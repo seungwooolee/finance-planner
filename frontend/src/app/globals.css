@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f4f7fa;
+  --foreground: #17283c;
+  --card: #ffffff;
+  --card-foreground: #17283c;
+  --primary: #087d72;
+  --primary-foreground: #ffffff;
+  --muted: #eef3f7;
+  --muted-foreground: #66768a;
+  --border: #e1e8ef;
+  --input: #dce4ed;
+  --ring: #0b9f8b;
+  --destructive: #b54340;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --font-sans: Arial, "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+button,
+input,
+summary {
+  -webkit-tap-highlight-color: transparent;
+}
+button,
+summary {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: wait;
+}
+::selection {
+  background: #beece2;
+}
+.recharts-wrapper:focus,
+.recharts-surface:focus {
+  outline: none;
+}
+.recharts-cartesian-axis-tick-value {
+  font-size: 11px;
+  fill: #7d8a9c;
+}
+.metric-number {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.045em;
+  overflow-wrap: anywhere;
+}
+.hero-orbit {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border: 1px solid #ffffff0f;
+  border-radius: 50%;
+  right: -70px;
+  top: -90px;
+  pointer-events: none;
+}
+.hero-orbit::before {
+  content: "";
+  position: absolute;
+  inset: 40px;
+  border: 1px solid #ffffff12;
+  border-radius: 50%;
+}
+.hero-orbit::after {
+  content: "";
+  position: absolute;
+  inset: 80px;
+  border: 1px solid #ffffff15;
+  border-radius: 50%;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
