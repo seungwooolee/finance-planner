@@ -1,5 +1,7 @@
 # Iteration 1 최소 개발 명세
 
+이 문서는 현재 구현의 API·계산 계약이다. 사용자 명시 기준과 구현 과정의 가정은 [계산 정책](calculation-policy.md)에서 구분한다. 회귀 테스트 통과만으로 미확정 재무 정책이 승인된 것으로 간주하지 않는다. 2026-10-27 환경 정비에서는 아래 계약과 수식을 변경하지 않았다.
+
 ## 범위와 완료 조건
 Next.js + TypeScript + Tailwind + shadcn/ui + Recharts 화면, FastAPI + Pydantic API, 독립 Decimal 계산 모듈을 구현한다. 가상 고객 로드, 전체 입력 수정, 재계산, 월별 그래프, 가정·오류·로딩 표시가 동작해야 한다. pytest와 실제 API를 사용하는 Playwright 검증, 타입 검사, lint, production build가 통과해야 한다. 이후 단계 및 AI 연결은 구현하지 않는다.
 

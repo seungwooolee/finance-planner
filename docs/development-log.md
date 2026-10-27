@@ -55,3 +55,44 @@
 - `1159e37`: 반응형 프론트엔드 및 검증된 브라우저 흐름.
 - Git 작성자 설정이 없어 커밋에 한해 `Codex <codex@local>`을 사용하며 전역 설정은 바꾸지 않는다. 원격 저장소 생성·push는 수행하지 않는다.
 - 다음 검토 범위는 Iteration 2의 지출 항목별 물가상승률이다. 세부 요구사항은 사용자 검토 후 정한다.
+
+## 2026-10-27 — 개발 환경 정비 및 API 연결 복구
+
+### 시작 상태와 분석
+- 시작 시 `main`의 HEAD는 `6274cfe`, 작업 트리는 깨끗했고 원격 저장소가 없었다. 기존 네 커밋·코드·데이터를 보존했다.
+- Node 24.22.1, npm 11.19.1, Python 3.12.4, Git 2.56.0을 실제 명령으로 재확인했다. 의존성 버전은 바꾸지 않았다.
+- 프론트 요청은 `frontend/src/lib/profile.ts`의 `requestJson`을 통해 `/api/sample-profile`(GET), `/api/calculate`(POST)로 나간다. 호출 주체는 `financial-planner.tsx`의 초기 로드/예시 초기화/계산 처리이다.
+- `frontend/next.config.ts`는 `/api/*`를 `BACKEND_URL` 또는 기본 `http://127.0.0.1:8000`의 `/api/*`로 전달한다. 별도 `.env.local`은 없었고 `.env.example`만 존재했다. 셸의 BACKEND_URL도 지정되어 있지 않았다.
+- 실제 백엔드는 `backend/app/main.py`의 FastAPI `app`이며, `backend` 작업 디렉터리에서 `.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000`으로 실행한다. 프레임워크를 추정하지 않고 코드와 설치 파일로 확인했다.
+
+### 근본 원인과 근거
+- 기존 프론트엔드 Node 프로세스 PID 25488이 3000번 포트에서 실행 중이었고, **8000번 포트의 리스너는 없었다**.
+- 프론트 경유 `GET http://127.0.0.1:3000/api/sample-profile`은 HTTP 500 / `Internal Server Error`를 반환했다.
+- 백엔드 직접 `GET http://127.0.0.1:8000/health`는 연결 거부를 반환했다. 실행 중인 백엔드 내부 오류를 뜻하는 500이 아니라, 프론트 프록시가 연결할 API 서버가 없었던 상태이다.
+- 서버 시작 후 **프론트 코드·포트·프록시·계산식을 바꾸지 않고** 같은 요청이 200으로 바뀌었다. 따라서 이 장애의 원인은 백엔드 미실행이며 CORS·API 경로·계산 엔진 오류를 수정할 필요가 없었다.
+- 기존 프론트의 수동 실행 터미널 로그는 이 채팅에 연결되어 있지 않았다. 근거는 직접 HTTP/TCP 진단과 복구 후 백엔드 access/startup 로그이다.
+
+### 최소 수정과 문서 정비
+- `scripts/start-dev.ps1`: `-BackendOnly` 옵션을 추가했다. 이미 켜진 사용자 프론트엔드를 유지하고 Python API만 시작·준비 확인·기록한다. 기본 모드는 기존대로 두 서버를 시작한다.
+- `scripts/verify.ps1`: Core / Build / E2E의 반복 가능한 진입점을 추가했다. 검사 실패 시 중단하며 작업 위치와 환경변수를 복구한다. 사용자 서버를 자동 종료하지 않는다.
+- `AGENTS.md`: 승인 범위, 미확정 금융 기준, 계산/AI 경계, 작은 기능 개발 사이클과 회귀 검증 원칙을 보강했다.
+- `README.md`: 문서 안내, Windows의 백엔드→프론트 실행 순서, 부분 실행 복구, 환경변수·로그·검증 명령을 보강했다.
+- `docs/calculation-policy.md`, `docs/project-status.md`, `docs/testing.md`: 사용자 기준/구현 가정, 요구사항별 상태와 다음 작은 기능, 검사 범위와 자동화 공백을 기록했다.
+- 기존 명세에는 가정 출처 문서 링크만 추가했다. 서비스 기능·API 계약·금융 공식·기준 정답·기존 테스트는 변경하지 않았다. 주요 구조 변경이나 파일 삭제도 하지 않았다.
+
+### 이번에 실제 실행한 검증
+- PowerShell 파서로 `start-dev.ps1`, `verify.ps1` 구문 확인: 통과.
+- `.\scripts\verify.ps1 -Mode Core`: **pytest 78 passed (0.89s)**, Ruff 통과, pip check 통과, TypeScript 통과, ESLint 통과.
+- `.\scripts\start-dev.ps1 -BackendOnly`: 실제 실행 성공. Uvicorn startup 로그와 `/health` 200 확인.
+- 복구 후 프론트 경유 sample-profile GET / calculate POST: **모두 HTTP 200**. 월 현금흐름 `800000`, 목표재원 `62000000`, 부족액 `8000000`, 달성률 `88.57`, 월별 기록 61개 확인.
+- `.\scripts\verify.ps1 -Mode E2E -BrowserChannel msedge`: **14 passed (1.7m)**. 실제 Edge에서 초기 예시/기본 예시 재시도, 입력 수정·계산, Recharts 표시, 표 일치, 오류 복구, 모바일을 확인했다.
+- `.\scripts\verify.ps1 -Mode Build`: **이번에는 빌드를 수행하지 않았다.** 기존 사용자 프론트엔드 실행을 감지해 종료 코드 1로 보호 중단하는 것을 확인했다. 마지막 실제 production build 통과는 위 최초 Iteration 1 기록이며 이번 결과와 구분한다. 이번 변경에는 프론트 번들 코드 변경이 없다.
+- Playwright의 `NO_COLOR`/`FORCE_COLOR` 경고는 결과에 영향을 주지 않았다. 인앱 브라우저 자동 제어 도구는 초기화 오류로 현재 사용자의 탭을 조작하지 못했지만 별도 실제 Edge E2E는 수행했다. 현재 탭이 이전 오류 상태이면 기본 예시 버튼 또는 새로고침으로 새 요청을 보낼 수 있다.
+
+### 인계 상태와 남은 작업
+- 기존 프론트엔드 PID 25488 / 3000 포트는 보존했다. 새 백엔드 Uvicorn PID 23804 / 8000 포트가 정상 실행 중이다. 서버 상태는 이번 확인 시점의 기록이다.
+- 사용자 요청대로 앱을 실행 상태로 인계한다. `logs/dev-processes.json`에는 이번에 시작한 백엔드만 기록되어 있으며 `stop-dev.ps1`은 이 백엔드만 종료한다.
+- 접속 주소: `http://127.0.0.1:3000/`, API 문서: `http://127.0.0.1:8000/docs`.
+- 자동 부팅/서비스 등록은 하지 않았다. 서버를 종료하거나 PC를 재시작하면 README의 명령으로 다시 실행해야 한다.
+- Build 재실행은 사용자가 프론트엔드를 종료한 뒤 수행할 수 있다. CI/다중 브라우저/실기기/부하 검증은 미구현 범위로 남는다.
+- 다음 작은 기능은 기존 응답 기반 “현재 사용 가능한 주거 저축” 보조지표 표시를 추천했다. 완료 조건만 문서화했으며 구현하지 않았다.

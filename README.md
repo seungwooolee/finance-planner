@@ -2,6 +2,17 @@
 
 사회초년생이 현재 자산과 월 현금흐름을 바탕으로 주거자금 목표를 확인하는 한국어 재무설계 서비스입니다. 현재 개발 범위는 **Iteration 1: 기본 재무설계**입니다. AI API와 이후 단계의 시나리오는 연결하지 않습니다.
 
+## 문서 안내
+
+| 문서 | 관리하는 내용 |
+| --- | --- |
+| [작업 지침](AGENTS.md) | 변경 범위·승인·개발 사이클·회귀 검증 원칙 |
+| [프로젝트 현황](docs/project-status.md) | 실제 구조와 스택, 요구사항별 진행 상태, 다음 작은 기능 제안 |
+| [Iteration 1 명세](docs/iteration-1-spec.md) | 현재 입력·응답 계약과 고정 정답 |
+| [계산 정책](docs/calculation-policy.md) | 사용자 지정 기준, 구현 가정, 미확정 정책의 구분 |
+| [테스트 안내](docs/testing.md) | 자동 검증 명령·범위·공백·연결 오류 진단 |
+| [개발 로그](docs/development-log.md) | 실제 실행 결과와 오류·수정 이력 |
+
 ## 실행 환경
 
 - Node.js 24 LTS / npm 11
@@ -29,12 +40,21 @@ Set-Location ..
 .\scripts\start-dev.ps1
 ```
 
+**화면만 열리고 “서버에 연결할 수 없습니다”가 나오면** Python API도 실행 중인지 확인하세요. `npm.cmd run dev`는 Next.js만 시작합니다. 프론트엔드가 이미 3000번 포트에서 실행 중이고 8000번 포트의 백엔드가 꺼져 있다면, 기존 화면을 유지하면서 다음 명령으로 백엔드만 시작할 수 있습니다.
+
+```powershell
+Set-Location 'C:\finance planner'
+.\scripts\start-dev.ps1 -BackendOnly
+```
+
+이때 `stop-dev.ps1`의 관리 대상은 새로 시작한 백엔드뿐입니다. 백엔드 준비 후 현재 화면의 **기본 예시 불러오기**를 누르거나 새로고침하세요. 이미 기록된 개발 세션이 있으면 스크립트가 중복 시작을 막습니다. 기존 프로세스를 임의 종료하거나 기록 파일을 지워 우회하지 말고 실행 상태를 먼저 확인하세요.
+
 - 앱: [http://127.0.0.1:3000](http://127.0.0.1:3000)
 - API 문서: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 - 종료: `.\scripts\stop-dev.ps1`
 - 포트 변경: `.\scripts\start-dev.ps1 -FrontendPort 3001 -BackendPort 8001`
 
-직접 실행하려면 서로 다른 터미널에서 아래 명령을 실행합니다.
+직접 실행하려면 **터미널 1에서 백엔드를 먼저 시작하고** `http://127.0.0.1:8000/health`가 응답한 뒤 **터미널 2에서 프론트엔드**를 시작합니다. 두 터미널을 실행한 상태로 유지하세요.
 
 ```powershell
 # 터미널 1
@@ -45,10 +65,15 @@ Set-Location 'C:\finance planner\backend'
 ```powershell
 # 터미널 2
 Set-Location 'C:\finance planner\frontend'
+$env:BACKEND_URL = 'http://127.0.0.1:8000'
 npm.cmd run dev -- --port 3000
 ```
 
 Next.js는 브라우저의 `/api/*` 요청을 FastAPI에 전달합니다. 백엔드 주소는 환경변수 `BACKEND_URL`로 지정하며 기본값은 `http://127.0.0.1:8000`입니다. 인터넷 공개나 서비스 배포는 이번 단계의 범위가 아닙니다.
+
+실제 백엔드 진입점은 `backend/app/main.py`의 `app`이고 실행 모듈은 `app.main:app`입니다. `frontend/.env.example`은 예시 파일이며 자동으로 로드되지 않습니다. 필요하면 `frontend/.env.local`로 복사하거나 위처럼 환경변수를 지정합니다. 주소를 바꾸면 이미 실행 중인 Next.js에도 적용되도록 해당 프론트엔드를 다시 시작해야 합니다. 브라우저 호출은 상대 주소 `/api/sample-profile`, `/api/calculate`이므로 백엔드 포트를 프론트 코드에 별도로 하드코딩하지 않습니다.
+
+실행 후 `http://127.0.0.1:3000/api/sample-profile`이 HTTP 200인지 확인하세요. 자동 실행 로그는 `logs/backend.stdout.log`, `logs/backend.stderr.log`, `logs/frontend.stdout.log`, `logs/frontend.stderr.log`에 기록됩니다. 수동 실행 로그는 해당 터미널에 표시됩니다.
 
 ## 사용 방법과 계산 기준
 
@@ -89,6 +114,17 @@ scripts/                 로컬 서버 시작·종료
 
 ## 검증
 
+루트에서 다음 명령으로 반복 검사할 수 있습니다. 서버 실행 중에는 Core와 E2E를 사용하고, Build는 같은 checkout의 서버를 종료한 뒤 별도로 실행합니다. 스크립트가 사용자 서버를 종료하지는 않습니다.
+
+```powershell
+.\scripts\verify.ps1 -Mode Core
+.\scripts\verify.ps1 -Mode E2E -BrowserChannel msedge
+# 서버가 실행되지 않을 때
+.\scripts\verify.ps1 -Mode Build
+```
+
+개별 명령과 검사 범위는 [테스트 안내](docs/testing.md)에 있으며, 직접 실행하려면 다음을 사용합니다.
+
 ```powershell
 Set-Location 'C:\finance planner\backend'
 & .\.venv\Scripts\python.exe -m pytest -q
@@ -110,10 +146,10 @@ Edge가 없는 환경에서는 `npm.cmd exec playwright install chromium`으로 
 
 실제로 수행한 검증 결과, 발견한 문제와 수정 내용은 [개발 로그](docs/development-log.md)에 기록합니다. 의존성은 `frontend/package-lock.json`과 `backend/requirements.txt`로 고정합니다.
 
-2026-10-27 검증: **pytest 78개 + Playwright 14개 통과**, 타입 검사·린트·production build 및 로컬 서버 시작·종료 확인 완료. 검증용 서버는 종료한 상태이므로 위 시작 스크립트로 다시 실행할 수 있습니다. 화면 기록은 `artifacts/lifepath-desktop.png`, `artifacts/lifepath-mobile.png`에 남겨 두었습니다.
+2026-10-27 최초 개발 검증: **pytest 78개 + Playwright 14개 통과**, 타입 검사·린트·production build 및 로컬 서버 시작·종료 확인 완료. 이후 환경 정비·연결 오류 복구의 실제 결과와 서버 상태는 [개발 로그](docs/development-log.md)의 후속 기록을 참고하세요. 화면 기록은 `artifacts/lifepath-desktop.png`, `artifacts/lifepath-mobile.png`에 남겨 두었습니다.
 
 ## 다음 단계
 
-다음 검토 대상은 Iteration 2의 지출 항목별 물가상승률입니다. 그 이후 이직·주거 전환·12개 시나리오·AI 해설과 재설계·검증 이력·배포를 순차적으로 검토합니다. 이번 코드에 해당 기능을 미리 넣지 않았습니다.
+다음 작은 기능으로는 기존 응답의 “현재 사용 가능한 주거 저축” 보조지표 표시를 제안합니다. [현황 문서](docs/project-status.md)에 완료 조건만 기록했으며 구현하지 않았습니다. 이후 Iteration 2의 지출 항목별 물가상승률과 이직·주거 전환·12개 시나리오·AI를 순차 검토합니다. 새 계산 기준은 별도 검토와 승인을 거칩니다.
 
 환경 호환성은 [Next.js 공식 설치 문서](https://nextjs.org/docs/app/getting-started/installation)와 [FastAPI 공식 릴리스 기록](https://fastapi.tiangolo.com/release-notes/) 및 패키지 레지스트리를 기준으로 확인했습니다.
