@@ -1,0 +1,14 @@
+{
+  "customer": { "age": 27 },
+  "income": { "monthly_net": "3000000" },
+  "expenses": { "monthly_living": "2200000" },
+  "assets": {
+    "rental_deposit": "10000000",
+    "housing_savings": "4000000",
+    "emergency_fund": "6000000",
+    "long_term_investments": "2000000"
+  },
+  "liabilities": { "current_balance": "0" },
+  "goal": { "target_amount": "70000000", "horizon_months": 60 },
+  "assumptions": { "deposit_returned_at_goal": true }
+}
