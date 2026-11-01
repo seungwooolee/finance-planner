@@ -33,6 +33,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { CatCompanion } from "@/components/cat-companion";
 import {
   Card,
   CardContent,
@@ -719,6 +720,7 @@ export function FinancialPlanner() {
         재무정보 입력으로 이동
       </a>
       <header className="border-b border-border bg-white">
+        <CatCompanion />
         <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-4 py-5 sm:px-8">
           <Link
             href="/"
@@ -733,6 +735,9 @@ export function FinancialPlanner() {
             </span>
           </Link>
           <div className="flex items-center gap-4">
+            <Link href="/login" className="rounded-md text-xs font-medium text-muted-foreground hover:text-primary focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">
+              로그인
+            </Link>
             <span className="hidden text-xs text-muted-foreground sm:block">
               나의 재무계획
             </span>
