@@ -12,6 +12,7 @@
 | [계산 정책](docs/calculation-policy.md) | 사용자 지정 기준, 구현 가정, 미확정 정책의 구분 |
 | [테스트 안내](docs/testing.md) | 자동 검증 명령·범위·공백·연결 오류 진단 |
 | [개발 로그](docs/development-log.md) | 실제 실행 결과와 오류·수정 이력 |
+| [PORTMEW 개발 인계](docs/portmew/README.md) | 현행 설계 5종, 실제 코드 대조, 대표 사례 기대값과 Codex 작업 순서 |
 
 ## 실행 환경
 
@@ -150,6 +151,6 @@ Edge가 없는 환경에서는 `npm.cmd exec playwright install chromium`으로 
 
 ## 다음 단계
 
-다음 작은 기능으로는 기존 응답의 “현재 사용 가능한 주거 저축” 보조지표 표시를 제안합니다. [현황 문서](docs/project-status.md)에 완료 조건만 기록했으며 구현하지 않았습니다. 이후 Iteration 2의 지출 항목별 물가상승률과 이직·주거 전환·12개 시나리오·AI를 순차 검토합니다. 새 계산 기준은 별도 검토와 승인을 거칩니다.
+2026-11-02 기준 다음 개발 대상은 [PORTMEW 인계 문서](docs/portmew/README.md)의 **T1 입력 정규화·기본 진단**입니다. 기존 Iteration 1과 고정 정답을 유지하며, 이후 세 계획·소득 변화·지급일 검사·부족 조정안을 작은 단위로 연결합니다. 이번에는 현행 명세·코드 대조·개발용 기대값을 전달했고 앱 기능은 변경하지 않았습니다. 실제 구현·테스트는 Codex 개발 작업에서 진행합니다. 이전의 “현재 사용 가능한 주거 저축” 보조지표 제안은 현황 문서에 이력으로 남깁니다.
 
 환경 호환성은 [Next.js 공식 설치 문서](https://nextjs.org/docs/app/getting-started/installation)와 [FastAPI 공식 릴리스 기록](https://fastapi.tiangolo.com/release-notes/) 및 패키지 레지스트리를 기준으로 확인했습니다.

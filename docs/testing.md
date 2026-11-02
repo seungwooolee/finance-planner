@@ -44,7 +44,7 @@
 
 기존 pytest 78개와 Playwright 14개는 모두 로컬 명령으로 자동 실행할 수 있다. 핵심 금액은 엔진에서 가져온 값으로 정답을 생성하지 않고 고정 예제로 비교한다. Playwright는 금융 응답을 모킹하지 않으며 로딩/실패 검사에서만 요청 지연과 통신 오류를 주입한다. 결과는 `frontend/playwright-report/`, 실패 trace/스크린샷은 `frontend/test-results/`에 남는다.
 
-- GitHub Actions 등 CI는 아직 없다. 향후 Python/Node 설치 → 잠금 의존성 설치 → Core/Build → 서버 시작 → 브라우저 설치/E2E → 로그 수집/본인 서버 종료 순서로 옮길 수 있다. 원격 저장소·계정 설정은 이번에 변경하지 않는다.
+- 확인한 main에는 GitHub Actions 등 CI가 없다. 원격 GitHub 저장소는 연결되어 있다. 향후 Python/Node 설치 → 잠금 의존성 설치 → Core/Build → 서버 시작 → 브라우저 설치/E2E → 로그 수집/본인 서버 종료 순서로 옮길 수 있다.
 - E2E는 Chromium 계열과 모바일 viewport를 확인한다. 실제 모바일 기기, Firefox/WebKit, 전체 접근성 감사, 부하·보안 검사는 아직 하지 않는다.
 - 퍼센트 기반 코드 커버리지 기준은 없다. 현재 테스트 개수를 커버리지 비율이나 금융 정책의 타당성으로 표현하지 않는다.
 - PowerShell 실행은 현재 Windows 환경에서 검증한다. PowerShell 5.1 또는 다른 OS 지원 여부는 실제 실행 기록이 없으면 보장하지 않는다.

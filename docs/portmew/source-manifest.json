@@ -1,0 +1,59 @@
+{
+  "snapshot_date": "2026-11-02",
+  "inspected_repository": "seungwooolee/finance-planner",
+  "inspected_main_commit": "2baa2be548b949d5bfb67a46e81a1a721291ef39",
+  "status": "DESIGN_HANDOFF_NOT_APP_IMPLEMENTATION",
+  "files": [
+    {
+      "path": "specs/PORTMEW_Data_and_Design_Handoff_v1_0.md",
+      "library_file_id": "libfile_86565dc77ae48191beb12fbb8026ee71",
+      "source_version": "4",
+      "content_version": "v1.4",
+      "size_bytes": 128956,
+      "sha256": "86945dd1b209b2322ee49930114ce0f510447b749312b9f08fabced330dcdb7e",
+      "source_size_bytes": 128956,
+      "source_sha256": "86945dd1b209b2322ee49930114ce0f510447b749312b9f08fabced330dcdb7e"
+    },
+    {
+      "path": "specs/PORTMEW_Questions_and_Financial_Policy_v1_0.md",
+      "library_file_id": "libfile_42f10ca0ec308191a9499104cee36fa9",
+      "source_version": "2",
+      "content_version": "POL-FIN-1.2",
+      "size_bytes": 72224,
+      "sha256": "f947dc42823d6b82e470b03f78bb9e896027d311d5d5cb3ff06aff90ba442ff6",
+      "source_size_bytes": 72224,
+      "source_sha256": "f947dc42823d6b82e470b03f78bb9e896027d311d5d5cb3ff06aff90ba442ff6"
+    },
+    {
+      "path": "specs/PORTMEW_Financial_Case_Verification_v1_0.md",
+      "library_file_id": "libfile_0644a958156c8191b82a32108ddf1782",
+      "source_version": "1",
+      "content_version": "v1.1",
+      "size_bytes": 30204,
+      "sha256": "ccc7ed38c4c61f3ce2cc60ffc61e149b2c5eb9bbf1fe22ebaa18e524b1b033ca",
+      "source_size_bytes": 30207,
+      "source_sha256": "1b2ac5efce5f53976e2fef0d4c420f9f79cd4a363a1591df8dc02528d9aec89b"
+    },
+    {
+      "path": "specs/PORTMEW_Data_Source_Review_v1_0.md",
+      "library_file_id": "libfile_fa7295a3785881918d6c79dd418017f2",
+      "source_version": "2",
+      "content_version": "v1.2",
+      "size_bytes": 43750,
+      "sha256": "9230ccd455849f45be2d94772545bc2fc9d5cf2743e4e0d0c79c7154ab2ebf13",
+      "source_size_bytes": 43754,
+      "source_sha256": "a44f930fe7191d7bd5d95c1549c75685651847bc59b2fef7a65fd247a25fddec"
+    },
+    {
+      "path": "specs/PORTMEW_Investment_Preference_and_Allocation_Policy_v0_1.md",
+      "library_file_id": "libfile_19cbc6d37ffc8191a108e62d85f91da4",
+      "source_version": "1",
+      "content_version": "v0.2",
+      "size_bytes": 42597,
+      "sha256": "27652623dda94e9f7220a2b3cdcf425846a9ff5af3ef3004ab56603b5260ee68",
+      "source_size_bytes": 42597,
+      "source_sha256": "27652623dda94e9f7220a2b3cdcf425846a9ff5af3ef3004ab56603b5260ee68"
+    }
+  ],
+  "formatting_normalization": "Preserve text and CommonMark hard breaks; encode trailing two-space hard breaks as backslash and normalize EOF to one newline."
+}
