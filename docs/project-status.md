@@ -1,5 +1,9 @@
 # 프로젝트 현황과 다음 작은 작업
 
+## 2026-11-03 현재 개발 기준
+
+원격 main은 `2baa2be`, PR1(고양이 UI)·PR2(설계 인계)는 미병합 초안이다. [현행 작업상태](portmew/delivery-status.md)·[미결정](portmew/decisions.md)·[출처](portmew/source-map.md)를 따른다. 기본 T1의 새 입력 계약을 먼저 구현한다. 기존 API·엔진·원장·PR1은 이번에 변경하지 않았다. 아래11/02·10/27 기록은 해당 시점 이력이다.
+
 현재 대조일: 2026-11-02. 원격 `seungwooolee/finance-planner`의 main `2baa2be548b949d5bfb67a46e81a1a721291ef39`을 읽어 PORTMEW 명세와 연결했다. [현재 개발 인계](portmew/README.md)와 [코드 대조·작업 순서](portmew/implementation-handoff.md)를 먼저 확인한다. 앱·API·계산 엔진은 이번에 변경하지 않았다. 사용자 로컬의 미커밋 ECC 설정과 열린 PR #1은 대조·통합 범위에 포함하지 않았다.
 
 아래 기존 환경·검증 기록은 2026-10-27 당시 상태다. 당시 분석 시작 Git은 `main`, `6274cfe`, 변경 없음·원격 미설정이었고, 이번 작업의 실제 실행 결과와 구분한다. 최신 실행 결과는 [개발 로그](development-log.md)에 별도 기록한다.

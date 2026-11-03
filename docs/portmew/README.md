@@ -1,5 +1,11 @@
 # PORTMEW 개발 인계 시작점
 
+## 2026-11-03 개발 기준 확인
+
+[개발 기준·출처](source-map.md), [작업상태표](delivery-status.md), [미결정표](decisions.md), [질문60개 대조](question-map.md)를 먼저 읽는다. 실행 순서는 [Codex v2.0](execution-prompts-v2.md)이 소유한다. 아래 T1~T6는 기존 모듈 대응표이며, 실행·점검·재채택·AI·제출의 순서는 v2.0을 적용한다.
+
+원장8탭·Q-ID60·데이터175, 시트 PASS55/앱 미실행89를 읽기 확인했다. 기존 앱 Core는 이번에 pytest78·Ruff·pip check·TypeScript·ESLint가 통과했다. 새 PORTMEW 앱 구현·팀원 접속·전체 E2E/Build는 완료하지 않았다. Q044 선호 enum과 새 UI→영속 Q-ID 연결은 미결정표를 따른다.
+
 2026-11-02 · 대조 대상: main `2baa2be548b949d5bfb67a46e81a1a721291ef39`
 
 현재 앱은 LifePath AI Iteration 1이다. 이 폴더는 PORTMEW의 확정 설계와 검산 정답을 개발에 전달한다. **세 계획·소득 감소·지급일 검사·채택 기능의 구현 완료를 뜻하지 않는다.** 코딩과 실제 앱 실행은 Codex 개발 작업에서 이어간다.

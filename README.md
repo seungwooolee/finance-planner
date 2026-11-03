@@ -1,5 +1,7 @@
 # LifePath AI
 
+개발 착수 전 [2026-11-03 기준·상태·미결정](docs/portmew/source-map.md)과 [Codex 실행 v2.0](docs/portmew/execution-prompts-v2.md)을 읽는다.
+
 사회초년생이 현재 자산과 월 현금흐름을 바탕으로 주거자금 목표를 확인하는 한국어 재무설계 서비스입니다. 현재 개발 범위는 **Iteration 1: 기본 재무설계**입니다. AI API와 이후 단계의 시나리오는 연결하지 않습니다.
 
 ## 문서 안내
