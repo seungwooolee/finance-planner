@@ -9,7 +9,7 @@ from ..planning.question_v12 import LEGACY_ADAPTER_VERSION as QUESTION_ADAPTER_V
 from ..planning.statuses import ENGINE_RELEASE
 from .adapter import ADAPTER_VERSION, build_engine_input
 from .question_bridge import run_frontend_questions
-from .raw_store import PocError, RawAnswerStore, _digest, _json, _now
+from .raw_store import PocError, RawAnswerStore, _digest, _id, _json, _now
 
 EXTRA_SCHEMA = """
 CREATE TABLE IF NOT EXISTS analysis_runs(
@@ -41,6 +41,41 @@ class BackendStore(RawAnswerStore):
                                  "BEGIN SELECT RAISE(ABORT, 'immutable analysis'); END")
         finally:
             conn.close()
+
+    def list_cases(self, actor, limit=20, after=None):
+        _id(actor)
+        if type(limit) is not int or not 1 <= limit <= 100:
+            raise PocError("INVALID_ENVELOPE")
+        if after is not None:
+            _id(after)
+        with self._transaction() as conn:
+            sql = "SELECT case_id,input_version FROM cases WHERE actor_id=?"
+            params = [actor]
+            if after is not None:
+                sql += " AND case_id>?"
+                params.append(after)
+            rows = conn.execute(sql + " ORDER BY case_id LIMIT ?", (*params, limit + 1)).fetchall()
+            items = [{"case_id": r["case_id"], "input_version": r["input_version"]} for r in rows[:limit]]
+            return {"items": items, "next_after": items[-1]["case_id"] if len(rows) > limit else None}
+
+    def open_case(self, actor, case_id):
+        """One read snapshot; old/failed results stay references, never promoted to current success."""
+        with self._transaction() as conn:
+            case = self._authorize(conn, actor, case_id)
+            rows = conn.execute("SELECT r.* FROM answer_heads h JOIN answer_revisions r "
+                                "ON r.revision_id=h.revision_id WHERE h.case_id=? ORDER BY h.logical_key",
+                                (case_id,)).fetchall()
+            runs = conn.execute("SELECT run_id,input_version,adapter_version,status,error_code,recorded_at "
+                                "FROM analysis_runs WHERE case_id=? ORDER BY recorded_at DESC,run_id DESC LIMIT 21",
+                                (case_id,)).fetchall()
+            return {"case_id": case_id, "input_version": case["input_version"],
+                    "answers": [self._revision(r) for r in rows],
+                    "analysis_refs": [{"run_id": r["run_id"], "input_version": r["input_version"],
+                                       "adapter_version": r["adapter_version"], "status": r["status"],
+                                       "error_code": r["error_code"], "recorded_at": r["recorded_at"],
+                                       "is_current": r["input_version"] == case["input_version"]}
+                                      for r in runs[:20]],
+                    "has_more_analyses": len(runs) > 20}
 
     def analyze(self, actor, case_id, expected_version, request_key, context,
                 outputs=None, engine=run_engine, *, question_options=None):

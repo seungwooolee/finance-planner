@@ -160,3 +160,19 @@ def test_pg_api_uses_actual_database_and_engine_with_mock_login(pg_store):
     assert response.status_code == 200, response.text
     result = client.get(base + "/analyses/" + response.json()["run_id"]).json()
     assert result["result"]["results"]["OUT-03"]["after_existing_contributions_krw"] == "500000"
+
+
+def test_pg_account_list_and_open_preserve_owner_version_and_raw(pg_store):
+    seed(pg_store)
+    original = run(pg_store)
+    pg_store.create_case("mock-actor-B", "private-B")
+    assert pg_store.list_cases("mock-actor-A") == {
+        "items": [{"case_id": "case-1", "input_version": 6}], "next_after": None}
+    opened = pg_store.open_case("mock-actor-A", "case-1")
+    assert opened["input_version"] == 6
+    assert opened["analysis_refs"][0]["run_id"] == original["run_id"]
+    assert opened["analysis_refs"][0]["is_current"] is True
+    assert any(r["envelope"]["fields"].get("monthly_net_income", {}).get("raw_value") == "00300.0000"
+               for r in opened["answers"])
+    with pytest.raises(PocError, match="NO_ACCESS"):
+        pg_store.open_case("mock-actor-B", "case-1")

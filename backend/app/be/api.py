@@ -2,7 +2,7 @@
 import json
 from functools import lru_cache
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 
 from .auth import get_actor
 from .postgres import PostgresStore
@@ -65,6 +65,22 @@ def create_case(value=Depends(body), actor=Depends(get_actor), store=Depends(get
     shape(value, ["case_id"])
     call(store.create_case, actor, value["case_id"])
     return {"case_id": value["case_id"], "input_version": 0}
+
+
+def private_read(response: Response):
+    response.headers["Cache-Control"] = "no-store"
+    response.headers["Pragma"] = "no-cache"
+
+
+@router.get("/cases", dependencies=[Depends(private_read)])
+def list_cases(limit: int = Query(20, ge=1, le=100), after: str | None = Query(None, min_length=1),
+               actor=Depends(get_actor), store=Depends(get_store)):
+    return call(store.list_cases, actor, limit, after)
+
+
+@router.get("/cases/{case_id}", dependencies=[Depends(private_read)])
+def open_case(case_id: str, actor=Depends(get_actor), store=Depends(get_store)):
+    return call(store.open_case, actor, case_id)
 
 
 @router.put("/cases/{case_id}/answers")
