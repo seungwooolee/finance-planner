@@ -1,3 +1,19 @@
+# 2026-11-11 — 상품 조건 필터·월별 배분 검토 연결
+
+사용자 요청으로 `dion/integration-20261111`의 `6d8e805`를 기준으로 상품 소비자 `DION-PRODUCT-REVIEW-0.1`을 연결했다. 조사 상품78개·제외22개와 공식 근거를 카탈로그에 담고 원응답/카탈로그/정책/기존 월 후보 SHA를 결과에 보존한다. `OUT-06`은 입력 부족·상품 제외 사유와 두 방식 각각의 배분액/미배분을 반환한다. 미리보기와 인증된 저장·복원에 같은 엔진을 사용한다. FE가 실제 상태·금액·공식 출처를 표시하고 옛 결과에는 재계산을 안내한다.
+
+실제 상품 상세 검증0개, 비중·위험 한도 정책 DRAFT다. 실제 추천 활성0개이며 배분0원·전액 미배분이 현재 정답이다. TEST01/TEST02는 테스트 전용 합성 상품이다. 최종 권장액·채택·거래·기존 보유 집중/중복·계좌별 적합성·실시간 갱신은 미완료다. 기존 배정정책1.0과 코어의 고정 정답은 보존한다. 상세 계약은 [상품 연결 명세](product-allocation-0.1.md)를 따른다.
+
+이번 검증:
+
+- 관련 `pytest` 125개 통과(상품21개·기존 어댑터·월 후보·FE 미리보기/저장·복원). 명령: `python -m pytest -q tests/planning/test_product_allocation.py tests/be/test_question_frontend.py tests/planning/test_question_v12.py tests/planning/test_engine_v12.py`.
+- 변경 Python 파일 Ruff, `npm run typecheck`, `npm run lint`, `npm run build -- --webpack` 통과. 데이터 합계78+22=100과 코드 중복 없음, 30/48만원의 배분+미배분 대사를 확인했다.
+- 임시 모의 인증·SQLite 하네스와 별도 FE 포트로 Next → FastAPI 실제 HTTP 프록시를 확인했다. `/dion` HTTP200, OUT-06 78개 심사·활성0·월 후보30/48만원 전액 미배분. 검사용 프로세스는 종료했다.
+- Chromium E2E는 sandbox의 socket() 차단으로 브라우저가 시작되지 않았다. 통과로 처리하지 않았다. 기존 UI 검사 기대값은 변경된 상품 화면/API에 맞춰 갱신했다. Turbopack은 외부 의존성 symlink 해석 제한으로 실행하지 못해 별도 설정 변경 없이 Webpack 빌드로 확인했다.
+- 처음 사용한 검사 환경에 httpx가 없어 API 검사 수집이 중단됐고, httpx가 설치된 기존 검증용 가상환경으로 관련125개를 실행했다. 의존성 파일은 바꾸지 않았다. 전체 Core·전체 E2E·실계정·원격DB·배포는 미실행이다.
+
+---
+
 # 2026-11-11 — 시작화면 고양이·도움말·회원가입 UI
 
 `C:\Users\LG\Projects\DION-git`, `dion/fe-review-20261111`의 깨끗한 작업 트리에서 시작했다. 시작화면 상단 선택 UI를 기존 `cat-welcome.png`의 CSS 이동·멈춤·방향 전환·짧은 점프로 교체했다. 빠른/정밀 진입 카드와 진단 중 전환은 유지했다. 고양이는 클릭을 받지 않으며 `prefers-reduced-motion`에서는 정지한다. 새 이미지나 애니메이션 의존성은 추가하지 않았다.
@@ -220,3 +236,4 @@ GitHub main 2baa2be의44개 파일을 내보내 blob 지문을 확인했다. 실
 |Core/E2E/Build·전체pytest|이번 질문·문서 변경에서는 미실행. 과거187통과를 이번 결과로 보고하지 않음|
 
 질문 설계 반영과 법령·금융정책 검증/앱 구현은 다르다. 배정정책1.0 유지, 세금·연금·상속 법령 활성0개, 실제 새 질문 API/DB/앱 어댑터 미구현 상태를 유지했다.
+

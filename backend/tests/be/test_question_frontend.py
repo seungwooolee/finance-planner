@@ -69,6 +69,27 @@ def test_preview_actual_engine_oracles_and_source_preservation(client):
     assert fields(result["adapter"]["source_snapshot"], "F03")["monthly_net_income_krw"]["raw_value"] == "00300.0000"
 
 
+def test_product_review_preview_saved_restore_and_replay_use_same_engine(client):
+    doc = deepcopy(FIXTURE)
+    doc["requested_outputs"].append("OUT-06")
+    preview = client.post("/api/fe/v1/preview", json=doc).json()["result"]["results"]["OUT-06"]
+    version = seed(client)
+    context = {k: v for k, v in doc["context"].items() if k not in {"case_id", "snapshot_id", "profile_version"}}
+    payload = {"expected_version": version, "request_key": "product-review", "context": context,
+               "requested_outputs": doc["requested_outputs"], "scope_ref": doc["scope_ref"],
+               "confirmations": doc["confirmations"]}
+    first = client.post("/api/be/v1/cases/synthetic/question-analyses", json=payload)
+    assert first.status_code == 200 and first.json()["status"] == "SUCCEEDED"
+    assert client.post("/api/be/v1/cases/synthetic/question-analyses", json=payload).json() == first.json()
+    stored = client.get(f"/api/be/v1/cases/synthetic/analyses/{first.json()['run_id']}").json()
+    review = stored["result"]["results"]["OUT-06"]
+    assert review["catalog"] == preview["catalog"]
+    assert review["candidates"] == preview["candidates"]
+    assert review["catalog"]["eligible_for_review_count"] == 0
+    assert stored["engine_input"]["requested_outputs"] == doc["requested_outputs"]
+    assert stored["is_current"] is True
+
+
 @pytest.mark.parametrize("state", ["UNKNOWN", "NOT_ENTERED", "NOT_ASKED", "NOT_APPLICABLE", "DEFERRED", "DECLINED"])
 def test_missing_is_never_zero_and_raw_states_survive(client, state):
     doc = deepcopy(FIXTURE)
@@ -189,3 +210,4 @@ def test_saved_legacy_questions_do_not_silently_enable_v2_extra_targets(client):
     assert saved["engine_input"]["schema_version"] == doc["schema_version"]
     assert saved["result"]["results"]["OUT-05"]["calc_state"] == preview["results"]["OUT-05"]["calc_state"] == "NOT_SUPPORTED"
     assert "candidates" not in saved["result"]["results"]["OUT-05"]
+

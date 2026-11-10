@@ -88,6 +88,7 @@ export function DionPlanner() {
   async function calculate(input?:Document) {
     if(busy&&!input)return;
     const captured=clone(input??docRef.current), seq=++sequence.current;
+    captured.requested_outputs=[...new Set([...captured.requested_outputs,"OUT-06"])];
     abort.current?.abort();abort.current=new AbortController();setBusy(true);setError("");setMessage("");
     try {
       const response=await request("/api/fe/v1/preview","POST",captured,undefined,abort.current.signal);
@@ -166,12 +167,13 @@ export function DionPlanner() {
   async function savedCalculation(engineV2=false){await serverAction(async()=>{
     if(connectedCase.current!==caseId||serverVersion===null)throw new ApiError(409,"RESTORE_OR_CREATE_CASE_FIRST");
     const captured=clone(docRef.current);
+    captured.requested_outputs=[...new Set([...captured.requested_outputs,"OUT-06"])];
     if(captured.raw_bundle.answers.some(r=>saved.current[r.envelope.question_ref.design_id]!==stable(r.envelope)))throw new ApiError(409,"SAVE_CURRENT_ANSWERS_FIRST");
     const {case_id:ignoredCase,snapshot_id:ignoredSnapshot,profile_version:ignoredVersion,...context}=captured.context;void ignoredCase;void ignoredSnapshot;void ignoredVersion;
     const assessment={...context,scope_ref:captured.scope_ref};
     const identity=stable({caseId,serverVersion,context,confirmations:captured.confirmations,outputs:captured.requested_outputs,engineV2});
     const body=pendingAnalysis.current?.identity===identity?pendingAnalysis.current.body:engineV2
-      ? {expected_version:serverVersion,request_key:`fe-v2-${crypto.randomUUID()}`,assessment,confirmations:captured.confirmations,requested_outputs:["OUT-02","OUT-03","OUT-04","OUT-05"]}
+      ? {expected_version:serverVersion,request_key:`fe-v2-${crypto.randomUUID()}`,assessment,confirmations:captured.confirmations,requested_outputs:["OUT-02","OUT-03","OUT-04","OUT-05","OUT-06"]}
       : {expected_version:serverVersion,request_key:`fe-run-${crypto.randomUUID()}`,context,requested_outputs:captured.requested_outputs,scope_ref:captured.scope_ref,confirmations:captured.confirmations};
     pendingAnalysis.current={identity,body};
     const receipt=await request(`${base()}/${engineV2?"analyses/question-v12":"question-analyses"}`,"POST",body,token);
@@ -222,3 +224,4 @@ export function DionPlanner() {
     </main><ScenarioPicker disabled={busy||saveBusy} onLoad={loadScenario}/>{loginOpen&&<LoginDialog onClose={()=>setLoginOpen(false)} onLogin={(value,seconds)=>{setToken(value);setExpiresAt(Date.now()+seconds*1000);setServerVersion(null);connectedCase.current=null;saved.current={};pending.current=null;pendingAnalysis.current=null;setRuns([]);setCases([]);setNextAfter(null);setMessage("로그인했어요. 작성한 답변은 그대로 있어요. 검토 도구에서 상담을 조회하거나 저장할 수 있어요.");}}/>}<ConsultationWidget compact={mode!=="welcome"}/><footer className="d-footer"><strong>dion.</strong><span>확인한 정보로, 나에게 맞는 다음 단계.</span><small>계산 미리보기 · 상품 추천과 금융거래는 준비 중</small></footer>
   </div>;
 }
+

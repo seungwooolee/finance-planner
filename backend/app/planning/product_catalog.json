@@ -1,0 +1,632 @@
+{
+  "schema_version": "DION-PRODUCT-CATALOG-0.1",
+  "version": "DION-PRODUCT-CATALOG-20261111-0.1",
+  "research_reviewed_on": "2026-11-10",
+  "research_excluded_count": 22,
+  "products": [
+    {
+      "code": "069500",
+      "name": "KODEX 200",
+      "official_source": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+      "identity_source_row": "01_주식형:2",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "102110",
+      "name": "TIGER 200",
+      "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=10211",
+      "identity_source_row": "01_주식형:3",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "229200",
+      "name": "KODEX 코스닥150",
+      "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=22920",
+      "identity_source_row": "01_주식형:4",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "360200",
+      "name": "ACE 미국S&P500",
+      "official_source": "https://kind.krx.co.kr/external/2026/10/28/000603/20261028001589/68659.htm",
+      "identity_source_row": "01_주식형:5",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "360750",
+      "name": "TIGER 미국S&P500",
+      "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?isuCd=KR7360750004&menuIndex=0&method=searchEftIsuDetail",
+      "identity_source_row": "01_주식형:6",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "379800",
+      "name": "KODEX 미국S&P500",
+      "official_source": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+      "identity_source_row": "01_주식형:7",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "133690",
+      "name": "TIGER 미국나스닥100",
+      "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?isuCd=KR7133690008&menuIndex=0&method=searchEftIsuDetail",
+      "identity_source_row": "01_주식형:8",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "379810",
+      "name": "KODEX 미국나스닥100",
+      "official_source": "https://www.samsungfund.com/upload/kodex/newsroom/20260211093328479.pdf",
+      "identity_source_row": "01_주식형:9",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "367380",
+      "name": "ACE 미국나스닥100",
+      "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=36738",
+      "identity_source_row": "01_주식형:10",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "232080",
+      "name": "TIGER 코스닥150",
+      "official_source": "https://www.tigeretf.com/upload/etf/20250611092530009636.pdf",
+      "identity_source_row": "01_주식형:11",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "148020",
+      "name": "RISE 200",
+      "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=14802",
+      "identity_source_row": "01_주식형:12",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "278530",
+      "name": "KODEX 200TR",
+      "official_source": "https://www.samsungfund.com/upload/kodex/newsroom/20250723085615455.pdf",
+      "identity_source_row": "01_주식형:13",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "458730",
+      "name": "TIGER 미국배당다우존스",
+      "official_source": "https://www.tigeretf.com/upload/etf/20250611092637005053.pdf",
+      "identity_source_row": "01_주식형:14",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "446720",
+      "name": "SOL 미국배당다우존스",
+      "official_source": "https://www.soletf.co.kr/ko/fund/etf/210942",
+      "identity_source_row": "01_주식형:15",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "489250",
+      "name": "KODEX 미국배당다우존스",
+      "official_source": "https://m.samsungfund.com/sheet/20250805/2ETFN9_20250731.pdf",
+      "identity_source_row": "01_주식형:16",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "402970",
+      "name": "ACE 미국배당다우존스",
+      "official_source": "https://kind.krx.co.kr/external/2026/10/13/000298/20261013000823/68659.htm",
+      "identity_source_row": "01_주식형:17",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "161510",
+      "name": "PLUS 고배당주",
+      "official_source": "https://www.plusetf.co.kr/product/detail?n=006273",
+      "identity_source_row": "01_주식형:18",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "325020",
+      "name": "KODEX 배당가치",
+      "official_source": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=75493",
+      "identity_source_row": "01_주식형:19",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "210780",
+      "name": "TIGER 코스피고배당",
+      "official_source": "https://www.tigeretf.com/upload/etf/20250404024858003268.pdf",
+      "identity_source_row": "01_주식형:20",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "091170",
+      "name": "KODEX 은행",
+      "official_source": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=79834",
+      "identity_source_row": "01_주식형:21",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "223190",
+      "name": "KODEX 200가치저변동",
+      "official_source": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=75493",
+      "identity_source_row": "01_주식형:22",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "279540",
+      "name": "KODEX 최소변동성",
+      "official_source": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=75493",
+      "identity_source_row": "01_주식형:23",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "495050",
+      "name": "RISE 코리아밸류업",
+      "official_source": "https://www.riseetf.co.kr/prod/finderDetail/44H7",
+      "identity_source_row": "01_주식형:24",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "496120",
+      "name": "ACE 코리아밸류업",
+      "official_source": "https://kind.krx.co.kr/external/2026/10/28/000603/20261028001589/68659.htm",
+      "identity_source_row": "01_주식형:25",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "381170",
+      "name": "TIGER 미국테크TOP10 INDXX",
+      "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=38117",
+      "identity_source_row": "01_주식형:26",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "465580",
+      "name": "ACE 미국빅테크TOP7 Plus",
+      "official_source": "https://www.aceetf.co.kr/cs/notice/5102",
+      "identity_source_row": "01_주식형:27",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "426030",
+      "name": "TIME 미국나스닥100액티브",
+      "official_source": "https://timeetf.co.kr/m11_view.php?cate=&idx=2",
+      "identity_source_row": "01_주식형:28",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "139260",
+      "name": "TIGER 200 IT",
+      "official_source": "https://www.tigeretf.com/upload/etf/20250611092528006050.pdf",
+      "identity_source_row": "01_주식형:29",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "091160",
+      "name": "KODEX 반도체",
+      "official_source": "https://m.samsungfund.com/etf/product/view.do?id=2ETF07",
+      "identity_source_row": "01_주식형:31",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "381180",
+      "name": "TIGER 미국필라델피아반도체나스닥",
+      "official_source": "https://www.tigeretf.com/upload/etf/20240311033416007155.pdf",
+      "identity_source_row": "01_주식형:32",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "395270",
+      "name": "HANARO Fn K-반도체",
+      "official_source": "https://www.hanaroetf.com/fund/etf-data-board",
+      "identity_source_row": "01_주식형:33",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "471990",
+      "name": "KODEX AI반도체핵심장비",
+      "official_source": "https://m.samsungfund.com/upload/kodex/newsroom/20260325170636388.pdf",
+      "identity_source_row": "01_주식형:34",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "152100",
+      "name": "PLUS 200",
+      "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=15210",
+      "identity_source_row": "01_주식형:37",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "469070",
+      "name": "RISE AI&로봇",
+      "official_source": "https://www.riseetf.co.kr/prod/finderDetail/44F5",
+      "identity_source_row": "01_주식형:38",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "244580",
+      "name": "KODEX 바이오",
+      "official_source": "https://www.samsungfund.com/upload/kodex/newsroom/20251020144727705.pdf",
+      "identity_source_row": "01_주식형:39",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "143860",
+      "name": "TIGER 헬스케어",
+      "official_source": "https://www.tigeretf.com/upload/etf/20250513024051006675.pdf",
+      "identity_source_row": "01_주식형:40",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "449450",
+      "name": "PLUS K방산",
+      "official_source": "https://www.plusetf.co.kr/insight/report/detail?n=2046",
+      "identity_source_row": "01_주식형:42",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "466920",
+      "name": "SOL 조선TOP3플러스",
+      "official_source": "https://www.soletf.co.kr/ko/fund/etf/211028",
+      "identity_source_row": "01_주식형:44",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "494670",
+      "name": "TIGER 조선TOP10",
+      "official_source": "https://www.tigeretf.com/upload/etf/20250708095908009201.pdf",
+      "identity_source_row": "01_주식형:45",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "305540",
+      "name": "TIGER 2차전지테마",
+      "official_source": "https://investments.miraeasset.com/tigeretf/upload/etf/20250804095323002538.pdf",
+      "identity_source_row": "01_주식형:46",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "305720",
+      "name": "KODEX 2차전지산업",
+      "official_source": "https://m.samsungfund.com/etf/product/view.do?id=2ETFB1",
+      "identity_source_row": "01_주식형:47",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "117680",
+      "name": "KODEX 철강",
+      "official_source": "https://www.samsungfund.com/etf/product/pensionlist.do",
+      "identity_source_row": "01_주식형:48",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "487230",
+      "name": "KODEX 미국AI전력핵심인프라",
+      "official_source": "https://www.samsungfund.com/upload/kodex/newsroom/2026011317101936.pdf",
+      "identity_source_row": "01_주식형:49",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "102970",
+      "name": "KODEX 증권",
+      "official_source": "https://www.samsungfund.com/upload/kodex/newsroom/20250723085615455.pdf",
+      "identity_source_row": "01_주식형:50",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "464600",
+      "name": "SOL 자동차소부장Fn",
+      "official_source": "https://www.soletf.co.kr/ko/fund/etf/211016",
+      "identity_source_row": "01_주식형:51",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "153130",
+      "name": "KODEX 단기채권",
+      "official_source": "https://www.samsungfund.com/etf/product/ytm.do",
+      "identity_source_row": "02_채권형:2",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "214980",
+      "name": "KODEX 단기채권PLUS",
+      "official_source": "https://www.samsungfund.com/etf/product/ytm.do",
+      "identity_source_row": "02_채권형:3",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "469830",
+      "name": "SOL 초단기채권액티브",
+      "official_source": "https://www.soletf.co.kr/ko/fund/etf/211038",
+      "identity_source_row": "02_채권형:4",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "114820",
+      "name": "TIGER 국채3년",
+      "official_source": "https://www.tigeretf.com/upload/etf/20250708095820005220.pdf",
+      "identity_source_row": "02_채권형:5",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "114260",
+      "name": "KODEX 국고채3년",
+      "official_source": "https://www.samsungfund.com/etf/product/ytm.do",
+      "identity_source_row": "02_채권형:6",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "471230",
+      "name": "KODEX 국고채10년액티브",
+      "official_source": "https://www.samsungfund.com/etf/product/ytm.do",
+      "identity_source_row": "02_채권형:7",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "439870",
+      "name": "KODEX 국고채30년액티브",
+      "official_source": "https://www.samsungfund.com/etf/product/ytm.do",
+      "identity_source_row": "02_채권형:8",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "298340",
+      "name": "PLUS 국채선물3년",
+      "official_source": "https://www.plusetf.co.kr/product/detail?n=006317",
+      "identity_source_row": "02_채권형:9",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "273130",
+      "name": "KODEX 종합채권(AA-이상)액티브",
+      "official_source": "https://m.samsungfund.com/upload/kodex/newsroom/20250722174437650.pdf",
+      "identity_source_row": "02_채권형:10",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "436140",
+      "name": "SOL 종합채권(AA-이상)액티브",
+      "official_source": "https://www.soletf.co.kr/ko/fund/etf/210932",
+      "identity_source_row": "02_채권형:11",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "356540",
+      "name": "ACE 종합채권(AA-이상)액티브",
+      "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=35654",
+      "identity_source_row": "02_채권형:12",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "451540",
+      "name": "TIGER 종합채권(AA-이상)액티브",
+      "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=45154",
+      "identity_source_row": "02_채권형:13",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "451000",
+      "name": "PLUS 종합채권(AA-이상)액티브",
+      "official_source": "https://www.plusetf.co.kr/product/detail?n=006358",
+      "identity_source_row": "02_채권형:14",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "454780",
+      "name": "KIWOOM 종합채권(AA-이상)액티브",
+      "official_source": "https://www.kiwoometf.com/service/etf/KO02010200M?gcode=454780",
+      "identity_source_row": "02_채권형:15",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "472920",
+      "name": "HK 종합채권(AA-이상)액티브",
+      "official_source": "https://kind.krx.co.kr/external/2026/01/13/000236/20260113000595/68656.htm",
+      "identity_source_row": "02_채권형:16",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "0192Z0",
+      "name": "TIGER 중기종합채권(A-이상)액티브",
+      "official_source": "https://kind.krx.co.kr/external/2026/08/07/000092/20260807000169/68656.htm",
+      "identity_source_row": "02_채권형:17",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "473290",
+      "name": "KODEX 26-12 회사채(AA-이상)액티브",
+      "official_source": "https://www.samsungfund.com/etf/product/ytm.do",
+      "identity_source_row": "02_채권형:18",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "0091C0",
+      "name": "KODEX 미국10년국채액티브(H)",
+      "official_source": "https://www.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+      "identity_source_row": "02_채권형:19",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "0085P0",
+      "name": "ACE 미국10년국채액티브",
+      "official_source": "https://kind.krx.co.kr/external/2026/10/28/000603/20261028001589/68659.htm",
+      "identity_source_row": "02_채권형:20",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "453850",
+      "name": "ACE 미국30년국채액티브(H)",
+      "official_source": "https://kind.krx.co.kr/external/2026/07/07/000259/20260707000645/68671.htm",
+      "identity_source_row": "02_채권형:21",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "481340",
+      "name": "RISE 미국30년국채액티브",
+      "official_source": "https://www.riseetf.co.kr/prod/finderDetail/44G6",
+      "identity_source_row": "02_채권형:22",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "304660",
+      "name": "KODEX 미국30년국채울트라선물(H)",
+      "official_source": "https://www.samsungfund.com/etf/lounge/notice-view.do?no=58735",
+      "identity_source_row": "02_채권형:23",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "437350",
+      "name": "RISE 미국단기투자등급회사채액티브",
+      "official_source": "https://www.riseetf.co.kr/prod/finderDetail/44D2",
+      "identity_source_row": "02_채권형:24",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "305080",
+      "name": "TIGER 미국채10년선물",
+      "official_source": "https://www.tigeretf.com/upload/etf/20250708095909001843.pdf",
+      "identity_source_row": "02_채권형:25",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "423160",
+      "name": "KODEX KOFR금리액티브(합성)",
+      "official_source": "https://www.samsungfund.com/upload/guide/230525_Kodex_bond_guidebook.pdf",
+      "identity_source_row": "03_현금성:6",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "459580",
+      "name": "KODEX CD금리액티브(합성)",
+      "official_source": "https://m.samsungfund.com/sheet/20250805/2ETFJ8_20250731.pdf",
+      "identity_source_row": "03_현금성:7",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "475630",
+      "name": "TIGER CD1년금리액티브(합성)",
+      "official_source": "https://www.tigeretf.com/upload/etf/20241007064830005296.pdf",
+      "identity_source_row": "03_현금성:8",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "481050",
+      "name": "KODEX CD1년금리플러스액티브(합성)",
+      "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=48105",
+      "identity_source_row": "03_현금성:9",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "488770",
+      "name": "KODEX 머니마켓액티브",
+      "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=48877",
+      "identity_source_row": "03_현금성:10",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "0043B0",
+      "name": "TIGER 머니마켓액티브",
+      "official_source": "https://investments.miraeasset.com/tigeretf/upload/etf/20250804095125001001.pdf",
+      "identity_source_row": "03_현금성:11",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "498400",
+      "name": "KODEX 200타겟위클리커버드콜",
+      "official_source": "https://m.samsungfund.com/etf/product/view.do?id=2ETFP4",
+      "identity_source_row": "04_파생전략형:2",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "441640",
+      "name": "KODEX 미국배당커버드콜액티브",
+      "official_source": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+      "identity_source_row": "04_파생전략형:3",
+      "recommendation_eligible": false,
+      "facts": null
+    },
+    {
+      "code": "486290",
+      "name": "TIGER 미국나스닥100타겟데일리커버드콜",
+      "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=48629",
+      "identity_source_row": "04_파생전략형:4",
+      "recommendation_eligible": false,
+      "facts": null
+    }
+  ]
+}

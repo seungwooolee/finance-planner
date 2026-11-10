@@ -1,0 +1,11 @@
+{
+  "schema_version": "DION-PRODUCT-POLICY-0.1",
+  "version": "DION-PRODUCT-POLICY-20261111-0.1",
+  "state": "DRAFT",
+  "scope": "GENERAL_TAXABLE_MONTHLY_REVIEW_ONLY",
+  "risk_floor_by_preference": {},
+  "risk_floor_by_loss_band": {},
+  "risk_floor_by_loss_response": {},
+  "target_slots_by_preference": {},
+  "reason": "상품별 상세 검증과 위험 한도·상품별 비중 정책의 검토 전에는 실제 상품 배분을 활성화하지 않음"
+}

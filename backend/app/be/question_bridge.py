@@ -3,6 +3,7 @@
 The original engine result remains intact. These are integration support flags,
 not new financial rules, amounts, or engine calculation states.
 """
+from ..planning.product_allocation import block_product_budget
 from ..planning.question_v12 import run_question_v12
 
 
@@ -51,4 +52,7 @@ def run_frontend_questions(document):
     result["frontend_integration"] = {"version": "DION-FE-INTEGRATION-1.1", "presentation_gates": gates,
                                       "engine_result_preserved": True, "plan_adopted": False,
                                       "transaction_executed": False}
+    if any("OUT-05" in gate["affected_outputs"] for gate in gates):
+        block_product_budget(result)
     return result
+
