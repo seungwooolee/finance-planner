@@ -1,0 +1,11 @@
+{
+  "early": {"after_existing": "1099000", "plans": "CALCULATED", "investments": ["399500", "639200"]},
+  "newlywed": {"after_existing": "2300000", "plans": "CALCULATED", "investments": ["750000", "1200000"]},
+  "childcare": {"after_existing": "400000", "plans": "NOT_SUPPORTED", "investments": []},
+  "school": {"after_existing": "1800000", "plans": "CALCULATED", "investments": ["600000", "960000"]},
+  "independence": {"after_existing": "2300000", "plans": "CALCULATED", "investments": ["650000", "1040000"]},
+  "retired": {"after_existing": "-400000", "plans": "PARTIAL", "investments": []},
+  "overlap": {"after_existing": "1300000", "plans": "CALCULATED", "investments": ["300000", "480000"]},
+  "shortfall": {"after_existing": "-701000", "plans": "PARTIAL", "investments": []},
+  "unknown": {"after_existing": null, "plans": "NEEDS_INPUT", "investments": []}
+}
