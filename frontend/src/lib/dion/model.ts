@@ -53,7 +53,7 @@ export function emptyEnvelope(doc: Document, id: string): Envelope {
     wire_version: "POC-RAW-0.1",
     question_ref: { namespace: "DION-DESIGN", design_id: id, definition_version: q.version,
       definition_ref: `${catalog.source}#${id}`, definition_text: q.source["고객에게 보여줄 질문"],
-      option_labels: { source_input_guidance: q.source["선택지·입력 안내"] } },
+      option_labels: { source_input_guidance: q.source["선택지·입력 안내"], ui_presentation_version: "DION-FE-COPY-1.1" } },
     subject_refs: { person_ref: doc.context.included_owner_ids[0] || "person_self" },
     context: { scope_ref: doc.scope_ref, as_of: doc.context.evaluation_on || null,
       period_start: record(doc, "F03")?.envelope.context.period_start ?? null,
@@ -66,7 +66,8 @@ export function revise(doc: Document, id: string, change: (env: Envelope) => voi
   const next = clone(doc), previous = record(next, id);
   const env = previous ? clone(previous.envelope) : emptyEnvelope(next, id);
   change(env);
-  env.question_ref.option_labels.ui_presentation_version = "DION-FE-COPY-1.1";
+  // An existing question definition is immutable in the raw-answer store.
+  // UI edits retain its original text/options/version, including older definitions.
   const version = next.raw_bundle.input_version + 1;
   env.context.source_ref = `user:revision:${id}:${version}`;
   const row: Revision = { answer_revision_id: `local-${crypto.randomUUID()}`, input_version: version,

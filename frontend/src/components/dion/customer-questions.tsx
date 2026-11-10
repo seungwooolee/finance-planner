@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Check, Home, Landmark, Sprout, Users, Wallet } from "lucide-react";
 import { Document, Field, Json, catalog, field, fieldValue, list, question, record, revise, textValue } from "@/lib/dion/model";
-import { goalName, patchGoal, restoreGoals, retainGoals, selectedMonth, setMonth, updateIncome } from "@/lib/dion/customer-flow";
+import { goalName, patchGoal, reactivateGoal, restoreGoals, retainGoals, selectedMonth, setMonth, updateIncome } from "@/lib/dion/customer-flow";
 import { MoneyField } from "./fields";
 
 type Props = { doc: Document; onChange: (doc: Document) => void };
@@ -46,6 +46,7 @@ export function SituationQuestion({ doc, onChange }: Props) {
         onChange(revise(doc, "LIFE-01", r => { r.fields.life_stage_overlaps = field(e.target.checked ? [...old, stage.code] : old.filter(v => v !== stage.code), "JSON"); }));
       }} />{stage.label}</label>)}</div></details>
     </section>
+    <AssetCompleteness doc={doc} onChange={onChange}/>
   </div>;
 }
 
@@ -61,6 +62,11 @@ export function GoalsQuestion({ doc, onChange }: Props) {
     const option = options.find(o => o.code === code)!;
     const existing = goals.find(g => g.type === code || goalName(g.type) === option.label);
     if (existing) { remove(goals.filter(g => g !== existing).map(g => String(g.goal_id))); return; }
+    const archived = list(fieldValue(doc, "F11", "inactive_goals")).find(item => {
+      const previous = item.goal as Record<string, Json> | null;
+      return previous && (previous.type === code || goalName(previous.type) === option.label);
+    });
+    if (archived) { onChange(reactivateGoal(doc, String(archived.goal_id))); return; }
     const next = revise(doc, "F11", e => {
       const owner = doc.context.included_owner_ids[0] || "person_self";
       e.fields.goals = field([...goals, { goal_id: `goal-${crypto.randomUUID()}`, type: code, priority: Math.max(0, ...goals.map(g => typeof g.priority === "number" ? g.priority : 0)) + 1, owner_refs: [owner], beneficiary_ref: owner, confirmed: true, question_version: "1.2" }], "JSON");
@@ -74,7 +80,7 @@ export function GoalsQuestion({ doc, onChange }: Props) {
       return <button type="button" key={option.code} className={selected ? "selected" : ""} aria-pressed={selected} onClick={() => add(option.code)}><Icon size={22} /><span>{option.label}</span>{selected && <Check size={16} />}</button>;
     })}</div>
     <div className="d-goal-neutral"><button type="button" aria-pressed={answer(doc, "F11", "goals").state === "KNOWN" && goals.length === 0} onClick={() => remove([])}>지금은 목표 없음</button><button type="button" aria-pressed={answer(doc, "F11", "goals").state === "UNKNOWN"} onClick={() => {
-      setUndo(doc); onChange(revise(doc, "F11", e => { e.fields.goals = field(null, "JSON", "UNKNOWN"); }));
+      setUndo(doc); onChange(revise(retainGoals(doc, []), "F11", e => { e.fields.goals = field(null, "JSON", "UNKNOWN"); }));
     }}>아직 생각 중이에요</button></div>
     {undo && <div className="d-undo" role="status">목표 선택을 바꿨어요.<button type="button" onClick={() => { onChange(restoreGoals(doc, undo)); setUndo(null); }}>되돌리기</button></div>}
     {goals.map((g, i) => {
@@ -95,6 +101,7 @@ export function GoalsQuestion({ doc, onChange }: Props) {
         </>}
       </section>;
     })}
+    {!!list(fieldValue(doc, "F11", "inactive_goals")).length && <p className="d-note">선택을 해제한 목표의 금액과 날짜는 보관했어요. 같은 목표를 다시 선택하면 복구돼요. 보관 중인 목표는 계산에 포함하지 않아요.</p>}
     {!goals.length && <p className="d-help">목표가 없어도 지금의 소득과 지출부터 살펴볼 수 있어요.</p>}
   </div>;
 }

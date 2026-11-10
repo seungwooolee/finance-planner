@@ -8,6 +8,8 @@ async function load(page:Page,name:string) {
   await expect(page.getByRole('dialog',{name:'요즘 나의 생활 · 가상 사례'})).toBeVisible();
   const response = preview(page);
   await page.getByRole('button',{name:`${name} 불러오기`,exact:true}).click();
+  const confirmation = page.getByRole("dialog", { name: "가상 사례로 바꿀까요?" });
+  if (await confirmation.isVisible()) await confirmation.getByRole("button", { name: "입력 보관하고 사례 불러오기" }).click();
   const r = await response;
   expect(r.ok()).toBeTruthy();
   await expect(page.getByRole('region',{name:'계산 결과'})).toBeVisible();
@@ -38,6 +40,8 @@ test('basic: real calculation, six risk answers, edit/reuse, product boundary an
   await page.getByRole('button',{name:'5% 이상~10% 미만',exact:true}).click();
   const updated=await recalculate(page);
   expect(answer(updated.posted,'NEW-10').fields.loss_tolerance_band_raw.raw_value).toBe('LOSS_5_10');
+  expect(answer(updated.posted,'NEW-10').question_ref).toEqual(answer(first.posted,'NEW-10').question_ref);
+  expect(answer(updated.posted,'NEW-10').fields.selection_codes.raw_value.loss_tolerance_band_raw).toBe('LOSS_5_10');
   expect(answer(updated.posted,'F03')).toEqual(answer(first.posted,'F03'));
   const amounts=(r:any)=>r.results['OUT-05'].candidates.map((c:any)=>c.rows.map((row:any)=>({investment:row.new_investment_krw,cash:row.additional_cash_krw,goal:row.goal_deposits_krw})));
   expect(amounts(updated.result)).toEqual(amounts(first.result));

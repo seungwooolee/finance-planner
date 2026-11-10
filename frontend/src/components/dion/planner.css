@@ -51,6 +51,8 @@
 .d-login-dialog>.d-text-button{margin:10px 8px 0}
 .d-login-dialog .d-field-error{color:#a33127;font-size:12px;line-height:1.6}
 .d-login-dialog .d-field-error:empty{display:none}
+.d-case-list{list-style:none;padding:0}.d-case-list .d-run{overflow-wrap:anywhere}#dion-account{scroll-margin-top:140px}#dion-account>.d-field{margin:20px 0 10px}
+@media(max-width:700px){.d-header:not(.d-header-welcome){flex-wrap:wrap}.d-header:not(.d-header-welcome) nav{order:3;width:100%;justify-content:center}.d-header-actions{flex-shrink:0}.d-header-actions button{white-space:nowrap}}
 .d-login-dialog input[aria-invalid=true]{border-color:#b54336}
 .d-login-dialog .d-note{font-size:12px;text-align:left}
 @media(max-width:700px){.d-header-welcome{gap:12px}.d-header-cat{max-width:230px}.d-help-window{width:max-content;min-width:min(280px,calc(100vw - 32px));max-width:calc(100vw - 32px)}}
