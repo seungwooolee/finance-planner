@@ -4,6 +4,7 @@ from uuid import uuid4
 
 from ..planning import run_engine
 from ..planning.common import VERSION
+from ..planning.question_v12 import ADAPTER_VERSION as QUESTION_V12_ADAPTER_VERSION
 from ..planning.question_v12 import LEGACY_ADAPTER_VERSION as QUESTION_ADAPTER_VERSION
 from ..planning.statuses import ENGINE_RELEASE
 from .adapter import ADAPTER_VERSION, build_engine_input
@@ -131,6 +132,87 @@ class BackendStore(RawAnswerStore):
         return self.analyze(actor, case_id, expected_version, request_key, context, outputs,
                             engine=run_frontend_questions,
                             question_options={"scope_ref": scope_ref, "confirmations": confirmations})
+
+    def analyze_question_v12(self, actor, case_id, expected_version, request_key, assessment,
+                             confirmations, outputs, payment_calendar=None, engine=run_frontend_questions):
+        """Freeze saved 1.2/1.2.1 answers and persist their explicit v2 adapter result."""
+        if not isinstance(assessment, dict) or not isinstance(confirmations, list) or not isinstance(outputs, list):
+            raise PocError("INVALID_ENVELOPE")
+        required = {"evaluation_on", "scope", "included_owner_ids", "currency", "timezone", "scope_ref"}
+        optional = {"projection_start", "projection_end"}
+        if set(assessment) - optional != required or ("projection_start" in assessment) != ("projection_end" in assessment):
+            raise PocError("CONTEXT_CONTRACT_REQUIRED")
+        if payment_calendar is not None and not isinstance(payment_calendar, dict):
+            raise PocError("INVALID_ENVELOPE")
+        fingerprint = _digest({"operation": "analyze_question_v12", "expected_version": expected_version,
+                               "assessment": assessment, "confirmations": confirmations,
+                               "outputs": outputs, "payment_calendar": payment_calendar})
+        with self._transaction(write=True) as conn:
+            case = self._authorize(conn, actor, case_id)
+            replay = self._replay(conn, case_id, request_key, fingerprint)
+            if replay is not None:
+                return replay
+            self._version(expected_version, case["input_version"])
+            rows = conn.execute("SELECT r.* FROM answer_heads h JOIN answer_revisions r "
+                                "ON r.revision_id=h.revision_id WHERE h.case_id=? ORDER BY h.logical_key",
+                                (case_id,)).fetchall()
+            revisions = [self._revision(r) for r in rows]
+            snapshot_id, run_id = "raw_" + uuid4().hex, "run_" + uuid4().hex
+            context = {key: value for key, value in assessment.items() if key != "scope_ref"}
+            context.update(case_id=case_id, snapshot_id=snapshot_id, profile_version=str(expected_version))
+            document = {"schema_version": QUESTION_V12_ADAPTER_VERSION, "context": context,
+                        "scope_ref": assessment["scope_ref"],
+                        "raw_bundle": {"case_id": case_id, "input_version": expected_version,
+                                       "raw_snapshot_id": snapshot_id, "answers": revisions},
+                        "confirmations": confirmations, "requested_outputs": outputs}
+            if payment_calendar is not None:
+                document["payment_calendar"] = payment_calendar
+            error = None
+            try:
+                result = engine(document)
+                if not isinstance(result, dict) or "calc_state" not in result:
+                    raise ValueError("engine response envelope")
+                if result["calc_state"] not in {"INTERNAL_ERROR", "INVALID_INPUT", "NEEDS_INPUT"}:
+                    adapter = result.get("adapter") or {}
+                    if (result.get("schema_version") != VERSION
+                            or result.get("engine_version") != VERSION
+                            or result.get("engine_release") != ENGINE_RELEASE
+                            or adapter.get("source_sha256") != _digest(document)
+                            or result.get("input_sha256") != adapter.get("normalized_sha256")
+                            or result.get("context") != context
+                            or set(result.get("results", {})) != set(outputs)):
+                        raise ValueError("engine result provenance mismatch")
+                _json(result)
+            except Exception:
+                result = {"calc_state": "INTERNAL_ERROR"}
+                error = "ENGINE_EXECUTION_FAILED"
+            failed = result["calc_state"] in {"INTERNAL_ERROR", "INVALID_INPUT", "NEEDS_INPUT"}
+            if failed and not error:
+                error = "ENGINE_" + result["calc_state"]
+            adapter = result.get("adapter") or {}
+            date_incomplete = (payment_calendar is not None and not
+                               result.get("results", {}).get("OUT-05", {}).get(
+                                   "dated_cash_evaluation", {}).get("verified_fundable", False))
+            status = "FAILED" if failed else "PARTIAL" if result["calc_state"] == "PARTIAL" or date_incomplete else "SUCCEEDED"
+            conn.execute("INSERT INTO raw_snapshots VALUES(?,?,?,?,?)",
+                         (snapshot_id, case_id, expected_version,
+                          _json([r["answer_revision_id"] for r in revisions]), _now()))
+            conn.execute("INSERT INTO analysis_runs VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                         (run_id, case_id, expected_version, snapshot_id, QUESTION_V12_ADAPTER_VERSION,
+                          _json(document), _json(adapter.get("normalized_input")),
+                          _json(adapter.get("field_provenance")), _digest(document),
+                          _json(result), status, error, _now()))
+            draft_id = None
+            if status == "SUCCEEDED" and result["calc_state"] == "CALCULATED" and (
+                    result.get("results", {}).get("OUT-05", {}).get("calc_state") == "CALCULATED"):
+                draft_id = "draft_" + uuid4().hex
+                conn.execute("INSERT INTO analysis_drafts VALUES(?,?,?,?,?)",
+                             (draft_id, case_id, run_id, expected_version, "REVIEW_DRAFT"))
+            response = {"run_id": run_id, "raw_snapshot_id": snapshot_id,
+                        "input_version": expected_version, "draft_id": draft_id,
+                        "status": status, "error_code": error}
+            self._receipt(conn, case_id, request_key, fingerprint, response)
+            return response
 
     def read_run(self, actor, case_id, run_id):
         with self._transaction() as conn:
