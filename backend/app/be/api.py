@@ -102,6 +102,16 @@ def analyze(case_id: str, value=Depends(body), actor=Depends(get_actor), store=D
                 value["context"], value["requested_outputs"])
 
 
+@router.post("/cases/{case_id}/analyses/question-v12")
+def analyze_question_v12(case_id: str, value=Depends(body), actor=Depends(get_actor), store=Depends(get_store)):
+    required = {"expected_version", "request_key", "assessment", "confirmations", "requested_outputs"}
+    if set(value) not in (required, required | {"payment_calendar"}):
+        raise HTTPException(422, detail={"code": "INVALID_REQUEST_FIELDS"})
+    return call(store.analyze_question_v12, actor, case_id, value["expected_version"],
+                value["request_key"], value["assessment"], value["confirmations"],
+                value["requested_outputs"], value.get("payment_calendar"))
+
+
 @router.get("/cases/{case_id}/analyses")
 def list_runs(case_id: str, actor=Depends(get_actor), store=Depends(get_store)):
     return call(store.list_runs, actor, case_id)
