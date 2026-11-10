@@ -67,7 +67,6 @@
     "ambient Starlette/httpx TestClient deprecation"
   ],
   "next_required_evidence": [
-    "Different-real-user access output: deferred by user, not passed",
     "Actual frontend-to-remote-storage acceptance",
     "Optional v2 contract remote acceptance; legacy evidence does not cover adapter1.1"
   ],
@@ -95,12 +94,14 @@
     },
     "restart_evidence": "Operator followed the instructed restart/verify sequence; process restart was not independently observed by the assistant",
     "cross_account_access": {
-      "status": "NOT_RUN_USER_DEFERRED",
-      "reason": "User requested skipping the second real test account check"
+      "status": "PASS_REPORTED",
+      "evidence": "DIFFERENT_REAL_USER_ACCESS_DENIED PASS",
+      "note": "Operator completed the different-real-user check after initially asking whether it could be skipped."
     },
     "boundaries": [
       "This updates reported acceptance evidence; the assistant did not use credentials or execute against the remote project",
       "No production readiness, frontend integration or v2 remote acceptance is inferred"
-    ]
+    ],
+    "acceptance_status": "LEGACY_SINGLE_ACCOUNT_STORAGE_AND_CROSS_ACCOUNT_API_CHECKS_PASSED_BY_OPERATOR"
   }
 }
