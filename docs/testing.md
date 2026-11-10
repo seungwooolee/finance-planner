@@ -1,3 +1,67 @@
+# Git 통합 검사 — 2026-11-11
+
+이번 검사는 `C:\Users\LG\Projects\DION-git`에서 새로 설치한 환경으로 실행했다. Core의 pytest429통과/7skip, Ruff/pip check/TypeScript/ESLint와 production Build를 확인했다. 조건부 부동산 의존성 보완 후 전체pytest429통과/7skip과 Ruff도 재검사했다. v2 출력7쌍/독립 금액/연결데모12건을 함께 확인했다.
+
+브라우저 실패·재검사, PostgreSQL7skip, 실제 계정/원격DB 미실행과 고정 의존성의 npm 경고는 [Git 통합 검증 기록](integration/2026-11-11-git-integration.md)을 따른다. 아래 과거 결과를 이번 실행으로 간주하지 않는다. 서버 종료는 이번 작업의 별도 포트 프로세스에만 한정한다.
+
+---
+
+# 재무엔진 v1.0 구현·검토 — 2026-11-10
+
+
+## 2026-11-11 고객 UX 후속 검증
+
+최종 Core369통과/7skip, Ruff·pip check·TypeScript·ESLint, production Build, production E2E25개(기존14+새11)가 통과했다. 명령은 기존 `scripts/verify.ps1 -Mode Core|Build|E2E`를 그대로 사용한다. E2E는 `-BrowserChannel msedge`와 tests 전용8002 하네스로 수행한다. 테스트 하네스 실행 방법/모의 인증 범위는 [첫 FE 통합 기록](integration/2026-11-11-frontend.md), 이번25개 검사와 초기 실패/수정은 [피드백 기록](integration/2026-11-11-frontend-feedback.md)을 따른다.
+
+추가 핵심 사례는 원응답의0/빈칸/나중 입력 구분, 오늘/과거 기준일 분리, 목표 없음/복구/동일 ID, 기준월과 비표준 기간 동기화, 결과 투자선호 이동 후 빠른 질문 복귀다. 목표나 소득을 수정해 미래 확인 가정이 맞지 않으면 계산 후보를 보류하는 것이 정답이다. 기존 금융 정답과 법령 규칙을 이 UI 검사에 맞춰 바꾸지 않는다.
+
+사용자 위임으로 중간 PoC 검토를 생략하고 독립 실행 엔진을 구현했다. 55개 설계 ID를 유지한 [질문 실행 계약1.3-engine](questions/v1.3-engine/README.md), 현재 원장·목표 달력·다중목표 월 후보·확인 세금/연금/상속 결과를 연결했다. [실행 안내](planning-engine-v1/README.md)와 [개발 인계](planning-engine-v1/handoff.md)를 우선한다.
+
+기존187+신규66, 전체 pytest253개 통과. Python 정적 검사·기존 질문/원장 검사·독립 가상사례16개 금액·기존 ASGI6건도 통과했다. 상세 [검증 기록](planning-engine-v1/verification.md)을 따른다. 금융상품 추천·법정세액 자동산출·목돈/전체 일별 달력·API/DB/UI는 완료되지 않았다. 아래 이전 항목은 당시 기록이다.
+
+---
+
+# 질문 v1.2 검사 — 2026-11-10
+
+`python docs/questions/v1.2/check_question_design.py`로55개 조건부 질문·14개 결과 의존성과14개 예시를 검사한다. 기존40개 스튜디오/CSV 검사는 v1.1 reference를 사용한다. 실제 이번 결과는 [질문 반영 기록](integration/2026-11-10-question-design.md)을 따른다.
+
+---
+
+# 배정정책1.0 추가 검사 — 2026-11-10
+
+실제 전체 pytest187통과(기존143+신규44). 독립 정답8건과 금액/누락/보호·운영/목표중복/B1/지급일/대규모 경계를 검사했다. CLI: `python docs/dion/09_UPDATED_FILES/tools/allocation_rules.py data/allocation-rules-example.json`. [실제 명령·제약](integration/2026-11-10-allocation-rules.md)을 따른다. 기존 Core/E2E/Build 전체를 실행한 것은 아니다.
+
+---
+
+# A1/B1 추가 검사 — 2026-11-10
+
+`backend`에서 `python -m pytest -q`로 기존112개와 A1/B1 검사를 함께 실행한다. 독립 기대값은 `docs/dion/12_CHECKS/allocation_policy_fixtures.json`에 있다. 프로젝트 루트 CLI: `python docs/dion/09_UPDATED_FILES/tools/allocation_policy.py data/allocation-policy-example.json`. 월 대사는 기존 funding 도구로 재검사한다. [실제 실행 기록](integration/2026-11-10-a1b1.md)을 따르며 전체 두안/법령산식/앱 검사가 아니다. 아래 숫자는 앞선 작업 당시 기록이다.
+
+---
+
+# FIN-CONTRACT-0.1 추가 검사 — 2026-11-10
+
+`backend`에서 `python -m pytest -q`로 기존78개와 새34개 검사를 함께 실행한다. 독립 입력 예시는 `data/financial-contract-example.json`이고 CLI는 `backend`에서 `python -m app.financial_contract ../data/financial-contract-example.json`이다. 이번 실제 환경·통과·미실행 범위는 [엔진 실행 기록](integration/2026-11-10-engine-foundation.md)을 따른다. 세금/연금/상속의 법령산식·두안 생성·앱 통합 검사는 아직 아니다.
+
+---
+
+# 2026-11-10 통합본 검사 안내
+
+기존 Core/E2E/Build 명령은 아래의 실행 계약을 유지한다. 이번 자료 통합의 검사·현재 환경 제약은 [통합·검증 기록](integration/2026-11-10.md)에 따로 기록한다.
+
+```text
+node docs/dion/12_CHECKS/check_updated_files.cjs
+python -m unittest discover -s docs/dion/12_CHECKS -p test_contract_and_funding.py -v
+python docs/dion/12_CHECKS/check_repository_smoke.py .
+python scripts/check-package-integrity.py
+```
+
+원본 ZIP 비교 검사는 업로드 원본의 상대 경로가 없으면 건너뛴다. 이는 원장/계약 검사 실패가 아니다. 배포·전체E2E·금융정책 승인은 이 검사에 포함하지 않는다.
+
+아래는 기존 앱 검사 안내다.
+
+---
+
 # 테스트와 실행 검증
 
 ## 반복 가능한 검증 명령
@@ -39,6 +103,12 @@
 - 실행 스크립트 변경: PowerShell 구문 검사, 정상 실행, 의존성/포트 충돌 실패, 프로세스 소유·종료 범위 확인. 실제 서버로 API 및 E2E 회귀 검사.
 - 문서 변경: 명령·링크·diff를 점검. 사용자 요청에 회귀 검증이 포함되면 기존 전체 테스트를 실행한다.
 - 실패를 수정한 뒤 관련 검사를 재실행한다. 무관한 실패를 숨기거나 고정 정답을 현재 코드에 맞춰 변경하지 않는다.
+
+## 2026-11-11 DION FE 검사
+
+Core: pytest369통과/7skip, Ruff·pip check·TypeScript·ESLint 통과. Build 통과. 실제 production3000/BE8001에서 E2E21통과(기존14+새 DION7). PostgreSQL 선택 런타임 부재7skip과 실제 로그인/원격DB 미실행은 통과로 보지 않는다. [명령·가상 저장 하네스·초기 실패·Stitch 캡처](integration/2026-11-11-frontend.md#검증-명령과-결과)를 따른다. 신규 저장 E2E는 `DION_TEST_BE_URL` 미설정 시 명시 skip하며 실제 로그인 검증을 대체하지 않는다.
+
+아래 테스트 개수와 당시 공백은 이전 구현 이력이다.
 
 ## 자동화 가능한 범위와 현재 공백
 

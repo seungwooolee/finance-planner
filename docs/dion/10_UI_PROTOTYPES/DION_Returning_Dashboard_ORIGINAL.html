@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-secondary":"#ffffff","surface-bright":"#faf8ff","secondary-container":"#bcb2ff","on-surface":"#161b29","secondary-fixed":"#e5deff","tertiary":"#555965","tertiary-container":"#6e717e","surface-container-high":"#e3e7fb","on-tertiary-container":"#f7f7ff","tertiary-fixed":"#e0e2f0","surface-dim":"#d5d9ec","inverse-on-surface":"#eef0ff","on-primary":"#ffffff","on-secondary-fixed":"#1a0d53","on-primary-fixed-variant":"#2132bc","surface":"#faf8ff","surface-variant":"#dee2f5","error":"#ba1a1a","on-tertiary-fixed-variant":"#434652","on-surface-variant":"#454654","outline-variant":"#c5c5d7","surface-tint":"#3e4ed4","surface-container-lowest":"#ffffff","on-secondary-fixed-variant":"#463d81","surface-container":"#eaedff","secondary-fixed-dim":"#c8bfff","on-tertiary-fixed":"#181b26","on-primary-fixed":"#000a64","error-container":"#ffdad6","inverse-primary":"#bdc2ff","outline":"#757686","surface-container-low":"#f2f3ff","primary":"#3848ce","on-error-container":"#93000a","on-error":"#ffffff","on-tertiary":"#ffffff","on-secondary-container":"#4a4285","tertiary-fixed-dim":"#c3c6d4","on-primary-container":"#f9f6ff","primary-container":"#5363e8","primary-fixed":"#dfe0ff","primary-fixed-dim":"#bdc2ff","surface-container-highest":"#dee2f5","secondary":"#5e559a","inverse-surface":"#2b303e","background":"#faf8ff","on-background":"#161b29"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"space-lg":"1.5rem","space-md":"1rem","space-xs":"0.25rem","space-sm":"0.5rem",gutter:"1.5rem","gutter-mobile":"1rem","space-xl":"2rem",margin:"2rem","margin-mobile":"1rem","margin-desktop":"3rem"},fontFamily:{"label-md":["Plus Jakarta Sans"],"display-lg-mobile":["Plus Jakarta Sans"],"label-lg":["Plus Jakarta Sans"],"body-md":["Plus Jakarta Sans"],"headline-xl":["Plus Jakarta Sans"],"display-lg":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"],"number-metric":["Plus Jakarta Sans"],"body-sm":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],"body-lg":["Plus Jakarta Sans"],"label-sm":["Plus Jakarta Sans"],"number-display":["Plus Jakarta Sans"]},fontSize:{"label-md":["12px",{lineHeight:"16px",fontWeight:"500"}],"display-lg-mobile":["32px",{lineHeight:"40px",fontWeight:"700"}],"label-lg":["14px",{lineHeight:"20px",fontWeight:"600"}],"body-md":["14px",{lineHeight:"20px",fontWeight:"400"}],"headline-xl":["28px",{lineHeight:"36px",fontWeight:"700"}],"display-lg":["40px",{lineHeight:"48px",fontWeight:"700"}],"headline-md":["18px",{lineHeight:"24px",fontWeight:"600"}],"number-metric":["20px",{lineHeight:"26px",fontWeight:"600"}],"body-sm":["12px",{lineHeight:"16px",fontWeight:"400"}],"headline-lg":["22px",{lineHeight:"28px",fontWeight:"600"}],"body-lg":["16px",{lineHeight:"24px",fontWeight:"400"}],"label-sm":["11px",{lineHeight:"14px",fontWeight:"500"}],"number-display":["32px",{lineHeight:"38px",fontWeight:"700"}]}}}};</script></head><body class="bg-surface font-body-md text-on-surface antialiased"><header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 max-w-7xl mx-auto px-gutter flex items-center justify-between"><div class="flex items-center gap-space-md"><a class="flex items-center gap-space-xs text-primary font-headline-lg font-bold tracking-tight" href="#">dion<span class="text-secondary">.</span></a><span class="hidden sm:inline-flex items-center px-space-sm py-0.5 rounded-full bg-surface-container-high text-primary font-label-sm font-medium">회원 재무 대시보드</span></div><nav class="hidden md:flex items-center gap-space-xs" data-active-classes="bg-primary-container text-on-primary-container font-label-lg rounded-lg"><a aria-current="page" class="px-space-md py-space-xs transition-colors bg-primary-container text-on-primary-container font-label-lg rounded-lg" data-path="financial-status" href="#">내 재무현황</a><a class="px-space-md py-space-xs rounded-lg text-on-surface-variant font-label-lg hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="diagnostic-results" href="#">진단 결과</a><a class="px-space-md py-space-xs rounded-lg text-on-surface-variant font-label-lg hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="precision-simulation" href="#">정밀 시뮬레이션</a><a class="px-space-md py-space-xs rounded-lg text-on-surface-variant font-label-lg hover:bg-surface-container-low hover:text-on-surface transition-colors" data-path="inspection-history" href="#">점검 기록</a></nav><div class="flex items-center gap-space-sm"><button aria-label="Notifications" class="p-space-sm rounded-full text-on-surface-variant hover:bg-surface-container-low hover:text-on-surface transition-colors" type="button"><span class="material-symbols-outlined text-[22px]">notifications</span></button><div class="flex items-center gap-space-sm pl-space-xs"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-surface-container" src="https://lh3.googleusercontent.com/aida/AEtjO1Wo6v7_WLhZKj8oEEQbcYjwB8qhnJWbIgaYm4paIcraWnj36DMA22vHVZj2o3zfJp1GG1DNNUAIQ-moMgMfYJg5GF0wOYXpGwFz9Q6EouCjMaFNAlTNiqCNkbZmMC2JCNvFPCA_oFEmkkTS173Oob5c8kKi0GWwnhFFe6JlbQMwmDZYDWFAch7FzZERW0xo4NBIo0APYr9cK66k87Qo6_bt0hQf-TB-XGKboo3oQnws9rshUfEZENTHhe1j"/><span class="hidden lg:inline text-on-surface font-label-md font-medium">냥코치 AI</span></div></div></div></header><main class="w-full pt-16 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<!-- Top Background Ambient Glow -->
+<div class="relative w-full overflow-hidden">
+<div class="absolute -top-32 -left-20 w-96 h-96 bg-primary-container/10 rounded-full blur-3xl pointer-events-none"></div>
+<div class="absolute top-20 -right-20 w-80 h-80 bg-secondary-container/15 rounded-full blur-3xl pointer-events-none"></div>
+<!-- Main Container -->
+<div class="max-w-7xl mx-auto px-gutter py-space-lg space-y-space-xl relative z-10">
+<!-- GREETING & STATUS HEADER -->
+<section class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-md pt-space-xs">
+<div class="space-y-space-xs max-w-3xl">
+<div class="flex flex-wrap items-center gap-space-xs">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-primary font-label-md font-semibold">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+              저장 후 재방문 회원
+            </span>
+<span class="inline-flex items-center px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant font-label-sm">
+              만 26세 · 단독 가구 · 본인 기준
+            </span>
+<span class="inline-flex items-center px-2.5 py-1 rounded-full bg-surface-container-low text-on-surface-variant font-label-sm">
+              최근 접속: 오늘 14:20
+            </span>
+<span class="inline-flex items-center px-2.5 py-1 rounded-full bg-surface-container text-tertiary font-label-sm">
+              기준 데이터: 2026.11.05 진단
+            </span>
+</div>
+<h1 class="text-display-lg font-display-lg tracking-tight text-on-surface mt-space-xs">
+            반가워요, <span class="text-primary">김디오</span>님! 다시 돌아오셨군요.
+          </h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant leading-relaxed">
+            지난 2026년 11월 5일에 저장하신 재무 데이터와 실천 계획을 바탕으로 이번 달 현황을 점검해요.
+          </p>
+</div>
+<!-- Quick Summary Mini Ledger Badge -->
+<div class="flex items-center gap-space-md bg-surface-container-lowest p-space-md rounded-xl shadow-sm self-start lg:self-auto">
+<div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+</div>
+<div class="space-y-0.5">
+<div class="text-label-sm font-label-sm text-on-surface-variant">월 세후 가용 소득</div>
+<div class="text-headline-md font-headline-md text-on-surface">3,000,000<span class="text-body-sm font-body-sm text-tertiary ml-0.5">원</span></div>
+</div>
+</div>
+</section>
+<!-- SECTION 1: 🌟 채택한 계획 vs 📝 검토 중인 초안 (Strict Separation Grid) -->
+<section class="space-y-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[24px]">compare_arrows</span>
+<h2 class="text-headline-lg font-headline-lg text-on-surface">
+              실행 플랜 상태 관리
+            </h2>
+<span class="text-body-sm font-body-sm text-on-surface-variant hidden sm:inline">| 정규 채택된 계획과 작업 중인 임시 시뮬레이션을 명확히 구분합니다</span>
+</div>
+<span class="text-label-sm font-label-sm text-tertiary">2개 안 비교 모드</span>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-space-lg items-stretch">
+<!-- LEFT: 공식 채택한 계획 (Adopted Active Plan) -->
+<div class="relative bg-surface-container-lowest rounded-xl p-space-lg shadow-md flex flex-col justify-between overflow-hidden">
+<!-- Top Active Plan Ribbon Effect -->
+<div class="absolute top-0 left-0 right-0 h-1.5 bg-primary"></div>
+<div class="space-y-space-md">
+<!-- Status Badge -->
+<div class="flex items-center justify-between flex-wrap gap-space-xs">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary text-on-primary font-label-md font-semibold shadow-sm">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+                  공식 채택한 계획 (2026.11.05 16:30 승인)
+                </span>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant font-label-sm font-semibold">
+                  실제 예산 반영 중
+                </span>
+</div>
+<!-- Title & Desc -->
+<div class="space-y-space-xs">
+<h3 class="text-headline-xl font-headline-xl text-on-surface flex items-center gap-space-xs">
+                  투자 여력 확대안 · B 균형운용
+                  <span class="text-label-sm font-label-sm font-medium px-2 py-0.5 rounded bg-surface-container text-primary">40:40:20</span>
+</h3>
+<p class="text-body-md font-body-md text-on-surface-variant leading-relaxed">
+                  생활비 10만원 절감(150만원 준수)으로 신규 월 30만원(기존 40만 유지, 전체 70만) 및 주거 목표 월 20만원 적립을 확정한 정규 실행 플랜입니다.
+                </p>
+</div>
+<!-- Structured Key Metrics Table -->
+<div class="bg-surface-container-low rounded-xl p-space-md space-y-space-xs">
+<div class="flex justify-between items-center py-1.5">
+<span class="text-body-sm font-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                    월 세후 총소득
+                  </span>
+<span class="text-headline-md font-headline-md text-on-surface">300만원</span>
+</div>
+<div class="h-[1px] w-full bg-outline-variant/30"></div>
+<div class="flex justify-between items-center py-1.5">
+<span class="text-body-sm font-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                    월 확정 생활비 (절감 적용)
+                  </span>
+<span class="text-body-md font-body-md font-bold text-on-surface">150만원 <span class="text-primary font-label-sm font-medium">(-10만)</span></span>
+</div>
+<div class="h-[1px] w-full bg-outline-variant/30"></div>
+<div class="flex justify-between items-center py-1.5">
+<span class="text-body-sm font-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-container"></span>
+                    주거 목표 적립 (보증금 분리)
+                  </span>
+<span class="text-body-md font-body-md font-bold text-on-surface">20만원 / 월 <span class="text-tertiary font-label-sm font-normal">(400만 배정)</span></span>
+</div>
+<div class="h-[1px] w-full bg-outline-variant/30"></div>
+<div class="flex justify-between items-center py-1.5">
+<span class="text-body-sm font-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+                    월 정기 투자 합계
+                  </span>
+<span class="text-headline-md font-headline-md text-primary">70만원 <span class="text-label-sm font-label-sm text-tertiary font-normal">(기존 40만 + B안 30만)</span></span>
+</div>
+<div class="h-[1px] w-full bg-outline-variant/30"></div>
+<div class="flex justify-between items-center py-1.5">
+<span class="text-body-sm font-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+                    비상금 및 의무 대출상환
+                  </span>
+<span class="text-body-sm font-body-sm text-on-surface">각 20만원 / 대출 20만원</span>
+</div>
+</div>
+</div>
+<!-- Action Strip -->
+<div class="pt-space-md mt-space-md flex flex-wrap items-center gap-space-sm">
+<button class="flex-1 min-w-[140px] px-space-md py-2.5 rounded-lg bg-primary-container text-on-primary-container font-label-lg font-semibold hover:bg-primary transition-colors flex items-center justify-center gap-1.5 shadow-sm" type="button">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+                채택한 계획 전문 보기
+              </button>
+<button class="px-space-md py-2.5 rounded-lg bg-surface-container text-on-surface font-label-lg font-semibold hover:bg-surface-container-high transition-colors flex items-center justify-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+                실행 증빙 관리
+              </button>
+</div>
+</div>
+<!-- RIGHT: 검토 중인 초안 (Draft Under Review) -->
+<div class="relative bg-surface-container-low rounded-xl p-space-lg shadow-sm flex flex-col justify-between">
+<div class="space-y-space-md">
+<!-- Status Badge -->
+<div class="flex items-center justify-between flex-wrap gap-space-xs">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-primary font-label-md font-semibold">
+<span class="material-symbols-outlined text-[16px]">edit_note</span>
+                  검토 중인 초안 (정밀 시뮬레이션 임시저장)
+                </span>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-surface-container text-tertiary font-label-sm">
+                  미승인 · 가상 시뮬레이션
+                </span>
+</div>
+<!-- Title & Desc -->
+<div class="space-y-space-xs">
+<h3 class="text-headline-xl font-headline-xl text-on-surface flex items-center gap-space-xs">
+                  정밀점검 직접 조정안
+                  <span class="text-label-sm font-label-sm font-medium px-2 py-0.5 rounded bg-surface-container-highest text-tertiary">45 : 35 : 20</span>
+</h3>
+<p class="text-body-md font-body-md text-on-surface-variant leading-relaxed">
+                  슬라이더로 자산군 비중을 직접 미세 조정한 시안입니다. 아직 법적 3대 고지 확인 및 채택 전 상태로, 실제 계좌 및 정규 예산에 반영되지 않았습니다.
+                </p>
+</div>
+<!-- Structured Draft Metrics -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md space-y-space-xs">
+<div class="flex justify-between items-center py-1.5">
+<span class="text-body-sm font-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+                    신규 일시금 배정 (400만)
+                  </span>
+<span class="text-body-md font-body-md font-bold text-on-surface">주식 180 / 채권 140 / 현금 80만</span>
+</div>
+<div class="h-[1px] w-full bg-outline-variant/30"></div>
+<div class="flex justify-between items-center py-1.5">
+<span class="text-body-sm font-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+                    월 최대 투자 한도 검토안
+                  </span>
+<span class="text-headline-md font-headline-md text-on-surface">≤ 110만원 <span class="text-tertiary font-label-sm font-normal">시뮬레이션</span></span>
+</div>
+<div class="h-[1px] w-full bg-outline-variant/30"></div>
+<div class="flex justify-between items-center py-1.5">
+<span class="text-body-sm font-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+                    저장 일시
+                  </span>
+<span class="text-body-sm font-body-sm text-tertiary">2026.11.05 17:10 (v1.2)</span>
+</div>
+<div class="h-[1px] w-full bg-outline-variant/30"></div>
+<div class="flex justify-between items-center py-1.5">
+<span class="text-body-sm font-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+                    상태 요약
+                  </span>
+<span class="text-label-sm font-label-sm font-semibold text-secondary">초안 저장됨 · 채택 대기 중</span>
+</div>
+</div>
+</div>
+<!-- Action Strip: Primary Continuation CTA -->
+<div class="pt-space-md mt-space-md flex flex-wrap items-center gap-space-sm">
+<a class="flex-1 min-w-[180px] px-space-md py-2.5 rounded-lg bg-primary text-on-primary font-label-lg font-semibold hover:bg-primary-container transition-colors flex items-center justify-center gap-1.5 shadow-md" href="#">
+<span>이어서 정밀점검 검토하기</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+<button class="px-space-md py-2.5 rounded-lg bg-surface-container text-tertiary font-label-lg font-medium hover:text-error hover:bg-error-container/20 transition-colors" type="button">
+                초안 삭제
+              </button>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 2: 이번 달 실행 현황 (Current Month Execution Progress) -->
+<section class="bg-surface-container-lowest rounded-xl p-space-lg shadow-sm space-y-space-lg">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md pb-space-xs">
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[24px]">task_alt</span>
+<h2 class="text-headline-lg font-headline-lg text-on-surface">이번 달 실행 현황 및 할 일 체크</h2>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant">
+              계획을 실제 행동으로 옮긴 내역을 추적하고 남은 절차를 확인합니다.
+            </p>
+</div>
+<!-- Progress Ring Pill Visualizer -->
+<div class="flex items-center gap-space-md bg-surface-container-low px-space-md py-space-sm rounded-xl">
+<!-- Inline SVG Gauge (67%) -->
+<div class="relative w-12 h-12 flex items-center justify-center">
+<svg class="w-12 h-12 transform -rotate-90" viewbox="0 0 36 36">
+<circle class="text-surface-container-high" cx="18" cy="18" fill="none" r="15.9155" stroke="currentColor" stroke-width="3.5"></circle>
+<circle class="text-primary" cx="18" cy="18" fill="none" r="15.9155" stroke="currentColor" stroke-dasharray="67, 100" stroke-linecap="round" stroke-width="3.5"></circle>
+</svg>
+<span class="absolute text-label-sm font-label-sm font-bold text-primary">67%</span>
+</div>
+<div>
+<div class="text-label-sm font-label-sm text-tertiary">실행 완료율</div>
+<div class="text-headline-md font-headline-md text-on-surface">3 / 4건 완료</div>
+</div>
+</div>
+</div>
+<!-- 4 Key Action Items Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<!-- Item 1: Complete -->
+<div class="bg-surface-container-low/70 rounded-xl p-space-md flex items-start gap-space-sm">
+<div class="w-7 h-7 rounded-full bg-primary text-on-primary flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</div>
+<div class="space-y-1 flex-1">
+<div class="flex items-center justify-between">
+<span class="text-label-md font-label-md text-primary font-bold">주거 목표 통장 분리 격리</span>
+<span class="text-label-sm font-label-sm text-tertiary">11.06 완료</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface leading-snug">
+                주거 목표 전용 통장에 400만원 분리 격리 및 자동이체 월 20만원 등록 완료
+              </p>
+<div class="text-label-sm font-label-sm text-secondary font-medium pt-1">
+                계좌 연동 정상 확인됨
+              </div>
+</div>
+</div>
+<!-- Item 2: Complete -->
+<div class="bg-surface-container-low/70 rounded-xl p-space-md flex items-start gap-space-sm">
+<div class="w-7 h-7 rounded-full bg-primary text-on-primary flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</div>
+<div class="space-y-1 flex-1">
+<div class="flex items-center justify-between">
+<span class="text-label-md font-label-md text-primary font-bold">생활비 150만원 상한 알림</span>
+<span class="text-label-sm font-label-sm text-tertiary">11.06 완료</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface leading-snug">
+                생활비 예산 150만원(10만원 절감) 소비 상한 알림 및 카드 한도 가이드 설정 완료
+              </p>
+<div class="text-label-sm font-label-sm text-secondary font-medium pt-1">
+                일일 지출 목표 50,000원 이하 유지 중
+              </div>
+</div>
+</div>
+<!-- Item 3: Complete -->
+<div class="bg-surface-container-low/70 rounded-xl p-space-md flex items-start gap-space-sm">
+<div class="w-7 h-7 rounded-full bg-primary text-on-primary flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</div>
+<div class="space-y-1 flex-1">
+<div class="flex items-center justify-between">
+<span class="text-label-md font-label-md text-primary font-bold">의무 대출상환 잔액 확인</span>
+<span class="text-label-sm font-label-sm text-tertiary">11.08 완료</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface leading-snug">
+                고정 의무 대출 상환 20만원 자동 결제 계좌 잔액 확인 및 정상 출금 대기 상태
+              </p>
+<div class="text-label-sm font-label-sm text-secondary font-medium pt-1">
+                상환 예정일: 매월 15일
+              </div>
+</div>
+</div>
+<!-- Item 4: IN PROGRESS -->
+<div class="bg-primary/5 rounded-xl p-space-md flex items-start gap-space-sm">
+<div class="w-7 h-7 rounded-full bg-primary-container text-on-primary flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]">hourglass_top</span>
+</div>
+<div class="space-y-1 flex-1">
+<div class="flex items-center justify-between">
+<span class="text-label-md font-label-md text-primary font-bold">신규 투자 계좌 자동납입 설정</span>
+<span class="text-label-sm font-label-sm font-bold text-error px-2 py-0.5 rounded-full bg-error-container/40">마감 D-5</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface leading-snug font-medium">
+                신규 투자(B안 월 30만원) ISA/연금저축 적격 계좌 및 매월 자동납입 설정 필요
+              </p>
+<div class="pt-2 flex items-center gap-space-xs">
+<button class="px-space-sm py-1 rounded bg-primary text-on-primary font-label-sm font-semibold hover:bg-primary-container transition-colors" type="button">
+                  원클릭 계좌 등록 가이드
+                </button>
+<button class="px-space-sm py-1 rounded bg-surface-container text-on-surface font-label-sm hover:bg-surface-container-high transition-colors" type="button">
+                  나중에 하기
+                </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Real-Time Monthly Cashflow Execution Strip -->
+<div class="bg-surface-container p-space-md rounded-xl space-y-space-xs">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-on-surface">
+<span class="text-label-md font-label-md font-semibold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[18px]">query_stats</span>
+              이번 달 총 예산 집행 현황 (300만원 기준)
+            </span>
+<span class="text-label-md font-label-md text-on-surface-variant">
+              현재 집행 누적액: <strong class="text-primary font-bold">2,400,000원</strong> (80.0% 집행 / 정상 범위)
+            </span>
+</div>
+<!-- Flow Meter Bar -->
+<div class="w-full bg-surface-container-highest rounded-full h-3 overflow-hidden flex">
+<div class="bg-secondary h-full" style="width: 50%" title="생활비: 150만 (50%)"></div>
+<div class="bg-primary h-full" style="width: 13.3%" title="기존 투자: 40만 (13.3%)"></div>
+<div class="bg-primary-container h-full" style="width: 6.7%" title="주거적립: 20만 (6.7%)"></div>
+<div class="bg-tertiary h-full" style="width: 6.7%" title="비상금: 20만 (6.7%)"></div>
+<div class="bg-outline h-full" style="width: 3.3%" title="대출이자: 10만 (3.3%)"></div>
+<div class="bg-surface-dim h-full" style="width: 20%" title="잔여 가용 잔액: 60만 (20%)"></div>
+</div>
+<div class="flex flex-wrap items-center justify-between text-label-sm font-label-sm text-tertiary pt-1">
+<div class="flex items-center gap-3">
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-secondary"></span> 생활비 150만</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-primary"></span> 투자 40만</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-primary-container"></span> 주거적립 20만</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-tertiary"></span> 기타 30만</span>
+</div>
+<span class="text-primary font-medium">잔여 계획 잔액: 600,000원 (신규 투자 30만 + 예비 30만)</span>
+</div>
+</div>
+</section>
+<!-- SECTION 3 & 4 DUAL BENTO ROW: Next Inspection & Mascot Companion -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+<!-- SECTION 3: 다음 점검일 & 캘린더 리마인더 (8 Cols) -->
+<div class="lg:col-span-7 bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between space-y-space-md">
+<div class="space-y-space-sm">
+<div class="flex items-center justify-between">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-label-sm font-semibold">
+<span class="material-symbols-outlined text-[16px]">calendar_clock</span>
+                정기 리뷰 일정
+              </span>
+<span class="inline-flex items-center gap-1 text-label-sm font-label-sm text-secondary font-medium">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+                카카오톡 &amp; 이메일 알림 켜짐 (D-3 사전 발송)
+              </span>
+</div>
+<!-- Big Date Callout -->
+<div class="space-y-1 pt-1">
+<div class="text-headline-xl font-headline-xl text-on-surface flex flex-wrap items-center gap-space-xs">
+<span>2026년 11월 25일 (수)</span>
+<span class="px-2.5 py-0.5 rounded-full bg-primary text-on-primary font-label-md font-bold">월말 급여일 D-15</span>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant leading-relaxed">
+                이번 달 실제 지출 내역(식비·교통·기타)과 저축 실적을 계획과 대조하는 첫 번째 월간 리뷰가 예정되어 있어요. 목표와 오차가 10% 이상 발생할 시 자동 보정 가이드가 발행됩니다.
+              </p>
+</div>
+<!-- Checklist summary for check-in -->
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-space-xs pt-1">
+<div class="bg-surface-container-low p-2.5 rounded-lg">
+<div class="text-label-sm font-label-sm text-tertiary">점검 항목 1</div>
+<div class="text-body-md font-body-md font-bold text-on-surface">식비 절감 추이</div>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded-lg">
+<div class="text-label-sm font-label-sm text-tertiary">점검 항목 2</div>
+<div class="text-body-md font-body-md font-bold text-on-surface">신규 30만 투자</div>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded-lg">
+<div class="text-label-sm font-label-sm text-tertiary">점검 항목 3</div>
+<div class="text-body-md font-body-md font-bold text-on-surface">주거 통장 잔액</div>
+</div>
+</div>
+</div>
+<div class="pt-space-sm flex flex-wrap items-center gap-space-sm">
+<button class="px-space-md py-2.5 rounded-lg bg-surface-container text-on-surface font-label-lg font-semibold hover:bg-surface-container-high transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[18px]">edit_calendar</span>
+              점검 일정 변경
+            </button>
+<button class="px-space-md py-2.5 rounded-lg bg-surface-container-low text-primary font-label-lg font-semibold hover:bg-surface-container transition-colors flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[18px]">post_add</span>
+              지금 미리 지출 기록하기
+            </button>
+</div>
+</div>
+<!-- SECTION 4: 고양이 냥코치 조력 카드 & 상시 질문 (5 Cols) -->
+<div class="lg:col-span-5 bg-surface-container-lowest rounded-xl p-space-lg shadow-sm flex flex-col justify-between space-y-space-md">
+<div class="space-y-space-md">
+<!-- Mascot Header Strip -->
+<div class="flex items-center gap-space-sm">
+<div class="relative shrink-0">
+<img alt="냥코치 AI" class="w-12 h-12 rounded-full object-cover shadow-sm ring-2 ring-primary/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFQ_MNoekiTYlSgUsDaUnuVy-MJBw7IFLJ4MJ5W6vE9eoD2upRGHSJ6bKc4fSiNhhj8q3MorzY2FltsF48iSkbRE1hRYmlDehNitzApAjwiCFKNCZFeVzcE4I76BtRwtej_2HZ_2v3hySKbEaLsvY7MCopXc8uPvc6mHofpfMqtkOIVuqw3VvnaomMIDqqq5ZpVjTXocxeGZNcY1QdyXZtty0QOz4GDrHl3kdP8kEpJr-cmvtNuiDaGA"/>
+<span class="absolute -bottom-1 -right-1 w-4 h-4 bg-primary rounded-full flex items-center justify-center text-[10px] text-on-primary">🐾</span>
+</div>
+<div>
+<div class="flex items-center gap-1">
+<span class="font-headline-md font-headline-md text-on-surface">냥코치 AI 파트너</span>
+<span class="px-1.5 py-0.5 rounded bg-primary-fixed text-on-primary-fixed-variant font-label-sm font-semibold">전담 조언</span>
+</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant">자산관리 엔진 v4.2 기반 맞춤 안내</div>
+</div>
+</div>
+<!-- Speech Bubble -->
+<div class="relative bg-surface-container-low p-space-md rounded-xl rounded-tl-none space-y-space-xs">
+<p class="text-body-md font-body-md text-on-surface leading-relaxed">
+                “김디오님! 지난번에 세워두신 계획대로 <strong>생활비 10만원 절감</strong>을 아주 훌륭하게 지키고 계시네요 🐾 이번 달 <strong>신규 투자 30만원 계좌 개설</strong>만 마치면 목표 달성 확률이 <span class="text-primary font-bold">95%</span>로 높아져요!”
+              </p>
+<div class="text-label-sm font-label-sm text-secondary font-medium">
+                Tip: ISA 계좌로 개설하시면 연 최대 200만원까지 비과세 혜택이 적용돼요.
+              </div>
+</div>
+<!-- Mascot Quick Inquiries -->
+<div class="space-y-space-xs pt-1">
+<div class="text-label-sm font-label-sm text-tertiary">자주 묻는 질문</div>
+<div class="flex flex-col gap-1.5">
+<button class="w-full text-left px-3 py-2 rounded-lg bg-surface text-on-surface-variant font-body-sm hover:text-primary hover:bg-surface-container transition-colors flex items-center justify-between group" type="button">
+<span>채택한 계획을 변경하고 싶어요</span>
+<span class="material-symbols-outlined text-[16px] text-tertiary group-hover:text-primary transition-colors">chevron_right</span>
+</button>
+<button class="w-full text-left px-3 py-2 rounded-lg bg-surface text-on-surface-variant font-body-sm hover:text-primary hover:bg-surface-container transition-colors flex items-center justify-between group" type="button">
+<span>정밀점검 초안과 채택 계획의 차이가 뭔가요?</span>
+<span class="material-symbols-outlined text-[16px] text-tertiary group-hover:text-primary transition-colors">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<div class="pt-space-xs">
+<button class="w-full py-2 rounded-lg bg-surface-container-high text-primary font-label-md font-bold hover:bg-primary-container hover:text-on-primary transition-colors flex items-center justify-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[18px]">chat</span>
+              냥코치에게 실시간 질문하기
+            </button>
+</div>
+</div>
+</div>
+<!-- BOTTOM NAVIGATION & WORKFLOW SHORTCUTS -->
+<section class="bg-surface-container-lowest rounded-xl p-space-md shadow-sm">
+<div class="flex flex-col sm:flex-row items-center justify-between gap-space-md">
+<a class="inline-flex items-center gap-2 text-on-surface-variant font-label-lg hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]">arrow_back</span>
+            지난 진단 결과 종합 보기 (FAST-05)
+          </a>
+<div class="flex flex-wrap items-center gap-space-sm w-full sm:w-auto justify-end">
+<button class="px-space-md py-2.5 rounded-lg bg-surface-container text-tertiary font-label-lg font-medium hover:text-on-surface hover:bg-surface-container-high transition-colors" type="button">
+              데이터 전체 재진단
+            </button>
+<a class="px-space-lg py-2.5 rounded-lg bg-primary text-on-primary font-label-lg font-semibold hover:bg-primary-container transition-colors shadow-sm inline-flex items-center gap-1.5" href="#">
+<span>정밀점검 이어서 진행하기 (DEEP-01)</span>
+<span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</a>
+</div>
+</div>
+</section>
+<!-- LEGAL DISCLAIMER COMPLIANCE CALLOUT -->
+<div class="px-space-sm py-space-xs text-center">
+<p class="text-label-sm font-label-sm text-tertiary leading-relaxed">
+          ※ 디온(dion) AI 어드바이저리는 자본시장법상 투자자문 및 일임 자격 체계를 준수하며, 채택되지 않은 초안 시뮬레이션은 어떠한 금융 계약 효력도 발생하지 않습니다.
+        </p>
+</div>
+</div>
+</div>
+</div></main><footer class="w-full bg-surface-container-low py-space-xl mt-space-xl"><div class="max-w-7xl mx-auto px-gutter"><div class="flex flex-col md:flex-row justify-between gap-space-lg pb-space-lg"><div class="space-y-space-xs"><div class="text-primary font-headline-md font-bold">dion. Wealth Advisory</div><p class="text-on-surface-variant font-body-sm max-w-xl leading-relaxed">디온(dion) AI는 고도화된 퀀트 및 재무공학 엔진에 기반한 디지털 자산관리 보조 서비스입니다. 본 플랫폼의 시뮬레이션 및 포트폴리오 분석 결과는 투자 참고용 지표이며, 금융투자상품의 원금 손실 위험을 수반할 수 있습니다.</p></div><div class="flex flex-col sm:flex-row gap-space-lg text-on-surface-variant font-label-md"><div><div class="font-label-lg text-on-surface mb-space-xs">고객 지원</div><p class="font-body-sm">support@dion-advisory.ai</p><p class="font-body-sm">평일 09:00 - 18:00 (KST)</p></div><div><div class="font-label-lg text-on-surface mb-space-xs">법적 고지</div><ul class="space-y-1 font-body-sm"><li><a class="hover:text-primary transition-colors" href="#">이용약관</a></li><li><a class="hover:text-primary transition-colors" href="#">개인정보처리방침</a></li><li><a class="hover:text-primary transition-colors" href="#">투자유의안내</a></li></ul></div></div></div><div class="pt-space-md flex flex-col sm:flex-row items-center justify-between gap-space-sm text-on-surface-variant font-label-sm"><p>© 2025 dion Inc. All rights reserved. 금융투자업 등록 관련 법령을 준수합니다.</p><div class="flex items-center gap-space-sm"><span>보안 인증 256-bit SSL</span><span class="w-1 h-1 rounded-full bg-outline-variant"></span><span>AI 엔진 v4.2 Stable</span></div></div></div></footer></body></html>

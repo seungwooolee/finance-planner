@@ -1,0 +1,214 @@
+{
+  "FAST-DEMO-02": {
+    "tool_schema": "DION-OFFLINE-FUNDING-CHECK-1",
+    "basis": "SCENARIO",
+    "recommendation": false,
+    "adoption_state": "NOT_IMPLEMENTED",
+    "generation": {
+      "state": "NEEDS_POLICY",
+      "policy": "DEC-02",
+      "candidates": null
+    },
+    "context": {
+      "case_id": "FAST-DEMO-02",
+      "profile_version": "demo-1",
+      "snapshot_id": "FAST-DEMO-02-source-snapshot",
+      "plan_id": "FAST-DEMO-02-expansion",
+      "plan_version": "demo-1",
+      "currency": "KRW",
+      "basis": "SCENARIO",
+      "strategy_id": "INVESTMENT_CAPACITY"
+    },
+    "input_state": "CHECKED_WITHIN_OFFLINE_SCOPE",
+    "stock": {
+      "rows": [
+        {
+          "source_id": "cash",
+          "assignable_krw": "14000000",
+          "allocated_krw": "10000000",
+          "unassigned_krw": "4000000",
+          "investment_cap_raw_krw": "4000000",
+          "investment_budget_cap_krw": "4000000",
+          "temporal_eligibility_separate": true
+        }
+      ],
+      "issues": [],
+      "changes_asset_total": false,
+      "state": "RECONCILED"
+    },
+    "monthly": {
+      "base_surplus_krw": "1300000",
+      "kept_total_krw": "400000",
+      "additional_targets": [
+        {
+          "target_id": "housing-goal",
+          "purpose": "GOAL",
+          "budget_basis": "PLAN_SELECTED",
+          "kept_krw": "0",
+          "additional_krw": "200000"
+        },
+        {
+          "target_id": "emergency-topup",
+          "purpose": "PROTECTION",
+          "budget_basis": "PLAN_SELECTED",
+          "kept_krw": "0",
+          "additional_krw": "200000"
+        }
+      ],
+      "monthly_unallocated_raw_krw": "300000",
+      "monthly_budget_cap_krw": "300000",
+      "shortfall_krw": "0",
+      "allocation_difference_krw": "0",
+      "conditional_excludes_unconfirmed_goals": false,
+      "issues": [],
+      "state": "RECONCILED"
+    },
+    "timing": {
+      "path": [],
+      "minimum_balance_krw": "14000000",
+      "issues": [],
+      "duplicates_ignored": 0,
+      "negative_path_is_funding_need_not_executed_debt": true,
+      "state": "RECONCILED"
+    }
+  },
+  "UI-INV-01": {
+    "tool_schema": "DION-OFFLINE-FUNDING-CHECK-1",
+    "basis": "SCENARIO",
+    "recommendation": false,
+    "adoption_state": "NOT_IMPLEMENTED",
+    "generation": {
+      "state": "NEEDS_POLICY",
+      "policy": "DEC-02",
+      "candidates": null
+    },
+    "context": {
+      "case_id": "UI-INV-01",
+      "profile_version": "demo-1",
+      "snapshot_id": "UI-INV-01-source-snapshot",
+      "plan_id": "UI-INV-01-expansion",
+      "plan_version": "demo-1",
+      "currency": "KRW",
+      "basis": "SCENARIO",
+      "strategy_id": "INVESTMENT_CAPACITY"
+    },
+    "input_state": "CHECKED_WITHIN_OFFLINE_SCOPE",
+    "stock": {
+      "rows": [
+        {
+          "source_id": "cash",
+          "assignable_krw": "14000000",
+          "allocated_krw": "10000000",
+          "unassigned_krw": "4000000",
+          "investment_cap_raw_krw": "4000000",
+          "investment_budget_cap_krw": "4000000",
+          "temporal_eligibility_separate": true
+        }
+      ],
+      "issues": [],
+      "changes_asset_total": false,
+      "state": "RECONCILED"
+    },
+    "monthly": {
+      "base_surplus_krw": "1300000",
+      "kept_total_krw": "0",
+      "additional_targets": [],
+      "monthly_unallocated_raw_krw": "1100000",
+      "monthly_budget_cap_krw": "1100000",
+      "shortfall_krw": "0",
+      "allocation_difference_krw": "0",
+      "conditional_excludes_unconfirmed_goals": true,
+      "issues": [
+        {
+          "code": "GOAL_ALLOCATION_UNCONFIRMED",
+          "kind": "NEEDS_INPUT",
+          "scope": "goal-adjusted funding and recommendation"
+        }
+      ],
+      "state": "NEEDS_INPUT"
+    },
+    "timing": {
+      "path": [],
+      "minimum_balance_krw": "14000000",
+      "issues": [],
+      "duplicates_ignored": 0,
+      "negative_path_is_funding_need_not_executed_debt": true,
+      "state": "RECONCILED"
+    }
+  },
+  "MX-26": {
+    "tool_schema": "DION-OFFLINE-FUNDING-CHECK-1",
+    "basis": "SCENARIO",
+    "recommendation": false,
+    "adoption_state": "NOT_IMPLEMENTED",
+    "generation": {
+      "state": "NEEDS_POLICY",
+      "policy": "DEC-02",
+      "candidates": null
+    },
+    "context": {
+      "case_id": "MX-26",
+      "profile_version": "demo-1",
+      "snapshot_id": "MX-26-source-snapshot",
+      "plan_id": "MX-26-expansion",
+      "plan_version": "demo-1",
+      "currency": "KRW",
+      "basis": "SCENARIO",
+      "strategy_id": "INVESTMENT_CAPACITY"
+    },
+    "input_state": "CHECKED_WITHIN_OFFLINE_SCOPE",
+    "stock": {
+      "rows": [
+        {
+          "source_id": "cash",
+          "assignable_krw": "0",
+          "allocated_krw": "0",
+          "unassigned_krw": "0",
+          "investment_cap_raw_krw": "0",
+          "investment_budget_cap_krw": "0",
+          "temporal_eligibility_separate": true
+        }
+      ],
+      "issues": [],
+      "changes_asset_total": false,
+      "state": "RECONCILED"
+    },
+    "monthly": {
+      "base_surplus_krw": "1100000",
+      "kept_total_krw": "0",
+      "additional_targets": [],
+      "monthly_unallocated_raw_krw": "1100000",
+      "monthly_budget_cap_krw": "1100000",
+      "shortfall_krw": "0",
+      "allocation_difference_krw": "0",
+      "conditional_excludes_unconfirmed_goals": false,
+      "issues": [],
+      "state": "RECONCILED"
+    },
+    "timing": {
+      "path": [
+        {
+          "event_id": "debt-due",
+          "on": "2026-11-05",
+          "cash_path_raw_krw": "-300000"
+        },
+        {
+          "event_id": "salary",
+          "on": "2026-11-25",
+          "cash_path_raw_krw": "2700000"
+        }
+      ],
+      "minimum_balance_krw": "-300000",
+      "issues": [
+        {
+          "code": "INTERMEDIATE_CASH_SHORTFALL",
+          "kind": "FUNDING_SHORTFALL",
+          "shortfall_krw": "300000"
+        }
+      ],
+      "duplicates_ignored": 0,
+      "negative_path_is_funding_need_not_executed_debt": true,
+      "state": "INFEASIBLE"
+    }
+  }
+}

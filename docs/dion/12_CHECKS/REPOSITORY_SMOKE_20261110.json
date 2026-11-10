@@ -1,0 +1,26 @@
+{
+  "engine_oracle": {
+    "current_net_worth": "22000000",
+    "monthly_cash_flow": "800000",
+    "final_goal_funds": "62000000",
+    "goal_shortfall": "8000000",
+    "achievement_rate": "88.57"
+  },
+  "monthly_rows": 61,
+  "in_process_asgi_checks": {
+    "health": 200,
+    "sample_profile": 200,
+    "calculate_fixed_oracle": 200,
+    "unsupported_monthly_debt_field": 422,
+    "unknown_income_not_zero": 422,
+    "fractional_won_exact_json": 422
+  },
+  "runtime_versions": {
+    "fastapi": "0.141.1",
+    "pydantic": "2.13.4",
+    "starlette": "1.6.0",
+    "httpx": "0.28.1"
+  },
+  "app_core_e2e_build_executed": false,
+  "external_server_started": false
+}

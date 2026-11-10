@@ -1,0 +1,4705 @@
+{
+  "source": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json",
+  "sha256": "948ce1f7a2e7e77482158de7f348072da325e13c5144ba4c2f46df433d09d155",
+  "quick": [
+    "NEW-01",
+    "LIFE-01",
+    "F11",
+    "F03",
+    "F04",
+    "F06",
+    "N01",
+    "N02",
+    "NEW-04",
+    "F12",
+    "F13"
+  ],
+  "conditional": [
+    "F08",
+    "F09+F10+D08"
+  ],
+  "lifeStages": [
+    {
+      "code": "LC_EARLY_CAREER",
+      "label": "사회초년생"
+    },
+    {
+      "code": "LC_NEWLYWED",
+      "label": "신혼기"
+    },
+    {
+      "code": "LC_CHILDCARE",
+      "label": "자녀 출산·양육기"
+    },
+    {
+      "code": "LC_SCHOOL_AGE",
+      "label": "자녀 학령기"
+    },
+    {
+      "code": "LC_CHILD_INDEPENDENCE",
+      "label": "자녀 독립기"
+    },
+    {
+      "code": "LC_RETIRED",
+      "label": "은퇴기"
+    },
+    {
+      "code": "LC_OTHER",
+      "label": "기타"
+    },
+    {
+      "code": "LC_UNKNOWN",
+      "label": "잘 모르겠음"
+    }
+  ],
+  "outputGates": [
+    {
+      "id": "OUT-01",
+      "title": "첫 현황",
+      "question_ids": [
+        "F03",
+        "F04",
+        "F06",
+        "NEW-01",
+        "NEW-04"
+      ],
+      "required_facts": "범위·알려진 금액·누락상태",
+      "verification": "평가기준·단위 확인",
+      "partial_result": "확인 소계·부족항목",
+      "guard": "완전 순자산·투자가능액으로 과장 금지",
+      "implementation": "기존 현황 부분 구현",
+      "direct_question_ids": [
+        "NEW-01",
+        "F03",
+        "F04",
+        "F06",
+        "NEW-04"
+      ],
+      "upstream_results": [],
+      "optional_context_question_ids": [
+        "LIFE-01",
+        "F11",
+        "N01",
+        "N02"
+      ],
+      "production_ui_verified": false
+    },
+    {
+      "id": "OUT-02",
+      "title": "전체 순자산",
+      "question_ids": [
+        "F06",
+        "F08",
+        "F09+F10+D08",
+        "NEW-01",
+        "NEW-04",
+        "NEW-09"
+      ],
+      "required_facts": "자산·채무 coverage=complete, 소유지분·평가일·보증금",
+      "verification": "같은 원장·동일범위",
+      "partial_result": "확인된 자산·채무 소계",
+      "guard": "모르는 자산·채무 0 처리 금지",
+      "implementation": "현황 일부 구현",
+      "direct_question_ids": [
+        "NEW-01",
+        "F06",
+        "F08",
+        "NEW-09",
+        "NEW-04",
+        "F09+F10+D08"
+      ],
+      "upstream_results": [],
+      "optional_context_question_ids": [],
+      "production_ui_verified": false
+    },
+    {
+      "id": "OUT-03",
+      "title": "월 가용흐름",
+      "question_ids": [
+        "F03",
+        "F04",
+        "F09+F10+D08",
+        "NEW-01",
+        "NEW-03",
+        "NEW-04"
+      ],
+      "required_facts": "세후소득·생활비·의무상환·포함액·기존 납입",
+      "verification": "같은 기간·범위와 포함관계",
+      "partial_result": "상환 전 차액 또는 미확정 항목",
+      "guard": "세후세금·급여공제 연금 재차감 금지",
+      "implementation": "공통계약 일부 구현",
+      "direct_question_ids": [
+        "NEW-01",
+        "F03",
+        "F04",
+        "NEW-04",
+        "NEW-03"
+      ],
+      "upstream_results": [],
+      "optional_context_question_ids": [],
+      "production_ui_verified": false,
+      "conditional_question_ids": [
+        {
+          "id": "F09+F10+D08",
+          "when": "debt not confirmed NONE; known cash payment needed; principal/interest split not required for current base flow"
+        }
+      ],
+      "variants": {
+        "before_existing_contributions": {
+          "required": [
+            "F03",
+            "F04",
+            "NEW-04"
+          ],
+          "after_existing_contributions": false
+        },
+        "after_existing_contributions": {
+          "additional": [
+            "NEW-03"
+          ],
+          "engine_consumer": "cashflow_with_kept"
+        }
+      }
+    },
+    {
+      "id": "OUT-04",
+      "title": "목표 준비·필요적립",
+      "question_ids": [
+        "F06",
+        "F11",
+        "F12",
+        "F13",
+        "NEW-01",
+        "NEW-05",
+        "NEW-06"
+      ],
+      "required_facts": "금액·가격기준·정확한 지급일·준비자산·가용일",
+      "verification": "검증 산식·정책·납입 달력",
+      "partial_result": "목표 요약·부족한 입력",
+      "guard": "금액/기한·성공확률 임의 생성 금지",
+      "implementation": "기존 단일주거/명시원장 범위",
+      "direct_question_ids": [
+        "NEW-01",
+        "F06",
+        "NEW-06",
+        "F11",
+        "F12",
+        "F13"
+      ],
+      "upstream_results": [],
+      "optional_context_question_ids": [],
+      "production_ui_verified": false,
+      "conditional_question_ids": [
+        {
+          "id": "NEW-05",
+          "when": "separate related obligation/event exists"
+        }
+      ]
+    },
+    {
+      "id": "OUT-05",
+      "title": "두 재무안의 월 후보",
+      "question_ids": [
+        "F03",
+        "F04",
+        "F06",
+        "F09+F10+D08",
+        "F11",
+        "F12",
+        "F13",
+        "INH-01",
+        "INH-03",
+        "NEW-01",
+        "NEW-02",
+        "NEW-03",
+        "NEW-04",
+        "NEW-05",
+        "NEW-06",
+        "PEN-02",
+        "TAX-04"
+      ],
+      "required_facts": "OUT-03 현금흐름·OUT-04 해당 목표 최소액·F03/F04/F06 직접 원천·필수생활비·의무상환·기존납입·현재 보호/운영확보·고객목표·정책1.0·명시 미래가정",
+      "verification": "DION-ALLOCATION-1.0 및 계약검사",
+      "partial_result": "불가 사유·부족액·입력 요청",
+      "guard": "월 후보를 목돈/전체달력·추천·채택 완료로 확대 금지",
+      "implementation": "독립 DION-ENGINE-1.0 월 시나리오 구현; 1.2.1 문항→1.3-engine 명시 변환·실제 API/DB/UI는 별도",
+      "direct_question_ids": [
+        "NEW-01",
+        "F03",
+        "F04",
+        "F06",
+        "NEW-04",
+        "NEW-03",
+        "NEW-06",
+        "NEW-02",
+        "NEW-05"
+      ],
+      "upstream_results": [
+        {
+          "id": "OUT-03",
+          "when": "always",
+          "fields": [
+            "normalized_living",
+            "base_surplus",
+            "existing_cash_contributions_krw",
+            "after_existing_contributions_krw"
+          ],
+          "on_missing": "hold OUT-05; preserve independently calculable current results"
+        },
+        {
+          "id": "OUT-04",
+          "when": "any active goal or goal completeness unknown",
+          "fields": [
+            "goals[].required_additional_krw",
+            "goals[].contribution_dates",
+            "goals[].prepared_krw",
+            "goals[].feasibility"
+          ],
+          "confirmed_no_goals": "explicit NONE/complete goal inventory bypasses OUT-04; unknown does not",
+          "on_missing": "hold affected candidate; never assume missing goal burden zero"
+        }
+      ],
+      "optional_context_question_ids": [
+        "LIFE-01",
+        "NEW-07"
+      ],
+      "production_ui_verified": false,
+      "conditional_question_ids": [
+        {
+          "id": "F09+F10+D08",
+          "when": "debt present/unknown"
+        },
+        {
+          "id": "F11",
+          "when": "goal coverage/selection confirmation"
+        },
+        {
+          "id": "F12",
+          "when": "confirmed active goals"
+        },
+        {
+          "id": "F13",
+          "when": "confirmed active goals"
+        },
+        {
+          "id": "TAX-04",
+          "when": "tax cash event in comparison period"
+        },
+        {
+          "id": "INH-01",
+          "when": "inheritance event/scenario requested"
+        },
+        {
+          "id": "INH-03",
+          "when": "inheritance event affects period"
+        },
+        {
+          "id": "PEN-02",
+          "when": "pension begins/changes within comparison period"
+        }
+      ]
+    },
+    {
+      "id": "OUT-06",
+      "title": "개인화 투자 검토",
+      "question_ids": [
+        "D14",
+        "D15",
+        "D16-1",
+        "D16-2",
+        "D17",
+        "D18",
+        "D19",
+        "F06",
+        "F15",
+        "F16",
+        "F17",
+        "F18",
+        "F20",
+        "NEW-07",
+        "NEW-08",
+        "NEW-10",
+        "NEW-11",
+        "NEW-12"
+      ],
+      "required_facts": "자금·기간·노출·경험·선호·제외·해당 이해",
+      "verification": "적합성·상품·비중 정책/자료 검증",
+      "partial_result": "구성 개념·확인 필요 정보",
+      "guard": "생애단계만으로 비중·상품 생성 금지",
+      "implementation": "개인화 상품추천 NOT_SUPPORTED; 선택 맥락만 보존",
+      "direct_question_ids": [
+        "F06",
+        "NEW-07",
+        "F15",
+        "NEW-08",
+        "F16",
+        "NEW-10",
+        "NEW-11",
+        "F18",
+        "F17",
+        "D14",
+        "D15",
+        "D16-1",
+        "D16-2",
+        "NEW-12",
+        "D17",
+        "D18",
+        "F20",
+        "D19"
+      ],
+      "upstream_results": [],
+      "optional_context_question_ids": [],
+      "production_ui_verified": false
+    },
+    {
+      "id": "OUT-07",
+      "title": "교육·가족지원 계획",
+      "question_ids": [
+        "EDU-01",
+        "F02",
+        "F04",
+        "F11",
+        "F12",
+        "F13",
+        "NEW-05"
+      ],
+      "required_facts": "지원대상·기간·주기·본인부담·가격기준·준비금",
+      "verification": "기간별 원장·수익/물가 가정 명시",
+      "partial_result": "자녀별 목표·확인금액",
+      "guard": "생활비 교육비와 목표 재차감 금지",
+      "implementation": "독립 엔진1.0의 명시 입력·확인값/시나리오 지원; 법정산식 제외·제품 연결 별도",
+      "direct_question_ids": [
+        "EDU-01",
+        "F02",
+        "F04",
+        "F11",
+        "F12",
+        "F13",
+        "NEW-05"
+      ],
+      "upstream_results": [],
+      "optional_context_question_ids": [],
+      "production_ui_verified": false
+    },
+    {
+      "id": "OUT-08",
+      "title": "연금 현황",
+      "question_ids": [
+        "D20-1",
+        "F03",
+        "F06",
+        "NEW-03",
+        "PEN-01"
+      ],
+      "required_facts": "소유자·종류·현재 수령/납입/잔액 참조·금액기준",
+      "verification": "조회/자가신고의 출처·일자",
+      "partial_result": "확인된 내역·누락",
+      "guard": "국민연금 누적보험료/DB 예상급여를 현금자산 생성 금지",
+      "implementation": "독립 엔진1.0의 명시 입력·확인값/시나리오 지원; 법정산식 제외·제품 연결 별도",
+      "direct_question_ids": [
+        "PEN-01",
+        "F03",
+        "NEW-03",
+        "F06",
+        "D20-1"
+      ],
+      "upstream_results": [],
+      "optional_context_question_ids": [],
+      "production_ui_verified": false
+    },
+    {
+      "id": "OUT-09",
+      "title": "은퇴 후 부족액",
+      "question_ids": [
+        "F03",
+        "F04",
+        "F09+F10+D08",
+        "PEN-01",
+        "PEN-02",
+        "RET-01"
+      ],
+      "required_facts": "은퇴일·생활비·계획기간·수령개시/조건·공식예상자료·세금기준",
+      "verification": "기간별 원장·명목/실질·지원 산식/가정",
+      "partial_result": "수령자료·은퇴 목표·추가 필요 정보",
+      "guard": "예상액 임의 산출·자동 평생수령 가정 금지",
+      "implementation": "독립 엔진1.0의 명시 입력·확인값/시나리오 지원; 법정산식 제외·제품 연결 별도",
+      "direct_question_ids": [
+        "RET-01",
+        "PEN-01",
+        "PEN-02",
+        "F03",
+        "F04",
+        "F09+F10+D08"
+      ],
+      "upstream_results": [],
+      "optional_context_question_ids": [],
+      "production_ui_verified": false
+    },
+    {
+      "id": "OUT-10",
+      "title": "공제·계좌 세후효과",
+      "question_ids": [
+        "D20-1",
+        "NEW-03",
+        "TAX-01",
+        "TAX-02",
+        "TAX-03"
+      ],
+      "required_facts": "납세자·연도·거주·소득기준·본인누적납입·계좌/공제이력",
+      "verification": "유효 법령·공제한도·예외·세액제약 검증",
+      "partial_result": "납입현황·부족정보",
+      "guard": "계좌 보유=자격·공제액=실제환급액으로 표시 금지",
+      "implementation": "법정 공제/세액 자동산출 NOT_SUPPORTED; 관심·확인자료와 구분",
+      "direct_question_ids": [
+        "TAX-01",
+        "TAX-02",
+        "TAX-03",
+        "D20-1",
+        "NEW-03"
+      ],
+      "upstream_results": [],
+      "optional_context_question_ids": [],
+      "production_ui_verified": false
+    },
+    {
+      "id": "OUT-11",
+      "title": "거래 세후·납부현금",
+      "question_ids": [
+        "F03",
+        "F06",
+        "NEW-05",
+        "TAX-01",
+        "TAX-04"
+      ],
+      "required_facts": "사건·세전/세후·원천세·확인세액 또는 원가/과표·수수료·납부일",
+      "verification": "확인세액과 법정산출 구분; 지원 규칙 검증",
+      "partial_result": "세전 또는 확인자료 현황",
+      "guard": "세금 미확인0·원천세 이중차감 금지",
+      "implementation": "독립 엔진1.0의 명시 입력·확인값/시나리오 지원; 법정산식 제외·제품 연결 별도",
+      "direct_question_ids": [
+        "TAX-01",
+        "TAX-04",
+        "F03",
+        "F06",
+        "NEW-05"
+      ],
+      "upstream_results": [],
+      "optional_context_question_ids": [],
+      "production_ui_verified": false
+    },
+    {
+      "id": "OUT-12",
+      "title": "받을 상속 시나리오",
+      "question_ids": [
+        "F06",
+        "INH-01",
+        "INH-03",
+        "TAX-04"
+      ],
+      "required_facts": "발생/확정상태·본인몫·세금비용·수령/현금화일·이미반영 여부",
+      "verification": "현재사실/확정권리/미확정시나리오 원장 분리",
+      "partial_result": "확인된 수령정보·별도 미래가정",
+      "guard": "미확정 상속 현재 투자재원 합산 금지",
+      "implementation": "독립 엔진1.0의 명시 입력·확인값/시나리오 지원; 법정산식 제외·제품 연결 별도",
+      "direct_question_ids": [
+        "INH-01",
+        "INH-03",
+        "F06",
+        "TAX-04"
+      ],
+      "upstream_results": [],
+      "optional_context_question_ids": [],
+      "production_ui_verified": false
+    },
+    {
+      "id": "OUT-13",
+      "title": "남길 재산·상속세 유동성",
+      "question_ids": [
+        "INH-01",
+        "INH-02",
+        "INH-03",
+        "INH-04",
+        "TAX-01",
+        "TAX-04"
+      ],
+      "required_facts": "시나리오일·재산채무·관계·명시배분·세금비용·납부원천; 세액산출은 전체재산/증여/공제 추가",
+      "verification": "지원 법령·사례 검증, 법정배분/분쟁은 별도",
+      "partial_result": "명시 배분·확인세금/비용 및 부족 입력",
+      "guard": "법정상속분·공제 임의 적용·재산 재가산 금지",
+      "implementation": "독립 엔진1.0의 명시 입력·확인값/시나리오 지원; 법정산식 제외·제품 연결 별도",
+      "direct_question_ids": [
+        "INH-01",
+        "INH-02",
+        "INH-03",
+        "INH-04",
+        "TAX-01",
+        "TAX-04"
+      ],
+      "upstream_results": [],
+      "optional_context_question_ids": [],
+      "production_ui_verified": false
+    },
+    {
+      "id": "OUT-14",
+      "title": "실행·사후점검",
+      "question_ids": [
+        "NEW-02",
+        "NEW-05",
+        "PLAN-01",
+        "REV-01"
+      ],
+      "required_facts": "입력/계획 버전·명시채택·기록기간·실적사건·미입력 상태",
+      "verification": "실제저장/권한/동시성·기간 종료 확인",
+      "partial_result": "검토목록·기록된 사실",
+      "guard": "채택=거래실행·중간기록=월성과로 표시 금지",
+      "implementation": "독립 엔진 REVIEW_ONLY 체크리스트; 실제채택·저장·실행 UI 별도",
+      "direct_question_ids": [
+        "PLAN-01",
+        "REV-01",
+        "NEW-02",
+        "NEW-05"
+      ],
+      "upstream_results": [],
+      "optional_context_question_ids": [],
+      "production_ui_verified": false
+    }
+  ],
+  "questions": [
+    {
+      "id": "NEW-01",
+      "version": "1.2.1",
+      "source": {
+        "순서": 1,
+        "항목": "기본정보",
+        "질문 ID": "NEW-01",
+        "변경 유형": "v1.2.1 수정",
+        "고객에게 보여줄 질문": "이번 재무진단은 누구의 재무정보를 기준으로 할까요?",
+        "응답 UI": "단일 선택",
+        "선택지·입력 안내": "본인 / 가구 합산과 포함 구성원 참조를 확인. 동일 확인값은 빠른·정밀에서 재입력하지 않음. 전체 자산 확인수준은 OUT-02/OUT-05에 필요할 때만 추가.",
+        "필수 여부": "필수",
+        "노출 조건": "빠른 ENTRY-01→FAST-01 및 정밀 ENTRY-01→DET-01 모두 최초 범위 확인. 전환 시 같은 범위·소유자·정의의 확인값을 재사용.",
+        "저장 필드(제안)": "assessment_scope; included_owner_ids; asset_coverage; scope_acknowledged; scope_version; owner_confirmation_ref",
+        "연결 결과": "소득·지출·자산·부채·목표의 집계 범위",
+        "부족 시 처리·검증": "가구 합산과 개인별 세금·연금의 귀속을 구분. 실명·주민번호·계좌번호 불필요. 이미 선택한 소유자를 모든 내역에서 재사용. 합의하지 않은 가족 정보는 수집하지 않음.",
+        "검토 상태": "수정반영·연결대조",
+        "화면 ID(설계용)": "DET-01",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "본인 / 가구 합산",
+        "진입 행동·선행 조건": "빠른 FAST-01 / 정밀 DET-01 공통. 첫 결과 이전 확인. 이전 원응답의 범위·소유자·정의를 확인한 경우 재사용.",
+        "미완료 시 처리·다음 단계": "범위 미확인은 해당 집계만 보류. 확인 후 빠른 FAST-02 / 정밀 LIFE-START."
+      },
+      "fields": "assessment_scope; included_owner_ids; asset_coverage; scope_acknowledged; scope_version; owner_confirmation_ref",
+      "outputs": [
+        "OUT-01",
+        "OUT-02",
+        "OUT-03",
+        "OUT-04",
+        "OUT-05"
+      ],
+      "options": [
+        {
+          "field": "assessment_scope",
+          "code": "PERSONAL",
+          "label": "본인 기준",
+          "mode": "단일"
+        },
+        {
+          "field": "assessment_scope",
+          "code": "HOUSEHOLD",
+          "label": "가구 합산 기준",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "LIFE-01",
+      "version": "1.2",
+      "source": {
+        "순서": 2,
+        "항목": "생애단계",
+        "질문 ID": "LIFE-01",
+        "변경 유형": "v1.2 추가",
+        "고객에게 보여줄 질문": "현재 가장 가까운 생활단계는 무엇인가요?",
+        "응답 UI": "대표 단일 + 겹치는 단계 복수",
+        "선택지·입력 안내": "사회초년생 / 신혼기 / 자녀 출산·양육기 / 자녀 학령기 / 자녀 독립기 / 은퇴기 / 기타 / 잘 모르겠음. 대표 1개, 중첩 추가 가능.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "범위 확인 직후. 기존 확인값 있으면 재사용.",
+        "저장 필드(제안)": "life_stage_primary; life_stage_overlaps[]; life_stage_confirmed_on; life_stage_question_version",
+        "연결 결과": "질문 순서·관련 보기 추천",
+        "부족 시 처리·검증": "나이·혼인·자녀로 자동 확정하지 않음. 기타·모름도 공통 현황 진행. 단계만으로 목표·성향·투자비중·지원 자격 결정 금지. 실제0/모름/미입력/해당없음/나중에를 구분. 모름은 null. 금액은 만원 입력→정수 원 문자열. 확인값·추정·공식조회·시나리오 및 기준일을 저장.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "LIFE-START",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "사회초년생 / 신혼기 / 자녀 출산·양육기 / 자녀 학령기 / 자녀 독립기 / 은퇴기 / 기타 / 잘 모르겠음. 대표 1개, 중첩 추가 가능.",
+        "진입 행동·선행 조건": "범위 확인 직후. 기존 확인값 있으면 재사용.",
+        "미완료 시 처리·다음 단계": "확인된 답변 재사용. 부족한 항목만 펼침. 영향받는 결과만 보류."
+      },
+      "fields": "life_stage_primary; life_stage_overlaps[]; life_stage_confirmed_on; life_stage_question_version",
+      "outputs": [],
+      "options": [
+        {
+          "field": "life_stage_primary",
+          "code": "LC_EARLY_CAREER",
+          "label": "사회초년생",
+          "mode": "단일"
+        },
+        {
+          "field": "life_stage_primary",
+          "code": "LC_NEWLYWED",
+          "label": "신혼기",
+          "mode": "단일"
+        },
+        {
+          "field": "life_stage_primary",
+          "code": "LC_CHILDCARE",
+          "label": "자녀 출산·양육기",
+          "mode": "단일"
+        },
+        {
+          "field": "life_stage_primary",
+          "code": "LC_SCHOOL_AGE",
+          "label": "자녀 학령기",
+          "mode": "단일"
+        },
+        {
+          "field": "life_stage_primary",
+          "code": "LC_CHILD_INDEPENDENCE",
+          "label": "자녀 독립기",
+          "mode": "단일"
+        },
+        {
+          "field": "life_stage_primary",
+          "code": "LC_RETIRED",
+          "label": "은퇴기",
+          "mode": "단일"
+        },
+        {
+          "field": "life_stage_primary",
+          "code": "LC_OTHER",
+          "label": "기타",
+          "mode": "단일"
+        },
+        {
+          "field": "life_stage_primary",
+          "code": "LC_UNKNOWN",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        },
+        {
+          "field": "life_stage_overlaps",
+          "code": "LC_EARLY_CAREER",
+          "label": "사회초년생",
+          "mode": "복수"
+        },
+        {
+          "field": "life_stage_overlaps",
+          "code": "LC_NEWLYWED",
+          "label": "신혼기",
+          "mode": "복수"
+        },
+        {
+          "field": "life_stage_overlaps",
+          "code": "LC_CHILDCARE",
+          "label": "자녀 출산·양육기",
+          "mode": "복수"
+        },
+        {
+          "field": "life_stage_overlaps",
+          "code": "LC_SCHOOL_AGE",
+          "label": "자녀 학령기",
+          "mode": "복수"
+        },
+        {
+          "field": "life_stage_overlaps",
+          "code": "LC_CHILD_INDEPENDENCE",
+          "label": "자녀 독립기",
+          "mode": "복수"
+        },
+        {
+          "field": "life_stage_overlaps",
+          "code": "LC_RETIRED",
+          "label": "은퇴기",
+          "mode": "복수"
+        },
+        {
+          "field": "life_stage_overlaps",
+          "code": "LC_OTHER",
+          "label": "기타",
+          "mode": "복수"
+        },
+        {
+          "field": "life_stage_overlaps",
+          "code": "LC_UNKNOWN",
+          "label": "잘 모르겠음",
+          "mode": "복수"
+        }
+      ]
+    },
+    {
+      "id": "F11",
+      "version": "1.2",
+      "source": {
+        "순서": 3,
+        "항목": "목표·예정지출",
+        "질문 ID": "F11",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "지금 가장 먼저 준비하고 싶은 일은 무엇인가요?",
+        "응답 UI": "주요 목표 단일 + 추가 목표 복수",
+        "선택지·입력 안내": "기존 장기 자산 형성 / 주거 / 은퇴 / 자녀 교육 / 정기 투자소득 / 기타 / 아직 미정 유지. 결혼 / 출산·양육 / 자녀 독립 지원 / 부채 상환 / 상속 계획을 추가. 주요 목표 1개와 실제 추가 목표만 선택. 생애단계로 후보를 앞에 보이되 자동 선택하지 않음.",
+        "필수 여부": "필수",
+        "노출 조건": "진단 대상·생애단계 확인 직후. 빠른·정밀 공통. 이전 목표가 있으면 확인만.",
+        "저장 필드(제안)": "goals[].{goal_id,type,priority,owner_refs,beneficiary_ref,confirmed,question_version}",
+        "연결 결과": "목표 준비 현황·배정 우선순위",
+        "부족 시 처리·검증": "대표 생애단계와 실제 목표를 분리. 미혼·무자녀·한부모·재혼·은퇴 후 근로 및 중첩단계를 허용. 미정이면 현황을 먼저 제공. 목표·위험등급·배분비중 자동 생성 금지.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "GOAL-START",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "우선 목표·추가 목표·목표일·금액 상태·일시/반복 지출",
+        "진입 행동·선행 조건": "LIFE-START 후. FAST-03 또는 GOAL-START에서 기존 목표 확인·재사용.",
+        "미완료 시 처리·다음 단계": "목표 미정은 허용. 현황 입력 계속. / FAST-04 또는 DET-02"
+      },
+      "fields": "goals[].{goal_id,type,priority,owner_refs,beneficiary_ref,confirmed,question_version}",
+      "outputs": [
+        "OUT-04",
+        "OUT-05",
+        "OUT-07"
+      ],
+      "options": [
+        {
+          "field": "goal_type",
+          "code": "GOAL_TYPE_01",
+          "label": "장기 자산 형성",
+          "mode": "단일"
+        },
+        {
+          "field": "goal_type",
+          "code": "GOAL_TYPE_02",
+          "label": "주거",
+          "mode": "단일"
+        },
+        {
+          "field": "goal_type",
+          "code": "GOAL_TYPE_03",
+          "label": "은퇴",
+          "mode": "단일"
+        },
+        {
+          "field": "goal_type",
+          "code": "GOAL_TYPE_04",
+          "label": "자녀 교육",
+          "mode": "단일"
+        },
+        {
+          "field": "goal_type",
+          "code": "GOAL_TYPE_05",
+          "label": "정기 투자소득",
+          "mode": "단일"
+        },
+        {
+          "field": "goal_type",
+          "code": "GOAL_TYPE_06",
+          "label": "기타",
+          "mode": "단일"
+        },
+        {
+          "field": "goal_type",
+          "code": "GOAL_TYPE_07",
+          "label": "아직 미정",
+          "mode": "단일"
+        },
+        {
+          "field": "goal_type",
+          "code": "GOAL_V12_MARRIAGE",
+          "label": "결혼",
+          "mode": "주요1개·추가복수"
+        },
+        {
+          "field": "goal_type",
+          "code": "GOAL_V12_CHILDCARE",
+          "label": "출산·양육",
+          "mode": "주요1개·추가복수"
+        },
+        {
+          "field": "goal_type",
+          "code": "GOAL_V12_CHILD_SUPPORT",
+          "label": "자녀 독립 지원",
+          "mode": "주요1개·추가복수"
+        },
+        {
+          "field": "goal_type",
+          "code": "GOAL_V12_DEBT_REPAYMENT",
+          "label": "부채 상환",
+          "mode": "주요1개·추가복수"
+        },
+        {
+          "field": "goal_type",
+          "code": "GOAL_V12_INHERITANCE",
+          "label": "상속 계획",
+          "mode": "주요1개·추가복수"
+        }
+      ]
+    },
+    {
+      "id": "F01",
+      "version": "1.2.1",
+      "source": {
+        "순서": 4,
+        "항목": "기본정보",
+        "질문 ID": "F01",
+        "변경 유형": "v1.2.1 수정",
+        "고객에게 보여줄 질문": "현재 만 나이는 어떻게 되시나요?",
+        "응답 UI": "숫자 선택(스텝퍼)",
+        "선택지·입력 안내": "만 나이 숫자를 선택. 기준일은 자동 기록. 연령대로 대체해 정확한 나이를 추정하지 않음",
+        "필수 여부": "선택",
+        "노출 조건": "초기 빠른·정밀 및 일반 수치계산 경로에서 제외. 실제 소비자가 등록된 별도 검토를 고객이 요청한 때만.",
+        "저장 필드(제안)": "age_years; assessment_as_of",
+        "연결 결과": "CONTEXT: 잠재적 연령 의존 검토. 현행 독립 엔진의 수치 소비자 없음.",
+        "부족 시 처리·검증": "연령으로 생애단계·위험성향·투자비중 자동 확정 금지. 수급일 검증에 출생연월이 필요한 경우에만 별도 확인하며 현재 나이로 생일을 역산하지 않음.",
+        "검토 상태": "수정반영·연결대조",
+        "화면 ID(설계용)": "DET-02",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "나이·가구·부양가족·직업. 근로자에게 고용형태 추가.",
+        "진입 행동·선행 조건": "현행 초기 소비자 없음: 질문은행·원응답 이력만 보존.",
+        "미완료 시 처리·다음 단계": "응답이 없어도 OUT-01~05를 보류하지 않음. 연령·직업·주택수를 다른 미확인 사실 대신 추정하지 않음."
+      },
+      "fields": "age_years; assessment_as_of",
+      "outputs": [],
+      "options": []
+    },
+    {
+      "id": "F02",
+      "version": "1.2",
+      "source": {
+        "순서": 5,
+        "항목": "기본정보",
+        "질문 ID": "F02",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "현재 가구 구성과 경제적으로 부양하는 가족은 어떻게 되나요?",
+        "응답 UI": "단일 선택 2개",
+        "선택지·입력 안내": "가구 구성·경제적 부양가족 수. 교육·돌봄·지원 목표가 있을 때만 해당 구성원의 별칭·관계·교육단계·지원 종료시점을 펼침. 상속 가족관계는 INH-02에서 별도로 확인.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "가구·부양·가족지원 등 요청 결과에 해당 사실이 필요하고 기존 확인값이 없을 때.",
+        "저장 필드(제안)": "household_type; dependent_count; family_members[].{person_ref,relationship,education_stage,support_end_status}",
+        "연결 결과": "가구 맥락·조건부 목표 질문",
+        "부족 시 처리·검증": "동거·경제적 부양·세법상 공제대상·상속관계를 서로 추정하지 않음. 자녀가 있어도 교육·결혼 지원 목표를 자동 생성하지 않음.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "DET-02",
+        "화면 내 순서": 2,
+        "해당 화면의 입력 범위": "나이·가구·부양가족·직업. 근로자에게 고용형태 추가.",
+        "진입 행동·선행 조건": "DET-01 후",
+        "미완료 시 처리·다음 단계": "직업과 고용형태 별도. 기존 응답은 재사용·수정 가능. / DET-03"
+      },
+      "fields": "household_type; dependent_count; family_members[].{person_ref,relationship,education_stage,support_end_status}",
+      "outputs": [
+        "OUT-07"
+      ],
+      "options": [
+        {
+          "field": "household_type",
+          "code": "single",
+          "label": "1인 가구",
+          "mode": "단일"
+        },
+        {
+          "field": "household_type",
+          "code": "couple",
+          "label": "부부 2인 가구",
+          "mode": "단일"
+        },
+        {
+          "field": "household_type",
+          "code": "children",
+          "label": "부부와 자녀",
+          "mode": "단일"
+        },
+        {
+          "field": "household_type",
+          "code": "parent",
+          "label": "부모님 또는 다른 가족과 동거",
+          "mode": "단일"
+        },
+        {
+          "field": "household_type",
+          "code": "singleparent",
+          "label": "한부모와 자녀",
+          "mode": "단일"
+        },
+        {
+          "field": "household_type",
+          "code": "other",
+          "label": "기타",
+          "mode": "단일"
+        },
+        {
+          "field": "dependent_count",
+          "code": "0",
+          "label": "0명",
+          "mode": "단일"
+        },
+        {
+          "field": "dependent_count",
+          "code": "1",
+          "label": "1명",
+          "mode": "단일"
+        },
+        {
+          "field": "dependent_count",
+          "code": "2",
+          "label": "2명",
+          "mode": "단일"
+        },
+        {
+          "field": "dependent_count",
+          "code": "3",
+          "label": "3명",
+          "mode": "단일"
+        },
+        {
+          "field": "dependent_count",
+          "code": "4plus",
+          "label": "4명 이상",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "D01",
+      "version": "1.2.1",
+      "source": {
+        "순서": 6,
+        "항목": "기본정보",
+        "질문 ID": "D01",
+        "변경 유형": "v1.2.1 수정",
+        "고객에게 보여줄 질문": "현재 직업과 고용형태는 어떻게 되시나요?",
+        "응답 UI": "직업 단일 + 근로자 고용형태 단일",
+        "선택지·입력 안내": "직업: 일반 근로자 / 공무원·공공기관 근로자 / 자영업자·개인사업자 / 프리랜서 / 학생·취업준비생 / 은퇴자 / 무직·구직 중 / 기타. 일반·공공기관 근로자에게만 정규직·무기계약 / 계약직·파견직 / 단시간·일용직 / 기타 / 잘 모르겠음을 추가 확인. 기타 설명은 선택.",
+        "필수 여부": "선택",
+        "노출 조건": "초기 빠른·정밀 및 일반 수치계산 경로에서 제외. 실제 소비자가 등록된 별도 검토를 고객이 요청한 때만.",
+        "저장 필드(제안)": "occupation_type_raw; employment_type_raw; occupation_question_version",
+        "연결 결과": "CONTEXT: 선택적 직업 설명. 현행 수치 소비자 없음. 소득 변화는 NEW-02의 실제 사실로 확인.",
+        "부족 시 처리·검증": "직업과 고용형태를 별도 저장. 주된 직업 하나를 선택하고 공무원·공공기관은 해당 직업 항목을 우선 선택. 직업만으로 소득 안정성을 확정하지 않음. 이전 primary_income_activity 답변은 보존하며 고용형태로 자동 이관하지 않음.",
+        "검토 상태": "수정반영·연결대조",
+        "화면 ID(설계용)": "DET-02",
+        "화면 내 순서": 3,
+        "해당 화면의 입력 범위": "나이·가구·부양가족·직업. 근로자에게 고용형태 추가.",
+        "진입 행동·선행 조건": "현행 초기 소비자 없음: 질문은행·원응답 이력만 보존.",
+        "미완료 시 처리·다음 단계": "응답이 없어도 OUT-01~05를 보류하지 않음. 연령·직업·주택수를 다른 미확인 사실 대신 추정하지 않음."
+      },
+      "fields": "occupation_type_raw; employment_type_raw; occupation_question_version",
+      "outputs": [],
+      "options": [
+        {
+          "field": "occupation_type_raw",
+          "code": "OCC_EMPLOYEE",
+          "label": "일반 근로자",
+          "mode": "단일"
+        },
+        {
+          "field": "occupation_type_raw",
+          "code": "OCC_PUBLIC",
+          "label": "공무원·공공기관 근로자",
+          "mode": "단일"
+        },
+        {
+          "field": "occupation_type_raw",
+          "code": "OCC_SELF",
+          "label": "자영업자·개인사업자",
+          "mode": "단일"
+        },
+        {
+          "field": "occupation_type_raw",
+          "code": "OCC_FREELANCE",
+          "label": "프리랜서",
+          "mode": "단일"
+        },
+        {
+          "field": "occupation_type_raw",
+          "code": "OCC_STUDENT",
+          "label": "학생·취업준비생",
+          "mode": "단일"
+        },
+        {
+          "field": "occupation_type_raw",
+          "code": "OCC_RETIRED",
+          "label": "은퇴자",
+          "mode": "단일"
+        },
+        {
+          "field": "occupation_type_raw",
+          "code": "OCC_UNEMPLOYED",
+          "label": "무직·구직 중",
+          "mode": "단일"
+        },
+        {
+          "field": "occupation_type_raw",
+          "code": "OCC_OTHER",
+          "label": "기타",
+          "mode": "단일"
+        },
+        {
+          "field": "employment_type_raw",
+          "code": "EMP_PERMANENT",
+          "label": "정규직·무기계약",
+          "mode": "단일"
+        },
+        {
+          "field": "employment_type_raw",
+          "code": "EMP_CONTRACT",
+          "label": "계약직·파견직",
+          "mode": "단일"
+        },
+        {
+          "field": "employment_type_raw",
+          "code": "EMP_PART_DAILY",
+          "label": "단시간·일용직",
+          "mode": "단일"
+        },
+        {
+          "field": "employment_type_raw",
+          "code": "EMP_OTHER",
+          "label": "기타",
+          "mode": "단일"
+        },
+        {
+          "field": "employment_type_raw",
+          "code": "EMP_UNKNOWN",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "F03",
+      "version": "1.2",
+      "source": {
+        "순서": 7,
+        "항목": "소득·지출",
+        "질문 ID": "F03",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "월평균 세후소득은 얼마인가요?",
+        "응답 UI": "만원 금액 입력 + 금액 상태·기준기간·일회성 포함 여부 선택",
+        "선택지·입력 안내": "빠른: 동일 범위 세후 월평균 총액·기간·일회성 여부. 정밀: 급여·사업·임대·연금·이자배당 등 필요한 소득원만 분리. 이미 있는 연금 수령·원천세는 참조로 연결.",
+        "필수 여부": "필수",
+        "노출 조건": "기본정보 후",
+        "저장 필드(제안)": "monthly_net_income_krw; income_amount_status; income_reference_period; income_period_start; income_period_end; includes_one_off_income; income_definition_version; income_sources[].{income_source_id,owner_ref,type,net_amount,period,tax_basis,tax_event_refs,pension_ref}",
+        "연결 결과": "월평균 세후소득 기준 기초 현금흐름",
+        "부족 시 처리·검증": "총액+상세 중복 합산 금지. 세후소득의 공제세금·공적연금 보험료를 다시 차감하지 않음. 계좌 인출·자산 매각대금은 소득과 구분. 연금 수령과 미래 예상액의 중복 방지. 소득별 귀속자 미확인이면 개인세금만 보류.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "DET-03",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "전체 세후소득·기준기간·일회성 여부. 변동·예정 변화 선택.",
+        "진입 행동·선행 조건": "기본정보 후",
+        "미완료 시 처리·다음 단계": "실제0·모름 구분. 변화 있음일 때만 금액·시점 확장. / DET-04"
+      },
+      "fields": "monthly_net_income_krw; income_amount_status; income_reference_period; income_period_start; income_period_end; includes_one_off_income; income_definition_version; income_sources[].{income_source_id,owner_ref,type,net_amount,period,tax_basis,tax_event_refs,pension_ref}",
+      "outputs": [
+        "OUT-01",
+        "OUT-03",
+        "OUT-05",
+        "OUT-08",
+        "OUT-09",
+        "OUT-11"
+      ],
+      "options": [
+        {
+          "field": "amount_status",
+          "code": "F03_AMOUNT_STATUS_01",
+          "label": "확인된 금액",
+          "mode": "단일"
+        },
+        {
+          "field": "amount_status",
+          "code": "F03_AMOUNT_STATUS_02",
+          "label": "대략적인 금액",
+          "mode": "단일"
+        },
+        {
+          "field": "amount_status",
+          "code": "F03_AMOUNT_STATUS_03",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        },
+        {
+          "field": "income_reference_period",
+          "code": "F03_INCOME_REFERENCE_PERIOD_01",
+          "label": "최근 3개월",
+          "mode": "단일"
+        },
+        {
+          "field": "income_reference_period",
+          "code": "F03_INCOME_REFERENCE_PERIOD_02",
+          "label": "최근 6개월",
+          "mode": "단일"
+        },
+        {
+          "field": "income_reference_period",
+          "code": "F03_INCOME_REFERENCE_PERIOD_03",
+          "label": "최근 12개월",
+          "mode": "단일"
+        },
+        {
+          "field": "income_reference_period",
+          "code": "F03_INCOME_REFERENCE_PERIOD_04",
+          "label": "다른 기간 선택",
+          "mode": "단일"
+        },
+        {
+          "field": "includes_one_off_income",
+          "code": "F03_INCLUDES_ONE_OFF_INCOME_01",
+          "label": "포함",
+          "mode": "단일"
+        },
+        {
+          "field": "includes_one_off_income",
+          "code": "F03_INCLUDES_ONE_OFF_INCOME_02",
+          "label": "미포함",
+          "mode": "단일"
+        },
+        {
+          "field": "includes_one_off_income",
+          "code": "F03_INCLUDES_ONE_OFF_INCOME_03",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "NEW-02",
+      "version": "1.2",
+      "source": {
+        "순서": 8,
+        "항목": "소득·지출",
+        "질문 ID": "NEW-02",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "소득이 크게 달라지거나, 앞으로 달라질 일이 있나요?",
+        "응답 UI": "단일 선택 + 금액·달력",
+        "선택지·입력 안내": "변화 없음 / 변화 있음 / 모름. 취업·이직·휴직·복직·퇴직 등 해당 변화만 선택하고 금액·시작/종료시점 확인. 생애단계는 보기 순서만 바꿈.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "기본정보 후",
+        "저장 필드(제안)": "income_change_status; income_change_amount_krw; income_change_date; events[].{event_id,owner_ref,type,amount_basis,start_on,end_on,certainty,income_source_ref}",
+        "연결 결과": "현금흐름 전망·부족 시 보류",
+        "부족 시 처리·검증": "기존 사건·연금 개시·목표에서 입력한 변화는 event_id로 재사용. 현재소득과 미래 가정을 구분하고 기간·금액 미정이면 해당 전망만 보류.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "DET-03",
+        "화면 내 순서": 2,
+        "해당 화면의 입력 범위": "전체 세후소득·기준기간·일회성 여부. 변동·예정 변화 선택.",
+        "진입 행동·선행 조건": "기본정보 후",
+        "미완료 시 처리·다음 단계": "실제0·모름 구분. 변화 있음일 때만 금액·시점 확장. / DET-04"
+      },
+      "fields": "income_change_status; income_change_amount_krw; income_change_date; events[].{event_id,owner_ref,type,amount_basis,start_on,end_on,certainty,income_source_ref}",
+      "outputs": [
+        "OUT-05",
+        "OUT-14"
+      ],
+      "options": [
+        {
+          "field": "income_change_status",
+          "code": "INCOME_CHANGE_STATUS_01",
+          "label": "큰 변동 없음",
+          "mode": "단일"
+        },
+        {
+          "field": "income_change_status",
+          "code": "INCOME_CHANGE_STATUS_02",
+          "label": "변동 큼",
+          "mode": "단일"
+        },
+        {
+          "field": "income_change_status",
+          "code": "INCOME_CHANGE_STATUS_03",
+          "label": "예정된 변화 있음",
+          "mode": "단일"
+        },
+        {
+          "field": "income_change_status",
+          "code": "INCOME_CHANGE_STATUS_04",
+          "label": "모름",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "F04",
+      "version": "1.2.1",
+      "source": {
+        "순서": 9,
+        "항목": "소득·지출",
+        "질문 ID": "F04",
+        "변경 유형": "v1.2.1 수정",
+        "고객에게 보여줄 질문": "대출 상환과 저축·투자 이체를 제외한 월 생활비는 얼마인가요?",
+        "응답 UI": "입력방식 선택 + 금액·상태; 총출금 방식만 포함액 확장",
+        "선택지·입력 안내": "기본 생활비만(LIVING_ONLY): 상환·저축이체 제외를 직접 확인. 전체 출금액(TOTAL_OUTFLOW)도 선택 가능하며 포함 상환액·포함 저축이체액을 각각 확인. 소득과 같은 기간을 재사용. 필수생활비는 보호·월 후보에 필요할 때만.",
+        "필수 여부": "필수",
+        "노출 조건": "소득 후",
+        "저장 필드(제안)": "expense_basis; living; exclusions_confirmed; included_debt; included_contributions; essential_living; period_start; period_end; response_definition_version",
+        "연결 결과": "월 잉여자금·필수자금 보호",
+        "부족 시 처리·검증": "정규 생활비=신고액−확인된 포함상환−확인된 포함이체. LIVING_ONLY를 기본 제시하되 제외 확인 전 포함액을0으로 채우지 않음. TOTAL_OUTFLOW의 모르는 포함액은 null. 필수생활비≤정규생활비. 구1.2 응답은 의미 확인 후 새 revision·1.2.1로 보존. 원문 덮어쓰기 금지.",
+        "검토 상태": "수정반영·연결대조",
+        "화면 ID(설계용)": "DET-04",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "입력방식·신고액·확인상태. 총출금 선택 시 두 포함액; 필수생활비는 OUT-05/보호 검토 때만.",
+        "진입 행동·선행 조건": "소득 후",
+        "미완료 시 처리·다음 단계": "포함액 미확인은 OUT-03/OUT-05의 의존값만 보류. 이미 확인한 범위·기간·금액은 재사용."
+      },
+      "fields": "expense_basis; living; exclusions_confirmed; included_debt; included_contributions; essential_living; period_start; period_end; response_definition_version",
+      "outputs": [
+        "OUT-01",
+        "OUT-03",
+        "OUT-05",
+        "OUT-07",
+        "OUT-09"
+      ],
+      "options": [
+        {
+          "field": "living_cost_inclusions",
+          "code": "F04_LIVING_COST_INCLUSIONS_01",
+          "label": "주거비",
+          "mode": "복수"
+        },
+        {
+          "field": "living_cost_inclusions",
+          "code": "F04_LIVING_COST_INCLUSIONS_02",
+          "label": "식비",
+          "mode": "복수"
+        },
+        {
+          "field": "living_cost_inclusions",
+          "code": "F04_LIVING_COST_INCLUSIONS_03",
+          "label": "교통비",
+          "mode": "복수"
+        },
+        {
+          "field": "living_cost_inclusions",
+          "code": "F04_LIVING_COST_INCLUSIONS_04",
+          "label": "보험료",
+          "mode": "복수"
+        },
+        {
+          "field": "living_cost_inclusions",
+          "code": "F04_LIVING_COST_INCLUSIONS_05",
+          "label": "부양비",
+          "mode": "복수"
+        },
+        {
+          "field": "living_cost_inclusions",
+          "code": "F04_LIVING_COST_INCLUSIONS_06",
+          "label": "기타",
+          "mode": "복수"
+        },
+        {
+          "field": "expense_basis",
+          "code": "LIVING_ONLY",
+          "label": "생활비만(상환·저축이체 제외)",
+          "mode": "단일"
+        },
+        {
+          "field": "expense_basis",
+          "code": "TOTAL_OUTFLOW",
+          "label": "전체 출금액(포함액 별도 확인)",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "NEW-03",
+      "version": "1.2",
+      "source": {
+        "순서": 10,
+        "항목": "소득·지출",
+        "질문 ID": "NEW-03",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "현재 매달 저축하거나 투자하는 금액이 있나요?",
+        "응답 UI": "있음·없음 선택 + 금액",
+        "선택지·입력 안내": "있음 / 없음 / 모름. 있음: 기존 계좌·목적·월금액·납입주기 선택. 계속 유지 / 조정 검토 / 나중에 선택. 감액 비교가 필요할 때만 고객 허용범위·최소유지액·감액한도와 계약/세금/비용 확인상태를 추가.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "생활비 후",
+        "저장 필드(제안)": "existing_contributions[].{contribution_id,owner_ref,account_ref,purpose_ref,amount,frequency,employee_or_employer,payroll_deducted,adjustment_permission,minimum_amount,max_reduction,contract_status,tax_cost_status,source_ref,profile_version}",
+        "연결 결과": "현재 납입과 제안 납입의 연결",
+        "부족 시 처리·검증": "B1은 고객이 허용한 유연납입만 검토. 조정 의향을 계약상 가능·세금 영향 없음으로 간주하지 않음. 감액 비용·공제환수 미확인 시 실제 감액 적용 보류. 사용자/회사 부담과 계좌이체를 구분.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "DET-05",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "있음/없음/모름. 있음이면 금액·계좌·목적·지속 여부.",
+        "진입 행동·선행 조건": "생활비 후",
+        "미완료 시 처리·다음 단계": "기존 납입을 신규 제안과 중복 반영하지 않음. / DET-06"
+      },
+      "fields": "existing_contributions[].{contribution_id,owner_ref,account_ref,purpose_ref,amount,frequency,employee_or_employer,payroll_deducted,adjustment_permission,minimum_amount,max_reduction,contract_status,tax_cost_status,source_ref,profile_version}",
+      "outputs": [
+        "OUT-03",
+        "OUT-05",
+        "OUT-08",
+        "OUT-10"
+      ],
+      "options": [
+        {
+          "field": "presence",
+          "code": "PRESENCE_01",
+          "label": "있음",
+          "mode": "단일"
+        },
+        {
+          "field": "presence",
+          "code": "PRESENCE_02",
+          "label": "없음",
+          "mode": "단일"
+        },
+        {
+          "field": "presence",
+          "code": "PRESENCE_03",
+          "label": "모름",
+          "mode": "단일"
+        },
+        {
+          "field": "contribution_type",
+          "code": "NEW_03_CONTRIBUTION_TYPE_01",
+          "label": "예금·적금",
+          "mode": "복수"
+        },
+        {
+          "field": "contribution_type",
+          "code": "NEW_03_CONTRIBUTION_TYPE_02",
+          "label": "투자",
+          "mode": "복수"
+        },
+        {
+          "field": "contribution_type",
+          "code": "NEW_03_CONTRIBUTION_TYPE_03",
+          "label": "연금",
+          "mode": "복수"
+        },
+        {
+          "field": "contribution_type",
+          "code": "NEW_03_CONTRIBUTION_TYPE_04",
+          "label": "기타",
+          "mode": "복수"
+        },
+        {
+          "field": "contribution_continuation",
+          "code": "NEW_03_CONTRIBUTION_CONTINUATION_01",
+          "label": "계속 납입",
+          "mode": "단일"
+        },
+        {
+          "field": "contribution_continuation",
+          "code": "NEW_03_CONTRIBUTION_CONTINUATION_02",
+          "label": "조정 희망",
+          "mode": "단일"
+        },
+        {
+          "field": "contribution_continuation",
+          "code": "NEW_03_CONTRIBUTION_CONTINUATION_03",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "F06",
+      "version": "1.2",
+      "source": {
+        "순서": 11,
+        "항목": "금융자산·계좌",
+        "질문 ID": "F06",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "현재 보유한 금융자산은 어떤 종류이고, 각각 얼마인가요?",
+        "응답 UI": "자산별 반복 입력 + 총액 자동 계산",
+        "선택지·입력 안내": "정밀진단: 자산 종류 → 보유 수단(직접/ETF/펀드/예금 등) → 현재 평가금액(만원)·확인 상태 → 계좌 유형·인출 제약·가용 시점. 상품명·종목코드는 선택. 세부 합계·구성비 자동 계산. 빠른진단만 총액 입력. 정밀진단에 총액 선입력을 강제하지 않음.",
+        "필수 여부": "필수",
+        "노출 조건": "기존 납입 후. 빠른진단·총액 선입력 불필요.",
+        "저장 필드(제안)": "financial_assets_total_reported_krw; financial_assets_detail_status; financial_assets[].{asset_id,owner_refs,share_basis,asset_class,investment_vehicle,market_value_krw,amount_status,account_ref,withdrawal_constraint,available_date,valuation_on}; accounts[].{account_id,owner_ref,type}",
+        "연결 결과": "금융자산 현황·기존 노출·가용자금",
+        "부족 시 처리·검증": "신고 총액·계좌 잔액·보유상품을 1회 집계. 연금잔액은 현재자산에 1회, 현재 투자재원과 별도. 국민연금 보험료 누계·DB 예상급여를 인출가능 계좌잔액으로 생성하지 않음. 소유지분·가용일·평가일·원천 재사용.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "DET-06",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "자산별 종류·수단·평가금액·계좌·인출 제약·가용일 입력. 합계·비중 자동.",
+        "진입 행동·선행 조건": "기존 납입 후. 빠른진단·총액 선입력 불필요.",
+        "미완료 시 처리·다음 단계": "빠른 총액이 있으면 대조. 세부내역과 신고 총액을 더하지 않음. / DET-07"
+      },
+      "fields": "financial_assets_total_reported_krw; financial_assets_detail_status; financial_assets[].{asset_id,owner_refs,share_basis,asset_class,investment_vehicle,market_value_krw,amount_status,account_ref,withdrawal_constraint,available_date,valuation_on}; accounts[].{account_id,owner_ref,type}",
+      "outputs": [
+        "OUT-01",
+        "OUT-02",
+        "OUT-04",
+        "OUT-05",
+        "OUT-06",
+        "OUT-08",
+        "OUT-11",
+        "OUT-12"
+      ],
+      "options": [
+        {
+          "field": "asset_class",
+          "code": "ASSET_CLASS_01",
+          "label": "현금·예금",
+          "mode": "단일"
+        },
+        {
+          "field": "asset_class",
+          "code": "ASSET_CLASS_02",
+          "label": "주식형",
+          "mode": "단일"
+        },
+        {
+          "field": "asset_class",
+          "code": "ASSET_CLASS_03",
+          "label": "채권형",
+          "mode": "단일"
+        },
+        {
+          "field": "asset_class",
+          "code": "ASSET_CLASS_04",
+          "label": "혼합·대체",
+          "mode": "단일"
+        },
+        {
+          "field": "asset_class",
+          "code": "ASSET_CLASS_05",
+          "label": "기타",
+          "mode": "단일"
+        },
+        {
+          "field": "asset_class",
+          "code": "ASSET_CLASS_06",
+          "label": "미분류",
+          "mode": "단일"
+        },
+        {
+          "field": "investment_vehicle",
+          "code": "INVESTMENT_VEHICLE_01",
+          "label": "직접 보유",
+          "mode": "단일"
+        },
+        {
+          "field": "investment_vehicle",
+          "code": "INVESTMENT_VEHICLE_02",
+          "label": "ETF",
+          "mode": "단일"
+        },
+        {
+          "field": "investment_vehicle",
+          "code": "INVESTMENT_VEHICLE_03",
+          "label": "일반 펀드",
+          "mode": "단일"
+        },
+        {
+          "field": "investment_vehicle",
+          "code": "INVESTMENT_VEHICLE_04",
+          "label": "예금·현금성",
+          "mode": "단일"
+        },
+        {
+          "field": "investment_vehicle",
+          "code": "INVESTMENT_VEHICLE_05",
+          "label": "기타",
+          "mode": "단일"
+        },
+        {
+          "field": "investment_vehicle",
+          "code": "INVESTMENT_VEHICLE_06",
+          "label": "미확인",
+          "mode": "단일"
+        },
+        {
+          "field": "amount_status",
+          "code": "F06_AMOUNT_STATUS_01",
+          "label": "확인된 금액",
+          "mode": "단일"
+        },
+        {
+          "field": "amount_status",
+          "code": "F06_AMOUNT_STATUS_02",
+          "label": "대략적인 금액",
+          "mode": "단일"
+        },
+        {
+          "field": "amount_status",
+          "code": "F06_AMOUNT_STATUS_03",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        },
+        {
+          "field": "withdrawal_constraint",
+          "code": "F06_WITHDRAWAL_CONSTRAINT_01",
+          "label": "바로 인출 가능",
+          "mode": "단일"
+        },
+        {
+          "field": "withdrawal_constraint",
+          "code": "F06_WITHDRAWAL_CONSTRAINT_02",
+          "label": "만기 후 인출",
+          "mode": "단일"
+        },
+        {
+          "field": "withdrawal_constraint",
+          "code": "F06_WITHDRAWAL_CONSTRAINT_03",
+          "label": "중도 인출에 비용·제약 있음",
+          "mode": "단일"
+        },
+        {
+          "field": "withdrawal_constraint",
+          "code": "F06_WITHDRAWAL_CONSTRAINT_04",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        },
+        {
+          "field": "financial_assets_detail_status",
+          "code": "ASSET_DETAIL_KNOWN",
+          "label": "세부내역 입력",
+          "mode": "단일"
+        },
+        {
+          "field": "financial_assets_detail_status",
+          "code": "ASSET_DETAIL_NONE",
+          "label": "보유 금융자산 없음",
+          "mode": "단일"
+        },
+        {
+          "field": "financial_assets_detail_status",
+          "code": "ASSET_DETAIL_UNKNOWN",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "D20-1",
+      "version": "1.2",
+      "source": {
+        "순서": 12,
+        "항목": "금융자산·계좌",
+        "질문 ID": "D20-1",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "ISA·연금저축·IRP 같은 절세계좌를 보유하고 있나요?",
+        "응답 UI": "보유 여부 단일 + 계좌 종류 복수",
+        "선택지·입력 안내": "기록된 ISA·연금저축·IRP는 확인만. 미확인일 때 있음 / 없음 / 모름과 계좌종류 선택. 납입·인출·공제는 TAX-03에서 해당 항목만.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "F06의 계좌유형이 미확인이고 절세계좌 확인이 필요한 경우에만 같은 자산 화면에서 확장.",
+        "저장 필드(제안)": "tax_account_presence; accounts[].type; selected_account_ids",
+        "연결 결과": "계좌 제약·세후 검토",
+        "부족 시 처리·검증": "F06의 계좌 ID 재사용. 계좌 보유가 공제자격·절세액·가입 권유가 아님. 기존 account_presence와 tax_account_presence의 충돌은 자동 병합하지 않고 새 버전에서 확인.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "DET-06",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "있음/없음/모름. ISA·연금저축·IRP. 기록된 계좌 재사용.",
+        "진입 행동·선행 조건": "금융자산 세부내역 직후",
+        "미완료 시 처리·다음 단계": "일반계좌와 절세계좌 구분. 금액 재합산 금지. / DET-08"
+      },
+      "fields": "tax_account_presence; accounts[].type; selected_account_ids",
+      "outputs": [
+        "OUT-08",
+        "OUT-10"
+      ],
+      "options": [
+        {
+          "field": "account_presence",
+          "code": "ACCOUNT_PRESENCE_01",
+          "label": "없음",
+          "mode": "단일"
+        },
+        {
+          "field": "account_presence",
+          "code": "ACCOUNT_PRESENCE_02",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        },
+        {
+          "field": "tax_account_presence",
+          "code": "TAX_ACCOUNT_YES",
+          "label": "있음",
+          "mode": "단일"
+        },
+        {
+          "field": "tax_account_presence",
+          "code": "TAX_ACCOUNT_NO",
+          "label": "없음",
+          "mode": "단일"
+        },
+        {
+          "field": "tax_account_presence",
+          "code": "TAX_ACCOUNT_UNKNOWN",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "N01",
+      "version": "1.2",
+      "source": {
+        "순서": 13,
+        "항목": "부동산·주거",
+        "질문 ID": "N01",
+        "변경 유형": "유지",
+        "고객에게 보여줄 질문": "현재 부동산을 보유하고 계신가요?",
+        "응답 UI": "단일 선택",
+        "선택지·입력 안내": "예 / 아니오 / 모름",
+        "필수 여부": "필수",
+        "노출 조건": "계좌 확인 후",
+        "저장 필드(제안)": "owns_real_estate",
+        "연결 결과": "부동산 자산 입력 분기",
+        "부족 시 처리·검증": "거주 형태와 별도. 아니오여도 반환받을 전월세보증금은 있을 수 있음.",
+        "검토 상태": "검토대기",
+        "화면 ID(설계용)": "DET-08",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "예 / 아니오 / 모름",
+        "진입 행동·선행 조건": "계좌 확인 후",
+        "미완료 시 처리·다음 단계": "예·모름이면 즉시 부동산 상세. 아니오면 상세 생략. / 예·모름 → DET-09 / 아니오 → DET-10"
+      },
+      "fields": "owns_real_estate",
+      "outputs": [],
+      "options": [
+        {
+          "field": "owns_real_estate",
+          "code": "OWNS_REAL_ESTATE_01",
+          "label": "예",
+          "mode": "단일"
+        },
+        {
+          "field": "owns_real_estate",
+          "code": "OWNS_REAL_ESTATE_02",
+          "label": "아니오",
+          "mode": "단일"
+        },
+        {
+          "field": "owns_real_estate",
+          "code": "OWNS_REAL_ESTATE_03",
+          "label": "모름",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "F08",
+      "version": "1.2",
+      "source": {
+        "순서": 14,
+        "항목": "부동산·주거",
+        "질문 ID": "F08",
+        "변경 유형": "구조수정",
+        "고객에게 보여줄 질문": "보유한 집·땅 등 부동산의 현재 시세는 얼마 정도인가요?",
+        "응답 UI": "종류·금액상태 선택 + 금액",
+        "선택지·입력 안내": "부동산 종류 선택 → 금액 확인 상태 → 보유 지분의 현재 시세(만원). 대출을 빼기 전 금액. 모르면 잘 모르겠음 선택.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "N01=예·모름 직후. 빠른 EXTRA-01 / 정밀 DET-09에서 확인.",
+        "저장 필드(제안)": "real_estate_assets[].type; market_value_krw; valuation_status; ownership_share",
+        "연결 결과": "부동산 자산규모·순자산",
+        "부족 시 처리·검증": "정확하지 않으면 대략 금액 허용하고 추정 표시. 공동명의는 선택한 본인/가구의 지분 반영. 대출은 별도 차감. 보증금은 NEW-09에서 별도 확인",
+        "검토 상태": "검토대기",
+        "화면 ID(설계용)": "DET-09",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "종류·보유 지분 시세(만원)·확인 상태·주택 수",
+        "진입 행동·선행 조건": "N01=예·모름 직후",
+        "미완료 시 처리·다음 단계": "모름을0으로 채우지 않음. 토지·상가만 있으면 주택0채 가능. / DET-10"
+      },
+      "fields": "real_estate_assets[].type; market_value_krw; valuation_status; ownership_share",
+      "outputs": [
+        "OUT-02"
+      ],
+      "options": [
+        {
+          "field": "has_receivable_deposit",
+          "code": "HAS_RECEIVABLE_DEPOSIT_01",
+          "label": "있음",
+          "mode": "단일"
+        },
+        {
+          "field": "has_receivable_deposit",
+          "code": "HAS_RECEIVABLE_DEPOSIT_02",
+          "label": "없음",
+          "mode": "단일"
+        },
+        {
+          "field": "has_receivable_deposit",
+          "code": "HAS_RECEIVABLE_DEPOSIT_03",
+          "label": "모름",
+          "mode": "단일"
+        },
+        {
+          "field": "valuation_status",
+          "code": "F08_AMOUNT_STATUS_01",
+          "label": "확인된 금액",
+          "mode": "단일"
+        },
+        {
+          "field": "valuation_status",
+          "code": "F08_AMOUNT_STATUS_02",
+          "label": "대략적인 금액",
+          "mode": "단일"
+        },
+        {
+          "field": "valuation_status",
+          "code": "F08_AMOUNT_STATUS_03",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        },
+        {
+          "field": "property_type",
+          "code": "F08_PROPERTY_TYPE_01",
+          "label": "주택",
+          "mode": "단일"
+        },
+        {
+          "field": "property_type",
+          "code": "F08_PROPERTY_TYPE_02",
+          "label": "상가·업무용",
+          "mode": "단일"
+        },
+        {
+          "field": "property_type",
+          "code": "F08_PROPERTY_TYPE_03",
+          "label": "토지",
+          "mode": "단일"
+        },
+        {
+          "field": "property_type",
+          "code": "F08_PROPERTY_TYPE_04",
+          "label": "기타",
+          "mode": "단일"
+        },
+        {
+          "field": "ownership_mode",
+          "code": "F08_OWNERSHIP_MODE_01",
+          "label": "단독명의",
+          "mode": "단일"
+        },
+        {
+          "field": "ownership_mode",
+          "code": "F08_OWNERSHIP_MODE_02",
+          "label": "공동명의",
+          "mode": "단일"
+        },
+        {
+          "field": "ownership_mode",
+          "code": "F08_OWNERSHIP_MODE_03",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "N03",
+      "version": "1.2.1",
+      "source": {
+        "순서": 15,
+        "항목": "부동산·주거",
+        "질문 ID": "N03",
+        "변경 유형": "v1.2.1 수정",
+        "고객에게 보여줄 질문": "현재 보유한 주택은 몇 채인가요?",
+        "응답 UI": "단일 선택",
+        "선택지·입력 안내": "0채 / 1채 / 2채 / 3채 이상 / 모름",
+        "필수 여부": "선택",
+        "노출 조건": "초기 빠른·정밀 및 일반 수치계산 경로에서 제외. 실제 소비자가 등록된 별도 검토를 고객이 요청한 때만.",
+        "저장 필드(제안)": "home_count",
+        "연결 결과": "CONTEXT: 잠재적 주택 분석. 현행 주택세액·주택수 계산 소비자 없음.",
+        "부족 시 처리·검증": "부동산 보유=예여도 토지·상가만 보유하면 0채 가능. 이 값만으로 세금 확정 금지.",
+        "검토 상태": "수정반영·연결대조",
+        "화면 ID(설계용)": "DET-09",
+        "화면 내 순서": 2,
+        "해당 화면의 입력 범위": "종류·보유 지분 시세(만원)·확인 상태·주택 수",
+        "진입 행동·선행 조건": "현행 초기 소비자 없음: 질문은행·원응답 이력만 보존.",
+        "미완료 시 처리·다음 단계": "응답이 없어도 OUT-01~05를 보류하지 않음. 연령·직업·주택수를 다른 미확인 사실 대신 추정하지 않음."
+      },
+      "fields": "home_count",
+      "outputs": [],
+      "options": [
+        {
+          "field": "home_count",
+          "code": "HOME_COUNT_01",
+          "label": "0채",
+          "mode": "단일"
+        },
+        {
+          "field": "home_count",
+          "code": "HOME_COUNT_02",
+          "label": "1채",
+          "mode": "단일"
+        },
+        {
+          "field": "home_count",
+          "code": "HOME_COUNT_03",
+          "label": "2채",
+          "mode": "단일"
+        },
+        {
+          "field": "home_count",
+          "code": "HOME_COUNT_04",
+          "label": "3채 이상",
+          "mode": "단일"
+        },
+        {
+          "field": "home_count",
+          "code": "HOME_COUNT_05",
+          "label": "모름",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "N02",
+      "version": "1.2",
+      "source": {
+        "순서": 16,
+        "항목": "부동산·주거",
+        "질문 ID": "N02",
+        "변경 유형": "문구수정",
+        "고객에게 보여줄 질문": "현재 어떤 형태로 거주하고 계신가요?",
+        "응답 UI": "단일 선택",
+        "선택지·입력 안내": "자가 / 전세 / 월세 / 가족 주택·무상거주 / 기타",
+        "필수 여부": "필수",
+        "노출 조건": "부동산 확인 후",
+        "저장 필드(제안)": "housing_type",
+        "연결 결과": "주거비·보증금 확인",
+        "부족 시 처리·검증": "월세라고 보증금이 없다고 가정하지 않음. 보증금 보유 여부 별도 확인.",
+        "검토 상태": "검토대기",
+        "화면 ID(설계용)": "DET-10",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "자가 / 전세 / 월세 / 가족 주택·무상거주 / 기타",
+        "진입 행동·선행 조건": "부동산 확인 후",
+        "미완료 시 처리·다음 단계": "부동산 보유와 거주 형태를 독립 저장. / DET-11"
+      },
+      "fields": "housing_type",
+      "outputs": [],
+      "options": [
+        {
+          "field": "housing_type",
+          "code": "HOUSING_TYPE_01",
+          "label": "자가",
+          "mode": "단일"
+        },
+        {
+          "field": "housing_type",
+          "code": "HOUSING_TYPE_02",
+          "label": "전세",
+          "mode": "단일"
+        },
+        {
+          "field": "housing_type",
+          "code": "HOUSING_TYPE_03",
+          "label": "월세",
+          "mode": "단일"
+        },
+        {
+          "field": "housing_type",
+          "code": "HOUSING_TYPE_04",
+          "label": "가족 주택·무상거주",
+          "mode": "단일"
+        },
+        {
+          "field": "housing_type",
+          "code": "HOUSING_TYPE_05",
+          "label": "기타",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "NEW-09",
+      "version": "1.2",
+      "source": {
+        "순서": 17,
+        "항목": "부동산·주거",
+        "질문 ID": "NEW-09",
+        "변경 유형": "추가",
+        "고객에게 보여줄 질문": "나중에 돌려받을 전세·월세보증금은 얼마인가요?",
+        "응답 UI": "있음·없음 선택 + 금액·달력",
+        "선택지·입력 안내": "있음 / 없음 / 모름 선택. 있음이면 금액(만원)과 확인된 금액 / 대략 / 잘 모르겠음 선택. 반환 예정일은 필요한 경우 달력 선택.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "거주 형태 직후",
+        "저장 필드(제안)": "receivable_deposits[].amount_krw; amount_status; expected_return_date; availability_status",
+        "연결 결과": "보증금 자산규모·자금 가용일",
+        "부족 시 처리·검증": "부동산 시가와 별도 집계. 임대인에게 돌려줄 돈은 채무로 기록. 기존 F08의 보증금 질문 분리이며 영속 ID 이관은 별도 검토",
+        "검토 상태": "검토대기",
+        "화면 ID(설계용)": "DET-11",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "있음/없음/모름. 있음이면 금액(만원)·확인 상태, 필요 시 반환일.",
+        "진입 행동·선행 조건": "거주 형태 직후",
+        "미완료 시 처리·다음 단계": "부동산이 없어도 보증금 확인. 임대인 반환 의무는 채무로 구분. / DET-12"
+      },
+      "fields": "receivable_deposits[].amount_krw; amount_status; expected_return_date; availability_status",
+      "outputs": [
+        "OUT-02"
+      ],
+      "options": [
+        {
+          "field": "amount_status",
+          "code": "NEW_09_AMOUNT_STATUS_01",
+          "label": "확인된 금액",
+          "mode": "단일"
+        },
+        {
+          "field": "amount_status",
+          "code": "NEW_09_AMOUNT_STATUS_02",
+          "label": "대략적인 금액",
+          "mode": "단일"
+        },
+        {
+          "field": "amount_status",
+          "code": "NEW_09_AMOUNT_STATUS_03",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        },
+        {
+          "field": "has_receivable_deposit",
+          "code": "NEW_09_HAS_RECEIVABLE_DEPOSIT_01",
+          "label": "있음",
+          "mode": "단일"
+        },
+        {
+          "field": "has_receivable_deposit",
+          "code": "NEW_09_HAS_RECEIVABLE_DEPOSIT_02",
+          "label": "없음",
+          "mode": "단일"
+        },
+        {
+          "field": "has_receivable_deposit",
+          "code": "NEW_09_HAS_RECEIVABLE_DEPOSIT_03",
+          "label": "모름",
+          "mode": "단일"
+        },
+        {
+          "field": "availability_status",
+          "code": "NEW_09_DEPOSIT_AVAILABILITY_STATUS_01",
+          "label": "반환 예정일이 정해짐",
+          "mode": "단일"
+        },
+        {
+          "field": "availability_status",
+          "code": "NEW_09_DEPOSIT_AVAILABILITY_STATUS_02",
+          "label": "반환 예정일 미정",
+          "mode": "단일"
+        },
+        {
+          "field": "availability_status",
+          "code": "NEW_09_DEPOSIT_AVAILABILITY_STATUS_03",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "NEW-04",
+      "version": "1.2",
+      "source": {
+        "순서": 18,
+        "항목": "부채",
+        "질문 ID": "NEW-04",
+        "변경 유형": "추가",
+        "고객에게 보여줄 질문": "현재 대출이나 앞으로 갚아야 할 채무가 있나요?",
+        "응답 UI": "단일 선택",
+        "선택지·입력 안내": "있음 / 없음 / 모름",
+        "필수 여부": "필수",
+        "노출 조건": "보증금 확인 후",
+        "저장 필드(제안)": "has_liabilities",
+        "연결 결과": "대출·기타 채무 입력 분기",
+        "부족 시 처리·검증": "모름을 없음으로 저장하지 않음. 임대인 반환보증금 등 대출 외 의무도 조건부 확인.",
+        "검토 상태": "검토대기",
+        "화면 ID(설계용)": "DET-12",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "있음 / 없음 / 모름",
+        "진입 행동·선행 조건": "보증금 확인 후",
+        "미완료 시 처리·다음 단계": "있음·모름이면 즉시 대출 상세. 없음이면 생략. / 있음·모름 → DET-13 / 없음 → DET-14"
+      },
+      "fields": "has_liabilities",
+      "outputs": [
+        "OUT-01",
+        "OUT-02",
+        "OUT-03",
+        "OUT-05"
+      ],
+      "options": [
+        {
+          "field": "presence",
+          "code": "PRESENCE_01",
+          "label": "있음",
+          "mode": "단일"
+        },
+        {
+          "field": "presence",
+          "code": "PRESENCE_02",
+          "label": "없음",
+          "mode": "단일"
+        },
+        {
+          "field": "presence",
+          "code": "PRESENCE_03",
+          "label": "모름",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "F09+F10+D08",
+      "version": "1.2.1",
+      "source": {
+        "순서": 19,
+        "항목": "부채",
+        "질문 ID": "F09+F10+D08",
+        "변경 유형": "v1.2.1 수정",
+        "고객에게 보여줄 질문": "대출별 남은 원금과 이번 기간에 낼 원금·이자·비용을 확인해주세요.",
+        "응답 UI": "채무별 반복 숫자 입력 + 확인 상태 선택",
+        "선택지·입력 안내": "채무별 원금잔액·잔액기준일/상환전후, 납부 대상기간·납부일, 본인부담 납부총액을 확인. 원금분·이자·수수료/기타비용은 아는 항목만 분리. 금리·월별 상환표는 해당 결과에 필요할 때만 확장.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "NEW-04=있음·모름 직후. 빠른 EXTRA-03 / 정밀 DET-13에서 금리까지 확인.",
+        "저장 필드(제안)": "debts[].{debt_id,owner_ids,balance,balance_as_of,balance_timing,payment_period,pay_on,payment_total,principal_payment,interest_payment,fees,components_complete,value_basis,payment_basis,annual_rate,schedule}",
+        "연결 결과": "총부채·월 상환액·자금 지급일",
+        "부족 시 처리·검증": "총납부액≤원금잔액 일괄 차단 폐기. 원금100,000+이자1,000+비용0=납부101,000원은 정상. 원금분≤상환직전 비교가능 원금잔액은 같은 소유범위·시점 확인 후 검사. 상환후잔액·시점불명은 원금 초과로 차단하지 않고 비교 보류. 구성 전부 확인 시에만 총액=원금+이자+비용 검사. 미확인 이자·비용을0으로 보정하지 않음. 저장 가능한 원응답과 계산 보류를 구분.",
+        "검토 상태": "수정반영·연결대조",
+        "화면 ID(설계용)": "DET-13",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "잔액과 기준시점 / 납부기간·날짜 / 확인 총액. 원금·이자·비용은 필요한 비교만 확장.",
+        "진입 행동·선행 조건": "채무 있음·모름 직후",
+        "미완료 시 처리·다음 단계": "총납부액이 원금잔액보다 크다는 이유로 저장·다음 차단 금지. 원금비교 시점불명은 관련 원금경로만 NEEDS_INPUT. 확인된 납부총액은 월흐름에 사용 가능."
+      },
+      "fields": "debts[].{debt_id,owner_ids,balance,balance_as_of,balance_timing,payment_period,pay_on,payment_total,principal_payment,interest_payment,fees,components_complete,value_basis,payment_basis,annual_rate,schedule}",
+      "outputs": [
+        "OUT-02",
+        "OUT-03",
+        "OUT-05",
+        "OUT-09"
+      ],
+      "options": [
+        {
+          "field": "liability_type",
+          "code": "LIABILITY_TYPE_01",
+          "label": "주택담보대출",
+          "mode": "반복"
+        },
+        {
+          "field": "liability_type",
+          "code": "LIABILITY_TYPE_02",
+          "label": "전세자금대출",
+          "mode": "반복"
+        },
+        {
+          "field": "liability_type",
+          "code": "LIABILITY_TYPE_03",
+          "label": "신용대출",
+          "mode": "반복"
+        },
+        {
+          "field": "liability_type",
+          "code": "LIABILITY_TYPE_04",
+          "label": "학자금대출",
+          "mode": "반복"
+        },
+        {
+          "field": "liability_type",
+          "code": "LIABILITY_TYPE_05",
+          "label": "기타 대출",
+          "mode": "반복"
+        },
+        {
+          "field": "liability_type",
+          "code": "LIABILITY_TYPE_06",
+          "label": "돌려줄 임차보증금",
+          "mode": "반복"
+        },
+        {
+          "field": "liability_type",
+          "code": "LIABILITY_TYPE_07",
+          "label": "기타 지급 의무",
+          "mode": "반복"
+        },
+        {
+          "field": "repayment_method",
+          "code": "F09_F10_D08_REPAYMENT_METHOD_01",
+          "label": "원리금 균등",
+          "mode": "단일"
+        },
+        {
+          "field": "repayment_method",
+          "code": "F09_F10_D08_REPAYMENT_METHOD_02",
+          "label": "원금 균등",
+          "mode": "단일"
+        },
+        {
+          "field": "repayment_method",
+          "code": "F09_F10_D08_REPAYMENT_METHOD_03",
+          "label": "만기 일시상환",
+          "mode": "단일"
+        },
+        {
+          "field": "repayment_method",
+          "code": "F09_F10_D08_REPAYMENT_METHOD_04",
+          "label": "기타",
+          "mode": "단일"
+        },
+        {
+          "field": "repayment_method",
+          "code": "F09_F10_D08_REPAYMENT_METHOD_05",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        },
+        {
+          "field": "balance_timing",
+          "code": "BEFORE_PAYMENT",
+          "label": "상환 직전 원금잔액",
+          "mode": "반복 내 단일"
+        },
+        {
+          "field": "balance_timing",
+          "code": "AFTER_PAYMENT",
+          "label": "상환 후 원금잔액",
+          "mode": "반복 내 단일"
+        },
+        {
+          "field": "balance_timing",
+          "code": "UNKNOWN",
+          "label": "기준시점 모름",
+          "mode": "반복 내 단일"
+        }
+      ]
+    },
+    {
+      "id": "F12",
+      "version": "1.2",
+      "source": {
+        "순서": 20,
+        "항목": "목표·예정지출",
+        "질문 ID": "F12",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "이 목표를 언제까지 준비하고 싶으신가요?",
+        "응답 UI": "기간 단일 선택 + 목표일 달력",
+        "선택지·입력 안내": "빠른: 기간 구간·미정. 정밀: 실제 목표일·첫 사용일. 반복 목표는 EDU-01/RET-01에서 시작·종료·주기를 같은 goal_id로 확장.",
+        "필수 여부": "필수",
+        "노출 조건": "부채 확인 후",
+        "저장 필드(제안)": "goals[].horizon_band; goals[].target_date",
+        "연결 결과": "목표 기간·납입 가능 횟수",
+        "부족 시 처리·검증": "기간 구간을 임의의 특정 날짜로 치환하지 않음. 정확한 기간 필요 결과만 보류. 은퇴일과 연금 개시일은 별개.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "DET-14",
+        "화면 내 순서": 2,
+        "해당 화면의 입력 범위": "우선 목표·추가 목표·목표일·금액 상태·일시/반복 지출",
+        "진입 행동·선행 조건": "부채 확인 후",
+        "미완료 시 처리·다음 단계": "미정이면 관련 정량 계산 보류. 기존 목표 재사용. / DET-15"
+      },
+      "fields": "goals[].horizon_band; goals[].target_date",
+      "outputs": [
+        "OUT-04",
+        "OUT-05",
+        "OUT-07"
+      ],
+      "options": [
+        {
+          "field": "horizon_band",
+          "code": "HORIZON_BAND_01",
+          "label": "1년 미만",
+          "mode": "단일"
+        },
+        {
+          "field": "horizon_band",
+          "code": "HORIZON_BAND_02",
+          "label": "1년 이상~3년 미만",
+          "mode": "단일"
+        },
+        {
+          "field": "horizon_band",
+          "code": "HORIZON_BAND_03",
+          "label": "3년 이상~5년 미만",
+          "mode": "단일"
+        },
+        {
+          "field": "horizon_band",
+          "code": "HORIZON_BAND_04",
+          "label": "5년 이상~10년 미만",
+          "mode": "단일"
+        },
+        {
+          "field": "horizon_band",
+          "code": "HORIZON_BAND_05",
+          "label": "10년 이상",
+          "mode": "단일"
+        },
+        {
+          "field": "horizon_band",
+          "code": "HORIZON_BAND_06",
+          "label": "미정",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "F13",
+      "version": "1.2",
+      "source": {
+        "순서": 21,
+        "항목": "목표·예정지출",
+        "질문 ID": "F13",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "목표에 필요한 금액은 얼마인가요?",
+        "응답 UI": "금액상태·지출형태 선택 + 금액",
+        "선택지·입력 안내": "확인 / 대략 / 미정. 일시 목돈 / 반복 지출. 현재가치 / 해당 시점 예상금액의 기준일 확인. 교육·은퇴 목표의 기존 월금액은 재사용.",
+        "필수 여부": "선택",
+        "노출 조건": "빠른진단은 선택. 정밀진단은목표 금액·시점 확인(미정 허용)",
+        "저장 필드(제안)": "goals[].{target_amount_krw,amount_status,payment_type,price_basis,price_base_date,payment_start,payment_end,frequency,prepared_asset_refs}",
+        "연결 결과": "목표 준비율·부족액·필요 적립액",
+        "부족 시 처리·검증": "금액·명목/실질·기간의 기준을 일치시킨 후 계산. 같은 반복 지출을 목표금과 현금지출로 이중 차감하지 않음. 준비자금은 기존 asset_id 배정으로 연결.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "DET-14",
+        "화면 내 순서": 3,
+        "해당 화면의 입력 범위": "우선 목표·추가 목표·목표일·금액 상태·일시/반복 지출",
+        "진입 행동·선행 조건": "부채 확인 후",
+        "미완료 시 처리·다음 단계": "미정이면 관련 정량 계산 보류. 기존 목표 재사용. / DET-15"
+      },
+      "fields": "goals[].{target_amount_krw,amount_status,payment_type,price_basis,price_base_date,payment_start,payment_end,frequency,prepared_asset_refs}",
+      "outputs": [
+        "OUT-04",
+        "OUT-05",
+        "OUT-07"
+      ],
+      "options": [
+        {
+          "field": "payment_type",
+          "code": "PAYMENT_TYPE_01",
+          "label": "일시 목돈",
+          "mode": "단일"
+        },
+        {
+          "field": "payment_type",
+          "code": "PAYMENT_TYPE_02",
+          "label": "반복 지출",
+          "mode": "단일"
+        },
+        {
+          "field": "payment_type",
+          "code": "PAYMENT_TYPE_03",
+          "label": "미정",
+          "mode": "단일"
+        },
+        {
+          "field": "goal_amount_status",
+          "code": "F13_GOAL_AMOUNT_STATUS_01",
+          "label": "확인된 금액",
+          "mode": "단일"
+        },
+        {
+          "field": "goal_amount_status",
+          "code": "F13_GOAL_AMOUNT_STATUS_02",
+          "label": "대략적인 금액",
+          "mode": "단일"
+        },
+        {
+          "field": "goal_amount_status",
+          "code": "F13_GOAL_AMOUNT_STATUS_03",
+          "label": "미정",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "NEW-05",
+      "version": "1.2",
+      "source": {
+        "순서": 22,
+        "항목": "목표·예정지출",
+        "질문 ID": "NEW-05",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "앞서 적은 목표 외에, 예정된 큰 지출이나 가족 지원이 있나요?",
+        "응답 UI": "있음·없음 선택 + 지출 종류 복수",
+        "선택지·입력 안내": "없음 / 있음 / 모름. 있음이면 주거·결혼·양육·교육·부모/자녀지원·의료돌봄·세금·기타에서 실제 사건만 선택하고 본인부담 금액·시점 확인.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "목표 직후",
+        "저장 필드(제안)": "planned_expenses[].{event_id,obligation_id,owner_ref,beneficiary_ref,type,amount,price_basis,payment_on,end_on,certainty,existing_goal_ref,existing_debt_ref}",
+        "연결 결과": "예정 지출 보호·목표 배정",
+        "부족 시 처리·검증": "생애단계로 관련 보기만 우선 노출. 이미 입력한 교육·상속비용·세금·대출만기·목표를 같은 사건으로 연결하여 1회 반영. 미확정 미래 상속 유입은 여기서 확정 재원으로 받지 않음.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "DET-15",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "앞서 적은 목표 외 큰 지출의 종류·금액·시점",
+        "진입 행동·선행 조건": "목표 직후",
+        "미완료 시 처리·다음 단계": "같은 목표·채무와 중복 등록·차감 금지. / DET-16"
+      },
+      "fields": "planned_expenses[].{event_id,obligation_id,owner_ref,beneficiary_ref,type,amount,price_basis,payment_on,end_on,certainty,existing_goal_ref,existing_debt_ref}",
+      "outputs": [
+        "OUT-04",
+        "OUT-05",
+        "OUT-07",
+        "OUT-11",
+        "OUT-14"
+      ],
+      "options": [
+        {
+          "field": "presence",
+          "code": "PRESENCE_01",
+          "label": "있음",
+          "mode": "단일"
+        },
+        {
+          "field": "presence",
+          "code": "PRESENCE_02",
+          "label": "없음",
+          "mode": "단일"
+        },
+        {
+          "field": "presence",
+          "code": "PRESENCE_03",
+          "label": "모름",
+          "mode": "단일"
+        },
+        {
+          "field": "expense_type",
+          "code": "NEW_05_EXPENSE_TYPE_01",
+          "label": "이사",
+          "mode": "복수"
+        },
+        {
+          "field": "expense_type",
+          "code": "NEW_05_EXPENSE_TYPE_02",
+          "label": "결혼",
+          "mode": "복수"
+        },
+        {
+          "field": "expense_type",
+          "code": "NEW_05_EXPENSE_TYPE_03",
+          "label": "차량 구매",
+          "mode": "복수"
+        },
+        {
+          "field": "expense_type",
+          "code": "NEW_05_EXPENSE_TYPE_04",
+          "label": "학비",
+          "mode": "복수"
+        },
+        {
+          "field": "expense_type",
+          "code": "NEW_05_EXPENSE_TYPE_05",
+          "label": "의료비",
+          "mode": "복수"
+        },
+        {
+          "field": "expense_type",
+          "code": "NEW_05_EXPENSE_TYPE_06",
+          "label": "가족 지원",
+          "mode": "복수"
+        },
+        {
+          "field": "expense_type",
+          "code": "NEW_05_EXPENSE_TYPE_07",
+          "label": "기타",
+          "mode": "복수"
+        },
+        {
+          "field": "expense_required",
+          "code": "NEW_05_EXPENSE_REQUIRED_01",
+          "label": "꼭 필요한 지출",
+          "mode": "단일"
+        },
+        {
+          "field": "expense_required",
+          "code": "NEW_05_EXPENSE_REQUIRED_02",
+          "label": "조정 가능한 지출",
+          "mode": "단일"
+        },
+        {
+          "field": "expense_required",
+          "code": "NEW_05_EXPENSE_REQUIRED_03",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "NEW-06",
+      "version": "1.2.1",
+      "source": {
+        "순서": 23,
+        "항목": "보호·투자재원",
+        "질문 ID": "NEW-06",
+        "변경 유형": "v1.2.1 수정",
+        "고객에게 보여줄 질문": "현재 확보한 비상자금·운영현금을 확인하고, 더 유지할 목표가 있으면 알려주세요.",
+        "응답 UI": "기존 요약 확인 + 목적 선택",
+        "선택지·입력 안내": "현재 확보액은 F06의 현금 원천별 배정을 재사용해 확인. 고객 목표는 정책기준만 / 총 유지목표 직접 입력 / 정책기준 위 추가금액 / 모름 선택. 추가목표 없음이 확인된 경우만 추가액0. 정책 계산값은 입력칸이 아닌 별도 표시.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "목표·예정지출 후",
+        "저장 필드(제안)": "reservations[].{reservation_id,asset_ref,purpose,amount,goal_ref}; customer_target_mode; customer_protection_extra; customer_operating_extra; customer_protection_total; customer_operating_total; policy_version",
+        "연결 결과": "보호·목표·투자 가능 재원 구분",
+        "부족 시 처리·검증": "DION-ALLOCATION-1.0 확정 유지. B=필수생활비+의무상환, 정책 최소 보호3B·운영B. 최종목표=max(고객총목표,정책최소), 추가액 방식은 정책최소+확인 추가액을 고객총목표로 명시 변환. 현재 확보액은 원천 배정 합계로 별도 계산. H=max(운영목표−현재 운영확보,0). 미확인 추가목표를0으로 채우지 않음. 정책 전부 미정으로 되돌리지 않음.",
+        "검토 상태": "수정반영·연결대조",
+        "화면 ID(설계용)": "DET-16",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "원천별 현재 확보 배정 확인 / 추가 유지목표 선택. 정책최소·최종목표·부족액 H는 읽기전용.",
+        "진입 행동·선행 조건": "목표·예정지출 후",
+        "미완료 시 처리·다음 단계": "원천·목표 미확인은 보호/월 후보에만 반영. 같은 현금을 보호·운영·목표에 중복 배정하지 않음."
+      },
+      "fields": "reservations[].{reservation_id,asset_ref,purpose,amount,goal_ref}; customer_target_mode; customer_protection_extra; customer_operating_extra; customer_protection_total; customer_operating_total; policy_version",
+      "outputs": [
+        "OUT-04",
+        "OUT-05"
+      ],
+      "options": [
+        {
+          "field": "reservation_purpose",
+          "code": "RESERVATION_PURPOSE_01",
+          "label": "생활비",
+          "mode": "반복"
+        },
+        {
+          "field": "reservation_purpose",
+          "code": "RESERVATION_PURPOSE_02",
+          "label": "비상자금",
+          "mode": "반복"
+        },
+        {
+          "field": "reservation_purpose",
+          "code": "RESERVATION_PURPOSE_03",
+          "label": "목표자금",
+          "mode": "반복"
+        },
+        {
+          "field": "reservation_purpose",
+          "code": "RESERVATION_PURPOSE_04",
+          "label": "기타 필수 의무",
+          "mode": "반복"
+        },
+        {
+          "field": "reservation_review",
+          "code": "NEW_06_RESERVATION_REVIEW_01",
+          "label": "그대로 유지",
+          "mode": "단일"
+        },
+        {
+          "field": "reservation_review",
+          "code": "NEW_06_RESERVATION_REVIEW_02",
+          "label": "금액 조정",
+          "mode": "단일"
+        },
+        {
+          "field": "reservation_review",
+          "code": "NEW_06_RESERVATION_REVIEW_03",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        },
+        {
+          "field": "customer_target_mode",
+          "code": "POLICY_ONLY",
+          "label": "정책기준만 유지",
+          "mode": "단일"
+        },
+        {
+          "field": "customer_target_mode",
+          "code": "TOTAL_TARGET",
+          "label": "총 유지목표 입력",
+          "mode": "단일"
+        },
+        {
+          "field": "customer_target_mode",
+          "code": "EXTRA_ABOVE_MINIMUM",
+          "label": "정책기준 위 추가금액",
+          "mode": "단일"
+        },
+        {
+          "field": "customer_target_mode",
+          "code": "UNKNOWN",
+          "label": "모름",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "EDU-01",
+      "version": "1.2",
+      "source": {
+        "순서": 24,
+        "항목": "자녀·가족 지원",
+        "질문 ID": "EDU-01",
+        "변경 유형": "v1.2 추가",
+        "고객에게 보여줄 질문": "누구에게 어떤 교육비나 독립자금을, 언제까지 지원할 계획인가요?",
+        "응답 UI": "해당자 반복 카드",
+        "선택지·입력 안내": "해당 구성원 별칭·교육단계 / 지원 종류 / 시작·종료 / 월 또는 목돈 본인부담액 / 현재·미래금액 기준. 지원 계획 없음·미정 허용.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "교육·자녀 독립지원 목표를 고객이 선택한 경우. 생애단계만으로 강제하지 않음.",
+        "저장 필드(제안)": "goals[].{beneficiary_ref,education_stage,support_type,payment_start,payment_end,frequency,amount,price_basis,prepared_asset_refs}",
+        "연결 결과": "자녀별 준비금·기간별 부담·은퇴와 동시 충족",
+        "부족 시 처리·검증": "가구정보·현재 교육비·목표·기존 지원 사건 재사용. 생활비에 이미 포함된 현재비용과 미래 추가비용을 구분. 부모 지원은 NEW-05 재사용. 실제0/모름/미입력/해당없음/나중에를 구분. 모름은 null. 금액은 만원 입력→정수 원 문자열. 확인값·추정·공식조회·시나리오 및 기준일을 저장.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "EDU-01",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "해당 구성원 별칭·교육단계 / 지원 종류 / 시작·종료 / 월 또는 목돈 본인부담액 / 현재·미래금액 기준. 지원 계획 없음·미정 허용.",
+        "진입 행동·선행 조건": "교육·자녀 독립지원 목표를 고객이 선택한 경우. 생애단계만으로 강제하지 않음.",
+        "미완료 시 처리·다음 단계": "확인된 답변 재사용. 부족한 항목만 펼침. 영향받는 결과만 보류."
+      },
+      "fields": "goals[].{beneficiary_ref,education_stage,support_type,payment_start,payment_end,frequency,amount,price_basis,prepared_asset_refs}",
+      "outputs": [
+        "OUT-07"
+      ],
+      "options": [
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_KNOWN",
+          "label": "확인한 정보가 있음",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_ESTIMATED",
+          "label": "대략 알고 있음",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_UNKNOWN",
+          "label": "모름",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_LATER",
+          "label": "나중에",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_NOT_APPLICABLE",
+          "label": "해당 없음",
+          "mode": "항목별 단일"
+        }
+      ]
+    },
+    {
+      "id": "RET-01",
+      "version": "1.2",
+      "source": {
+        "순서": 25,
+        "항목": "은퇴 목표",
+        "질문 ID": "RET-01",
+        "변경 유형": "v1.2 추가",
+        "고객에게 보여줄 질문": "언제 은퇴하고, 이후 매달 얼마를 사용할 계획인가요?",
+        "응답 UI": "날짜·기간·금액 카드",
+        "선택지·입력 안내": "은퇴일(모르면 예상 시점) / 은퇴 후 월생활비 / 현재·미래금액 기준 / 계획기간. 이미 은퇴한 경우 실제 시작일.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "은퇴생활 분석을 요청했고 기존 목표 정보가 부족할 때.",
+        "저장 필드(제안)": "retirement_goal.{goal_ref,retirement_on,monthly_spending,price_basis,price_base_date,planning_end,planning_period_status,other_income_refs,debt_refs}",
+        "연결 결과": "은퇴 후 기간별 부족액·추가 준비자금",
+        "부족 시 처리·검증": "생활비·기존 소득·채무·목표 재사용. 은퇴일·연금개시일 별도. 현재가치/명목금액 일치. 수익·물가·수명 가정을 임의 확정하지 않음. 실제0/모름/미입력/해당없음/나중에를 구분. 모름은 null. 금액은 만원 입력→정수 원 문자열. 확인값·추정·공식조회·시나리오 및 기준일을 저장.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "RET-01",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "은퇴일(모르면 예상 시점) / 은퇴 후 월생활비 / 현재·미래금액 기준 / 계획기간. 이미 은퇴한 경우 실제 시작일.",
+        "진입 행동·선행 조건": "은퇴생활 분석을 요청했고 기존 목표 정보가 부족할 때.",
+        "미완료 시 처리·다음 단계": "확인된 답변 재사용. 부족한 항목만 펼침. 영향받는 결과만 보류."
+      },
+      "fields": "retirement_goal.{goal_ref,retirement_on,monthly_spending,price_basis,price_base_date,planning_end,planning_period_status,other_income_refs,debt_refs}",
+      "outputs": [
+        "OUT-09"
+      ],
+      "options": [
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_KNOWN",
+          "label": "확인한 정보가 있음",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_ESTIMATED",
+          "label": "대략 알고 있음",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_UNKNOWN",
+          "label": "모름",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_LATER",
+          "label": "나중에",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_NOT_APPLICABLE",
+          "label": "해당 없음",
+          "mode": "항목별 단일"
+        }
+      ]
+    },
+    {
+      "id": "PEN-01",
+      "version": "1.2",
+      "source": {
+        "순서": 26,
+        "항목": "연금 현황",
+        "질문 ID": "PEN-01",
+        "변경 유형": "v1.2 추가",
+        "고객에게 보여줄 질문": "현재 가입하거나 받고 있는 연금이 있나요?",
+        "응답 UI": "있음·없음·모름 + 해당 연금 반복",
+        "선택지·입력 안내": "국민연금 / 직역연금 / 퇴직연금(DB·DC·퇴직금·모름) / IRP / 연금저축·기타 개인연금. 납입 중·수령 중·대기 상태. 확인되지 않은 현재 납입·잔액·수령액만 추가.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "연금 납입·계좌·수령이 확인됐거나 고객이 연금 확인을 요청했을 때.",
+        "저장 필드(제안)": "pensions[].{pension_id,owner_ref,type,retirement_scheme,status,account_ref,balance_asset_ref,contribution_ref,income_source_ref,current_payment_basis,payroll_deducted,coverage}",
+        "연결 결과": "연금별 현재 잔액·납입·수령 현황",
+        "부족 시 처리·검증": "국민연금 보험료 누계를 계좌잔액으로 생성 금지. DB 예상급여와 DC 잔액 구분. 회사부담·급여공제 중복 차감 금지. 직역·해외연금은 확인자료 현황과 계산지원 구분. 실제0/모름/미입력/해당없음/나중에를 구분. 모름은 null. 금액은 만원 입력→정수 원 문자열. 확인값·추정·공식조회·시나리오 및 기준일을 저장.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "PEN-01",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "국민연금 / 직역연금 / 퇴직연금(DB·DC·퇴직금·모름) / IRP / 연금저축·기타 개인연금. 납입 중·수령 중·대기 상태. 확인되지 않은 현재 납입·잔액·수령액만 추가.",
+        "진입 행동·선행 조건": "연금 납입·계좌·수령이 확인됐거나 고객이 연금 확인을 요청했을 때.",
+        "미완료 시 처리·다음 단계": "확인된 답변 재사용. 부족한 항목만 펼침. 영향받는 결과만 보류."
+      },
+      "fields": "pensions[].{pension_id,owner_ref,type,retirement_scheme,status,account_ref,balance_asset_ref,contribution_ref,income_source_ref,current_payment_basis,payroll_deducted,coverage}",
+      "outputs": [
+        "OUT-08",
+        "OUT-09"
+      ],
+      "options": [
+        {
+          "field": "pension_type",
+          "code": "V12_PENSION_TYPE_NATIONAL",
+          "label": "국민연금",
+          "mode": "반복 내 단일"
+        },
+        {
+          "field": "pension_type",
+          "code": "V12_PENSION_TYPE_OCCUPATIONAL",
+          "label": "직역연금",
+          "mode": "반복 내 단일"
+        },
+        {
+          "field": "pension_type",
+          "code": "V12_PENSION_TYPE_RETIREMENT",
+          "label": "퇴직연금",
+          "mode": "반복 내 단일"
+        },
+        {
+          "field": "pension_type",
+          "code": "V12_PENSION_TYPE_IRP",
+          "label": "IRP",
+          "mode": "반복 내 단일"
+        },
+        {
+          "field": "pension_type",
+          "code": "V12_PENSION_TYPE_PERSONAL",
+          "label": "개인연금",
+          "mode": "반복 내 단일"
+        },
+        {
+          "field": "pension_type",
+          "code": "V12_PENSION_TYPE_NONE",
+          "label": "없음",
+          "mode": "반복 내 단일"
+        },
+        {
+          "field": "pension_type",
+          "code": "V12_PENSION_TYPE_UNKNOWN",
+          "label": "모름",
+          "mode": "반복 내 단일"
+        },
+        {
+          "field": "pension_status",
+          "code": "V12_PENSION_STATUS_PAYING",
+          "label": "납입 중",
+          "mode": "반복 내 단일"
+        },
+        {
+          "field": "pension_status",
+          "code": "V12_PENSION_STATUS_RECEIVING",
+          "label": "수령 중",
+          "mode": "반복 내 단일"
+        },
+        {
+          "field": "pension_status",
+          "code": "V12_PENSION_STATUS_WAITING",
+          "label": "수령 대기",
+          "mode": "반복 내 단일"
+        },
+        {
+          "field": "pension_status",
+          "code": "V12_PENSION_STATUS_UNKNOWN",
+          "label": "모름",
+          "mode": "반복 내 단일"
+        },
+        {
+          "field": "retirement_scheme",
+          "code": "V12_RETIREMENT_SCHEME_DB",
+          "label": "DB",
+          "mode": "반복 내 단일"
+        },
+        {
+          "field": "retirement_scheme",
+          "code": "V12_RETIREMENT_SCHEME_DC",
+          "label": "DC",
+          "mode": "반복 내 단일"
+        },
+        {
+          "field": "retirement_scheme",
+          "code": "V12_RETIREMENT_SCHEME_SEVERANCE",
+          "label": "퇴직금",
+          "mode": "반복 내 단일"
+        },
+        {
+          "field": "retirement_scheme",
+          "code": "V12_RETIREMENT_SCHEME_UNKNOWN",
+          "label": "모름",
+          "mode": "반복 내 단일"
+        }
+      ]
+    },
+    {
+      "id": "PEN-02",
+      "version": "1.2",
+      "source": {
+        "순서": 27,
+        "항목": "연금 예상수령",
+        "질문 ID": "PEN-02",
+        "변경 유형": "v1.2 추가",
+        "고객에게 보여줄 질문": "공식 조회자료의 예상연금액과 수령 시작 시점을 알고 있나요?",
+        "응답 UI": "자료 있음·없음·모름 + 값 확인",
+        "선택지·입력 안내": "연금별 조회금액 / 공식 조회일·출처 / 현재가치·미래금액 / 세전·세후 / 수령개시 / 종료·지속 조건 / 향후 납입 가정. 명시한 가상 시나리오는 별도 표시.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "은퇴·미래 연금 분석 요청. 지원 범위 확인 후 필요한 연금만.",
+        "저장 필드(제안)": "pensions[].forecast.{amount,source_ref,queried_on,price_basis,tax_basis,start_on,end_condition,future_contribution_assumption,certainty}",
+        "연결 결과": "수령시점별 수입·개시 전 소득공백·은퇴 부족액",
+        "부족 시 처리·검증": "공식값 미확인을 자체 국민연금 산식으로 대체하지 않음. 현재 수령액과 같은 기간에 중복 계상하지 않음. 계좌 인출은 잔액감소와 연결. 지속기간·과세 미확인은 관련 결과만 보류. 실제0/모름/미입력/해당없음/나중에를 구분. 모름은 null. 금액은 만원 입력→정수 원 문자열. 확인값·추정·공식조회·시나리오 및 기준일을 저장.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "PEN-02",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "연금별 조회금액 / 공식 조회일·출처 / 현재가치·미래금액 / 세전·세후 / 수령개시 / 종료·지속 조건 / 향후 납입 가정. 명시한 가상 시나리오는 별도 표시.",
+        "진입 행동·선행 조건": "은퇴·미래 연금 분석 요청. 지원 범위 확인 후 필요한 연금만.",
+        "미완료 시 처리·다음 단계": "확인된 답변 재사용. 부족한 항목만 펼침. 영향받는 결과만 보류."
+      },
+      "fields": "pensions[].forecast.{amount,source_ref,queried_on,price_basis,tax_basis,start_on,end_condition,future_contribution_assumption,certainty}",
+      "outputs": [
+        "OUT-05",
+        "OUT-09"
+      ],
+      "options": [
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_KNOWN",
+          "label": "확인한 정보가 있음",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_ESTIMATED",
+          "label": "대략 알고 있음",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_UNKNOWN",
+          "label": "모름",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_LATER",
+          "label": "나중에",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_NOT_APPLICABLE",
+          "label": "해당 없음",
+          "mode": "항목별 단일"
+        }
+      ]
+    },
+    {
+      "id": "TAX-01",
+      "version": "1.2",
+      "source": {
+        "순서": 28,
+        "항목": "세금 기준",
+        "질문 ID": "TAX-01",
+        "변경 유형": "v1.2 추가",
+        "고객에게 보여줄 질문": "누구의 세금을 어느 연도와 거주 조건으로 검토할까요?",
+        "응답 UI": "기존 구성원·연도·거주 상태 선택",
+        "선택지·입력 안내": "납세자 별칭 / 귀속연도 / 한국 세법상 거주·비거주·모름 / 관련 국가. 기준일은 기록하되 과세연도는 고객이 확인.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "세후·세액공제·상속세 검토 요청 또는 확인세액 현금사건 정리가 필요할 때.",
+        "저장 필드(제안)": "tax_contexts[].{taxpayer_ref,tax_year,residence_status,country,confirmed_on,scope_status}",
+        "연결 결과": "개인별 세금 기준·지원여부",
+        "부족 시 처리·검증": "가구 합산세액·국적/주소에 의한 거주 판정 금지. 미지원·미구현이면 사실·확인세액 정리 경로를 우선하고 상세 자료 수집 제한. 실제0/모름/미입력/해당없음/나중에를 구분. 모름은 null. 금액은 만원 입력→정수 원 문자열. 확인값·추정·공식조회·시나리오 및 기준일을 저장.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "TAX-01",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "납세자 별칭 / 귀속연도 / 한국 세법상 거주·비거주·모름 / 관련 국가. 기준일은 기록하되 과세연도는 고객이 확인.",
+        "진입 행동·선행 조건": "세후·세액공제·상속세 검토 요청 또는 확인세액 현금사건 정리가 필요할 때.",
+        "미완료 시 처리·다음 단계": "확인된 답변 재사용. 부족한 항목만 펼침. 영향받는 결과만 보류."
+      },
+      "fields": "tax_contexts[].{taxpayer_ref,tax_year,residence_status,country,confirmed_on,scope_status}",
+      "outputs": [
+        "OUT-10",
+        "OUT-11",
+        "OUT-13"
+      ],
+      "options": [
+        {
+          "field": "residence_status",
+          "code": "V12_RESIDENCE_STATUS_RESIDENT",
+          "label": "한국 세법상 거주",
+          "mode": "단일"
+        },
+        {
+          "field": "residence_status",
+          "code": "V12_RESIDENCE_STATUS_NONRESIDENT",
+          "label": "비거주",
+          "mode": "단일"
+        },
+        {
+          "field": "residence_status",
+          "code": "V12_RESIDENCE_STATUS_UNKNOWN",
+          "label": "모름",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "TAX-02",
+      "version": "1.2",
+      "source": {
+        "순서": 29,
+        "항목": "세금 소득자료",
+        "질문 ID": "TAX-02",
+        "변경 유형": "v1.2 추가",
+        "고객에게 보여줄 질문": "해당 연도의 소득·공제·기납부세액 자료를 확인할 수 있나요?",
+        "응답 UI": "자료 있음·없음·모름 + 필요한 항목만",
+        "선택지·입력 안내": "해당 계산에 필요한 총급여 또는 종합소득금액 / 연간 이자·배당 등 / 적용 공제 / 관련 산출·결정·기납부세액. 자료가 없으면 모름.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "공제·금융소득 정산 등 요청 결과에 해당 입력이 필요하고 계산 지원이 확인된 경우.",
+        "저장 필드(제안)": "tax_contexts[].income_details.{gross_salary,aggregate_income_amount,annual_interest_dividend,deduction_refs,pre_credit_tax,other_credit_refs,prepaid_tax,source_ref,coverage}",
+        "연결 결과": "지원범위 공제효과·세후 비교·추가 납부 검토",
+        "부족 시 처리·검증": "세후 월소득×12를 총급여/종합소득금액으로 대체 금지. 총급여와 종합소득금액 별도. 공제효과와 실제환급액 구분. 실제환급에 필요한 전체자료가 없으면 환급액 확정 보류. 실제0/모름/미입력/해당없음/나중에를 구분. 모름은 null. 금액은 만원 입력→정수 원 문자열. 확인값·추정·공식조회·시나리오 및 기준일을 저장.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "TAX-02",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "해당 계산에 필요한 총급여 또는 종합소득금액 / 연간 이자·배당 등 / 적용 공제 / 관련 산출·결정·기납부세액. 자료가 없으면 모름.",
+        "진입 행동·선행 조건": "공제·금융소득 정산 등 요청 결과에 해당 입력이 필요하고 계산 지원이 확인된 경우.",
+        "미완료 시 처리·다음 단계": "확인된 답변 재사용. 부족한 항목만 펼침. 영향받는 결과만 보류."
+      },
+      "fields": "tax_contexts[].income_details.{gross_salary,aggregate_income_amount,annual_interest_dividend,deduction_refs,pre_credit_tax,other_credit_refs,prepaid_tax,source_ref,coverage}",
+      "outputs": [
+        "OUT-10"
+      ],
+      "options": [
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_KNOWN",
+          "label": "확인한 정보가 있음",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_ESTIMATED",
+          "label": "대략 알고 있음",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_UNKNOWN",
+          "label": "모름",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_LATER",
+          "label": "나중에",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_NOT_APPLICABLE",
+          "label": "해당 없음",
+          "mode": "항목별 단일"
+        }
+      ]
+    },
+    {
+      "id": "TAX-03",
+      "version": "1.2",
+      "source": {
+        "순서": 30,
+        "항목": "절세계좌 상세",
+        "질문 ID": "TAX-03",
+        "변경 유형": "v1.2 추가",
+        "고객에게 보여줄 질문": "이 계좌의 올해 납입과 공제·인출 내역을 확인할까요?",
+        "응답 UI": "기존 계좌 선택 + 해당 항목만",
+        "선택지·입력 안내": "계좌별 가입·만기 / 본인 누적납입 / 예정 추가납입 / 회사부담·이전금 구분 / 공제받은 납입액·공제 미적용 원금·수익 / 인출액·사유·시점 / 한도 사용·자격 확인.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "ISA·연금계좌의 납입·인출·해지 비교를 요청하고 해당 지원이 확인된 경우.",
+        "저장 필드(제안)": "accounts[].tax_details.{opened_on,maturity_on,eligibility,contribution_year,self_paid_ytd,planned_additional,employer_paid,rollover,credited_principal,uncredited_principal,earnings,prior_credit_refs,withdrawal_amount,withdrawal_reason,withdrawal_on,limit_used,source_ref}",
+        "연결 결과": "추가납입 검토·계좌별 세제효과·인출 영향",
+        "부족 시 처리·검증": "보유·월납입만으로 연간한도·공제·실제환급 확정 금지. 계좌 이전금·퇴직금·회사부담 구분. 미확인 세금은0 아님. 실제 개설·이전·납입 자동 실행 없음. 실제0/모름/미입력/해당없음/나중에를 구분. 모름은 null. 금액은 만원 입력→정수 원 문자열. 확인값·추정·공식조회·시나리오 및 기준일을 저장.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "TAX-03",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "계좌별 가입·만기 / 본인 누적납입 / 예정 추가납입 / 회사부담·이전금 구분 / 공제받은 납입액·공제 미적용 원금·수익 / 인출액·사유·시점 / 한도 사용·자격 확인.",
+        "진입 행동·선행 조건": "ISA·연금계좌의 납입·인출·해지 비교를 요청하고 해당 지원이 확인된 경우.",
+        "미완료 시 처리·다음 단계": "확인된 답변 재사용. 부족한 항목만 펼침. 영향받는 결과만 보류."
+      },
+      "fields": "accounts[].tax_details.{opened_on,maturity_on,eligibility,contribution_year,self_paid_ytd,planned_additional,employer_paid,rollover,credited_principal,uncredited_principal,earnings,prior_credit_refs,withdrawal_amount,withdrawal_reason,withdrawal_on,limit_used,source_ref}",
+      "outputs": [
+        "OUT-10"
+      ],
+      "options": [
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_KNOWN",
+          "label": "확인한 정보가 있음",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_ESTIMATED",
+          "label": "대략 알고 있음",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_UNKNOWN",
+          "label": "모름",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_LATER",
+          "label": "나중에",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_NOT_APPLICABLE",
+          "label": "해당 없음",
+          "mode": "항목별 단일"
+        }
+      ]
+    },
+    {
+      "id": "TAX-04",
+      "version": "1.2",
+      "source": {
+        "순서": 31,
+        "항목": "세금 사건",
+        "질문 ID": "TAX-04",
+        "변경 유형": "v1.2 추가",
+        "고객에게 보여줄 질문": "세후로 비교할 거래나, 이미 낸·앞으로 낼 세금이 있나요?",
+        "응답 UI": "사건 선택 + 부족 항목만",
+        "선택지·입력 안내": "이자·배당 / 매도 / 인출 / 확인된 세금납부. 거래별 취득원가·취득일·매도/분배액·상품 세무분류·수수료·실현손익·원천세·기납부·추가세액·납부일 중 필요한 항목.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "관련 거래 비교 또는 확인된 납부 사건이 있을 때. 지원 밖 거래는 확인 세액 입력/관심 접수까지만.",
+        "저장 필드(제안)": "tax_events[].{tax_event_id,economic_event_ref,taxpayer_ref,account_ref,holding_ref,type,event_on,tax_year,gross_amount,net_amount,cost_basis,acquired_on,realized_gain,fees,withheld,prepaid,additional_tax,pay_on,tax_status,rule_ref}",
+        "연결 결과": "거래별 세전·세후와 납부시점 현금흐름",
+        "부족 시 처리·검증": "세후 금액의 원천세 재차감 금지. 수령일·귀속연도·세금납부일 구분. 확인세액 입력과 법정산출 구분. 원가·분류·법령 검증 누락이면 세후결과 보류. 실제0/모름/미입력/해당없음/나중에를 구분. 모름은 null. 금액은 만원 입력→정수 원 문자열. 확인값·추정·공식조회·시나리오 및 기준일을 저장.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "TAX-04",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "이자·배당 / 매도 / 인출 / 확인된 세금납부. 거래별 취득원가·취득일·매도/분배액·상품 세무분류·수수료·실현손익·원천세·기납부·추가세액·납부일 중 필요한 항목.",
+        "진입 행동·선행 조건": "관련 거래 비교 또는 확인된 납부 사건이 있을 때. 지원 밖 거래는 확인 세액 입력/관심 접수까지만.",
+        "미완료 시 처리·다음 단계": "확인된 답변 재사용. 부족한 항목만 펼침. 영향받는 결과만 보류."
+      },
+      "fields": "tax_events[].{tax_event_id,economic_event_ref,taxpayer_ref,account_ref,holding_ref,type,event_on,tax_year,gross_amount,net_amount,cost_basis,acquired_on,realized_gain,fees,withheld,prepaid,additional_tax,pay_on,tax_status,rule_ref}",
+      "outputs": [
+        "OUT-05",
+        "OUT-11",
+        "OUT-12",
+        "OUT-13"
+      ],
+      "options": [
+        {
+          "field": "tax_event_type",
+          "code": "V12_TAX_EVENT_TYPE_INTEREST_DIVIDEND",
+          "label": "이자·배당",
+          "mode": "단일"
+        },
+        {
+          "field": "tax_event_type",
+          "code": "V12_TAX_EVENT_TYPE_SALE",
+          "label": "매도",
+          "mode": "단일"
+        },
+        {
+          "field": "tax_event_type",
+          "code": "V12_TAX_EVENT_TYPE_WITHDRAWAL",
+          "label": "인출",
+          "mode": "단일"
+        },
+        {
+          "field": "tax_event_type",
+          "code": "V12_TAX_EVENT_TYPE_KNOWN_TAX_PAYMENT",
+          "label": "확인된 세금납부",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "INH-01",
+      "version": "1.2",
+      "source": {
+        "순서": 32,
+        "항목": "상속 방향·상태",
+        "질문 ID": "INH-01",
+        "변경 유형": "v1.2 추가",
+        "고객에게 보여줄 질문": "받을 상속과 남길 재산 중 무엇을 검토할까요?",
+        "응답 UI": "방향·발생상태 선택",
+        "선택지·입력 안내": "본인 사후 이전 / 받을 상속 / 둘 다. 받을 상속: 이미 수령 / 상속 발생·절차 중 / 미래 예상 / 모름. 본인 사후 이전은 사망 가정일·계획 기준일을 별도로 표시.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "상속 사건이 있거나 상속 목표·검토를 고객이 선택한 경우. 전 생애단계에서 진입.",
+        "저장 필드(제안)": "inheritance_cases[].{case_id,direction,status,actual_event_on,assumed_event_on,certainty,review_level}",
+        "연결 결과": "현재 사실·확정 권리·미래 시나리오 구분",
+        "부족 시 처리·검증": "미래 미확정 상속을 현재자산·확정 투자재원으로 승격 금지. 실제 사건과 가정일 구분. 독립 증여 설계 전체를 자동 추가하지 않음. 실제0/모름/미입력/해당없음/나중에를 구분. 모름은 null. 금액은 만원 입력→정수 원 문자열. 확인값·추정·공식조회·시나리오 및 기준일을 저장.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "INH-01",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "본인 사후 이전 / 받을 상속 / 둘 다. 받을 상속: 이미 수령 / 상속 발생·절차 중 / 미래 예상 / 모름. 본인 사후 이전은 사망 가정일·계획 기준일을 별도로 표시.",
+        "진입 행동·선행 조건": "상속 사건이 있거나 상속 목표·검토를 고객이 선택한 경우. 전 생애단계에서 진입.",
+        "미완료 시 처리·다음 단계": "확인된 답변 재사용. 부족한 항목만 펼침. 영향받는 결과만 보류."
+      },
+      "fields": "inheritance_cases[].{case_id,direction,status,actual_event_on,assumed_event_on,certainty,review_level}",
+      "outputs": [
+        "OUT-05",
+        "OUT-12",
+        "OUT-13"
+      ],
+      "options": [
+        {
+          "field": "inheritance_direction",
+          "code": "V12_INHERITANCE_DIRECTION_OWN_ESTATE",
+          "label": "본인 사후 이전",
+          "mode": "단일"
+        },
+        {
+          "field": "inheritance_direction",
+          "code": "V12_INHERITANCE_DIRECTION_INCOMING",
+          "label": "받을 상속",
+          "mode": "단일"
+        },
+        {
+          "field": "inheritance_direction",
+          "code": "V12_INHERITANCE_DIRECTION_BOTH",
+          "label": "둘 다",
+          "mode": "단일"
+        },
+        {
+          "field": "inheritance_status",
+          "code": "V12_INHERITANCE_STATUS_RECEIVED",
+          "label": "이미 수령",
+          "mode": "단일"
+        },
+        {
+          "field": "inheritance_status",
+          "code": "V12_INHERITANCE_STATUS_OPEN_PENDING",
+          "label": "상속 발생·절차 중",
+          "mode": "단일"
+        },
+        {
+          "field": "inheritance_status",
+          "code": "V12_INHERITANCE_STATUS_FUTURE_SCENARIO",
+          "label": "미래 예상",
+          "mode": "단일"
+        },
+        {
+          "field": "inheritance_status",
+          "code": "V12_INHERITANCE_STATUS_UNKNOWN",
+          "label": "모름",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "INH-02",
+      "version": "1.2",
+      "source": {
+        "순서": 33,
+        "항목": "상속 관계·대상",
+        "질문 ID": "INH-02",
+        "변경 유형": "v1.2 추가",
+        "고객에게 보여줄 질문": "누구의 재산을 누가 받으며, 어떤 재산과 채무가 관련되나요?",
+        "응답 UI": "관계 별칭·기존 재산 선택",
+        "선택지·입력 안내": "남길 재산: 본인 원장의 자산·채무 선택. 받을 상속: 피상속인 별칭·관계, 확인 가능한 별도 상속재산·채무·소유지분. 관계별 배우자·자녀·부모 등 확인상태, 전체/일부/모름 구분.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "INH-01에서 방향을 선택하고 배분·재산현황 검토에 필요한 경우.",
+        "저장 필드(제안)": "inheritance_cases[].{estate_owner_ref,party_refs,family_relationship_refs,asset_refs,debt_refs,estate_assets,estate_debts,ownership_basis,coverage}",
+        "연결 결과": "명시 재산배분·상속대상 현황",
+        "부족 시 처리·검증": "받을 상속의 재산을 본인 현재자산에서 가져오지 않음. 부양가족=법적상속인 추정 금지. 가족관계가 곧 상속권 판정 아님. 별칭을 사용하고 주민번호·실명 불필요. 실제0/모름/미입력/해당없음/나중에를 구분. 모름은 null. 금액은 만원 입력→정수 원 문자열. 확인값·추정·공식조회·시나리오 및 기준일을 저장.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "INH-02",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "남길 재산: 본인 원장의 자산·채무 선택. 받을 상속: 피상속인 별칭·관계, 확인 가능한 별도 상속재산·채무·소유지분. 관계별 배우자·자녀·부모 등 확인상태, 전체/일부/모름 구분.",
+        "진입 행동·선행 조건": "INH-01에서 방향을 선택하고 배분·재산현황 검토에 필요한 경우.",
+        "미완료 시 처리·다음 단계": "확인된 답변 재사용. 부족한 항목만 펼침. 영향받는 결과만 보류."
+      },
+      "fields": "inheritance_cases[].{estate_owner_ref,party_refs,family_relationship_refs,asset_refs,debt_refs,estate_assets,estate_debts,ownership_basis,coverage}",
+      "outputs": [
+        "OUT-13"
+      ],
+      "options": [
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_KNOWN",
+          "label": "확인한 정보가 있음",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_ESTIMATED",
+          "label": "대략 알고 있음",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_UNKNOWN",
+          "label": "모름",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_LATER",
+          "label": "나중에",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_NOT_APPLICABLE",
+          "label": "해당 없음",
+          "mode": "항목별 단일"
+        }
+      ]
+    },
+    {
+      "id": "INH-03",
+      "version": "1.2",
+      "source": {
+        "순서": 34,
+        "항목": "상속 금액·가용시점",
+        "질문 ID": "INH-03",
+        "변경 유형": "v1.2 추가",
+        "고객에게 보여줄 질문": "실제로 받을 금액이나 남길 배분, 세금·비용과 사용 시점을 알고 있나요?",
+        "응답 UI": "금액·배분·날짜 카드",
+        "선택지·입력 안내": "받을 상속: 본인 몫·세금/비용 반영 여부·부담자·분할확정·수령일·현금화일·이미 반영한 자산 선택. 남길 재산: 대상자별 자산/비율·부담비용·지급일·납부재원 선택. 미정 허용.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "상속 현금흐름 또는 배분 시나리오를 요청한 경우. 알려진 세후수령액 경로는 전체재산 입력을 요구하지 않음.",
+        "저장 필드(제안)": "inheritance_cases[].{allocations,own_share,gross_or_net,tax_cost_refs,payer_refs,distribution_status,receipt_on,liquidation_on,payment_on,funding_asset_refs,resulting_asset_ref,economic_event_ref}",
+        "연결 결과": "수령 시점별 계획 변화·배분·세금비용 납부현금 부족",
+        "부족 시 처리·검증": "이미 수령·반영한 자산 재가산 금지. 상속개시·분할확정·수령·현금화일 구분. 가구 내부 이전은 가구자산 순증0. 세금모듈과 같은 사건을 참조하여1회 차감. 실제0/모름/미입력/해당없음/나중에를 구분. 모름은 null. 금액은 만원 입력→정수 원 문자열. 확인값·추정·공식조회·시나리오 및 기준일을 저장.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "INH-03",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "받을 상속: 본인 몫·세금/비용 반영 여부·부담자·분할확정·수령일·현금화일·이미 반영한 자산 선택. 남길 재산: 대상자별 자산/비율·부담비용·지급일·납부재원 선택. 미정 허용.",
+        "진입 행동·선행 조건": "상속 현금흐름 또는 배분 시나리오를 요청한 경우. 알려진 세후수령액 경로는 전체재산 입력을 요구하지 않음.",
+        "미완료 시 처리·다음 단계": "확인된 답변 재사용. 부족한 항목만 펼침. 영향받는 결과만 보류."
+      },
+      "fields": "inheritance_cases[].{allocations,own_share,gross_or_net,tax_cost_refs,payer_refs,distribution_status,receipt_on,liquidation_on,payment_on,funding_asset_refs,resulting_asset_ref,economic_event_ref}",
+      "outputs": [
+        "OUT-05",
+        "OUT-12",
+        "OUT-13"
+      ],
+      "options": [
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_KNOWN",
+          "label": "확인한 정보가 있음",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_ESTIMATED",
+          "label": "대략 알고 있음",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_UNKNOWN",
+          "label": "모름",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_LATER",
+          "label": "나중에",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_NOT_APPLICABLE",
+          "label": "해당 없음",
+          "mode": "항목별 단일"
+        }
+      ]
+    },
+    {
+      "id": "INH-04",
+      "version": "1.2",
+      "source": {
+        "순서": 35,
+        "항목": "상속세 정밀자료",
+        "질문 ID": "INH-04",
+        "변경 유형": "v1.2 추가",
+        "고객에게 보여줄 질문": "상속세 추정에 필요한 전체 재산과 과거 증여·공제 자료를 확인할까요?",
+        "응답 UI": "정밀계산 요청 후 자료별 상태 확인",
+        "선택지·입력 안내": "피상속인 전체 상속재산·평가기준 / 채무·공과금·장례비·평가비 / 과거증여일·대상·관계·금액·기납부증여세 / 배우자 배분·공제근거 / 관련 특례·비거주·해외 등 예외. 해당 자료만.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "상속세 자체 추정을 명시 요청하고 법령·사례·지원범위 검증이 끝난 경우에만 상세 수집. 현재는 설계 입력 정의.",
+        "저장 필드(제안)": "inheritance_cases[].estate_tax_details.{valuation_on,gross_estate,debts,public_charges,funeral_cost,valuation_cost,prior_gifts,deduction_evidence,spouse_allocation,prior_tax,exception_flags,coverage,legal_rule_ref}",
+        "연결 결과": "검증된 지원범위의 상속세·납부재원 검토",
+        "부족 시 처리·검증": "본인 수령액만으로 상속세 역산 금지. 공제·상속분·유류분·특례 자동 적용 금지. 미구현/미지원이면 민감 상세 수집 전에 안내. 현재 법령 활성규칙0개 유지. 실제0/모름/미입력/해당없음/나중에를 구분. 모름은 null. 금액은 만원 입력→정수 원 문자열. 확인값·추정·공식조회·시나리오 및 기준일을 저장.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "INH-04",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "피상속인 전체 상속재산·평가기준 / 채무·공과금·장례비·평가비 / 과거증여일·대상·관계·금액·기납부증여세 / 배우자 배분·공제근거 / 관련 특례·비거주·해외 등 예외. 해당 자료만.",
+        "진입 행동·선행 조건": "상속세 자체 추정을 명시 요청하고 법령·사례·지원범위 검증이 끝난 경우에만 상세 수집. 현재는 설계 입력 정의.",
+        "미완료 시 처리·다음 단계": "확인된 답변 재사용. 부족한 항목만 펼침. 영향받는 결과만 보류."
+      },
+      "fields": "inheritance_cases[].estate_tax_details.{valuation_on,gross_estate,debts,public_charges,funeral_cost,valuation_cost,prior_gifts,deduction_evidence,spouse_allocation,prior_tax,exception_flags,coverage,legal_rule_ref}",
+      "outputs": [
+        "OUT-13"
+      ],
+      "options": [
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_KNOWN",
+          "label": "확인한 정보가 있음",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_ESTIMATED",
+          "label": "대략 알고 있음",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_UNKNOWN",
+          "label": "모름",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_LATER",
+          "label": "나중에",
+          "mode": "항목별 단일"
+        },
+        {
+          "field": "detail_input_status",
+          "code": "V12_DETAIL_NOT_APPLICABLE",
+          "label": "해당 없음",
+          "mode": "항목별 단일"
+        }
+      ]
+    },
+    {
+      "id": "NEW-07",
+      "version": "1.2.1",
+      "source": {
+        "순서": 36,
+        "항목": "보호·투자재원",
+        "질문 ID": "NEW-07",
+        "변경 유형": "v1.2.1 수정",
+        "고객에게 보여줄 질문": "지금 투자에 사용할 돈과, 매달 추가로 투자하고 싶은 금액은 각각 얼마인가요?",
+        "응답 UI": "재원 복수 선택 + 금액 2개",
+        "선택지·입력 안내": "기존 자산 목록에서 재원을 선택. 지금 투자할 금액과 월 희망액을 숫자로 입력. 투자할 돈 없음 / 금액 알고 있음 / 잘 모르겠음 선택 가능",
+        "필수 여부": "선택",
+        "노출 조건": "개인화 투자 의향 비교를 고객이 명시 요청한 경우에만. OUT-05 월 예산후보의 공통 필수값이 아님.",
+        "저장 필드(제안)": "investment_funding_sources[]; desired_monthly_investment_krw",
+        "연결 결과": "OUT-06 투자 희망과 재원 비교의 선택 맥락. OUT-05 산출을 막지 않음.",
+        "부족 시 처리·검증": "투자 희망액·예산상한·월 후보·적합성·실제권장액을 분리. 희망액 미입력으로 OUT-05를 보류하지 않음. 기존 생활비·소득·계산 재원 덮어쓰기 금지.",
+        "검토 상태": "수정반영·연결대조",
+        "화면 ID(설계용)": "DET-17",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "일시금·월 희망액·원천 자산·최초 사용일. 투자할 돈 없음·모름 허용.",
+        "진입 행동·선행 조건": "보호자금 후",
+        "미완료 시 처리·다음 단계": "투자 미요청이면 해당 없음으로 생략하고 현황·목표·세금·연금·상속 결과는 제공. 투자 요청 시 기존 게이트와 검증 유지."
+      },
+      "fields": "investment_funding_sources[]; desired_monthly_investment_krw",
+      "outputs": [
+        "OUT-06"
+      ],
+      "options": [
+        {
+          "field": "amount_status",
+          "code": "NEW_07_AMOUNT_STATUS_01",
+          "label": "확인된 금액",
+          "mode": "단일"
+        },
+        {
+          "field": "amount_status",
+          "code": "NEW_07_AMOUNT_STATUS_02",
+          "label": "대략적인 금액",
+          "mode": "단일"
+        },
+        {
+          "field": "amount_status",
+          "code": "NEW_07_AMOUNT_STATUS_03",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        },
+        {
+          "field": "investment_amount_status",
+          "code": "NEW_07_INVESTMENT_AMOUNT_STATUS_01",
+          "label": "투자할 돈 없음",
+          "mode": "단일"
+        },
+        {
+          "field": "investment_amount_status",
+          "code": "NEW_07_INVESTMENT_AMOUNT_STATUS_02",
+          "label": "금액 알고 있음",
+          "mode": "단일"
+        },
+        {
+          "field": "investment_amount_status",
+          "code": "NEW_07_INVESTMENT_AMOUNT_STATUS_03",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "F15",
+      "version": "1.2",
+      "source": {
+        "순서": 37,
+        "항목": "보호·투자재원",
+        "질문 ID": "F15",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "투자에 사용할 이 돈을 가장 빨리 꺼내 써야 하는 때는 언제인가요?",
+        "응답 UI": "사용계획 단일 선택 + 달력",
+        "선택지·입력 안내": "사용할 시점이 정해짐 / 정해진 사용계획 없음 / 잘 모르겠음. 정해짐일 때 달력으로 가장 빠른 사용일 선택. 자금별 반복",
+        "필수 여부": "조건부필수",
+        "노출 조건": "개인화 투자 검토를 요청한 경우에만. 보호자금 후",
+        "저장 필드(제안)": "investment_funds[].earliest_use_date; availability_date",
+        "연결 결과": "자금별 투자기간 제약",
+        "부족 시 처리·검증": "목표 달성일과 구분. 계획 없음은 무제한 투자기간 아님. 미정이면 기간 의존 추천 보류.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "DET-17",
+        "화면 내 순서": 2,
+        "해당 화면의 입력 범위": "일시금·월 희망액·원천 자산·최초 사용일. 투자할 돈 없음·모름 허용.",
+        "진입 행동·선행 조건": "보호자금 후",
+        "미완료 시 처리·다음 단계": "투자 미요청이면 해당 없음으로 생략하고 현황·목표·세금·연금·상속 결과는 제공. 투자 요청 시 기존 게이트와 검증 유지."
+      },
+      "fields": "investment_funds[].earliest_use_date; availability_date",
+      "outputs": [
+        "OUT-06"
+      ],
+      "options": [
+        {
+          "field": "earliest_use_status",
+          "code": "EARLIEST_USE_STATUS_01",
+          "label": "사용할 시점이 정해짐",
+          "mode": "단일"
+        },
+        {
+          "field": "earliest_use_status",
+          "code": "EARLIEST_USE_STATUS_02",
+          "label": "정해진 사용계획 없음",
+          "mode": "단일"
+        },
+        {
+          "field": "earliest_use_status",
+          "code": "EARLIEST_USE_STATUS_03",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "D20-2",
+      "version": "1.2.1",
+      "source": {
+        "순서": 38,
+        "항목": "세금 검토",
+        "질문 ID": "D20-2",
+        "변경 유형": "v1.2.1 수정",
+        "고객에게 보여줄 질문": "별도로 검토받고 싶은 세금 관련 내용이 있나요?",
+        "응답 UI": "복수 선택",
+        "선택지·입력 안내": "기존 금융소득 / 계좌 활용·연말정산 / 해외 직접주식 / 상속·증여 / 없음 / 모름 유지. 해당 결과를 선택하면 TAX·INH 분기로 연결. 초기 미지원 거래는 관심만 수집.",
+        "필수 여부": "선택",
+        "노출 조건": "초기 입력에서 제외. 고객이 추가 세금 검토 메뉴를 열었고 요청 분야가 아직 없을 때만. 기존 목표·사건·요청으로 같은 분야가 확인되면 재사용.",
+        "저장 필드(제안)": "tax_review_interests",
+        "연결 결과": "ROUTING: review_router.tax_review_interests로 TAX/INH 검토 선택. 세액 수치계산 입력 아님.",
+        "부족 시 처리·검증": "관심과 과세 의무는 별개. 없음이어도 이미 확인된 납부 의무를 현금흐름에서 제거하지 않음. 미지원·미구현이면 상세 민감정보 수집 전에 안내하고 결과 상태 구분.",
+        "검토 상태": "수정반영·연결대조",
+        "화면 ID(설계용)": "DET-18",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "금융소득 / 계좌 활용·연말정산 / 해외 직접주식 / 상속·증여 / 없음 / 모름",
+        "진입 행동·선행 조건": "별도 검토 메뉴에서만. 현재 활성 소비자는 검토 경로 선택기.",
+        "미완료 시 처리·다음 단계": "관심 미응답은 OUT-01~05를 막지 않음. 확인된 납세 사건은 관심 없음이어도 원장에 유지."
+      },
+      "fields": "tax_review_interests",
+      "outputs": [],
+      "options": [
+        {
+          "field": "tax_review_interests",
+          "code": "TAX_REVIEW_INTERESTS_01",
+          "label": "금융소득",
+          "mode": "복수"
+        },
+        {
+          "field": "tax_review_interests",
+          "code": "TAX_REVIEW_INTERESTS_02",
+          "label": "계좌 활용·연말정산",
+          "mode": "복수"
+        },
+        {
+          "field": "tax_review_interests",
+          "code": "TAX_REVIEW_INTERESTS_03",
+          "label": "해외 직접주식",
+          "mode": "복수"
+        },
+        {
+          "field": "tax_review_interests",
+          "code": "TAX_REVIEW_INTERESTS_04",
+          "label": "상속·증여",
+          "mode": "복수"
+        },
+        {
+          "field": "tax_review_interests",
+          "code": "TAX_REVIEW_INTERESTS_05",
+          "label": "없음",
+          "mode": "복수"
+        },
+        {
+          "field": "tax_review_interests",
+          "code": "TAX_REVIEW_INTERESTS_06",
+          "label": "잘 모르겠음",
+          "mode": "복수"
+        }
+      ]
+    },
+    {
+      "id": "NEW-08",
+      "version": "1.2",
+      "source": {
+        "순서": 39,
+        "항목": "경험·손실",
+        "질문 ID": "NEW-08",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "투자금이 줄어들면 생활비·대출상환·예정된 지출에 영향이 있나요?",
+        "응답 UI": "단일 선택 + 영향 항목 복수",
+        "선택지·입력 안내": "영향 있음 / 영향 없음 / 잘 모르겠음. 있음·모름일 때 생활비 / 대출상환 / 예정 지출 / 기타 필수 지출 중 선택",
+        "필수 여부": "조건부필수",
+        "노출 조건": "개인화 투자 검토를 요청한 경우에만. 선호 질문 전에 자금 여력 확인",
+        "저장 필드(제안)": "loss_affects_essentials; affected_outflows[]",
+        "연결 결과": "생활 영향 확인·적합한 투자 범위",
+        "부족 시 처리·검증": "영향 있음/모름이면 필요한 자금과 시점 확인. 공격적 선호로 필수자금 보호를 무시하지 않음.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "DET-19",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "생활비·상환·예정 지출 영향 있음/없음/모름",
+        "진입 행동·선행 조건": "선호 질문 전에 자금 여력 확인",
+        "미완료 시 처리·다음 단계": "투자 미요청이면 해당 없음으로 생략하고 현황·목표·세금·연금·상속 결과는 제공. 투자 요청 시 기존 게이트와 검증 유지."
+      },
+      "fields": "loss_affects_essentials; affected_outflows[]",
+      "outputs": [
+        "OUT-06"
+      ],
+      "options": [
+        {
+          "field": "loss_affects_essentials",
+          "code": "LOSS_AFFECTS_ESSENTIALS_01",
+          "label": "영향 있음",
+          "mode": "단일"
+        },
+        {
+          "field": "loss_affects_essentials",
+          "code": "LOSS_AFFECTS_ESSENTIALS_02",
+          "label": "영향 없음",
+          "mode": "단일"
+        },
+        {
+          "field": "loss_affects_essentials",
+          "code": "LOSS_AFFECTS_ESSENTIALS_03",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        },
+        {
+          "field": "affected_outflows",
+          "code": "NEW_08_AFFECTED_OUTFLOWS_01",
+          "label": "생활비",
+          "mode": "복수"
+        },
+        {
+          "field": "affected_outflows",
+          "code": "NEW_08_AFFECTED_OUTFLOWS_02",
+          "label": "대출상환",
+          "mode": "복수"
+        },
+        {
+          "field": "affected_outflows",
+          "code": "NEW_08_AFFECTED_OUTFLOWS_03",
+          "label": "예정 지출",
+          "mode": "복수"
+        },
+        {
+          "field": "affected_outflows",
+          "code": "NEW_08_AFFECTED_OUTFLOWS_04",
+          "label": "기타 필수 지출",
+          "mode": "복수"
+        }
+      ]
+    },
+    {
+      "id": "F16",
+      "version": "1.2",
+      "source": {
+        "순서": 40,
+        "항목": "경험·손실",
+        "질문 ID": "F16",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "어떤 금융상품에 투자해보셨고, 투자기간은 어느 정도인가요?",
+        "응답 UI": "경험 상품 복수 + 기간 단일",
+        "선택지·입력 안내": "경험 없음 / 예금 / 주식 / 채권 / ETF·펀드 / 기타. 기간은 경험 없음 / 1년 미만 / 1~3년 미만 / 3~5년 미만 / 5년 이상 / 잘 모르겠음",
+        "필수 여부": "조건부필수",
+        "노출 조건": "개인화 투자 검토를 요청한 경우에만. 생활 영향 후",
+        "저장 필드(제안)": "investment_experience_products; experience_duration",
+        "연결 결과": "설명 수준·상품별 추가 확인",
+        "부족 시 처리·검증": "경험 없음은 다른 경험 선택과 배타. 투자기간만으로 상품 이해도·적합성 판단 금지.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "DET-20",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "일반 상품 경험·기간. 파생 관련 상품별 경험·조건부 기간.",
+        "진입 행동·선행 조건": "생활 영향 후",
+        "미완료 시 처리·다음 단계": "투자 미요청이면 해당 없음으로 생략하고 현황·목표·세금·연금·상속 결과는 제공. 투자 요청 시 기존 게이트와 검증 유지."
+      },
+      "fields": "investment_experience_products; experience_duration",
+      "outputs": [
+        "OUT-06"
+      ],
+      "options": [
+        {
+          "field": "experience_products",
+          "code": "EXPERIENCE_PRODUCTS_01",
+          "label": "경험 없음",
+          "mode": "복수"
+        },
+        {
+          "field": "experience_products",
+          "code": "EXPERIENCE_PRODUCTS_02",
+          "label": "예금",
+          "mode": "복수"
+        },
+        {
+          "field": "experience_products",
+          "code": "EXPERIENCE_PRODUCTS_03",
+          "label": "주식",
+          "mode": "복수"
+        },
+        {
+          "field": "experience_products",
+          "code": "EXPERIENCE_PRODUCTS_04",
+          "label": "채권",
+          "mode": "복수"
+        },
+        {
+          "field": "experience_products",
+          "code": "EXPERIENCE_PRODUCTS_05",
+          "label": "ETF·펀드",
+          "mode": "복수"
+        },
+        {
+          "field": "experience_products",
+          "code": "EXPERIENCE_PRODUCTS_06",
+          "label": "기타",
+          "mode": "복수"
+        },
+        {
+          "field": "experience_duration",
+          "code": "EXPERIENCE_DURATION_01",
+          "label": "경험 없음",
+          "mode": "단일"
+        },
+        {
+          "field": "experience_duration",
+          "code": "EXPERIENCE_DURATION_02",
+          "label": "1년 미만",
+          "mode": "단일"
+        },
+        {
+          "field": "experience_duration",
+          "code": "EXPERIENCE_DURATION_03",
+          "label": "1년 이상~3년 미만",
+          "mode": "단일"
+        },
+        {
+          "field": "experience_duration",
+          "code": "EXPERIENCE_DURATION_04",
+          "label": "3년 이상~5년 미만",
+          "mode": "단일"
+        },
+        {
+          "field": "experience_duration",
+          "code": "EXPERIENCE_DURATION_05",
+          "label": "5년 이상",
+          "mode": "단일"
+        },
+        {
+          "field": "experience_duration",
+          "code": "EXPERIENCE_DURATION_06",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "NEW-11",
+      "version": "1.2",
+      "source": {
+        "순서": 41,
+        "항목": "경험·손실",
+        "질문 ID": "NEW-11",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "레버리지·인버스 ETF나 선물·옵션 등 파생 관련 상품에 투자해본 적이 있나요?",
+        "응답 UI": "경험 상품 복수 + 조건부 경험기간 단일",
+        "선택지·입력 안내": "경험 없음 / 레버리지·인버스 ETF / 파생전략형 ETF·펀드 / 선물·옵션 직접거래 / 기타 / 잘 모르겠음. 경험 있음이면 경험기간: 1년 미만 / 1~3년 미만 / 3~5년 미만 / 5년 이상 / 잘 모르겠음.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "개인화 투자 검토를 요청한 경우에만. 생활 영향 후",
+        "저장 필드(제안)": "derivative_experience_products_raw; derivative_experience_duration_raw",
+        "연결 결과": "파생 관련 상품별 경험·설명 수준",
+        "부족 시 처리·검증": "경험 없음·모름은 상품 선택과 배타. ETF 경험과 직접 파생거래 경험을 구분. 경험·이해도(D19)·향후 의향(F20)은 별도이며 경험만으로 적합 판정 금지. 상세 미확인은 관련 상품 검토 보류.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "DET-20",
+        "화면 내 순서": 2,
+        "해당 화면의 입력 범위": "일반 상품 경험·기간. 파생 관련 상품별 경험·조건부 기간.",
+        "진입 행동·선행 조건": "생활 영향 후",
+        "미완료 시 처리·다음 단계": "투자 미요청이면 해당 없음으로 생략하고 현황·목표·세금·연금·상속 결과는 제공. 투자 요청 시 기존 게이트와 검증 유지."
+      },
+      "fields": "derivative_experience_products_raw; derivative_experience_duration_raw",
+      "outputs": [
+        "OUT-06"
+      ],
+      "options": [
+        {
+          "field": "derivative_experience_products_raw",
+          "code": "DER_EXP_NONE",
+          "label": "경험 없음",
+          "mode": "복수"
+        },
+        {
+          "field": "derivative_experience_products_raw",
+          "code": "DER_EXP_LEVERAGED_INVERSE",
+          "label": "레버리지·인버스 ETF",
+          "mode": "복수"
+        },
+        {
+          "field": "derivative_experience_products_raw",
+          "code": "DER_EXP_STRATEGY_FUND",
+          "label": "파생전략형 ETF·펀드",
+          "mode": "복수"
+        },
+        {
+          "field": "derivative_experience_products_raw",
+          "code": "DER_EXP_FUTURES_OPTIONS",
+          "label": "선물·옵션 직접거래",
+          "mode": "복수"
+        },
+        {
+          "field": "derivative_experience_products_raw",
+          "code": "DER_EXP_OTHER",
+          "label": "기타",
+          "mode": "복수"
+        },
+        {
+          "field": "derivative_experience_products_raw",
+          "code": "DER_EXP_UNKNOWN",
+          "label": "잘 모르겠음",
+          "mode": "복수"
+        },
+        {
+          "field": "derivative_experience_duration_raw",
+          "code": "DER_DUR_LT1",
+          "label": "1년 미만",
+          "mode": "단일"
+        },
+        {
+          "field": "derivative_experience_duration_raw",
+          "code": "DER_DUR_1_3",
+          "label": "1~3년 미만",
+          "mode": "단일"
+        },
+        {
+          "field": "derivative_experience_duration_raw",
+          "code": "DER_DUR_3_5",
+          "label": "3~5년 미만",
+          "mode": "단일"
+        },
+        {
+          "field": "derivative_experience_duration_raw",
+          "code": "DER_DUR_5_PLUS",
+          "label": "5년 이상",
+          "mode": "단일"
+        },
+        {
+          "field": "derivative_experience_duration_raw",
+          "code": "DER_DUR_UNKNOWN",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "NEW-10",
+      "version": "1.2",
+      "source": {
+        "순서": 42,
+        "항목": "경험·손실",
+        "질문 ID": "NEW-10",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "투자금이 줄어들더라도 감수할 수 있는 최대 손실은 어느 정도인가요?",
+        "응답 UI": "설명형 단일 선택",
+        "선택지·입력 안내": "손실을 원하지 않아요 / 5% 미만 / 5% 이상~10% 미만 / 10% 이상~20% 미만 / 20% 이상~30% 미만 / 30% 이상 / 잘 모르겠어요",
+        "필수 여부": "조건부필수",
+        "노출 조건": "개인화 투자 검토를 요청한 경우에만. 경험 확인 후",
+        "저장 필드(제안)": "loss_tolerance_band_raw; loss_tolerance_question_version",
+        "연결 결과": "자기보고 손실 감수 한도",
+        "부족 시 처리·검증": "원본 F18의 손실률 기능을 별도 카드로 복원. 현재 F18 하락행동 응답과 별도 저장. 가정 손실률이며 보장·예상 최대손실을 뜻하지 않음. 한도·하락행동·생활영향이 충돌하면 확인 요청. 검증 전 등급·투자비중으로 자동 환산 금지.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "DET-21",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "최대 감수 손실률 구간과20% 하락 시 행동을 각각 선택.",
+        "진입 행동·선행 조건": "경험 확인 후",
+        "미완료 시 처리·다음 단계": "투자 미요청이면 해당 없음으로 생략하고 현황·목표·세금·연금·상속 결과는 제공. 투자 요청 시 기존 게이트와 검증 유지."
+      },
+      "fields": "loss_tolerance_band_raw; loss_tolerance_question_version",
+      "outputs": [
+        "OUT-06"
+      ],
+      "options": [
+        {
+          "field": "loss_tolerance_band_raw",
+          "code": "LOSS_NONE",
+          "label": "손실을 원하지 않아요",
+          "mode": "단일"
+        },
+        {
+          "field": "loss_tolerance_band_raw",
+          "code": "LOSS_UNDER_5",
+          "label": "5% 미만",
+          "mode": "단일"
+        },
+        {
+          "field": "loss_tolerance_band_raw",
+          "code": "LOSS_5_10",
+          "label": "5% 이상~10% 미만",
+          "mode": "단일"
+        },
+        {
+          "field": "loss_tolerance_band_raw",
+          "code": "LOSS_10_20",
+          "label": "10% 이상~20% 미만",
+          "mode": "단일"
+        },
+        {
+          "field": "loss_tolerance_band_raw",
+          "code": "LOSS_20_30",
+          "label": "20% 이상~30% 미만",
+          "mode": "단일"
+        },
+        {
+          "field": "loss_tolerance_band_raw",
+          "code": "LOSS_30_PLUS",
+          "label": "30% 이상",
+          "mode": "단일"
+        },
+        {
+          "field": "loss_tolerance_band_raw",
+          "code": "LOSS_UNKNOWN",
+          "label": "잘 모르겠어요",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "F18",
+      "version": "1.2",
+      "source": {
+        "순서": 43,
+        "항목": "경험·손실",
+        "질문 ID": "F18",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "투자금의 평가금액이 20% 하락한다면 어떻게 행동할 것 같나요?",
+        "응답 UI": "단일 선택",
+        "선택지·입력 안내": "전부 매도 / 일부 매도 / 유지 / 추가 투자 / 잘 모르겠음",
+        "필수 여부": "조건부필수",
+        "노출 조건": "개인화 투자 검토를 요청한 경우에만. 경험 확인 후",
+        "저장 필드(제안)": "loss_response_raw; loss_response_version",
+        "연결 결과": "하락 시 행동 맥락",
+        "부족 시 처리·검증": "기존 기준서의 하락 행동 질문 유지 방향 반영. 20%는 가상 상황이며 실제 손실 한도·등급 가점으로 사용 금지. 선택지 이관 검토 필요.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "DET-21",
+        "화면 내 순서": 2,
+        "해당 화면의 입력 범위": "최대 감수 손실률 구간과20% 하락 시 행동을 각각 선택.",
+        "진입 행동·선행 조건": "경험 확인 후",
+        "미완료 시 처리·다음 단계": "투자 미요청이면 해당 없음으로 생략하고 현황·목표·세금·연금·상속 결과는 제공. 투자 요청 시 기존 게이트와 검증 유지."
+      },
+      "fields": "loss_response_raw; loss_response_version",
+      "outputs": [
+        "OUT-06"
+      ],
+      "options": [
+        {
+          "field": "loss_response_raw",
+          "code": "LOSS_RESPONSE_RAW_01",
+          "label": "전부 매도",
+          "mode": "단일"
+        },
+        {
+          "field": "loss_response_raw",
+          "code": "LOSS_RESPONSE_RAW_02",
+          "label": "일부 매도",
+          "mode": "단일"
+        },
+        {
+          "field": "loss_response_raw",
+          "code": "LOSS_RESPONSE_RAW_03",
+          "label": "유지",
+          "mode": "단일"
+        },
+        {
+          "field": "loss_response_raw",
+          "code": "LOSS_RESPONSE_RAW_04",
+          "label": "추가 투자",
+          "mode": "단일"
+        },
+        {
+          "field": "loss_response_raw",
+          "code": "LOSS_RESPONSE_RAW_05",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "F17",
+      "version": "1.2",
+      "source": {
+        "순서": 44,
+        "항목": "투자선호",
+        "질문 ID": "F17",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "투자할 때, 어느 쪽을 더 중요하게 생각하세요?",
+        "응답 UI": "설명형 5개 선택지 + 모름",
+        "선택지·입력 안내": "1. 수익이 적더라도 손실 위험을 최대한 줄이고 싶어요.\n2. 수익보다 안정성을 조금 더 중요하게 생각해요.\n3. 안정성과 수익을 비슷하게 중요하게 생각해요.\n4. 손실 위험을 어느 정도 감수하고 수익을 더 추구하고 싶어요.\n5. 큰 손실 위험을 감수하더라도 높은 수익을 추구하고 싶어요.\n6. 잘 모르겠어요.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "개인화 투자 검토를 요청한 경우에만. 정밀진단 마지막 투자선호 묶음. 없음·모름 응답 허용.",
+        "저장 필드(제안)": "risk_preference_choice_raw; question_version",
+        "연결 결과": "자기보고 선호",
+        "부족 시 처리·검증": "자기보고 선호 응답을 보존. 5개 선택지를 검증된 위험등급·점수로 간주하지 않음. 원금 보장 표현 금지. 기존 슬라이더 응답은 별도 버전으로 보존",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "PREF-01",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "설명형5개 + 잘 모르겠음",
+        "진입 행동·선행 조건": "경험·손실 확인 후. 질문의 마지막 묶음 시작.",
+        "미완료 시 처리·다음 단계": "투자 미요청이면 해당 없음으로 생략하고 현황·목표·세금·연금·상속 결과는 제공. 투자 요청 시 기존 게이트와 검증 유지."
+      },
+      "fields": "risk_preference_choice_raw; question_version",
+      "outputs": [
+        "OUT-06"
+      ],
+      "options": [
+        {
+          "field": "risk_preference_choice_raw",
+          "code": "PREF_STABILITY",
+          "label": "수익이 적더라도 손실 위험을 최대한 줄이고 싶어요.",
+          "mode": "단일"
+        },
+        {
+          "field": "risk_preference_choice_raw",
+          "code": "PREF_RETURN",
+          "label": "큰 손실 위험을 감수하더라도 높은 수익을 추구하고 싶어요.",
+          "mode": "단일"
+        },
+        {
+          "field": "risk_preference_choice_raw",
+          "code": "PREF_LEAN_STABILITY",
+          "label": "수익보다 안정성을 조금 더 중요하게 생각해요.",
+          "mode": "단일"
+        },
+        {
+          "field": "risk_preference_choice_raw",
+          "code": "PREF_BALANCED",
+          "label": "안정성과 수익을 비슷하게 중요하게 생각해요.",
+          "mode": "단일"
+        },
+        {
+          "field": "risk_preference_choice_raw",
+          "code": "PREF_LEAN_RETURN",
+          "label": "손실 위험을 어느 정도 감수하고 수익을 더 추구하고 싶어요.",
+          "mode": "단일"
+        },
+        {
+          "field": "risk_preference_choice_raw",
+          "code": "PREF_UNKNOWN",
+          "label": "잘 모르겠어요.",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "D15",
+      "version": "1.2",
+      "source": {
+        "순서": 45,
+        "항목": "투자선호",
+        "질문 ID": "D15",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "어느 시장에 투자하는 국내 상장 ETF에 관심이 있나요?",
+        "응답 UI": "단일 선택",
+        "선택지·입력 안내": "한국 / 미국 / 두 시장 모두 / 특별한 선호 없음 / 잘 모르겠음",
+        "필수 여부": "조건부필수",
+        "노출 조건": "개인화 투자 검토를 요청한 경우에만. 정밀진단 마지막 투자선호 묶음. 없음·모름 응답 허용.",
+        "저장 필드(제안)": "preferred_underlying_market",
+        "연결 결과": "국내 상장 ETF 기초시장 선호",
+        "부족 시 처리·검증": "상장시장과 기초시장을 구분. 미국 선호가 미국 직접주식 주문이나 무환위험을 뜻하지 않음.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "PREF-02",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "한국/미국/모두/없음/모름, 배당·성장·가치·지수 등",
+        "진입 행동·선행 조건": "PREF-01 후",
+        "미완료 시 처리·다음 단계": "투자 미요청이면 해당 없음으로 생략하고 현황·목표·세금·연금·상속 결과는 제공. 투자 요청 시 기존 게이트와 검증 유지."
+      },
+      "fields": "preferred_underlying_market",
+      "outputs": [
+        "OUT-06"
+      ],
+      "options": [
+        {
+          "field": "preferred_underlying_market",
+          "code": "PREFERRED_UNDERLYING_MARKET_01",
+          "label": "한국",
+          "mode": "단일"
+        },
+        {
+          "field": "preferred_underlying_market",
+          "code": "PREFERRED_UNDERLYING_MARKET_02",
+          "label": "미국",
+          "mode": "단일"
+        },
+        {
+          "field": "preferred_underlying_market",
+          "code": "PREFERRED_UNDERLYING_MARKET_03",
+          "label": "두 시장 모두",
+          "mode": "단일"
+        },
+        {
+          "field": "preferred_underlying_market",
+          "code": "PREFERRED_UNDERLYING_MARKET_04",
+          "label": "특별한 선호 없음",
+          "mode": "단일"
+        },
+        {
+          "field": "preferred_underlying_market",
+          "code": "PREFERRED_UNDERLYING_MARKET_05",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "D16-1",
+      "version": "1.2",
+      "source": {
+        "순서": 46,
+        "항목": "투자선호",
+        "질문 ID": "D16-1",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "관심 있는 투자전략이 있나요?",
+        "응답 UI": "복수 선택",
+        "선택지·입력 안내": "배당·인컴 / 성장 / 가치 / 시장지수 / 특별한 선호 없음 / 잘 모르겠음",
+        "필수 여부": "조건부필수",
+        "노출 조건": "개인화 투자 검토를 요청한 경우에만. 정밀진단 마지막 투자선호 묶음. 없음·모름 응답 허용.",
+        "저장 필드(제안)": "preferred_strategies",
+        "연결 결과": "전략 설명·적합한 후보 비교",
+        "부족 시 처리·검증": "배당·인컴이 안정성 보장 의미 아님. 없음·모름은 다른 선택과 배타.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "PREF-02",
+        "화면 내 순서": 2,
+        "해당 화면의 입력 범위": "한국/미국/모두/없음/모름, 배당·성장·가치·지수 등",
+        "진입 행동·선행 조건": "PREF-01 후",
+        "미완료 시 처리·다음 단계": "투자 미요청이면 해당 없음으로 생략하고 현황·목표·세금·연금·상속 결과는 제공. 투자 요청 시 기존 게이트와 검증 유지."
+      },
+      "fields": "preferred_strategies",
+      "outputs": [
+        "OUT-06"
+      ],
+      "options": [
+        {
+          "field": "preferred_strategies",
+          "code": "PREFERRED_STRATEGIES_01",
+          "label": "배당·인컴",
+          "mode": "복수"
+        },
+        {
+          "field": "preferred_strategies",
+          "code": "PREFERRED_STRATEGIES_02",
+          "label": "성장",
+          "mode": "복수"
+        },
+        {
+          "field": "preferred_strategies",
+          "code": "PREFERRED_STRATEGIES_03",
+          "label": "가치",
+          "mode": "복수"
+        },
+        {
+          "field": "preferred_strategies",
+          "code": "PREFERRED_STRATEGIES_04",
+          "label": "시장지수",
+          "mode": "복수"
+        },
+        {
+          "field": "preferred_strategies",
+          "code": "PREFERRED_STRATEGIES_05",
+          "label": "특별한 선호 없음",
+          "mode": "복수"
+        },
+        {
+          "field": "preferred_strategies",
+          "code": "PREFERRED_STRATEGIES_06",
+          "label": "잘 모르겠음",
+          "mode": "복수"
+        }
+      ]
+    },
+    {
+      "id": "D16-2",
+      "version": "1.2",
+      "source": {
+        "순서": 47,
+        "항목": "투자선호",
+        "질문 ID": "D16-2",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "관심 있는 산업은 무엇인가요? 최대 3개까지 골라주세요.",
+        "응답 UI": "복수 선택 0~3개",
+        "선택지·입력 안내": "반도체 / AI·빅테크 / 바이오·헬스케어 / 방산·우주항공 / 조선·해운 / 자동차·모빌리티 / 2차전지·에너지 / 금융 / 로봇·자동화 / 소비재·유통 / 특별한 선호 없음 / 잘 모르겠음",
+        "필수 여부": "조건부필수",
+        "노출 조건": "개인화 투자 검토를 요청한 경우에만. 정밀진단 마지막 투자선호 묶음. 없음·모름 응답 허용.",
+        "저장 필드(제안)": "preferred_industries",
+        "연결 결과": "산업 분석·적합성 설명·대안 비교",
+        "부족 시 처리·검증": "투자선호 마지막 묶음에서 명시 노출. 산업 선택은0~3개, 없음·모름은 다른 선택과 배타. 선호 수로 비중 생성 금지. NEW-12 제외 산업과 중복 시 충돌을 표시하고 고객 확인 전 자동 편입 금지.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "PREF-03",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "동일10개 산업에서0~3개 또는 선호 없음·모름",
+        "진입 행동·선행 조건": "PREF-02 후. 심화 메뉴에 숨기지 않음.",
+        "미완료 시 처리·다음 단계": "투자 미요청이면 해당 없음으로 생략하고 현황·목표·세금·연금·상속 결과는 제공. 투자 요청 시 기존 게이트와 검증 유지."
+      },
+      "fields": "preferred_industries",
+      "outputs": [
+        "OUT-06"
+      ],
+      "options": [
+        {
+          "field": "preferred_industries",
+          "code": "PREFERRED_INDUSTRIES_01",
+          "label": "반도체",
+          "mode": "복수"
+        },
+        {
+          "field": "preferred_industries",
+          "code": "PREFERRED_INDUSTRIES_02",
+          "label": "AI·빅테크",
+          "mode": "복수"
+        },
+        {
+          "field": "preferred_industries",
+          "code": "PREFERRED_INDUSTRIES_03",
+          "label": "바이오·헬스케어",
+          "mode": "복수"
+        },
+        {
+          "field": "preferred_industries",
+          "code": "PREFERRED_INDUSTRIES_04",
+          "label": "방산·우주항공",
+          "mode": "복수"
+        },
+        {
+          "field": "preferred_industries",
+          "code": "PREFERRED_INDUSTRIES_05",
+          "label": "조선·해운",
+          "mode": "복수"
+        },
+        {
+          "field": "preferred_industries",
+          "code": "PREFERRED_INDUSTRIES_06",
+          "label": "자동차·모빌리티",
+          "mode": "복수"
+        },
+        {
+          "field": "preferred_industries",
+          "code": "PREFERRED_INDUSTRIES_07",
+          "label": "2차전지·에너지",
+          "mode": "복수"
+        },
+        {
+          "field": "preferred_industries",
+          "code": "PREFERRED_INDUSTRIES_08",
+          "label": "금융",
+          "mode": "복수"
+        },
+        {
+          "field": "preferred_industries",
+          "code": "PREFERRED_INDUSTRIES_09",
+          "label": "로봇·자동화",
+          "mode": "복수"
+        },
+        {
+          "field": "preferred_industries",
+          "code": "PREFERRED_INDUSTRIES_10",
+          "label": "소비재·유통",
+          "mode": "복수"
+        },
+        {
+          "field": "preferred_industries",
+          "code": "PREFERRED_INDUSTRIES_11",
+          "label": "특별한 선호 없음",
+          "mode": "복수"
+        },
+        {
+          "field": "preferred_industries",
+          "code": "PREFERRED_INDUSTRIES_UNKNOWN",
+          "label": "잘 모르겠음",
+          "mode": "복수"
+        }
+      ]
+    },
+    {
+      "id": "NEW-12",
+      "version": "1.2",
+      "source": {
+        "순서": 48,
+        "항목": "투자선호",
+        "질문 ID": "NEW-12",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "투자에서 제외하고 싶은 산업이 있나요?",
+        "응답 UI": "복수 선택(제외 산업 개수 제한 없음)",
+        "선택지·입력 안내": "반도체 / AI·빅테크 / 바이오·헬스케어 / 방산·우주항공 / 조선·해운 / 자동차·모빌리티 / 2차전지·에너지 / 금융 / 로봇·자동화 / 소비재·유통 / 제외할 산업 없음 / 잘 모르겠음",
+        "필수 여부": "조건부필수",
+        "노출 조건": "개인화 투자 검토를 요청한 경우에만. 정밀진단 마지막 투자선호 묶음. 없음·모름 응답 허용.",
+        "저장 필드(제안)": "excluded_industries_raw; industry_exclusion_version",
+        "연결 결과": "산업별 비선호·제외 조건",
+        "부족 시 처리·검증": "D16-2와 같은10개 산업 목록을 사용. 선호 최대3개 제한을 제외 산업에 적용하지 않음. 없음·모름은 배타. 선호·제외 중복은 고객 재확인 전 자동 적용·편입 금지. 제외 범위는 분류 태그와 연결하고 혼합 ETF의 허용 노출 기준은 별도 검토.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "PREF-04",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "동일10개 산업에서 제외 대상 복수 선택. 개수 제한 없음.",
+        "진입 행동·선행 조건": "산업 선호 직후",
+        "미완료 시 처리·다음 단계": "투자 미요청이면 해당 없음으로 생략하고 현황·목표·세금·연금·상속 결과는 제공. 투자 요청 시 기존 게이트와 검증 유지."
+      },
+      "fields": "excluded_industries_raw; industry_exclusion_version",
+      "outputs": [
+        "OUT-06"
+      ],
+      "options": [
+        {
+          "field": "excluded_industries_raw",
+          "code": "EXCL_INDUSTRY_01",
+          "label": "반도체",
+          "mode": "복수"
+        },
+        {
+          "field": "excluded_industries_raw",
+          "code": "EXCL_INDUSTRY_02",
+          "label": "AI·빅테크",
+          "mode": "복수"
+        },
+        {
+          "field": "excluded_industries_raw",
+          "code": "EXCL_INDUSTRY_03",
+          "label": "바이오·헬스케어",
+          "mode": "복수"
+        },
+        {
+          "field": "excluded_industries_raw",
+          "code": "EXCL_INDUSTRY_04",
+          "label": "방산·우주항공",
+          "mode": "복수"
+        },
+        {
+          "field": "excluded_industries_raw",
+          "code": "EXCL_INDUSTRY_05",
+          "label": "조선·해운",
+          "mode": "복수"
+        },
+        {
+          "field": "excluded_industries_raw",
+          "code": "EXCL_INDUSTRY_06",
+          "label": "자동차·모빌리티",
+          "mode": "복수"
+        },
+        {
+          "field": "excluded_industries_raw",
+          "code": "EXCL_INDUSTRY_07",
+          "label": "2차전지·에너지",
+          "mode": "복수"
+        },
+        {
+          "field": "excluded_industries_raw",
+          "code": "EXCL_INDUSTRY_08",
+          "label": "금융",
+          "mode": "복수"
+        },
+        {
+          "field": "excluded_industries_raw",
+          "code": "EXCL_INDUSTRY_09",
+          "label": "로봇·자동화",
+          "mode": "복수"
+        },
+        {
+          "field": "excluded_industries_raw",
+          "code": "EXCL_INDUSTRY_10",
+          "label": "소비재·유통",
+          "mode": "복수"
+        },
+        {
+          "field": "excluded_industries_raw",
+          "code": "EXCL_INDUSTRY_NONE",
+          "label": "제외할 산업 없음",
+          "mode": "복수"
+        },
+        {
+          "field": "excluded_industries_raw",
+          "code": "EXCL_INDUSTRY_UNKNOWN",
+          "label": "잘 모르겠음",
+          "mode": "복수"
+        }
+      ]
+    },
+    {
+      "id": "D14",
+      "version": "1.2",
+      "source": {
+        "순서": 49,
+        "항목": "투자선호",
+        "질문 ID": "D14",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "투자에서 반드시 제외하고 싶은 대상이나 조건이 있나요?",
+        "응답 UI": "복수 선택 + 조건부 산업 선택",
+        "선택지·입력 안내": "없음 / 주식 / 채권 / 해외 기초자산 / 환노출 / 레버리지·인버스 / 파생전략형 / 특정 산업 / 기타 / 잘 모르겠음. 특정 산업은 NEW-12 응답을 재사용하며 미입력일 때만 NEW-12로 연결. 기타 설명은 선택.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "개인화 투자 검토를 요청한 경우에만. 정밀진단 마지막 투자선호 묶음. 없음·모름 응답 허용.",
+        "저장 필드(제안)": "restricted_assets; restriction_tags",
+        "연결 결과": "후보 제외 조건",
+        "부족 시 처리·검증": "시장·전략·산업 선호와 구분해 제외조건으로 적용. 산업 비선호는 NEW-12에 별도 저장해 재사용. 모름을 없음으로 처리하지 않음. 같은 산업 선호·제외 중복은 확인 전 자동 확정하지 않음.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "PREF-05",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "주식·채권·해외·환노출·레버리지·파생 등 제외조건. 산업은 기존 응답 재사용.",
+        "진입 행동·선행 조건": "산업 비선호 후",
+        "미완료 시 처리·다음 단계": "투자 미요청이면 해당 없음으로 생략하고 현황·목표·세금·연금·상속 결과는 제공. 투자 요청 시 기존 게이트와 검증 유지."
+      },
+      "fields": "restricted_assets; restriction_tags",
+      "outputs": [
+        "OUT-06"
+      ],
+      "options": [
+        {
+          "field": "restricted_assets",
+          "code": "RESTRICTED_ASSETS_01",
+          "label": "없음",
+          "mode": "복수"
+        },
+        {
+          "field": "restricted_assets",
+          "code": "RESTRICTED_ASSETS_02",
+          "label": "주식",
+          "mode": "복수"
+        },
+        {
+          "field": "restricted_assets",
+          "code": "RESTRICTED_ASSETS_03",
+          "label": "채권",
+          "mode": "복수"
+        },
+        {
+          "field": "restricted_assets",
+          "code": "RESTRICTED_ASSETS_04",
+          "label": "해외 기초자산",
+          "mode": "복수"
+        },
+        {
+          "field": "restricted_assets",
+          "code": "RESTRICTED_ASSETS_05",
+          "label": "환노출",
+          "mode": "복수"
+        },
+        {
+          "field": "restricted_assets",
+          "code": "RESTRICTED_ASSETS_06",
+          "label": "레버리지·인버스",
+          "mode": "복수"
+        },
+        {
+          "field": "restricted_assets",
+          "code": "RESTRICTED_ASSETS_07",
+          "label": "파생전략형",
+          "mode": "복수"
+        },
+        {
+          "field": "restricted_assets",
+          "code": "RESTRICTED_ASSETS_08",
+          "label": "특정 산업",
+          "mode": "복수"
+        },
+        {
+          "field": "restricted_assets",
+          "code": "RESTRICTED_ASSETS_09",
+          "label": "기타",
+          "mode": "복수"
+        },
+        {
+          "field": "restricted_assets",
+          "code": "RESTRICTED_ASSETS_10",
+          "label": "잘 모르겠음",
+          "mode": "복수"
+        }
+      ]
+    },
+    {
+      "id": "D17",
+      "version": "1.2",
+      "source": {
+        "순서": 50,
+        "항목": "투자선호",
+        "질문 ID": "D17",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "채권 ETF에서 어떤 특성을 중요하게 생각하시나요?",
+        "응답 UI": "설명 후 단일 선택",
+        "선택지·입력 안내": "가격 변동을 줄이는 방향 / 이자수익 / 금리변동에 따른 가격변화 / 균형 / 잘 모르겠음",
+        "필수 여부": "선택",
+        "노출 조건": "개인화 투자 검토를 요청한 경우에만. 선호 묶음에서 채권 검토가 해당할 때",
+        "저장 필드(제안)": "bond_preference",
+        "연결 결과": "채권 후보 설명·기간 검토",
+        "부족 시 처리·검증": "원금 보장처럼 표현하지 않음. 실제 상품의 기간·가격 위험·비용은 상품 데이터로 설명.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "PREF-06",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "가격 변동 / 이자 / 금리변동 가격변화 / 균형 / 모름",
+        "진입 행동·선행 조건": "선호 묶음에서 채권 검토가 해당할 때",
+        "미완료 시 처리·다음 단계": "투자 미요청이면 해당 없음으로 생략하고 현황·목표·세금·연금·상속 결과는 제공. 투자 요청 시 기존 게이트와 검증 유지."
+      },
+      "fields": "bond_preference",
+      "outputs": [
+        "OUT-06"
+      ],
+      "options": [
+        {
+          "field": "bond_preference",
+          "code": "BOND_PREFERENCE_01",
+          "label": "가격 변동을 줄이는 방향",
+          "mode": "단일"
+        },
+        {
+          "field": "bond_preference",
+          "code": "BOND_PREFERENCE_02",
+          "label": "이자수익",
+          "mode": "단일"
+        },
+        {
+          "field": "bond_preference",
+          "code": "BOND_PREFERENCE_03",
+          "label": "금리변동에 따른 가격변화",
+          "mode": "단일"
+        },
+        {
+          "field": "bond_preference",
+          "code": "BOND_PREFERENCE_04",
+          "label": "균형",
+          "mode": "단일"
+        },
+        {
+          "field": "bond_preference",
+          "code": "BOND_PREFERENCE_05",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "D18",
+      "version": "1.2",
+      "source": {
+        "순서": 51,
+        "항목": "투자선호",
+        "질문 ID": "D18",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "해외 자산의 환율 변동을 어느 정도 받아들일 수 있나요?",
+        "응답 UI": "환율 영향 설명 후 단일 선택",
+        "선택지·입력 안내": "환헤지 상품을 선호해요 / 가능하면 환율 영향을 줄이고 싶어요 / 환헤지·환노출을 섞고 싶어요 / 환율 변동을 받아들일 수 있어요 / 잘 모르겠어요",
+        "필수 여부": "조건부필수",
+        "노출 조건": "개인화 투자 검토를 요청한 경우에만. 해외 기초자산 보유·관심·후보 노출이 있거나 미확인일 때",
+        "저장 필드(제안)": "fx_preference_raw_v2; fx_preference_version",
+        "연결 결과": "환헤지·환노출 설명",
+        "부족 시 처리·검증": "해외 기초자산 보유·투자 관심 또는 후보 노출 시 확인. 국내 상장 여부만으로 생략 금지. 환헤지는 원금 보장 아님. 기존4개 fx_preference 응답은 원문·버전을 보존하고 자동 재코딩하지 않음. 미확인 시 해당 환율 조건을 임의 확정하지 않음.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "PREF-07",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "환헤지 선호 / 가급적 축소 / 혼합 / 환노출 수용 / 모름",
+        "진입 행동·선행 조건": "해외 기초자산 보유·관심·후보 노출이 있거나 미확인일 때",
+        "미완료 시 처리·다음 단계": "투자 미요청이면 해당 없음으로 생략하고 현황·목표·세금·연금·상속 결과는 제공. 투자 요청 시 기존 게이트와 검증 유지."
+      },
+      "fields": "fx_preference_raw_v2; fx_preference_version",
+      "outputs": [
+        "OUT-06"
+      ],
+      "options": [
+        {
+          "field": "fx_preference_raw_v2",
+          "code": "FX_HEDGE_PREFERRED",
+          "label": "환헤지 상품을 선호해요",
+          "mode": "단일"
+        },
+        {
+          "field": "fx_preference_raw_v2",
+          "code": "FX_REDUCE",
+          "label": "가능하면 환율 영향을 줄이고 싶어요",
+          "mode": "단일"
+        },
+        {
+          "field": "fx_preference_raw_v2",
+          "code": "FX_MIXED",
+          "label": "환헤지·환노출을 섞고 싶어요",
+          "mode": "단일"
+        },
+        {
+          "field": "fx_preference_raw_v2",
+          "code": "FX_ACCEPT",
+          "label": "환율 변동을 받아들일 수 있어요",
+          "mode": "단일"
+        },
+        {
+          "field": "fx_preference_raw_v2",
+          "code": "FX_UNKNOWN",
+          "label": "잘 모르겠어요",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "F20",
+      "version": "1.2",
+      "source": {
+        "순서": 52,
+        "항목": "투자선호",
+        "질문 ID": "F20",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "추가 설명과 조건 확인을 거쳐 파생전략형 상품도 검토하시겠어요?",
+        "응답 UI": "단일 선택",
+        "선택지·입력 안내": "검토 희망 / 조건 확인 후 결정 / 제외 / 잘 모르겠음",
+        "필수 여부": "선택",
+        "노출 조건": "개인화 투자 검토를 요청한 경우에만. 정밀진단 마지막 선호 묶음. 지원 밖은 관심만 수집하고 실제 편입 보류.",
+        "저장 필드(제안)": "derivative_review_intent",
+        "연결 결과": "심화 설명 진입",
+        "부족 시 처리·검증": "희망만으로 편입 금지. 기본/최대 비중 및 분모 미확정. 검토 전 실제 배분 생성 금지.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "PREF-08",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "의향 먼저 선택. 희망·조건부 희망이면 상품 설명·이해 확인.",
+        "진입 행동·선행 조건": "투자선호 마지막. 지원 밖 상품은 일반 설명·관심 접수만.",
+        "미완료 시 처리·다음 단계": "투자 미요청이면 해당 없음으로 생략하고 현황·목표·세금·연금·상속 결과는 제공. 투자 요청 시 기존 게이트와 검증 유지."
+      },
+      "fields": "derivative_review_intent",
+      "outputs": [
+        "OUT-06"
+      ],
+      "options": [
+        {
+          "field": "derivative_review_intent",
+          "code": "DERIVATIVE_REVIEW_INTENT_01",
+          "label": "검토 희망",
+          "mode": "단일"
+        },
+        {
+          "field": "derivative_review_intent",
+          "code": "DERIVATIVE_REVIEW_INTENT_02",
+          "label": "조건 확인 후 결정",
+          "mode": "단일"
+        },
+        {
+          "field": "derivative_review_intent",
+          "code": "DERIVATIVE_REVIEW_INTENT_03",
+          "label": "제외",
+          "mode": "단일"
+        },
+        {
+          "field": "derivative_review_intent",
+          "code": "DERIVATIVE_REVIEW_INTENT_04",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "D19",
+      "version": "1.2",
+      "source": {
+        "순서": 53,
+        "항목": "투자선호",
+        "질문 ID": "D19",
+        "변경 유형": "v1.2 보완",
+        "고객에게 보여줄 질문": "검토할 상품의 수익구조와 손실 가능성에 대한 설명을 확인하셨나요?",
+        "응답 UI": "단일 선택 + 상품별 객관식 확인",
+        "선택지·입력 안내": "충분히 이해 / 일부 이해 / 추가 설명 필요 / 잘 모르겠음. 지원할 상품의 이해 확인 문항은 객관식으로 별도 설계",
+        "필수 여부": "조건부필수",
+        "노출 조건": "개인화 투자 검토를 요청한 경우에만. 마지막 F20=검토 희망·조건 확인 후 결정이고 지원 상품 검토가 가능한 경우",
+        "저장 필드(제안)": "product_understanding_self_report; product_knowledge_checks",
+        "연결 결과": "상품별 이해 확인",
+        "부족 시 처리·검증": "자기평가만으로 적합 판정 금지. 상품별 객관식 확인 문항·정답 근거·경험·자금·기간 정책은 별도 검증. 자유서술로 이해도를 평가하지 않음",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "PREF-08",
+        "화면 내 순서": 2,
+        "해당 화면의 입력 범위": "의향 먼저 선택. 희망·조건부 희망이면 상품 설명·이해 확인.",
+        "진입 행동·선행 조건": "투자선호 마지막. 지원 밖 상품은 일반 설명·관심 접수만.",
+        "미완료 시 처리·다음 단계": "투자 미요청이면 해당 없음으로 생략하고 현황·목표·세금·연금·상속 결과는 제공. 투자 요청 시 기존 게이트와 검증 유지."
+      },
+      "fields": "product_understanding_self_report; product_knowledge_checks",
+      "outputs": [
+        "OUT-06"
+      ],
+      "options": [
+        {
+          "field": "product_understanding",
+          "code": "PRODUCT_UNDERSTANDING_01",
+          "label": "충분히 이해",
+          "mode": "단일"
+        },
+        {
+          "field": "product_understanding",
+          "code": "PRODUCT_UNDERSTANDING_02",
+          "label": "일부 이해",
+          "mode": "단일"
+        },
+        {
+          "field": "product_understanding",
+          "code": "PRODUCT_UNDERSTANDING_03",
+          "label": "추가 설명 필요",
+          "mode": "단일"
+        },
+        {
+          "field": "product_understanding",
+          "code": "PRODUCT_UNDERSTANDING_04",
+          "label": "잘 모르겠음",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "PLAN-01",
+      "version": "1.2",
+      "source": {
+        "순서": 54,
+        "항목": "계획 선택·실행",
+        "질문 ID": "PLAN-01",
+        "변경 유형": "v1.2 추가",
+        "고객에게 보여줄 질문": "검토한 계획 중 어떤 안을 실행계획으로 선택할까요?",
+        "응답 UI": "계획 선택·명시 확인",
+        "선택지·입력 안내": "계획별 목표·부족액·납입/상환·변경 조건·시작일 확인 후 선택 / 수정 요청 / 나중에. 허용한 변경만 기록.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "같은 입력버전의 실행 가능한 계획이 제시되고 고객이 선택을 원하는 경우.",
+        "저장 필드(제안)": "plan_adoption.{plan_id,plan_version,input_snapshot_ref,selected_option,confirmed_on,start_on,permissions_ref,action_schedule_refs}",
+        "연결 결과": "채택한 계획·해야 할 일·실행 일정",
+        "부족 시 처리·검증": "미리보기·채택·실제 금융실행 구분. 조회/입력만으로 채택 처리 금지. 불가능하거나 미검증인 안을 채택 가능으로 표시하지 않음. 자동 금융거래는 수행하지 않음. 실제0/모름/미입력/해당없음/나중에를 구분. 모름은 null. 금액은 만원 입력→정수 원 문자열. 확인값·추정·공식조회·시나리오 및 기준일을 저장.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "PLAN-01",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "계획별 목표·부족액·납입/상환·변경 조건·시작일 확인 후 선택 / 수정 요청 / 나중에. 허용한 변경만 기록.",
+        "진입 행동·선행 조건": "같은 입력버전의 실행 가능한 계획이 제시되고 고객이 선택을 원하는 경우.",
+        "미완료 시 처리·다음 단계": "확인된 답변 재사용. 부족한 항목만 펼침. 영향받는 결과만 보류."
+      },
+      "fields": "plan_adoption.{plan_id,plan_version,input_snapshot_ref,selected_option,confirmed_on,start_on,permissions_ref,action_schedule_refs}",
+      "outputs": [
+        "OUT-14"
+      ],
+      "options": [
+        {
+          "field": "plan_selection",
+          "code": "V12_PLAN_SELECTION_SELECT",
+          "label": "안 선택",
+          "mode": "단일"
+        },
+        {
+          "field": "plan_selection",
+          "code": "V12_PLAN_SELECTION_REVISE",
+          "label": "수정 요청",
+          "mode": "단일"
+        },
+        {
+          "field": "plan_selection",
+          "code": "V12_PLAN_SELECTION_LATER",
+          "label": "나중에",
+          "mode": "단일"
+        }
+      ]
+    },
+    {
+      "id": "REV-01",
+      "version": "1.2",
+      "source": {
+        "순서": 55,
+        "항목": "실적·재점검",
+        "질문 ID": "REV-01",
+        "변경 유형": "v1.2 추가",
+        "고객에게 보여줄 질문": "이번 기간에 계획과 달랐거나 앞으로 달라질 내용이 있나요?",
+        "응답 UI": "변화 없음·변화 있음·모름 + 변경분만",
+        "선택지·입력 안내": "소득·생활비·상환·저축/연금 납입·가족/직업·목표·세금·상속에서 변경 항목만. 기록기간·기준일·실제금액 또는 미입력 상태·완료 여부 분리. 점검주기 선택.",
+        "필수 여부": "조건부필수",
+        "노출 조건": "고객이 점검을 요청했거나 채택계획의 점검 시점에 직접 진입한 경우.",
+        "저장 필드(제안)": "reviews[].{review_id,plan_ref,period_start,period_end,as_of,is_closed,changed_fields,actual_event_refs,task_completion,review_cycle,next_review_on}",
+        "연결 결과": "계획 대비 차이·재검토할 항목·새 초안",
+        "부족 시 처리·검증": "전체 설문 재입력 요구 금지. 실제0·미입력·중간기록·월말 구분. 변경 후 계산은 새 초안이고 기존 채택안을 자동 변경하지 않음. 주기 선택은 자동 알림 생성 동의가 아님. 실제0/모름/미입력/해당없음/나중에를 구분. 모름은 null. 금액은 만원 입력→정수 원 문자열. 확인값·추정·공식조회·시나리오 및 기준일을 저장.",
+        "검토 상태": "설계반영·연결대기",
+        "화면 ID(설계용)": "REV-01",
+        "화면 내 순서": 1,
+        "해당 화면의 입력 범위": "소득·생활비·상환·저축/연금 납입·가족/직업·목표·세금·상속에서 변경 항목만. 기록기간·기준일·실제금액 또는 미입력 상태·완료 여부 분리. 점검주기 선택.",
+        "진입 행동·선행 조건": "고객이 점검을 요청했거나 채택계획의 점검 시점에 직접 진입한 경우.",
+        "미완료 시 처리·다음 단계": "확인된 답변 재사용. 부족한 항목만 펼침. 영향받는 결과만 보류."
+      },
+      "fields": "reviews[].{review_id,plan_ref,period_start,period_end,as_of,is_closed,changed_fields,actual_event_refs,task_completion,review_cycle,next_review_on}",
+      "outputs": [
+        "OUT-14"
+      ],
+      "options": [
+        {
+          "field": "review_change_status",
+          "code": "V12_REVIEW_CHANGE_STATUS_NO_CHANGE",
+          "label": "변화 없음",
+          "mode": "단일"
+        },
+        {
+          "field": "review_change_status",
+          "code": "V12_REVIEW_CHANGE_STATUS_CHANGED",
+          "label": "변화 있음",
+          "mode": "단일"
+        },
+        {
+          "field": "review_change_status",
+          "code": "V12_REVIEW_CHANGE_STATUS_UNKNOWN",
+          "label": "모름",
+          "mode": "단일"
+        },
+        {
+          "field": "review_cycle",
+          "code": "V12_REVIEW_CYCLE_MONTHLY",
+          "label": "매월",
+          "mode": "단일"
+        },
+        {
+          "field": "review_cycle",
+          "code": "V12_REVIEW_CYCLE_QUARTERLY",
+          "label": "3개월",
+          "mode": "단일"
+        },
+        {
+          "field": "review_cycle",
+          "code": "V12_REVIEW_CYCLE_HALFYEAR",
+          "label": "6개월",
+          "mode": "단일"
+        },
+        {
+          "field": "review_cycle",
+          "code": "V12_REVIEW_CYCLE_YEARLY",
+          "label": "매년",
+          "mode": "단일"
+        },
+        {
+          "field": "review_cycle",
+          "code": "V12_REVIEW_CYCLE_MANUAL",
+          "label": "필요할 때",
+          "mode": "단일"
+        }
+      ]
+    }
+  ]
+}

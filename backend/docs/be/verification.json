@@ -1,0 +1,93 @@
+{
+  "date_kst": "2026-11-10",
+  "baseline_library_version": "5",
+  "baseline_sha256": "64c799714399647626a62a1d898fcf0ff8ba48a31955038fadd21ddce5e16042",
+  "runtime": {
+    "python": "3.12.14",
+    "platform": "Linux",
+    "fastapi": "0.141.1",
+    "pydantic": "2.13.4",
+    "httpx": "0.28.1",
+    "pytest": "9.2.0",
+    "ruff": "0.17.4",
+    "psycopg": "3.3.8",
+    "pgserver": "0.1.4"
+  },
+  "checks": [
+    {
+      "command": "python -m pytest tests -q",
+      "passed": 307,
+      "skipped": 7,
+      "warnings": 2,
+      "result": "PASS_WITH_BLOCKED_POSTGRES_TESTS",
+      "baseline_passed": 253,
+      "reused_poc_passed": 29,
+      "new_integration_passed": 25
+    },
+    {
+      "command": "python -m ruff check app/be app/be_server.py tests/be",
+      "result": "PASS"
+    },
+    {
+      "command": "python scripts/check-package-integrity.py",
+      "result": "PASS",
+      "managed_baseline_files": 209
+    },
+    {
+      "check": "all original ZIP file bytes SHA256 compare",
+      "result": "PASS",
+      "baseline_files_including_manifest": 210,
+      "changed": 0
+    },
+    {
+      "check": "3 separate processes: app.be.demo seed -> edit -> report",
+      "result": "PASS",
+      "storage": "LOCAL_SQLITE",
+      "identity": "MOCK",
+      "engine": "ACTUAL DION-ENGINE-1.0",
+      "logical_revision_versions": [
+        "v1",
+        "v2"
+      ],
+      "case_input_versions": [
+        6,
+        7
+      ],
+      "raw_income_original": "00300.0000",
+      "OUT-03_krw": [
+        "500000",
+        "700000"
+      ],
+      "is_current": [
+        false,
+        true
+      ]
+    },
+    {
+      "check": "PostgreSQL 16.2 standalone SQL schema installation and count query",
+      "result": "PASS_DDL_ONLY",
+      "rows_in_fresh_analysis_runs": 0
+    },
+    {
+      "check": "local PostgreSQL psycopg transaction tests",
+      "result": "BLOCKED",
+      "count": 7,
+      "reason": "PermissionError: execution host denies AF_UNIX socket creation; not a passed integration test"
+    },
+    {
+      "check": "remote Supabase DB + real login A/B + API persistence",
+      "result": "NOT_RUN",
+      "reason": "No remote connection credentials or actual login tokens were used; user-reported /health/db is separate evidence"
+    },
+    {
+      "check": "PowerShell Core / frontend E2E / Build",
+      "result": "NOT_RUN",
+      "reason": "BE-only patch; no frontend changes, PowerShell not available in execution environment"
+    }
+  ],
+  "warnings": [
+    "pytest/anyio deprecation",
+    "ambient starlette TestClient/httpx deprecation; runtime differs from requirements.txt"
+  ],
+  "acceptance": "LIMITED_LOCAL_INTEGRATION_VERIFIED; R03/R06/R07 REMOTE_ACCEPTANCE_PENDING"
+}

@@ -1,0 +1,827 @@
+{
+  "baseline_library_version": 5,
+  "source_archive_sha256": "64c799714399647626a62a1d898fcf0ff8ba48a31955038fadd21ddce5e16042",
+  "original_file_count": 210,
+  "all_original_paths_retained_on_overlay": true,
+  "legacy_design_ids": 40,
+  "legacy_persistent_ids": 60,
+  "historical_question_ids": 37,
+  "automatic_migration": false,
+  "old_304_options_exact_preserved": true,
+  "poc_cells_and_metadata_unchanged": true,
+  "unchanged_original_files": [
+    {
+      "path": ".gitattributes",
+      "sha256": "8480c5b5d6bb83ecee84d438a26dfaf0cca8cf8441387bbd9720d6da92630d4e"
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "0002c3e7f4a797f93cd6a7e76ead7ff1670aa1c4a14f5fc2b050a53d87287918"
+    },
+    {
+      "path": "AGENTS.md",
+      "sha256": "629875609ebdc6a573433b5b1d501e3050dfa9ffff2041c43311371e8db3b028"
+    },
+    {
+      "path": "PACKAGE_MANIFEST.json",
+      "sha256": "afec6ebd14aa88263edab8cfff1548ebed0324f775dd82303f36f6d0a5b32333"
+    },
+    {
+      "path": "PATH_RENAMES.json",
+      "sha256": "65db94e22d70e9227c16d54c52b1a8d15699c91786b247bc3a33a3aac4a69ece"
+    },
+    {
+      "path": "README.md",
+      "sha256": "1e3f597b8c5f5faeffdb0bcec86d67a0a9b8313694772a14308f6f563a2a15ad"
+    },
+    {
+      "path": "backend/app/__init__.py",
+      "sha256": "a9674771c15ebf46641146b701c4598599a5fcb702fa924315b5d03f3c4041c5"
+    },
+    {
+      "path": "backend/app/engine.py",
+      "sha256": "05b9a986f8acda215a20f318d52b3fe1476dd405412cc9df537a7fd13e2fc606"
+    },
+    {
+      "path": "backend/app/financial_contract.py",
+      "sha256": "ba8fd46ece3f8d8d015a4c7763f4413463fda77c6fcaebd144653a959500f75e"
+    },
+    {
+      "path": "backend/app/main.py",
+      "sha256": "54ff8135d8bc904214b1228f41416327bfade91170a49e8a83301c32ae9ebed4"
+    },
+    {
+      "path": "backend/app/models.py",
+      "sha256": "719efdd8a5d80bc6743f10d7033696cdfbd1925a16741cad443b5283dc317cd4"
+    },
+    {
+      "path": "backend/app/planning/__init__.py",
+      "sha256": "2097732385709988f8be01d56a6a0a018f956d169d543559489bb7b567d93358"
+    },
+    {
+      "path": "backend/app/planning/__main__.py",
+      "sha256": "62898b95264e4f68509434274236b83b8920e0aab8ad11432c8d584d9920f929"
+    },
+    {
+      "path": "backend/app/planning/bindings.py",
+      "sha256": "f869cf079b55b9cfca3f0785e9ed5052ef969dc460ea828757f1ba3e078904f8"
+    },
+    {
+      "path": "backend/app/planning/common.py",
+      "sha256": "debc99fecb60fbe3593226d13702c561eba2433222f34dceabfe39b7a15c4427"
+    },
+    {
+      "path": "backend/app/planning/engine.py",
+      "sha256": "04591321d1ae2b0722e3db7a934510aefae800ccdcbec63fc996788b82f6f140"
+    },
+    {
+      "path": "backend/app/planning/goals.py",
+      "sha256": "73e4dc6e7a28f797931ccb58533743a97c2633ede1c34de14ac0be679746e7f8"
+    },
+    {
+      "path": "backend/app/planning/modules.py",
+      "sha256": "00500aef318ca0c36c46166ac966665d0ff8ab19c508a9789b0b7a553d517437"
+    },
+    {
+      "path": "backend/app/planning/policies/__init__.py",
+      "sha256": "061c1558d3b9fd3e966f020c4f5846f939f9e7996c906a1a3c2376c02061348a"
+    },
+    {
+      "path": "backend/app/planning/policies/allocation_policy.py",
+      "sha256": "7b125989f8dfea87e8d0c9ff074f625d37e68604f7cc50e594f959afbc2ac175"
+    },
+    {
+      "path": "backend/app/planning/policies/allocation_rules.py",
+      "sha256": "095825ddad585a7c7727fbf3851abac0bed43898da4c734efde8b97bbd2470e3"
+    },
+    {
+      "path": "backend/app/planning/policies/funding_ledger.py",
+      "sha256": "8dd18874aee8f44557607603fbb79041d60b2aa8ffd4b35083b8c3aa1555d387"
+    },
+    {
+      "path": "backend/app/planning/projection.py",
+      "sha256": "0c7f6533a756b5d92b2704e6c6b0ae58bb0797415aa8790f9e8e542796b2e0ad"
+    },
+    {
+      "path": "backend/app/planning/question_catalog.json",
+      "sha256": "803effdf28ab60e9d0f8081ff96171772bd9143d2b5d00824d9bdf2fd0c10888"
+    },
+    {
+      "path": "backend/app/planning/questions.py",
+      "sha256": "85b94ceea660b50522b58f8303087c97e408fc747968abc117eecdb333fa0f87"
+    },
+    {
+      "path": "backend/examples/planning/base_input.json",
+      "sha256": "8afa366f23aa36c800614a5236807fc6858cd1c29e3ee0d7c1101d98d6ca2aaa"
+    },
+    {
+      "path": "backend/examples/planning/base_output.json",
+      "sha256": "9f63fd16707ceaed1e31c55dfe1e5bb1a5433d1649774527a15f26c7c5520f7b"
+    },
+    {
+      "path": "backend/examples/planning/full_input.json",
+      "sha256": "e7b71a6c8ce336f3bfe7b0fb994d88d615de89d2a9a168528310c9e592526d3c"
+    },
+    {
+      "path": "backend/examples/planning/full_output.json",
+      "sha256": "e822a72102a1cae0ebc32b1379bd0c1764019ce8d67845df6aa0861efac2cca1"
+    },
+    {
+      "path": "backend/pyproject.toml",
+      "sha256": "927dc7ee48f0cd2a9a1be29b92f855fb196055d862395235953e0c21f7ae78fc"
+    },
+    {
+      "path": "backend/requirements.txt",
+      "sha256": "5d2610200847bb7c62f20ed7f449f38894b84a7e6db9b11dc7cb08e97a6c83d0"
+    },
+    {
+      "path": "backend/tests/conftest.py",
+      "sha256": "76176bef0fb0d40df900f546d735da7cdb37f4266e899fdca9f315b35c10a8e9"
+    },
+    {
+      "path": "backend/tests/planning/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "backend/tests/planning/cases.py",
+      "sha256": "612fd3b4aa4d4a93dfa1f74ccca09c3ecf268a1b98293522ad11708773e80a54"
+    },
+    {
+      "path": "backend/tests/planning/test_planning.py",
+      "sha256": "bb933c9e7c4c68b9dba0870c2a43d7797ad8bc35d65ded15d887babf42c34dca"
+    },
+    {
+      "path": "backend/tests/test_allocation_policy.py",
+      "sha256": "2c2f7887025320fb2a01fa0c84c54b47276ff7bd0378f3fc5a79e54d02f1f29d"
+    },
+    {
+      "path": "backend/tests/test_allocation_rules.py",
+      "sha256": "4f36095e27da5c72340f1e64a5b12531665364ffe8f85649c4da0e4d0b9983ba"
+    },
+    {
+      "path": "backend/tests/test_api.py",
+      "sha256": "86f5eab05891a863af9c8f0fe72eba5f6f3b2d7c20079bdd5e445a248cacc275"
+    },
+    {
+      "path": "backend/tests/test_engine.py",
+      "sha256": "0f0c70fc37695edd015f0b55bc0c769671586dfffee0c9f2835302acc728886a"
+    },
+    {
+      "path": "backend/tests/test_financial_contract.py",
+      "sha256": "408b312192e3ac68ed8d507c5bd63eba5db5eeef2611797c117a789a453334eb"
+    },
+    {
+      "path": "data/allocation-policy-example.json",
+      "sha256": "bbca8375132a386451234a1a0e4aea9ba1918bf12a803941a3b0f18fcc2544a8"
+    },
+    {
+      "path": "data/allocation-rules-example.json",
+      "sha256": "d79441bb7e21903d2f3f6574034938a90362f50add138b76023371fd570b97ca"
+    },
+    {
+      "path": "data/allocation-rules-v1.json",
+      "sha256": "274ab446296c3be33f9e62da82edaa61699ba9c6b219a445926d05d4bea0fd1d"
+    },
+    {
+      "path": "data/financial-contract-example.json",
+      "sha256": "fae0e6768ee52997da1c49b7e1ce15b3924911bb3e488035e67048fdedd46afa"
+    },
+    {
+      "path": "data/sample-profile.json",
+      "sha256": "6e714316b84b2062d8d8c196195f2544c2c461de889dee21f9df5ba9a4b961fe"
+    },
+    {
+      "path": "docs/calculation-policy.md",
+      "sha256": "3e9dc3beca5b61e7591b9d154cc1ed6e8e37ac663455ee64ea9d05160b11a975"
+    },
+    {
+      "path": "docs/design/2026-11-10/README.md",
+      "sha256": "cc1503ddaa5f63301991c9b7ec45b3bbd738fe5ca647d2943c06f17cd7679dfa"
+    },
+    {
+      "path": "docs/design/2026-11-10/monthly-checkin-desktop.original.html",
+      "sha256": "191cbe174d265bce1d3f84e9225a649d9c8e83de7d1e735c72fc63146e8fc03e"
+    },
+    {
+      "path": "docs/design/2026-11-10/monthly-checkin-mobile.original.html",
+      "sha256": "ba50fd08bd8619409ab07b3c912d6a8d701ee7e96565c01d581836b43cfec3dd"
+    },
+    {
+      "path": "docs/design/2026-11-10/returning-dashboard.original.html",
+      "sha256": "5772bd2f3609b367235b06a8fee8c6a7f9075bf3c8a7b17e964bbfe04d79f065"
+    },
+    {
+      "path": "docs/development-log.md",
+      "sha256": "4cf66d957dfe31cb8bdf845a415dc3190b0fc523a3f24b9d27410860dd4f4bce"
+    },
+    {
+      "path": "docs/dion/00_START_HERE.md",
+      "sha256": "c264be05742e586477cdcf8e22a2bd08a80678499fc8cef75492924a30c3273c"
+    },
+    {
+      "path": "docs/dion/01_START_PROMPT.txt",
+      "sha256": "8492baf7ac8786c0ad5abbd53b8099c86f9abc5ff0ea08d7bfce250c95011096"
+    },
+    {
+      "path": "docs/dion/02_PROJECT_STATUS.md",
+      "sha256": "64558e9ff18d66997c9f40fba012068f14d7fe67fbc64f3a678c867471d79a03"
+    },
+    {
+      "path": "docs/dion/03_DECISIONS_AND_CONFLICTS.md",
+      "sha256": "b8c6b1d0718c94b6fb1d037a6d28f61f122a8065baae1d6624a1b6cbe7f2d0d7"
+    },
+    {
+      "path": "docs/dion/04_NEXT_ACTIONS.md",
+      "sha256": "2abba5172701af2d9766bd2bdf58f602da9f8271881710826761ce983f225b93"
+    },
+    {
+      "path": "docs/dion/05_VALIDATION.md",
+      "sha256": "3dc63e5679c95bc315b05b9f7cc0d3988d46fc37954e6ab4221284980ba1deb3"
+    },
+    {
+      "path": "docs/dion/06_REFERENCE_INDEX.md",
+      "sha256": "e18b85295887471d9c6df56ca6d75c75d5b206c175f99cc9684bd555592b4e63"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/DION_Version_Audit_20261109.md",
+      "sha256": "ef1b03c495ebfc4cab0539170b7c397d11dca20803c8376d982bda79ec6f172e"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/Q37_TO_Q40_DIFF.md",
+      "sha256": "82e4df1da56b91376396c979990061c020d0ffbef6506f0c659df7972c4b05ae"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/engine/DION_Data_and_Design_Handoff_v1_0.md",
+      "sha256": "1101bb4d3ac5c7707ce1d99f55479de24ea2f3ac553622ec636f3593dac6d346"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/engine/DION_Financial_Case_Verification_v1_0.md",
+      "sha256": "073fdc6178b6069155664f7d283b354aca213ee103cb74f158e9f142a08776b5"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/engine/DION_Investment_Preference_and_Allocation_Policy_v0_1.md",
+      "sha256": "9b48aac42f9de248d6f4e83b233cad5fb05de8b433a31284e4ba7a5fa80767d7"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/engine/DION_Questions_and_Financial_Policy_v1_0.md",
+      "sha256": "ba8ba4eb9d5191e895a40459abe5232c059afc8ac66f04c2b5ade152467bcce0"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/engine/OLD_20261109_PACKAGE_SNAPSHOT/02_CONTEXT_AND_TODAY.md",
+      "sha256": "f579beefc36efff107d74f5c14d0f953fc420c344b85103cf67b468ffd884bbf"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/engine/OLD_20261109_PACKAGE_SNAPSHOT/03_DATA_PRINCIPLES.md",
+      "sha256": "8a77d75a2bf66ff2bcb96ca2aca458ebd6bc69f7856c4bc4c929f7ebb80fb39d"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/engine/OLD_20261109_PACKAGE_SNAPSHOT/04_IO_FORMULA_SPEC.md",
+      "sha256": "33c3b05c6395aebfc8b53f361a5204d8eb7c760ed2e2bb927ae83a7633c042c5"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/engine/OLD_20261109_PACKAGE_SNAPSHOT/05_CURRENT_FLOW_AND_PENDING.md",
+      "sha256": "f40ab954a5ac37aa4112a531d7dab6b71c7ca9dea2acc6599b46137c43f20c74"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/engine/OLD_20261109_PACKAGE_SNAPSHOT/06_CASES_AND_CHECKS.md",
+      "sha256": "400875b818b6e7759531374d58a89389fe9f249d9eef2370c10e3210c4fd84ae"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/engine/OLD_20261109_PACKAGE_SNAPSHOT/07_Question_Flow_Design.xlsx",
+      "sha256": "b8142db0faa2a99a2ded13c08796e057c748a38547be6f5ac2c69be267d5ab4d"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/engine/OLD_20261109_PACKAGE_SNAPSHOT/MANIFEST.json",
+      "sha256": "20342231aa0f9f3b0f311b21990e828884a0b5cc1d0ed3a2117c2bf9e9f39a06"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/frontend/DION_Portfolio_Frontend_Implementation_Spec_v1_0.md",
+      "sha256": "da1549945e8306b88d637823703a16097ac31de50fe8adb01a820434db5b12ed"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/frontend/DION_Stitch_Customer_Screens_v1_0.md",
+      "sha256": "fbef98a9fe806845af6bc9600b405cccb575c996c010a8f4aa14837bf20f749c"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/google_drive/01_02 [필수] DION 포트폴리오·고객 화면·실행 검산 v1.3.txt",
+      "sha256": "c167ce9b5fc8046e4dcff22378716defcaf3e158a41c61f68a2201688a408700"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/google_drive/02_04 [필수·검토중] DION 고객 질문·포트폴리오 수정안 v1.0 (2026-11-04).txt",
+      "sha256": "fff2a02c7f857901d5a208591c8af22b02425698d1eaa3edcd6d097da65a49d0"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/google_drive/03_03 [필수] DION 상세 설계·구현 명세서 v3.4.txt",
+      "sha256": "88c36d24b5b3302f162aa5043b4ad50bb98791f1f6985868fa2364cdc9a1d72c"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/google_drive/04_01 [필수] DION 통합 기획서 v3.4.txt",
+      "sha256": "b3550fd9bfc89d3d388c5323caef32ad01bfa5ed3512cb7d6e56ec7a6fd119a4"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/google_drive/05_05 [필수·기존ID원장] DION 데이터·시나리오 통합 원장 LP-DATA-4.1.txt",
+      "sha256": "4887585ba4a1eb5916064fb3514ea8455a1ccb6c7e5a0968d4983a21bd289332"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/google_drive/06_03 [개발참고] DION 데이터 설계·개발 인계 명세.txt",
+      "sha256": "fa74f37b9d0314c8a5505bdf64328167d0b3d2661f64185a00926afef8aa8262"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/google_drive/07_01 [개발참고·개정필요] DION Codex 작업 프롬프트 v2.0.txt",
+      "sha256": "7c81c84d5bb42cc7adc9245687af6333d854a062c822b2e5d1c515bd636c23e6"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/google_drive/08_08 [개발참고·개정필요] DION 화면 영역·데이터 연결 명세.txt",
+      "sha256": "4e5f168ec65ecaaae37fa843f238b4ab550dc4076aa925034c684218c34fe7dd"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/google_drive/09_07 [회귀검산참고] DION 이전 대표 사례 재무계산 검산.txt",
+      "sha256": "0226afe496322fbb1f0b91d533bcbe9f910a492887fbfd8a18c3748f0ee74e5d"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/google_drive/10_06 [개발참고] DION 데이터 공급원 검토안.txt",
+      "sha256": "f5d1078f8e9d60a57a506fc082d1eff528853b59fe93a323670cc583eb09d6b9"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/google_drive/11_05 [개발참고·검증대기] DION 투자선호·자산배분 정책.txt",
+      "sha256": "1d4bbae2f9c7c6f74afe6ce93728cda0bac880b2592c903be220edddc97a150b"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/google_drive/12_04 [개발참고·개정필요] DION 고객 질문·재무 정책.txt",
+      "sha256": "6e6e0ce5a6c4cb02da9254c156700ec55cec6d23d4e612bdb6ade43855010994"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/google_drive/13_02 [개발참고] DION 전체 개발 아키텍처 v2.txt",
+      "sha256": "69903ba3fb5de859de38f7679db4ec2ab5bea499f4c3a9625aa4cd661b11dc78"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/google_drive/14_DION 문서 사용 안내·진행 이력_이승우.txt",
+      "sha256": "a53653e59ac6306c51b6c2d8ba56fd8fb0d69523d1208d19d1efa014925e52ac"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/google_drive/15_DION 회의록.txt",
+      "sha256": "0a988e4c3c67c5ca4121891f13e49ac8e9ee7f871070af360f04e13a665a0da2"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/google_drive/16_[이전편집본] DION 포트폴리오 설계 기준서 v1.2.txt",
+      "sha256": "55e91825180a5b8b85ecb2c48d980edcd7f8ddf7476882057f8d898c1e31503a"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/google_drive/17_[이전설계] DION 공모전 제출용 MVP 상세 설계서 v1.1.txt",
+      "sha256": "ea83bea1dc096b8cb0fabfde5a04521c780b5b1075b78e2940f048a712f32e5a"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/google_drive/18_DION_Reviewed_v6.xlsx.txt",
+      "sha256": "9a2d004e506d290ac5d68c6fbfc5ad70c737e4d1de416383728adbad0497680e"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/google_drive/19_DION_시나리오_설계서_작성완료_v2.xlsx.txt",
+      "sha256": "6fd7347ad5b934b9aeeb995b4d415848dd617a88acd88e7c17db0b65394d40e7"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/google_drive/20_DION 통합설계_정리전백업_2026-11-01.txt",
+      "sha256": "003dcc1647e2a3386523e219e67e8b6773715df82a35478fa1bbb863e3f89a9e"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/google_drive/21_[백업] DION 고객질문 68개 정리 전 - 2026-11-01.txt",
+      "sha256": "a5254b945abe5edb01ec2193c632ca7b7c5f61f95ab03ca0768bd2aaf35a4d41"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/google_drive/22_[백업] DION Q-120 원리금 분리·위치 변경 전 (2026-11-01).txt",
+      "sha256": "cdebfec55bea5eada9ebb9d2b831d4294c578a24aa92197d0c4e2c57cf6bca44"
+    },
+    {
+      "path": "docs/dion/07_REFERENCE_SNAPSHOTS/google_drive/CURRENT_QUESTION_SHEET_v1_1.txt",
+      "sha256": "fff2a02c7f857901d5a208591c8af22b02425698d1eaa3edcd6d097da65a49d0"
+    },
+    {
+      "path": "docs/dion/08_ORIGINAL_INPUTS/.gitattributes",
+      "sha256": "8480c5b5d6bb83ecee84d438a26dfaf0cca8cf8441387bbd9720d6da92630d4e"
+    },
+    {
+      "path": "docs/dion/08_ORIGINAL_INPUTS/.gitignore",
+      "sha256": "0002c3e7f4a797f93cd6a7e76ead7ff1670aa1c4a14f5fc2b050a53d87287918"
+    },
+    {
+      "path": "docs/dion/08_ORIGINAL_INPUTS/AGENTS.md",
+      "sha256": "de7140f3180ef916ad5a2a68f0e891b53a91e3c1e4a448cac37a240b59ca8521"
+    },
+    {
+      "path": "docs/dion/08_ORIGINAL_INPUTS/DION_Design_Studio.html",
+      "sha256": "382569a18296abd51ec70f714239a03e07958d00979b7afc79e6c0b10b88fb2c"
+    },
+    {
+      "path": "docs/dion/08_ORIGINAL_INPUTS/LifePath_Question_Table_Starter.csv",
+      "sha256": "86a8a0f86290fb1903caef280bbb66dfa1590318159dbef7ee2d3ac0cd94e0c9"
+    },
+    {
+      "path": "docs/dion/08_ORIGINAL_INPUTS/README.md",
+      "sha256": "42fad19cb3cf3969beba857971abc7cddf091960e40cc30b9eb35a6229144f0c"
+    },
+    {
+      "path": "docs/dion/08_ORIGINAL_INPUTS/py",
+      "sha256": "218e12367fbb5e80c05c02026048a2052fb02151d0cba3b34cef53cf82601f0f"
+    },
+    {
+      "path": "docs/dion/09_UPDATED_FILES/.gitattributes",
+      "sha256": "8480c5b5d6bb83ecee84d438a26dfaf0cca8cf8441387bbd9720d6da92630d4e"
+    },
+    {
+      "path": "docs/dion/09_UPDATED_FILES/.gitignore",
+      "sha256": "0002c3e7f4a797f93cd6a7e76ead7ff1670aa1c4a14f5fc2b050a53d87287918"
+    },
+    {
+      "path": "docs/dion/09_UPDATED_FILES/AGENTS.md",
+      "sha256": "cc1587aeb7bd86a5aefb107de045c64a5cb307b7fbb5a4a9a15e5f5bdd788ab7"
+    },
+    {
+      "path": "docs/dion/09_UPDATED_FILES/CHANGELOG.md",
+      "sha256": "44bbd2b79c81155e0c5daafb16df494c1bf305debb09003d2242febf75ae0677"
+    },
+    {
+      "path": "docs/dion/09_UPDATED_FILES/DION_DEC02_REVIEW.md",
+      "sha256": "f98c89ae15168852a9c1a73a2910a3ba772b1bbf8c7b676b79b42937cd090f65"
+    },
+    {
+      "path": "docs/dion/09_UPDATED_FILES/DION_Design_Studio.html",
+      "sha256": "75d1fea3538ea4cc98d0765fb4aa40abc4bda5ff9fea8e538640006706abb16d"
+    },
+    {
+      "path": "docs/dion/09_UPDATED_FILES/DION_Question_Contract_Audit.json",
+      "sha256": "327268cbbf8b4c44f1e20762261200f7ba9772890b4d9120cb21f706bdb7b5e8"
+    },
+    {
+      "path": "docs/dion/09_UPDATED_FILES/DION_Question_Contract_Audit.md",
+      "sha256": "9cc5354b59264e5ad6c7941b2f0a8027b8ca6a07778eba05887f3c32663a84a9"
+    },
+    {
+      "path": "docs/dion/09_UPDATED_FILES/DION_Repository_Field_Evidence.json",
+      "sha256": "12e6522309657248165f6718335d695b054fa6cf0064a438c8b8de00e07193bb"
+    },
+    {
+      "path": "docs/dion/09_UPDATED_FILES/LifePath_Question_Table_Starter.csv",
+      "sha256": "85652a3e18a2794ffceaaa852ee7b9e39a160c40e5d3b482277eed98922b2c40"
+    },
+    {
+      "path": "docs/dion/09_UPDATED_FILES/README.md",
+      "sha256": "29b7f549a3f23621ee196b7b4f9fc52f7ffaa465a56997b6ae99160c5b35d2f8"
+    },
+    {
+      "path": "docs/dion/09_UPDATED_FILES/py",
+      "sha256": "218e12367fbb5e80c05c02026048a2052fb02151d0cba3b34cef53cf82601f0f"
+    },
+    {
+      "path": "docs/dion/09_UPDATED_FILES/reference/AGENTS_iteration1_legacy.md",
+      "sha256": "de7140f3180ef916ad5a2a68f0e891b53a91e3c1e4a448cac37a240b59ca8521"
+    },
+    {
+      "path": "docs/dion/09_UPDATED_FILES/reference/AGENTS_question_v1_1.md",
+      "sha256": "a242716d635bbb4d7c75b080f64c59f1165a27a3357ed17a7dc45ba23c662420"
+    },
+    {
+      "path": "docs/dion/09_UPDATED_FILES/reference/DION_Question_Source_v1_1.json",
+      "sha256": "2d671a29395d1bf9dc0789d1d3ded5eb0db0261f14a0c9c1f6ce690195b47493"
+    },
+    {
+      "path": "docs/dion/09_UPDATED_FILES/reference/README_iteration1_20261027.md",
+      "sha256": "42fad19cb3cf3969beba857971abc7cddf091960e40cc30b9eb35a6229144f0c"
+    },
+    {
+      "path": "docs/dion/09_UPDATED_FILES/reference/questions_114_legacy.json",
+      "sha256": "0ddfb76f47d1580b93ea299b6d24b8955d66acaf9b26af5d6bcd4ce5c3be6816"
+    },
+    {
+      "path": "docs/dion/09_UPDATED_FILES/tools/allocation_policy.py",
+      "sha256": "b14eac17f85ceee440fc2b3605c986bad8b8bdc21eed1801bdb71a8ae93ae1fb"
+    },
+    {
+      "path": "docs/dion/09_UPDATED_FILES/tools/allocation_rules.py",
+      "sha256": "284e06202eab3b77eaa69d7b44a909808d9e274224f03382a2088a3bdb4c6db3"
+    },
+    {
+      "path": "docs/dion/09_UPDATED_FILES/tools/funding_ledger.py",
+      "sha256": "8dd18874aee8f44557607603fbb79041d60b2aa8ffd4b35083b8c3aa1555d387"
+    },
+    {
+      "path": "docs/dion/10_UI_PROTOTYPES/DION_Monthly_Checkin_PROTOTYPE.html",
+      "sha256": "026242752f8dcc7acecd296b9f619d20b7c821b9185a2afe3910a60de6d3035b"
+    },
+    {
+      "path": "docs/dion/10_UI_PROTOTYPES/DION_Returning_Dashboard_ORIGINAL.html",
+      "sha256": "5772bd2f3609b367235b06a8fee8c6a7f9075bf3c8a7b17e964bbfe04d79f065"
+    },
+    {
+      "path": "docs/dion/10_UI_PROTOTYPES/DION_Stitch_Combined.zip",
+      "sha256": "d0793deb2385baaec674dbf579a09ae0cb726ae97e975d04ea7cdae20b8ed56e"
+    },
+    {
+      "path": "docs/dion/10_UI_PROTOTYPES/MONTHLY_CHECKIN_REQUIREMENTS.md",
+      "sha256": "399117577b9cb97ecbdf1c1414f57fcf90ac0bfaef801c01bc7c46bdf4506c79"
+    },
+    {
+      "path": "docs/dion/10_UI_PROTOTYPES/README.md",
+      "sha256": "1b4623d201582ffad32d2b74852d084a2247c60150767d9b7df4e114355e7752"
+    },
+    {
+      "path": "docs/dion/11_BRAND_ASSETS/DION_Brand_Guidelines_v1_0.md",
+      "sha256": "a0580efc9e2486f2c2c313284b5c8fffd3cdbb34060a8a03e24228af65fad6e5"
+    },
+    {
+      "path": "docs/dion/11_BRAND_ASSETS/웨이브하는 금융 코치 고양이.png",
+      "sha256": "448ae4fc839ea7224d185ccb8f4dd51242dfa010299f266594af2b653de20238"
+    },
+    {
+      "path": "docs/dion/11_BRAND_ASSETS/클립보드를 든 금융 고양이.png",
+      "sha256": "95832a1545782e60d09891ff6d385e69a73a41daa24502bf62691f9f9fa131cd"
+    },
+    {
+      "path": "docs/dion/12_CHECKS/FUNDING_RESULTS_20261110.json",
+      "sha256": "2d12c8103ccc30537434296fc3f17094387f936b2a93dd0d5ab3bde9f00ea330"
+    },
+    {
+      "path": "docs/dion/12_CHECKS/PACKAGE_CHECK_20261110.json",
+      "sha256": "8bade88f397c4237cfb52ed3f40022a90c2296423026970b1dc631c54ef49605"
+    },
+    {
+      "path": "docs/dion/12_CHECKS/README.md",
+      "sha256": "28a6368626e4fbf830b37575f5bd314cd3705d1a168f432dba4b25905171dd2a"
+    },
+    {
+      "path": "docs/dion/12_CHECKS/REPOSITORY_SMOKE_20261110.json",
+      "sha256": "0eac0564eeeb76c6d6c6edb20abf542ececa1a543f949c8659dd9597e9c7def4"
+    },
+    {
+      "path": "docs/dion/12_CHECKS/VALIDATION_20261110.md",
+      "sha256": "171fc051ac26abed2cd1814caccd72dd3687c21d8900dd25e1e986c69e4600e2"
+    },
+    {
+      "path": "docs/dion/12_CHECKS/allocation_policy_fixtures.json",
+      "sha256": "9aad2a7b46527a147dc03e32727179df667305a069c22ba9c5204e7911c71855"
+    },
+    {
+      "path": "docs/dion/12_CHECKS/allocation_rules_fixtures.json",
+      "sha256": "db276e3a16bde592e236d0895a23eb231032e967759e3c401bbbbb075cf3f38f"
+    },
+    {
+      "path": "docs/dion/12_CHECKS/build_contract_audit.py",
+      "sha256": "fed43de7f5db33ea7952f3b974f477f297891d641b0d5c2a5522dac5f1d86c9f"
+    },
+    {
+      "path": "docs/dion/12_CHECKS/check_repository_smoke.py",
+      "sha256": "3d38a8de3e9c8b7728830cf1d76644d99d7eb467b4a30e4ac3e410b24f9ef4a0"
+    },
+    {
+      "path": "docs/dion/12_CHECKS/check_updated_files.cjs",
+      "sha256": "27a15ad27f4a7685b8e5eeaec69c4e97885ec5d83953705faced226c379387b5"
+    },
+    {
+      "path": "docs/dion/12_CHECKS/funding_fixtures.json",
+      "sha256": "65381b86ac70ef0ac03ab9a49efebdc1f9262d6064d32642995625e90f334229"
+    },
+    {
+      "path": "docs/dion/12_CHECKS/test_contract_and_funding.py",
+      "sha256": "deb0f4527a270a82ff37cc8dd563062a19d1cfe4dc472ddbffa1c1d3c43ecc52"
+    },
+    {
+      "path": "docs/dion/MANIFEST.json",
+      "sha256": "07ffab76ea65018760b5f1b21a4807817ea85a5d01461c76482013a971764c06"
+    },
+    {
+      "path": "docs/financial-engine-rule-registry.json",
+      "sha256": "769e07d94ad78df8608a4e8e741a40ef0671d8889c09ad074a693ffef4605947"
+    },
+    {
+      "path": "docs/financial-engine-spec.md",
+      "sha256": "4e7c308926e9050c921eb31f67850e9f5b7df53df17e7cadd52947eb79a50851"
+    },
+    {
+      "path": "docs/integration/2026-11-10-a1b1-results.json",
+      "sha256": "8e7da4d93f0ad9b3ffd1c87dabb740113b127e47e46f843733bb1fb9cb864a82"
+    },
+    {
+      "path": "docs/integration/2026-11-10-a1b1.md",
+      "sha256": "2d40bb30335694ebb201f1234fccde97680bf010eb656e6b046cf58563250de4"
+    },
+    {
+      "path": "docs/integration/2026-11-10-allocation-rules-results.json",
+      "sha256": "bd6e73c247a94bd052f1bf7b5065151dd3f2ab2783a64ecb5b9b957593989572"
+    },
+    {
+      "path": "docs/integration/2026-11-10-allocation-rules.md",
+      "sha256": "3a705040a9d3991fc13e5e596053130498b9ac8586ca9c8b7e5769404239a0d4"
+    },
+    {
+      "path": "docs/integration/2026-11-10-contract-example-output.json",
+      "sha256": "e0d965996e2040ee05b476093f7af304c578d44c6df0fc6d74837a4d003fe687"
+    },
+    {
+      "path": "docs/integration/2026-11-10-engine-foundation.md",
+      "sha256": "6ecd8d3bfb844dda4a66f28137dbb9f91c19b1179ed40d6c64b5c5583c0959cf"
+    },
+    {
+      "path": "docs/integration/2026-11-10-planning-engine.md",
+      "sha256": "9797c088b0b5d99f96152fd5a0c2d77a6d06b996307886c6d62ab1beb6e9c1af"
+    },
+    {
+      "path": "docs/integration/2026-11-10-question-design.md",
+      "sha256": "eafae8ea0f7a6d39d855ca80db9af2d5852c86d3b5d3fd37b2bc558fcf26617e"
+    },
+    {
+      "path": "docs/integration/2026-11-10-results.json",
+      "sha256": "fd86ba83d9ee91a6fe30e3c0151905c0a891d8ef6569dc9827a75024a001ab14"
+    },
+    {
+      "path": "docs/integration/2026-11-10-sources.json",
+      "sha256": "85c241489f361b95895e3c27a6700aaa7798e932ddcc05e8491cc84ecaff2554"
+    },
+    {
+      "path": "docs/integration/2026-11-10.md",
+      "sha256": "3a312d5a4c9f15612eb2929225b5dc730622774a1f375a52f8f3f433b0b0b8f6"
+    },
+    {
+      "path": "docs/iteration-1-spec.md",
+      "sha256": "de7af15ef9e3b090128001a4f41dd088027b71fb3508584d782c42d28c7c30e9"
+    },
+    {
+      "path": "docs/planning-engine-v1/README.md",
+      "sha256": "dde81baa32a1a9eade083823b87ff8833de76fb5593a5b8ce337f3c568a3292d"
+    },
+    {
+      "path": "docs/planning-engine-v1/check_oracles.py",
+      "sha256": "f3671cc677f09d0f3968614920eb6ff18bbdbebe21c0adde45e2dff162acc4cb"
+    },
+    {
+      "path": "docs/planning-engine-v1/contract.md",
+      "sha256": "e44445b200be268dc14e1d3cd6c90e57f55379ecf85b680c312061cb489c7cec"
+    },
+    {
+      "path": "docs/planning-engine-v1/handoff.md",
+      "sha256": "2e60c3ba2046ab69db278f356c44143618d25a8cc0e2b5e2533e33681b842b9d"
+    },
+    {
+      "path": "docs/planning-engine-v1/input-envelope.schema.json",
+      "sha256": "f3dc3044f3e2b4d00a7010736a55b5b9dc536682d7e47d39ca96726c39841f8a"
+    },
+    {
+      "path": "docs/planning-engine-v1/oracles.json",
+      "sha256": "ce08008b1f6c0a60396bd26078d43cd7bb92918d4171c12106394922e1146173"
+    },
+    {
+      "path": "docs/planning-engine-v1/verification.md",
+      "sha256": "433cae0172baea5adf85724c20ae2e8f981df878abae66ca228c3554bb6e31f5"
+    },
+    {
+      "path": "docs/project-status.md",
+      "sha256": "987db17005bf13603af2d64e263a0ebe8e0814593dc866a19a70a83793871bf2"
+    },
+    {
+      "path": "docs/questions/v1.2/Google_Sheets_v1_1_before.json",
+      "sha256": "7b4c0185899e985dfa848d78e69058da7170e259a25cffb343dc96e7eca020c0"
+    },
+    {
+      "path": "docs/questions/v1.2/preservation.json",
+      "sha256": "ef56e4c482c2ef1100d0d20d0ca8f6f41507cd291a38e25a2387d4b682765400"
+    },
+    {
+      "path": "docs/questions/v1.2/verification.json",
+      "sha256": "8f38f98103e118ad2a97db0d98427038524ebf5e05f28249dc51a17b2e478e3f"
+    },
+    {
+      "path": "docs/questions/v1.3-engine/README.md",
+      "sha256": "b531933951c0e8c4e69e9d3362ea0e44fe5438ee16e28a76365bf3e5e546610f"
+    },
+    {
+      "path": "docs/questions/v1.3-engine/bindings.json",
+      "sha256": "e0989a267f89e4cfc876b4ef017c9da77c4ce9f51dd77bbbd6dfada2538f28cb"
+    },
+    {
+      "path": "docs/questions/v1.3-engine/question-data-calculation-results.md",
+      "sha256": "f9a70b0cbc10100d224f04749ccfadb2cb184ef6d4834f8485a786d74b970385"
+    },
+    {
+      "path": "docs/reference/AGENTS_repository_20261027.md",
+      "sha256": "7bbebe88653def057c24e21e82301fbe21972cedd469abee04cc93579548a66f"
+    },
+    {
+      "path": "docs/reference/README_repository_20261027.md",
+      "sha256": "9e7e2fc91c2209a832431785eaffd03437d997e38df77e76d0b430ed733e1656"
+    },
+    {
+      "path": "docs/testing.md",
+      "sha256": "a5193775ae59a25958d6677dbdb4ffba1b11910114a5df3e8569d91df8b108e6"
+    },
+    {
+      "path": "docs/update-guide.md",
+      "sha256": "980fb79ae603ac14dd41a804a9e42f899f605b321646ffe80843dc47dae55971"
+    },
+    {
+      "path": "frontend/.env.example",
+      "sha256": "7d984f976a9ce35900a15eb56934d33144bad666e3f11903a6112b417a8ae919"
+    },
+    {
+      "path": "frontend/AGENTS.md",
+      "sha256": "063098f6cb31bb44c6f8fbea25b3876de7ee1e5f7d00a50dbab506f6415eb7f0"
+    },
+    {
+      "path": "frontend/components.json",
+      "sha256": "36b7e6023a4ff66a8a9f82a961e754860c742cac9aeb089889cce643bd5c9183"
+    },
+    {
+      "path": "frontend/e2e/financial-planner.spec.ts",
+      "sha256": "835ce4b8de7463a8f6b5ad1633d242af297aa6351b6c59b1f236cfc246645174"
+    },
+    {
+      "path": "frontend/eslint.config.mjs",
+      "sha256": "7d4259448f7bb57df0ba84ae2ed4272891dfd8a246741cd8856b840c58fd2035"
+    },
+    {
+      "path": "frontend/next.config.ts",
+      "sha256": "0140d12a999fcce53df68fdc64e46914cfa12c6cad293d3f7ac96f29896829d9"
+    },
+    {
+      "path": "frontend/package-lock.json",
+      "sha256": "bccb6ce0531c90b7843db73d0618fe3cf194da44ba9d6d33a7f6c8e2adfd3987"
+    },
+    {
+      "path": "frontend/package.json",
+      "sha256": "2bb6fc8d8c72f9449d289c480ed76d3b1c89f547d544e32d0718cda27c406ff0"
+    },
+    {
+      "path": "frontend/playwright.config.ts",
+      "sha256": "7ecba9665ada5e9858dff5416c98f36f8f25d2a1d2a1f3ad545ed949d27e2ad6"
+    },
+    {
+      "path": "frontend/postcss.config.mjs",
+      "sha256": "b783348d5618047d0f37e12acd15c5a2c5f02809d8711e0764c9cea52750346c"
+    },
+    {
+      "path": "frontend/src/app/globals.css",
+      "sha256": "f742fa09b696784ce10f2602b83e0864624dc0594d7afc5e216befcbaff32c02"
+    },
+    {
+      "path": "frontend/src/app/layout.tsx",
+      "sha256": "f1716fa4a3dceef1a35426caa9b20b296ce48d2897adc1b20dfe633fe8dfc5cc"
+    },
+    {
+      "path": "frontend/src/app/page.tsx",
+      "sha256": "a246cf98052a8d2c6d9790822b59598ae8cf8ecafdef01f4107c0776cb5e940f"
+    },
+    {
+      "path": "frontend/src/components/financial-planner.tsx",
+      "sha256": "23b725e748f1761e3ac5e236a45f3e2b959ed611dfa268f6be5507f725e5cf90"
+    },
+    {
+      "path": "frontend/src/components/projection-chart.tsx",
+      "sha256": "b9a044ac597bec00f3bd04eeb72877167a3fcf228697b1e68c76d17ffe09eecf"
+    },
+    {
+      "path": "frontend/src/components/ui/button.tsx",
+      "sha256": "a723dc7e14d2e0b93a47c9bec03c98a5f8a2c36a4f4d5d4fb489c4dd37438eaa"
+    },
+    {
+      "path": "frontend/src/components/ui/card.tsx",
+      "sha256": "aa7bbb8c763051536cc7bcb24cbdbb39a1580705655592fc4966a932edcc7302"
+    },
+    {
+      "path": "frontend/src/components/ui/input.tsx",
+      "sha256": "ea640b2d807512b991aa9954c740b5d08de23cd7fab41d169149c133f7f4957b"
+    },
+    {
+      "path": "frontend/src/components/ui/label.tsx",
+      "sha256": "e76539fa1b101a47de0310dcc4ee1bc5e77d969fc23f52f74fd91ee34797ce56"
+    },
+    {
+      "path": "frontend/src/lib/profile.ts",
+      "sha256": "af60134ac6c6429d08ae18e04da06d86e9e58ce4bd541fb1a861e4e4676ff3cf"
+    },
+    {
+      "path": "frontend/src/lib/utils.ts",
+      "sha256": "d1f1e0d62cb8d8d1e04c26e14de842d8a151f75812d81b046c65b5d1fe8e4b27"
+    },
+    {
+      "path": "frontend/tsconfig.json",
+      "sha256": "44e74ce141e5715c3bea4bbc66cf31a0e70f07f25345d23ed2e99eb575d6135e"
+    },
+    {
+      "path": "scripts/check-package-integrity.py",
+      "sha256": "9a8c64f9f95572206c4d05fe2c2ccc72d76fea02b718b9cf57dcaaedbea59c5d"
+    },
+    {
+      "path": "scripts/start-dev.ps1",
+      "sha256": "16f0ded0bd1a6ce03da01889a564abe9ce6c4e5bc9e9a48c99a93286811729dc"
+    },
+    {
+      "path": "scripts/stop-dev.ps1",
+      "sha256": "16756a7ad95c4edc6ca05625a683a2b86eb273820d87e9388b480891e5af8a00"
+    },
+    {
+      "path": "scripts/verify.ps1",
+      "sha256": "95abbc2a5e827d582317394ca4f6758ba009cc1def332dc56096452de9d5eefe"
+    }
+  ],
+  "current_definition_history_saved": [
+    "reference/Question_Source_before_R02_R04_R05_R06_R12.json",
+    "reference/Question_Contract_before_R02_R04_R05_R06_R12.json"
+  ],
+  "zip_policy": "patch modified/new files only; never replace integrated archive"
+}

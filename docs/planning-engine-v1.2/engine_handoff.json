@@ -1,0 +1,90 @@
+{
+  "manifest_version": "POC-HANDOFF-0.1",
+  "items": [
+    {
+      "id": "H01",
+      "title": "첫 연결 범위",
+      "status": "PROVIDED",
+      "artifact_ref": "docs/planning-engine-v1.2/README.md",
+      "review_note": "엔진1.2 제공. 기존BE OUT01/03 및 제출데모와 실제 회귀검증. 새 질문/지급일 계약의 BE 수락·UI 연결은 미완료이며 REVIEWED로 자동 승격하지 않음."
+    },
+    {
+      "id": "H02",
+      "title": "입력 계약",
+      "status": "PROVIDED",
+      "artifact_ref": "docs/planning-engine-v1.2/contract.md",
+      "review_note": "엔진1.2 제공. 기존BE OUT01/03 및 제출데모와 실제 회귀검증. 새 질문/지급일 계약의 BE 수락·UI 연결은 미완료이며 REVIEWED로 자동 승격하지 않음."
+    },
+    {
+      "id": "H03",
+      "title": "단위와 값 상태",
+      "status": "PROVIDED",
+      "artifact_ref": "docs/planning-engine-v1.2/contract.md",
+      "review_note": "엔진1.2 제공. 기존BE OUT01/03 및 제출데모와 실제 회귀검증. 새 질문/지급일 계약의 BE 수락·UI 연결은 미완료이며 REVIEWED로 자동 승격하지 않음."
+    },
+    {
+      "id": "H04",
+      "title": "귀속과 기간",
+      "status": "PROVIDED",
+      "artifact_ref": "docs/planning-engine-v1.2/contract.md",
+      "review_note": "엔진1.2 제공. 기존BE OUT01/03 및 제출데모와 실제 회귀검증. 새 질문/지급일 계약의 BE 수락·UI 연결은 미완료이며 REVIEWED로 자동 승격하지 않음."
+    },
+    {
+      "id": "H05",
+      "title": "출력 계약",
+      "status": "PROVIDED",
+      "artifact_ref": "backend/examples/planning-v1.2/dated_funded_output.json",
+      "review_note": "엔진1.2 제공. 기존BE OUT01/03 및 제출데모와 실제 회귀검증. 새 질문/지급일 계약의 BE 수락·UI 연결은 미완료이며 REVIEWED로 자동 승격하지 않음."
+    },
+    {
+      "id": "H06",
+      "title": "상태와 오류",
+      "status": "PROVIDED",
+      "artifact_ref": "docs/planning-engine-v1.2/contract.md",
+      "review_note": "엔진1.2 제공. 기존BE OUT01/03 및 제출데모와 실제 회귀검증. 새 질문/지급일 계약의 BE 수락·UI 연결은 미완료이며 REVIEWED로 자동 승격하지 않음."
+    },
+    {
+      "id": "H07",
+      "title": "버전과 식별자",
+      "status": "PROVIDED",
+      "artifact_ref": "docs/planning-engine-v1.2/patch-manifest.json",
+      "review_note": "엔진1.2 제공. 기존BE OUT01/03 및 제출데모와 실제 회귀검증. 새 질문/지급일 계약의 BE 수락·UI 연결은 미완료이며 REVIEWED로 자동 승격하지 않음."
+    },
+    {
+      "id": "H08",
+      "title": "호출 방법",
+      "status": "PROVIDED",
+      "artifact_ref": "docs/planning-engine-v1.2/README.md",
+      "review_note": "엔진1.2 제공. 기존BE OUT01/03 및 제출데모와 실제 회귀검증. 새 질문/지급일 계약의 BE 수락·UI 연결은 미완료이며 REVIEWED로 자동 승격하지 않음."
+    },
+    {
+      "id": "H09",
+      "title": "재현 예시",
+      "status": "PROVIDED",
+      "artifact_ref": "docs/planning-engine-v1.2/verify_samples.py",
+      "review_note": "엔진1.2 제공. 기존BE OUT01/03 및 제출데모와 실제 회귀검증. 새 질문/지급일 계약의 BE 수락·UI 연결은 미완료이며 REVIEWED로 자동 승격하지 않음."
+    },
+    {
+      "id": "H10",
+      "title": "지원과 승인 근거",
+      "status": "PROVIDED",
+      "artifact_ref": "docs/planning-engine-v1.2/README.md",
+      "review_note": "엔진1.2 제공. 기존BE OUT01/03 및 제출데모와 실제 회귀검증. 새 질문/지급일 계약의 BE 수락·UI 연결은 미완료이며 REVIEWED로 자동 승격하지 않음."
+    },
+    {
+      "id": "H11",
+      "title": "실행 제약",
+      "status": "PROVIDED",
+      "artifact_ref": "docs/planning-engine-v1.2/contract.md",
+      "review_note": "엔진1.2 제공. 기존BE OUT01/03 및 제출데모와 실제 회귀검증. 새 질문/지급일 계약의 BE 수락·UI 연결은 미완료이며 REVIEWED로 자동 승격하지 않음."
+    },
+    {
+      "id": "H12",
+      "title": "변경과 호환성",
+      "status": "PROVIDED",
+      "artifact_ref": "docs/planning-engine-v1.2/CHANGELOG.md",
+      "review_note": "엔진1.2 제공. 기존BE OUT01/03 및 제출데모와 실제 회귀검증. 새 질문/지급일 계약의 BE 수락·UI 연결은 미완료이며 REVIEWED로 자동 승격하지 않음."
+    }
+  ],
+  "engine_release": "DION-ENGINE-1.2"
+}

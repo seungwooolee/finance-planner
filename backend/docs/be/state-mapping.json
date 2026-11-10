@@ -1,0 +1,37 @@
+{
+  "KNOWN": {
+    "engine_state": "KNOWN",
+    "omission_reason": null,
+    "raw_preserved": true
+  },
+  "UNKNOWN": {
+    "engine_state": "UNKNOWN",
+    "omission_reason": null,
+    "raw_preserved": true
+  },
+  "NOT_ENTERED": {
+    "engine_state": "UNKNOWN",
+    "omission_reason": null,
+    "raw_preserved": true
+  },
+  "NOT_ASKED": {
+    "engine_state": "NOT_ASKED",
+    "omission_reason": null,
+    "raw_preserved": true
+  },
+  "NOT_APPLICABLE": {
+    "engine_state": "NOT_APPLICABLE",
+    "omission_reason": null,
+    "raw_preserved": true
+  },
+  "DEFERRED": {
+    "engine_state": "UNKNOWN",
+    "omission_reason": "LATER",
+    "raw_preserved": true
+  },
+  "DECLINED": {
+    "engine_state": "UNKNOWN",
+    "omission_reason": "DECLINED",
+    "raw_preserved": true
+  }
+}

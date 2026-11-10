@@ -1,0 +1,65 @@
+{
+  "package_date": "2026-11-09",
+  "purpose": "재무엔진 설계 인계·원본 수정 없음",
+  "sources": [
+    {
+      "library_file_id": "libfile_86565dc77ae48191beb12fbb8026ee71",
+      "version": "9",
+      "content_version": "v1.6 + 2026-11-04 현행 소득과 투자 제안 흐름",
+      "snapshot_sha256": "1101bb4d3ac5c7707ce1d99f55479de24ea2f3ac553622ec636f3593dac6d346"
+    },
+    {
+      "library_file_id": "libfile_e8c7777856cc8191afc080452d8e9482",
+      "version": "1",
+      "snapshot_sha256": "b8142db0faa2a99a2ded13c08796e057c748a38547be6f5ac2c69be267d5ab4d"
+    }
+  ],
+  "files": [
+    {
+      "path": "00_README.md",
+      "bytes": 1434,
+      "sha256": "c1397ae2a21f990eb60ad59ff391b2523dc618c399fee2adafe8831806747420"
+    },
+    {
+      "path": "01_START_PROMPT.txt",
+      "bytes": 3315,
+      "sha256": "106ff64afc6a6f352250f0dd0d41ea7c58495b89d06b9b26c6f74377cdd117e8"
+    },
+    {
+      "path": "02_CONTEXT_AND_TODAY.md",
+      "bytes": 3033,
+      "sha256": "f579beefc36efff107d74f5c14d0f953fc420c344b85103cf67b468ffd884bbf"
+    },
+    {
+      "path": "03_DATA_PRINCIPLES.md",
+      "bytes": 38384,
+      "sha256": "8a77d75a2bf66ff2bcb96ca2aca458ebd6bc69f7856c4bc4c929f7ebb80fb39d"
+    },
+    {
+      "path": "04_IO_FORMULA_SPEC.md",
+      "bytes": 60904,
+      "sha256": "33c3b05c6395aebfc8b53f361a5204d8eb7c760ed2e2bb927ae83a7633c042c5"
+    },
+    {
+      "path": "05_CURRENT_FLOW_AND_PENDING.md",
+      "bytes": 4482,
+      "sha256": "f40ab954a5ac37aa4112a531d7dab6b71c7ca9dea2acc6599b46137c43f20c74"
+    },
+    {
+      "path": "06_CASES_AND_CHECKS.md",
+      "bytes": 10966,
+      "sha256": "400875b818b6e7759531374d58a89389fe9f249d9eef2370c10e3210c4fd84ae"
+    },
+    {
+      "path": "07_Question_Flow_Design.xlsx",
+      "bytes": 73482,
+      "sha256": "b8142db0faa2a99a2ded13c08796e057c748a38547be6f5ac2c69be267d5ab4d"
+    },
+    {
+      "path": "optional/Original_Handoff.md",
+      "bytes": 235663,
+      "sha256": "1101bb4d3ac5c7707ce1d99f55479de24ea2f3ac553622ec636f3593dac6d346"
+    }
+  ],
+  "validation": "압축 무결성·원본 복사·발췌 일치·질문 파일 ZIP 무결성 확인. 앱 실행·새 정책 타당성 검증은 아님"
+}

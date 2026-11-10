@@ -1,0 +1,482 @@
+{
+  "release": "DION_frontend_20261111_v2",
+  "base_zip": "DION_Integrated_20261110_v6.zip",
+  "base_sha256": "098edcfe074fa1cf4ceb00580510616737a6139250d6c388530f80b12c8e558d",
+  "layout": "dion/ relative paths; cumulative v1 plus UX feedback, apply onto v6",
+  "ui_presentation_version": "DION-FE-COPY-1.1",
+  "env_files_excluded": true,
+  "env_modified_by_this_FE_task": false,
+  "env_baseline_differences_preserved": [
+    "backend/.env"
+  ],
+  "env_note": "backend/.env differs from the pre-task hash. Current file retained without reading values or reverting it; excluded from ZIP. No claim that it is unchanged since task start.",
+  "user_changes_excluded": [
+    "backend/requirements-be.txt",
+    ".env files"
+  ],
+  "generated_files_excluded": [
+    "frontend/next-env.d.ts",
+    "node_modules",
+    ".venv",
+    ".next",
+    "logs",
+    "test-results",
+    "local DB"
+  ],
+  "tests": {
+    "pytest_passed": 369,
+    "pytest_skipped": 7,
+    "skip_reason": "optional pgserver not installed",
+    "ruff": "PASS",
+    "pip_check": "PASS",
+    "typescript": "PASS",
+    "eslint": "PASS",
+    "production_build": "PASS",
+    "production_e2e_passed": 25,
+    "question_design": "UNCHANGED; prior v1 PASS, not rerun for UI-only changes",
+    "remote_auth_and_db": "UNVERIFIED"
+  },
+  "files": [
+    {
+      "path": "README.md",
+      "change": "modified",
+      "purpose": "Contract, current status, reproducible verification and handoff",
+      "bytes": 5836,
+      "sha256": "5b18cea0c84ab84865b2edb9b6a07ad6887ec1785fec4c5e20cdb0177374a185",
+      "source_v6_sha256": "f43fd7ac9cc805728b3d9a4555b1382c5b2c14cb6056942de4bac47bf7f06fa9",
+      "task_start_sha256": "f43fd7ac9cc805728b3d9a4555b1382c5b2c14cb6056942de4bac47bf7f06fa9",
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "RUN_INTEGRATED.md",
+      "change": "modified",
+      "purpose": "Contract, current status, reproducible verification and handoff",
+      "bytes": 7297,
+      "sha256": "6e53d0e82e7655571e8ec71779689a1745c21fc2d7556f79dc95d3edc9c425cc",
+      "source_v6_sha256": "b32372741dd84456bdd6a775016ac8f330de9c35fa966c118a938c2d4ed964de",
+      "task_start_sha256": "b32372741dd84456bdd6a775016ac8f330de9c35fa966c118a938c2d4ed964de",
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "CHANGELOG.md",
+      "change": "added",
+      "purpose": "Contract, current status, reproducible verification and handoff",
+      "bytes": 5074,
+      "sha256": "6837b366d26e4287b15eb2930e97328d0e3e10c7d2374b26c7691318c06b26b7",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "docs/project-status.md",
+      "change": "modified",
+      "purpose": "Contract, current status, reproducible verification and handoff",
+      "bytes": 15488,
+      "sha256": "a35cc641fc84c4bb736a2b6c221f2b6913cede7e8685fe2b7ab4a3a176a357e2",
+      "source_v6_sha256": "61b205dd1568c2c8c158b59cc773b3af54a62732fd78ab962250b8a9712c6563",
+      "task_start_sha256": "61b205dd1568c2c8c158b59cc773b3af54a62732fd78ab962250b8a9712c6563",
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "docs/testing.md",
+      "change": "modified",
+      "purpose": "Contract, current status, reproducible verification and handoff",
+      "bytes": 10980,
+      "sha256": "22bf2b43d89921477114ddb3361464ab0976c70d7640a3525ac3e5c526a52735",
+      "source_v6_sha256": "a5193775ae59a25958d6677dbdb4ffba1b11910114a5df3e8569d91df8b108e6",
+      "task_start_sha256": "a5193775ae59a25958d6677dbdb4ffba1b11910114a5df3e8569d91df8b108e6",
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "docs/development-log.md",
+      "change": "modified",
+      "purpose": "Contract, current status, reproducible verification and handoff",
+      "bytes": 22439,
+      "sha256": "1761f4ee93f6e274be9dbc692759f014f1f7d63e31a17e98d516afc5a24ec46f",
+      "source_v6_sha256": "4cf66d957dfe31cb8bdf845a415dc3190b0fc523a3f24b9d27410860dd4f4bce",
+      "task_start_sha256": "4cf66d957dfe31cb8bdf845a415dc3190b0fc523a3f24b9d27410860dd4f4bce",
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "docs/integration/2026-11-11-frontend.md",
+      "change": "added",
+      "purpose": "Contract, current status, reproducible verification and handoff",
+      "bytes": 17843,
+      "sha256": "a7d84c6a8da0ef1665b39e341a4ecab543b41c5d540d5105d1d5b4997b3f1693",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "backend/docs/be/API.md",
+      "change": "modified",
+      "purpose": "Contract, current status, reproducible verification and handoff",
+      "bytes": 8309,
+      "sha256": "e463a033b814587ffccde45b1322a1b0e3c1206486a97a9d941b323da180544c",
+      "source_v6_sha256": "f4b339721d483eb97d1d46567072b9a6bbbbef35f62fdca651e3f7d22e2a19c5",
+      "task_start_sha256": "f4b339721d483eb97d1d46567072b9a6bbbbef35f62fdca651e3f7d22e2a19c5",
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "backend/app/be_server.py",
+      "change": "modified",
+      "purpose": "Minimal question adapter/API/storage integration, existing financial rules reused",
+      "bytes": 364,
+      "sha256": "15a32e1fed92030a18a0709614710d46dc5ddb98dca1dcff1081c8464b49403a",
+      "source_v6_sha256": "7ca2551adbf5c9df3734471437b65d55211c8f504cfc14cf9a42e54f823439d0",
+      "task_start_sha256": "7ca2551adbf5c9df3734471437b65d55211c8f504cfc14cf9a42e54f823439d0",
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "backend/app/be/store.py",
+      "change": "modified",
+      "purpose": "Minimal question adapter/API/storage integration, existing financial rules reused",
+      "bytes": 9833,
+      "sha256": "8d7672e0710cfb5021e4a746e3856404a7275d759cc6ab489eeb8f219033a2a2",
+      "source_v6_sha256": "161133aba517a2e101811145cf4a9ef6f49d534e49d4c9df0e797670ebc24221",
+      "task_start_sha256": "161133aba517a2e101811145cf4a9ef6f49d534e49d4c9df0e797670ebc24221",
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "backend/app/be/question_api.py",
+      "change": "added",
+      "purpose": "Minimal question adapter/API/storage integration, existing financial rules reused",
+      "bytes": 1340,
+      "sha256": "859cf35e82ffa0117e069c80fd6efe8ac4666d9ab7ed224b7c7a484b78bfd18c",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "backend/app/be/question_bridge.py",
+      "change": "added",
+      "purpose": "Minimal question adapter/API/storage integration, existing financial rules reused",
+      "bytes": 2627,
+      "sha256": "81ce5249db4a39277f2f4f24348e0edfc4052289c1d5a2cf7b65f4123c33e0ef",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "backend/app/planning/question_catalog.json",
+      "change": "modified",
+      "purpose": "Original question definitions snapshot and source hash",
+      "bytes": 7713,
+      "sha256": "7aefad379934f04f7a1d40ccc9dec02fa47d05f6f7d42e40fcdcaef1da6bf2a8",
+      "source_v6_sha256": "803effdf28ab60e9d0f8081ff96171772bd9143d2b5d00824d9bdf2fd0c10888",
+      "task_start_sha256": "803effdf28ab60e9d0f8081ff96171772bd9143d2b5d00824d9bdf2fd0c10888",
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "backend/tests/be/test_question_frontend.py",
+      "change": "added",
+      "purpose": "Real engine regression; mock identity only in test harness",
+      "bytes": 7179,
+      "sha256": "cdd92851439a8ede792493faf503ab4f78f197d18dbed1809658a50025ad554a",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "backend/tests/be/test_raw_poc.py",
+      "change": "modified",
+      "purpose": "Real engine regression; mock identity only in test harness",
+      "bytes": 14178,
+      "sha256": "a9d9c780b0899bfce4c8a783179f857c3d663268ec18d913b87574fc9516fb42",
+      "source_v6_sha256": "60cfd31aafdfb2b11cda4fa5158290724d27b46de0a2d626bbd682dfe7e07294",
+      "task_start_sha256": "60cfd31aafdfb2b11cda4fa5158290724d27b46de0a2d626bbd682dfe7e07294",
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "backend/tests/fe_http_harness.py",
+      "change": "added",
+      "purpose": "Real engine regression; mock identity only in test harness",
+      "bytes": 1406,
+      "sha256": "4bce19a73248e45b6a682058eadca79f445cd30a607f9f6dd3e1e1f267a25be9",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "frontend/next.config.ts",
+      "change": "modified",
+      "purpose": "DION customer question UX, exact raw states and versions, existing API integration",
+      "bytes": 314,
+      "sha256": "5a2b4b5410aa63dc6b05f91ba6aaa31b2940d3d99da5a51dee3de9ab87540d3a",
+      "source_v6_sha256": "0140d12a999fcce53df68fdc64e46914cfa12c6cad293d3f7ac96f29896829d9",
+      "task_start_sha256": "0140d12a999fcce53df68fdc64e46914cfa12c6cad293d3f7ac96f29896829d9",
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "frontend/src/app/page.tsx",
+      "change": "modified",
+      "purpose": "DION customer question UX, exact raw states and versions, existing API integration",
+      "bytes": 436,
+      "sha256": "4badd9f5a4d792f62fa30f0ffeecb8ae903ffe18c9ef7381bf76b7acc405026c",
+      "source_v6_sha256": "a246cf98052a8d2c6d9790822b59598ae8cf8ecafdef01f4107c0776cb5e940f",
+      "task_start_sha256": "a246cf98052a8d2c6d9790822b59598ae8cf8ecafdef01f4107c0776cb5e940f",
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "frontend/src/app/dion/page.tsx",
+      "change": "added",
+      "purpose": "DION customer question UX, exact raw states and versions, existing API integration",
+      "bytes": 331,
+      "sha256": "983afae2bda073a68e4fa547e79cfd7bc17762395c034c2c3b248768396207a5",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "frontend/src/components/dion/planner.tsx",
+      "change": "added",
+      "purpose": "DION customer question UX, exact raw states and versions, existing API integration",
+      "bytes": 22930,
+      "sha256": "987f94cc73da405424b7bae880bd2d1f9778d8bf6467724f7951cc581ebf59b0",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "frontend/src/components/dion/planner.css",
+      "change": "added",
+      "purpose": "DION customer question UX, exact raw states and versions, existing API integration",
+      "bytes": 20108,
+      "sha256": "a877083af30986968f54d7d6e77b4cfaac9896dd3409f74bf73c44cf03bdd2e4",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "frontend/src/components/dion/questions.tsx",
+      "change": "added",
+      "purpose": "DION customer question UX, exact raw states and versions, existing API integration",
+      "bytes": 10203,
+      "sha256": "a100ec80633a9d53ac2c3bc567daf4029bceb7cbab1f885e528c7a446c1b95e4",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "frontend/src/components/dion/fields.tsx",
+      "change": "added",
+      "purpose": "DION customer question UX, exact raw states and versions, existing API integration",
+      "bytes": 14391,
+      "sha256": "e323e78ddfeef26dcbdc31caa15d003a59d1a496a6388ae3decfc83430de6414",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "frontend/src/components/dion/results.tsx",
+      "change": "added",
+      "purpose": "DION customer question UX, exact raw states and versions, existing API integration",
+      "bytes": 11636,
+      "sha256": "6998922d3e1bdb93cf4a4f67f1fd17edc654612eaf0e9c1a13f13dc0b0438b06",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "frontend/src/components/dion/cash-chart.tsx",
+      "change": "added",
+      "purpose": "DION customer question UX, exact raw states and versions, existing API integration",
+      "bytes": 1183,
+      "sha256": "e27e129b00ae3a0c1a47ccd14f996dddeca07f219674251fda92601661d3a5de",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "frontend/src/lib/dion/model.ts",
+      "change": "added",
+      "purpose": "DION customer question UX, exact raw states and versions, existing API integration",
+      "bytes": 8879,
+      "sha256": "36944e79333e888e5bcfb0427ab5a66b033f287013127fb05a8cb255b0e95826",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "frontend/src/lib/dion/catalog.json",
+      "change": "added",
+      "purpose": "Original question definitions snapshot and source hash",
+      "bytes": 203739,
+      "sha256": "95d2b829d5ebc996200f8c5f30e617f20aaf8b54b60d85848cb1c045e9490141",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "frontend/src/lib/dion/fictional-example.json",
+      "change": "added",
+      "purpose": "Unchanged fictional question_v121 fixture",
+      "bytes": 35478,
+      "sha256": "c48922bc66b919a09e84c9830f88632119239f9e394f13ebbbf6e57f79883167",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "frontend/e2e/dion.spec.ts",
+      "change": "added",
+      "purpose": "Real engine regression; mock identity only in test harness",
+      "bytes": 23149,
+      "sha256": "dbfe896493f3cce37e866289cabc05b637a0eb68b69e98cf2905890a71ca3843",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "scripts/build-fe-catalog.py",
+      "change": "added",
+      "purpose": "Original question definitions snapshot and source hash",
+      "bytes": 2433,
+      "sha256": "a43673ee2dd8bf63d57c99b79244c89ddcef403cac7cec5a6cb7ddc301e06b53",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "frontend/src/components/dion/customer-questions.tsx",
+      "change": "added",
+      "purpose": "DION customer question UX, exact raw states and versions, existing API integration",
+      "bytes": 17863,
+      "sha256": "2b535a983abbea157fc0bd3bd909026406fee1f607a16b194e064ce497bb2c34",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "frontend/src/lib/dion/customer-flow.ts",
+      "change": "added",
+      "purpose": "DION customer question UX, exact raw states and versions, existing API integration",
+      "bytes": 6842,
+      "sha256": "34661069b7e2f9597a53c5bea34b8e0fd4d3669cb332130f85e438286347076e",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "docs/integration/2026-11-11-frontend-feedback.md",
+      "change": "added",
+      "purpose": "Contract, current status, reproducible verification and handoff",
+      "bytes": 10728,
+      "sha256": "8b15477c95d2d467626a1ac01698f9a520962bd8f61a3aab08f731c9d084e08b",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "docs/integration/2026-11-11-feedback/dion-feedback-situation.png",
+      "change": "added",
+      "purpose": "Fictional live-engine browser screenshot",
+      "bytes": 84278,
+      "sha256": "de1a70cf8241a22f02110e06f9ad5a0e87c20e847b45d4c8fd75d3abdd0954a4",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "docs/integration/2026-11-11-feedback/dion-feedback-goals.png",
+      "change": "added",
+      "purpose": "Fictional live-engine browser screenshot",
+      "bytes": 99443,
+      "sha256": "6b2055dbeeb409e0501420ab0a984993a483e6ed197d2b718e20108ffa6bd57a",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "docs/integration/2026-11-11-feedback/dion-feedback-income.png",
+      "change": "added",
+      "purpose": "Fictional live-engine browser screenshot",
+      "bytes": 79546,
+      "sha256": "c688f865a049261e68e94c265c3e68e7521464e972ef510f764a993fadcc9a84",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "docs/integration/2026-11-11-feedback/dion-feedback-desktop-overview.png",
+      "change": "added",
+      "purpose": "Fictional live-engine browser screenshot",
+      "bytes": 99701,
+      "sha256": "53f6d8bd3c7f979257c24d8711db5a6d1f1f937bcc7790b3cd7267395a6f5516",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "docs/integration/2026-11-11-feedback/dion-feedback-desktop-candidates.png",
+      "change": "added",
+      "purpose": "Fictional live-engine browser screenshot",
+      "bytes": 89898,
+      "sha256": "df67c99c82d7d8eb5a5511559fbaea22e112316ddd8fdb810b50760193fa223d",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "docs/integration/2026-11-11-feedback/dion-feedback-mobile-input.png",
+      "change": "added",
+      "purpose": "Fictional live-engine browser screenshot",
+      "bytes": 55129,
+      "sha256": "b46271863f96185ae9f79e17b6ad3c6df41fe3c4db606e41eb6f12ec6e7b181d",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "docs/integration/2026-11-11-feedback/dion-feedback-mobile-candidates.png",
+      "change": "added",
+      "purpose": "Fictional live-engine browser screenshot",
+      "bytes": 95868,
+      "sha256": "daebbe9d192702031902122216f043740a9d54b7049a8b94c7ee8c1ef980160d",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "docs/integration/2026-11-11-frontend/dion-desktop-overview.png",
+      "change": "added",
+      "purpose": "Fictional live-engine browser screenshot",
+      "bytes": 128558,
+      "sha256": "cb84eb7cb189a0230d47c5903d251f251e082c0d545cae46564538990830f773",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "docs/integration/2026-11-11-frontend/dion-desktop-candidates.png",
+      "change": "added",
+      "purpose": "Fictional live-engine browser screenshot",
+      "bytes": 118970,
+      "sha256": "b9d3241c3b6f93976b086b063f32df19c08504164f3538cfd0ea1fb856a1f880",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "docs/integration/2026-11-11-frontend/dion-mobile-input.png",
+      "change": "added",
+      "purpose": "Fictional live-engine browser screenshot",
+      "bytes": 74726,
+      "sha256": "9e12f767efe6336764fb4ba026ba8a50f22f5c60b58e0b512dd8a2f009dbbb49",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    },
+    {
+      "path": "docs/integration/2026-11-11-frontend/dion-mobile-candidates.png",
+      "change": "added",
+      "purpose": "Fictional live-engine browser screenshot",
+      "bytes": 121174,
+      "sha256": "0c71c5ab9a6d2c97d813f7b6c2b9bf07acb1da520501c3819a61c105fc9c0169",
+      "source_v6_sha256": null,
+      "task_start_sha256": null,
+      "preexisting_user_change_included": false
+    }
+  ],
+  "manifest_note": "This manifest is included but excludes its own recursive SHA-256. ZIP SHA-256 is supplied separately."
+}

@@ -1,0 +1,6 @@
+{
+  "calc_state": "INVALID_INPUT",
+  "schema_version": "DION-ENGINE-1.0",
+  "input_state": "INVALID_INPUT",
+  "reason": "bound v1.2 responses need an explicit field migration to1.3-engine"
+}

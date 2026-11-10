@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_standard" name="shell-type"/><title>dion Wealth Intelligence</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base { html, body { margin: 0; padding: 0; } body { overscroll-behavior: none; } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "tertiary-fixed": "#e0e2f0", "background": "#faf8ff", "on-secondary-fixed": "#1a0d53", "primary-container": "#5363e8", "secondary": "#5e559a", "on-tertiary": "#ffffff", "inverse-surface": "#2b303e", "surface-dim": "#d5d9ec", "tertiary-container": "#6e717e", "on-surface": "#161b29", "error": "#ba1a1a", "on-primary-fixed": "#000a64", "on-secondary": "#ffffff", "surface-container-highest": "#dee2f5", "inverse-on-surface": "#eef0ff", "secondary-fixed-dim": "#c8bfff", "outline": "#757686", "surface-container-lowest": "#ffffff", "on-background": "#161b29", "primary": "#3848ce", "on-error-container": "#93000a", "on-secondary-container": "#4a4285", "on-error": "#ffffff", "on-primary": "#ffffff", "surface-container-low": "#f2f3ff", "surface-bright": "#faf8ff", "primary-fixed": "#dfe0ff", "on-surface-variant": "#454654", "on-primary-fixed-variant": "#2132bc", "tertiary": "#555965", "surface-variant": "#dee2f5", "surface-tint": "#3e4ed4", "tertiary-fixed-dim": "#c3c6d4", "secondary-container": "#bcb2ff", "on-secondary-fixed-variant": "#463d81", "on-primary-container": "#f9f6ff", "primary-fixed-dim": "#bdc2ff", "on-tertiary-container": "#f7f7ff", "surface-container": "#eaedff", "surface": "#faf8ff", "secondary-fixed": "#e5deff", "outline-variant": "#c5c5d7", "on-tertiary-fixed-variant": "#434652", "error-container": "#ffdad6", "surface-container-high": "#e3e7fb", "on-tertiary-fixed": "#181b26", "inverse-primary": "#bdc2ff" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "margin-mobile": "1rem", "space-xs": "0.25rem", "space-md": "1rem", "margin-desktop": "3rem", "space-lg": "1.5rem", "margin": "2rem", "space-xl": "2rem", "space-sm": "0.5rem", "gutter-mobile": "1rem", "gutter": "1.5rem" }, "fontFamily": { "headline-xl": [ "Plus Jakarta Sans" ], "body-lg": [ "Plus Jakarta Sans" ], "number-metric": [ "Plus Jakarta Sans" ], "label-lg": [ "Plus Jakarta Sans" ], "display-lg": [ "Plus Jakarta Sans" ], "body-md": [ "Plus Jakarta Sans" ], "number-display": [ "Plus Jakarta Sans" ], "headline-lg": [ "Plus Jakarta Sans" ], "display-lg-mobile": [ "Plus Jakarta Sans" ], "label-md": [ "Plus Jakarta Sans" ], "body-sm": [ "Plus Jakarta Sans" ], "headline-md": [ "Plus Jakarta Sans" ], "label-sm": [ "Plus Jakarta Sans" ] }, "fontSize": { "headline-xl": [ "28px", { "lineHeight": "36px", "fontWeight": "700" } ], "body-lg": [ "16px", { "lineHeight": "24px", "fontWeight": "400" } ], "number-metric": [ "20px", { "lineHeight": "26px", "fontWeight": "600" } ], "label-lg": [ "14px", { "lineHeight": "20px", "fontWeight": "600" } ], "display-lg": [ "40px", { "lineHeight": "48px", "fontWeight": "700" } ], "body-md": [ "14px", { "lineHeight": "20px", "fontWeight": "400" } ], "number-display": [ "32px", { "lineHeight": "38px", "fontWeight": "700" } ], "headline-lg": [ "22px", { "lineHeight": "28px", "fontWeight": "600" } ], "display-lg-mobile": [ "32px", { "lineHeight": "40px", "fontWeight": "700" } ], "label-md": [ "12px", { "lineHeight": "16px", "fontWeight": "500" } ], "body-sm": [ "12px", { "lineHeight": "16px", "fontWeight": "400" } ], "headline-md": [ "18px", { "lineHeight": "24px", "fontWeight": "600" } ], "label-sm": [ "11px", { "lineHeight": "14px", "fontWeight": "500" } ] } } } };</script></head><body class="bg-surface font-body-md text-body-md text-on-surface antialiased"><header class="fixed top-0 w-full z-50 bg-surface/85 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-20 max-w-7xl mx-auto px-margin-desktop flex items-center justify-between"><div class="flex items-center gap-12"><a class="flex items-center gap-2 group" href="#"><span class="font-headline-xl text-headline-xl text-primary tracking-tight">dion<span class="text-secondary">.</span></span><span class="hidden xl:inline-block px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm uppercase tracking-wide">Wealth Intel</span></a><nav class="flex items-center gap-1" data-active-classes="bg-primary text-on-primary font-label-lg rounded-full shadow-sm"><a class="px-4 py-2 rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" data-path="my-financial-status" href="#">내 재무현황</a><a class="px-4 py-2 rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" data-path="diagnosis-results" href="#">진단 결과</a><a class="px-4 py-2 rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" data-path="precision-simulation" href="#">정밀 시뮬레이션</a><a aria-current="page" class="px-4 py-2 transition-all bg-primary text-on-primary font-label-lg rounded-full shadow-sm" data-path="checkup-history" href="#">점검 기록</a></nav></div><div class="flex items-center gap-4"><div class="flex items-center gap-3 pl-3 pr-2 py-1.5 rounded-full bg-surface-container-low"><div class="flex flex-col text-right"><span class="font-label-md text-label-md text-on-surface font-semibold">Nyang Coach</span><span class="font-label-sm text-label-sm text-on-surface-variant">수석 자산분석관</span></div><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-primary/20" src="https://lh3.googleusercontent.com/aida/AEtjO1Wo6v7_WLhZKj8oEEQbcYjwB8qhnJWbIgaYm4paIcraWnj36DMA22vHVZj2o3zfJp1GG1DNNUAIQ-moMgMfYJg5GF0wOYXpGwFz9Q6EouCjMaFNAlTNiqCNkbZmMC2JCNvFPCA_oFEmkkTS173Oob5c8kKi0GWwnhFFe6JlbQMwmDZYDWFAch7FzZERW0xo4NBIo0APYr9cK66k87Qo6_bt0hQf-TB-XGKboo3oQnws9rshUfEZENTHhe1j"/></div></div></div></header><main class="w-full pt-20 bg-surface min-h-[calc(100vh-18rem)]"><div class="flex flex-col w-full">
+<div class="max-w-7xl mx-auto w-full px-margin-mobile md:px-margin-desktop py-space-lg space-y-space-lg">
+<!-- Top Header & Scope Banner -->
+<div class="flex flex-col gap-4">
+<div class="flex flex-wrap items-center justify-between gap-3 text-on-surface-variant font-label-md text-label-md">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-high text-primary font-label-md font-semibold">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+            중간 기록 (진행 중)
+          </span>
+<span class="text-tertiary">집계 기간: 11월 1일 ~ 11월 10일 (10일간)</span>
+<span class="text-outline-variant">·</span>
+<span>마지막 저장: 오늘 14:15</span>
+<span class="text-outline-variant">·</span>
+<span class="text-tertiary">입력 출처: 직접 입력</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="relative inline-block text-left" id="monthDropdownWrap">
+<button class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-surface-container-lowest shadow-sm text-on-surface font-label-lg text-label-lg hover:bg-surface-container-low transition-colors" type="button">
+<span class="material-symbols-outlined text-[18px] text-primary">calendar_today</span>
+<span>2026년 11월 (기록 중)</span>
+<span class="material-symbols-outlined text-[16px] text-tertiary">arrow_drop_down</span>
+</button>
+</div>
+<div class="inline-flex p-1 rounded-lg bg-surface-container-low">
+<button class="px-3 py-1 rounded-md bg-surface-container-lowest text-primary shadow-sm font-label-md text-label-md font-semibold transition-all" type="button">중간 기록</button>
+<button class="px-3 py-1 rounded-md text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all" type="button">월말 마감</button>
+</div>
+</div>
+</div>
+<!-- Title & Comparison Benchmark Card -->
+<div class="p-space-lg rounded-xl bg-surface-container-lowest shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div class="space-y-1.5 max-w-2xl">
+<div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-medium">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+<span>채택 계획 대조군 v1.0</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">이번 달, 계획대로 보내고 있나요?</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">실제로 들어오고 나간 돈을 기록해 보세요. 아직 모르는 금액은 나중에 입력해도 괜찮아요.</p>
+</div>
+<div class="p-3.5 rounded-lg bg-surface-container-low flex flex-col gap-1 min-w-[310px]">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">비교 벤치마크 기준</span>
+<span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm">승인 확정</span>
+</div>
+<div class="font-label-lg text-label-lg text-on-surface font-semibold flex items-center gap-1.5 pt-0.5">
+<span class="material-symbols-outlined text-[18px] text-primary">bookmark_check</span>
+            투자 여력 확대안 · B균형운용
+          </div>
+<div class="flex items-center justify-between text-tertiary font-label-sm text-label-sm pt-1">
+<span>2026.11.05 승인</span>
+<span class="text-tertiary-container">(초안 계획 2건은 대조 제외)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Main Grid: Left Column (7 cols) + Right Column (5 cols) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
+<!-- Left Column: Actual Input Table & Core Ledger -->
+<div class="lg:col-span-7 flex flex-col gap-space-lg">
+<!-- Table Card -->
+<div class="rounded-xl bg-surface-container-lowest shadow-sm overflow-hidden flex flex-col">
+<div class="p-space-lg flex flex-wrap items-center justify-between gap-3 bg-surface-container-lowest">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">월간 핵심 수지 대조표</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">빈칸은 '미입력(대기)' 상태를 의미하며, 0원은 '실제 미집행(0원)'으로 계산됩니다.</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-low text-tertiary font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span> 자산 형성 이동
+              </span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-low text-tertiary font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span> 순수 소비 지출
+              </span>
+</div>
+</div>
+<!-- Table Header -->
+<div class="grid grid-cols-12 px-space-lg py-2.5 bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant font-semibold">
+<span class="col-span-4">구분 항목</span>
+<span class="col-span-2 text-right">채택 계획</span>
+<span class="col-span-3 text-right">실제 입력 (만원)</span>
+<span class="col-span-3 text-right">월 계획 대비 차이</span>
+</div>
+<!-- Line Items List -->
+<div class="flex flex-col text-body-md text-on-surface">
+<!-- 1. 월 세후소득 -->
+<div class="grid grid-cols-12 items-center px-space-lg py-3.5 hover:bg-surface-container-low/50 transition-colors">
+<div class="col-span-4 flex flex-col">
+<div class="flex items-center gap-1.5 font-label-lg text-label-lg font-semibold text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-primary">payments</span>
+<span>월 세후소득</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">정기 급여 및 입금액</span>
+</div>
+<div class="col-span-2 text-right font-number-metric text-number-metric text-on-surface">300<span class="font-label-md text-label-md text-tertiary">만</span></div>
+<div class="col-span-3 flex justify-end">
+<div class="relative w-28">
+<input class="w-full text-right py-1.5 px-2.5 pr-8 rounded-lg bg-surface-container-low text-on-surface font-number-metric text-number-metric focus:outline-none focus:ring-2 focus:ring-primary/40" type="number" value="300"/>
+<span class="absolute right-2.5 top-1/2 -translate-y-1/2 font-label-sm text-label-sm text-tertiary pointer-events-none">만</span>
+</div>
+</div>
+<div class="col-span-3 flex flex-col items-end">
+<span class="font-label-lg text-label-lg font-semibold text-primary">0만원</span>
+<span class="font-label-sm text-label-sm text-tertiary">수입 정상 확인</span>
+</div>
+</div>
+<!-- 2. 생활비 (소비) with Accordion -->
+<div class="flex flex-col hover:bg-surface-container-low/30 transition-colors">
+<div class="grid grid-cols-12 items-center px-space-lg py-3.5">
+<div class="col-span-4 flex flex-col">
+<div class="flex items-center gap-1.5 font-label-lg text-label-lg font-semibold text-error">
+<span class="material-symbols-outlined text-[18px] text-error">shopping_cart</span>
+<span>생활비 (소비)</span>
+</div>
+<button class="inline-flex items-center gap-1 text-primary font-label-sm text-label-sm hover:underline mt-0.5 text-left" onclick="document.getElementById('livingCostDetails').classList.toggle('hidden');" type="button">
+<span>상세 내역 (식비·주거 외)</span>
+<span class="material-symbols-outlined text-[14px]">expand_more</span>
+</button>
+</div>
+<div class="col-span-2 text-right font-number-metric text-number-metric text-on-surface">150<span class="font-label-md text-label-md text-tertiary">만</span></div>
+<div class="col-span-3 flex justify-end">
+<div class="relative w-28">
+<input class="w-full text-right py-1.5 px-2.5 pr-8 rounded-lg bg-surface-container-low text-on-surface font-number-metric text-number-metric focus:outline-none focus:ring-2 focus:ring-primary/40" type="number" value="95"/>
+<span class="absolute right-2.5 top-1/2 -translate-y-1/2 font-label-sm text-label-sm text-tertiary pointer-events-none">만</span>
+</div>
+</div>
+<div class="col-span-3 flex flex-col items-end">
+<span class="font-label-lg text-label-lg font-semibold text-primary">-55만원</span>
+<span class="font-label-sm text-label-sm text-tertiary">10일간 95만 (잔여 55만)</span>
+</div>
+</div>
+<!-- Accordion breakdown -->
+<div class="px-space-lg pb-3 pt-1 bg-surface-container-low/60 flex flex-col gap-1.5 text-body-sm text-on-surface-variant" id="livingCostDetails">
+<div class="p-2.5 rounded-lg bg-surface-container-lowest grid grid-cols-4 gap-2 text-center">
+<div class="flex flex-col"><span class="font-label-sm text-label-sm text-tertiary">식비</span><span class="font-number-metric text-number-metric text-on-surface">45<span class="font-label-sm text-label-sm font-normal">만원</span></span></div>
+<div class="flex flex-col"><span class="font-label-sm text-label-sm text-tertiary">주거 관리비</span><span class="font-number-metric text-number-metric text-on-surface">25<span class="font-label-sm text-label-sm font-normal">만원</span></span></div>
+<div class="flex flex-col"><span class="font-label-sm text-label-sm text-tertiary">교통·통신</span><span class="font-number-metric text-number-metric text-on-surface">15<span class="font-label-sm text-label-sm font-normal">만원</span></span></div>
+<div class="flex flex-col"><span class="font-label-sm text-label-sm text-tertiary">기타 소모</span><span class="font-number-metric text-number-metric text-on-surface">10<span class="font-label-sm text-label-sm font-normal">만원</span></span></div>
+</div>
+</div>
+</div>
+<!-- 3. 대출 원리금 상환 -->
+<div class="grid grid-cols-12 items-center px-space-lg py-3.5 hover:bg-surface-container-low/50 transition-colors">
+<div class="col-span-4 flex flex-col">
+<div class="flex items-center gap-1.5 font-label-lg text-label-lg font-semibold text-on-surface">
+<span class="material-symbols-outlined text-[18px] text-tertiary">account_balance</span>
+<span>대출 원리금 상환</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">부채 원리금 자동이체</span>
+</div>
+<div class="col-span-2 text-right font-number-metric text-number-metric text-on-surface">20<span class="font-label-md text-label-md text-tertiary">만</span></div>
+<div class="col-span-3 flex justify-end">
+<div class="relative w-28">
+<input class="w-full text-right py-1.5 px-2.5 pr-8 rounded-lg bg-surface-container-low text-on-surface font-number-metric text-number-metric focus:outline-none focus:ring-2 focus:ring-primary/40" type="number" value="20"/>
+<span class="absolute right-2.5 top-1/2 -translate-y-1/2 font-label-sm text-label-sm text-tertiary pointer-events-none">만</span>
+</div>
+</div>
+<div class="col-span-3 flex flex-col items-end">
+<span class="font-label-lg text-label-lg font-semibold text-on-surface">0만원</span>
+<span class="font-label-sm text-label-sm text-secondary">정상 출금 확인</span>
+</div>
+</div>
+<!-- 4. 주거 목표 적립 -->
+<div class="grid grid-cols-12 items-center px-space-lg py-3.5 hover:bg-surface-container-low/50 transition-colors">
+<div class="col-span-4 flex flex-col">
+<div class="flex items-center gap-1.5 font-label-lg text-label-lg font-semibold text-secondary">
+<span class="material-symbols-outlined text-[18px] text-secondary">home_pin</span>
+<span>주거 목표 적립</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">자산 간 이동 (자산 형성)</span>
+</div>
+<div class="col-span-2 text-right font-number-metric text-number-metric text-on-surface">20<span class="font-label-md text-label-md text-tertiary">만</span></div>
+<div class="col-span-3 flex justify-end">
+<div class="relative w-28">
+<input class="w-full text-right py-1.5 px-2.5 pr-8 rounded-lg bg-surface-container-low text-on-surface font-number-metric text-number-metric focus:outline-none focus:ring-2 focus:ring-primary/40" type="number" value="20"/>
+<span class="absolute right-2.5 top-1/2 -translate-y-1/2 font-label-sm text-label-sm text-tertiary pointer-events-none">만</span>
+</div>
+</div>
+<div class="col-span-3 flex flex-col items-end">
+<span class="font-label-lg text-label-lg font-semibold text-on-surface">0만원</span>
+<span class="font-label-sm text-label-sm text-secondary">전용통장 분리 완료</span>
+</div>
+</div>
+<!-- 5. 기존 투자 납입 -->
+<div class="grid grid-cols-12 items-center px-space-lg py-3.5 hover:bg-surface-container-low/50 transition-colors">
+<div class="col-span-4 flex flex-col">
+<div class="flex items-center gap-1.5 font-label-lg text-label-lg font-semibold text-secondary">
+<span class="material-symbols-outlined text-[18px] text-secondary">show_chart</span>
+<span>기존 투자 납입</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">주택청약 및 정기펀드</span>
+</div>
+<div class="col-span-2 text-right font-number-metric text-number-metric text-on-surface">40<span class="font-label-md text-label-md text-tertiary">만</span></div>
+<div class="col-span-3 flex justify-end">
+<div class="relative w-28">
+<input class="w-full text-right py-1.5 px-2.5 pr-8 rounded-lg bg-surface-container-low text-on-surface font-number-metric text-number-metric focus:outline-none focus:ring-2 focus:ring-primary/40" type="number" value="40"/>
+<span class="absolute right-2.5 top-1/2 -translate-y-1/2 font-label-sm text-label-sm text-tertiary pointer-events-none">만</span>
+</div>
+</div>
+<div class="col-span-3 flex flex-col items-end">
+<span class="font-label-lg text-label-lg font-semibold text-on-surface">0만원</span>
+<span class="font-label-sm text-label-sm text-secondary">자동납입 완료</span>
+</div>
+</div>
+<!-- 6. 신규 투자 납입 (Empty/Pending) -->
+<div class="grid grid-cols-12 items-center px-space-lg py-3.5 bg-surface-container-low/30 hover:bg-surface-container-low/60 transition-colors">
+<div class="col-span-4 flex flex-col">
+<div class="flex items-center gap-1.5 font-label-lg text-label-lg font-semibold text-primary">
+<span class="material-symbols-outlined text-[18px] text-primary">trending_up</span>
+<span>신규 투자 납입</span>
+</div>
+<span class="font-label-sm text-label-sm text-tertiary font-medium">※ 계좌 개설 대기중</span>
+</div>
+<div class="col-span-2 text-right font-number-metric text-number-metric text-on-surface">30<span class="font-label-md text-label-md text-tertiary">만</span></div>
+<div class="col-span-3 flex justify-end">
+<div class="relative w-28">
+<input class="w-full text-right py-1.5 px-2.5 pr-3 rounded-lg bg-surface-container-lowest text-on-surface font-body-sm text-body-sm placeholder:text-tertiary placeholder:text-[11px] focus:outline-none focus:ring-2 focus:ring-primary/40 shadow-sm" placeholder="아직 미입력" type="number"/>
+</div>
+</div>
+<div class="col-span-3 flex flex-col items-end">
+<span class="font-label-lg text-label-lg font-semibold text-tertiary">-30만원</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm">진행 대기</span>
+</div>
+</div>
+<!-- 7. 비상금 적립 -->
+<div class="grid grid-cols-12 items-center px-space-lg py-3.5 hover:bg-surface-container-low/50 transition-colors">
+<div class="col-span-4 flex flex-col">
+<div class="flex items-center gap-1.5 font-label-lg text-label-lg font-semibold text-secondary">
+<span class="material-symbols-outlined text-[18px] text-secondary">health_and_safety</span>
+<span>비상금 적립</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">CMA 유동성 파킹</span>
+</div>
+<div class="col-span-2 text-right font-number-metric text-number-metric text-on-surface">20<span class="font-label-md text-label-md text-tertiary">만</span></div>
+<div class="col-span-3 flex justify-end">
+<div class="relative w-28">
+<input class="w-full text-right py-1.5 px-2.5 pr-8 rounded-lg bg-surface-container-low text-on-surface font-number-metric text-number-metric focus:outline-none focus:ring-2 focus:ring-primary/40" type="number" value="20"/>
+<span class="absolute right-2.5 top-1/2 -translate-y-1/2 font-label-sm text-label-sm text-tertiary pointer-events-none">만</span>
+</div>
+</div>
+<div class="col-span-3 flex flex-col items-end">
+<span class="font-label-lg text-label-lg font-semibold text-on-surface">0만원</span>
+<span class="font-label-sm text-label-sm text-secondary">적립 확인</span>
+</div>
+</div>
+<!-- 8. 추가 현금 저축 (Empty/Pending) -->
+<div class="grid grid-cols-12 items-center px-space-lg py-3.5 bg-surface-container-low/30 hover:bg-surface-container-low/60 transition-colors">
+<div class="col-span-4 flex flex-col">
+<div class="flex items-center gap-1.5 font-label-lg text-label-lg font-semibold text-secondary">
+<span class="material-symbols-outlined text-[18px] text-secondary">savings</span>
+<span>추가 현금 저축</span>
+</div>
+<span class="font-label-sm text-label-sm text-tertiary font-medium">※ 월말 잔여 집행</span>
+</div>
+<div class="col-span-2 text-right font-number-metric text-number-metric text-on-surface">20<span class="font-label-md text-label-md text-tertiary">만</span></div>
+<div class="col-span-3 flex justify-end">
+<div class="relative w-28">
+<input class="w-full text-right py-1.5 px-2.5 pr-3 rounded-lg bg-surface-container-lowest text-on-surface font-body-sm text-body-sm placeholder:text-tertiary placeholder:text-[11px] focus:outline-none focus:ring-2 focus:ring-primary/40 shadow-sm" placeholder="아직 미입력" type="number"/>
+</div>
+</div>
+<div class="col-span-3 flex flex-col items-end">
+<span class="font-label-lg text-label-lg font-semibold text-tertiary">-20만원</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm">월말 입력</span>
+</div>
+</div>
+</div>
+<!-- Bottom Notice within Table -->
+<div class="p-space-md bg-surface-container-low flex items-start gap-2.5">
+<span class="material-symbols-outlined text-[18px] text-primary flex-shrink-0 mt-0.5">info</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+<strong class="font-semibold text-on-surface">자산 형성 및 이동 주의:</strong> 주거 적립·기존 및 신규 투자·비상금은 단순 소비 지출이 아닌 <span class="text-primary font-medium">‘자산 간 이동’</span>으로 분류됩니다. 또한 투자 납입액은 계좌 입금 원금이며 실시간 평가손익과 무관합니다.
+            </p>
+</div>
+</div>
+<!-- Foldable Section: Lump-sum Execution Record -->
+<div class="rounded-xl bg-surface-container-lowest shadow-sm overflow-hidden">
+<button class="w-full p-space-lg flex items-center justify-between hover:bg-surface-container-low/40 transition-colors text-left" onclick="document.getElementById('lumpSumContent').classList.toggle('hidden'); document.getElementById('lumpSumArrow').classList.toggle('rotate-180');" type="button">
+<div class="flex items-center gap-3">
+<span class="w-8 h-8 rounded-lg bg-primary-fixed text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">account_balance_wallet</span>
+</span>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">별도 일시금 실행 기록</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">월소득 배분 외 기존 보유자산 분리 및 일시 재배치 내역</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-[20px] text-tertiary transition-transform duration-200" id="lumpSumArrow">expand_more</span>
+</button>
+<div class="px-space-lg pb-space-lg flex flex-col gap-3" id="lumpSumContent">
+<div class="p-3.5 rounded-lg bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[20px] text-primary">check_circle</span>
+<div>
+<span class="font-label-lg text-label-lg font-semibold text-on-surface block">주거 목표 전용자금 분리</span>
+<span class="font-body-sm text-body-sm text-tertiary">기존 유동성 통장에서 주거 전용 파킹통장으로 이동</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-number-metric text-number-metric text-on-surface font-semibold">400만원</span>
+<span class="block font-label-sm text-label-sm text-secondary font-medium">실행 완료</span>
+</div>
+</div>
+<div class="p-3.5 rounded-lg bg-surface-container-low flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[20px] text-tertiary">hourglass_top</span>
+<div>
+<span class="font-label-lg text-label-lg font-semibold text-on-surface block">신규 일시 투자 배정 (글로벌 ETF)</span>
+<span class="font-body-sm text-body-sm text-tertiary">포트폴리오 배분 계획에 따른 일시금 투자 대기</span>
+</div>
+</div>
+<div class="text-right">
+<span class="font-number-metric text-number-metric text-tertiary font-semibold">400만원</span>
+<span class="block font-label-sm text-label-sm text-tertiary font-medium">계좌 개설 대기 중</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Real-time Summary, Alerts & Task Checklist -->
+<div class="lg:col-span-5 flex flex-col gap-space-lg">
+<!-- 1. Real-time Summary Card -->
+<div class="rounded-xl bg-surface-container-lowest shadow-sm p-space-lg flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-md text-headline-md text-on-surface">월 계획 대비 현재 기록 요약</h2>
+<span class="px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-semibold">6/8개 항목 완료</span>
+</div>
+<!-- Total Metrics Row -->
+<div class="grid grid-cols-2 gap-3 p-3.5 rounded-lg bg-surface-container-low">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">실제 소득 입금</span>
+<span class="font-number-display text-number-display text-on-surface">300<span class="font-label-lg text-label-lg text-tertiary font-normal">만원</span></span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">현재 기록 총액</span>
+<span class="font-number-display text-number-display text-primary">195<span class="font-label-lg text-label-lg text-primary/70 font-normal">만원</span></span>
+</div>
+</div>
+<!-- Visual Stack Bar -->
+<div class="flex flex-col gap-1.5">
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant">
+<span>기록 집행률 65% (195 / 300만)</span>
+<span class="text-tertiary font-semibold">미입력 잔여 105만원</span>
+</div>
+<div class="w-full h-3 rounded-full bg-surface-container-high overflow-hidden flex">
+<div class="h-full bg-error" style="width: 38.3%;" title="생활비 및 대출상환 (115만)"></div>
+<div class="h-full bg-primary" style="width: 26.7%;" title="자산 이동 및 저축 (80만)"></div>
+<div class="h-full bg-surface-dim" style="width: 35%;" title="미배정 대기 (105만)"></div>
+</div>
+<div class="flex items-center justify-between pt-1 font-label-sm text-label-sm text-tertiary">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span>지출·상환 115만</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span>자산이동 80만</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-surface-dim"></span>
+<span>미입력 105만</span>
+</div>
+</div>
+</div>
+<!-- Breakdown Ledger inside Card -->
+<div class="space-y-2 pt-2 text-body-sm text-on-surface">
+<div class="flex justify-between py-1.5 border-b border-surface-container-high">
+<span class="text-on-surface-variant">생활비 지출 (95만) + 대출상환 (20만)</span>
+<span class="font-label-lg text-label-lg font-semibold">115만원</span>
+</div>
+<div class="flex justify-between py-1.5 border-b border-surface-container-high">
+<span class="text-on-surface-variant">자산 이동 및 저축·투자 (주거20+기존40+비상20)</span>
+<span class="font-label-lg text-label-lg font-semibold text-primary">80만원</span>
+</div>
+<div class="flex justify-between py-1.5 bg-surface-container-low px-2.5 rounded-lg">
+<span class="font-medium text-tertiary">월말 미배정 잔여액 (미입력 2건 대기)</span>
+<span class="font-label-lg text-label-lg font-bold text-on-surface">105만원</span>
+</div>
+</div>
+</div>
+<!-- 2. Income Excess / Discrepancy Guidance Box -->
+<div class="p-space-md rounded-xl bg-surface-container-low flex flex-col gap-2">
+<div class="flex items-start gap-2.5">
+<span class="material-symbols-outlined text-[20px] text-primary flex-shrink-0 mt-0.5">tips_and_updates</span>
+<div class="space-y-1">
+<span class="font-label-lg text-label-lg font-semibold text-on-surface block">소득 초과 배정 안내 가이드</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                만약 소득보다 기록한 총액이 많아지면, 기존 계좌 잔액 사용 / 부수입 반영 / 입력 수정을 유연하게 선택하여 보정할 수 있습니다.
+              </p>
+</div>
+</div>
+</div>
+<!-- 3. Task Status Checklist -->
+<div class="rounded-xl bg-surface-container-lowest shadow-sm p-space-lg flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">실행 과제 체크리스트</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">계좌 잔액 확인 및 행정 조치는 실제 금액과 별도 분리 체크</p>
+</div>
+<div class="text-right">
+<span class="font-label-lg text-label-lg font-bold text-primary">75%</span>
+<span class="block font-label-sm text-label-sm text-tertiary">3 / 4 완료</span>
+</div>
+</div>
+<div class="space-y-2.5">
+<!-- Task 1 -->
+<label class="flex items-start gap-3 p-3 rounded-lg bg-surface-container-low/70 hover:bg-surface-container-low transition-colors cursor-pointer">
+<input checked="" class="mt-1 w-4 h-4 rounded text-primary focus:ring-primary" type="checkbox"/>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="font-label-lg text-label-lg font-semibold text-on-surface">주거목표 전용통장 분리</span>
+<span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-medium">완료</span>
+</div>
+<p class="font-body-sm text-body-sm text-tertiary">보유 유동성 400만원 전용 파킹통장 이전 완료</p>
+</div>
+</label>
+<!-- Task 2 -->
+<label class="flex items-start gap-3 p-3 rounded-lg bg-surface-container-low/70 hover:bg-surface-container-low transition-colors cursor-pointer">
+<input checked="" class="mt-1 w-4 h-4 rounded text-primary focus:ring-primary" type="checkbox"/>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="font-label-lg text-label-lg font-semibold text-on-surface">생활비 150만원 상한 알림 설정</span>
+<span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-medium">완료</span>
+</div>
+<p class="font-body-sm text-body-sm text-tertiary">금융 앱 푸시 알림 기준치 설정 완료</p>
+</div>
+</label>
+<!-- Task 3 -->
+<label class="flex items-start gap-3 p-3 rounded-lg bg-surface-container-low/70 hover:bg-surface-container-low transition-colors cursor-pointer">
+<input checked="" class="mt-1 w-4 h-4 rounded text-primary focus:ring-primary" type="checkbox"/>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="font-label-lg text-label-lg font-semibold text-on-surface">대출상환 계좌 잔액 확인</span>
+<span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-medium">완료</span>
+</div>
+<p class="font-body-sm text-body-sm text-tertiary">출금일 전 잔액 20만원 이상 유지 점검</p>
+</div>
+</label>
+<!-- Task 4 -->
+<div class="flex flex-col gap-2 p-3 rounded-lg bg-surface-container-high/60">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-start gap-2.5">
+<span class="material-symbols-outlined text-[20px] text-primary mt-0.5">pending_actions</span>
+<div>
+<span class="font-label-lg text-label-lg font-semibold text-on-surface block">신규 투자 계좌 개설 및 자동이체</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">증권계좌 비대면 개설 후 30만원 자동이체 설정</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm font-medium flex-shrink-0">진행 중</span>
+</div>
+<div class="flex items-center gap-1.5 pt-1 pl-7">
+<button class="px-2.5 py-1 rounded bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm hover:text-on-surface" type="button">예정</button>
+<button class="px-2.5 py-1 rounded bg-primary text-on-primary font-label-sm text-label-sm font-semibold" type="button">진행 중</button>
+<button class="px-2.5 py-1 rounded bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm hover:text-on-surface" type="button">완료</button>
+<button class="px-2.5 py-1 rounded bg-surface-container-lowest text-on-surface-variant font-label-sm text-label-sm hover:text-on-surface" type="button">보류</button>
+</div>
+</div>
+</div>
+</div>
+<!-- 4. Foldable Section: Change of Situation Check -->
+<div class="rounded-xl bg-surface-container-lowest shadow-sm overflow-hidden">
+<button class="w-full p-space-md flex items-center justify-between hover:bg-surface-container-low/40 transition-colors text-left" onclick="document.getElementById('situationChanges').classList.toggle('hidden'); document.getElementById('changeArrow').classList.toggle('rotate-180');" type="button">
+<div class="flex items-center gap-2.5">
+<span class="material-symbols-outlined text-[20px] text-secondary">alt_route</span>
+<span class="font-headline-md text-headline-md text-on-surface">최근 달라진 점이 있나요?</span>
+</div>
+<span class="material-symbols-outlined text-[20px] text-tertiary transition-transform duration-200" id="changeArrow">expand_more</span>
+</button>
+<div class="px-space-md pb-space-md flex flex-col gap-3" id="situationChanges">
+<p class="font-body-sm text-body-sm text-on-surface-variant">재무 상황에 변화가 생겼다면 체크해 주세요. 채택 계획은 유지되며, 새로운 가상 시나리오(초안)로 검토를 돕습니다.</p>
+<div class="grid grid-cols-2 gap-2 text-body-sm">
+<label class="flex items-center gap-2 p-2 rounded-lg bg-surface-container-low hover:bg-surface-container-high cursor-pointer">
+<input class="w-3.5 h-3.5 text-primary rounded" type="checkbox"/>
+<span class="font-label-sm text-label-sm">소득 변화</span>
+</label>
+<label class="flex items-center gap-2 p-2 rounded-lg bg-surface-container-low hover:bg-surface-container-high cursor-pointer">
+<input class="w-3.5 h-3.5 text-primary rounded" type="checkbox"/>
+<span class="font-label-sm text-label-sm">예상 못한 지출</span>
+</label>
+<label class="flex items-center gap-2 p-2 rounded-lg bg-surface-container-low hover:bg-surface-container-high cursor-pointer">
+<input class="w-3.5 h-3.5 text-primary rounded" type="checkbox"/>
+<span class="font-label-sm text-label-sm">부채 상환 변동</span>
+</label>
+<label class="flex items-center gap-2 p-2 rounded-lg bg-surface-container-low hover:bg-surface-container-high cursor-pointer">
+<input class="w-3.5 h-3.5 text-primary rounded" type="checkbox"/>
+<span class="font-label-sm text-label-sm">목표 금액·시기 변화</span>
+</label>
+<label class="flex items-center gap-2 p-2 rounded-lg bg-surface-container-low hover:bg-surface-container-high cursor-pointer">
+<input class="w-3.5 h-3.5 text-primary rounded" type="checkbox"/>
+<span class="font-label-sm text-label-sm">투자 성향 변화</span>
+</label>
+<label class="flex items-center gap-2 p-2 rounded-lg bg-surface-container-low hover:bg-surface-container-high cursor-pointer">
+<input checked="" class="w-3.5 h-3.5 text-primary rounded" type="checkbox"/>
+<span class="font-label-sm text-label-sm font-semibold text-primary">변화 없음</span>
+</label>
+</div>
+<button class="w-full mt-1 py-2 px-3 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-primary font-label-md text-label-md font-semibold transition-colors flex items-center justify-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px]">sync</span>
+<span>변경 사항으로 계획 다시 검토하기</span>
+</button>
+</div>
+</div>
+<!-- 5. Nyang Coach Mascot Advice Box -->
+<div class="rounded-xl bg-surface-container-low p-space-md flex items-start gap-3.5">
+<div class="w-14 h-14 rounded-full overflow-hidden flex-shrink-0 bg-primary-fixed shadow-sm">
+<img alt="Nyang Coach" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqPx-fBSKSJ1U6rlXaSJWtxpCj3tXojzv9e5XmoVqIfeWu-BijQQELSLmnioS1rO5JwQdj3_TM03T4cCKuNJdwD6cTYBcxaR4dcp3sxE8zeuYT5WBrOnATlWqbnHfdGzOoKcmdLEFrdpbHIqN2xZ93_zuenFtin0SATuh6QXcx6k6aTgxl-w6eyZI3bQC66WadBnEyYnk4VwfcBJpjWptwIxZ8GFcKUsBZUIIhgIEDQp3iDtzAaAigNw"/>
+</div>
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="font-label-md text-label-md font-bold text-on-surface">냥코치 자산분석관</span>
+<span class="px-2 py-0.2 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm">10일차 코칭</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+              “김디오님! 현재 10일 차까지 생활비 95만원으로 순항 중이시네요 🐾 아직 신규 투자(30만)와 추가 저축(20만)은 미입력 상태예요. 월말까지 차근차근 기록해 봐요!”
+            </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Action & Save Feedback Strip -->
+<div class="w-full p-space-md rounded-xl bg-surface-container-lowest shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-2.5 text-tertiary font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[18px] text-primary">cloud_done</span>
+<span>마지막 자동 임시저장 <strong class="text-on-surface font-semibold">14:15</strong> | 모든 입력 데이터는 256-bit로 안전하게 보존 중입니다.</span>
+</div>
+<div class="flex items-center gap-3 w-full md:w-auto">
+<button class="flex-1 md:flex-none px-5 py-2.5 rounded-lg bg-surface-container-lowest hover:bg-surface-container-low text-on-surface font-label-lg text-label-lg shadow-sm transition-all flex items-center justify-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[18px] text-tertiary">save</span>
+<span>임시 저장 (현재 입력 보존)</span>
+</button>
+<button class="flex-1 md:flex-none px-6 py-2.5 rounded-lg bg-primary hover:bg-primary-fixed-variant text-on-primary font-label-lg text-label-lg font-semibold shadow-md transition-all flex items-center justify-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[18px]">done_all</span>
+<span>이번 달 점검 완료 (월말 마감)</span>
+</button>
+</div>
+</div>
+</div>
+</div></main><footer class="w-full bg-surface-container-lowest mt-space-xl shadow-[0_-1px_6px_rgba(0,0,0,0.02)]"><div class="max-w-7xl mx-auto px-margin-desktop py-space-xl"><div class="grid grid-cols-1 md:grid-cols-12 gap-gutter items-start pb-space-lg"><div class="md:col-span-6 space-y-space-sm"><div class="flex items-center gap-2"><span class="font-headline-md text-headline-md text-primary tracking-tight">dion.</span><span class="font-label-md text-label-md text-tertiary">디온 웰스 인텔리전스</span></div><p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed max-w-xl">본 자산 진단 및 알고리즘 시뮬레이션 결과는 고객의 재정 건전성 평가 및 계획 수립을 돕기 위한 참고 자료이며, 투자 원금이나 미래 수익률을 보장하지 않습니다. 금융투자상품 매매 시 투자손실이 발생할 수 있으며 이는 투자자 본인에게 귀속됩니다.</p><div class="flex items-center gap-3 pt-space-xs"><div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-low text-on-surface font-label-sm text-label-sm"><span class="material-symbols-outlined text-[16px] text-primary">verified_user</span><span>256-Bit SSL 암호화 안전 전송</span></div><div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-low text-on-surface font-label-sm text-label-sm"><span class="material-symbols-outlined text-[16px] text-secondary">security</span><span>금융보안표준 인증 아키텍처</span></div></div></div><div class="md:col-span-3 space-y-space-xs"><span class="font-label-lg text-label-lg text-on-surface block">고객지원 센터</span><p class="font-headline-md text-headline-md text-on-surface font-semibold">1588-0249</p><p class="font-body-sm text-body-sm text-on-surface-variant">평일 09:00 - 18:00 (공휴일 제외)</p><p class="font-body-sm text-body-sm text-tertiary">advisory@dionwealth.ai</p></div><div class="md:col-span-3 space-y-space-xs"><span class="font-label-lg text-label-lg text-on-surface block">컴플라이언스 &amp; 규정</span><ul class="space-y-1 font-body-sm text-body-sm text-on-surface-variant"><li><a class="hover:text-primary transition-colors" href="#">이용약관</a></li><li><a class="hover:text-primary font-semibold transition-colors" href="#">개인정보처리방침</a></li><li><a class="hover:text-primary transition-colors" href="#">투자유의사항 및 권리고지</a></li><li><a class="hover:text-primary transition-colors" href="#">알고리즘 공시체계</a></li></ul></div></div><div class="pt-space-md flex flex-col md:flex-row items-center justify-between text-on-surface-variant font-body-sm text-body-sm gap-2"><p>© 2025 dion Wealth Intelligence Inc. All rights reserved.</p><div class="flex items-center gap-4 text-tertiary font-label-sm text-label-sm"><span>디온 주식회사 서울특별시 영등포구 여의대로 108 파크원 타워</span><span>사업자등록번호 214-88-09123</span></div></div></div></footer></body></html>

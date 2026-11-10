@@ -1,0 +1,301 @@
+{
+  "schema_version": "DION-ENGINE-1.0",
+  "context": {
+    "case_id": "SUBMISSION-B-01",
+    "snapshot_id": "draft",
+    "profile_version": "1",
+    "evaluation_on": "2026-11-30",
+    "scope": "household",
+    "included_owner_ids": [
+      "adult-1",
+      "adult-2"
+    ],
+    "currency": "KRW",
+    "timezone": "Asia/Seoul",
+    "projection_start": "2026-12-01",
+    "projection_end": "2027-02-28"
+  },
+  "answers": [
+    {
+      "answer_id": "a:NEW-01",
+      "question_id": "NEW-01",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "raw_response": {
+        "scope": "household",
+        "owner_ids": [
+          "adult-1",
+          "adult-2"
+        ],
+        "asset_coverage": "complete"
+      }
+    },
+    {
+      "answer_id": "a:F03",
+      "question_id": "F03",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "raw_response": {
+        "monthly_net_income": {
+          "value": "00500.0000",
+          "state": "KNOWN",
+          "unit": "KRW_10000",
+          "basis": "SCENARIO"
+        },
+        "period_start": "2026-11-01",
+        "period_end": "2026-11-30",
+        "includes_one_off": "NO"
+      }
+    },
+    {
+      "answer_id": "a:F04",
+      "question_id": "F04",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "raw_response": {
+        "living": {
+          "value": "00200.0000",
+          "state": "KNOWN",
+          "unit": "KRW_10000",
+          "basis": "SCENARIO"
+        },
+        "expense_basis": "LIVING_ONLY",
+        "exclusions_confirmed": true,
+        "essential_living": {
+          "value": "00200.0000",
+          "state": "KNOWN",
+          "unit": "KRW_10000",
+          "basis": "SCENARIO"
+        },
+        "period_start": "2026-11-01",
+        "period_end": "2026-11-30"
+      }
+    },
+    {
+      "answer_id": "a:F06",
+      "question_id": "F06",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "raw_response": {
+        "items": [
+          {
+            "asset_id": "cash-1",
+            "kind": "CASH",
+            "parent_asset_id": null,
+            "owner_ids": [
+              "adult-1",
+              "adult-2"
+            ],
+            "value": {
+              "value": "02000.0000",
+              "state": "KNOWN",
+              "unit": "KRW_10000",
+              "basis": "SCENARIO"
+            },
+            "valuation_on": "2026-11-30",
+            "value_basis": "SCOPE_SHARE",
+            "share_numerator": "1",
+            "share_denominator": "1",
+            "detail_coverage": "complete",
+            "available_on": "2026-11-30",
+            "withdrawal_constraint": "NONE_CONFIRMED"
+          }
+        ]
+      }
+    },
+    {
+      "answer_id": "a:NEW-04",
+      "question_id": "NEW-04",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "raw_response": {
+        "status": "NONE"
+      }
+    },
+    {
+      "answer_id": "a:NEW-03",
+      "question_id": "NEW-03",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "raw_response": {
+        "status": "KNOWN",
+        "items": [
+          {
+            "contribution_id": "invest-existing",
+            "owner_ref": "adult-1",
+            "purpose": "INVESTMENT",
+            "amount": {
+              "value": "00050.0000",
+              "state": "KNOWN",
+              "unit": "KRW_10000",
+              "basis": "SCENARIO"
+            },
+            "destination": "NONCASH",
+            "pay_day": 15,
+            "period_basis": "CONFIRMED_CONSTANT",
+            "already_deducted_from_net_income": false
+          }
+        ]
+      }
+    },
+    {
+      "answer_id": "a:NEW-02",
+      "question_id": "NEW-02",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "raw_response": {
+        "carry_forward_snapshot": true,
+        "zero_return": true,
+        "unchanged_living_confirmed": true,
+        "income_basis": "CONFIRMED_CONSTANT"
+      }
+    },
+    {
+      "answer_id": "a:NEW-05",
+      "question_id": "NEW-05",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "raw_response": {
+        "status": "NONE",
+        "items": []
+      }
+    },
+    {
+      "answer_id": "a:NEW-06",
+      "question_id": "NEW-06",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "raw_response": {
+        "coverage": "complete",
+        "customer_protection_target": {
+          "value": "00600.0000",
+          "state": "KNOWN",
+          "unit": "KRW_10000",
+          "basis": "SCENARIO"
+        },
+        "customer_operating_target": {
+          "value": "00200.0000",
+          "state": "KNOWN",
+          "unit": "KRW_10000",
+          "basis": "SCENARIO"
+        },
+        "items": [
+          {
+            "reservation_id": "r-p",
+            "asset_ref": "cash-1",
+            "purpose": "PROTECTION",
+            "amount": {
+              "value": "00600.0000",
+              "state": "KNOWN",
+              "unit": "KRW_10000",
+              "basis": "SCENARIO"
+            }
+          },
+          {
+            "reservation_id": "r-o",
+            "asset_ref": "cash-1",
+            "purpose": "OPERATING",
+            "amount": {
+              "value": "00200.0000",
+              "state": "KNOWN",
+              "unit": "KRW_10000",
+              "basis": "SCENARIO"
+            }
+          },
+          {
+            "reservation_id": "r-g",
+            "asset_ref": "cash-1",
+            "purpose": "GOAL",
+            "goal_ref": "goal-1",
+            "amount": {
+              "value": "00200.0000",
+              "state": "KNOWN",
+              "unit": "KRW_10000",
+              "basis": "SCENARIO"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "answer_id": "a:F11",
+      "question_id": "F11",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "raw_response": {
+        "status": "KNOWN",
+        "items": [
+          {
+            "goal_id": "goal-1",
+            "type": "EDUCATION",
+            "priority": 1,
+            "owner_ref": "adult-1",
+            "confirmed": true
+          }
+        ]
+      }
+    },
+    {
+      "answer_id": "a:F12",
+      "question_id": "F12",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "raw_response": {
+        "items": [
+          {
+            "goal_id": "goal-1",
+            "due_on": "2027-02-28",
+            "contribution_dates": [
+              "2026-12-15",
+              "2027-01-15",
+              "2027-02-15"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "answer_id": "a:F13",
+      "question_id": "F13",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "raw_response": {
+        "items": [
+          {
+            "goal_id": "goal-1",
+            "price_basis": "FUTURE_NOMINAL",
+            "return_basis": "ZERO_RETURN",
+            "prepared_reservation_ids": [
+              "r-g"
+            ],
+            "payments": [
+              {
+                "on": "2027-02-28",
+                "amount": {
+                  "value": "00500.0000",
+                  "state": "KNOWN",
+                  "unit": "KRW_10000",
+                  "basis": "SCENARIO"
+                },
+                "economic_event_id": "tuition-1"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "requested_outputs": [
+    "OUT-02",
+    "OUT-03",
+    "OUT-04",
+    "OUT-05",
+    "OUT-06",
+    "OUT-08",
+    "OUT-09",
+    "OUT-10",
+    "OUT-11",
+    "OUT-12",
+    "OUT-14"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "fixture_id": "FAST-DEMO-02",
+  "record_id": "FAST-20261110-01",
+  "plan_id": "FAST-DEMO-02-SIM-1",
+  "as_of": "2026-11-10",
+  "period_start": "2026-11-01",
+  "period_end": "2026-11-10",
+  "period_kind": "INTERIM",
+  "simulation": true,
+  "source_ref": "DION_Account_Handoff_20261109/03_DECISIONS_AND_CONFLICTS.md + monthly prototype requirements",
+  "life_plan_krw": "1500000",
+  "life_record_krw": "950000",
+  "life_remaining_budget_krw": "550000",
+  "new_investment_plan_krw": "300000",
+  "new_investment_actual": {
+    "state": "NOT_ENTERED",
+    "raw_value": null,
+    "unit": "KRW_10000"
+  },
+  "lump_sum": {
+    "amount_krw": "4000000",
+    "status": "PENDING",
+    "source_ref": "FAST-20261110-01:execution:lump-1"
+  },
+  "tasks": [
+    true,
+    true,
+    true,
+    false
+  ]
+}

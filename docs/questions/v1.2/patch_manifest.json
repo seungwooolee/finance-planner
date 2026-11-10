@@ -1,0 +1,363 @@
+{
+  "patch": "DION_questions_20261110_v1.zip",
+  "version": "DION-QUESTION-RESULT-1.2.1",
+  "baseline_archive_sha256": "64c799714399647626a62a1d898fcf0ff8ba48a31955038fadd21ddce5e16042",
+  "baseline_library_version": 5,
+  "files": [
+    {
+      "path": "dion/docs/dion/09_UPDATED_FILES/CHANGELOG.md",
+      "change": "MODIFIED",
+      "before_sha256": "44bbd2b79c81155e0c5daafb16df494c1bf305debb09003d2242febf75ae0677",
+      "after_sha256": "0ace35939e4832a1f59113949c321b0ef6e080a1371e014c9ff738d08ad5d1e2",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/dion/09_UPDATED_FILES/DION_Current_Question_Source.json",
+      "change": "MODIFIED",
+      "before_sha256": "768eeff218308210e00937d7ed7d3a56ae4c40ea6be283ceca79ac7c580a499f",
+      "after_sha256": "f96d61bc43ed626d843821b0da4d2209c1f5c6aa82e0a900e891d8fef4b3eadb",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/questions/v1.2/CHANGELOG.md",
+      "change": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "d09a592598125c375ded60fcd248e4524163f20429fc3086557e7f05acf139dd",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json",
+      "change": "MODIFIED",
+      "before_sha256": "f11b332e7be9d4768f28a65bb4d2d4db5ec0b9de75e4a335e6c562d020be281e",
+      "after_sha256": "948ce1f7a2e7e77482158de7f348072da325e13c5144ba4c2f46df433d09d155",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/questions/v1.2/DION_Adaptive_Questions_v1_2.csv",
+      "change": "MODIFIED",
+      "before_sha256": "bae6ee065aa57df753514a378dd15050618d151072bc440e0cf488728a87cd7c",
+      "after_sha256": "03034a974dda9e80eac3751964426d5395131c1fe424ab94c64e064b4cee1679",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/questions/v1.2/DION_Question_Design_v1_2.xlsx",
+      "change": "MODIFIED",
+      "before_sha256": "32034e40dad3da9e97da7e71198907d0782d6ca344c13c48367b31af7bbb5d8a",
+      "after_sha256": "93d98438bb628fce063ff9b3ee273419d97699af0c0b3cf4b59a003cdb6a5311",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/questions/v1.2/Google_Sheets_native_tables.json",
+      "change": "MODIFIED",
+      "before_sha256": "70abea76a9731f3803968da96719956ce99db29dd8b144fec1edd178cdbce4bf",
+      "after_sha256": "785957cf4b8ebdaca1fa5dca17e913d669a008c52e6ecb5161d708fb85d1fc4d",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/questions/v1.2/Google_Sheets_v1_2.json",
+      "change": "MODIFIED",
+      "before_sha256": "e630a2fa08744e5c3c5b367466cc107b7d9eb3932c91755d2213b94dd6f018c6",
+      "after_sha256": "726be5bafab4af827e70671a5df400306316d90f44536382f976000ba503f240",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/questions/v1.2/OTHER_PART_ACTIONS.md",
+      "change": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "a59e2ef8ee5df185261ce28e48c6179e6d92cb2e3460e70aa92efdd0592bfcee",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/questions/v1.2/POC_adoption.json",
+      "change": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "acc64a30339bd04eac6be140517009471d10476135db3b7c12a2425360e60a08",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/questions/v1.2/README.md",
+      "change": "MODIFIED",
+      "before_sha256": "87aa9888ea30d4427fa6a8f8b96379f79d277cf9749dc6df068d49c9ed10b6b0",
+      "after_sha256": "f56c65d933798cde81e2c7f4d52db82fdb22e7725296f09055883308b40eb8f7",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/questions/v1.2/check_question_design.py",
+      "change": "MODIFIED",
+      "before_sha256": "4478a597989dfce15baac2207247c83b5e219f3ca4b17aaa1ba2fcbabffa45e9",
+      "after_sha256": "2597e060d2d789698e401eff6a9dd532b616bce2c3f1598f0f2611b99c3888ea",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/questions/v1.2/field_connections.csv",
+      "change": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "0259a0a20faf31ef83f183bfd581cfa72dc4f5add19a25ab08264b926f11da69",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/questions/v1.2/field_registry.json",
+      "change": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "c6fc455288862d10a455efc6f42dad964962a2e7a8ce945edfc917a2cd556f42",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/questions/v1.2/live_sheet_patch.json",
+      "change": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "5eedaa9ea39fcac0dfaeae54b3df186bc1036e69d4f9209878bba4087bc3cc2d",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/questions/v1.2/path_burden.csv",
+      "change": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "b25f3fc9314c04c023fb11caa54029789ee1323e95f08d19db214b6f2b246f5b",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/questions/v1.2/path_burden.json",
+      "change": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "12317fe3a7d0f73dd3449e452ebfc3ff6ef0d431697f70cd12fadecad54ec3cd",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/questions/v1.2/preservation.json",
+      "change": "MODIFIED",
+      "before_sha256": "ef56e4c482c2ef1100d0d20d0ca8f6f41507cd291a38e25a2387d4b682765400",
+      "after_sha256": "d0c165825b6217e11c8da512a2bbf08d5b78b3741dd93c6bcc403cd75e720ecb",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/questions/v1.2/question_consumers.csv",
+      "change": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "60f2e6e4d52e678183910667108eccad6fd70392333deacf6e0a06a698bdcff2",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/questions/v1.2/question_review.py",
+      "change": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "3c7644b3ebbadd7de5238f874e36b0dedce4b1f8e655898d12cf808b2a9cdf3e",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/questions/v1.2/reference/Question_Contract_before_R02_R04_R05_R06_R12.json",
+      "change": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "f11b332e7be9d4768f28a65bb4d2d4db5ec0b9de75e4a335e6c562d020be281e",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/questions/v1.2/reference/Question_Source_before_R02_R04_R05_R06_R12.json",
+      "change": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "768eeff218308210e00937d7ed7d3a56ae4c40ea6be283ceca79ac7c580a499f",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/questions/v1.2/reference/README_before_1_2_1.md",
+      "change": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "87aa9888ea30d4427fa6a8f8b96379f79d277cf9749dc6df068d49c9ed10b6b0",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/questions/v1.2/state_mapping.csv",
+      "change": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "7bf5439cef3941270cc56baa797968cab20735a86381b1420ba9d8649b8775fb",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/questions/v1.2/test_question_review.py",
+      "change": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "7bfb1d3f6a8d2cef9932130c8eafcaa78bebded49875a060a0056f4896f8d269",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/questions/v1.2/verification.json",
+      "change": "MODIFIED",
+      "before_sha256": "8f38f98103e118ad2a97db0d98427038524ebf5e05f28249dc51a17b2e478e3f",
+      "after_sha256": "dac0f96a138980213c0556923fa5601c370423ce5c39c1ff8e921bf7a1b5e0d0",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/questions/v1.2/version_diff.csv",
+      "change": "ADDED",
+      "before_sha256": null,
+      "after_sha256": "0be18b74417ef4d798f0628f2eea5a44f547334a18b5759c2d1d38f28beb4491",
+      "issues": [
+        "R02",
+        "R04",
+        "R05",
+        "R06",
+        "R12"
+      ]
+    }
+  ],
+  "manifest_self_hash": "excluded (self reference)",
+  "no_deletions": true,
+  "owned_paths_only": true,
+  "existing_integrated_zip_unchanged": true
+}

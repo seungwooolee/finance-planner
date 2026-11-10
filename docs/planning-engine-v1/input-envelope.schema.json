@@ -1,0 +1,697 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:dion:engine:1.0:input",
+  "title": "DION engine envelope and bound response field names",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "context",
+    "answers",
+    "requested_outputs"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "DION-ENGINE-1.0"
+    },
+    "context": {
+      "type": "object",
+      "required": [
+        "case_id",
+        "snapshot_id",
+        "profile_version",
+        "evaluation_on",
+        "scope",
+        "included_owner_ids",
+        "currency",
+        "timezone"
+      ]
+    },
+    "requested_outputs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "OUT-01",
+          "OUT-02",
+          "OUT-03",
+          "OUT-04",
+          "OUT-05",
+          "OUT-06",
+          "OUT-07",
+          "OUT-08",
+          "OUT-09",
+          "OUT-10",
+          "OUT-11",
+          "OUT-12",
+          "OUT-13",
+          "OUT-14"
+        ]
+      }
+    },
+    "answers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "answer_id",
+          "question_id",
+          "definition_version",
+          "revision",
+          "raw_response"
+        ],
+        "properties": {
+          "answer_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "question_id": {
+            "enum": [
+              "NEW-01",
+              "LIFE-01",
+              "F11",
+              "F01",
+              "F02",
+              "D01",
+              "F03",
+              "NEW-02",
+              "F04",
+              "NEW-03",
+              "F06",
+              "D20-1",
+              "N01",
+              "F08",
+              "N03",
+              "N02",
+              "NEW-09",
+              "NEW-04",
+              "F09+F10+D08",
+              "F12",
+              "F13",
+              "NEW-05",
+              "NEW-06",
+              "EDU-01",
+              "RET-01",
+              "PEN-01",
+              "PEN-02",
+              "TAX-01",
+              "TAX-02",
+              "TAX-03",
+              "TAX-04",
+              "INH-01",
+              "INH-02",
+              "INH-03",
+              "INH-04",
+              "NEW-07",
+              "F15",
+              "D20-2",
+              "NEW-08",
+              "F16",
+              "NEW-11",
+              "NEW-10",
+              "F18",
+              "F17",
+              "D15",
+              "D16-1",
+              "D16-2",
+              "NEW-12",
+              "D14",
+              "D17",
+              "D18",
+              "F20",
+              "D19",
+              "PLAN-01",
+              "REV-01"
+            ]
+          },
+          "definition_version": {
+            "enum": [
+              "1.2",
+              "1.3-engine"
+            ]
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "raw_response": {
+            "type": "object"
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "question_id": {
+                  "const": "NEW-01"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "definition_version": {
+                  "const": "1.3-engine"
+                },
+                "raw_response": {
+                  "type": "object",
+                  "properties": {
+                    "scope": {},
+                    "owner_ids": {},
+                    "asset_coverage": {}
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "question_id": {
+                  "const": "F03"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "definition_version": {
+                  "const": "1.3-engine"
+                },
+                "raw_response": {
+                  "type": "object",
+                  "properties": {
+                    "monthly_net_income": {},
+                    "period_start": {},
+                    "period_end": {},
+                    "includes_one_off": {}
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "question_id": {
+                  "const": "F04"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "definition_version": {
+                  "const": "1.3-engine"
+                },
+                "raw_response": {
+                  "type": "object",
+                  "properties": {
+                    "living": {},
+                    "expense_basis": {},
+                    "exclusions_confirmed": {},
+                    "essential_living": {},
+                    "period_start": {},
+                    "period_end": {},
+                    "included_debt": {},
+                    "included_contributions": {}
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "question_id": {
+                  "const": "F06"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "definition_version": {
+                  "const": "1.3-engine"
+                },
+                "raw_response": {
+                  "type": "object",
+                  "properties": {
+                    "items": {},
+                    "coverage": {}
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "question_id": {
+                  "const": "F08"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "definition_version": {
+                  "const": "1.3-engine"
+                },
+                "raw_response": {
+                  "type": "object",
+                  "properties": {
+                    "items": {},
+                    "coverage": {}
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "question_id": {
+                  "const": "NEW-09"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "definition_version": {
+                  "const": "1.3-engine"
+                },
+                "raw_response": {
+                  "type": "object",
+                  "properties": {
+                    "items": {},
+                    "coverage": {}
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "question_id": {
+                  "const": "NEW-04"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "definition_version": {
+                  "const": "1.3-engine"
+                },
+                "raw_response": {
+                  "type": "object",
+                  "properties": {
+                    "status": {}
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "question_id": {
+                  "const": "F09+F10+D08"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "definition_version": {
+                  "const": "1.3-engine"
+                },
+                "raw_response": {
+                  "type": "object",
+                  "properties": {
+                    "coverage": {},
+                    "items": {}
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "question_id": {
+                  "const": "NEW-03"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "definition_version": {
+                  "const": "1.3-engine"
+                },
+                "raw_response": {
+                  "type": "object",
+                  "properties": {
+                    "status": {},
+                    "items": {},
+                    "adjustment_options": {},
+                    "requested_reductions": {}
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "question_id": {
+                  "const": "NEW-02"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "definition_version": {
+                  "const": "1.3-engine"
+                },
+                "raw_response": {
+                  "type": "object",
+                  "properties": {
+                    "carry_forward_snapshot": {},
+                    "zero_return": {},
+                    "unchanged_living_confirmed": {},
+                    "income_basis": {},
+                    "income_periods": {},
+                    "pension_treatment": {}
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "question_id": {
+                  "const": "NEW-05"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "definition_version": {
+                  "const": "1.3-engine"
+                },
+                "raw_response": {
+                  "type": "object",
+                  "properties": {
+                    "status": {},
+                    "items": {}
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "question_id": {
+                  "const": "NEW-06"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "definition_version": {
+                  "const": "1.3-engine"
+                },
+                "raw_response": {
+                  "type": "object",
+                  "properties": {
+                    "coverage": {},
+                    "items": {},
+                    "customer_protection_target": {},
+                    "customer_operating_target": {}
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "question_id": {
+                  "const": "F11"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "definition_version": {
+                  "const": "1.3-engine"
+                },
+                "raw_response": {
+                  "type": "object",
+                  "properties": {
+                    "status": {},
+                    "items": {}
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "question_id": {
+                  "const": "F12"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "definition_version": {
+                  "const": "1.3-engine"
+                },
+                "raw_response": {
+                  "type": "object",
+                  "properties": {
+                    "items": {}
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "question_id": {
+                  "const": "F13"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "definition_version": {
+                  "const": "1.3-engine"
+                },
+                "raw_response": {
+                  "type": "object",
+                  "properties": {
+                    "items": {}
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "question_id": {
+                  "const": "PEN-01"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "definition_version": {
+                  "const": "1.3-engine"
+                },
+                "raw_response": {
+                  "type": "object",
+                  "properties": {
+                    "status": {},
+                    "items": {}
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "question_id": {
+                  "const": "PEN-02"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "definition_version": {
+                  "const": "1.3-engine"
+                },
+                "raw_response": {
+                  "type": "object",
+                  "properties": {
+                    "coverage": {},
+                    "items": {}
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "question_id": {
+                  "const": "RET-01"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "definition_version": {
+                  "const": "1.3-engine"
+                },
+                "raw_response": {
+                  "type": "object",
+                  "properties": {
+                    "price_basis": {},
+                    "partial_month_basis": {},
+                    "monthly_living": {},
+                    "monthly_debt": {},
+                    "monthly_other_net": {},
+                    "retire_on": {},
+                    "end_on": {}
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "question_id": {
+                  "const": "TAX-04"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "definition_version": {
+                  "const": "1.3-engine"
+                },
+                "raw_response": {
+                  "type": "object",
+                  "properties": {
+                    "status": {},
+                    "items": {}
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "question_id": {
+                  "const": "INH-01"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "definition_version": {
+                  "const": "1.3-engine"
+                },
+                "raw_response": {
+                  "type": "object",
+                  "properties": {
+                    "direction": {}
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "question_id": {
+                  "const": "INH-02"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "definition_version": {
+                  "const": "1.3-engine"
+                },
+                "raw_response": {
+                  "type": "object",
+                  "properties": {
+                    "coverage": {},
+                    "owner_ref": {},
+                    "asset_refs": {},
+                    "debt_refs": {},
+                    "beneficiaries": {}
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "question_id": {
+                  "const": "INH-03"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "definition_version": {
+                  "const": "1.3-engine"
+                },
+                "raw_response": {
+                  "type": "object",
+                  "properties": {
+                    "incoming": {},
+                    "own_estate": {}
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

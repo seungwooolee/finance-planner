@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_stack" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "error-container": "#ffdad6", "secondary-fixed": "#e5deff", "on-tertiary-fixed-variant": "#434652", "primary": "#3848ce", "inverse-on-surface": "#eef0ff", "on-secondary": "#ffffff", "on-secondary-fixed-variant": "#463d81", "on-primary-fixed": "#000a64", "on-tertiary-container": "#f7f7ff", "tertiary-container": "#6e717e", "surface-container-high": "#e3e7fb", "inverse-primary": "#bdc2ff", "primary-container": "#5363e8", "primary-fixed-dim": "#bdc2ff", "surface-tint": "#3e4ed4", "on-surface-variant": "#454654", "surface-dim": "#d5d9ec", "tertiary-fixed": "#e0e2f0", "primary-fixed": "#dfe0ff", "on-primary-container": "#f9f6ff", "surface-container-lowest": "#ffffff", "background": "#faf8ff", "surface-variant": "#dee2f5", "tertiary": "#555965", "secondary-fixed-dim": "#c8bfff", "inverse-surface": "#2b303e", "surface-container-low": "#f2f3ff", "secondary": "#5e559a", "on-secondary-container": "#4a4285", "error": "#ba1a1a", "surface-container-highest": "#dee2f5", "on-secondary-fixed": "#1a0d53", "on-primary-fixed-variant": "#2132bc", "secondary-container": "#bcb2ff", "surface": "#faf8ff", "on-background": "#161b29", "on-primary": "#ffffff", "tertiary-fixed-dim": "#c3c6d4", "on-error": "#ffffff", "on-surface": "#161b29", "surface-bright": "#faf8ff", "outline": "#757686", "outline-variant": "#c5c5d7", "on-tertiary": "#ffffff", "surface-container": "#eaedff", "on-error-container": "#93000a", "on-tertiary-fixed": "#181b26" }, "borderRadius": { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, "spacing": { "space-xs": "0.25rem", "margin-desktop": "3rem", "space-xl": "2rem", "space-md": "1rem", "margin-mobile": "1rem", "space-lg": "1.5rem", "margin": "2rem", "space-sm": "0.5rem", "gutter": "1.5rem", "gutter-mobile": "1rem" }, "fontFamily": { "label-md": ["Plus Jakarta Sans"], "headline-lg": ["Plus Jakarta Sans"], "body-md": ["Plus Jakarta Sans"], "number-metric": ["Plus Jakarta Sans"], "body-sm": ["Plus Jakarta Sans"], "number-display": ["Plus Jakarta Sans"], "display-lg": ["Plus Jakarta Sans"], "body-lg": ["Plus Jakarta Sans"], "display-lg-mobile": ["Plus Jakarta Sans"], "headline-xl": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "label-lg": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"] }, "fontSize": { "label-md": ["12px", {"lineHeight": "16px", "fontWeight": "500"}], "headline-lg": ["22px", {"lineHeight": "28px", "fontWeight": "600"}], "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}], "number-metric": ["20px", {"lineHeight": "26px", "fontWeight": "600"}], "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}], "number-display": ["32px", {"lineHeight": "38px", "fontWeight": "700"}], "display-lg": ["40px", {"lineHeight": "48px", "fontWeight": "700"}], "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}], "display-lg-mobile": ["32px", {"lineHeight": "40px", "fontWeight": "700"}], "headline-xl": ["28px", {"lineHeight": "36px", "fontWeight": "700"}], "headline-md": ["18px", {"lineHeight": "24px", "fontWeight": "600"}], "label-lg": ["14px", {"lineHeight": "20px", "fontWeight": "600"}], "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}] } } } }</script><style>@layer base{html,body{width:100vw;margin:0;padding:0;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style></head><body class="bg-surface font-body-md text-on-surface flex flex-col min-h-screen"><header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl pt-safe shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-space-xs flex items-center justify-between"><div class="flex items-center min-w-[44px]"><button aria-label="뒤로 가기" class="w-11 h-11 flex items-center justify-center text-on-surface hover:text-primary transition-colors rounded-full" onclick="history.back()"><span class="material-symbols-outlined text-[24px]">arrow_back</span></button></div><div class="flex-1 text-center truncate px-space-xs"><h1 class="font-headline-md text-headline-md text-on-surface tracking-tight truncate">이번 달 기록·점검</h1></div><div class="flex items-center gap-space-xs justify-end min-w-[44px]"><img alt="Profile" class="w-8 h-8 rounded-full object-cover hidden sm:block" src="https://lh3.googleusercontent.com/aida/AEtjO1Wo6v7_WLhZKj8oEEQbcYjwB8qhnJWbIgaYm4paIcraWnj36DMA22vHVZj2o3zfJp1GG1DNNUAIQ-moMgMfYJg5GF0wOYXpGwFz9Q6EouCjMaFNAlTNiqCNkbZmMC2JCNvFPCA_oFEmkkTS173Oob5c8kKi0GWwnhFFe6JlbQMwmDZYDWFAch7FzZERW0xo4NBIo0APYr9cK66k87Qo6_bt0hQf-TB-XGKboo3oQnws9rshUfEZENTHhe1j"/><button aria-label="닫기" class="w-11 h-11 flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-colors rounded-full" onclick="window.location.href='#'"><span class="material-symbols-outlined text-[24px]">close</span></button></div></div></header><main class="flex flex-col relative w-full pt-16 pb-28 bg-surface min-h-screen"><div class="flex flex-col w-full pb-6 px-margin-mobile max-w-[420px] mx-auto select-none">
+<!-- Top Navigation Context & Period Pill -->
+<div class="flex flex-col gap-space-xs pt-space-md pb-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs bg-surface-container-lowest px-3 py-1.5 rounded-full shadow-[0_1px_4px_rgba(0,0,0,0.04)] cursor-pointer">
+<span class="font-headline-md text-headline-md text-on-surface">2026년 11월</span>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">keyboard_arrow_down</span>
+</div>
+<span class="bg-surface-container-low text-primary font-label-md text-label-md px-3 py-1 rounded-full">
+        중간 기록 (1~10일차)
+      </span>
+</div>
+<!-- Benchmark Adoption Tag -->
+<div class="flex items-center gap-1.5 mt-1 px-1">
+<span class="material-symbols-outlined text-[14px] text-secondary">verified</span>
+<p class="font-label-sm text-label-sm text-on-surface-variant truncate">
+        채택 기준: 투자 여력 확대안 · B균형운용 (2026.11.05 승인)
+      </p>
+</div>
+<!-- Headings -->
+<div class="mt-2 px-1">
+<h2 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">이번 달, 계획대로 보내고 있나요?</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">
+        실제로 들어오고 나간 돈을 가볍게 기록해요. 모르는 금액은 나중에 채워도 괜찮아요.
+      </p>
+<div class="flex items-center gap-1.5 mt-2 font-label-sm text-label-sm text-tertiary">
+<span class="material-symbols-outlined text-[14px]">history</span>
+<span>마지막 저장: 오늘 14:15 · 입력 출처: 직접 입력</span>
+</div>
+</div>
+</div>
+<!-- Hero Progress Widget -->
+<div class="mt-space-md bg-surface-container-lowest rounded-xl p-space-md shadow-[0_4px_20px_-4px_rgba(56,72,206,0.08)] flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+<span class="font-label-lg text-label-lg text-on-surface">기록 진행 현황</span>
+</div>
+<span class="bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm px-2.5 py-0.5 rounded-full">
+        일부 입력 기준 (6/8개 완료)
+      </span>
+</div>
+<!-- Metric Grid -->
+<div class="grid grid-cols-3 gap-2 bg-surface-container-low p-3 rounded-lg">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">확인 소득</span>
+<span class="font-number-metric text-number-metric text-primary mt-0.5">300<span class="text-xs font-normal">만</span></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-0.5 opacity-80">계획 100%</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">지출·배정</span>
+<span class="font-number-metric text-number-metric text-on-surface mt-0.5">195<span class="text-xs font-normal">만</span></span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-0.5 opacity-80">95만+100만</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">미배정 잔여</span>
+<span class="font-number-metric text-number-metric text-secondary mt-0.5">105<span class="text-xs font-normal">만</span></span>
+<span class="font-label-sm text-label-sm text-secondary font-medium mt-0.5">입력 대기</span>
+</div>
+</div>
+<!-- Visual Progress Bar -->
+<div class="flex flex-col gap-1.5">
+<div class="flex justify-between items-center text-label-sm font-label-sm">
+<span class="text-on-surface-variant">총 소득 대비 집행률</span>
+<span class="text-primary font-semibold">65% 완료 (195만 / 300만)</span>
+</div>
+<div class="w-full h-2.5 bg-surface-container rounded-full overflow-hidden flex">
+<div class="bg-primary h-full rounded-full transition-all duration-500" style="width: 65%;"></div>
+</div>
+</div>
+</div>
+<!-- Coaching Mascot Nyang Coach Banner -->
+<div class="mt-space-md bg-secondary-fixed/40 p-space-md rounded-xl flex items-start gap-3 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
+<div class="relative shrink-0">
+<img alt="Nyang Coach Mascot" class="w-12 h-12 rounded-full object-cover shadow-sm bg-surface-container-lowest" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJUNc8gaEMd-D8KM-Y4CkMRpmCgYtmtNjlDMYKoZ_HXcpq949zngTTUcfvBO3hzD2JbEcRQ7zhZ_9_TYCQCiy-H8XeyB8rH7C55TDTZu2iMpdbtHVqXXzTLTxLd2Fkm-223lxb-v_d8LcttgCRNe0-4YrWaLDZcXkVE78f3QiN7d7bePMvzX2NLO5vJlwRwjhFC6UhZAqGJEMmNWUXQF4pn-H9bP7M416AqgQeSnoLqSrSt7c0LIQn_w"/>
+<span class="absolute -bottom-1 -right-1 bg-primary text-on-primary rounded-full text-[10px] px-1 font-label-sm">냥코치</span>
+</div>
+<div class="flex-1 text-on-surface">
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-md text-label-md font-bold text-secondary">냥코치의 중간 점검 한마디</span>
+<span class="material-symbols-outlined text-secondary text-[16px]">chat_bubble</span>
+</div>
+<p class="font-body-sm text-body-sm leading-relaxed text-on-secondary-container">
+        김디오님! 현재 10일 차까지 생활비가 <span class="font-semibold text-primary">95만원</span>으로 계획보다 <span class="font-semibold text-primary">55만원 여유</span>로워요! 중순 신규 투자(30만) 납입만 챙기면 완벽한 한 달이 될 거예요 냥! 🐾
+      </p>
+</div>
+</div>
+<!-- Detailed Input Cards Section -->
+<div class="mt-space-lg flex flex-col gap-3">
+<div class="flex items-center justify-between px-1">
+<h3 class="font-headline-md text-headline-md text-on-surface">항목별 상세 입력</h3>
+<span class="font-label-sm text-label-sm text-tertiary">단위: 만원</span>
+</div>
+<!-- Card 1: 세후소득 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-[0_1px_4px_rgba(0,0,0,0.03)] flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">payments</span>
+</div>
+<div>
+<div class="font-label-lg text-label-lg text-on-surface">월 세후소득</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">계획: 300만원</div>
+</div>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+<div class="flex items-center bg-surface-container-low px-3 py-1.5 rounded-lg">
+<input class="w-12 text-right bg-transparent font-number-metric text-number-metric text-on-surface focus:outline-none" readonly="" type="text" value="300"/>
+<span class="font-label-md text-label-md text-on-surface-variant ml-1">만원</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Card 2: 생활비 지출 (Accordion Included) -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-[0_1px_4px_rgba(0,0,0,0.03)] flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">shopping_bag</span>
+</div>
+<div>
+<div class="flex items-center gap-1.5">
+<span class="font-label-lg text-label-lg text-on-surface">생활비 지출</span>
+<span class="bg-surface-container-low text-primary text-[10px] px-1.5 py-0.5 rounded font-medium">-55만 절약중</span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">계획: 150만원 (10일간 집행)</div>
+</div>
+</div>
+<div class="flex items-center bg-surface-container-low px-3 py-1.5 rounded-lg focus-within:ring-2 focus-within:ring-primary/30">
+<input class="w-12 text-right bg-transparent font-number-metric text-number-metric text-on-surface focus:outline-none" type="number" value="95"/>
+<span class="font-label-md text-label-md text-on-surface-variant ml-1">만원</span>
+</div>
+</div>
+<!-- Accordion Toggle Button -->
+<button class="flex items-center justify-between w-full bg-surface-container-low/60 hover:bg-surface-container-low px-3 py-2 rounded-lg transition-colors" onclick="document.getElementById('living-cost-detail').classList.toggle('hidden'); this.querySelector('.arrow-icon').classList.toggle('rotate-180');">
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-tertiary">receipt_long</span>
+          세부 내역 보기
+        </span>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant transition-transform arrow-icon">expand_more</span>
+</button>
+<!-- Accordion Content -->
+<div class="hidden flex flex-col gap-1.5 pt-1 px-1" id="living-cost-detail">
+<div class="flex justify-between items-center text-body-sm text-on-surface-variant py-1 border-b border-surface-container">
+<span>식비 및 카페</span>
+<span class="font-medium text-on-surface">45만원</span>
+</div>
+<div class="flex justify-between items-center text-body-sm text-on-surface-variant py-1 border-b border-surface-container">
+<span>주거 통신 및 관리비</span>
+<span class="font-medium text-on-surface">25만원</span>
+</div>
+<div class="flex justify-between items-center text-body-sm text-on-surface-variant py-1 border-b border-surface-container">
+<span>교통비</span>
+<span class="font-medium text-on-surface">15만원</span>
+</div>
+<div class="flex justify-between items-center text-body-sm text-on-surface-variant py-1">
+<span>기타 잡비</span>
+<span class="font-medium text-on-surface">10만원</span>
+</div>
+</div>
+</div>
+<!-- Card 3: 대출 원리금 상환 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-[0_1px_4px_rgba(0,0,0,0.03)] flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">account_balance</span>
+</div>
+<div>
+<div class="font-label-lg text-label-lg text-on-surface">대출 원리금 상환</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">계획: 20만원 · 의무상환 완료</div>
+</div>
+</div>
+<div class="flex items-center bg-surface-container-low px-3 py-1.5 rounded-lg">
+<input class="w-12 text-right bg-transparent font-number-metric text-number-metric text-on-surface focus:outline-none" readonly="" type="text" value="20"/>
+<span class="font-label-md text-label-md text-on-surface-variant ml-1">만원</span>
+</div>
+</div>
+<!-- Card 4: 주거 목표 적립 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-[0_1px_4px_rgba(0,0,0,0.03)] flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">home_work</span>
+</div>
+<div>
+<div class="font-label-lg text-label-lg text-on-surface">주거 목표 적립</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">계획: 20만원 · 전용통장 분리</div>
+</div>
+</div>
+<div class="flex items-center bg-surface-container-low px-3 py-1.5 rounded-lg">
+<input class="w-12 text-right bg-transparent font-number-metric text-number-metric text-on-surface focus:outline-none" type="text" value="20"/>
+<span class="font-label-md text-label-md text-on-surface-variant ml-1">만원</span>
+</div>
+</div>
+<!-- Card 5: 기존 투자 납입 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-[0_1px_4px_rgba(0,0,0,0.03)] flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">trending_up</span>
+</div>
+<div>
+<div class="font-label-lg text-label-lg text-on-surface">기존 투자 납입</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">계획: 40만원 · 청약/펀드 자동납입</div>
+</div>
+</div>
+<div class="flex items-center bg-surface-container-low px-3 py-1.5 rounded-lg">
+<input class="w-12 text-right bg-transparent font-number-metric text-number-metric text-on-surface focus:outline-none" type="text" value="40"/>
+<span class="font-label-md text-label-md text-on-surface-variant ml-1">만원</span>
+</div>
+</div>
+<!-- Card 6: 신규 투자 납입 (B균형) - Unfilled / Coach tip -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-[0_2px_8px_rgba(83,99,232,0.06)] flex flex-col gap-2.5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">add_chart</span>
+</div>
+<div>
+<div class="flex items-center gap-1">
+<span class="font-label-lg text-label-lg text-on-surface">신규 투자 납입</span>
+<span class="bg-primary/10 text-primary text-[10px] px-1 rounded font-semibold">B균형</span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">계획: 30만원 · 계좌 개설 대기</div>
+</div>
+</div>
+<div class="flex items-center bg-surface-container px-3 py-1.5 rounded-lg">
+<input class="w-20 text-right bg-transparent font-label-md text-label-md placeholder:text-on-surface-variant focus:outline-none" placeholder="아직 미입력" type="text"/>
+<span class="font-label-md text-label-md text-on-surface-variant ml-1">만원</span>
+</div>
+</div>
+<!-- Coach tip callout -->
+<div class="bg-surface-container-low rounded-lg p-2.5 flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-primary">lightbulb</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+          급여일 이후 자동이체 예정인가요? 실제 납입 후 입력해 주세요.
+        </p>
+</div>
+</div>
+<!-- Card 7: 비상금 적립 -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-[0_1px_4px_rgba(0,0,0,0.03)] flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">shield</span>
+</div>
+<div>
+<div class="font-label-lg text-label-lg text-on-surface">비상금 적립</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">계획: 20만원 · CMA 파킹 완료</div>
+</div>
+</div>
+<div class="flex items-center bg-surface-container-low px-3 py-1.5 rounded-lg">
+<input class="w-12 text-right bg-transparent font-number-metric text-number-metric text-on-surface focus:outline-none" type="text" value="20"/>
+<span class="font-label-md text-label-md text-on-surface-variant ml-1">만원</span>
+</div>
+</div>
+<!-- Card 8: 추가 현금 저축 - Unfilled -->
+<div class="bg-surface-container-lowest rounded-xl p-space-md shadow-[0_1px_4px_rgba(0,0,0,0.03)] flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">savings</span>
+</div>
+<div>
+<div class="font-label-lg text-label-lg text-on-surface">추가 현금 저축</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">계획: 20만원 · 월말 잔여 집행</div>
+</div>
+</div>
+<div class="flex items-center bg-surface-container px-3 py-1.5 rounded-lg">
+<input class="w-20 text-right bg-transparent font-label-md text-label-md placeholder:text-on-surface-variant focus:outline-none" placeholder="아직 미입력" type="text"/>
+<span class="font-label-md text-label-md text-on-surface-variant ml-1">만원</span>
+</div>
+</div>
+</div>
+<!-- Soft Warning & Safety Notice -->
+<div class="mt-space-md bg-surface-container-low p-space-md rounded-xl flex items-start gap-2.5">
+<span class="material-symbols-outlined text-primary text-[20px] shrink-0 mt-0.5">info</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+<strong class="font-semibold text-on-surface">소득 초과 배정 알림 안내:</strong> 소득을 초과해 배정된 경우에도 저장을 일방적으로 막지 않고, 기존 잔액 사용 또는 추가 수입 확인 옵션을 제공해 드려요.
+    </p>
+</div>
+<!-- Action Checklist Status (할 일 체크와 실제 실행의 엄격한 분리) -->
+<div class="mt-space-lg bg-surface-container-lowest rounded-xl p-space-md shadow-[0_1px_4px_rgba(0,0,0,0.03)] flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-md text-headline-md text-on-surface">이번 달 실천 과제 점검</h3>
+<span class="font-label-sm text-label-sm bg-primary/10 text-primary px-2 py-0.5 rounded-full font-semibold">
+        75% 완료 (3 / 4건)
+      </span>
+</div>
+<!-- Checklist Items -->
+<div class="flex flex-col gap-2 mt-1">
+<div class="flex items-center justify-between p-2.5 bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-surface">주거목표 통장 분리 (CMA 확인)</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-semibold">완료</span>
+</div>
+<div class="flex items-center justify-between p-2.5 bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-surface">생활비 150만원 상한 알림 설정</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-semibold">완료</span>
+</div>
+<div class="flex items-center justify-between p-2.5 bg-surface-container-low rounded-lg">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">check_circle</span>
+<span class="font-body-sm text-body-sm text-on-surface">대출 상환 계좌 잔액 확인 (20만)</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-semibold">완료</span>
+</div>
+<div class="flex items-center justify-between p-2.5 bg-secondary-fixed/40 rounded-lg">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">pending</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">신규 투자 계좌 개설 및 자동이체</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary font-bold">진행 중 (D-5)</span>
+</div>
+</div>
+</div>
+<!-- Collapsible Section: 별도 일시금 실행 기록 -->
+<div class="mt-space-md bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_1px_4px_rgba(0,0,0,0.03)]">
+<button class="w-full p-space-md flex items-center justify-between text-left hover:bg-surface-container-low/50 transition-colors" onclick="document.getElementById('lump-sum-content').classList.toggle('hidden'); this.querySelector('.arrow-toggle').classList.toggle('rotate-180');">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">wallet</span>
+<span class="font-headline-md text-headline-md text-on-surface">별도 일시금 실행 기록</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant">주거 400만 · 투자 400만</span>
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant transition-transform arrow-toggle">expand_more</span>
+</div>
+</button>
+<div class="hidden p-space-md pt-0 flex flex-col gap-2" id="lump-sum-content">
+<div class="p-3 bg-surface-container-low rounded-lg flex justify-between items-center text-body-sm">
+<span>주거 보증금 증액 분할 실행</span>
+<span class="font-semibold text-on-surface">400만원 완료</span>
+</div>
+<div class="p-3 bg-surface-container-low rounded-lg flex justify-between items-center text-body-sm">
+<span>일시 여유자금 지수형 ETF 분할 매수</span>
+<span class="font-semibold text-on-surface">400만원 완료</span>
+</div>
+</div>
+</div>
+<!-- Collapsible Section: 최근 달라진 점이 있나요? -->
+<div class="mt-space-md bg-surface-container-lowest rounded-xl p-space-md shadow-[0_1px_4px_rgba(0,0,0,0.03)] flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">tune</span>
+<span class="font-headline-md text-headline-md text-on-surface">최근 환경 변화가 있나요?</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-medium">변화 없음 선택 중</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+      소득 규모, 고정지출 구조, 또는 부채 상환 조건에 변화가 생기면 추천 포트폴리오를 새로 조율해 드려요.
+    </p>
+<button class="w-full py-2.5 px-3 rounded-lg bg-surface-container hover:bg-surface-container-high text-primary font-label-md text-label-md transition-colors flex items-center justify-center gap-1" type="button">
+<span class="material-symbols-outlined text-[16px]">sync_alt</span>
+      변경사항으로 계획 다시 검토하기
+    </button>
+</div>
+</div></main><aside class="fixed bottom-0 w-full z-50 pb-safe bg-surface/85 backdrop-blur-xl shadow-[0_-4px_16px_rgba(0,0,0,0.05)]"><div class="px-margin-mobile py-space-sm flex items-center gap-space-sm max-w-md mx-auto"><button class="flex-1 h-12 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-label-lg text-label-lg transition-colors flex items-center justify-center" type="button">임시 저장</button><button class="flex-[2] h-12 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg transition-colors flex items-center justify-center shadow-[0_2px_8px_rgba(56,72,206,0.25)]" type="button">점검 완료하기</button></div></aside></body></html>

@@ -1,0 +1,3513 @@
+{
+  "schema_version": "DION-ENGINE-1.0",
+  "engine_version": "DION-ENGINE-1.1",
+  "question_binding_version": "1.3-engine",
+  "policy_version": "DION-ALLOCATION-1.0",
+  "active_legal_rules": [],
+  "input_state": "VALIDATED_ENVELOPE",
+  "calc_state": "PARTIAL",
+  "context": {
+    "case_id": "DION-FICTIONAL-300-210",
+    "snapshot_id": "raw-snapshot-fixture-1",
+    "profile_version": "1",
+    "evaluation_on": "2026-10-31",
+    "scope": "personal",
+    "included_owner_ids": [
+      "person_self"
+    ],
+    "currency": "KRW",
+    "timezone": "Asia/Seoul",
+    "projection_start": "2026-11-01",
+    "projection_end": "2026-11-30"
+  },
+  "input_snapshot": {
+    "schema_version": "DION-ENGINE-1.0",
+    "context": {
+      "case_id": "DION-FICTIONAL-300-210",
+      "snapshot_id": "raw-snapshot-fixture-1",
+      "profile_version": "1",
+      "evaluation_on": "2026-10-31",
+      "scope": "personal",
+      "included_owner_ids": [
+        "person_self"
+      ],
+      "currency": "KRW",
+      "timezone": "Asia/Seoul",
+      "projection_start": "2026-11-01",
+      "projection_end": "2026-11-30"
+    },
+    "answers": [
+      {
+        "answer_id": "fixture-rev-1",
+        "question_id": "NEW-01",
+        "revision": 1,
+        "definition_version": "1.3-engine",
+        "source_ref": "raw-revision:fixture-rev-1",
+        "raw_response": {
+          "scope": "personal",
+          "owner_ids": [
+            "person_self"
+          ],
+          "asset_coverage": "complete"
+        }
+      },
+      {
+        "answer_id": "fixture-rev-3",
+        "question_id": "F04",
+        "revision": 3,
+        "definition_version": "1.3-engine",
+        "source_ref": "raw-revision:fixture-rev-3",
+        "raw_response": {
+          "living": {
+            "value": "210",
+            "state": "KNOWN",
+            "unit": "KRW_10000",
+            "basis": "SCENARIO"
+          },
+          "essential_living": {
+            "value": "160",
+            "state": "KNOWN",
+            "unit": "KRW_10000",
+            "basis": "SCENARIO"
+          },
+          "expense_basis": "TOTAL_OUTFLOW",
+          "exclusions_confirmed": false,
+          "included_debt": {
+            "value": "30",
+            "state": "KNOWN",
+            "unit": "KRW_10000",
+            "basis": "SCENARIO"
+          },
+          "included_contributions": {
+            "value": "20",
+            "state": "KNOWN",
+            "unit": "KRW_10000",
+            "basis": "SCENARIO"
+          },
+          "period_start": "2026-10-01",
+          "period_end": "2026-10-31"
+        }
+      },
+      {
+        "answer_id": "fixture-rev-4",
+        "question_id": "F06",
+        "revision": 4,
+        "definition_version": "1.3-engine",
+        "source_ref": "raw-revision:fixture-rev-4",
+        "raw_response": {
+          "items": [
+            {
+              "asset_id": "cash-1",
+              "kind": "CASH",
+              "owner_ids": [
+                "person_self"
+              ],
+              "value": {
+                "value": "1200",
+                "state": "KNOWN",
+                "unit": "KRW_10000",
+                "basis": "SCENARIO"
+              },
+              "valuation_on": "2026-10-31",
+              "available_on": "2026-10-31",
+              "withdrawal_constraint": "NONE_CONFIRMED",
+              "parent_asset_id": null,
+              "value_basis": "SCOPE_SHARE",
+              "share_numerator": "1",
+              "share_denominator": "1",
+              "detail_coverage": "complete"
+            }
+          ],
+          "coverage": "complete"
+        }
+      },
+      {
+        "answer_id": "fixture-rev-5",
+        "question_id": "NEW-04",
+        "revision": 5,
+        "definition_version": "1.3-engine",
+        "source_ref": "raw-revision:fixture-rev-5",
+        "raw_response": {
+          "status": "KNOWN"
+        }
+      },
+      {
+        "answer_id": "fixture-rev-6",
+        "question_id": "F09+F10+D08",
+        "revision": 6,
+        "definition_version": "1.3-engine",
+        "source_ref": "raw-revision:fixture-rev-6",
+        "raw_response": {
+          "items": [
+            {
+              "debt_id": "debt-1",
+              "owner_ids": [
+                "person_self"
+              ],
+              "balance": {
+                "value": "1000",
+                "state": "KNOWN",
+                "unit": "KRW_10000",
+                "basis": "SCENARIO"
+              },
+              "monthly_payment": {
+                "value": "30",
+                "state": "KNOWN",
+                "unit": "KRW_10000",
+                "basis": "SCENARIO"
+              },
+              "principal_payment": {
+                "value": "25",
+                "state": "KNOWN",
+                "unit": "KRW_10000",
+                "basis": "SCENARIO"
+              },
+              "interest_payment": {
+                "value": "5",
+                "state": "KNOWN",
+                "unit": "KRW_10000",
+                "basis": "SCENARIO"
+              },
+              "fees": {
+                "value": "0",
+                "state": "KNOWN",
+                "unit": "KRW_10000",
+                "basis": "SCENARIO"
+              },
+              "valuation_on": "2026-10-31",
+              "payment_on": "2026-10-31",
+              "balance_timing": "AFTER_PAYMENT",
+              "share_numerator": "1",
+              "share_denominator": "1",
+              "value_basis": "SCOPE_SHARE",
+              "payment_basis": "SCOPE_SHARE",
+              "schedule": [
+                {
+                  "period": "2026-11",
+                  "payment": {
+                    "value": "30",
+                    "state": "KNOWN",
+                    "unit": "KRW_10000",
+                    "basis": "SCENARIO"
+                  },
+                  "principal": {
+                    "value": "25",
+                    "state": "KNOWN",
+                    "unit": "KRW_10000",
+                    "basis": "SCENARIO"
+                  }
+                }
+              ]
+            }
+          ],
+          "coverage": "complete"
+        }
+      },
+      {
+        "answer_id": "fixture-rev-7",
+        "question_id": "NEW-03",
+        "revision": 7,
+        "definition_version": "1.3-engine",
+        "source_ref": "raw-revision:fixture-rev-7",
+        "raw_response": {
+          "status": "KNOWN",
+          "items": [
+            {
+              "contribution_id": "kept-1",
+              "owner_ref": "person_self",
+              "amount": {
+                "value": "20",
+                "state": "KNOWN",
+                "unit": "KRW_10000",
+                "basis": "SCENARIO"
+              },
+              "already_deducted_from_net_income": false,
+              "purpose": "INVESTMENT",
+              "destination": "NONCASH",
+              "pay_day": 15,
+              "period_basis": "CONFIRMED_CONSTANT",
+              "goal_ref": null
+            }
+          ]
+        }
+      },
+      {
+        "answer_id": "fixture-rev-8",
+        "question_id": "NEW-02",
+        "revision": 8,
+        "definition_version": "1.3-engine",
+        "source_ref": "raw-revision:fixture-rev-8",
+        "raw_response": {
+          "carry_forward_snapshot": true,
+          "zero_return": true,
+          "unchanged_living_confirmed": true,
+          "income_basis": "CONFIRMED_CONSTANT"
+        }
+      },
+      {
+        "answer_id": "fixture-rev-9",
+        "question_id": "NEW-05",
+        "revision": 9,
+        "definition_version": "1.3-engine",
+        "source_ref": "raw-revision:fixture-rev-9",
+        "raw_response": {
+          "status": "NONE",
+          "items": []
+        }
+      },
+      {
+        "answer_id": "fixture-rev-10",
+        "question_id": "NEW-06",
+        "revision": 10,
+        "definition_version": "1.3-engine",
+        "source_ref": "raw-revision:fixture-rev-10",
+        "raw_response": {
+          "items": [
+            {
+              "reservation_id": "reserve-protection",
+              "asset_ref": "cash-1",
+              "purpose": "PROTECTION",
+              "amount": {
+                "value": "570",
+                "state": "KNOWN",
+                "unit": "KRW_10000",
+                "basis": "SCENARIO"
+              }
+            },
+            {
+              "reservation_id": "reserve-operating",
+              "asset_ref": "cash-1",
+              "purpose": "OPERATING",
+              "amount": {
+                "value": "190",
+                "state": "KNOWN",
+                "unit": "KRW_10000",
+                "basis": "SCENARIO"
+              }
+            }
+          ],
+          "coverage": "complete",
+          "customer_protection_target": {
+            "value": "570",
+            "state": "KNOWN",
+            "unit": "KRW_10000",
+            "basis": "SCENARIO"
+          },
+          "customer_operating_target": {
+            "value": "190",
+            "state": "KNOWN",
+            "unit": "KRW_10000",
+            "basis": "SCENARIO"
+          }
+        }
+      },
+      {
+        "answer_id": "fixture-rev-11",
+        "question_id": "F11",
+        "revision": 11,
+        "definition_version": "1.3-engine",
+        "source_ref": "raw-revision:fixture-rev-11",
+        "raw_response": {
+          "items": [
+            {
+              "goal_id": "goal-1",
+              "type": "EDUCATION",
+              "priority": 1,
+              "owner_ref": "person_self",
+              "confirmed": true
+            }
+          ],
+          "status": "KNOWN"
+        }
+      },
+      {
+        "answer_id": "fixture-rev-12",
+        "question_id": "F12",
+        "revision": 12,
+        "definition_version": "1.3-engine",
+        "source_ref": "raw-revision:fixture-rev-12",
+        "raw_response": {
+          "items": [
+            {
+              "goal_id": "goal-1",
+              "due_on": "2026-11-30",
+              "contribution_dates": [
+                "2026-11-15"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "answer_id": "fixture-rev-13",
+        "question_id": "F13",
+        "revision": 13,
+        "definition_version": "1.3-engine",
+        "source_ref": "raw-revision:fixture-rev-13",
+        "raw_response": {
+          "items": [
+            {
+              "goal_id": "goal-1",
+              "price_basis": "FUTURE_NOMINAL",
+              "return_basis": "ZERO_RETURN",
+              "prepared_reservation_ids": [],
+              "payments": [
+                {
+                  "on": "2026-11-30",
+                  "amount": {
+                    "value": "30",
+                    "state": "KNOWN",
+                    "unit": "KRW_10000",
+                    "basis": "SCENARIO"
+                  },
+                  "economic_event_id": "education-payment-1"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "requested_outputs": [
+      "OUT-02",
+      "OUT-03",
+      "OUT-04",
+      "OUT-05"
+    ]
+  },
+  "input_sha256": "d8c103aaae08e8ee73663e128208ff2db1e95b29a886172d8e2fd4df273890b0",
+  "question_trace": [
+    {
+      "question_id": "F04",
+      "answer_id": "fixture-rev-3",
+      "definition_version": "1.3-engine",
+      "revision": 3,
+      "source_ref": "raw-revision:fixture-rev-3",
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "living",
+        "expense_basis",
+        "exclusions_confirmed",
+        "essential_living",
+        "period_start",
+        "period_end",
+        "included_debt",
+        "included_contributions"
+      ]
+    },
+    {
+      "question_id": "F06",
+      "answer_id": "fixture-rev-4",
+      "definition_version": "1.3-engine",
+      "revision": 4,
+      "source_ref": "raw-revision:fixture-rev-4",
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "items",
+        "coverage"
+      ]
+    },
+    {
+      "question_id": "F09+F10+D08",
+      "answer_id": "fixture-rev-6",
+      "definition_version": "1.3-engine",
+      "revision": 6,
+      "source_ref": "raw-revision:fixture-rev-6",
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "coverage",
+        "items"
+      ]
+    },
+    {
+      "question_id": "F11",
+      "answer_id": "fixture-rev-11",
+      "definition_version": "1.3-engine",
+      "revision": 11,
+      "source_ref": "raw-revision:fixture-rev-11",
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "status",
+        "items"
+      ]
+    },
+    {
+      "question_id": "F12",
+      "answer_id": "fixture-rev-12",
+      "definition_version": "1.3-engine",
+      "revision": 12,
+      "source_ref": "raw-revision:fixture-rev-12",
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "items"
+      ]
+    },
+    {
+      "question_id": "F13",
+      "answer_id": "fixture-rev-13",
+      "definition_version": "1.3-engine",
+      "revision": 13,
+      "source_ref": "raw-revision:fixture-rev-13",
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "items"
+      ]
+    },
+    {
+      "question_id": "NEW-01",
+      "answer_id": "fixture-rev-1",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "source_ref": "raw-revision:fixture-rev-1",
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "scope",
+        "owner_ids",
+        "asset_coverage"
+      ]
+    },
+    {
+      "question_id": "NEW-02",
+      "answer_id": "fixture-rev-8",
+      "definition_version": "1.3-engine",
+      "revision": 8,
+      "source_ref": "raw-revision:fixture-rev-8",
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "carry_forward_snapshot",
+        "zero_return",
+        "unchanged_living_confirmed",
+        "income_basis",
+        "income_periods",
+        "pension_treatment"
+      ]
+    },
+    {
+      "question_id": "NEW-03",
+      "answer_id": "fixture-rev-7",
+      "definition_version": "1.3-engine",
+      "revision": 7,
+      "source_ref": "raw-revision:fixture-rev-7",
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "status",
+        "items",
+        "adjustment_options",
+        "requested_reductions"
+      ]
+    },
+    {
+      "question_id": "NEW-04",
+      "answer_id": "fixture-rev-5",
+      "definition_version": "1.3-engine",
+      "revision": 5,
+      "source_ref": "raw-revision:fixture-rev-5",
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "status"
+      ]
+    },
+    {
+      "question_id": "NEW-05",
+      "answer_id": "fixture-rev-9",
+      "definition_version": "1.3-engine",
+      "revision": 9,
+      "source_ref": "raw-revision:fixture-rev-9",
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "status",
+        "items"
+      ]
+    },
+    {
+      "question_id": "NEW-06",
+      "answer_id": "fixture-rev-10",
+      "definition_version": "1.3-engine",
+      "revision": 10,
+      "source_ref": "raw-revision:fixture-rev-10",
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "coverage",
+        "items",
+        "customer_protection_target",
+        "customer_operating_target"
+      ]
+    }
+  ],
+  "results": {
+    "OUT-02": {
+      "calc_state": "NOT_SUPPORTED",
+      "reason_code": "ADAPTER_DEPENDENCY_UNRESOLVED",
+      "issues": [
+        {
+          "question_id": "Q-07",
+          "code": "NOT_SUPPORTED",
+          "reason": "namespace/version is not DION-DESIGN 1.2/1.2.1; no Q-ID or EXT alias inference",
+          "raw_answer_preserved": true,
+          "affected_outputs": [
+            "OUT-02",
+            "OUT-03",
+            "OUT-04",
+            "OUT-05"
+          ]
+        }
+      ],
+      "partial_result": {
+        "calc_state": "CALCULATED",
+        "reported_root_assets_krw": "12000000",
+        "known_debts_krw": "10000000",
+        "total_assets": {
+          "calc_state": "CALCULATED",
+          "value": "12000000",
+          "unit": "KRW",
+          "reason_codes": []
+        },
+        "total_debt": {
+          "calc_state": "CALCULATED",
+          "value": "10000000",
+          "unit": "KRW",
+          "reason_codes": []
+        },
+        "net_worth": {
+          "calc_state": "CALCULATED",
+          "value": "2000000",
+          "unit": "KRW",
+          "reason_codes": []
+        },
+        "issues": [],
+        "investment_available": {
+          "calc_state": "NOT_EVALUATED",
+          "value": null,
+          "unit": "KRW",
+          "reason_codes": [
+            "ALLOCATION_POLICY_DECIDED_BUT_NOT_APPLIED_IN_SNAPSHOT"
+          ]
+        },
+        "title": "전체 순자산",
+        "source_refs": [
+          "raw-revision:fixture-rev-1",
+          "raw-revision:fixture-rev-4",
+          "raw-revision:fixture-rev-5",
+          "raw-revision:fixture-rev-6"
+        ],
+        "status_axes": {
+          "status_version": "DION-STATUS-1.0",
+          "calculation": {
+            "state": "CALCULATED",
+            "scope": "DECLARED_INPUT_ARITHMETIC"
+          },
+          "policy": {
+            "allocation_state": "DECIDED",
+            "allocation_version": "DION-ALLOCATION-1.0",
+            "legal_rule_state": "INACTIVE",
+            "active_legal_rule_count": 0
+          },
+          "implementation": {
+            "engine": "IMPLEMENTED_WITH_LIMITS",
+            "api_ui_integration": "NOT_CONNECTED",
+            "statutory_tax_pension_inheritance": "NOT_IMPLEMENTED"
+          },
+          "fundability": {
+            "monthly": "NOT_EVALUATED",
+            "dated_cash": "NOT_VERIFIED_COMPLETE_CALENDAR"
+          },
+          "investment_suitability": {
+            "state": "NOT_EVALUATED",
+            "recommended_new_investment_krw": null
+          },
+          "adoption": {
+            "state": "NOT_ADOPTED",
+            "transaction_state": "NOT_EXECUTED"
+          }
+        }
+      },
+      "recommendation": false,
+      "status_axes": {
+        "status_version": "DION-STATUS-1.0",
+        "calculation": {
+          "state": "NOT_SUPPORTED",
+          "scope": "DECLARED_INPUT_ARITHMETIC"
+        },
+        "policy": {
+          "allocation_state": "DECIDED",
+          "allocation_version": "DION-ALLOCATION-1.0",
+          "legal_rule_state": "INACTIVE",
+          "active_legal_rule_count": 0
+        },
+        "implementation": {
+          "engine": "ADAPTER_BLOCKED",
+          "api_ui_integration": "NOT_CONNECTED",
+          "statutory_tax_pension_inheritance": "NOT_IMPLEMENTED"
+        },
+        "fundability": {
+          "monthly": "NOT_EVALUATED",
+          "dated_cash": "NOT_VERIFIED_COMPLETE_CALENDAR"
+        },
+        "investment_suitability": {
+          "state": "NOT_EVALUATED",
+          "recommended_new_investment_krw": null
+        },
+        "adoption": {
+          "state": "NOT_ADOPTED",
+          "transaction_state": "NOT_EXECUTED"
+        }
+      },
+      "dependency_question_ids": [
+        "F06",
+        "F08",
+        "F09+F10+D08",
+        "NEW-01",
+        "NEW-04",
+        "NEW-09"
+      ]
+    },
+    "OUT-03": {
+      "calc_state": "NOT_SUPPORTED",
+      "reason_code": "ADAPTER_DEPENDENCY_UNRESOLVED",
+      "issues": [
+        {
+          "question_id": "Q-07",
+          "code": "NOT_SUPPORTED",
+          "reason": "namespace/version is not DION-DESIGN 1.2/1.2.1; no Q-ID or EXT alias inference",
+          "raw_answer_preserved": true,
+          "affected_outputs": [
+            "OUT-02",
+            "OUT-03",
+            "OUT-04",
+            "OUT-05"
+          ]
+        }
+      ],
+      "partial_result": {
+        "calc_state": "NEEDS_INPUT",
+        "missing": [
+          "F03/F04: same explicit reference period required"
+        ],
+        "title": "월 가용흐름",
+        "source_refs": [
+          "raw-revision:fixture-rev-1",
+          "raw-revision:fixture-rev-3",
+          "raw-revision:fixture-rev-5",
+          "raw-revision:fixture-rev-6",
+          "raw-revision:fixture-rev-7"
+        ],
+        "status_axes": {
+          "status_version": "DION-STATUS-1.0",
+          "calculation": {
+            "state": "NEEDS_INPUT",
+            "scope": "DECLARED_INPUT_ARITHMETIC"
+          },
+          "policy": {
+            "allocation_state": "DECIDED",
+            "allocation_version": "DION-ALLOCATION-1.0",
+            "legal_rule_state": "INACTIVE",
+            "active_legal_rule_count": 0
+          },
+          "implementation": {
+            "engine": "IMPLEMENTED_WITH_LIMITS",
+            "api_ui_integration": "NOT_CONNECTED",
+            "statutory_tax_pension_inheritance": "NOT_IMPLEMENTED"
+          },
+          "fundability": {
+            "monthly": "NOT_EVALUATED",
+            "dated_cash": "NOT_VERIFIED_COMPLETE_CALENDAR"
+          },
+          "investment_suitability": {
+            "state": "NOT_EVALUATED",
+            "recommended_new_investment_krw": null
+          },
+          "adoption": {
+            "state": "NOT_ADOPTED",
+            "transaction_state": "NOT_EXECUTED"
+          }
+        }
+      },
+      "recommendation": false,
+      "status_axes": {
+        "status_version": "DION-STATUS-1.0",
+        "calculation": {
+          "state": "NOT_SUPPORTED",
+          "scope": "DECLARED_INPUT_ARITHMETIC"
+        },
+        "policy": {
+          "allocation_state": "DECIDED",
+          "allocation_version": "DION-ALLOCATION-1.0",
+          "legal_rule_state": "INACTIVE",
+          "active_legal_rule_count": 0
+        },
+        "implementation": {
+          "engine": "ADAPTER_BLOCKED",
+          "api_ui_integration": "NOT_CONNECTED",
+          "statutory_tax_pension_inheritance": "NOT_IMPLEMENTED"
+        },
+        "fundability": {
+          "monthly": "NOT_EVALUATED",
+          "dated_cash": "NOT_VERIFIED_COMPLETE_CALENDAR"
+        },
+        "investment_suitability": {
+          "state": "NOT_EVALUATED",
+          "recommended_new_investment_krw": null
+        },
+        "adoption": {
+          "state": "NOT_ADOPTED",
+          "transaction_state": "NOT_EXECUTED"
+        }
+      },
+      "dependency_question_ids": [
+        "F03",
+        "F04",
+        "F09+F10+D08",
+        "NEW-01",
+        "NEW-03",
+        "NEW-04"
+      ]
+    },
+    "OUT-04": {
+      "calc_state": "NOT_SUPPORTED",
+      "reason_code": "ADAPTER_DEPENDENCY_UNRESOLVED",
+      "issues": [
+        {
+          "question_id": "Q-07",
+          "code": "NOT_SUPPORTED",
+          "reason": "namespace/version is not DION-DESIGN 1.2/1.2.1; no Q-ID or EXT alias inference",
+          "raw_answer_preserved": true,
+          "affected_outputs": [
+            "OUT-02",
+            "OUT-03",
+            "OUT-04",
+            "OUT-05"
+          ]
+        }
+      ],
+      "partial_result": {
+        "calc_state": "CALCULATED",
+        "rows": [
+          {
+            "goal_id": "goal-1",
+            "type": "EDUCATION",
+            "priority": 1,
+            "calc_state": "CALCULATED",
+            "due_on": "2026-11-30",
+            "target_krw": "300000",
+            "prepared_krw": "0",
+            "gap_krw": "300000",
+            "contribution_count": 1,
+            "level_contribution_krw": "300000",
+            "funding_schedule": [
+              {
+                "on": "2026-11-15",
+                "amount_krw": "300000"
+              }
+            ],
+            "payments": [
+              {
+                "on": "2026-11-30",
+                "amount_krw": "300000",
+                "economic_event_id": "education-payment-1"
+              }
+            ],
+            "readiness": {
+              "numerator": "0",
+              "denominator": "300000"
+            },
+            "price_basis": "FUTURE_NOMINAL",
+            "return_basis": "ZERO_RETURN"
+          }
+        ],
+        "cash_events": [
+          {
+            "on": "2026-11-30",
+            "amount_krw": "300000",
+            "economic_event_id": "education-payment-1",
+            "event_id": "goal:education-payment-1",
+            "direction": "OUT",
+            "goal_id": "goal-1",
+            "source_ref": "raw-revision:fixture-rev-13"
+          }
+        ],
+        "allocation_policy": "DION-GOAL-CALENDAR-1.0",
+        "future_return_assumed": false,
+        "level_payment_rule": "max-prefix-ceiling; final contributions capped to remaining gap",
+        "title": "목표 준비·필요적립",
+        "source_refs": [
+          "raw-revision:fixture-rev-1",
+          "raw-revision:fixture-rev-4",
+          "raw-revision:fixture-rev-10",
+          "raw-revision:fixture-rev-11",
+          "raw-revision:fixture-rev-12",
+          "raw-revision:fixture-rev-13"
+        ],
+        "status_axes": {
+          "status_version": "DION-STATUS-1.0",
+          "calculation": {
+            "state": "CALCULATED",
+            "scope": "DECLARED_INPUT_ARITHMETIC"
+          },
+          "policy": {
+            "allocation_state": "DECIDED",
+            "allocation_version": "DION-ALLOCATION-1.0",
+            "legal_rule_state": "INACTIVE",
+            "active_legal_rule_count": 0
+          },
+          "implementation": {
+            "engine": "IMPLEMENTED_WITH_LIMITS",
+            "api_ui_integration": "NOT_CONNECTED",
+            "statutory_tax_pension_inheritance": "NOT_IMPLEMENTED"
+          },
+          "fundability": {
+            "monthly": "NOT_EVALUATED",
+            "dated_cash": "NOT_VERIFIED_COMPLETE_CALENDAR"
+          },
+          "investment_suitability": {
+            "state": "NOT_EVALUATED",
+            "recommended_new_investment_krw": null
+          },
+          "adoption": {
+            "state": "NOT_ADOPTED",
+            "transaction_state": "NOT_EXECUTED"
+          }
+        }
+      },
+      "recommendation": false,
+      "status_axes": {
+        "status_version": "DION-STATUS-1.0",
+        "calculation": {
+          "state": "NOT_SUPPORTED",
+          "scope": "DECLARED_INPUT_ARITHMETIC"
+        },
+        "policy": {
+          "allocation_state": "DECIDED",
+          "allocation_version": "DION-ALLOCATION-1.0",
+          "legal_rule_state": "INACTIVE",
+          "active_legal_rule_count": 0
+        },
+        "implementation": {
+          "engine": "ADAPTER_BLOCKED",
+          "api_ui_integration": "NOT_CONNECTED",
+          "statutory_tax_pension_inheritance": "NOT_IMPLEMENTED"
+        },
+        "fundability": {
+          "monthly": "NOT_EVALUATED",
+          "dated_cash": "NOT_VERIFIED_COMPLETE_CALENDAR"
+        },
+        "investment_suitability": {
+          "state": "NOT_EVALUATED",
+          "recommended_new_investment_krw": null
+        },
+        "adoption": {
+          "state": "NOT_ADOPTED",
+          "transaction_state": "NOT_EXECUTED"
+        }
+      },
+      "dependency_question_ids": [
+        "F06",
+        "F11",
+        "F12",
+        "F13",
+        "NEW-01",
+        "NEW-06"
+      ]
+    },
+    "OUT-05": {
+      "calc_state": "NOT_SUPPORTED",
+      "reason_code": "ADAPTER_DEPENDENCY_UNRESOLVED",
+      "issues": [
+        {
+          "question_id": "Q-07",
+          "code": "NOT_SUPPORTED",
+          "reason": "namespace/version is not DION-DESIGN 1.2/1.2.1; no Q-ID or EXT alias inference",
+          "raw_answer_preserved": true,
+          "affected_outputs": [
+            "OUT-02",
+            "OUT-03",
+            "OUT-04",
+            "OUT-05"
+          ]
+        }
+      ],
+      "partial_result": {
+        "calc_state": "NEEDS_INPUT",
+        "missing": [
+          "complete same-period cashflow"
+        ],
+        "title": "두 재무안의 월별 시나리오",
+        "source_refs": [
+          "raw-revision:fixture-rev-1",
+          "raw-revision:fixture-rev-3",
+          "raw-revision:fixture-rev-4",
+          "raw-revision:fixture-rev-5",
+          "raw-revision:fixture-rev-6",
+          "raw-revision:fixture-rev-7",
+          "raw-revision:fixture-rev-8",
+          "raw-revision:fixture-rev-9",
+          "raw-revision:fixture-rev-10",
+          "raw-revision:fixture-rev-11",
+          "raw-revision:fixture-rev-12",
+          "raw-revision:fixture-rev-13"
+        ],
+        "status_axes": {
+          "status_version": "DION-STATUS-1.0",
+          "calculation": {
+            "state": "NEEDS_INPUT",
+            "scope": "MONTHLY_BUDGET_SCENARIOS"
+          },
+          "policy": {
+            "allocation_state": "DECIDED",
+            "allocation_version": "DION-ALLOCATION-1.0",
+            "legal_rule_state": "INACTIVE",
+            "active_legal_rule_count": 0
+          },
+          "implementation": {
+            "engine": "IMPLEMENTED_WITH_LIMITS",
+            "api_ui_integration": "NOT_CONNECTED",
+            "statutory_tax_pension_inheritance": "NOT_IMPLEMENTED"
+          },
+          "fundability": {
+            "monthly": "NEEDS_INPUT",
+            "dated_cash": "NOT_VERIFIED_COMPLETE_CALENDAR"
+          },
+          "investment_suitability": {
+            "state": "NOT_EVALUATED",
+            "recommended_new_investment_krw": null
+          },
+          "adoption": {
+            "state": "NOT_ADOPTED",
+            "transaction_state": "NOT_EXECUTED"
+          }
+        }
+      },
+      "recommendation": false,
+      "support_limitations": [
+        "FULL_DATED_CASH_CALENDAR_NOT_IMPLEMENTED",
+        "NO_PERSONALIZED_INVESTMENT_APPROVAL"
+      ],
+      "payment_calendar_preserved": false,
+      "payment_calendar_evaluation": "NOT_REQUESTED",
+      "status_axes": {
+        "status_version": "DION-STATUS-1.0",
+        "calculation": {
+          "state": "NOT_SUPPORTED",
+          "scope": "MONTHLY_BUDGET_SCENARIOS"
+        },
+        "policy": {
+          "allocation_state": "DECIDED",
+          "allocation_version": "DION-ALLOCATION-1.0",
+          "legal_rule_state": "INACTIVE",
+          "active_legal_rule_count": 0
+        },
+        "implementation": {
+          "engine": "ADAPTER_BLOCKED",
+          "api_ui_integration": "NOT_CONNECTED",
+          "statutory_tax_pension_inheritance": "NOT_IMPLEMENTED"
+        },
+        "fundability": {
+          "monthly": "NOT_EVALUATED",
+          "dated_cash": "NOT_VERIFIED_COMPLETE_CALENDAR"
+        },
+        "investment_suitability": {
+          "state": "NOT_EVALUATED",
+          "recommended_new_investment_krw": null
+        },
+        "adoption": {
+          "state": "NOT_ADOPTED",
+          "transaction_state": "NOT_EXECUTED"
+        }
+      },
+      "dependency_question_ids": [
+        "F03",
+        "F04",
+        "F06",
+        "F08",
+        "F09+F10+D08",
+        "F11",
+        "F12",
+        "F13",
+        "INH-01",
+        "INH-02",
+        "INH-03",
+        "NEW-01",
+        "NEW-02",
+        "NEW-03",
+        "NEW-04",
+        "NEW-05",
+        "NEW-06",
+        "NEW-09",
+        "PEN-01",
+        "PEN-02",
+        "TAX-04"
+      ]
+    }
+  },
+  "next_question_ids": [
+    "F03"
+  ],
+  "normalization": {
+    "normalized": {
+      "schema_version": "FIN-CONTRACT-0.1",
+      "context": {
+        "case_id": "DION-FICTIONAL-300-210",
+        "profile_version": "1",
+        "snapshot_id": "raw-snapshot-fixture-1",
+        "evaluation_date": "2026-10-31",
+        "scope": "personal",
+        "included_owner_ids": [
+          "person_self"
+        ],
+        "currency": "KRW",
+        "timezone": "Asia/Seoul",
+        "policy_refs": [
+          "DION-ALLOCATION-1.0"
+        ],
+        "legal_rule_refs": []
+      },
+      "answers": [],
+      "coverage": {
+        "assets": "complete",
+        "debts": "complete"
+      },
+      "assets": [
+        {
+          "asset_id": "cash-1",
+          "parent_asset_id": null,
+          "kind": "CASH",
+          "origin": "CURRENT",
+          "owner_ids": [
+            "person_self"
+          ],
+          "value_krw": {
+            "value": "12000000",
+            "missing_status": "KNOWN",
+            "basis": "SCENARIO",
+            "source_ref": "raw-revision:fixture-rev-4"
+          },
+          "valued_on": "2026-10-31",
+          "value_basis": "SCOPE_SHARE",
+          "share_numerator": "1",
+          "share_denominator": "1",
+          "detail_coverage": "complete"
+        }
+      ],
+      "debts": [
+        {
+          "debt_id": "debt-1",
+          "owner_ids": [
+            "person_self"
+          ],
+          "value_krw": {
+            "value": "10000000",
+            "missing_status": "KNOWN",
+            "basis": "SCENARIO",
+            "source_ref": "raw-revision:fixture-rev-6"
+          },
+          "valued_on": "2026-10-31",
+          "share_numerator": "1",
+          "share_denominator": "1",
+          "value_basis": "SCOPE_SHARE"
+        }
+      ],
+      "cashflow": {
+        "monthly_net_income_krw": {
+          "value": null,
+          "missing_status": "NOT_ASKED",
+          "basis": "USER_REPORTED",
+          "source_ref": "missing:F03"
+        },
+        "reported_living_krw": {
+          "value": "2100000",
+          "missing_status": "KNOWN",
+          "basis": "SCENARIO",
+          "source_ref": "raw-revision:fixture-rev-3"
+        },
+        "included_debt_payment_krw": {
+          "value": "300000",
+          "missing_status": "KNOWN",
+          "basis": "USER_REPORTED",
+          "source_ref": "raw-revision:fixture-rev-3"
+        },
+        "included_contributions_krw": {
+          "value": "200000",
+          "missing_status": "KNOWN",
+          "basis": "USER_REPORTED",
+          "source_ref": "raw-revision:fixture-rev-3"
+        },
+        "required_debt_payment_krw": {
+          "value": "300000",
+          "missing_status": "KNOWN",
+          "basis": "USER_REPORTED",
+          "source_ref": "raw-revision:fixture-rev-6"
+        },
+        "income_basis": "NET",
+        "period_start": "2026-10-31",
+        "period_end": "2026-10-31",
+        "definition_version": "DION-CASHFLOW-1.0",
+        "includes_one_off_income": "UNKNOWN"
+      }
+    },
+    "result": {
+      "schema_version": "FIN-CONTRACT-0.1",
+      "engine_version": "DION-CURRENT-0.1.1",
+      "recommendation": false,
+      "adoption_state": "NOT_IMPLEMENTED",
+      "input_state": "VALIDATED_HEADER_ONLY",
+      "input_snapshot": {
+        "schema_version": "FIN-CONTRACT-0.1",
+        "context": {
+          "case_id": "DION-FICTIONAL-300-210",
+          "profile_version": "1",
+          "snapshot_id": "raw-snapshot-fixture-1",
+          "evaluation_date": "2026-10-31",
+          "scope": "personal",
+          "included_owner_ids": [
+            "person_self"
+          ],
+          "currency": "KRW",
+          "timezone": "Asia/Seoul",
+          "policy_refs": [
+            "DION-ALLOCATION-1.0"
+          ],
+          "legal_rule_refs": []
+        },
+        "answers": [],
+        "coverage": {
+          "assets": "complete",
+          "debts": "complete"
+        },
+        "assets": [
+          {
+            "asset_id": "cash-1",
+            "parent_asset_id": null,
+            "kind": "CASH",
+            "origin": "CURRENT",
+            "owner_ids": [
+              "person_self"
+            ],
+            "value_krw": {
+              "value": "12000000",
+              "missing_status": "KNOWN",
+              "basis": "SCENARIO",
+              "source_ref": "raw-revision:fixture-rev-4"
+            },
+            "valued_on": "2026-10-31",
+            "value_basis": "SCOPE_SHARE",
+            "share_numerator": "1",
+            "share_denominator": "1",
+            "detail_coverage": "complete"
+          }
+        ],
+        "debts": [
+          {
+            "debt_id": "debt-1",
+            "owner_ids": [
+              "person_self"
+            ],
+            "value_krw": {
+              "value": "10000000",
+              "missing_status": "KNOWN",
+              "basis": "SCENARIO",
+              "source_ref": "raw-revision:fixture-rev-6"
+            },
+            "valued_on": "2026-10-31",
+            "share_numerator": "1",
+            "share_denominator": "1",
+            "value_basis": "SCOPE_SHARE"
+          }
+        ],
+        "cashflow": {
+          "monthly_net_income_krw": {
+            "value": null,
+            "missing_status": "NOT_ASKED",
+            "basis": "USER_REPORTED",
+            "source_ref": "missing:F03"
+          },
+          "reported_living_krw": {
+            "value": "2100000",
+            "missing_status": "KNOWN",
+            "basis": "SCENARIO",
+            "source_ref": "raw-revision:fixture-rev-3"
+          },
+          "included_debt_payment_krw": {
+            "value": "300000",
+            "missing_status": "KNOWN",
+            "basis": "USER_REPORTED",
+            "source_ref": "raw-revision:fixture-rev-3"
+          },
+          "included_contributions_krw": {
+            "value": "200000",
+            "missing_status": "KNOWN",
+            "basis": "USER_REPORTED",
+            "source_ref": "raw-revision:fixture-rev-3"
+          },
+          "required_debt_payment_krw": {
+            "value": "300000",
+            "missing_status": "KNOWN",
+            "basis": "USER_REPORTED",
+            "source_ref": "raw-revision:fixture-rev-6"
+          },
+          "income_basis": "NET",
+          "period_start": "2026-10-31",
+          "period_end": "2026-10-31",
+          "definition_version": "DION-CASHFLOW-1.0",
+          "includes_one_off_income": "UNKNOWN"
+        }
+      },
+      "trace": {
+        "input_sha256": "e4eae0b0ba3f12106af3b9b26d27cfec47c94298ace396d533daf8c5522041c8",
+        "case_id": "DION-FICTIONAL-300-210",
+        "profile_version": "1",
+        "snapshot_id": "raw-snapshot-fixture-1",
+        "evaluation_date": "2026-10-31",
+        "scope": "personal",
+        "included_owner_ids": [
+          "person_self"
+        ],
+        "currency": "KRW",
+        "timezone": "Asia/Seoul",
+        "policy_refs": [
+          "DION-ALLOCATION-1.0"
+        ],
+        "legal_rule_refs": []
+      },
+      "overview": {
+        "reported_root_assets_krw": "12000000",
+        "known_debts_krw": "10000000",
+        "total_assets": {
+          "calc_state": "CALCULATED",
+          "value": "12000000",
+          "unit": "KRW",
+          "reason_codes": []
+        },
+        "total_debt": {
+          "calc_state": "CALCULATED",
+          "value": "10000000",
+          "unit": "KRW",
+          "reason_codes": []
+        },
+        "net_worth": {
+          "calc_state": "CALCULATED",
+          "value": "2000000",
+          "unit": "KRW",
+          "reason_codes": []
+        },
+        "issues": [],
+        "investment_available": {
+          "calc_state": "NOT_EVALUATED",
+          "value": null,
+          "unit": "KRW",
+          "reason_codes": [
+            "ALLOCATION_POLICY_DECIDED_BUT_NOT_APPLIED_IN_SNAPSHOT"
+          ]
+        }
+      },
+      "cashflow": {
+        "calc_state": "NEEDS_INPUT",
+        "missing": [
+          "F03/F04: same explicit reference period required"
+        ]
+      }
+    },
+    "legacy_contract_evidence": {
+      "scope": "ORIGINAL_SNAPSHOT_ONLY_RESPONSE",
+      "result": {
+        "schema_version": "FIN-CONTRACT-0.1",
+        "engine_version": "DION-CURRENT-0.1.1",
+        "recommendation": false,
+        "adoption_state": "NOT_IMPLEMENTED",
+        "input_state": "VALIDATED_HEADER_ONLY",
+        "input_snapshot": {
+          "schema_version": "FIN-CONTRACT-0.1",
+          "context": {
+            "case_id": "DION-FICTIONAL-300-210",
+            "profile_version": "1",
+            "snapshot_id": "raw-snapshot-fixture-1",
+            "evaluation_date": "2026-10-31",
+            "scope": "personal",
+            "included_owner_ids": [
+              "person_self"
+            ],
+            "currency": "KRW",
+            "timezone": "Asia/Seoul",
+            "policy_refs": [
+              "DION-ALLOCATION-1.0"
+            ],
+            "legal_rule_refs": []
+          },
+          "answers": [],
+          "coverage": {
+            "assets": "complete",
+            "debts": "complete"
+          },
+          "assets": [
+            {
+              "asset_id": "cash-1",
+              "parent_asset_id": null,
+              "kind": "CASH",
+              "origin": "CURRENT",
+              "owner_ids": [
+                "person_self"
+              ],
+              "value_krw": {
+                "value": "12000000",
+                "missing_status": "KNOWN",
+                "basis": "SCENARIO",
+                "source_ref": "raw-revision:fixture-rev-4"
+              },
+              "valued_on": "2026-10-31",
+              "value_basis": "SCOPE_SHARE",
+              "share_numerator": "1",
+              "share_denominator": "1",
+              "detail_coverage": "complete"
+            }
+          ],
+          "debts": [
+            {
+              "debt_id": "debt-1",
+              "owner_ids": [
+                "person_self"
+              ],
+              "value_krw": {
+                "value": "10000000",
+                "missing_status": "KNOWN",
+                "basis": "SCENARIO",
+                "source_ref": "raw-revision:fixture-rev-6"
+              },
+              "valued_on": "2026-10-31",
+              "share_numerator": "1",
+              "share_denominator": "1",
+              "value_basis": "SCOPE_SHARE"
+            }
+          ],
+          "cashflow": {
+            "monthly_net_income_krw": {
+              "value": null,
+              "missing_status": "NOT_ASKED",
+              "basis": "USER_REPORTED",
+              "source_ref": "missing:F03"
+            },
+            "reported_living_krw": {
+              "value": "2100000",
+              "missing_status": "KNOWN",
+              "basis": "SCENARIO",
+              "source_ref": "raw-revision:fixture-rev-3"
+            },
+            "included_debt_payment_krw": {
+              "value": "300000",
+              "missing_status": "KNOWN",
+              "basis": "USER_REPORTED",
+              "source_ref": "raw-revision:fixture-rev-3"
+            },
+            "included_contributions_krw": {
+              "value": "200000",
+              "missing_status": "KNOWN",
+              "basis": "USER_REPORTED",
+              "source_ref": "raw-revision:fixture-rev-3"
+            },
+            "required_debt_payment_krw": {
+              "value": "300000",
+              "missing_status": "KNOWN",
+              "basis": "USER_REPORTED",
+              "source_ref": "raw-revision:fixture-rev-6"
+            },
+            "income_basis": "NET",
+            "period_start": "2026-10-31",
+            "period_end": "2026-10-31",
+            "definition_version": "DION-CASHFLOW-1.0",
+            "includes_one_off_income": "UNKNOWN"
+          }
+        },
+        "trace": {
+          "input_sha256": "e4eae0b0ba3f12106af3b9b26d27cfec47c94298ace396d533daf8c5522041c8",
+          "case_id": "DION-FICTIONAL-300-210",
+          "profile_version": "1",
+          "snapshot_id": "raw-snapshot-fixture-1",
+          "evaluation_date": "2026-10-31",
+          "scope": "personal",
+          "included_owner_ids": [
+            "person_self"
+          ],
+          "currency": "KRW",
+          "timezone": "Asia/Seoul",
+          "policy_refs": [
+            "DION-ALLOCATION-1.0"
+          ],
+          "legal_rule_refs": []
+        },
+        "overview": {
+          "reported_root_assets_krw": "12000000",
+          "known_debts_krw": "10000000",
+          "total_assets": {
+            "calc_state": "CALCULATED",
+            "value": "12000000",
+            "unit": "KRW",
+            "reason_codes": []
+          },
+          "total_debt": {
+            "calc_state": "CALCULATED",
+            "value": "10000000",
+            "unit": "KRW",
+            "reason_codes": []
+          },
+          "net_worth": {
+            "calc_state": "CALCULATED",
+            "value": "2000000",
+            "unit": "KRW",
+            "reason_codes": []
+          },
+          "issues": [],
+          "investment_available": {
+            "calc_state": "NEEDS_POLICY",
+            "value": null,
+            "unit": "KRW",
+            "reason_codes": [
+              "FUNDING_POLICY_NOT_APPLIED"
+            ]
+          }
+        },
+        "cashflow": {
+          "calc_state": "NEEDS_INPUT",
+          "missing": [
+            "F03/F04: same explicit reference period required"
+          ]
+        },
+        "modules": {
+          "tax": {
+            "calc_state": "NOT_IMPLEMENTED",
+            "value": null,
+            "unit": "KRW",
+            "reason_codes": [
+              "DESIGN_ONLY_RULES_INACTIVE"
+            ]
+          },
+          "pension": {
+            "calc_state": "NOT_IMPLEMENTED",
+            "value": null,
+            "unit": "KRW",
+            "reason_codes": [
+              "DESIGN_ONLY_RULES_INACTIVE"
+            ]
+          },
+          "inheritance": {
+            "calc_state": "NOT_IMPLEMENTED",
+            "value": null,
+            "unit": "KRW",
+            "reason_codes": [
+              "DESIGN_ONLY_RULES_INACTIVE"
+            ]
+          }
+        },
+        "plan_generation": {
+          "calc_state": "NEEDS_POLICY",
+          "value": null,
+          "unit": "KRW",
+          "reason_codes": [
+            "DEC02_FULL_GENERATION_POLICY_INCOMPLETE"
+          ]
+        }
+      }
+    }
+  },
+  "module_states": {
+    "tax": "NEEDS_INPUT",
+    "retirement": "NEEDS_INPUT",
+    "pension": "NEEDS_INPUT",
+    "inheritance": "NEEDS_INPUT"
+  },
+  "boundaries": {
+    "api_db_connected": false,
+    "raw_answer_persisted": false,
+    "recommendation": false,
+    "plan_adopted": false,
+    "transactions_executed": false,
+    "daily_cash_calendar_verified": false
+  },
+  "status_axes": {
+    "status_version": "DION-STATUS-1.0",
+    "calculation": {
+      "state": "PARTIAL",
+      "scope": "DECLARED_INPUT_ARITHMETIC"
+    },
+    "policy": {
+      "allocation_state": "DECIDED",
+      "allocation_version": "DION-ALLOCATION-1.0",
+      "legal_rule_state": "INACTIVE",
+      "active_legal_rule_count": 0
+    },
+    "implementation": {
+      "engine": "IMPLEMENTED_WITH_LIMITS",
+      "api_ui_integration": "NOT_CONNECTED",
+      "statutory_tax_pension_inheritance": "NOT_IMPLEMENTED"
+    },
+    "fundability": {
+      "monthly": "NOT_EVALUATED",
+      "dated_cash": "NOT_VERIFIED_COMPLETE_CALENDAR"
+    },
+    "investment_suitability": {
+      "state": "NOT_EVALUATED",
+      "recommended_new_investment_krw": null
+    },
+    "adoption": {
+      "state": "NOT_ADOPTED",
+      "transaction_state": "NOT_EXECUTED"
+    }
+  },
+  "adapter": {
+    "adapter_version": "DION-QUESTION12-ADAPTER-1.0",
+    "source_snapshot": {
+      "schema_version": "DION-QUESTION12-ADAPTER-1.0",
+      "context": {
+        "case_id": "DION-FICTIONAL-300-210",
+        "snapshot_id": "raw-snapshot-fixture-1",
+        "profile_version": "1",
+        "evaluation_on": "2026-10-31",
+        "scope": "personal",
+        "included_owner_ids": [
+          "person_self"
+        ],
+        "currency": "KRW",
+        "timezone": "Asia/Seoul",
+        "projection_start": "2026-11-01",
+        "projection_end": "2026-11-30"
+      },
+      "scope_ref": "scope_personal",
+      "raw_bundle": {
+        "case_id": "DION-FICTIONAL-300-210",
+        "input_version": 13,
+        "answers": [
+          {
+            "answer_revision_id": "fixture-rev-1",
+            "input_version": 1,
+            "prior_revision_id": null,
+            "recorded_at": "2026-11-10T00:00:00Z",
+            "envelope": {
+              "wire_version": "POC-RAW-0.1",
+              "question_ref": {
+                "namespace": "DION-DESIGN",
+                "design_id": "NEW-01",
+                "definition_version": "1.2",
+                "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#NEW-01",
+                "definition_text": "이번 재무진단은 누구의 재무정보를 기준으로 할까요?",
+                "option_labels": {
+                  "source_input_guidance": "본인 / 가구 합산. 가구는 동의한 구성원 별칭을 선택. 소득·자산·채무·계좌의 소유자·납세자와 지분을 연결. 지원 분석 범위 안내를 먼저 확인."
+                }
+              },
+              "subject_refs": {
+                "person_ref": "person_self"
+              },
+              "context": {
+                "scope_ref": "scope_personal",
+                "as_of": "2026-10-31",
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "source_ref": "fixture:independent-300-210:NEW-01",
+                "basis": "SCENARIO"
+              },
+              "fields": {
+                "assessment_scope": {
+                  "state": "KNOWN",
+                  "raw_value": "personal",
+                  "unit": "TEXT"
+                },
+                "included_owner_ids": {
+                  "state": "KNOWN",
+                  "raw_value": [
+                    "person_self"
+                  ],
+                  "unit": "JSON"
+                },
+                "owners": {
+                  "state": "KNOWN",
+                  "raw_value": [
+                    {
+                      "person_ref": "person_self",
+                      "relationship": "SELF",
+                      "confirmed": true
+                    }
+                  ],
+                  "unit": "JSON"
+                },
+                "scope_acknowledged": {
+                  "state": "KNOWN",
+                  "raw_value": true,
+                  "unit": "BOOLEAN"
+                },
+                "scope_version": {
+                  "state": "KNOWN",
+                  "raw_value": "1.2",
+                  "unit": "TEXT"
+                }
+              }
+            }
+          },
+          {
+            "answer_revision_id": "fixture-rev-2",
+            "input_version": 2,
+            "prior_revision_id": null,
+            "recorded_at": "2026-11-10T00:00:00Z",
+            "envelope": {
+              "wire_version": "POC-RAW-0.1",
+              "question_ref": {
+                "namespace": "LEGACY-PERSISTENT",
+                "design_id": "Q-07",
+                "definition_version": "1.2",
+                "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#F03",
+                "definition_text": "월평균 세후소득은 얼마인가요?",
+                "option_labels": {
+                  "source_input_guidance": "빠른: 동일 범위 세후 월평균 총액·기간·일회성 여부. 정밀: 급여·사업·임대·연금·이자배당 등 필요한 소득원만 분리. 이미 있는 연금 수령·원천세는 참조로 연결."
+                }
+              },
+              "subject_refs": {
+                "person_ref": "person_self"
+              },
+              "context": {
+                "scope_ref": "scope_personal",
+                "as_of": "2026-10-31",
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "source_ref": "fixture:independent-300-210:F03",
+                "basis": "SCENARIO"
+              },
+              "fields": {
+                "monthly_net_income_krw": {
+                  "state": "KNOWN",
+                  "raw_value": "00300.0000",
+                  "unit": "KRW_10000"
+                },
+                "income_amount_status": {
+                  "state": "KNOWN",
+                  "raw_value": "KNOWN",
+                  "unit": "TEXT"
+                },
+                "income_reference_period": {
+                  "state": "KNOWN",
+                  "raw_value": "MONTHLY_AVERAGE",
+                  "unit": "TEXT"
+                },
+                "income_period_start": {
+                  "state": "KNOWN",
+                  "raw_value": "2026-10-01",
+                  "unit": "DATE"
+                },
+                "income_period_end": {
+                  "state": "KNOWN",
+                  "raw_value": "2026-10-31",
+                  "unit": "DATE"
+                },
+                "includes_one_off_income": {
+                  "state": "KNOWN",
+                  "raw_value": "NO",
+                  "unit": "TEXT"
+                },
+                "income_definition_version": {
+                  "state": "KNOWN",
+                  "raw_value": "DION-INCOME-1.2",
+                  "unit": "TEXT"
+                }
+              }
+            }
+          },
+          {
+            "answer_revision_id": "fixture-rev-3",
+            "input_version": 3,
+            "prior_revision_id": null,
+            "recorded_at": "2026-11-10T00:00:00Z",
+            "envelope": {
+              "wire_version": "POC-RAW-0.1",
+              "question_ref": {
+                "namespace": "DION-DESIGN",
+                "design_id": "F04",
+                "definition_version": "1.2",
+                "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#F04",
+                "definition_text": "월평균 생활비는 얼마인가요?",
+                "option_labels": {
+                  "source_input_guidance": "첫 진단: 총 생활비 숫자와 대출·저축 이체 포함 여부 확인. 투자 제안 전: 같은 카드에서 꼭 필요한 지출의 부분금액을 추가 확인"
+                }
+              },
+              "subject_refs": {
+                "person_ref": "person_self"
+              },
+              "context": {
+                "scope_ref": "scope_personal",
+                "as_of": "2026-10-31",
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "source_ref": "fixture:independent-300-210:F04",
+                "basis": "SCENARIO"
+              },
+              "fields": {
+                "monthly_living_cost_krw": {
+                  "state": "KNOWN",
+                  "raw_value": "210",
+                  "unit": "KRW_10000"
+                },
+                "monthly_essential_cost_krw": {
+                  "state": "KNOWN",
+                  "raw_value": "160",
+                  "unit": "KRW_10000"
+                },
+                "expense_reference_period": {
+                  "state": "KNOWN",
+                  "raw_value": "2026-10",
+                  "unit": "TEXT"
+                },
+                "expense_inclusions": {
+                  "state": "KNOWN",
+                  "raw_value": {
+                    "debt_payment_status": "INCLUDED_CONFIRMED",
+                    "debt_payment_amount": {
+                      "state": "KNOWN",
+                      "raw_value": "30",
+                      "unit": "KRW_10000"
+                    },
+                    "contribution_status": "INCLUDED_CONFIRMED",
+                    "contribution_amount": {
+                      "state": "KNOWN",
+                      "raw_value": "20",
+                      "unit": "KRW_10000"
+                    },
+                    "pension_premium_status": "EXCLUDED_CONFIRMED",
+                    "rent_status": "INCLUDED_CONFIRMED",
+                    "tax_payment_status": "EXCLUDED_CONFIRMED"
+                  },
+                  "unit": "JSON"
+                }
+              }
+            }
+          },
+          {
+            "answer_revision_id": "fixture-rev-4",
+            "input_version": 4,
+            "prior_revision_id": null,
+            "recorded_at": "2026-11-10T00:00:00Z",
+            "envelope": {
+              "wire_version": "POC-RAW-0.1",
+              "question_ref": {
+                "namespace": "DION-DESIGN",
+                "design_id": "F06",
+                "definition_version": "1.2",
+                "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#F06",
+                "definition_text": "현재 보유한 금융자산은 어떤 종류이고, 각각 얼마인가요?",
+                "option_labels": {
+                  "source_input_guidance": "정밀진단: 자산 종류 → 보유 수단(직접/ETF/펀드/예금 등) → 현재 평가금액(만원)·확인 상태 → 계좌 유형·인출 제약·가용 시점. 상품명·종목코드는 선택. 세부 합계·구성비 자동 계산. 빠른진단만 총액 입력. 정밀진단에 총액 선입력을 강제하지 않음."
+                }
+              },
+              "subject_refs": {
+                "person_ref": "person_self"
+              },
+              "context": {
+                "scope_ref": "scope_personal",
+                "as_of": "2026-10-31",
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "source_ref": "fixture:independent-300-210:F06",
+                "basis": "SCENARIO"
+              },
+              "fields": {
+                "financial_assets_total_reported_krw": {
+                  "state": "KNOWN",
+                  "raw_value": "1200",
+                  "unit": "KRW_10000"
+                },
+                "financial_assets_detail_status": {
+                  "state": "KNOWN",
+                  "raw_value": "COMPLETE",
+                  "unit": "TEXT"
+                },
+                "financial_assets": {
+                  "state": "KNOWN",
+                  "raw_value": [
+                    {
+                      "asset_id": "cash-1",
+                      "owner_refs": [
+                        "person_self"
+                      ],
+                      "share_basis": "SCOPE_SHARE",
+                      "asset_class": "CASH",
+                      "investment_vehicle": "DEPOSIT",
+                      "market_value_krw": {
+                        "state": "KNOWN",
+                        "raw_value": "1200",
+                        "unit": "KRW_10000"
+                      },
+                      "amount_status": "KNOWN",
+                      "account_ref": "bank-1",
+                      "withdrawal_constraint": "NONE_CONFIRMED",
+                      "available_date": "2026-10-31",
+                      "valuation_on": "2026-10-31"
+                    }
+                  ],
+                  "unit": "JSON"
+                },
+                "accounts": {
+                  "state": "KNOWN",
+                  "raw_value": [
+                    {
+                      "account_id": "bank-1",
+                      "owner_ref": "person_self",
+                      "type": "BANK"
+                    }
+                  ],
+                  "unit": "JSON"
+                }
+              }
+            }
+          },
+          {
+            "answer_revision_id": "fixture-rev-5",
+            "input_version": 5,
+            "prior_revision_id": null,
+            "recorded_at": "2026-11-10T00:00:00Z",
+            "envelope": {
+              "wire_version": "POC-RAW-0.1",
+              "question_ref": {
+                "namespace": "DION-DESIGN",
+                "design_id": "NEW-04",
+                "definition_version": "1.2",
+                "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#NEW-04",
+                "definition_text": "현재 대출이나 앞으로 갚아야 할 채무가 있나요?",
+                "option_labels": {
+                  "source_input_guidance": "있음 / 없음 / 모름"
+                }
+              },
+              "subject_refs": {
+                "person_ref": "person_self"
+              },
+              "context": {
+                "scope_ref": "scope_personal",
+                "as_of": "2026-10-31",
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "source_ref": "fixture:independent-300-210:NEW-04",
+                "basis": "SCENARIO"
+              },
+              "fields": {
+                "has_liabilities": {
+                  "state": "KNOWN",
+                  "raw_value": true,
+                  "unit": "BOOLEAN"
+                }
+              }
+            }
+          },
+          {
+            "answer_revision_id": "fixture-rev-6",
+            "input_version": 6,
+            "prior_revision_id": null,
+            "recorded_at": "2026-11-10T00:00:00Z",
+            "envelope": {
+              "wire_version": "POC-RAW-0.1",
+              "question_ref": {
+                "namespace": "DION-DESIGN",
+                "design_id": "F09+F10+D08",
+                "definition_version": "1.2",
+                "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#F09+F10+D08",
+                "definition_text": "대출별로 남은 잔액, 연 금리, 월 원리금을 알려주세요.",
+                "option_labels": {
+                  "source_input_guidance": "대출별 종류 → 잔액(만원) → 연 금리(%) → 월 원리금(만원)을 같은 상세 화면에서 확인. 금리 입력 또는 잘 모르겠음 응답 필수. 비대출 채무는 금리 적용 없음 구분. 만기·상환방식은 관련 전망에 필요한 경우 추가."
+                }
+              },
+              "subject_refs": {
+                "person_ref": "person_self"
+              },
+              "context": {
+                "scope_ref": "scope_personal",
+                "as_of": "2026-10-31",
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "source_ref": "fixture:independent-300-210:F09+F10+D08",
+                "basis": "SCENARIO"
+              },
+              "fields": {
+                "liabilities": {
+                  "state": "KNOWN",
+                  "raw_value": [
+                    {
+                      "debt_id": "debt-1",
+                      "owner_ids": [
+                        "person_self"
+                      ],
+                      "balance": {
+                        "state": "KNOWN",
+                        "raw_value": "1000",
+                        "unit": "KRW_10000"
+                      },
+                      "monthly_payment": {
+                        "state": "KNOWN",
+                        "raw_value": "30",
+                        "unit": "KRW_10000"
+                      },
+                      "principal_payment": {
+                        "state": "KNOWN",
+                        "raw_value": "25",
+                        "unit": "KRW_10000"
+                      },
+                      "interest_payment": {
+                        "state": "KNOWN",
+                        "raw_value": "5",
+                        "unit": "KRW_10000"
+                      },
+                      "fees": {
+                        "state": "KNOWN",
+                        "raw_value": "0",
+                        "unit": "KRW_10000"
+                      },
+                      "valuation_on": "2026-10-31",
+                      "payment_on": "2026-10-31",
+                      "balance_timing": "AFTER_PAYMENT",
+                      "share_numerator": "1",
+                      "share_denominator": "1",
+                      "value_basis": "SCOPE_SHARE",
+                      "payment_basis": "SCOPE_SHARE",
+                      "schedule": [
+                        {
+                          "period": "2026-11",
+                          "payment": {
+                            "state": "KNOWN",
+                            "raw_value": "30",
+                            "unit": "KRW_10000"
+                          },
+                          "principal": {
+                            "state": "KNOWN",
+                            "raw_value": "25",
+                            "unit": "KRW_10000"
+                          }
+                        }
+                      ]
+                    }
+                  ],
+                  "unit": "JSON"
+                }
+              }
+            }
+          },
+          {
+            "answer_revision_id": "fixture-rev-7",
+            "input_version": 7,
+            "prior_revision_id": null,
+            "recorded_at": "2026-11-10T00:00:00Z",
+            "envelope": {
+              "wire_version": "POC-RAW-0.1",
+              "question_ref": {
+                "namespace": "DION-DESIGN",
+                "design_id": "NEW-03",
+                "definition_version": "1.2",
+                "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#NEW-03",
+                "definition_text": "현재 매달 저축하거나 투자하는 금액이 있나요?",
+                "option_labels": {
+                  "source_input_guidance": "있음 / 없음 / 모름. 있음: 기존 계좌·목적·월금액·납입주기 선택. 계속 유지 / 조정 검토 / 나중에 선택. 감액 비교가 필요할 때만 고객 허용범위·최소유지액·감액한도와 계약/세금/비용 확인상태를 추가."
+                }
+              },
+              "subject_refs": {
+                "person_ref": "person_self"
+              },
+              "context": {
+                "scope_ref": "scope_personal",
+                "as_of": "2026-10-31",
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "source_ref": "fixture:independent-300-210:NEW-03",
+                "basis": "SCENARIO"
+              },
+              "fields": {
+                "existing_contributions": {
+                  "state": "KNOWN",
+                  "raw_value": [
+                    {
+                      "contribution_id": "kept-1",
+                      "owner_ref": "person_self",
+                      "account_ref": "investment-1",
+                      "purpose_ref": "purpose-invest",
+                      "amount": {
+                        "state": "KNOWN",
+                        "raw_value": "20",
+                        "unit": "KRW_10000"
+                      },
+                      "frequency": "MONTHLY",
+                      "employee_or_employer": "EMPLOYEE",
+                      "payroll_deducted": false,
+                      "adjustment_permission": "NOT_ALLOWED",
+                      "minimum_amount": {
+                        "state": "KNOWN",
+                        "raw_value": "20",
+                        "unit": "KRW_10000"
+                      },
+                      "max_reduction": {
+                        "state": "KNOWN",
+                        "raw_value": "0",
+                        "unit": "KRW_10000"
+                      },
+                      "contract_status": "CONFIRMED",
+                      "tax_cost_status": "NO_CHANGE",
+                      "source_ref": "fixture:contribution",
+                      "profile_version": "1"
+                    }
+                  ],
+                  "unit": "JSON"
+                }
+              }
+            }
+          },
+          {
+            "answer_revision_id": "fixture-rev-8",
+            "input_version": 8,
+            "prior_revision_id": null,
+            "recorded_at": "2026-11-10T00:00:00Z",
+            "envelope": {
+              "wire_version": "POC-RAW-0.1",
+              "question_ref": {
+                "namespace": "DION-DESIGN",
+                "design_id": "NEW-02",
+                "definition_version": "1.2",
+                "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#NEW-02",
+                "definition_text": "소득이 크게 달라지거나, 앞으로 달라질 일이 있나요?",
+                "option_labels": {
+                  "source_input_guidance": "변화 없음 / 변화 있음 / 모름. 취업·이직·휴직·복직·퇴직 등 해당 변화만 선택하고 금액·시작/종료시점 확인. 생애단계는 보기 순서만 바꿈."
+                }
+              },
+              "subject_refs": {
+                "person_ref": "person_self"
+              },
+              "context": {
+                "scope_ref": "scope_personal",
+                "as_of": "2026-10-31",
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "source_ref": "fixture:independent-300-210:NEW-02",
+                "basis": "SCENARIO"
+              },
+              "fields": {
+                "income_change_status": {
+                  "state": "KNOWN",
+                  "raw_value": "NO_CHANGE_CONFIRMED",
+                  "unit": "TEXT"
+                },
+                "events": {
+                  "state": "KNOWN",
+                  "raw_value": [],
+                  "unit": "JSON"
+                }
+              }
+            }
+          },
+          {
+            "answer_revision_id": "fixture-rev-9",
+            "input_version": 9,
+            "prior_revision_id": null,
+            "recorded_at": "2026-11-10T00:00:00Z",
+            "envelope": {
+              "wire_version": "POC-RAW-0.1",
+              "question_ref": {
+                "namespace": "DION-DESIGN",
+                "design_id": "NEW-05",
+                "definition_version": "1.2",
+                "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#NEW-05",
+                "definition_text": "앞서 적은 목표 외에, 예정된 큰 지출이나 가족 지원이 있나요?",
+                "option_labels": {
+                  "source_input_guidance": "없음 / 있음 / 모름. 있음이면 주거·결혼·양육·교육·부모/자녀지원·의료돌봄·세금·기타에서 실제 사건만 선택하고 본인부담 금액·시점 확인."
+                }
+              },
+              "subject_refs": {
+                "person_ref": "person_self"
+              },
+              "context": {
+                "scope_ref": "scope_personal",
+                "as_of": "2026-10-31",
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "source_ref": "fixture:independent-300-210:NEW-05",
+                "basis": "SCENARIO"
+              },
+              "fields": {
+                "planned_expenses": {
+                  "state": "KNOWN",
+                  "raw_value": [],
+                  "unit": "JSON"
+                }
+              }
+            }
+          },
+          {
+            "answer_revision_id": "fixture-rev-10",
+            "input_version": 10,
+            "prior_revision_id": null,
+            "recorded_at": "2026-11-10T00:00:00Z",
+            "envelope": {
+              "wire_version": "POC-RAW-0.1",
+              "question_ref": {
+                "namespace": "DION-DESIGN",
+                "design_id": "NEW-06",
+                "definition_version": "1.2",
+                "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#NEW-06",
+                "definition_text": "현재 자산 중 생활비·비상자금·목표자금으로 남겨둘 돈을 확인해주세요.",
+                "option_labels": {
+                  "source_input_guidance": "그대로 유지 / 금액 조정 / 잘 모르겠음 선택. 조정할 때 생활비 / 비상자금 / 목표자금 / 기타 의무 선택 후 기존 자산 연결. 금액만 숫자 입력"
+                }
+              },
+              "subject_refs": {
+                "person_ref": "person_self"
+              },
+              "context": {
+                "scope_ref": "scope_personal",
+                "as_of": "2026-10-31",
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "source_ref": "fixture:independent-300-210:NEW-06",
+                "basis": "SCENARIO"
+              },
+              "fields": {
+                "fund_reservations": {
+                  "state": "KNOWN",
+                  "raw_value": [
+                    {
+                      "reservation_id": "reserve-protection",
+                      "asset_ref": "cash-1",
+                      "purpose": "PROTECTION",
+                      "amount": {
+                        "state": "KNOWN",
+                        "raw_value": "570",
+                        "unit": "KRW_10000"
+                      }
+                    },
+                    {
+                      "reservation_id": "reserve-operating",
+                      "asset_ref": "cash-1",
+                      "purpose": "OPERATING",
+                      "amount": {
+                        "state": "KNOWN",
+                        "raw_value": "190",
+                        "unit": "KRW_10000"
+                      }
+                    }
+                  ],
+                  "unit": "JSON"
+                }
+              }
+            }
+          },
+          {
+            "answer_revision_id": "fixture-rev-11",
+            "input_version": 11,
+            "prior_revision_id": null,
+            "recorded_at": "2026-11-10T00:00:00Z",
+            "envelope": {
+              "wire_version": "POC-RAW-0.1",
+              "question_ref": {
+                "namespace": "DION-DESIGN",
+                "design_id": "F11",
+                "definition_version": "1.2",
+                "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#F11",
+                "definition_text": "지금 가장 먼저 준비하고 싶은 일은 무엇인가요?",
+                "option_labels": {
+                  "source_input_guidance": "기존 장기 자산 형성 / 주거 / 은퇴 / 자녀 교육 / 정기 투자소득 / 기타 / 아직 미정 유지. 결혼 / 출산·양육 / 자녀 독립 지원 / 부채 상환 / 상속 계획을 추가. 주요 목표 1개와 실제 추가 목표만 선택. 생애단계로 후보를 앞에 보이되 자동 선택하지 않음."
+                }
+              },
+              "subject_refs": {
+                "person_ref": "person_self"
+              },
+              "context": {
+                "scope_ref": "scope_personal",
+                "as_of": "2026-10-31",
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "source_ref": "fixture:independent-300-210:F11",
+                "basis": "SCENARIO"
+              },
+              "fields": {
+                "goals": {
+                  "state": "KNOWN",
+                  "raw_value": [
+                    {
+                      "goal_id": "goal-1",
+                      "type": "EDUCATION",
+                      "priority": 1,
+                      "owner_refs": [
+                        "person_self"
+                      ],
+                      "beneficiary_ref": "person_self",
+                      "confirmed": true,
+                      "question_version": "1.2"
+                    }
+                  ],
+                  "unit": "JSON"
+                }
+              }
+            }
+          },
+          {
+            "answer_revision_id": "fixture-rev-12",
+            "input_version": 12,
+            "prior_revision_id": null,
+            "recorded_at": "2026-11-10T00:00:00Z",
+            "envelope": {
+              "wire_version": "POC-RAW-0.1",
+              "question_ref": {
+                "namespace": "DION-DESIGN",
+                "design_id": "F12",
+                "definition_version": "1.2",
+                "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#F12",
+                "definition_text": "이 목표를 언제까지 준비하고 싶으신가요?",
+                "option_labels": {
+                  "source_input_guidance": "빠른: 기간 구간·미정. 정밀: 실제 목표일·첫 사용일. 반복 목표는 EDU-01/RET-01에서 시작·종료·주기를 같은 goal_id로 확장."
+                }
+              },
+              "subject_refs": {
+                "person_ref": "person_self"
+              },
+              "context": {
+                "scope_ref": "scope_personal",
+                "as_of": "2026-10-31",
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "source_ref": "fixture:independent-300-210:F12",
+                "basis": "SCENARIO"
+              },
+              "fields": {
+                "goals": {
+                  "state": "KNOWN",
+                  "raw_value": [
+                    {
+                      "goal_id": "goal-1",
+                      "horizon_band": "WITHIN_1_YEAR",
+                      "target_date": "2026-11-30"
+                    }
+                  ],
+                  "unit": "JSON"
+                }
+              }
+            }
+          },
+          {
+            "answer_revision_id": "fixture-rev-13",
+            "input_version": 13,
+            "prior_revision_id": null,
+            "recorded_at": "2026-11-10T00:00:00Z",
+            "envelope": {
+              "wire_version": "POC-RAW-0.1",
+              "question_ref": {
+                "namespace": "DION-DESIGN",
+                "design_id": "F13",
+                "definition_version": "1.2",
+                "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#F13",
+                "definition_text": "목표에 필요한 금액은 얼마인가요?",
+                "option_labels": {
+                  "source_input_guidance": "확인 / 대략 / 미정. 일시 목돈 / 반복 지출. 현재가치 / 해당 시점 예상금액의 기준일 확인. 교육·은퇴 목표의 기존 월금액은 재사용."
+                }
+              },
+              "subject_refs": {
+                "person_ref": "person_self"
+              },
+              "context": {
+                "scope_ref": "scope_personal",
+                "as_of": "2026-10-31",
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "source_ref": "fixture:independent-300-210:F13",
+                "basis": "SCENARIO"
+              },
+              "fields": {
+                "goals": {
+                  "state": "KNOWN",
+                  "raw_value": [
+                    {
+                      "goal_id": "goal-1",
+                      "target_amount_krw": {
+                        "state": "KNOWN",
+                        "raw_value": "30",
+                        "unit": "KRW_10000"
+                      },
+                      "amount_status": "KNOWN",
+                      "payment_type": "ONE_OFF",
+                      "price_basis": "FUTURE_NOMINAL",
+                      "price_base_date": "2026-11-30",
+                      "payment_start": "2026-11-30",
+                      "payment_end": "2026-11-30",
+                      "frequency": "ONCE",
+                      "prepared_asset_refs": []
+                    }
+                  ],
+                  "unit": "JSON"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "confirmations": [
+        {
+          "question_id": "NEW-01",
+          "definition_version": "DION-ADAPTER-CONFIRM-1.0",
+          "source_ref": "fixture:explicit-supplement:NEW-01",
+          "values": {
+            "asset_coverage": "complete"
+          }
+        },
+        {
+          "question_id": "F04",
+          "definition_version": "DION-ADAPTER-CONFIRM-1.0",
+          "source_ref": "fixture:explicit-supplement:F04",
+          "values": {
+            "expense_basis": "TOTAL_OUTFLOW",
+            "exclusions_confirmed": false,
+            "period_start": "2026-10-01",
+            "period_end": "2026-10-31"
+          }
+        },
+        {
+          "question_id": "F06",
+          "definition_version": "DION-ADAPTER-CONFIRM-1.0",
+          "source_ref": "fixture:explicit-supplement:F06",
+          "values": {
+            "coverage": "complete",
+            "items": {
+              "cash-1": {
+                "parent_asset_id": null,
+                "value_basis": "SCOPE_SHARE",
+                "share_numerator": "1",
+                "share_denominator": "1",
+                "detail_coverage": "complete"
+              }
+            }
+          }
+        },
+        {
+          "question_id": "F09+F10+D08",
+          "definition_version": "DION-ADAPTER-CONFIRM-1.0",
+          "source_ref": "fixture:explicit-supplement:F09+F10+D08",
+          "values": {
+            "coverage": "complete",
+            "item_definition_version": "DION-LIABILITY-1.1"
+          }
+        },
+        {
+          "question_id": "NEW-03",
+          "definition_version": "DION-ADAPTER-CONFIRM-1.0",
+          "source_ref": "fixture:explicit-supplement:NEW-03",
+          "values": {
+            "items": {
+              "kept-1": {
+                "purpose": "INVESTMENT",
+                "destination": "NONCASH",
+                "pay_day": 15,
+                "period_basis": "CONFIRMED_CONSTANT",
+                "goal_ref": null
+              }
+            }
+          }
+        },
+        {
+          "question_id": "NEW-02",
+          "definition_version": "DION-ADAPTER-CONFIRM-1.0",
+          "source_ref": "fixture:explicit-supplement:NEW-02",
+          "values": {
+            "source_period_start": "2026-10-01",
+            "source_period_end": "2026-10-31",
+            "applies_from": "2026-11-01",
+            "applies_to": "2026-11-30",
+            "assumption_text": "2026년 10월 세후 월평균 300만원을 2026년 11월에 반복하는 가정. 미래 확정소득 아님. 수익률 0, 생활비 및 기존납입 유지.",
+            "carry_forward_snapshot": true,
+            "zero_return": true,
+            "unchanged_living_confirmed": true,
+            "income_basis": "CONFIRMED_CONSTANT",
+            "source_income_fingerprint": "835da87cdef45cc7893d0e09330b0c619d724266ef218b96481e51c51eef53e8"
+          }
+        },
+        {
+          "question_id": "NEW-06",
+          "definition_version": "DION-ADAPTER-CONFIRM-1.0",
+          "source_ref": "fixture:explicit-supplement:NEW-06",
+          "values": {
+            "item_definition_version": "DION-RESERVATION-1.0",
+            "coverage": "complete",
+            "customer_protection_target": {
+              "state": "KNOWN",
+              "raw_value": "570",
+              "unit": "KRW_10000"
+            },
+            "customer_operating_target": {
+              "state": "KNOWN",
+              "raw_value": "190",
+              "unit": "KRW_10000"
+            }
+          }
+        },
+        {
+          "question_id": "F12",
+          "definition_version": "DION-ADAPTER-CONFIRM-1.0",
+          "source_ref": "fixture:explicit-supplement:F12",
+          "values": {
+            "items": {
+              "goal-1": {
+                "contribution_dates": [
+                  "2026-11-15"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "question_id": "F13",
+          "definition_version": "DION-ADAPTER-CONFIRM-1.0",
+          "source_ref": "fixture:explicit-supplement:F13",
+          "values": {
+            "items": {
+              "goal-1": {
+                "return_basis": "ZERO_RETURN",
+                "prepared_reservation_ids": [],
+                "economic_event_id": "education-payment-1"
+              }
+            }
+          }
+        }
+      ],
+      "requested_outputs": [
+        "OUT-02",
+        "OUT-03",
+        "OUT-04",
+        "OUT-05"
+      ]
+    },
+    "source_sha256": "e3cba5ce5517be7adf4a85c868020a07d09566727f30b1a9a9ed7ed558deffca",
+    "normalized_input": {
+      "schema_version": "DION-ENGINE-1.0",
+      "context": {
+        "case_id": "DION-FICTIONAL-300-210",
+        "snapshot_id": "raw-snapshot-fixture-1",
+        "profile_version": "1",
+        "evaluation_on": "2026-10-31",
+        "scope": "personal",
+        "included_owner_ids": [
+          "person_self"
+        ],
+        "currency": "KRW",
+        "timezone": "Asia/Seoul",
+        "projection_start": "2026-11-01",
+        "projection_end": "2026-11-30"
+      },
+      "answers": [
+        {
+          "answer_id": "fixture-rev-1",
+          "question_id": "NEW-01",
+          "revision": 1,
+          "definition_version": "1.3-engine",
+          "source_ref": "raw-revision:fixture-rev-1",
+          "raw_response": {
+            "scope": "personal",
+            "owner_ids": [
+              "person_self"
+            ],
+            "asset_coverage": "complete"
+          }
+        },
+        {
+          "answer_id": "fixture-rev-3",
+          "question_id": "F04",
+          "revision": 3,
+          "definition_version": "1.3-engine",
+          "source_ref": "raw-revision:fixture-rev-3",
+          "raw_response": {
+            "living": {
+              "value": "210",
+              "state": "KNOWN",
+              "unit": "KRW_10000",
+              "basis": "SCENARIO"
+            },
+            "essential_living": {
+              "value": "160",
+              "state": "KNOWN",
+              "unit": "KRW_10000",
+              "basis": "SCENARIO"
+            },
+            "expense_basis": "TOTAL_OUTFLOW",
+            "exclusions_confirmed": false,
+            "included_debt": {
+              "value": "30",
+              "state": "KNOWN",
+              "unit": "KRW_10000",
+              "basis": "SCENARIO"
+            },
+            "included_contributions": {
+              "value": "20",
+              "state": "KNOWN",
+              "unit": "KRW_10000",
+              "basis": "SCENARIO"
+            },
+            "period_start": "2026-10-01",
+            "period_end": "2026-10-31"
+          }
+        },
+        {
+          "answer_id": "fixture-rev-4",
+          "question_id": "F06",
+          "revision": 4,
+          "definition_version": "1.3-engine",
+          "source_ref": "raw-revision:fixture-rev-4",
+          "raw_response": {
+            "items": [
+              {
+                "asset_id": "cash-1",
+                "kind": "CASH",
+                "owner_ids": [
+                  "person_self"
+                ],
+                "value": {
+                  "value": "1200",
+                  "state": "KNOWN",
+                  "unit": "KRW_10000",
+                  "basis": "SCENARIO"
+                },
+                "valuation_on": "2026-10-31",
+                "available_on": "2026-10-31",
+                "withdrawal_constraint": "NONE_CONFIRMED",
+                "parent_asset_id": null,
+                "value_basis": "SCOPE_SHARE",
+                "share_numerator": "1",
+                "share_denominator": "1",
+                "detail_coverage": "complete"
+              }
+            ],
+            "coverage": "complete"
+          }
+        },
+        {
+          "answer_id": "fixture-rev-5",
+          "question_id": "NEW-04",
+          "revision": 5,
+          "definition_version": "1.3-engine",
+          "source_ref": "raw-revision:fixture-rev-5",
+          "raw_response": {
+            "status": "KNOWN"
+          }
+        },
+        {
+          "answer_id": "fixture-rev-6",
+          "question_id": "F09+F10+D08",
+          "revision": 6,
+          "definition_version": "1.3-engine",
+          "source_ref": "raw-revision:fixture-rev-6",
+          "raw_response": {
+            "items": [
+              {
+                "debt_id": "debt-1",
+                "owner_ids": [
+                  "person_self"
+                ],
+                "balance": {
+                  "value": "1000",
+                  "state": "KNOWN",
+                  "unit": "KRW_10000",
+                  "basis": "SCENARIO"
+                },
+                "monthly_payment": {
+                  "value": "30",
+                  "state": "KNOWN",
+                  "unit": "KRW_10000",
+                  "basis": "SCENARIO"
+                },
+                "principal_payment": {
+                  "value": "25",
+                  "state": "KNOWN",
+                  "unit": "KRW_10000",
+                  "basis": "SCENARIO"
+                },
+                "interest_payment": {
+                  "value": "5",
+                  "state": "KNOWN",
+                  "unit": "KRW_10000",
+                  "basis": "SCENARIO"
+                },
+                "fees": {
+                  "value": "0",
+                  "state": "KNOWN",
+                  "unit": "KRW_10000",
+                  "basis": "SCENARIO"
+                },
+                "valuation_on": "2026-10-31",
+                "payment_on": "2026-10-31",
+                "balance_timing": "AFTER_PAYMENT",
+                "share_numerator": "1",
+                "share_denominator": "1",
+                "value_basis": "SCOPE_SHARE",
+                "payment_basis": "SCOPE_SHARE",
+                "schedule": [
+                  {
+                    "period": "2026-11",
+                    "payment": {
+                      "value": "30",
+                      "state": "KNOWN",
+                      "unit": "KRW_10000",
+                      "basis": "SCENARIO"
+                    },
+                    "principal": {
+                      "value": "25",
+                      "state": "KNOWN",
+                      "unit": "KRW_10000",
+                      "basis": "SCENARIO"
+                    }
+                  }
+                ]
+              }
+            ],
+            "coverage": "complete"
+          }
+        },
+        {
+          "answer_id": "fixture-rev-7",
+          "question_id": "NEW-03",
+          "revision": 7,
+          "definition_version": "1.3-engine",
+          "source_ref": "raw-revision:fixture-rev-7",
+          "raw_response": {
+            "status": "KNOWN",
+            "items": [
+              {
+                "contribution_id": "kept-1",
+                "owner_ref": "person_self",
+                "amount": {
+                  "value": "20",
+                  "state": "KNOWN",
+                  "unit": "KRW_10000",
+                  "basis": "SCENARIO"
+                },
+                "already_deducted_from_net_income": false,
+                "purpose": "INVESTMENT",
+                "destination": "NONCASH",
+                "pay_day": 15,
+                "period_basis": "CONFIRMED_CONSTANT",
+                "goal_ref": null
+              }
+            ]
+          }
+        },
+        {
+          "answer_id": "fixture-rev-8",
+          "question_id": "NEW-02",
+          "revision": 8,
+          "definition_version": "1.3-engine",
+          "source_ref": "raw-revision:fixture-rev-8",
+          "raw_response": {
+            "carry_forward_snapshot": true,
+            "zero_return": true,
+            "unchanged_living_confirmed": true,
+            "income_basis": "CONFIRMED_CONSTANT"
+          }
+        },
+        {
+          "answer_id": "fixture-rev-9",
+          "question_id": "NEW-05",
+          "revision": 9,
+          "definition_version": "1.3-engine",
+          "source_ref": "raw-revision:fixture-rev-9",
+          "raw_response": {
+            "status": "NONE",
+            "items": []
+          }
+        },
+        {
+          "answer_id": "fixture-rev-10",
+          "question_id": "NEW-06",
+          "revision": 10,
+          "definition_version": "1.3-engine",
+          "source_ref": "raw-revision:fixture-rev-10",
+          "raw_response": {
+            "items": [
+              {
+                "reservation_id": "reserve-protection",
+                "asset_ref": "cash-1",
+                "purpose": "PROTECTION",
+                "amount": {
+                  "value": "570",
+                  "state": "KNOWN",
+                  "unit": "KRW_10000",
+                  "basis": "SCENARIO"
+                }
+              },
+              {
+                "reservation_id": "reserve-operating",
+                "asset_ref": "cash-1",
+                "purpose": "OPERATING",
+                "amount": {
+                  "value": "190",
+                  "state": "KNOWN",
+                  "unit": "KRW_10000",
+                  "basis": "SCENARIO"
+                }
+              }
+            ],
+            "coverage": "complete",
+            "customer_protection_target": {
+              "value": "570",
+              "state": "KNOWN",
+              "unit": "KRW_10000",
+              "basis": "SCENARIO"
+            },
+            "customer_operating_target": {
+              "value": "190",
+              "state": "KNOWN",
+              "unit": "KRW_10000",
+              "basis": "SCENARIO"
+            }
+          }
+        },
+        {
+          "answer_id": "fixture-rev-11",
+          "question_id": "F11",
+          "revision": 11,
+          "definition_version": "1.3-engine",
+          "source_ref": "raw-revision:fixture-rev-11",
+          "raw_response": {
+            "items": [
+              {
+                "goal_id": "goal-1",
+                "type": "EDUCATION",
+                "priority": 1,
+                "owner_ref": "person_self",
+                "confirmed": true
+              }
+            ],
+            "status": "KNOWN"
+          }
+        },
+        {
+          "answer_id": "fixture-rev-12",
+          "question_id": "F12",
+          "revision": 12,
+          "definition_version": "1.3-engine",
+          "source_ref": "raw-revision:fixture-rev-12",
+          "raw_response": {
+            "items": [
+              {
+                "goal_id": "goal-1",
+                "due_on": "2026-11-30",
+                "contribution_dates": [
+                  "2026-11-15"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "answer_id": "fixture-rev-13",
+          "question_id": "F13",
+          "revision": 13,
+          "definition_version": "1.3-engine",
+          "source_ref": "raw-revision:fixture-rev-13",
+          "raw_response": {
+            "items": [
+              {
+                "goal_id": "goal-1",
+                "price_basis": "FUTURE_NOMINAL",
+                "return_basis": "ZERO_RETURN",
+                "prepared_reservation_ids": [],
+                "payments": [
+                  {
+                    "on": "2026-11-30",
+                    "amount": {
+                      "value": "30",
+                      "state": "KNOWN",
+                      "unit": "KRW_10000",
+                      "basis": "SCENARIO"
+                    },
+                    "economic_event_id": "education-payment-1"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "requested_outputs": [
+        "OUT-02",
+        "OUT-03",
+        "OUT-04",
+        "OUT-05"
+      ]
+    },
+    "normalized_sha256": "d8c103aaae08e8ee73663e128208ff2db1e95b29a886172d8e2fd4df273890b0",
+    "field_provenance": [
+      {
+        "question_id": "NEW-01",
+        "namespace": "DION-DESIGN",
+        "definition_version": "1.2",
+        "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#NEW-01",
+        "field": "assessment_scope",
+        "answer_revision_id": "fixture-rev-1",
+        "input_version": 1,
+        "source_ref": "fixture:independent-300-210:NEW-01",
+        "owner_refs": {
+          "person_ref": "person_self"
+        },
+        "period_start": "2026-10-01",
+        "period_end": "2026-10-31",
+        "basis": "SCENARIO",
+        "raw_state": "KNOWN",
+        "engine_state": "KNOWN",
+        "unit": "TEXT",
+        "raw_value": "personal"
+      },
+      {
+        "question_id": "NEW-01",
+        "namespace": "DION-DESIGN",
+        "definition_version": "1.2",
+        "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#NEW-01",
+        "field": "included_owner_ids",
+        "answer_revision_id": "fixture-rev-1",
+        "input_version": 1,
+        "source_ref": "fixture:independent-300-210:NEW-01",
+        "owner_refs": {
+          "person_ref": "person_self"
+        },
+        "period_start": "2026-10-01",
+        "period_end": "2026-10-31",
+        "basis": "SCENARIO",
+        "raw_state": "KNOWN",
+        "engine_state": "KNOWN",
+        "unit": "JSON",
+        "raw_value": [
+          "person_self"
+        ]
+      },
+      {
+        "question_id": "NEW-01",
+        "namespace": "DION-DESIGN",
+        "definition_version": "1.2",
+        "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#NEW-01",
+        "field": "owners",
+        "answer_revision_id": "fixture-rev-1",
+        "input_version": 1,
+        "source_ref": "fixture:independent-300-210:NEW-01",
+        "owner_refs": {
+          "person_ref": "person_self"
+        },
+        "period_start": "2026-10-01",
+        "period_end": "2026-10-31",
+        "basis": "SCENARIO",
+        "raw_state": "KNOWN",
+        "engine_state": "KNOWN",
+        "unit": "JSON",
+        "raw_value": [
+          {
+            "person_ref": "person_self",
+            "relationship": "SELF",
+            "confirmed": true
+          }
+        ]
+      },
+      {
+        "question_id": "NEW-01",
+        "namespace": "DION-DESIGN",
+        "definition_version": "1.2",
+        "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#NEW-01",
+        "field": "scope_acknowledged",
+        "answer_revision_id": "fixture-rev-1",
+        "input_version": 1,
+        "source_ref": "fixture:independent-300-210:NEW-01",
+        "owner_refs": {
+          "person_ref": "person_self"
+        },
+        "period_start": "2026-10-01",
+        "period_end": "2026-10-31",
+        "basis": "SCENARIO",
+        "raw_state": "KNOWN",
+        "engine_state": "KNOWN",
+        "unit": "BOOLEAN",
+        "raw_value": true
+      },
+      {
+        "question_id": "NEW-01",
+        "namespace": "DION-DESIGN",
+        "definition_version": "1.2",
+        "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#NEW-01",
+        "field": "scope_version",
+        "answer_revision_id": "fixture-rev-1",
+        "input_version": 1,
+        "source_ref": "fixture:independent-300-210:NEW-01",
+        "owner_refs": {
+          "person_ref": "person_self"
+        },
+        "period_start": "2026-10-01",
+        "period_end": "2026-10-31",
+        "basis": "SCENARIO",
+        "raw_state": "KNOWN",
+        "engine_state": "KNOWN",
+        "unit": "TEXT",
+        "raw_value": "1.2"
+      },
+      {
+        "question_id": "F04",
+        "namespace": "DION-DESIGN",
+        "definition_version": "1.2",
+        "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#F04",
+        "field": "monthly_living_cost_krw",
+        "answer_revision_id": "fixture-rev-3",
+        "input_version": 3,
+        "source_ref": "fixture:independent-300-210:F04",
+        "owner_refs": {
+          "person_ref": "person_self"
+        },
+        "period_start": "2026-10-01",
+        "period_end": "2026-10-31",
+        "basis": "SCENARIO",
+        "raw_state": "KNOWN",
+        "engine_state": "KNOWN",
+        "unit": "KRW_10000",
+        "raw_value": "210"
+      },
+      {
+        "question_id": "F04",
+        "namespace": "DION-DESIGN",
+        "definition_version": "1.2",
+        "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#F04",
+        "field": "monthly_essential_cost_krw",
+        "answer_revision_id": "fixture-rev-3",
+        "input_version": 3,
+        "source_ref": "fixture:independent-300-210:F04",
+        "owner_refs": {
+          "person_ref": "person_self"
+        },
+        "period_start": "2026-10-01",
+        "period_end": "2026-10-31",
+        "basis": "SCENARIO",
+        "raw_state": "KNOWN",
+        "engine_state": "KNOWN",
+        "unit": "KRW_10000",
+        "raw_value": "160"
+      },
+      {
+        "question_id": "F04",
+        "namespace": "DION-DESIGN",
+        "definition_version": "1.2",
+        "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#F04",
+        "field": "expense_reference_period",
+        "answer_revision_id": "fixture-rev-3",
+        "input_version": 3,
+        "source_ref": "fixture:independent-300-210:F04",
+        "owner_refs": {
+          "person_ref": "person_self"
+        },
+        "period_start": "2026-10-01",
+        "period_end": "2026-10-31",
+        "basis": "SCENARIO",
+        "raw_state": "KNOWN",
+        "engine_state": "KNOWN",
+        "unit": "TEXT",
+        "raw_value": "2026-10"
+      },
+      {
+        "question_id": "F04",
+        "namespace": "DION-DESIGN",
+        "definition_version": "1.2",
+        "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#F04",
+        "field": "expense_inclusions",
+        "answer_revision_id": "fixture-rev-3",
+        "input_version": 3,
+        "source_ref": "fixture:independent-300-210:F04",
+        "owner_refs": {
+          "person_ref": "person_self"
+        },
+        "period_start": "2026-10-01",
+        "period_end": "2026-10-31",
+        "basis": "SCENARIO",
+        "raw_state": "KNOWN",
+        "engine_state": "KNOWN",
+        "unit": "JSON",
+        "raw_value": {
+          "debt_payment_status": "INCLUDED_CONFIRMED",
+          "debt_payment_amount": {
+            "state": "KNOWN",
+            "raw_value": "30",
+            "unit": "KRW_10000"
+          },
+          "contribution_status": "INCLUDED_CONFIRMED",
+          "contribution_amount": {
+            "state": "KNOWN",
+            "raw_value": "20",
+            "unit": "KRW_10000"
+          },
+          "pension_premium_status": "EXCLUDED_CONFIRMED",
+          "rent_status": "INCLUDED_CONFIRMED",
+          "tax_payment_status": "EXCLUDED_CONFIRMED"
+        }
+      },
+      {
+        "question_id": "F06",
+        "namespace": "DION-DESIGN",
+        "definition_version": "1.2",
+        "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#F06",
+        "field": "financial_assets_total_reported_krw",
+        "answer_revision_id": "fixture-rev-4",
+        "input_version": 4,
+        "source_ref": "fixture:independent-300-210:F06",
+        "owner_refs": {
+          "person_ref": "person_self"
+        },
+        "period_start": "2026-10-01",
+        "period_end": "2026-10-31",
+        "basis": "SCENARIO",
+        "raw_state": "KNOWN",
+        "engine_state": "KNOWN",
+        "unit": "KRW_10000",
+        "raw_value": "1200"
+      },
+      {
+        "question_id": "F06",
+        "namespace": "DION-DESIGN",
+        "definition_version": "1.2",
+        "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#F06",
+        "field": "financial_assets_detail_status",
+        "answer_revision_id": "fixture-rev-4",
+        "input_version": 4,
+        "source_ref": "fixture:independent-300-210:F06",
+        "owner_refs": {
+          "person_ref": "person_self"
+        },
+        "period_start": "2026-10-01",
+        "period_end": "2026-10-31",
+        "basis": "SCENARIO",
+        "raw_state": "KNOWN",
+        "engine_state": "KNOWN",
+        "unit": "TEXT",
+        "raw_value": "COMPLETE"
+      },
+      {
+        "question_id": "F06",
+        "namespace": "DION-DESIGN",
+        "definition_version": "1.2",
+        "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#F06",
+        "field": "financial_assets",
+        "answer_revision_id": "fixture-rev-4",
+        "input_version": 4,
+        "source_ref": "fixture:independent-300-210:F06",
+        "owner_refs": {
+          "person_ref": "person_self"
+        },
+        "period_start": "2026-10-01",
+        "period_end": "2026-10-31",
+        "basis": "SCENARIO",
+        "raw_state": "KNOWN",
+        "engine_state": "KNOWN",
+        "unit": "JSON",
+        "raw_value": [
+          {
+            "asset_id": "cash-1",
+            "owner_refs": [
+              "person_self"
+            ],
+            "share_basis": "SCOPE_SHARE",
+            "asset_class": "CASH",
+            "investment_vehicle": "DEPOSIT",
+            "market_value_krw": {
+              "state": "KNOWN",
+              "raw_value": "1200",
+              "unit": "KRW_10000"
+            },
+            "amount_status": "KNOWN",
+            "account_ref": "bank-1",
+            "withdrawal_constraint": "NONE_CONFIRMED",
+            "available_date": "2026-10-31",
+            "valuation_on": "2026-10-31"
+          }
+        ]
+      },
+      {
+        "question_id": "F06",
+        "namespace": "DION-DESIGN",
+        "definition_version": "1.2",
+        "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#F06",
+        "field": "accounts",
+        "answer_revision_id": "fixture-rev-4",
+        "input_version": 4,
+        "source_ref": "fixture:independent-300-210:F06",
+        "owner_refs": {
+          "person_ref": "person_self"
+        },
+        "period_start": "2026-10-01",
+        "period_end": "2026-10-31",
+        "basis": "SCENARIO",
+        "raw_state": "KNOWN",
+        "engine_state": "KNOWN",
+        "unit": "JSON",
+        "raw_value": [
+          {
+            "account_id": "bank-1",
+            "owner_ref": "person_self",
+            "type": "BANK"
+          }
+        ]
+      },
+      {
+        "question_id": "NEW-04",
+        "namespace": "DION-DESIGN",
+        "definition_version": "1.2",
+        "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#NEW-04",
+        "field": "has_liabilities",
+        "answer_revision_id": "fixture-rev-5",
+        "input_version": 5,
+        "source_ref": "fixture:independent-300-210:NEW-04",
+        "owner_refs": {
+          "person_ref": "person_self"
+        },
+        "period_start": "2026-10-01",
+        "period_end": "2026-10-31",
+        "basis": "SCENARIO",
+        "raw_state": "KNOWN",
+        "engine_state": "KNOWN",
+        "unit": "BOOLEAN",
+        "raw_value": true
+      },
+      {
+        "question_id": "F09+F10+D08",
+        "namespace": "DION-DESIGN",
+        "definition_version": "1.2",
+        "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#F09+F10+D08",
+        "field": "liabilities",
+        "answer_revision_id": "fixture-rev-6",
+        "input_version": 6,
+        "source_ref": "fixture:independent-300-210:F09+F10+D08",
+        "owner_refs": {
+          "person_ref": "person_self"
+        },
+        "period_start": "2026-10-01",
+        "period_end": "2026-10-31",
+        "basis": "SCENARIO",
+        "raw_state": "KNOWN",
+        "engine_state": "KNOWN",
+        "unit": "JSON",
+        "raw_value": [
+          {
+            "debt_id": "debt-1",
+            "owner_ids": [
+              "person_self"
+            ],
+            "balance": {
+              "state": "KNOWN",
+              "raw_value": "1000",
+              "unit": "KRW_10000"
+            },
+            "monthly_payment": {
+              "state": "KNOWN",
+              "raw_value": "30",
+              "unit": "KRW_10000"
+            },
+            "principal_payment": {
+              "state": "KNOWN",
+              "raw_value": "25",
+              "unit": "KRW_10000"
+            },
+            "interest_payment": {
+              "state": "KNOWN",
+              "raw_value": "5",
+              "unit": "KRW_10000"
+            },
+            "fees": {
+              "state": "KNOWN",
+              "raw_value": "0",
+              "unit": "KRW_10000"
+            },
+            "valuation_on": "2026-10-31",
+            "payment_on": "2026-10-31",
+            "balance_timing": "AFTER_PAYMENT",
+            "share_numerator": "1",
+            "share_denominator": "1",
+            "value_basis": "SCOPE_SHARE",
+            "payment_basis": "SCOPE_SHARE",
+            "schedule": [
+              {
+                "period": "2026-11",
+                "payment": {
+                  "state": "KNOWN",
+                  "raw_value": "30",
+                  "unit": "KRW_10000"
+                },
+                "principal": {
+                  "state": "KNOWN",
+                  "raw_value": "25",
+                  "unit": "KRW_10000"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "question_id": "NEW-03",
+        "namespace": "DION-DESIGN",
+        "definition_version": "1.2",
+        "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#NEW-03",
+        "field": "existing_contributions",
+        "answer_revision_id": "fixture-rev-7",
+        "input_version": 7,
+        "source_ref": "fixture:independent-300-210:NEW-03",
+        "owner_refs": {
+          "person_ref": "person_self"
+        },
+        "period_start": "2026-10-01",
+        "period_end": "2026-10-31",
+        "basis": "SCENARIO",
+        "raw_state": "KNOWN",
+        "engine_state": "KNOWN",
+        "unit": "JSON",
+        "raw_value": [
+          {
+            "contribution_id": "kept-1",
+            "owner_ref": "person_self",
+            "account_ref": "investment-1",
+            "purpose_ref": "purpose-invest",
+            "amount": {
+              "state": "KNOWN",
+              "raw_value": "20",
+              "unit": "KRW_10000"
+            },
+            "frequency": "MONTHLY",
+            "employee_or_employer": "EMPLOYEE",
+            "payroll_deducted": false,
+            "adjustment_permission": "NOT_ALLOWED",
+            "minimum_amount": {
+              "state": "KNOWN",
+              "raw_value": "20",
+              "unit": "KRW_10000"
+            },
+            "max_reduction": {
+              "state": "KNOWN",
+              "raw_value": "0",
+              "unit": "KRW_10000"
+            },
+            "contract_status": "CONFIRMED",
+            "tax_cost_status": "NO_CHANGE",
+            "source_ref": "fixture:contribution",
+            "profile_version": "1"
+          }
+        ]
+      },
+      {
+        "question_id": "NEW-02",
+        "namespace": "DION-DESIGN",
+        "definition_version": "1.2",
+        "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#NEW-02",
+        "field": "income_change_status",
+        "answer_revision_id": "fixture-rev-8",
+        "input_version": 8,
+        "source_ref": "fixture:independent-300-210:NEW-02",
+        "owner_refs": {
+          "person_ref": "person_self"
+        },
+        "period_start": "2026-10-01",
+        "period_end": "2026-10-31",
+        "basis": "SCENARIO",
+        "raw_state": "KNOWN",
+        "engine_state": "KNOWN",
+        "unit": "TEXT",
+        "raw_value": "NO_CHANGE_CONFIRMED"
+      },
+      {
+        "question_id": "NEW-02",
+        "namespace": "DION-DESIGN",
+        "definition_version": "1.2",
+        "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#NEW-02",
+        "field": "events",
+        "answer_revision_id": "fixture-rev-8",
+        "input_version": 8,
+        "source_ref": "fixture:independent-300-210:NEW-02",
+        "owner_refs": {
+          "person_ref": "person_self"
+        },
+        "period_start": "2026-10-01",
+        "period_end": "2026-10-31",
+        "basis": "SCENARIO",
+        "raw_state": "KNOWN",
+        "engine_state": "KNOWN",
+        "unit": "JSON",
+        "raw_value": []
+      },
+      {
+        "question_id": "NEW-05",
+        "namespace": "DION-DESIGN",
+        "definition_version": "1.2",
+        "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#NEW-05",
+        "field": "planned_expenses",
+        "answer_revision_id": "fixture-rev-9",
+        "input_version": 9,
+        "source_ref": "fixture:independent-300-210:NEW-05",
+        "owner_refs": {
+          "person_ref": "person_self"
+        },
+        "period_start": "2026-10-01",
+        "period_end": "2026-10-31",
+        "basis": "SCENARIO",
+        "raw_state": "KNOWN",
+        "engine_state": "KNOWN",
+        "unit": "JSON",
+        "raw_value": []
+      },
+      {
+        "question_id": "NEW-06",
+        "namespace": "DION-DESIGN",
+        "definition_version": "1.2",
+        "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#NEW-06",
+        "field": "fund_reservations",
+        "answer_revision_id": "fixture-rev-10",
+        "input_version": 10,
+        "source_ref": "fixture:independent-300-210:NEW-06",
+        "owner_refs": {
+          "person_ref": "person_self"
+        },
+        "period_start": "2026-10-01",
+        "period_end": "2026-10-31",
+        "basis": "SCENARIO",
+        "raw_state": "KNOWN",
+        "engine_state": "KNOWN",
+        "unit": "JSON",
+        "raw_value": [
+          {
+            "reservation_id": "reserve-protection",
+            "asset_ref": "cash-1",
+            "purpose": "PROTECTION",
+            "amount": {
+              "state": "KNOWN",
+              "raw_value": "570",
+              "unit": "KRW_10000"
+            }
+          },
+          {
+            "reservation_id": "reserve-operating",
+            "asset_ref": "cash-1",
+            "purpose": "OPERATING",
+            "amount": {
+              "state": "KNOWN",
+              "raw_value": "190",
+              "unit": "KRW_10000"
+            }
+          }
+        ]
+      },
+      {
+        "question_id": "F11",
+        "namespace": "DION-DESIGN",
+        "definition_version": "1.2",
+        "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#F11",
+        "field": "goals",
+        "answer_revision_id": "fixture-rev-11",
+        "input_version": 11,
+        "source_ref": "fixture:independent-300-210:F11",
+        "owner_refs": {
+          "person_ref": "person_self"
+        },
+        "period_start": "2026-10-01",
+        "period_end": "2026-10-31",
+        "basis": "SCENARIO",
+        "raw_state": "KNOWN",
+        "engine_state": "KNOWN",
+        "unit": "JSON",
+        "raw_value": [
+          {
+            "goal_id": "goal-1",
+            "type": "EDUCATION",
+            "priority": 1,
+            "owner_refs": [
+              "person_self"
+            ],
+            "beneficiary_ref": "person_self",
+            "confirmed": true,
+            "question_version": "1.2"
+          }
+        ]
+      },
+      {
+        "question_id": "F12",
+        "namespace": "DION-DESIGN",
+        "definition_version": "1.2",
+        "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#F12",
+        "field": "goals",
+        "answer_revision_id": "fixture-rev-12",
+        "input_version": 12,
+        "source_ref": "fixture:independent-300-210:F12",
+        "owner_refs": {
+          "person_ref": "person_self"
+        },
+        "period_start": "2026-10-01",
+        "period_end": "2026-10-31",
+        "basis": "SCENARIO",
+        "raw_state": "KNOWN",
+        "engine_state": "KNOWN",
+        "unit": "JSON",
+        "raw_value": [
+          {
+            "goal_id": "goal-1",
+            "horizon_band": "WITHIN_1_YEAR",
+            "target_date": "2026-11-30"
+          }
+        ]
+      },
+      {
+        "question_id": "F13",
+        "namespace": "DION-DESIGN",
+        "definition_version": "1.2",
+        "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#F13",
+        "field": "goals",
+        "answer_revision_id": "fixture-rev-13",
+        "input_version": 13,
+        "source_ref": "fixture:independent-300-210:F13",
+        "owner_refs": {
+          "person_ref": "person_self"
+        },
+        "period_start": "2026-10-01",
+        "period_end": "2026-10-31",
+        "basis": "SCENARIO",
+        "raw_state": "KNOWN",
+        "engine_state": "KNOWN",
+        "unit": "JSON",
+        "raw_value": [
+          {
+            "goal_id": "goal-1",
+            "target_amount_krw": {
+              "state": "KNOWN",
+              "raw_value": "30",
+              "unit": "KRW_10000"
+            },
+            "amount_status": "KNOWN",
+            "payment_type": "ONE_OFF",
+            "price_basis": "FUTURE_NOMINAL",
+            "price_base_date": "2026-11-30",
+            "payment_start": "2026-11-30",
+            "payment_end": "2026-11-30",
+            "frequency": "ONCE",
+            "prepared_asset_refs": []
+          }
+        ]
+      }
+    ],
+    "issues": [
+      {
+        "question_id": "Q-07",
+        "code": "NOT_SUPPORTED",
+        "reason": "namespace/version is not DION-DESIGN 1.2/1.2.1; no Q-ID or EXT alias inference",
+        "raw_answer_preserved": true,
+        "affected_outputs": [
+          "OUT-02",
+          "OUT-03",
+          "OUT-04",
+          "OUT-05"
+        ]
+      }
+    ],
+    "income_projection_assumption": {
+      "question_id": "NEW-02",
+      "definition_version": "DION-ADAPTER-CONFIRM-1.0",
+      "source_ref": "fixture:explicit-supplement:NEW-02",
+      "values": {
+        "source_period_start": "2026-10-01",
+        "source_period_end": "2026-10-31",
+        "applies_from": "2026-11-01",
+        "applies_to": "2026-11-30",
+        "assumption_text": "2026년 10월 세후 월평균 300만원을 2026년 11월에 반복하는 가정. 미래 확정소득 아님. 수익률 0, 생활비 및 기존납입 유지.",
+        "carry_forward_snapshot": true,
+        "zero_return": true,
+        "unchanged_living_confirmed": true,
+        "income_basis": "CONFIRMED_CONSTANT",
+        "source_income_fingerprint": "835da87cdef45cc7893d0e09330b0c619d724266ef218b96481e51c51eef53e8"
+      }
+    }
+  },
+  "legal_evidence": {
+    "active_rule_count": 0,
+    "statutory_calculation": "NOT_IMPLEMENTED",
+    "supplied_official_pension_estimates": "USER_SUPPLIED_NOT_INDEPENDENTLY_VERIFIED"
+  }
+}

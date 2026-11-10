@@ -1,0 +1,1429 @@
+{
+  "policy_version": "DION-ALLOCATION-A1B1-0.1",
+  "executed_on": "2026-11-10",
+  "basis": "SCENARIO",
+  "this_file_is_execution_output_not_oracle": true,
+  "runs": [
+    {
+      "case_id": "A1-FIRST",
+      "actual": {
+        "tool_schema": "DION-A1B1-CHECK-0.1",
+        "recommendation": false,
+        "adoption_state": "NOT_IMPLEMENTED",
+        "plan_generation": {
+          "state": "NEEDS_POLICY",
+          "reason_codes": [
+            "SERVICE_MINIMUM_H_FINAL_INVESTMENT_VECTOR_UNSET"
+          ]
+        },
+        "state": "RECONCILED_MONTHLY_SLICE",
+        "policy_version": "DION-ALLOCATION-A1B1-0.1",
+        "context": {
+          "case_id": "A1-FIRST",
+          "profile_version": "scenario-1",
+          "snapshot_id": "A1-FIRST-snapshot-1",
+          "plan_id": "A1-FIRST-candidate",
+          "plan_version": "1",
+          "currency": "KRW",
+          "basis": "SCENARIO",
+          "strategy_id": "STABILITY_FIRST"
+        },
+        "evaluation_on": "2026-11-10",
+        "input_candidate_preserved": {
+          "context": {
+            "case_id": "A1-FIRST",
+            "profile_version": "scenario-1",
+            "snapshot_id": "A1-FIRST-snapshot-1",
+            "plan_id": "A1-FIRST-candidate",
+            "plan_version": "1",
+            "currency": "KRW",
+            "basis": "SCENARIO",
+            "strategy_id": "STABILITY_FIRST"
+          },
+          "stock": {
+            "coverage": "complete",
+            "sources": [
+              {
+                "source_id": "cash",
+                "asset_id": "cash-account",
+                "kind": "CASH",
+                "assignable_krw": "20000000",
+                "available_on": "2026-11-10"
+              }
+            ],
+            "allocations": [
+              {
+                "allocation_id": "protection",
+                "source_id": "cash",
+                "purpose": "PROTECTION",
+                "amount_krw": "7000000",
+                "use_on": "2026-11-10"
+              },
+              {
+                "allocation_id": "goal-stock",
+                "source_id": "cash",
+                "purpose": "GOAL",
+                "amount_krw": "4000000",
+                "use_on": "2028-12-31"
+              }
+            ]
+          },
+          "monthly": {
+            "period": "2026-12",
+            "income_krw": "3000000",
+            "living_krw": "1500000",
+            "debt_payment_krw": "200000",
+            "kept": [
+              {
+                "contribution_id": "flex",
+                "amount_krw": "200000",
+                "purpose": "INVESTMENT"
+              }
+            ],
+            "targets": [
+              {
+                "target_id": "goal",
+                "purpose": "GOAL",
+                "budget_basis": "PLAN_SELECTED",
+                "total_contribution_krw": "300000",
+                "kept_contribution_ids": []
+              }
+            ],
+            "h_krw": "100000",
+            "new_investment_krw": "0",
+            "unassigned_krw": "0",
+            "coverage": "complete",
+            "goal_status": "KNOWN"
+          },
+          "timing": {
+            "source_id": "cash",
+            "opening_on": "2026-11-10",
+            "events": []
+          },
+          "allocation_policy": {
+            "version": "DION-ALLOCATION-A1B1-0.1",
+            "evaluation_on": "2026-11-10",
+            "protection_target_id": "reserve",
+            "protection_target_krw": "8400000",
+            "target_source_ref": "fixture:A1-FIRST:CUSTOMER_SELECTED_NOT_SERVICE_MINIMUM",
+            "adjustment_options": [
+              {
+                "contribution_id": "flex",
+                "permission": "ALLOWED",
+                "contract": "CLEAR",
+                "consequences": "NO_IMPACT",
+                "minimum_krw": "0",
+                "max_reduction_krw": "200000",
+                "profile_version": "scenario-1",
+                "source_ref": "fixture:A1-FIRST:explicit-scenario-permission"
+              }
+            ],
+            "requested_reductions": []
+          }
+        },
+        "changes_executed": false,
+        "protection": {
+          "target_krw": "8400000",
+          "funded_at_open_krw": "7000000",
+          "gap_at_open_krw": "1400000",
+          "kept_topup_krw": "0",
+          "extra_topup_krw": "700000",
+          "closing_gap_krw": "700000"
+        },
+        "review": {
+          "priority": "B1_FLEXIBLE_CONTRIBUTIONS_BEFORE_GOAL_CHANGE",
+          "required_reduction_before_krw": "0",
+          "explicit_reductions_krw": "0",
+          "options": [
+            {
+              "contribution_id": "flex",
+              "state": "ELIGIBLE_SCENARIO_REVIEW",
+              "current_krw": "200000",
+              "reduction_cap_krw": "200000"
+            }
+          ],
+          "automatic_reductions": false
+        },
+        "new_investment_policy_cap_krw": "0",
+        "lump_sum_new_investment_policy_cap_krw": "0",
+        "recommended_new_investment_krw": null,
+        "candidate": {
+          "context": {
+            "case_id": "A1-FIRST",
+            "profile_version": "scenario-1",
+            "snapshot_id": "A1-FIRST-snapshot-1",
+            "plan_id": "A1-FIRST-candidate",
+            "plan_version": "1",
+            "currency": "KRW",
+            "basis": "SCENARIO",
+            "strategy_id": "STABILITY_FIRST"
+          },
+          "stock": {
+            "coverage": "complete",
+            "sources": [
+              {
+                "source_id": "cash",
+                "asset_id": "cash-account",
+                "kind": "CASH",
+                "assignable_krw": "20000000",
+                "available_on": "2026-11-10"
+              }
+            ],
+            "allocations": [
+              {
+                "allocation_id": "protection",
+                "source_id": "cash",
+                "purpose": "PROTECTION",
+                "amount_krw": "7000000",
+                "use_on": "2026-11-10"
+              },
+              {
+                "allocation_id": "goal-stock",
+                "source_id": "cash",
+                "purpose": "GOAL",
+                "amount_krw": "4000000",
+                "use_on": "2028-12-31"
+              }
+            ]
+          },
+          "monthly": {
+            "period": "2026-12",
+            "income_krw": "3000000",
+            "living_krw": "1500000",
+            "debt_payment_krw": "200000",
+            "kept": [
+              {
+                "contribution_id": "flex",
+                "amount_krw": "200000",
+                "purpose": "INVESTMENT"
+              }
+            ],
+            "targets": [
+              {
+                "target_id": "goal",
+                "purpose": "GOAL",
+                "budget_basis": "PLAN_SELECTED",
+                "total_contribution_krw": "300000",
+                "kept_contribution_ids": []
+              },
+              {
+                "target_id": "policy:a1-extra",
+                "purpose": "PROTECTION",
+                "budget_basis": "PLAN_SELECTED",
+                "total_contribution_krw": "700000",
+                "kept_contribution_ids": []
+              }
+            ],
+            "h_krw": "100000",
+            "new_investment_krw": "0",
+            "unassigned_krw": "0",
+            "coverage": "complete",
+            "goal_status": "KNOWN"
+          },
+          "timing": {
+            "source_id": "cash",
+            "opening_on": "2026-11-10",
+            "events": []
+          },
+          "allocation_policy": {
+            "version": "DION-ALLOCATION-A1B1-0.1",
+            "evaluation_on": "2026-11-10",
+            "protection_target_id": "reserve",
+            "protection_target_krw": "8400000",
+            "target_source_ref": "fixture:A1-FIRST:CUSTOMER_SELECTED_NOT_SERVICE_MINIMUM",
+            "adjustment_options": [
+              {
+                "contribution_id": "flex",
+                "permission": "ALLOWED",
+                "contract": "CLEAR",
+                "consequences": "NO_IMPACT",
+                "minimum_krw": "0",
+                "max_reduction_krw": "200000",
+                "profile_version": "scenario-1",
+                "source_ref": "fixture:A1-FIRST:explicit-scenario-permission"
+              }
+            ],
+            "requested_reductions": []
+          }
+        },
+        "ledger_check": {
+          "tool_schema": "DION-OFFLINE-FUNDING-CHECK-1",
+          "basis": "SCENARIO",
+          "recommendation": false,
+          "adoption_state": "NOT_IMPLEMENTED",
+          "generation": {
+            "state": "NEEDS_POLICY",
+            "policy": "DEC-02",
+            "candidates": null
+          },
+          "context": {
+            "case_id": "A1-FIRST",
+            "profile_version": "scenario-1",
+            "snapshot_id": "A1-FIRST-snapshot-1",
+            "plan_id": "A1-FIRST-candidate",
+            "plan_version": "1",
+            "currency": "KRW",
+            "basis": "SCENARIO",
+            "strategy_id": "STABILITY_FIRST"
+          },
+          "input_state": "CHECKED_WITHIN_OFFLINE_SCOPE",
+          "stock": {
+            "rows": [
+              {
+                "source_id": "cash",
+                "assignable_krw": "20000000",
+                "allocated_krw": "11000000",
+                "unassigned_krw": "9000000",
+                "investment_cap_raw_krw": "9000000",
+                "investment_budget_cap_krw": "9000000",
+                "temporal_eligibility_separate": true
+              }
+            ],
+            "issues": [],
+            "changes_asset_total": false,
+            "state": "RECONCILED"
+          },
+          "monthly": {
+            "base_surplus_krw": "1300000",
+            "kept_total_krw": "200000",
+            "additional_targets": [
+              {
+                "target_id": "goal",
+                "purpose": "GOAL",
+                "budget_basis": "PLAN_SELECTED",
+                "kept_krw": "0",
+                "additional_krw": "300000"
+              },
+              {
+                "target_id": "policy:a1-extra",
+                "purpose": "PROTECTION",
+                "budget_basis": "PLAN_SELECTED",
+                "kept_krw": "0",
+                "additional_krw": "700000"
+              }
+            ],
+            "monthly_unallocated_raw_krw": "0",
+            "monthly_budget_cap_krw": "0",
+            "shortfall_krw": "0",
+            "allocation_difference_krw": "0",
+            "conditional_excludes_unconfirmed_goals": false,
+            "issues": [],
+            "state": "RECONCILED"
+          },
+          "timing": {
+            "path": [],
+            "minimum_balance_krw": "20000000",
+            "issues": [],
+            "duplicates_ignored": 0,
+            "negative_path_is_funding_need_not_executed_debt": true,
+            "state": "RECONCILED"
+          }
+        },
+        "reason_codes": [
+          "A1_MONTHLY_OPENING_GAP_BLOCKS_NEW_INVESTMENT"
+        ],
+        "cash_remaining_krw": "0",
+        "timing_state": "RECONCILED",
+        "complete_cash_calendar_verified": false
+      }
+    },
+    {
+      "case_id": "A1-SECOND",
+      "actual": {
+        "tool_schema": "DION-A1B1-CHECK-0.1",
+        "recommendation": false,
+        "adoption_state": "NOT_IMPLEMENTED",
+        "plan_generation": {
+          "state": "NEEDS_POLICY",
+          "reason_codes": [
+            "SERVICE_MINIMUM_H_FINAL_INVESTMENT_VECTOR_UNSET"
+          ]
+        },
+        "state": "RECONCILED_MONTHLY_SLICE",
+        "policy_version": "DION-ALLOCATION-A1B1-0.1",
+        "context": {
+          "case_id": "A1-SECOND",
+          "profile_version": "scenario-1",
+          "snapshot_id": "A1-SECOND-snapshot-1",
+          "plan_id": "A1-SECOND-candidate",
+          "plan_version": "1",
+          "currency": "KRW",
+          "basis": "SCENARIO",
+          "strategy_id": "STABILITY_FIRST"
+        },
+        "evaluation_on": "2026-11-10",
+        "input_candidate_preserved": {
+          "context": {
+            "case_id": "A1-SECOND",
+            "profile_version": "scenario-1",
+            "snapshot_id": "A1-SECOND-snapshot-1",
+            "plan_id": "A1-SECOND-candidate",
+            "plan_version": "1",
+            "currency": "KRW",
+            "basis": "SCENARIO",
+            "strategy_id": "STABILITY_FIRST"
+          },
+          "stock": {
+            "coverage": "complete",
+            "sources": [
+              {
+                "source_id": "cash",
+                "asset_id": "cash-account",
+                "kind": "CASH",
+                "assignable_krw": "20000000",
+                "available_on": "2026-11-10"
+              }
+            ],
+            "allocations": [
+              {
+                "allocation_id": "protection",
+                "source_id": "cash",
+                "purpose": "PROTECTION",
+                "amount_krw": "7700000",
+                "use_on": "2026-11-10"
+              },
+              {
+                "allocation_id": "goal-stock",
+                "source_id": "cash",
+                "purpose": "GOAL",
+                "amount_krw": "4000000",
+                "use_on": "2028-12-31"
+              }
+            ]
+          },
+          "monthly": {
+            "period": "2026-12",
+            "income_krw": "3000000",
+            "living_krw": "1500000",
+            "debt_payment_krw": "200000",
+            "kept": [
+              {
+                "contribution_id": "flex",
+                "amount_krw": "200000",
+                "purpose": "INVESTMENT"
+              }
+            ],
+            "targets": [
+              {
+                "target_id": "goal",
+                "purpose": "GOAL",
+                "budget_basis": "PLAN_SELECTED",
+                "total_contribution_krw": "300000",
+                "kept_contribution_ids": []
+              }
+            ],
+            "h_krw": "100000",
+            "new_investment_krw": "0",
+            "unassigned_krw": "0",
+            "coverage": "complete",
+            "goal_status": "KNOWN"
+          },
+          "timing": {
+            "source_id": "cash",
+            "opening_on": "2026-11-10",
+            "events": []
+          },
+          "allocation_policy": {
+            "version": "DION-ALLOCATION-A1B1-0.1",
+            "evaluation_on": "2026-11-10",
+            "protection_target_id": "reserve",
+            "protection_target_krw": "8400000",
+            "target_source_ref": "fixture:A1-SECOND:CUSTOMER_SELECTED_NOT_SERVICE_MINIMUM",
+            "adjustment_options": [
+              {
+                "contribution_id": "flex",
+                "permission": "ALLOWED",
+                "contract": "CLEAR",
+                "consequences": "NO_IMPACT",
+                "minimum_krw": "0",
+                "max_reduction_krw": "200000",
+                "profile_version": "scenario-1",
+                "source_ref": "fixture:A1-SECOND:explicit-scenario-permission"
+              }
+            ],
+            "requested_reductions": []
+          }
+        },
+        "changes_executed": false,
+        "protection": {
+          "target_krw": "8400000",
+          "funded_at_open_krw": "7700000",
+          "gap_at_open_krw": "700000",
+          "kept_topup_krw": "0",
+          "extra_topup_krw": "700000",
+          "closing_gap_krw": "0"
+        },
+        "review": {
+          "priority": "B1_FLEXIBLE_CONTRIBUTIONS_BEFORE_GOAL_CHANGE",
+          "required_reduction_before_krw": "0",
+          "explicit_reductions_krw": "0",
+          "options": [
+            {
+              "contribution_id": "flex",
+              "state": "ELIGIBLE_SCENARIO_REVIEW",
+              "current_krw": "200000",
+              "reduction_cap_krw": "200000"
+            }
+          ],
+          "automatic_reductions": false
+        },
+        "new_investment_policy_cap_krw": "0",
+        "lump_sum_new_investment_policy_cap_krw": "0",
+        "recommended_new_investment_krw": null,
+        "candidate": {
+          "context": {
+            "case_id": "A1-SECOND",
+            "profile_version": "scenario-1",
+            "snapshot_id": "A1-SECOND-snapshot-1",
+            "plan_id": "A1-SECOND-candidate",
+            "plan_version": "1",
+            "currency": "KRW",
+            "basis": "SCENARIO",
+            "strategy_id": "STABILITY_FIRST"
+          },
+          "stock": {
+            "coverage": "complete",
+            "sources": [
+              {
+                "source_id": "cash",
+                "asset_id": "cash-account",
+                "kind": "CASH",
+                "assignable_krw": "20000000",
+                "available_on": "2026-11-10"
+              }
+            ],
+            "allocations": [
+              {
+                "allocation_id": "protection",
+                "source_id": "cash",
+                "purpose": "PROTECTION",
+                "amount_krw": "7700000",
+                "use_on": "2026-11-10"
+              },
+              {
+                "allocation_id": "goal-stock",
+                "source_id": "cash",
+                "purpose": "GOAL",
+                "amount_krw": "4000000",
+                "use_on": "2028-12-31"
+              }
+            ]
+          },
+          "monthly": {
+            "period": "2026-12",
+            "income_krw": "3000000",
+            "living_krw": "1500000",
+            "debt_payment_krw": "200000",
+            "kept": [
+              {
+                "contribution_id": "flex",
+                "amount_krw": "200000",
+                "purpose": "INVESTMENT"
+              }
+            ],
+            "targets": [
+              {
+                "target_id": "goal",
+                "purpose": "GOAL",
+                "budget_basis": "PLAN_SELECTED",
+                "total_contribution_krw": "300000",
+                "kept_contribution_ids": []
+              },
+              {
+                "target_id": "policy:a1-extra",
+                "purpose": "PROTECTION",
+                "budget_basis": "PLAN_SELECTED",
+                "total_contribution_krw": "700000",
+                "kept_contribution_ids": []
+              }
+            ],
+            "h_krw": "100000",
+            "new_investment_krw": "0",
+            "unassigned_krw": "0",
+            "coverage": "complete",
+            "goal_status": "KNOWN"
+          },
+          "timing": {
+            "source_id": "cash",
+            "opening_on": "2026-11-10",
+            "events": []
+          },
+          "allocation_policy": {
+            "version": "DION-ALLOCATION-A1B1-0.1",
+            "evaluation_on": "2026-11-10",
+            "protection_target_id": "reserve",
+            "protection_target_krw": "8400000",
+            "target_source_ref": "fixture:A1-SECOND:CUSTOMER_SELECTED_NOT_SERVICE_MINIMUM",
+            "adjustment_options": [
+              {
+                "contribution_id": "flex",
+                "permission": "ALLOWED",
+                "contract": "CLEAR",
+                "consequences": "NO_IMPACT",
+                "minimum_krw": "0",
+                "max_reduction_krw": "200000",
+                "profile_version": "scenario-1",
+                "source_ref": "fixture:A1-SECOND:explicit-scenario-permission"
+              }
+            ],
+            "requested_reductions": []
+          }
+        },
+        "ledger_check": {
+          "tool_schema": "DION-OFFLINE-FUNDING-CHECK-1",
+          "basis": "SCENARIO",
+          "recommendation": false,
+          "adoption_state": "NOT_IMPLEMENTED",
+          "generation": {
+            "state": "NEEDS_POLICY",
+            "policy": "DEC-02",
+            "candidates": null
+          },
+          "context": {
+            "case_id": "A1-SECOND",
+            "profile_version": "scenario-1",
+            "snapshot_id": "A1-SECOND-snapshot-1",
+            "plan_id": "A1-SECOND-candidate",
+            "plan_version": "1",
+            "currency": "KRW",
+            "basis": "SCENARIO",
+            "strategy_id": "STABILITY_FIRST"
+          },
+          "input_state": "CHECKED_WITHIN_OFFLINE_SCOPE",
+          "stock": {
+            "rows": [
+              {
+                "source_id": "cash",
+                "assignable_krw": "20000000",
+                "allocated_krw": "11700000",
+                "unassigned_krw": "8300000",
+                "investment_cap_raw_krw": "8300000",
+                "investment_budget_cap_krw": "8300000",
+                "temporal_eligibility_separate": true
+              }
+            ],
+            "issues": [],
+            "changes_asset_total": false,
+            "state": "RECONCILED"
+          },
+          "monthly": {
+            "base_surplus_krw": "1300000",
+            "kept_total_krw": "200000",
+            "additional_targets": [
+              {
+                "target_id": "goal",
+                "purpose": "GOAL",
+                "budget_basis": "PLAN_SELECTED",
+                "kept_krw": "0",
+                "additional_krw": "300000"
+              },
+              {
+                "target_id": "policy:a1-extra",
+                "purpose": "PROTECTION",
+                "budget_basis": "PLAN_SELECTED",
+                "kept_krw": "0",
+                "additional_krw": "700000"
+              }
+            ],
+            "monthly_unallocated_raw_krw": "0",
+            "monthly_budget_cap_krw": "0",
+            "shortfall_krw": "0",
+            "allocation_difference_krw": "0",
+            "conditional_excludes_unconfirmed_goals": false,
+            "issues": [],
+            "state": "RECONCILED"
+          },
+          "timing": {
+            "path": [],
+            "minimum_balance_krw": "20000000",
+            "issues": [],
+            "duplicates_ignored": 0,
+            "negative_path_is_funding_need_not_executed_debt": true,
+            "state": "RECONCILED"
+          }
+        },
+        "reason_codes": [
+          "A1_MONTHLY_OPENING_GAP_BLOCKS_NEW_INVESTMENT"
+        ],
+        "cash_remaining_krw": "0",
+        "timing_state": "RECONCILED",
+        "complete_cash_calendar_verified": false
+      }
+    },
+    {
+      "case_id": "A1-AFTER",
+      "actual": {
+        "tool_schema": "DION-A1B1-CHECK-0.1",
+        "recommendation": false,
+        "adoption_state": "NOT_IMPLEMENTED",
+        "plan_generation": {
+          "state": "NEEDS_POLICY",
+          "reason_codes": [
+            "SERVICE_MINIMUM_H_FINAL_INVESTMENT_VECTOR_UNSET"
+          ]
+        },
+        "state": "RECONCILED_MONTHLY_SLICE",
+        "policy_version": "DION-ALLOCATION-A1B1-0.1",
+        "context": {
+          "case_id": "A1-AFTER",
+          "profile_version": "scenario-1",
+          "snapshot_id": "A1-AFTER-snapshot-1",
+          "plan_id": "A1-AFTER-candidate",
+          "plan_version": "1",
+          "currency": "KRW",
+          "basis": "SCENARIO",
+          "strategy_id": "STABILITY_FIRST"
+        },
+        "evaluation_on": "2026-11-10",
+        "input_candidate_preserved": {
+          "context": {
+            "case_id": "A1-AFTER",
+            "profile_version": "scenario-1",
+            "snapshot_id": "A1-AFTER-snapshot-1",
+            "plan_id": "A1-AFTER-candidate",
+            "plan_version": "1",
+            "currency": "KRW",
+            "basis": "SCENARIO",
+            "strategy_id": "STABILITY_FIRST"
+          },
+          "stock": {
+            "coverage": "complete",
+            "sources": [
+              {
+                "source_id": "cash",
+                "asset_id": "cash-account",
+                "kind": "CASH",
+                "assignable_krw": "20000000",
+                "available_on": "2026-11-10"
+              }
+            ],
+            "allocations": [
+              {
+                "allocation_id": "protection",
+                "source_id": "cash",
+                "purpose": "PROTECTION",
+                "amount_krw": "8400000",
+                "use_on": "2026-11-10"
+              },
+              {
+                "allocation_id": "goal-stock",
+                "source_id": "cash",
+                "purpose": "GOAL",
+                "amount_krw": "4000000",
+                "use_on": "2028-12-31"
+              }
+            ]
+          },
+          "monthly": {
+            "period": "2026-12",
+            "income_krw": "3000000",
+            "living_krw": "1500000",
+            "debt_payment_krw": "200000",
+            "kept": [
+              {
+                "contribution_id": "flex",
+                "amount_krw": "200000",
+                "purpose": "INVESTMENT"
+              }
+            ],
+            "targets": [
+              {
+                "target_id": "goal",
+                "purpose": "GOAL",
+                "budget_basis": "PLAN_SELECTED",
+                "total_contribution_krw": "300000",
+                "kept_contribution_ids": []
+              }
+            ],
+            "h_krw": "100000",
+            "new_investment_krw": "0",
+            "unassigned_krw": "0",
+            "coverage": "complete",
+            "goal_status": "KNOWN"
+          },
+          "timing": {
+            "source_id": "cash",
+            "opening_on": "2026-11-10",
+            "events": []
+          },
+          "allocation_policy": {
+            "version": "DION-ALLOCATION-A1B1-0.1",
+            "evaluation_on": "2026-11-10",
+            "protection_target_id": "reserve",
+            "protection_target_krw": "8400000",
+            "target_source_ref": "fixture:A1-AFTER:CUSTOMER_SELECTED_NOT_SERVICE_MINIMUM",
+            "adjustment_options": [
+              {
+                "contribution_id": "flex",
+                "permission": "ALLOWED",
+                "contract": "CLEAR",
+                "consequences": "NO_IMPACT",
+                "minimum_krw": "0",
+                "max_reduction_krw": "200000",
+                "profile_version": "scenario-1",
+                "source_ref": "fixture:A1-AFTER:explicit-scenario-permission"
+              }
+            ],
+            "requested_reductions": []
+          }
+        },
+        "changes_executed": false,
+        "protection": {
+          "target_krw": "8400000",
+          "funded_at_open_krw": "8400000",
+          "gap_at_open_krw": "0",
+          "kept_topup_krw": "0",
+          "extra_topup_krw": "0",
+          "closing_gap_krw": "0"
+        },
+        "review": {
+          "priority": "B1_FLEXIBLE_CONTRIBUTIONS_BEFORE_GOAL_CHANGE",
+          "required_reduction_before_krw": "0",
+          "explicit_reductions_krw": "0",
+          "options": [
+            {
+              "contribution_id": "flex",
+              "state": "ELIGIBLE_SCENARIO_REVIEW",
+              "current_krw": "200000",
+              "reduction_cap_krw": "200000"
+            }
+          ],
+          "automatic_reductions": false
+        },
+        "new_investment_policy_cap_krw": "700000",
+        "lump_sum_new_investment_policy_cap_krw": null,
+        "recommended_new_investment_krw": null,
+        "candidate": {
+          "context": {
+            "case_id": "A1-AFTER",
+            "profile_version": "scenario-1",
+            "snapshot_id": "A1-AFTER-snapshot-1",
+            "plan_id": "A1-AFTER-candidate",
+            "plan_version": "1",
+            "currency": "KRW",
+            "basis": "SCENARIO",
+            "strategy_id": "STABILITY_FIRST"
+          },
+          "stock": {
+            "coverage": "complete",
+            "sources": [
+              {
+                "source_id": "cash",
+                "asset_id": "cash-account",
+                "kind": "CASH",
+                "assignable_krw": "20000000",
+                "available_on": "2026-11-10"
+              }
+            ],
+            "allocations": [
+              {
+                "allocation_id": "protection",
+                "source_id": "cash",
+                "purpose": "PROTECTION",
+                "amount_krw": "8400000",
+                "use_on": "2026-11-10"
+              },
+              {
+                "allocation_id": "goal-stock",
+                "source_id": "cash",
+                "purpose": "GOAL",
+                "amount_krw": "4000000",
+                "use_on": "2028-12-31"
+              }
+            ]
+          },
+          "monthly": {
+            "period": "2026-12",
+            "income_krw": "3000000",
+            "living_krw": "1500000",
+            "debt_payment_krw": "200000",
+            "kept": [
+              {
+                "contribution_id": "flex",
+                "amount_krw": "200000",
+                "purpose": "INVESTMENT"
+              }
+            ],
+            "targets": [
+              {
+                "target_id": "goal",
+                "purpose": "GOAL",
+                "budget_basis": "PLAN_SELECTED",
+                "total_contribution_krw": "300000",
+                "kept_contribution_ids": []
+              }
+            ],
+            "h_krw": "100000",
+            "new_investment_krw": "0",
+            "unassigned_krw": "700000",
+            "coverage": "complete",
+            "goal_status": "KNOWN"
+          },
+          "timing": {
+            "source_id": "cash",
+            "opening_on": "2026-11-10",
+            "events": []
+          },
+          "allocation_policy": {
+            "version": "DION-ALLOCATION-A1B1-0.1",
+            "evaluation_on": "2026-11-10",
+            "protection_target_id": "reserve",
+            "protection_target_krw": "8400000",
+            "target_source_ref": "fixture:A1-AFTER:CUSTOMER_SELECTED_NOT_SERVICE_MINIMUM",
+            "adjustment_options": [
+              {
+                "contribution_id": "flex",
+                "permission": "ALLOWED",
+                "contract": "CLEAR",
+                "consequences": "NO_IMPACT",
+                "minimum_krw": "0",
+                "max_reduction_krw": "200000",
+                "profile_version": "scenario-1",
+                "source_ref": "fixture:A1-AFTER:explicit-scenario-permission"
+              }
+            ],
+            "requested_reductions": []
+          }
+        },
+        "ledger_check": {
+          "tool_schema": "DION-OFFLINE-FUNDING-CHECK-1",
+          "basis": "SCENARIO",
+          "recommendation": false,
+          "adoption_state": "NOT_IMPLEMENTED",
+          "generation": {
+            "state": "NEEDS_POLICY",
+            "policy": "DEC-02",
+            "candidates": null
+          },
+          "context": {
+            "case_id": "A1-AFTER",
+            "profile_version": "scenario-1",
+            "snapshot_id": "A1-AFTER-snapshot-1",
+            "plan_id": "A1-AFTER-candidate",
+            "plan_version": "1",
+            "currency": "KRW",
+            "basis": "SCENARIO",
+            "strategy_id": "STABILITY_FIRST"
+          },
+          "input_state": "CHECKED_WITHIN_OFFLINE_SCOPE",
+          "stock": {
+            "rows": [
+              {
+                "source_id": "cash",
+                "assignable_krw": "20000000",
+                "allocated_krw": "12400000",
+                "unassigned_krw": "7600000",
+                "investment_cap_raw_krw": "7600000",
+                "investment_budget_cap_krw": "7600000",
+                "temporal_eligibility_separate": true
+              }
+            ],
+            "issues": [],
+            "changes_asset_total": false,
+            "state": "RECONCILED"
+          },
+          "monthly": {
+            "base_surplus_krw": "1300000",
+            "kept_total_krw": "200000",
+            "additional_targets": [
+              {
+                "target_id": "goal",
+                "purpose": "GOAL",
+                "budget_basis": "PLAN_SELECTED",
+                "kept_krw": "0",
+                "additional_krw": "300000"
+              }
+            ],
+            "monthly_unallocated_raw_krw": "700000",
+            "monthly_budget_cap_krw": "700000",
+            "shortfall_krw": "0",
+            "allocation_difference_krw": "0",
+            "conditional_excludes_unconfirmed_goals": false,
+            "issues": [],
+            "state": "RECONCILED"
+          },
+          "timing": {
+            "path": [],
+            "minimum_balance_krw": "20000000",
+            "issues": [],
+            "duplicates_ignored": 0,
+            "negative_path_is_funding_need_not_executed_debt": true,
+            "state": "RECONCILED"
+          }
+        },
+        "reason_codes": [
+          "CAP_NOT_RECOMMENDATION"
+        ],
+        "cash_remaining_krw": "700000",
+        "timing_state": "RECONCILED",
+        "complete_cash_calendar_verified": false
+      }
+    },
+    {
+      "case_id": "B1-REVIEW",
+      "actual": {
+        "tool_schema": "DION-A1B1-CHECK-0.1",
+        "recommendation": false,
+        "adoption_state": "NOT_IMPLEMENTED",
+        "plan_generation": {
+          "state": "NEEDS_POLICY",
+          "reason_codes": [
+            "SERVICE_MINIMUM_H_FINAL_INVESTMENT_VECTOR_UNSET"
+          ]
+        },
+        "state": "REVIEW_REQUIRED",
+        "policy_version": "DION-ALLOCATION-A1B1-0.1",
+        "context": {
+          "case_id": "B1-REVIEW",
+          "profile_version": "scenario-1",
+          "snapshot_id": "B1-REVIEW-snapshot-1",
+          "plan_id": "B1-REVIEW-candidate",
+          "plan_version": "1",
+          "currency": "KRW",
+          "basis": "SCENARIO",
+          "strategy_id": "STABILITY_FIRST"
+        },
+        "evaluation_on": "2026-11-10",
+        "input_candidate_preserved": {
+          "context": {
+            "case_id": "B1-REVIEW",
+            "profile_version": "scenario-1",
+            "snapshot_id": "B1-REVIEW-snapshot-1",
+            "plan_id": "B1-REVIEW-candidate",
+            "plan_version": "1",
+            "currency": "KRW",
+            "basis": "SCENARIO",
+            "strategy_id": "STABILITY_FIRST"
+          },
+          "stock": {
+            "coverage": "complete",
+            "sources": [
+              {
+                "source_id": "cash",
+                "asset_id": "cash-account",
+                "kind": "CASH",
+                "assignable_krw": "20000000",
+                "available_on": "2026-11-10"
+              }
+            ],
+            "allocations": [
+              {
+                "allocation_id": "protection",
+                "source_id": "cash",
+                "purpose": "PROTECTION",
+                "amount_krw": "8400000",
+                "use_on": "2026-11-10"
+              },
+              {
+                "allocation_id": "goal-stock",
+                "source_id": "cash",
+                "purpose": "GOAL",
+                "amount_krw": "4000000",
+                "use_on": "2028-12-31"
+              }
+            ]
+          },
+          "monthly": {
+            "period": "2026-12",
+            "income_krw": "3000000",
+            "living_krw": "1500000",
+            "debt_payment_krw": "200000",
+            "kept": [
+              {
+                "contribution_id": "flex",
+                "amount_krw": "600000",
+                "purpose": "INVESTMENT"
+              }
+            ],
+            "targets": [
+              {
+                "target_id": "goal",
+                "purpose": "GOAL",
+                "budget_basis": "PLAN_SELECTED",
+                "total_contribution_krw": "800000",
+                "kept_contribution_ids": []
+              }
+            ],
+            "h_krw": "100000",
+            "new_investment_krw": "0",
+            "unassigned_krw": "0",
+            "coverage": "complete",
+            "goal_status": "KNOWN"
+          },
+          "timing": {
+            "source_id": "cash",
+            "opening_on": "2026-11-10",
+            "events": []
+          },
+          "allocation_policy": {
+            "version": "DION-ALLOCATION-A1B1-0.1",
+            "evaluation_on": "2026-11-10",
+            "protection_target_id": "reserve",
+            "protection_target_krw": "8400000",
+            "target_source_ref": "fixture:B1-REVIEW:CUSTOMER_SELECTED_NOT_SERVICE_MINIMUM",
+            "adjustment_options": [
+              {
+                "contribution_id": "flex",
+                "permission": "ALLOWED",
+                "contract": "CLEAR",
+                "consequences": "NO_IMPACT",
+                "minimum_krw": "0",
+                "max_reduction_krw": "600000",
+                "profile_version": "scenario-1",
+                "source_ref": "fixture:B1-REVIEW:explicit-scenario-permission"
+              }
+            ],
+            "requested_reductions": []
+          }
+        },
+        "changes_executed": false,
+        "protection": {
+          "target_krw": "8400000",
+          "funded_at_open_krw": "8400000",
+          "gap_at_open_krw": "0"
+        },
+        "review": {
+          "priority": "B1_FLEXIBLE_CONTRIBUTIONS_BEFORE_GOAL_CHANGE",
+          "required_reduction_before_krw": "200000",
+          "explicit_reductions_krw": "0",
+          "options": [
+            {
+              "contribution_id": "flex",
+              "state": "ELIGIBLE_SCENARIO_REVIEW",
+              "current_krw": "600000",
+              "reduction_cap_krw": "600000"
+            }
+          ],
+          "automatic_reductions": false
+        },
+        "new_investment_policy_cap_krw": null,
+        "lump_sum_new_investment_policy_cap_krw": null,
+        "recommended_new_investment_krw": null,
+        "candidate": null,
+        "remaining_shortfall_krw": "200000",
+        "reason_codes": [
+          "GOAL_OR_COMMITTED_BUDGET_SHORTFALL_NO_AUTOMATIC_CHANGE"
+        ]
+      }
+    },
+    {
+      "case_id": "B1-EXPLICIT",
+      "actual": {
+        "tool_schema": "DION-A1B1-CHECK-0.1",
+        "recommendation": false,
+        "adoption_state": "NOT_IMPLEMENTED",
+        "plan_generation": {
+          "state": "NEEDS_POLICY",
+          "reason_codes": [
+            "SERVICE_MINIMUM_H_FINAL_INVESTMENT_VECTOR_UNSET"
+          ]
+        },
+        "state": "RECONCILED_MONTHLY_SLICE",
+        "policy_version": "DION-ALLOCATION-A1B1-0.1",
+        "context": {
+          "case_id": "B1-EXPLICIT",
+          "profile_version": "scenario-1",
+          "snapshot_id": "B1-EXPLICIT-snapshot-1",
+          "plan_id": "B1-EXPLICIT-candidate",
+          "plan_version": "1",
+          "currency": "KRW",
+          "basis": "SCENARIO",
+          "strategy_id": "STABILITY_FIRST"
+        },
+        "evaluation_on": "2026-11-10",
+        "input_candidate_preserved": {
+          "context": {
+            "case_id": "B1-EXPLICIT",
+            "profile_version": "scenario-1",
+            "snapshot_id": "B1-EXPLICIT-snapshot-1",
+            "plan_id": "B1-EXPLICIT-candidate",
+            "plan_version": "1",
+            "currency": "KRW",
+            "basis": "SCENARIO",
+            "strategy_id": "STABILITY_FIRST"
+          },
+          "stock": {
+            "coverage": "complete",
+            "sources": [
+              {
+                "source_id": "cash",
+                "asset_id": "cash-account",
+                "kind": "CASH",
+                "assignable_krw": "20000000",
+                "available_on": "2026-11-10"
+              }
+            ],
+            "allocations": [
+              {
+                "allocation_id": "protection",
+                "source_id": "cash",
+                "purpose": "PROTECTION",
+                "amount_krw": "8400000",
+                "use_on": "2026-11-10"
+              },
+              {
+                "allocation_id": "goal-stock",
+                "source_id": "cash",
+                "purpose": "GOAL",
+                "amount_krw": "4000000",
+                "use_on": "2028-12-31"
+              }
+            ]
+          },
+          "monthly": {
+            "period": "2026-12",
+            "income_krw": "3000000",
+            "living_krw": "1500000",
+            "debt_payment_krw": "200000",
+            "kept": [
+              {
+                "contribution_id": "flex",
+                "amount_krw": "600000",
+                "purpose": "INVESTMENT"
+              }
+            ],
+            "targets": [
+              {
+                "target_id": "goal",
+                "purpose": "GOAL",
+                "budget_basis": "PLAN_SELECTED",
+                "total_contribution_krw": "800000",
+                "kept_contribution_ids": []
+              }
+            ],
+            "h_krw": "100000",
+            "new_investment_krw": "0",
+            "unassigned_krw": "0",
+            "coverage": "complete",
+            "goal_status": "KNOWN"
+          },
+          "timing": {
+            "source_id": "cash",
+            "opening_on": "2026-11-10",
+            "events": []
+          },
+          "allocation_policy": {
+            "version": "DION-ALLOCATION-A1B1-0.1",
+            "evaluation_on": "2026-11-10",
+            "protection_target_id": "reserve",
+            "protection_target_krw": "8400000",
+            "target_source_ref": "fixture:B1-EXPLICIT:CUSTOMER_SELECTED_NOT_SERVICE_MINIMUM",
+            "adjustment_options": [
+              {
+                "contribution_id": "flex",
+                "permission": "ALLOWED",
+                "contract": "CLEAR",
+                "consequences": "NO_IMPACT",
+                "minimum_krw": "0",
+                "max_reduction_krw": "600000",
+                "profile_version": "scenario-1",
+                "source_ref": "fixture:B1-EXPLICIT:explicit-scenario-permission"
+              }
+            ],
+            "requested_reductions": [
+              {
+                "contribution_id": "flex",
+                "amount_krw": "200000"
+              }
+            ]
+          }
+        },
+        "changes_executed": false,
+        "protection": {
+          "target_krw": "8400000",
+          "funded_at_open_krw": "8400000",
+          "gap_at_open_krw": "0",
+          "kept_topup_krw": "0",
+          "extra_topup_krw": "0",
+          "closing_gap_krw": "0"
+        },
+        "review": {
+          "priority": "B1_FLEXIBLE_CONTRIBUTIONS_BEFORE_GOAL_CHANGE",
+          "required_reduction_before_krw": "200000",
+          "explicit_reductions_krw": "200000",
+          "options": [
+            {
+              "contribution_id": "flex",
+              "state": "ELIGIBLE_SCENARIO_REVIEW",
+              "current_krw": "600000",
+              "reduction_cap_krw": "600000"
+            }
+          ],
+          "automatic_reductions": false
+        },
+        "new_investment_policy_cap_krw": "0",
+        "lump_sum_new_investment_policy_cap_krw": null,
+        "recommended_new_investment_krw": null,
+        "candidate": {
+          "context": {
+            "case_id": "B1-EXPLICIT",
+            "profile_version": "scenario-1",
+            "snapshot_id": "B1-EXPLICIT-snapshot-1",
+            "plan_id": "B1-EXPLICIT-candidate",
+            "plan_version": "1",
+            "currency": "KRW",
+            "basis": "SCENARIO",
+            "strategy_id": "STABILITY_FIRST"
+          },
+          "stock": {
+            "coverage": "complete",
+            "sources": [
+              {
+                "source_id": "cash",
+                "asset_id": "cash-account",
+                "kind": "CASH",
+                "assignable_krw": "20000000",
+                "available_on": "2026-11-10"
+              }
+            ],
+            "allocations": [
+              {
+                "allocation_id": "protection",
+                "source_id": "cash",
+                "purpose": "PROTECTION",
+                "amount_krw": "8400000",
+                "use_on": "2026-11-10"
+              },
+              {
+                "allocation_id": "goal-stock",
+                "source_id": "cash",
+                "purpose": "GOAL",
+                "amount_krw": "4000000",
+                "use_on": "2028-12-31"
+              }
+            ]
+          },
+          "monthly": {
+            "period": "2026-12",
+            "income_krw": "3000000",
+            "living_krw": "1500000",
+            "debt_payment_krw": "200000",
+            "kept": [
+              {
+                "contribution_id": "flex",
+                "amount_krw": "400000",
+                "purpose": "INVESTMENT"
+              }
+            ],
+            "targets": [
+              {
+                "target_id": "goal",
+                "purpose": "GOAL",
+                "budget_basis": "PLAN_SELECTED",
+                "total_contribution_krw": "800000",
+                "kept_contribution_ids": []
+              }
+            ],
+            "h_krw": "100000",
+            "new_investment_krw": "0",
+            "unassigned_krw": "0",
+            "coverage": "complete",
+            "goal_status": "KNOWN"
+          },
+          "timing": {
+            "source_id": "cash",
+            "opening_on": "2026-11-10",
+            "events": []
+          },
+          "allocation_policy": {
+            "version": "DION-ALLOCATION-A1B1-0.1",
+            "evaluation_on": "2026-11-10",
+            "protection_target_id": "reserve",
+            "protection_target_krw": "8400000",
+            "target_source_ref": "fixture:B1-EXPLICIT:CUSTOMER_SELECTED_NOT_SERVICE_MINIMUM",
+            "adjustment_options": [
+              {
+                "contribution_id": "flex",
+                "permission": "ALLOWED",
+                "contract": "CLEAR",
+                "consequences": "NO_IMPACT",
+                "minimum_krw": "0",
+                "max_reduction_krw": "600000",
+                "profile_version": "scenario-1",
+                "source_ref": "fixture:B1-EXPLICIT:explicit-scenario-permission"
+              }
+            ],
+            "requested_reductions": [
+              {
+                "contribution_id": "flex",
+                "amount_krw": "200000"
+              }
+            ]
+          }
+        },
+        "ledger_check": {
+          "tool_schema": "DION-OFFLINE-FUNDING-CHECK-1",
+          "basis": "SCENARIO",
+          "recommendation": false,
+          "adoption_state": "NOT_IMPLEMENTED",
+          "generation": {
+            "state": "NEEDS_POLICY",
+            "policy": "DEC-02",
+            "candidates": null
+          },
+          "context": {
+            "case_id": "B1-EXPLICIT",
+            "profile_version": "scenario-1",
+            "snapshot_id": "B1-EXPLICIT-snapshot-1",
+            "plan_id": "B1-EXPLICIT-candidate",
+            "plan_version": "1",
+            "currency": "KRW",
+            "basis": "SCENARIO",
+            "strategy_id": "STABILITY_FIRST"
+          },
+          "input_state": "CHECKED_WITHIN_OFFLINE_SCOPE",
+          "stock": {
+            "rows": [
+              {
+                "source_id": "cash",
+                "assignable_krw": "20000000",
+                "allocated_krw": "12400000",
+                "unassigned_krw": "7600000",
+                "investment_cap_raw_krw": "7600000",
+                "investment_budget_cap_krw": "7600000",
+                "temporal_eligibility_separate": true
+              }
+            ],
+            "issues": [],
+            "changes_asset_total": false,
+            "state": "RECONCILED"
+          },
+          "monthly": {
+            "base_surplus_krw": "1300000",
+            "kept_total_krw": "400000",
+            "additional_targets": [
+              {
+                "target_id": "goal",
+                "purpose": "GOAL",
+                "budget_basis": "PLAN_SELECTED",
+                "kept_krw": "0",
+                "additional_krw": "800000"
+              }
+            ],
+            "monthly_unallocated_raw_krw": "0",
+            "monthly_budget_cap_krw": "0",
+            "shortfall_krw": "0",
+            "allocation_difference_krw": "0",
+            "conditional_excludes_unconfirmed_goals": false,
+            "issues": [],
+            "state": "RECONCILED"
+          },
+          "timing": {
+            "path": [],
+            "minimum_balance_krw": "20000000",
+            "issues": [],
+            "duplicates_ignored": 0,
+            "negative_path_is_funding_need_not_executed_debt": true,
+            "state": "RECONCILED"
+          }
+        },
+        "reason_codes": [
+          "CAP_NOT_RECOMMENDATION"
+        ],
+        "cash_remaining_krw": "0",
+        "timing_state": "RECONCILED",
+        "complete_cash_calendar_verified": false
+      }
+    }
+  ]
+}

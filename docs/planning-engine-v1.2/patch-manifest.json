@@ -1,0 +1,498 @@
+{
+  "patch_version": "DION-engine-20261110-v2",
+  "engine_release": "DION-ENGINE-1.2",
+  "baseline_version": 5,
+  "baseline_filename": "finance-planner_DION_Integrated_20261110.zip",
+  "baseline_sha256": "64c799714399647626a62a1d898fcf0ff8ba48a31955038fadd21ddce5e16042",
+  "cumulative_replaces_engine_v1": true,
+  "archive_prefix": "dion/",
+  "issue_ids": [
+    "R02",
+    "R03",
+    "R04",
+    "R07",
+    "R08",
+    "R09"
+  ],
+  "partner_patch_sha256": {
+    "revision_questions_patch.zip": "4087f674bd0726a12fd4de6487d58bd8c937c0c62c40386a597066dc0b7ea645",
+    "v2_backend_reference.zip": "83fa2339a999c4a62635e80904239f0fca06cf96a1e6c2d0efb03dd973a7a960",
+    "v2_ui_reference.zip": "30f813c4bd4384afe1c62fce65f935cd8cbac434f0b90cb54fbe869c84d1cf3b"
+  },
+  "case_insensitive_partner_path_conflicts": [],
+  "root_shared_logs_omitted": true,
+  "tests": {
+    "engine": 342,
+    "engine_plus_BE": 396,
+    "BE_postgres_skipped": 7,
+    "UI_demo": 12,
+    "legal_active_rules": 0
+  },
+  "files": [
+    {
+      "path": "backend/app/planning/__main__.py",
+      "archive_path": "dion/backend/app/planning/__main__.py",
+      "change": "MODIFIED",
+      "bytes": 1086,
+      "sha256": "c7cc21942b5cecfdb380f130b124d6b262fa6250843a2daf24a83f5798576dd7",
+      "baseline_sha256": "62898b95264e4f68509434274236b83b8920e0aab8ad11432c8d584d9920f929"
+    },
+    {
+      "path": "backend/app/planning/bindings.py",
+      "archive_path": "dion/backend/app/planning/bindings.py",
+      "change": "MODIFIED",
+      "bytes": 3015,
+      "sha256": "5b6ac3b6c90e4d4e8dabdd6e0b0b9d82d7c2d46654987cdf06e029276b837558",
+      "baseline_sha256": "f869cf079b55b9cfca3f0785e9ed5052ef969dc460ea828757f1ba3e078904f8"
+    },
+    {
+      "path": "backend/app/planning/dated_cash.py",
+      "archive_path": "dion/backend/app/planning/dated_cash.py",
+      "change": "ADDED",
+      "bytes": 19227,
+      "sha256": "8205f7924d2a25c4e7a0b271c808fafed6f4d1ab0c464efd6e6c4cb1d4347af1",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/app/planning/engine.py",
+      "archive_path": "dion/backend/app/planning/engine.py",
+      "change": "MODIFIED",
+      "bytes": 9757,
+      "sha256": "c6c09895629c6f463f5c7f16652319144f6cd04316a94413ce2443017a850fc4",
+      "baseline_sha256": "04591321d1ae2b0722e3db7a934510aefae800ccdcbec63fc996788b82f6f140"
+    },
+    {
+      "path": "backend/app/planning/projection.py",
+      "archive_path": "dion/backend/app/planning/projection.py",
+      "change": "MODIFIED",
+      "bytes": 30987,
+      "sha256": "fbe4d19df47e296ece9cca8cb346fb1e38700f677e0dc82bcb24878cb2eb0b39",
+      "baseline_sha256": "0c7f6533a756b5d92b2704e6c6b0ae58bb0797415aa8790f9e8e542796b2e0ad"
+    },
+    {
+      "path": "backend/app/planning/question_v12.py",
+      "archive_path": "dion/backend/app/planning/question_v12.py",
+      "change": "ADDED",
+      "bytes": 38913,
+      "sha256": "c0b542a8ba274732f9bd6521253c89c5b2d3637e5f57012482343e7d9cbadec5",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/app/planning/questions.py",
+      "archive_path": "dion/backend/app/planning/questions.py",
+      "change": "MODIFIED",
+      "bytes": 14586,
+      "sha256": "77e7c2c7b57a86216c914440065d26d5167441ebbc87976882864d7f1977a3cd",
+      "baseline_sha256": "85b94ceea660b50522b58f8303087c97e408fc747968abc117eecdb333fa0f87"
+    },
+    {
+      "path": "backend/app/planning/reserve_targets.py",
+      "archive_path": "dion/backend/app/planning/reserve_targets.py",
+      "change": "ADDED",
+      "bytes": 2165,
+      "sha256": "1306f0827dbc32fd32b375652c8b2fb7ed3dede3bee4ab83a014cf7100d06773",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/app/planning/statuses.py",
+      "archive_path": "dion/backend/app/planning/statuses.py",
+      "change": "ADDED",
+      "bytes": 4160,
+      "sha256": "42f4d9e4ddcf501f8ad29ac1d080f035b030855059ef0cf08e073f45843ab037",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.1/independent_expectations.json",
+      "archive_path": "dion/backend/examples/planning-v1.1/independent_expectations.json",
+      "change": "ADDED",
+      "bytes": 473,
+      "sha256": "61f0b734741fa51c49c0c023425eb7046b56e25362a28feba6404fcb5ec09b3c",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.1/invalid_money_input.json",
+      "archive_path": "dion/backend/examples/planning-v1.1/invalid_money_input.json",
+      "change": "ADDED",
+      "bytes": 32640,
+      "sha256": "11d9d5b5b88825131a747ad15aefc6512cee29f8619080d776264a7227a93ac0",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.1/invalid_money_output.json",
+      "archive_path": "dion/backend/examples/planning-v1.1/invalid_money_output.json",
+      "change": "ADDED",
+      "bytes": 118105,
+      "sha256": "fed697e2ad8e0dccdd9d1fe6aba21d60d2f74fd8eda8d7e48b3512773ff500d2",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.1/invalid_namespace_input.json",
+      "archive_path": "dion/backend/examples/planning-v1.1/invalid_namespace_input.json",
+      "change": "ADDED",
+      "bytes": 32648,
+      "sha256": "8486e0c5924da3e7440e17e8e640e1083920b3e1df51c29dde6097f6ad533c61",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.1/invalid_namespace_output.json",
+      "archive_path": "dion/backend/examples/planning-v1.1/invalid_namespace_output.json",
+      "change": "ADDED",
+      "bytes": 116204,
+      "sha256": "cdcdc91a98f39c4f1ec3cde0c775a60dcb7eff1f4374efe8f8e19a241aff89a0",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.1/partial_unknown_inclusion_input.json",
+      "archive_path": "dion/backend/examples/planning-v1.1/partial_unknown_inclusion_input.json",
+      "change": "ADDED",
+      "bytes": 32726,
+      "sha256": "5975564b826c69a24574cffab6d4000af8b8e16dbc246acbf68397235f6252d0",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.1/partial_unknown_inclusion_output.json",
+      "archive_path": "dion/backend/examples/planning-v1.1/partial_unknown_inclusion_output.json",
+      "change": "ADDED",
+      "bytes": 118438,
+      "sha256": "eb1d1a9ab54bfe44042ee1f1c01fdd09c9f52634e86f3cf7dd155db7abb110cb",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.1/question_v121_input.json",
+      "archive_path": "dion/backend/examples/planning-v1.1/question_v121_input.json",
+      "change": "ADDED",
+      "bytes": 34515,
+      "sha256": "68147a8c2dbbe8d6b33a813664e5f66c593e5734e3c39c42b0cbbbedca28ce75",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.1/question_v121_output.json",
+      "archive_path": "dion/backend/examples/planning-v1.1/question_v121_output.json",
+      "change": "ADDED",
+      "bytes": 140418,
+      "sha256": "3eacd17c81cb5a86d58f6da201fa69774f647cfe53fe78fa8100671ad810015b",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.1/representative_input.json",
+      "archive_path": "dion/backend/examples/planning-v1.1/representative_input.json",
+      "change": "ADDED",
+      "bytes": 32641,
+      "sha256": "aacb219facdeef82cf0350ff5d3c273c2caa8ec971d49ec983b34bae7064d036",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.1/representative_output.json",
+      "archive_path": "dion/backend/examples/planning-v1.1/representative_output.json",
+      "change": "ADDED",
+      "bytes": 129697,
+      "sha256": "68aeed698f4931463054e5df2d744d2668794ad639dd463a90641d547d8f1fc9",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.1/scope_modules_input.json",
+      "archive_path": "dion/backend/examples/planning-v1.1/scope_modules_input.json",
+      "change": "ADDED",
+      "bytes": 48591,
+      "sha256": "3d4b40c502d484bfef8a2b1a9a62ff64adb76defa6d8bf23984e5da30d49efab",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.1/scope_modules_output.json",
+      "archive_path": "dion/backend/examples/planning-v1.1/scope_modules_output.json",
+      "change": "ADDED",
+      "bytes": 181941,
+      "sha256": "7447b0d6db07d99d8b5eebb55c7ee32e19acd76d3643d9935cf8b7a11cc31ff8",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.1/unsupported_recurring_goal_input.json",
+      "archive_path": "dion/backend/examples/planning-v1.1/unsupported_recurring_goal_input.json",
+      "change": "ADDED",
+      "bytes": 32644,
+      "sha256": "59ea5e07a79afbfc0a49d626cf72b5a8ac466cb389de0a4b6fdcc7fc32bda7af",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.1/unsupported_recurring_goal_output.json",
+      "archive_path": "dion/backend/examples/planning-v1.1/unsupported_recurring_goal_output.json",
+      "change": "ADDED",
+      "bytes": 118571,
+      "sha256": "334d57e3aec78810012bcda71c5bbea1e71d386fd4c9b92ddcb31f1f9019ca04",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.2/dated_early_income_input.json",
+      "archive_path": "dion/backend/examples/planning-v1.2/dated_early_income_input.json",
+      "change": "ADDED",
+      "bytes": 41483,
+      "sha256": "013c005829452fc35bd31ae14ae2bcefd2143d28cb778fa53e5a2dcf972a123b",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.2/dated_early_income_output.json",
+      "archive_path": "dion/backend/examples/planning-v1.2/dated_early_income_output.json",
+      "change": "ADDED",
+      "bytes": 183829,
+      "sha256": "ecca3280e3ca432ad43323611099ac6e8b5f9b532fbb0d64a31199cefbe5d33e",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.2/dated_funded_input.json",
+      "archive_path": "dion/backend/examples/planning-v1.2/dated_funded_input.json",
+      "change": "ADDED",
+      "bytes": 41485,
+      "sha256": "05cec1d32c714f00d611ae3b0830de6d2f276f01aa13e7a245c41b1c897e6ffc",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.2/dated_funded_output.json",
+      "archive_path": "dion/backend/examples/planning-v1.2/dated_funded_output.json",
+      "change": "ADDED",
+      "bytes": 183890,
+      "sha256": "464ba20e492a5158e478bbd0dbd7350c730b5b87f2506da41929c88d7734068c",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.2/dated_missing_debt_input.json",
+      "archive_path": "dion/backend/examples/planning-v1.2/dated_missing_debt_input.json",
+      "change": "ADDED",
+      "bytes": 41023,
+      "sha256": "98463d895ca299e8b6866b997e9a61086cd540bbe9d4e15639a42ebd8d90c72f",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.2/dated_missing_debt_output.json",
+      "archive_path": "dion/backend/examples/planning-v1.2/dated_missing_debt_output.json",
+      "change": "ADDED",
+      "bytes": 174602,
+      "sha256": "cce2b351f970d599fe5f587b629cf37be45b07039960b5f5993bd01f0581f210",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.2/dated_reserved_shortfall_input.json",
+      "archive_path": "dion/backend/examples/planning-v1.2/dated_reserved_shortfall_input.json",
+      "change": "ADDED",
+      "bytes": 41483,
+      "sha256": "24c1c1c11cc710a08f488f3d67a0493fe92635ee5a54c7a1dfae00874b7e0aa8",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.2/dated_reserved_shortfall_output.json",
+      "archive_path": "dion/backend/examples/planning-v1.2/dated_reserved_shortfall_output.json",
+      "change": "ADDED",
+      "bytes": 192641,
+      "sha256": "9a9d21daea3d3b402f2c8da9422625b37deb0d321525da4a7e3d9be34b5b78b2",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.2/extra_funded_input.json",
+      "archive_path": "dion/backend/examples/planning-v1.2/extra_funded_input.json",
+      "change": "ADDED",
+      "bytes": 34519,
+      "sha256": "c48bf8275a9a2ce32dbd3fa746dec164c1e22c606e5043b24e624dccd2fe5778",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.2/extra_funded_output.json",
+      "archive_path": "dion/backend/examples/planning-v1.2/extra_funded_output.json",
+      "change": "ADDED",
+      "bytes": 155386,
+      "sha256": "bdd1593967bdf6a227325997eb3dfa829b89d3f8fd187d1558c303bd55c1b32a",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.2/extra_unknown_input.json",
+      "archive_path": "dion/backend/examples/planning-v1.2/extra_unknown_input.json",
+      "change": "ADDED",
+      "bytes": 34363,
+      "sha256": "69e8516891bb7132d1af0821da88bf53cce27d5633cb22a5709d6d12bdd7136a",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.2/extra_unknown_output.json",
+      "archive_path": "dion/backend/examples/planning-v1.2/extra_unknown_output.json",
+      "change": "ADDED",
+      "bytes": 127894,
+      "sha256": "6b0c9687319d397ec391d1101fdbcb7a3a16085d4d484f344b15f93d4ad35ae1",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.2/independent_expectations.json",
+      "archive_path": "dion/backend/examples/planning-v1.2/independent_expectations.json",
+      "change": "ADDED",
+      "bytes": 1532,
+      "sha256": "f31156a26800ffb71b6d63a24d831dca64a2ae603b42f6c3b4daf2af88bb2bd6",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.2/monthly_input.json",
+      "archive_path": "dion/backend/examples/planning-v1.2/monthly_input.json",
+      "change": "ADDED",
+      "bytes": 34515,
+      "sha256": "804975bf1dacfb4a0488092a3d02495d0b5780ccc285f973d08bfcd240dfb1ca",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/examples/planning-v1.2/monthly_output.json",
+      "archive_path": "dion/backend/examples/planning-v1.2/monthly_output.json",
+      "change": "ADDED",
+      "bytes": 155346,
+      "sha256": "700d965409671f8f0cc89c36f61ee8b79a50c36d59dfab2c570fb5acd8e03dc0",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/tests/planning/test_engine_v12.py",
+      "archive_path": "dion/backend/tests/planning/test_engine_v12.py",
+      "change": "ADDED",
+      "bytes": 17483,
+      "sha256": "056db2d4d37b3afa5a6e71d6daeec5a5aa209cef9f816d47a01fcca0fc46cf68",
+      "baseline_sha256": null
+    },
+    {
+      "path": "backend/tests/planning/test_question_v12.py",
+      "archive_path": "dion/backend/tests/planning/test_question_v12.py",
+      "change": "ADDED",
+      "bytes": 17050,
+      "sha256": "4691c134908233d3a05f9dd91cde14162bbfdb6b7f48e108a9dee88c6d56759d",
+      "baseline_sha256": null
+    },
+    {
+      "path": "docs/planning-engine-v1.1/README.md",
+      "archive_path": "dion/docs/planning-engine-v1.1/README.md",
+      "change": "ADDED",
+      "bytes": 10465,
+      "sha256": "72ff7ac21c7ce22103c61b3307e1fa51bf90dddcd2e3f0eae9f2da7e9cd31251",
+      "baseline_sha256": null
+    },
+    {
+      "path": "docs/planning-engine-v1.1/adapter-contract.md",
+      "archive_path": "dion/docs/planning-engine-v1.1/adapter-contract.md",
+      "change": "ADDED",
+      "bytes": 11275,
+      "sha256": "652890a2e929cef1acd0bb465d37b370d9849214b513536100540bcd1583a531",
+      "baseline_sha256": null
+    },
+    {
+      "path": "docs/planning-engine-v1.1/be-integration-results.json",
+      "archive_path": "dion/docs/planning-engine-v1.1/be-integration-results.json",
+      "change": "ADDED",
+      "bytes": 1419,
+      "sha256": "0300ed822369b9fbad71ffdb28f5958fe71791e015977ce1fed8b618e058b2e1",
+      "baseline_sha256": null
+    },
+    {
+      "path": "docs/planning-engine-v1.1/check_be_integration.py",
+      "archive_path": "dion/docs/planning-engine-v1.1/check_be_integration.py",
+      "change": "ADDED",
+      "bytes": 8079,
+      "sha256": "c028c999400fa3ef7f7a16125a13cba14efa0a3042043b083b559b732dfd6efd",
+      "baseline_sha256": null
+    },
+    {
+      "path": "docs/planning-engine-v1.1/engine_handoff.json",
+      "archive_path": "dion/docs/planning-engine-v1.1/engine_handoff.json",
+      "change": "ADDED",
+      "bytes": 3268,
+      "sha256": "4207de670ee2f021e6ce46a996382ed4b74d1f2a095af2a5598452b1b12bdbbb",
+      "baseline_sha256": null
+    },
+    {
+      "path": "docs/planning-engine-v1.1/field-map.json",
+      "archive_path": "dion/docs/planning-engine-v1.1/field-map.json",
+      "change": "ADDED",
+      "bytes": 13567,
+      "sha256": "6c713255addbf556ba4df76fd502410419e38e889fbb68c5460f611f27859a5a",
+      "baseline_sha256": null
+    },
+    {
+      "path": "docs/planning-engine-v1.1/question-1.2.1-alignment.json",
+      "archive_path": "dion/docs/planning-engine-v1.1/question-1.2.1-alignment.json",
+      "change": "ADDED",
+      "bytes": 1373,
+      "sha256": "c729b9e82ec695e11b9d305ec85f0d390e5bb3c4b7537fe09ce9a7de6801698f",
+      "baseline_sha256": null
+    },
+    {
+      "path": "docs/planning-engine-v1.1/verification.json",
+      "archive_path": "dion/docs/planning-engine-v1.1/verification.json",
+      "change": "ADDED",
+      "bytes": 7653,
+      "sha256": "d0071b31b80af4e18ab8db98dbccb6981f5d3624895955760a2e5503126dd125",
+      "baseline_sha256": null
+    },
+    {
+      "path": "docs/planning-engine-v1.2/CHANGELOG.md",
+      "archive_path": "dion/docs/planning-engine-v1.2/CHANGELOG.md",
+      "change": "ADDED",
+      "bytes": 8993,
+      "sha256": "91614965b3c8acada8d692f3ca2c8219793ef6392e78fde40b616db486c205da",
+      "baseline_sha256": null
+    },
+    {
+      "path": "docs/planning-engine-v1.2/README.md",
+      "archive_path": "dion/docs/planning-engine-v1.2/README.md",
+      "change": "ADDED",
+      "bytes": 5155,
+      "sha256": "0c4cd4d3724ac0f5726f7a537ac936896455489e9b219e04288826e181594585",
+      "baseline_sha256": null
+    },
+    {
+      "path": "docs/planning-engine-v1.2/check_host_integration.py",
+      "archive_path": "dion/docs/planning-engine-v1.2/check_host_integration.py",
+      "change": "ADDED",
+      "bytes": 4067,
+      "sha256": "0d3e50d3a154cc1a0a3d314b95c2861e1e99e98868db2da376befa31b6407e18",
+      "baseline_sha256": null
+    },
+    {
+      "path": "docs/planning-engine-v1.2/contract.md",
+      "archive_path": "dion/docs/planning-engine-v1.2/contract.md",
+      "change": "ADDED",
+      "bytes": 9337,
+      "sha256": "3ec0a584b84f21f8c545dd7edc7585f3026bf30cbc73b66f10ae2d28ca5a7307",
+      "baseline_sha256": null
+    },
+    {
+      "path": "docs/planning-engine-v1.2/engine_handoff.json",
+      "archive_path": "dion/docs/planning-engine-v1.2/engine_handoff.json",
+      "change": "ADDED",
+      "bytes": 4558,
+      "sha256": "0b17838fdc66aa1c147b5a92bd9f331123ce3a75b5e2ea2983f8e04bf346ab90",
+      "baseline_sha256": null
+    },
+    {
+      "path": "docs/planning-engine-v1.2/host-integration-results.json",
+      "archive_path": "dion/docs/planning-engine-v1.2/host-integration-results.json",
+      "change": "ADDED",
+      "bytes": 4886,
+      "sha256": "6504fc0b805a9db086c1d21879b9e274c8f7282ef7f827714a4cf9b2d1b883c8",
+      "baseline_sha256": null
+    },
+    {
+      "path": "docs/planning-engine-v1.2/previous-v1-CHANGELOG.md",
+      "archive_path": "dion/docs/planning-engine-v1.2/previous-v1-CHANGELOG.md",
+      "change": "ADDED",
+      "bytes": 9693,
+      "sha256": "bd783ba6a4d12bc1832216418742fa11cebc6c9e5949ffd33ca8c8e3ebf1bbf4",
+      "baseline_sha256": null
+    },
+    {
+      "path": "docs/planning-engine-v1.2/verification.json",
+      "archive_path": "dion/docs/planning-engine-v1.2/verification.json",
+      "change": "ADDED",
+      "bytes": 3445,
+      "sha256": "279ddf943c9fe125dc867dae3d299d8b4590aea7d303630735a33631416dde96",
+      "baseline_sha256": null
+    },
+    {
+      "path": "docs/planning-engine-v1.2/verify_samples.py",
+      "archive_path": "dion/docs/planning-engine-v1.2/verify_samples.py",
+      "change": "ADDED",
+      "bytes": 2567,
+      "sha256": "76ddb68f19ec36a92f6da5dd4ff7f2ba75c588e96ce2fe4fdf44b318b5c8baec",
+      "baseline_sha256": null
+    }
+  ],
+  "manifest_self_hash": "excluded; ZIP SHA-256 supplied in handoff"
+}
