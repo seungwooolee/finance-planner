@@ -67,9 +67,40 @@
     "ambient Starlette/httpx TestClient deprecation"
   ],
   "next_required_evidence": [
-    "doctor output from new worktree",
-    "real-user seed output",
-    "verify after operator restarts backend",
-    "different-real-user access output"
-  ]
+    "Different-real-user access output: deferred by user, not passed",
+    "Actual frontend-to-remote-storage acceptance",
+    "Optional v2 contract remote acceptance; legacy evidence does not cover adapter1.1"
+  ],
+  "operator_validation": {
+    "date_kst": "2026-11-11",
+    "source": "User-reported Windows terminal output in this conversation",
+    "checkout": "DION-be-check",
+    "api_port": 8201,
+    "contract": "DION-QUESTION12-ADAPTER-1.0",
+    "doctor": {
+      "status": "PASS_REPORTED",
+      "evidence": "POSTGRES_CONNECTION_AND_TABLES PASS"
+    },
+    "seed": {
+      "status": "PASS_REPORTED",
+      "evidence": "User replied pass after the seed instructions; complete raw output not collected"
+    },
+    "verify": {
+      "status": "PASS_REPORTED",
+      "evidence": [
+        "REAL_LOGIN PASS",
+        "RAW_RESTORE PASS",
+        "STORAGE_CHECK_COMPLETE"
+      ]
+    },
+    "restart_evidence": "Operator followed the instructed restart/verify sequence; process restart was not independently observed by the assistant",
+    "cross_account_access": {
+      "status": "NOT_RUN_USER_DEFERRED",
+      "reason": "User requested skipping the second real test account check"
+    },
+    "boundaries": [
+      "This updates reported acceptance evidence; the assistant did not use credentials or execute against the remote project",
+      "No production readiness, frontend integration or v2 remote acceptance is inferred"
+    ]
+  }
 }
