@@ -1,5 +1,15 @@
 # 실행·검사 — 사용자 PC 및 총괄 인계
 
+## 2026-11-11 Git 작업본의 실제 로그인·저장 검사
+
+현재 FE는 `/question-analyses` / 어댑터1.0을 사용한다. 엔진 v2의
+`/analyses/question-v12` / 어댑터1.1 검사는 선택 모드로 분리했다.
+두 경로를 자동 교체하거나 FE 브랜치를 변경하지 않는다.
+새 검사 도구와 독립 worktree 준비 방법은 [LIVE_CHECK.md](LIVE_CHECK.md)를 따른다.
+`backend/tools/check_live_storage.py doctor`는 현재 checkout의 `.env`와 실제 PostgreSQL
+테이블을 읽는다. seed/verify는 실제 로그인·API 기록과 해당 DB의 행을 대조한다.
+이번 코드 검증은 로컬 SQLite/모의 인증이며 실제 사용자 원격 검사 통과 기록이 아니다.
+
 모든 경로는 기존 프로젝트 루트 기준이다. 다른 파트 파일을 먼저 덮어쓰지 않는다.
 이 문서는 명령 안내이며 사용자 원격 DB나 실제 로그인 검사를 대신하지 않는다.
 
@@ -19,7 +29,7 @@ requirements-be.txt는 기존 requirements.txt를 유지하고 psycopg[binary]==
 기존 backend/.env는 보존하고 backend/env.be.example의 항목을 로컬에서 추가한다.
 DION_DB_HOST/USER/PASSWORD는 앞서 사용자가 확인한 Session pooler 연결 정보다.
 DION_DB_PORT 기본5432, DION_DB_NAME 기본postgres이며 실제 SSL 연결을 사용한다.
-Supabase URL과 publishable/anon 공개 키를 DION_SUPABASE_URL/PUBLIC_KEY에 설정한다.
+Supabase URL과 publishable/anon 공개 키를 DION_SUPABASE_URL/DION_SUPABASE_PUBLIC_KEY에 설정한다.
 service_role/secret 키를 브라우저나 샘플에 넣지 않는다.
 권한을 가진 migration용 계정과 최소 권한 앱 계정 분리는 운영 인계의 미완료 항목이다.
 POST /cases를 쓸 사용자 access token은 실제 로그인 절차로 발급받아야 한다.
