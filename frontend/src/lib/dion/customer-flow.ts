@@ -1,8 +1,10 @@
 import { Document, Field, Json, activeQuestions, clone, completed, field, fieldValue, list, record, revise, textValue } from "./model";
+import { riskIds, riskNeeds } from "./investment-review";
 
-export const customerStep = (id: string) => ({ "LIFE-01": "NEW-01", F12: "F11", F13: "F11", F08: "N01" }[id] ?? id);
+export const customerStep = (id: string) => ({ "LIFE-01": "NEW-01", F12: "F11", F13: "F11", F08: "N01", F15: "F17", "NEW-08": "F17", F16: "F17", "NEW-10": "F17", F18: "F17" }[id] ?? id);
 export const customerSteps = (doc: Document, deep: boolean) => [...new Set(activeQuestions(doc, deep).map(customerStep))];
 export function stepComplete(doc: Document, id: string) {
+  if (id === "F17") return riskIds.every(q => !riskNeeds(doc,q).length);
   if (id === "NEW-01") return completed(doc, id) && completed(doc, "LIFE-01");
   if (id === "F11" && list(fieldValue(doc, id, "goals")).length) return ["F11", "F12", "F13"].every(q => completed(doc, q));
   return completed(doc, id);
@@ -22,7 +24,7 @@ export const copy: Record<string, { nav: string; title: string; help: string }> 
   "NEW-02": { nav: "앞으로의 소득", title: "앞으로 받는 돈에 변화가 있나요?", help: "퇴직·이직 등 이미 알고 있는 변화가 있을 때 알려주세요." },
   "NEW-05": { nav: "예정된 지출", title: "앞으로 따로 나갈 큰돈이 있나요?", help: "이미 목표에 적은 지출은 다시 적지 않아도 돼요." },
   "NEW-06": { nav: "남겨둘 돈", title: "생활과 비상시에 쓸 돈을 따로 두었나요?", help: "다른 목표에 배정한 돈과 겹치지 않게 확인해요." },
-  F17: { nav: "투자 생각", title: "투자할 때 무엇을 더 중요하게 생각하나요?", help: "지금 생각에 가까운 문장을 골라주세요." },
+  F17: { nav: "투자 검토", title: "투자 전에 필요한 정보를 함께 살펴봐요", help: "투자상품 검토를 원할 때만 답해주세요. 이미 확인한 답변은 다시 입력하지 않아도 돼요." },
 };
 
 export function monthPeriod(month: string): { start: string; end: string } | null {

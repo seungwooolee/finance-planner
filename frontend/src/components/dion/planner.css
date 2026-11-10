@@ -15,3 +15,42 @@
 
 .d-sidebar-coach{display:flex;align-items:center;text-align:left;gap:8px;padding:10px;margin:12px 0}.d-sidebar-coach .d-cat{width:62px;margin:0}.d-sidebar-coach p{font-size:11px}.d-help-launcher.compact{width:62px;height:62px;border-radius:50%;padding:5px;position:relative;justify-content:center}.d-help-launcher.compact>.d-cat{width:50px;border-radius:50%}.d-help-launcher.compact>span{display:none}.d-help-launcher.compact>svg{position:absolute;bottom:-2px;right:-2px;background:#3848ce;border:2px solid white;border-radius:50%;padding:3px;width:24px;height:24px}
 @media(max-width:700px){.d-sidebar-coach{display:none}.d-help-launcher.compact{width:54px;height:54px}.d-help-launcher.compact>.d-cat{width:44px}}
+
+/* FE review: isolated scenarios and raw investment answers. */
+.d-scenario-launch{position:fixed;left:24px;bottom:22px;z-index:34;box-shadow:0 6px 26px #303c8c20;background:white;min-height:48px}
+.d-scenario-dialog{margin:auto;width:960px;max-width:calc(100vw - 32px);max-height:calc(100dvh - 32px);overflow:auto;border:1px solid var(--d-line);border-radius:24px;padding:28px;background:#faf8ff;color:#161b29}
+.d-scenario-dialog::backdrop{background:#1a204460;backdrop-filter:blur(3px)}
+.d-scenario-heading{display:flex;align-items:start;justify-content:space-between;gap:18px}.d-scenario-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.d-scenario-grid h4{font-size:19px;font-weight:700}.d-scenario-grid .d-primary{margin-top:16px}.d-scenario-grid code{display:block;overflow-wrap:anywhere;white-space:pre-wrap;font-size:11px}.d-scenario-grid details{font-size:12px}.d-scenario-grid dt{font-weight:700;margin-top:18px}.d-scenario-grid li{margin-bottom:8px}
+.d-risk-question summary{font-weight:700}.d-risk-question h2{font-size:18px;margin-top:22px}.d-risk-question .d-choice{font-size:14px}.d-risk-summary>div{display:grid;grid-template-columns:170px 1fr;border-bottom:1px solid var(--d-line);padding:16px 0;gap:16px}.d-risk-summary dt{font-weight:700}.d-risk-summary small{display:block}.d-fictional .d-secondary{margin:8px 16px}.d-output-status small{display:block}.d-output-status .d-text-button{display:block;margin:7px 0}.d-scenario-dialog ul{padding-left:18px;list-style:disc}
+@media(max-width:700px){.d-scenario-launch{left:12px;bottom:12px;min-height:44px;padding:8px 12px;font-size:12px}.d-scenario-dialog{padding:20px 16px}.d-scenario-grid{grid-template-columns:1fr}.d-risk-summary>div{grid-template-columns:1fr;gap:0}.d-calc-bar{bottom:78px}.d-main{padding-bottom:145px}.d-fictional .d-secondary{margin:10px 0;display:block}.d-scenario-heading h2{font-size:20px}}
+
+/* Welcome header: reuse the existing mascot in its own non-interactive play area. */
+.d-header-welcome{display:grid;grid-template-columns:auto minmax(0,1fr) auto}
+.d-header-cat{position:relative;min-width:0;width:100%;max-width:420px;justify-self:center;height:64px;overflow:hidden;pointer-events:none;user-select:none}
+.d-header-cat:after{content:"";position:absolute;bottom:3px;left:5px;right:5px;height:1px;background:linear-gradient(90deg,transparent,#d9dcf4,transparent)}
+.d-cat-travel{position:absolute;inset:0 56px 0 8px;transform:translateX(0);animation:d-cat-wander 18s ease-in-out infinite;will-change:transform}
+.d-cat-turn{position:absolute;bottom:5px;left:0;width:44px;animation:d-cat-direction 18s steps(1,end) infinite}
+.d-cat-play{transform-origin:50% 90%;animation:d-cat-steps 18s linear infinite}
+.d-header-cat .d-cat{display:block;width:44px;height:44px;object-fit:contain}
+@keyframes d-cat-wander{0%{transform:translateX(0)}20%,32%{transform:translateX(62%)}40%,48%{transform:translateX(100%)}76%,100%{transform:translateX(0)}}
+@keyframes d-cat-direction{0%,40%{transform:scaleX(1)}44%,80%{transform:scaleX(-1)}84%,100%{transform:scaleX(1)}}
+@keyframes d-cat-steps{
+  0%,4%,8%,12%,16%,20%,32%,40%,48%,52%,56%,60%,64%,68%,72%,76%,90%,100%{transform:translateY(0) rotate(0)}
+  2%,6%,10%,14%,18%,50%,54%,58%,62%,66%,70%,74%{transform:translateY(-2px) rotate(3deg)}
+  34%{transform:translateY(1px) scaleY(.93)}36%{transform:translateY(-8px) rotate(-8deg)}38%{transform:translateY(-3px) rotate(4deg)}
+  92%{transform:translateY(1px) scaleY(.94)}95%{transform:translateY(-6px) rotate(-5deg)}97%{transform:translateY(0) scaleY(.96)}
+}
+@media(prefers-reduced-motion:reduce){.d-cat-travel,.d-cat-turn,.d-cat-play{animation:none;will-change:auto}.d-cat-travel{transform:translateX(35%)}}
+/* Speech stays content-sized; the surrounding dialog scrolls for long answers. */
+.d-help-window{width:max-content;min-width:min(300px,calc(100vw - 32px));max-width:min(420px,calc(100vw - 32px))}
+.d-help-window>header,.d-help-window>footer{flex-shrink:0}
+.d-help-body{min-height:0;min-width:0}
+.d-chat-bubble,.d-chat-question{width:fit-content;max-width:100%;height:auto;min-width:0;white-space:pre-wrap;overflow-wrap:anywhere;word-break:normal;text-overflow:clip;line-clamp:unset;-webkit-line-clamp:unset}
+.d-chat-question{max-width:calc(100% - 30px);margin-left:auto}
+.d-help-topics button{white-space:normal;overflow-wrap:anywhere;min-width:0}
+.d-login-dialog>.d-text-button{margin:10px 8px 0}
+.d-login-dialog .d-field-error{color:#a33127;font-size:12px;line-height:1.6}
+.d-login-dialog .d-field-error:empty{display:none}
+.d-login-dialog input[aria-invalid=true]{border-color:#b54336}
+.d-login-dialog .d-note{font-size:12px;text-align:left}
+@media(max-width:700px){.d-header-welcome{gap:12px}.d-header-cat{max-width:230px}.d-help-window{width:max-content;min-width:min(280px,calc(100vw - 32px));max-width:calc(100vw - 32px)}}
