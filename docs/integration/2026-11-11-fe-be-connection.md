@@ -11,7 +11,7 @@
 
 ## 검사와 제한
 
-- 로컬 격리본에서 BE 계정·저장·질문 v2 관련 pytest **43개 통과**, Ruff 통과.
+- 로컬 격리본에서 BE 계정·저장·질문 v2 관련 pytest **43개 통과**. 통합 후 백엔드 전체 pytest **482개 통과 / 8개 skip**, Ruff와 pip check 통과. FE 대표 사례 9개 오프라인 검산 통과.
 - FE TypeScript, ESLint, production Build 통과. 계정·가입 화면의 Playwright 검사는 이 실행 환경에서 Chromium 소켓 생성이 거부되어 완료하지 못했다. 해당 검사는 Windows Codex 또는 브라우저가 허용된 환경에서 실행해야 한다.
 - 실제 Supabase 이메일 가입·로그인, 원격 PostgreSQL 소유권과 저장·재열기, Vercel·Render 배포 동작은 이 검사의 범위에 포함되지 않았다. `CHECK_EMAIL_OR_SIGN_IN`은 이메일 수신 보증이 아니다.
 - 새 FE는 로그인 토큰을 탭 메모리에만 둔다. 새로고침 후 재로그인하고 내 상담을 다시 조회한다. 복원 시 미래 가정과 확인값은 자동으로 되살리지 않으며 저장된 실행을 읽어 이전 가정을 확인한다.
