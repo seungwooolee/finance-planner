@@ -1,11 +1,168 @@
 {
-  "schema_version": "DION-PRODUCT-POLICY-0.1",
-  "version": "DION-PRODUCT-POLICY-20261111-0.1",
-  "state": "DRAFT",
+  "schema_version": "DION-PRODUCT-POLICY-0.2",
+  "version": "DION-PRODUCT-POLICY-20261111-0.2",
+  "state": "REVIEWED_FOR_PREVIEW",
   "scope": "GENERAL_TAXABLE_MONTHLY_REVIEW_ONLY",
-  "risk_floor_by_preference": {},
-  "risk_floor_by_loss_band": {},
-  "risk_floor_by_loss_response": {},
-  "target_slots_by_preference": {},
-  "reason": "상품별 상세 검증과 위험 한도·상품별 비중 정책의 검토 전에는 실제 상품 배분을 활성화하지 않음"
+  "reviewed_on": "2026-11-11",
+  "valid_until": "2026-12-11",
+  "review_ttl_days": 30,
+  "source_max_age_days": 365,
+  "risk_floor_by_preference": {
+    "PREF_STABILITY": 6,
+    "PREF_LEAN_STABILITY": 6,
+    "PREF_BALANCED": 2,
+    "PREF_LEAN_RETURN": 2,
+    "PREF_RETURN": 2
+  },
+  "risk_floor_by_loss_band": {
+    "LOSS_NONE": 6,
+    "LOSS_UNDER_5": 6,
+    "LOSS_5_10": 5,
+    "LOSS_10_20": 2,
+    "LOSS_20_30": 2,
+    "LOSS_30_PLUS": 2
+  },
+  "risk_floor_by_loss_response": {
+    "LOSS_RESPONSE_RAW_01": 6,
+    "LOSS_RESPONSE_RAW_02": 5,
+    "LOSS_RESPONSE_RAW_03": 2,
+    "LOSS_RESPONSE_RAW_04": 2
+  },
+  "target_slots_by_preference": {
+    "PREF_STABILITY": [],
+    "PREF_LEAN_STABILITY": [
+      {
+        "code": "153130",
+        "target_bps": 3000,
+        "cap_bps": 4000
+      }
+    ],
+    "PREF_BALANCED": [
+      {
+        "code": "153130",
+        "target_bps": 3000,
+        "cap_bps": 4000
+      },
+      {
+        "code": "069500",
+        "target_bps": 1000,
+        "cap_bps": 4000
+      },
+      {
+        "code": "360200",
+        "target_bps": 2000,
+        "cap_bps": 4000
+      }
+    ],
+    "PREF_LEAN_RETURN": [
+      {
+        "code": "153130",
+        "target_bps": 2000,
+        "cap_bps": 4000
+      },
+      {
+        "code": "069500",
+        "target_bps": 1500,
+        "cap_bps": 4000
+      },
+      {
+        "code": "360200",
+        "target_bps": 3000,
+        "cap_bps": 4000
+      }
+    ],
+    "PREF_RETURN": [
+      {
+        "code": "153130",
+        "target_bps": 1000,
+        "cap_bps": 4000
+      },
+      {
+        "code": "069500",
+        "target_bps": 2000,
+        "cap_bps": 4000
+      },
+      {
+        "code": "360200",
+        "target_bps": 4000,
+        "cap_bps": 4000
+      }
+    ]
+  },
+  "maximum_product_bps": 4000,
+  "maximum_issuer_bps": 5000,
+  "maximum_benchmark_bps": 4000,
+  "maximum_equity_bps": 6000,
+  "maximum_foreign_bps": 4000,
+  "minimum_holding_days_by_role": {
+    "KRW_SHORT_BOND": 180,
+    "KR_BROAD_EQUITY": 1825,
+    "US_BROAD_EQUITY": 1825,
+    "KRW_AGG_BOND": 1095,
+    "KRW_GOVT_INTERMEDIATE": 1095
+  },
+  "scenario_shock_bps_by_role": {
+    "KRW_SHORT_BOND": 500,
+    "KR_BROAD_EQUITY": 6000,
+    "US_BROAD_EQUITY": 6000,
+    "KRW_AGG_BOND": 2000,
+    "KRW_GOVT_INTERMEDIATE": 1500
+  },
+  "stress_budget_bps_by_loss_band": {
+    "LOSS_NONE": 0,
+    "LOSS_UNDER_5": 0,
+    "LOSS_5_10": 500,
+    "LOSS_10_20": 1000,
+    "LOSS_20_30": 2000,
+    "LOSS_30_PLUS": 3000
+  },
+  "selection": {
+    "default_codes": [
+      "153130",
+      "069500",
+      "360200"
+    ],
+    "reference_alternative_codes": [
+      "214980",
+      "379800",
+      "360750"
+    ],
+    "automatic_substitution": false,
+    "renormalization": false,
+    "basis": "원화 단기 국채/통안채·국내 대표지수·미국 대표지수 역할. 비용만으로 최적 상품을 판정하지 않음. 동일 지수 대체 상품은 자동 중복 편입하지 않음."
+  },
+  "assumption_basis": {
+    "risk_mapping": "서비스의 보수적 탐색용 교차 제한. 세 응답별 최소 허용 등급 숫자 중 최댓값을 취함. 운용사 1~6등급을 고객 손실률이나 법정 적합성 등급으로 환산하지 않음.",
+    "weights": "월 신규 후보의 일부만 배정하는 검토 시작값. 최적화·수익률 검증·법정 상한이 아님. 보호/목표금 등 원래 월 후보 산식을 바꾸지 않음.",
+    "stress": "주식 -60%, 단기채 -5%, 종합채 -20%, 중기국채 -15%를 동시에 가정하는 내부 역풍 시나리오. 상관관계 분산 할인 없음. 통계적 최대손실·VaR·보증 아님.",
+    "budget": "손실 허용 구간의 하단을 보수적으로 사용한 서비스 스트레스 한도. 5% 미만 구간은 정확한 허용치가 없어 0으로 보류. 전체 보유자산 손실을 통제하지 않음.",
+    "concentration": "단일 상품40%, 운용사50%, 동일 기초지수 그룹40%, 주식 합계60%, 해외기초자산40%는 신규 월 후보 분모의 내부 비중 한도. 운용사 집중은 기초자산 신용위험 한도와 다름.",
+    "horizon": "180/1095/1825일은 내부 검토 최소기간. 약관상 의무 보유기간·적정 회복기간·수익보장이 아님.",
+    "freshness": "위험/총보수/보수비용의 자료연령365일과 조사 갱신30일은 내부 운영기준. 준법감시인 광고 승인기간을 데이터 유효기간으로 사용하지 않음."
+  },
+  "official_references": [
+    {
+      "topic": "금융상품 위험등급 체계 및 별도 유동성 검토",
+      "url": "https://www.fsc.go.kr/no010101/79327",
+      "published_on": "2023-01-25"
+    },
+    {
+      "topic": "회사별 투자권유준칙·적합성 절차. 표준준칙이 모든 고객의 공통 투자비중을 정하지 않음",
+      "url": "https://law.kofia.or.kr/service/law/lawFullScreenContent.do?historySeq=1787&seq=149",
+      "amended_on": "2026-04-09"
+    },
+    {
+      "topic": "ETF T+2 영업일 결제; 거래 체결/출금일은 별도",
+      "url": "https://regulation.krx.co.kr/contents/RGL/03/03060102/RGL03060102.jsp"
+    }
+  ],
+  "financial_validation": {
+    "state": "DETERMINISTIC_SCENARIO_REVIEW_ONLY",
+    "backtest_completed": false,
+    "loss_guarantee": false,
+    "holdings_lookthrough_completed": false,
+    "live_tradability_verified": false,
+    "isa_irp_pension_account_eligibility_verified": false,
+    "final_customer_recommendation": false
+  }
 }

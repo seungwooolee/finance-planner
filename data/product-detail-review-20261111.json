@@ -1,0 +1,5127 @@
+{
+  "schema_version": "DION-PRODUCT-DETAIL-REVIEW-0.2",
+  "reviewed_on": "2026-11-11",
+  "source_universe": "기존 공식 식별 확인 78개; 과거 제외22개는 복원하지 않음",
+  "method": "78개 전부 공식 자료 검색/대조. 검색 발췌는 같은 코드의 행·페이지에 연결될 때만 수치 채택. 최신성/충돌 미해소는 보류.",
+  "scope": "공식 공시의 특정 기준일 사실과 서비스 분류. 최신 매매 가능/계좌 적합성/고객 최종 권유 승인은 검증하지 않음.",
+  "summary": {
+    "reviewed_count": 78,
+    "enabled_for_preview_count": 6,
+    "state_counts": {
+      "VERIFIED_FOR_PREVIEW": 6,
+      "HOLD_EVIDENCE": 15,
+      "EXCLUDED_DEFAULT_POLICY": 57
+    },
+    "ledger_ref": "data/product-detail-review-20261111.json",
+    "live_tradability": "NOT_VERIFIED",
+    "risk_grade_recorded_count": 35,
+    "base_fee_recorded_count": 41,
+    "expense_recorded_count": 25
+  },
+  "sources": {
+    "Sf515d82b6900": {
+      "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-03-31",
+      "observed_on": "2026-11-11",
+      "locator": "PDF 14쪽, 종목코드 069500 상품 카드",
+      "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f"
+    },
+    "S0f1498aad62f": {
+      "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-03-31",
+      "observed_on": "2026-11-11",
+      "locator": "PDF 14쪽, 종목코드 229200 상품 카드",
+      "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f"
+    },
+    "S8680bb0dff4e": {
+      "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-03-31",
+      "observed_on": "2026-11-11",
+      "locator": "PDF 15쪽, 종목코드 379800 상품 카드",
+      "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f"
+    },
+    "S2b9c6ffe841f": {
+      "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-03-31",
+      "observed_on": "2026-11-11",
+      "locator": "PDF 15쪽, 종목코드 379810 상품 카드",
+      "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f"
+    },
+    "Saac087ad61ac": {
+      "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-03-31",
+      "observed_on": "2026-11-11",
+      "locator": "PDF 16쪽, 종목코드 091160 상품 카드",
+      "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f"
+    },
+    "S95edf6eda33d": {
+      "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-03-31",
+      "observed_on": "2026-11-11",
+      "locator": "PDF 17쪽, 종목코드 487230 상품 카드",
+      "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f"
+    },
+    "S9fc7475cafcc": {
+      "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-03-31",
+      "observed_on": "2026-11-11",
+      "locator": "PDF 19쪽, 종목코드 498400 상품 카드",
+      "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f"
+    },
+    "S0219d1495ad5": {
+      "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-03-31",
+      "observed_on": "2026-11-11",
+      "locator": "PDF 21쪽, 종목코드 441640 상품 카드",
+      "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f"
+    },
+    "S202a4cda99f6": {
+      "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2025-12-31",
+      "observed_on": "2026-11-11",
+      "locator": "PDF 22쪽, 종목코드 488770 상품 카드",
+      "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f"
+    },
+    "Sad92967c2650": {
+      "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-10-13",
+      "observed_on": "2026-11-11",
+      "locator": "상품정보: 153130; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용"
+    },
+    "S49d2d41afa62": {
+      "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-10-13",
+      "observed_on": "2026-11-11",
+      "locator": "상품정보: 214980; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용"
+    },
+    "Sf25b142dcb76": {
+      "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-10-13",
+      "observed_on": "2026-11-11",
+      "locator": "상품정보: 498400; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용"
+    },
+    "S70bfc2dca6a0": {
+      "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-10-13",
+      "observed_on": "2026-11-11",
+      "locator": "상품정보: 441640; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용"
+    },
+    "Sbaa4651d3002": {
+      "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-10-13",
+      "observed_on": "2026-11-11",
+      "locator": "상품정보: 489250; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용"
+    },
+    "Sa33fc4818f22": {
+      "url": "https://papi.aceetf.co.kr/api/funds/K55101D78195",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-11-10",
+      "observed_on": "2026-11-11",
+      "locator": "공식 사이트 공개 API: stockCd, riskLevelCode, stdDt",
+      "sha256": "a4f9cae52ae96848b3b9954d18599322c2563d52447ac52ea31002acb067eaa2"
+    },
+    "Se9620dbc4e50": {
+      "url": "https://papi.aceetf.co.kr/api/funds/K55101D78195/product",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-11-10",
+      "observed_on": "2026-11-11",
+      "locator": "공식 사이트 공개 API: baseIndexName, total_FEE와 보수 성분",
+      "sha256": "a4f9cae52ae96848b3b9954d18599322c2563d52447ac52ea31002acb067eaa2"
+    },
+    "S753a5f608399": {
+      "url": "https://ftp.kim.co.kr/doc/M00001/M00028/20260209/215758/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS%26P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81%28%EC%A3%BC%EC%8B%9D%29%EA%B0%84%EC%9D%B4%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2025-12-31",
+      "observed_on": "2026-11-11",
+      "locator": "간이투자설명서 1쪽 위험등급/비용표, 2~3쪽 환율위험. 효력발생일 20260213",
+      "sha256": "a79df46f21860f8fb767e0789e1de6db4fbc0daa325bd8ff6a8fbd10ef418276"
+    },
+    "Sc9b341c88595": {
+      "url": "https://papi.aceetf.co.kr/api/funds/K55101DB1182",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-11-10",
+      "observed_on": "2026-11-11",
+      "locator": "공식 사이트 공개 API: stockCd, riskLevelCode, stdDt",
+      "sha256": "38ffbc00fa6e9f6758864752181c42f262a5bda6fc71de2a0c709634a45540a4"
+    },
+    "S9f0ffc4674ad": {
+      "url": "https://papi.aceetf.co.kr/api/funds/K55101DB1182/product",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-11-10",
+      "observed_on": "2026-11-11",
+      "locator": "공식 사이트 공개 API: baseIndexName, total_FEE와 보수 성분",
+      "sha256": "38ffbc00fa6e9f6758864752181c42f262a5bda6fc71de2a0c709634a45540a4"
+    },
+    "S1591832e1f55": {
+      "url": "https://ftp.kim.co.kr/doc/M00001/M00028/20260511/218566/1/9002A_20260515_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%AD%EB%82%98%EC%8A%A4%EB%8B%A5100%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81%28%EC%A3%BC%EC%8B%9D%29%EA%B0%84%EC%9D%B4%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2025-12-31",
+      "observed_on": "2026-11-11",
+      "locator": "간이투자설명서 1쪽 위험등급/비용표, 2~3쪽 환율위험. 효력발생일 20260515",
+      "sha256": "40e74cc8f85c8d2ef6c6e287379adde9738879b8636a93e6b4a37abea6bf86c6"
+    },
+    "S43530172ab79": {
+      "url": "https://papi.aceetf.co.kr/api/funds/K55101DN4471",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-11-10",
+      "observed_on": "2026-11-11",
+      "locator": "공식 사이트 공개 API: stockCd, riskLevelCode, stdDt",
+      "sha256": "e30085636d39533716fa80e221d11384416ff8e468401c13d2f172f24dfdb75c"
+    },
+    "Sb74b83d91d8f": {
+      "url": "https://papi.aceetf.co.kr/api/funds/K55101DN4471/product",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-11-10",
+      "observed_on": "2026-11-11",
+      "locator": "공식 사이트 공개 API: baseIndexName, total_FEE와 보수 성분",
+      "sha256": "e30085636d39533716fa80e221d11384416ff8e468401c13d2f172f24dfdb75c"
+    },
+    "S23a21c0c23d4": {
+      "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-02-13",
+      "observed_on": "2026-11-11",
+      "locator": "운용사 제작 자료 PDF 44쪽 360750 상품개요",
+      "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a"
+    },
+    "S2c31458081a1": {
+      "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-02-13",
+      "observed_on": "2026-11-11",
+      "locator": "운용사 제작 자료 PDF 45쪽 133690 상품개요",
+      "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a"
+    },
+    "Sd3fd190ed2ec": {
+      "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-02-13",
+      "observed_on": "2026-11-11",
+      "locator": "운용사 제작 자료 PDF 46쪽 102110 상품개요",
+      "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a"
+    },
+    "Se7b3961b128c": {
+      "url": "https://securities.miraeasset.com/public/hks4412/040/260310.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-02-12",
+      "observed_on": "2026-11-11",
+      "locator": "PDF 1쪽 232080 상품개요 및 준법감시인 심사 날짜; 거래비용 회계기간 2024.12.31~2025.12.31",
+      "sha256": "0e5500f4bc52d733ef9ec975b647ea8a09616532e9bdb45ca581f7966aa2a49e"
+    },
+    "S1f265d4571d7": {
+      "url": "https://www.riseetf.co.kr/upload/cdn/2026/01/09/20260109a7fff17c400a415.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2025-12-30",
+      "observed_on": "2026-11-11",
+      "locator": "148020 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "S87e7e82f53ca": {
+      "url": "https://www.soletf.co.kr/ko/fund/etf/210942",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "446720 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "Sa350d7478c51": {
+      "url": "https://plusetf.co.kr/insight/report/detail?n=1805",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-06-18",
+      "observed_on": "2026-11-11",
+      "locator": "161510 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "Sabc64657edad": {
+      "url": "https://m.samsungfund.com/sheet/20241108/2ETF97_20241031.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2024-10-31",
+      "observed_on": "2026-11-11",
+      "locator": "279540 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "S7b768281f599": {
+      "url": "https://m.samsungfund.com/sheet/20251204/2ETF92_20251130.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2025-11-30",
+      "observed_on": "2026-11-11",
+      "locator": "278530 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "S95bddf21e712": {
+      "url": "https://www.riseetf.co.kr/pdf/viewer/15425?file=%2Fupload%2Fcdn%2F2026%2F07%2F08%2F2026070898881336e9994bf.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-06-30",
+      "observed_on": "2026-11-11",
+      "locator": "495050 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "S60a0acf4c2db": {
+      "url": "https://www.timeetf.co.kr/m11_view.php?idx=2",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "426030 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "Sa6b65809f6e0": {
+      "url": "https://www.hanaroetf.com/investment/insight/1efi8yV2oQUEF02q",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "395270 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "S37dd727b9012": {
+      "url": "https://www.plusetf.co.kr/insight/report/detail?n=1063",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2025-10-22",
+      "observed_on": "2026-11-11",
+      "locator": "152100 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "S1c581675ad29": {
+      "url": "https://riseetf.co.kr/pdf/viewer/14974?file=%2Fupload%2Fcdn%2F2026%2F05%2F12%2F202605122fa85cb2ba43487.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-04-30",
+      "observed_on": "2026-11-11",
+      "locator": "469070 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "S3635a931bff9": {
+      "url": "https://www.plusetf.co.kr/upload/fund/PLUS_K%EB%B0%A9%EC%82%B0_20260430.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-04-30",
+      "observed_on": "2026-11-11",
+      "locator": "449450 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "S794b88646525": {
+      "url": "https://www.soletf.co.kr/ko/fund/etf/211028",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "466920 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "Sfa3124f4f857": {
+      "url": "https://www.soletf.co.kr/ko/fund/etf/211016",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "464600 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "S1648da216a71": {
+      "url": "https://www.soletf.co.kr/ko/fund/etf/211038",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "469830 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "Sc7823d79df21": {
+      "url": "https://m.samsungfund.com/sheet/20220722/2ETF19_20220630.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2022-06-30",
+      "observed_on": "2026-11-11",
+      "locator": "114260 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "Sdf5978647aa4": {
+      "url": "https://www.samsungfund.com/upload/kodex/newsroom/20250722174437650.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2025-06-30",
+      "observed_on": "2026-11-11",
+      "locator": "439870 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "Sa5f4bfe18403": {
+      "url": "https://www.plusetf.co.kr/upload/fund/PLUS_%EA%B5%AD%EC%B1%84%EC%84%A0%EB%AC%BC3%EB%85%84_20260228.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-02-28",
+      "observed_on": "2026-11-11",
+      "locator": "298340 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "S0597d880b275": {
+      "url": "https://m.samsungfund.com/sheet/20260511/2ETF88_20260430.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-04-30",
+      "observed_on": "2026-11-11",
+      "locator": "273130 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "S6898ad1b75b9": {
+      "url": "https://www.soletf.co.kr/ko/fund/etf/210932",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "436140 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "S3c3200baef1a": {
+      "url": "https://www.plusetf.co.kr/upload/fund/PLUS_%EC%A2%85%ED%95%A9%EC%B1%84%EA%B6%8C%28AA-%EC%9D%B4%EC%83%81%29_%EC%95%A1%ED%8B%B0%EB%B8%8C_20260228.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-02-28",
+      "observed_on": "2026-11-11",
+      "locator": "451000 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "Sc9237f6d6396": {
+      "url": "https://www.kiwoometf.com/service/etf/KO02010200M?gcode=454780",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "454780 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "S486fb8bf95fa": {
+      "url": "https://riseetf.co.kr/prod/finderDetail/44G6",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "481340 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "S8ebe5789fd54": {
+      "url": "https://riseetf.co.kr/prod/finderDetail/44D2",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "437350 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "Scc3bda66a944": {
+      "url": "https://m.samsungfund.com/sheet/20251204/2ETFG6_20251130.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2025-11-30",
+      "observed_on": "2026-11-11",
+      "locator": "423160 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "S90c5bd19a8d6": {
+      "url": "https://m.samsungfund.com/sheet/20250805/2ETFJ8_20250731.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2025-07-31",
+      "observed_on": "2026-11-11",
+      "locator": "459580 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "S1ffbd7b76c33": {
+      "url": "https://m.samsungfund.com/sheet/20250402/2ETFM7_20250331.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2025-03-31",
+      "observed_on": "2026-11-11",
+      "locator": "481050 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "S3a1ad9b08cbe": {
+      "url": "https://m.samsungfund.com/sheet/20260305/2ETFB1_20260228.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2026-02-28",
+      "observed_on": "2026-11-11",
+      "locator": "305720 상품 행/상품개요; 날짜가 없으면 최신성 미확정"
+    },
+    "Sde7b3c4f25ca": {
+      "url": "https://www.samsungfund.com/upload/kodex/newsroom/20250722174437650.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2025-06-30",
+      "observed_on": "2026-11-11",
+      "locator": "273130 상품 카드: 직전 회계연도 비용"
+    },
+    "S5d95d76043a8": {
+      "url": "https://regulation.krx.co.kr/contents/RGL/03/03060102/RGL03060102.jsp",
+      "kind": "OFFICIAL_MARKET_RULE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "ETF 거래 결제: 매매체결일로부터 2영업일. 휴장/매도 체결/개별 증권사 출금은 별도"
+    },
+    "S448616f6a9fa": {
+      "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:2"
+    },
+    "S76a7e9602939": {
+      "url": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=10211",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:3"
+    },
+    "S33551f4f0f7f": {
+      "url": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=22920",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:4"
+    },
+    "S7ecab4ccba0f": {
+      "url": "https://kind.krx.co.kr/external/2026/10/28/000603/20261028001589/68659.htm",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:5"
+    },
+    "S161bc9424bcb": {
+      "url": "https://kind.krx.co.kr/disclosure/etfisudetail.do?isuCd=KR7360750004&menuIndex=0&method=searchEftIsuDetail",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:6"
+    },
+    "S86f09fc7f7d8": {
+      "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:7"
+    },
+    "Sfc6a2602037f": {
+      "url": "https://kind.krx.co.kr/disclosure/etfisudetail.do?isuCd=KR7133690008&menuIndex=0&method=searchEftIsuDetail",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:8"
+    },
+    "Sacd381f2d17c": {
+      "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260211093328479.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:9"
+    },
+    "S5bc8f8bb240a": {
+      "url": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=36738",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:10"
+    },
+    "Sa3a1742e3abe": {
+      "url": "https://www.tigeretf.com/upload/etf/20250611092530009636.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:11"
+    },
+    "Se0ee58f0786d": {
+      "url": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=14802",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:12"
+    },
+    "S8355eb4951ae": {
+      "url": "https://www.samsungfund.com/upload/kodex/newsroom/20250723085615455.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:13"
+    },
+    "Sc7a561dc3813": {
+      "url": "https://www.tigeretf.com/upload/etf/20250611092637005053.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:14"
+    },
+    "S5659bf569648": {
+      "url": "https://www.soletf.co.kr/ko/fund/etf/210942",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:15"
+    },
+    "Saffc3607b98d": {
+      "url": "https://m.samsungfund.com/sheet/20250805/2ETFN9_20250731.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:16"
+    },
+    "S01c61a44fb74": {
+      "url": "https://kind.krx.co.kr/external/2026/10/13/000298/20261013000823/68659.htm",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:17"
+    },
+    "S9f4c5e9dd001": {
+      "url": "https://www.plusetf.co.kr/product/detail?n=006273",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:18"
+    },
+    "S4f66c1aa896e": {
+      "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=75493",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:19"
+    },
+    "S3d1fbbe2a7f0": {
+      "url": "https://www.tigeretf.com/upload/etf/20250404024858003268.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:20"
+    },
+    "S8c46f099ca7b": {
+      "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=79834",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:21"
+    },
+    "S5bc1990d19ec": {
+      "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=75493",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:22"
+    },
+    "S17208af15eb4": {
+      "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=75493",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:23"
+    },
+    "Sfc74f9c89e4f": {
+      "url": "https://www.riseetf.co.kr/prod/finderDetail/44H7",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:24"
+    },
+    "Sbb1da2bb20a3": {
+      "url": "https://kind.krx.co.kr/external/2026/10/28/000603/20261028001589/68659.htm",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:25"
+    },
+    "Sfe00ea1f3041": {
+      "url": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=38117",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:26"
+    },
+    "Sf85fe992c01d": {
+      "url": "https://www.aceetf.co.kr/cs/notice/5102",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:27"
+    },
+    "S57f76b8bb780": {
+      "url": "https://timeetf.co.kr/m11_view.php?cate=&idx=2",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:28"
+    },
+    "S54f51426b0c6": {
+      "url": "https://www.tigeretf.com/upload/etf/20250611092528006050.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:29"
+    },
+    "S3d20685f79d1": {
+      "url": "https://m.samsungfund.com/etf/product/view.do?id=2ETF07",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:31"
+    },
+    "S8ae9981ea564": {
+      "url": "https://www.tigeretf.com/upload/etf/20240311033416007155.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:32"
+    },
+    "S69e452fe338b": {
+      "url": "https://www.hanaroetf.com/fund/etf-data-board",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:33"
+    },
+    "S097a034c54d6": {
+      "url": "https://m.samsungfund.com/upload/kodex/newsroom/20260325170636388.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:34"
+    },
+    "S14d7fc417b6b": {
+      "url": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=15210",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:37"
+    },
+    "S8ed56095438a": {
+      "url": "https://www.riseetf.co.kr/prod/finderDetail/44F5",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:38"
+    },
+    "Sf3327499baa5": {
+      "url": "https://www.samsungfund.com/upload/kodex/newsroom/20251020144727705.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:39"
+    },
+    "Sb0b745cb94fa": {
+      "url": "https://www.tigeretf.com/upload/etf/20250513024051006675.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:40"
+    },
+    "S5a49db6d5793": {
+      "url": "https://www.plusetf.co.kr/insight/report/detail?n=2046",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:42"
+    },
+    "S7d5261647f88": {
+      "url": "https://www.soletf.co.kr/ko/fund/etf/211028",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:44"
+    },
+    "S49db5823fd06": {
+      "url": "https://www.tigeretf.com/upload/etf/20250708095908009201.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:45"
+    },
+    "Sf00964219b1e": {
+      "url": "https://investments.miraeasset.com/tigeretf/upload/etf/20250804095323002538.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:46"
+    },
+    "S5d790c804812": {
+      "url": "https://m.samsungfund.com/etf/product/view.do?id=2ETFB1",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:47"
+    },
+    "S37ec304f8cf5": {
+      "url": "https://www.samsungfund.com/etf/product/pensionlist.do",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:48"
+    },
+    "Sedede1978e68": {
+      "url": "https://www.samsungfund.com/upload/kodex/newsroom/2026011317101936.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:49"
+    },
+    "S83266b94d4ca": {
+      "url": "https://www.samsungfund.com/upload/kodex/newsroom/20250723085615455.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:50"
+    },
+    "Sf24ffc77c9f3": {
+      "url": "https://www.soletf.co.kr/ko/fund/etf/211016",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 01_주식형:51"
+    },
+    "Sa11d6aa1641e": {
+      "url": "https://www.samsungfund.com/etf/product/ytm.do",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 02_채권형:2"
+    },
+    "S46127e938216": {
+      "url": "https://m.samsungfund.com/sheet/20250204/2ETF35_20250131.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2025-01-31",
+      "observed_on": "2026-11-11",
+      "locator": "153130 기초지수와 원화 단기채권 운용전략; 위험·비용·상장참조는 2026.10.13 공지 별도 대조"
+    },
+    "S51ce0bf4c426": {
+      "url": "https://www.samsungfund.com/etf/product/ytm.do",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 02_채권형:3"
+    },
+    "Sd6a0df82a566": {
+      "url": "https://m.samsungfund.com/sheet/20241021/2ETF48_20240930.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": "2024-09-30",
+      "observed_on": "2026-11-11",
+      "locator": "214980 기초지수와 원화 단기채권 운용전략; 위험·비용·상장참조는 2026.10.13 공지 별도 대조"
+    },
+    "Se4db94f2a569": {
+      "url": "https://www.soletf.co.kr/ko/fund/etf/211038",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 02_채권형:4"
+    },
+    "S3d09adf811f3": {
+      "url": "https://www.tigeretf.com/upload/etf/20250708095820005220.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 02_채권형:5"
+    },
+    "S760c3b57eaf5": {
+      "url": "https://www.samsungfund.com/etf/product/ytm.do",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 02_채권형:6"
+    },
+    "S3f4b8d74b162": {
+      "url": "https://www.samsungfund.com/etf/product/ytm.do",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 02_채권형:7"
+    },
+    "S1a84e2b1f3cf": {
+      "url": "https://www.samsungfund.com/etf/product/ytm.do",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 02_채권형:8"
+    },
+    "Sfe8546394f4d": {
+      "url": "https://www.plusetf.co.kr/product/detail?n=006317",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 02_채권형:9"
+    },
+    "S43c9124d02ce": {
+      "url": "https://m.samsungfund.com/upload/kodex/newsroom/20250722174437650.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 02_채권형:10"
+    },
+    "Sfa04dda91795": {
+      "url": "https://www.soletf.co.kr/ko/fund/etf/210932",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 02_채권형:11"
+    },
+    "Sa422d94ad6eb": {
+      "url": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=35654",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 02_채권형:12"
+    },
+    "S37de95a8a0c8": {
+      "url": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=45154",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 02_채권형:13"
+    },
+    "S5a159f69d049": {
+      "url": "https://www.plusetf.co.kr/product/detail?n=006358",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 02_채권형:14"
+    },
+    "Sdcb70cc51aab": {
+      "url": "https://www.kiwoometf.com/service/etf/KO02010200M?gcode=454780",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 02_채권형:15"
+    },
+    "Sc3e6567fcd5b": {
+      "url": "https://kind.krx.co.kr/external/2026/01/13/000236/20260113000595/68656.htm",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 02_채권형:16"
+    },
+    "Sa810e325e6f9": {
+      "url": "https://kind.krx.co.kr/external/2026/08/07/000092/20260807000169/68656.htm",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 02_채권형:17"
+    },
+    "S5a8f303ddf28": {
+      "url": "https://www.samsungfund.com/etf/product/ytm.do",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 02_채권형:18"
+    },
+    "S0248b6018820": {
+      "url": "https://www.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 02_채권형:19"
+    },
+    "Scc48619af97e": {
+      "url": "https://kind.krx.co.kr/external/2026/10/28/000603/20261028001589/68659.htm",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 02_채권형:20"
+    },
+    "Sa5a27589c3a6": {
+      "url": "https://kind.krx.co.kr/external/2026/07/07/000259/20260707000645/68671.htm",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 02_채권형:21"
+    },
+    "Seed04a128cfc": {
+      "url": "https://www.riseetf.co.kr/prod/finderDetail/44G6",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 02_채권형:22"
+    },
+    "S0029bae2e91c": {
+      "url": "https://www.samsungfund.com/etf/lounge/notice-view.do?no=58735",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 02_채권형:23"
+    },
+    "Sdd8832ea40ca": {
+      "url": "https://www.riseetf.co.kr/prod/finderDetail/44D2",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 02_채권형:24"
+    },
+    "Sfd0753ab5bb5": {
+      "url": "https://www.tigeretf.com/upload/etf/20250708095909001843.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 02_채권형:25"
+    },
+    "Sb8a1537f551b": {
+      "url": "https://www.samsungfund.com/upload/guide/230525_Kodex_bond_guidebook.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 03_현금성:6"
+    },
+    "S923ed5704cb5": {
+      "url": "https://m.samsungfund.com/sheet/20250805/2ETFJ8_20250731.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 03_현금성:7"
+    },
+    "S32ca012a9035": {
+      "url": "https://www.tigeretf.com/upload/etf/20241007064830005296.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 03_현금성:8"
+    },
+    "S8378b6f845a2": {
+      "url": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=48105",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 03_현금성:9"
+    },
+    "S04b59b7deeb9": {
+      "url": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=48877",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 03_현금성:10"
+    },
+    "Se72bb793f4bd": {
+      "url": "https://investments.miraeasset.com/tigeretf/upload/etf/20250804095125001001.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 03_현금성:11"
+    },
+    "S0a134d690829": {
+      "url": "https://m.samsungfund.com/etf/product/view.do?id=2ETFP4",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 04_파생전략형:2"
+    },
+    "S9ba1edb767b7": {
+      "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 04_파생전략형:3"
+    },
+    "S7775a3101b58": {
+      "url": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=48629",
+      "kind": "OFFICIAL_DISCLOSURE",
+      "source_as_of": null,
+      "observed_on": "2026-11-11",
+      "locator": "기존 공식 명칭·코드 원장 04_파생전략형:4"
+    }
+  },
+  "products": [
+    {
+      "code": "069500",
+      "name": "KODEX 200",
+      "identity_source_row": "01_주식형:2",
+      "identity_source_id": "S448616f6a9fa",
+      "review_state": "VERIFIED_FOR_PREVIEW",
+      "service_role": "KR_BROAD_EQUITY",
+      "recommendation_eligible": true,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 2,
+          "source_id": "Sf515d82b6900",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.150",
+          "source_id": "Sf515d82b6900",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_total_expense_percent": {
+          "value": "0.1615",
+          "source_id": "Sf515d82b6900",
+          "state": "VERIFIED_AS_OF"
+        },
+        "transaction_cost_percent": {
+          "value": "0.0283",
+          "source_id": "Sf515d82b6900",
+          "state": "VERIFIED_AS_OF"
+        },
+        "asset_class": {
+          "value": "EQUITY",
+          "source_id": "Sf515d82b6900",
+          "state": "VERIFIED_AS_OF"
+        },
+        "fx_exposed": {
+          "value": false,
+          "source_id": "Sf515d82b6900",
+          "state": "VERIFIED_AS_OF"
+        },
+        "foreign_underlying": {
+          "value": false,
+          "source_id": "Sf515d82b6900",
+          "state": "VERIFIED_AS_OF"
+        },
+        "principal_loss_possible": {
+          "value": true,
+          "source_id": "Sf515d82b6900",
+          "state": "VERIFIED_AS_OF"
+        },
+        "deposit_protected": {
+          "value": false,
+          "source_id": "Sf515d82b6900",
+          "state": "VERIFIED_AS_OF"
+        },
+        "leveraged_inverse": {
+          "value": false,
+          "source_id": "Sf515d82b6900",
+          "state": "VERIFIED_AS_OF"
+        },
+        "listing_reference_confirmed": {
+          "value": true,
+          "source_id": "Sf515d82b6900",
+          "state": "VERIFIED_AS_OF"
+        },
+        "issuer_id": {
+          "value": "SAMSUNG",
+          "source_id": "Sf515d82b6900",
+          "state": "VERIFIED_AS_OF"
+        },
+        "cash_conversion": {
+          "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+          "source_id": "S5d95d76043a8",
+          "state": "REFERENCE_UNDATED"
+        },
+        "benchmark": {
+          "value": "KOSPI 200",
+          "source_id": "Sf515d82b6900",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [],
+      "reasons": [],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+        "https://www.samsungfund.com/upload/kodex/newsroom/2026011317101936.pdf",
+        "https://www.samsungfund.com/upload/kodex/newsroom/20260325170636388.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "102110",
+      "name": "TIGER 200",
+      "identity_source_row": "01_주식형:3",
+      "identity_source_id": "S76a7e9602939",
+      "review_state": "HOLD_EVIDENCE",
+      "service_role": "KR_BROAD_EQUITY",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 2,
+          "source_id": "Sd3fd190ed2ec",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.050",
+          "source_id": "Sd3fd190ed2ec",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_total_expense_percent": {
+          "value": "0.070",
+          "source_id": "Sd3fd190ed2ec",
+          "state": "VERIFIED_AS_OF"
+        },
+        "transaction_cost_percent": {
+          "value": "0.0183",
+          "source_id": "Sd3fd190ed2ec",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "필수 공시 필드·기준일·비용 검증을 모두 통과하지 못함",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [
+        "국내 코스피200 상품 카드에 환율전략 환노출 표기. 해외기초자산/직접 환노출 의미를 추가 확인할 때까지 환노출 값을 확정하지 않고 보류."
+      ],
+      "reviewed_primary_candidate_urls": [
+        "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+        "https://securities.miraeasset.com/public/hks4412/040/20251204.pdf",
+        "https://securities.miraeasset.com/public/hks4412/040/200.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "229200",
+      "name": "KODEX 코스닥150",
+      "identity_source_row": "01_주식형:4",
+      "identity_source_id": "S33551f4f0f7f",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "GROWTH_CONCENTRATED",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 1,
+          "source_id": "S0f1498aad62f",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.250",
+          "source_id": "S0f1498aad62f",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_total_expense_percent": {
+          "value": "0.2825",
+          "source_id": "S0f1498aad62f",
+          "state": "VERIFIED_AS_OF"
+        },
+        "transaction_cost_percent": {
+          "value": "0.0401",
+          "source_id": "S0f1498aad62f",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: GROWTH_CONCENTRATED",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://m.samsungfund.com/upload/kodex/newsroom/20260325170636388.pdf",
+        "https://m.samsungfund.com/sheet/20260106/2ETF54_20251230.pdf",
+        "https://m.samsungfund.com/sheet/20250905/2ETF54_20250829.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "360200",
+      "name": "ACE 미국S&P500",
+      "identity_source_row": "01_주식형:5",
+      "identity_source_id": "S7ecab4ccba0f",
+      "review_state": "VERIFIED_FOR_PREVIEW",
+      "service_role": "US_BROAD_EQUITY",
+      "recommendation_eligible": true,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 2,
+          "source_id": "Sa33fc4818f22",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.0047",
+          "source_id": "Se9620dbc4e50",
+          "state": "VERIFIED_AS_OF"
+        },
+        "benchmark": {
+          "value": "S&P 500 지수",
+          "source_id": "Se9620dbc4e50",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_total_expense_percent": {
+          "value": "0.0707",
+          "source_id": "S753a5f608399",
+          "state": "VERIFIED_AS_OF"
+        },
+        "fx_exposed": {
+          "value": true,
+          "source_id": "S753a5f608399",
+          "state": "VERIFIED_AS_OF"
+        },
+        "principal_loss_possible": {
+          "value": true,
+          "source_id": "S753a5f608399",
+          "state": "VERIFIED_AS_OF"
+        },
+        "deposit_protected": {
+          "value": false,
+          "source_id": "S753a5f608399",
+          "state": "VERIFIED_AS_OF"
+        },
+        "asset_class": {
+          "value": "EQUITY",
+          "source_id": "S753a5f608399",
+          "state": "VERIFIED_AS_OF"
+        },
+        "foreign_underlying": {
+          "value": true,
+          "source_id": "S753a5f608399",
+          "state": "VERIFIED_AS_OF"
+        },
+        "leveraged_inverse": {
+          "value": false,
+          "source_id": "S753a5f608399",
+          "state": "VERIFIED_AS_OF"
+        },
+        "listing_reference_confirmed": {
+          "value": true,
+          "source_id": "S753a5f608399",
+          "state": "VERIFIED_AS_OF"
+        },
+        "issuer_id": {
+          "value": "KIM",
+          "source_id": "S753a5f608399",
+          "state": "VERIFIED_AS_OF"
+        },
+        "cash_conversion": {
+          "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+          "source_id": "S5d95d76043a8",
+          "state": "REFERENCE_UNDATED"
+        }
+      },
+      "unverified_fields": [
+        "transaction_cost_percent"
+      ],
+      "reasons": [
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음",
+        "보수·비용은 확인; 증권거래비용 수치 미확인. 실제 매수 비용/세금 산출에는 사용하지 않음"
+      ],
+      "issues": [
+        "공식 API 소개문구의 과거 0.07%와 구조화 보수 0.0047%가 다름. 간이설명서 비용표와 성분 합계가 일치하는 0.0047%를 총보수로 채택. 총보수·비용 0.0707%는 별도값. 거래비용은 미확인."
+      ],
+      "reviewed_primary_candidate_urls": [],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "360750",
+      "name": "TIGER 미국S&P500",
+      "identity_source_row": "01_주식형:6",
+      "identity_source_id": "S161bc9424bcb",
+      "review_state": "VERIFIED_FOR_PREVIEW",
+      "service_role": "US_BROAD_EQUITY",
+      "recommendation_eligible": true,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 2,
+          "source_id": "S23a21c0c23d4",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.0068",
+          "source_id": "S23a21c0c23d4",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_total_expense_percent": {
+          "value": "0.0868",
+          "source_id": "S23a21c0c23d4",
+          "state": "VERIFIED_AS_OF"
+        },
+        "transaction_cost_percent": {
+          "value": "0.0396",
+          "source_id": "S23a21c0c23d4",
+          "state": "VERIFIED_AS_OF"
+        },
+        "asset_class": {
+          "value": "EQUITY",
+          "source_id": "S23a21c0c23d4",
+          "state": "VERIFIED_AS_OF"
+        },
+        "fx_exposed": {
+          "value": true,
+          "source_id": "S23a21c0c23d4",
+          "state": "VERIFIED_AS_OF"
+        },
+        "foreign_underlying": {
+          "value": true,
+          "source_id": "S23a21c0c23d4",
+          "state": "VERIFIED_AS_OF"
+        },
+        "principal_loss_possible": {
+          "value": true,
+          "source_id": "S23a21c0c23d4",
+          "state": "VERIFIED_AS_OF"
+        },
+        "deposit_protected": {
+          "value": false,
+          "source_id": "S23a21c0c23d4",
+          "state": "VERIFIED_AS_OF"
+        },
+        "leveraged_inverse": {
+          "value": false,
+          "source_id": "S23a21c0c23d4",
+          "state": "VERIFIED_AS_OF"
+        },
+        "listing_reference_confirmed": {
+          "value": true,
+          "source_id": "S23a21c0c23d4",
+          "state": "VERIFIED_AS_OF"
+        },
+        "issuer_id": {
+          "value": "MIRAE_ASSET",
+          "source_id": "S23a21c0c23d4",
+          "state": "VERIFIED_AS_OF"
+        },
+        "cash_conversion": {
+          "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+          "source_id": "S5d95d76043a8",
+          "state": "REFERENCE_UNDATED"
+        },
+        "benchmark": {
+          "value": "S&P 500",
+          "source_id": "S23a21c0c23d4",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [],
+      "reasons": [
+        "대체 후보로만 보존. 기본 배분 슬롯에 자동 추가·대체하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+        "https://securities.miraeasset.com/public/hks4412/040/20251204.pdf",
+        "https://securities.miraeasset.com/public/hks4412/040/2025121501.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "379800",
+      "name": "KODEX 미국S&P500",
+      "identity_source_row": "01_주식형:7",
+      "identity_source_id": "S86f09fc7f7d8",
+      "review_state": "VERIFIED_FOR_PREVIEW",
+      "service_role": "US_BROAD_EQUITY",
+      "recommendation_eligible": true,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 2,
+          "source_id": "S8680bb0dff4e",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.0062",
+          "source_id": "S8680bb0dff4e",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_total_expense_percent": {
+          "value": "0.0738",
+          "source_id": "S8680bb0dff4e",
+          "state": "VERIFIED_AS_OF"
+        },
+        "transaction_cost_percent": {
+          "value": "0.0345",
+          "source_id": "S8680bb0dff4e",
+          "state": "VERIFIED_AS_OF"
+        },
+        "asset_class": {
+          "value": "EQUITY",
+          "source_id": "S8680bb0dff4e",
+          "state": "VERIFIED_AS_OF"
+        },
+        "fx_exposed": {
+          "value": true,
+          "source_id": "S8680bb0dff4e",
+          "state": "VERIFIED_AS_OF"
+        },
+        "foreign_underlying": {
+          "value": true,
+          "source_id": "S8680bb0dff4e",
+          "state": "VERIFIED_AS_OF"
+        },
+        "principal_loss_possible": {
+          "value": true,
+          "source_id": "S8680bb0dff4e",
+          "state": "VERIFIED_AS_OF"
+        },
+        "deposit_protected": {
+          "value": false,
+          "source_id": "S8680bb0dff4e",
+          "state": "VERIFIED_AS_OF"
+        },
+        "leveraged_inverse": {
+          "value": false,
+          "source_id": "S8680bb0dff4e",
+          "state": "VERIFIED_AS_OF"
+        },
+        "listing_reference_confirmed": {
+          "value": true,
+          "source_id": "S8680bb0dff4e",
+          "state": "VERIFIED_AS_OF"
+        },
+        "issuer_id": {
+          "value": "SAMSUNG",
+          "source_id": "S8680bb0dff4e",
+          "state": "VERIFIED_AS_OF"
+        },
+        "cash_conversion": {
+          "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+          "source_id": "S5d95d76043a8",
+          "state": "REFERENCE_UNDATED"
+        },
+        "benchmark": {
+          "value": "S&P 500",
+          "source_id": "S8680bb0dff4e",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [],
+      "reasons": [
+        "대체 후보로만 보존. 기본 배분 슬롯에 자동 추가·대체하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+        "https://www.samsungfund.com/upload/kodex/newsroom/20260211093328479.pdf",
+        "https://m.samsungfund.com/upload/kodex/newsroom/20260427141121713.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "133690",
+      "name": "TIGER 미국나스닥100",
+      "identity_source_row": "01_주식형:8",
+      "identity_source_id": "Sfc6a2602037f",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "GROWTH_CONCENTRATED",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 2,
+          "source_id": "S2c31458081a1",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.0068",
+          "source_id": "S2c31458081a1",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_total_expense_percent": {
+          "value": "0.1268",
+          "source_id": "S2c31458081a1",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: GROWTH_CONCENTRATED",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://securities.miraeasset.com/public/hks4412/040/2025121501.pdf",
+        "https://www.tigeretf.com/upload/etf/20250404024808002792.pdf",
+        "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "379810",
+      "name": "KODEX 미국나스닥100",
+      "identity_source_row": "01_주식형:9",
+      "identity_source_id": "Sacd381f2d17c",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "GROWTH_CONCENTRATED",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 2,
+          "source_id": "S2b9c6ffe841f",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.0062",
+          "source_id": "S2b9c6ffe841f",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_total_expense_percent": {
+          "value": "0.1003",
+          "source_id": "S2b9c6ffe841f",
+          "state": "VERIFIED_AS_OF"
+        },
+        "transaction_cost_percent": {
+          "value": "0.0558",
+          "source_id": "S2b9c6ffe841f",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: GROWTH_CONCENTRATED",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.samsungfund.com/upload/kodex/newsroom/20260211093328479.pdf",
+        "https://www.samsungfund.com/upload/kodex/newsroom/2026011317101936.pdf",
+        "https://www.samsungfund.com/upload/kodex/newsroom/20250912183647389.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "367380",
+      "name": "ACE 미국나스닥100",
+      "identity_source_row": "01_주식형:10",
+      "identity_source_id": "S5bc8f8bb240a",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "GROWTH_CONCENTRATED",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 2,
+          "source_id": "Sc9b341c88595",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.0062",
+          "source_id": "S9f0ffc4674ad",
+          "state": "VERIFIED_AS_OF"
+        },
+        "benchmark": {
+          "value": "NASDAQ100 지수 (NASDAQ100 Index)",
+          "source_id": "S9f0ffc4674ad",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_total_expense_percent": {
+          "value": "0.0971",
+          "source_id": "S1591832e1f55",
+          "state": "VERIFIED_AS_OF"
+        },
+        "fx_exposed": {
+          "value": true,
+          "source_id": "S1591832e1f55",
+          "state": "VERIFIED_AS_OF"
+        },
+        "principal_loss_possible": {
+          "value": true,
+          "source_id": "S1591832e1f55",
+          "state": "VERIFIED_AS_OF"
+        },
+        "deposit_protected": {
+          "value": false,
+          "source_id": "S1591832e1f55",
+          "state": "VERIFIED_AS_OF"
+        },
+        "asset_class": {
+          "value": "EQUITY",
+          "source_id": "S1591832e1f55",
+          "state": "VERIFIED_AS_OF"
+        },
+        "foreign_underlying": {
+          "value": true,
+          "source_id": "S1591832e1f55",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "leveraged_inverse",
+        "transaction_cost_percent",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: GROWTH_CONCENTRATED",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "232080",
+      "name": "TIGER 코스닥150",
+      "identity_source_row": "01_주식형:11",
+      "identity_source_id": "Sa3a1742e3abe",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "GROWTH_CONCENTRATED",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 1,
+          "source_id": "Se7b3961b128c",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.190",
+          "source_id": "Se7b3961b128c",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_total_expense_percent": {
+          "value": "0.220",
+          "source_id": "Se7b3961b128c",
+          "state": "VERIFIED_AS_OF"
+        },
+        "transaction_cost_percent": {
+          "value": "0.0499",
+          "source_id": "Se7b3961b128c",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: GROWTH_CONCENTRATED",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [
+        "검색 결과의 2등급은 인접 코스닥글로벌 상품의 값. 232080 상품행은 1등급. 기본 코어 범위에서 제외."
+      ],
+      "reviewed_primary_candidate_urls": [
+        "https://www.tigeretf.com/upload/etf/20250611092530009636.pdf",
+        "https://securities.miraeasset.com/public/hks4412/040/260310.pdf",
+        "https://investments.miraeasset.com/tigeretf/upload/etf/20250708095823001531.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "148020",
+      "name": "RISE 200",
+      "identity_source_row": "01_주식형:12",
+      "identity_source_id": "Se0ee58f0786d",
+      "review_state": "HOLD_EVIDENCE",
+      "service_role": "KR_BROAD_EQUITY",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "annual_base_fee_percent": {
+          "value": "0.017",
+          "source_id": "S1f265d4571d7",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_total_expense_percent": {
+          "value": "0.040",
+          "source_id": "S1f265d4571d7",
+          "state": "VERIFIED_AS_OF"
+        },
+        "transaction_cost_percent": {
+          "value": "0.0139",
+          "source_id": "S1f265d4571d7",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "필수 공시 필드·기준일·비용 검증을 모두 통과하지 못함",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.riseetf.co.kr/upload/cdn/2026/01/09/20260109a7fff17c400a415.pdf",
+        "https://www.riseetf.co.kr/upload/cdn/2026/03/10/2026031045b10efbe54f4aa.pdf",
+        "https://www.riseetf.co.kr/prod/finderDetail/4435?searchFlag=viewtab2"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "278530",
+      "name": "KODEX 200TR",
+      "identity_source_row": "01_주식형:13",
+      "identity_source_id": "S8355eb4951ae",
+      "review_state": "HOLD_EVIDENCE",
+      "service_role": "KR_BROAD_EQUITY",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 2,
+          "source_id": "S7b768281f599",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.050",
+          "source_id": "S7b768281f599",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "필수 공시 필드·기준일·비용 검증을 모두 통과하지 못함",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://m.samsungfund.com/upload/kodex/newsroom/20250722174437650.pdf",
+        "https://m.samsungfund.com/sheet/20250707/2ETF92_20250630.pdf",
+        "https://m.samsungfund.com/sheet/20250610/2ETF92_20250530.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "458730",
+      "name": "TIGER 미국배당다우존스",
+      "identity_source_row": "01_주식형:14",
+      "identity_source_id": "Sc7a561dc3813",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "FACTOR_DIVIDEND",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: FACTOR_DIVIDEND",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.tigeretf.com/upload/etf/20250804095349009577.pdf",
+        "https://www.tigeretf.com/upload/etf/20250611092637005053.pdf",
+        "https://investments.miraeasset.com/tigeretf/upload/etf/20240607044945007745.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "446720",
+      "name": "SOL 미국배당다우존스",
+      "identity_source_row": "01_주식형:15",
+      "identity_source_id": "S5659bf569648",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "FACTOR_DIVIDEND",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "annual_base_fee_percent": {
+          "value": "0.010",
+          "source_id": "S87e7e82f53ca",
+          "state": "REFERENCE_UNDATED"
+        }
+      },
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: FACTOR_DIVIDEND",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.soletf.co.kr/ko/main",
+        "https://www.soletf.co.kr/ko/fund/etf/210942",
+        "https://www.soletf.co.kr/ko/main?selectedLanguage=ko"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "489250",
+      "name": "KODEX 미국배당다우존스",
+      "identity_source_row": "01_주식형:16",
+      "identity_source_id": "Saffc3607b98d",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "FACTOR_DIVIDEND",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 2,
+          "source_id": "Sbaa4651d3002",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.0099",
+          "source_id": "Sbaa4651d3002",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_total_expense_percent": {
+          "value": "0.0887",
+          "source_id": "Sbaa4651d3002",
+          "state": "VERIFIED_AS_OF"
+        },
+        "transaction_cost_percent": {
+          "value": "0.0863",
+          "source_id": "Sbaa4651d3002",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: FACTOR_DIVIDEND",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [
+        "2025 자료의 합성총보수 0.3741%와 2026.10.13의 0.0887%는 다른 기준 자료. 최근 공지값 채택; 배당 전략은 기본 배분 제외."
+      ],
+      "reviewed_primary_candidate_urls": [
+        "https://m.samsungfund.com/upload/kodex/newsroom/20250722174437650.pdf",
+        "https://m.samsungfund.com/sheet/20250707/2ETFN9_20250630.pdf",
+        "https://m.samsungfund.com/sheet/20250805/2ETFN9_20250731.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "402970",
+      "name": "ACE 미국배당다우존스",
+      "identity_source_row": "01_주식형:17",
+      "identity_source_id": "S01c61a44fb74",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "FACTOR_DIVIDEND",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 3,
+          "source_id": "S43530172ab79",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.01",
+          "source_id": "Sb74b83d91d8f",
+          "state": "VERIFIED_AS_OF"
+        },
+        "benchmark": {
+          "value": "Dow Jones U.S. Dividend 100 Price return Index",
+          "source_id": "Sb74b83d91d8f",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: FACTOR_DIVIDEND",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "161510",
+      "name": "PLUS 고배당주",
+      "identity_source_row": "01_주식형:18",
+      "identity_source_id": "S9f4c5e9dd001",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "FACTOR_DIVIDEND",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 2,
+          "source_id": "Sa350d7478c51",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.230",
+          "source_id": "Sa350d7478c51",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_total_expense_percent": {
+          "value": "0.2838",
+          "source_id": "Sa350d7478c51",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: FACTOR_DIVIDEND",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://plusetf.co.kr/insight/report/detail?n=1805",
+        "https://www.plusetf.co.kr/insight/report/detail?n=1243",
+        "https://www.plusetf.co.kr/insight/report/detail?n=1264"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "325020",
+      "name": "KODEX 배당가치",
+      "identity_source_row": "01_주식형:19",
+      "identity_source_id": "S4f66c1aa896e",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "FACTOR_DIVIDEND",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: FACTOR_DIVIDEND",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://m.samsungfund.com/sheet/20250402/2ETFB9_20250331.pdf",
+        "https://m.samsungfund.com/sheet/20240806/2ETFB9_20240731.pdf",
+        "https://m.samsungfund.com/sheet/20250204/2ETFB9_20250131.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "210780",
+      "name": "TIGER 코스피고배당",
+      "identity_source_row": "01_주식형:20",
+      "identity_source_id": "S3d1fbbe2a7f0",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "FACTOR_DIVIDEND",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: FACTOR_DIVIDEND",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.tigeretf.com/upload/etf/20250404024858003268.pdf",
+        "https://www.tigeretf.com/upload/etf/20250513023943002021.pdf",
+        "https://investments.miraeasset.com/tigeretf/upload/etf/20250611092529001803.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "091170",
+      "name": "KODEX 은행",
+      "identity_source_row": "01_주식형:21",
+      "identity_source_id": "S8c46f099ca7b",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SECTOR_THEME",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SECTOR_THEME",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [
+        "서로 다른 과거 자료의 1/2등급이 충돌. 최신 개별 투자설명서 대조 전 위험등급 미확정."
+      ],
+      "reviewed_primary_candidate_urls": [
+        "https://m.samsungfund.com/upload/kodex/newsroom/20241202171319440.pdf",
+        "https://m.samsungfund.com/sheet/20120911/SHEET51517Kodex%EC%9D%80%ED%96%89.pdf",
+        "https://www.samsungfund.com/etf/product/pensionlist.do"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "223190",
+      "name": "KODEX 200가치저변동",
+      "identity_source_row": "01_주식형:22",
+      "identity_source_id": "S5bc1990d19ec",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "FACTOR_DIVIDEND",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: FACTOR_DIVIDEND",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [
+        "검색 결과에 이웃 상품의 위험/비용이 섞여 있어 해당 종목의 현재 위험·비용값을 채택하지 않음."
+      ],
+      "reviewed_primary_candidate_urls": [
+        "https://www.samsungfund.com/upload/guide/230525_Kodex_bond_guidebook.pdf",
+        "https://m.samsungfund.com/sheet/20180312/2ETF51_20180228.pdf",
+        "https://m.samsungfund.com/sheet/20181109/2ETF51_20181031.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "279540",
+      "name": "KODEX 최소변동성",
+      "identity_source_row": "01_주식형:23",
+      "identity_source_id": "S17208af15eb4",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "FACTOR_DIVIDEND",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 3,
+          "source_id": "Sabc64657edad",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.300",
+          "source_id": "Sabc64657edad",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: FACTOR_DIVIDEND",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://m.samsungfund.com/sheet/20241108/2ETF97_20241031.pdf",
+        "https://m.samsungfund.com/sheet/20250305/2ETF97_20250228.pdf",
+        "https://m.samsungfund.com/sheet/20250402/2ETF97_20250331.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "495050",
+      "name": "RISE 코리아밸류업",
+      "identity_source_row": "01_주식형:24",
+      "identity_source_id": "Sfc74f9c89e4f",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "FACTOR_DIVIDEND",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "annual_total_expense_percent": {
+          "value": "0.028",
+          "source_id": "S95bddf21e712",
+          "state": "VERIFIED_AS_OF"
+        },
+        "transaction_cost_percent": {
+          "value": "0.010",
+          "source_id": "S95bddf21e712",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: FACTOR_DIVIDEND",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.riseetf.co.kr/pdf/viewer/15425?file=%2Fupload%2Fcdn%2F2026%2F07%2F08%2F2026070898881336e9994bf.pdf",
+        "https://www.riseetf.co.kr/prod/finderDetail/44H7",
+        "https://riseetf.co.kr/pdf/viewer/14322?file=%2Fupload%2Fcdn%2F2026%2F02%2F09%2F20260209773953b21b50423.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "496120",
+      "name": "ACE 코리아밸류업",
+      "identity_source_row": "01_주식형:25",
+      "identity_source_id": "Sbb1da2bb20a3",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "FACTOR_DIVIDEND",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: FACTOR_DIVIDEND",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "381170",
+      "name": "TIGER 미국테크TOP10 INDXX",
+      "identity_source_row": "01_주식형:26",
+      "identity_source_id": "Sfe00ea1f3041",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SECTOR_THEME",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SECTOR_THEME",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://securities.miraeasset.com/public/hks4412/040/2025121501.pdf",
+        "https://www.tigeretf.com/upload/etf/20240509105027005590.pdf",
+        "https://investments.miraeasset.com/tigeretf/upload/etf/20250804095324002606.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "465580",
+      "name": "ACE 미국빅테크TOP7 Plus",
+      "identity_source_row": "01_주식형:27",
+      "identity_source_id": "Sf85fe992c01d",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SECTOR_THEME",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SECTOR_THEME",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.aceetf.co.kr/cs/notice/5102"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "426030",
+      "name": "TIME 미국나스닥100액티브",
+      "identity_source_row": "01_주식형:28",
+      "identity_source_id": "S57f76b8bb780",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "GROWTH_CONCENTRATED",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 1,
+          "source_id": "S60a0acf4c2db",
+          "state": "REFERENCE_UNDATED"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.800",
+          "source_id": "S60a0acf4c2db",
+          "state": "REFERENCE_UNDATED"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: GROWTH_CONCENTRATED",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.timeetf.co.kr/m11_view.php?idx=2",
+        "https://timeetf.co.kr/m11_view.php?cate=&idx=2",
+        "https://timeetf.co.kr/m11_view.php?cate=001&idx=2"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "139260",
+      "name": "TIGER 200 IT",
+      "identity_source_row": "01_주식형:29",
+      "identity_source_id": "S54f51426b0c6",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SECTOR_THEME",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SECTOR_THEME",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://investments.miraeasset.com/tigeretf/upload/etf/20250804095126005319.pdf",
+        "https://investments.miraeasset.com/tigeretf/upload/etf/20250108070738001919.pdf",
+        "https://investments.miraeasset.com/tigeretf/upload/etf/20250219103457004621.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "091160",
+      "name": "KODEX 반도체",
+      "identity_source_row": "01_주식형:31",
+      "identity_source_id": "S3d20685f79d1",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SECTOR_THEME",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 1,
+          "source_id": "Saac087ad61ac",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.450",
+          "source_id": "Saac087ad61ac",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_total_expense_percent": {
+          "value": "0.4625",
+          "source_id": "Saac087ad61ac",
+          "state": "VERIFIED_AS_OF"
+        },
+        "transaction_cost_percent": {
+          "value": "0.0479",
+          "source_id": "Saac087ad61ac",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SECTOR_THEME",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+        "https://www.samsungfund.com/upload/kodex/newsroom/2026011317101936.pdf",
+        "https://www.samsungfund.com/upload/kodex/newsroom/20260325170636388.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "381180",
+      "name": "TIGER 미국필라델피아반도체나스닥",
+      "identity_source_row": "01_주식형:32",
+      "identity_source_id": "S8ae9981ea564",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SECTOR_THEME",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SECTOR_THEME",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://investments.miraeasset.com/tigeretf/upload/etf/20250408022843002412.pdf",
+        "https://investments.miraeasset.com/tigeretf/upload/etf/20250804095321007601.pdf%3Bjsessionid%3Dco%2BGC9UqwAAiyg6MZ0ys4a1u.ip-172-31-2-74",
+        "https://investments.miraeasset.com/tigeretf/upload/etf/20250919083235004068.pdf%3Bjsessionid%3DZ8gvJlsXI16zojzk2ax4N6Ap.ip-172-31-2-74"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "395270",
+      "name": "HANARO Fn K-반도체",
+      "identity_source_row": "01_주식형:33",
+      "identity_source_id": "S69e452fe338b",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SECTOR_THEME",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 1,
+          "source_id": "Sa6b65809f6e0",
+          "state": "REFERENCE_UNDATED"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.450",
+          "source_id": "Sa6b65809f6e0",
+          "state": "REFERENCE_UNDATED"
+        },
+        "annual_total_expense_percent": {
+          "value": "0.5087",
+          "source_id": "Sa6b65809f6e0",
+          "state": "REFERENCE_UNDATED"
+        },
+        "transaction_cost_percent": {
+          "value": "0.0256",
+          "source_id": "Sa6b65809f6e0",
+          "state": "REFERENCE_UNDATED"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SECTOR_THEME",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.hanaroetf.com/investment/insight/1efi8yV2oQUEF02q",
+        "https://www.hanaroetf.com/_upload/public/fund-content/i8W1mpTYsbxthEM5/LWk8czTPzyOwPu9d.pdf",
+        "https://www.hanaroetf.com/investment/insight/WVXXLVtt9w2SydSn"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "471990",
+      "name": "KODEX AI반도체핵심장비",
+      "identity_source_row": "01_주식형:34",
+      "identity_source_id": "S097a034c54d6",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SECTOR_THEME",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SECTOR_THEME",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [
+        "395160 이웃 상품 값과 분리 필요. 471990 행 위험 2등급이나 합성총보수 표기 0.390%와 기타비용 0.0477% 기재가 불명확하여 비용 채택 보류."
+      ],
+      "reviewed_primary_candidate_urls": [
+        "https://www.samsungfund.com/upload/kodex/newsroom/20260515152133113.pdf",
+        "https://m.samsungfund.com/upload/kodex/newsroom/20260325170636388.pdf",
+        "https://m.samsungfund.com/sheet/20260106/2ETFL7_20251230.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "152100",
+      "name": "PLUS 200",
+      "identity_source_row": "01_주식형:37",
+      "identity_source_id": "S14d7fc417b6b",
+      "review_state": "HOLD_EVIDENCE",
+      "service_role": "KR_BROAD_EQUITY",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 2,
+          "source_id": "S37dd727b9012",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.017",
+          "source_id": "S37dd727b9012",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_total_expense_percent": {
+          "value": "0.0374",
+          "source_id": "S37dd727b9012",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "필수 공시 필드·기준일·비용 검증을 모두 통과하지 못함",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.plusetf.co.kr/upload/fund/PLUS_200_20260529.pdf",
+        "https://www.plusetf.co.kr/insight/report/detail?n=1063",
+        "https://www.plusetf.co.kr/insight/report/detail?n=1043"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "469070",
+      "name": "RISE AI&로봇",
+      "identity_source_row": "01_주식형:38",
+      "identity_source_id": "S8ed56095438a",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SECTOR_THEME",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "annual_total_expense_percent": {
+          "value": "0.471",
+          "source_id": "S1c581675ad29",
+          "state": "VERIFIED_AS_OF"
+        },
+        "transaction_cost_percent": {
+          "value": "0.051",
+          "source_id": "S1c581675ad29",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SECTOR_THEME",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://riseetf.co.kr/pdf/viewer/14974?file=%2Fupload%2Fcdn%2F2026%2F05%2F12%2F202605122fa85cb2ba43487.pdf",
+        "https://www.riseetf.co.kr/prod/finderDetail/44F5",
+        "https://www.riseetf.co.kr/prod/finderDetail/44F5?searchFlag=viewtab1"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "244580",
+      "name": "KODEX 바이오",
+      "identity_source_row": "01_주식형:39",
+      "identity_source_id": "Sf3327499baa5",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SECTOR_THEME",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SECTOR_THEME",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://m.samsungfund.com/sheet/20250103/2ETF63_20241231.pdf",
+        "https://m.samsungfund.com/sheet/20240703/2ETF63_20240630.pdf",
+        "https://m.samsungfund.com/upload/guide/230525_Kodex_bond_guidebook.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "143860",
+      "name": "TIGER 헬스케어",
+      "identity_source_row": "01_주식형:40",
+      "identity_source_id": "Sb0b745cb94fa",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SECTOR_THEME",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SECTOR_THEME",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.tigeretf.com/upload/etf/20250513024051006675.pdf",
+        "https://www.tigeretf.com/upload/etf/20250404024857001087.pdf",
+        "https://investments.miraeasset.com/tigeretf/upload/etf/20250804095126008770.pdf%3Bjsessionid%3DKhPKOdFA%2BFlLOeabLXjStHT-.ip-172-31-2-74"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "449450",
+      "name": "PLUS K방산",
+      "identity_source_row": "01_주식형:42",
+      "identity_source_id": "S5a49db6d5793",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SECTOR_THEME",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 2,
+          "source_id": "S3635a931bff9",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SECTOR_THEME",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.plusetf.co.kr/upload/fund/PLUS_K%EB%B0%A9%EC%82%B0_20260430.pdf",
+        "https://www.plusetf.co.kr/insight/report/detail?n=2046",
+        "https://www.plusetf.co.kr/insight/report/detail?n=904"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "466920",
+      "name": "SOL 조선TOP3플러스",
+      "identity_source_row": "01_주식형:44",
+      "identity_source_id": "S7d5261647f88",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SECTOR_THEME",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "annual_base_fee_percent": {
+          "value": "0.450",
+          "source_id": "S794b88646525",
+          "state": "REFERENCE_UNDATED"
+        }
+      },
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SECTOR_THEME",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.soletf.co.kr/ko/fund/etf/211028?tabIndex=3",
+        "https://www.soletf.co.kr/ko/fund",
+        "https://www.soletf.co.kr/ko/strategy/pension"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "494670",
+      "name": "TIGER 조선TOP10",
+      "identity_source_row": "01_주식형:45",
+      "identity_source_id": "S49db5823fd06",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SECTOR_THEME",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SECTOR_THEME",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://securities.miraeasset.com/public/hks4412/040/20251204.pdf",
+        "https://www.tigeretf.com/upload/etf/20250708095908009201.pdf",
+        "https://www.tigeretf.com/upload/etf/20250804095348006795.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "305540",
+      "name": "TIGER 2차전지테마",
+      "identity_source_row": "01_주식형:46",
+      "identity_source_id": "Sf00964219b1e",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SECTOR_THEME",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SECTOR_THEME",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.tigeretf.com/upload/etf/20250804095323002538.pdf",
+        "https://www.tigeretf.com/upload/etf/20250611092634004596.pdf",
+        "https://investments.miraeasset.com/tigeretf/upload/etf/20250804095323002538.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "305720",
+      "name": "KODEX 2차전지산업",
+      "identity_source_row": "01_주식형:47",
+      "identity_source_id": "S5d790c804812",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SECTOR_THEME",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 1,
+          "source_id": "S3a1ad9b08cbe",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.450",
+          "source_id": "S3a1ad9b08cbe",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SECTOR_THEME",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://m.samsungfund.com/sheet/20260305/2ETFB1_20260228.pdf",
+        "https://m.samsungfund.com/sheet/20260206/2ETFB1_20260131.pdf",
+        "https://m.samsungfund.com/sheet/20250905/2ETFB1_20250829.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "117680",
+      "name": "KODEX 철강",
+      "identity_source_row": "01_주식형:48",
+      "identity_source_id": "S37ec304f8cf5",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SECTOR_THEME",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SECTOR_THEME",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://m.samsungfund.com/upload/kodex/newsroom/20240610095432826.pdf",
+        "https://m.samsungfund.com/upload/kodex/newsroom/20231214100849107.pdf",
+        "https://m.samsungfund.com/sheet/20130611/2ETF23_20130531.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "487230",
+      "name": "KODEX 미국AI전력핵심인프라",
+      "identity_source_row": "01_주식형:49",
+      "identity_source_id": "Sedede1978e68",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SECTOR_THEME",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 2,
+          "source_id": "S95edf6eda33d",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.450",
+          "source_id": "S95edf6eda33d",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_total_expense_percent": {
+          "value": "0.5315",
+          "source_id": "S95edf6eda33d",
+          "state": "VERIFIED_AS_OF"
+        },
+        "transaction_cost_percent": {
+          "value": "0.3685",
+          "source_id": "S95edf6eda33d",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SECTOR_THEME",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://m.samsungfund.com/upload/kodex/newsroom/20260211093328479.pdf",
+        "https://www.samsungfund.com/upload/kodex/newsroom/2026011317101936.pdf",
+        "https://www.samsungfund.com/upload/kodex/newsroom/20260211093328479.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "102970",
+      "name": "KODEX 증권",
+      "identity_source_row": "01_주식형:50",
+      "identity_source_id": "S83266b94d4ca",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SECTOR_THEME",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SECTOR_THEME",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.samsungfund.com/upload/kodex/newsroom/20250723085615455.pdf",
+        "https://m.samsungfund.com/upload/kodex/newsroom/20250722174437650.pdf",
+        "https://www.samsungfund.com/upload/kodex/newsroom/20241202171319440.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "464600",
+      "name": "SOL 자동차소부장Fn",
+      "identity_source_row": "01_주식형:51",
+      "identity_source_id": "Sf24ffc77c9f3",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SECTOR_THEME",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "annual_base_fee_percent": {
+          "value": "0.450",
+          "source_id": "Sfa3124f4f857",
+          "state": "REFERENCE_UNDATED"
+        }
+      },
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SECTOR_THEME",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.soletf.co.kr/ko/fund/etf/211016",
+        "https://www.soletf.co.kr/ko/fund",
+        "https://www.soletf.co.kr/ko/fund/etf/summary/211016"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "153130",
+      "name": "KODEX 단기채권",
+      "identity_source_row": "02_채권형:2",
+      "identity_source_id": "Sa11d6aa1641e",
+      "review_state": "VERIFIED_FOR_PREVIEW",
+      "service_role": "KRW_SHORT_BOND",
+      "recommendation_eligible": true,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 6,
+          "source_id": "Sad92967c2650",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.150",
+          "source_id": "Sad92967c2650",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_total_expense_percent": {
+          "value": "0.1671",
+          "source_id": "Sad92967c2650",
+          "state": "VERIFIED_AS_OF"
+        },
+        "transaction_cost_percent": {
+          "value": "0.0064",
+          "source_id": "Sad92967c2650",
+          "state": "VERIFIED_AS_OF"
+        },
+        "asset_class": {
+          "value": "BOND",
+          "source_id": "S46127e938216",
+          "state": "VERIFIED_AS_OF"
+        },
+        "fx_exposed": {
+          "value": false,
+          "source_id": "S46127e938216",
+          "state": "VERIFIED_AS_OF"
+        },
+        "foreign_underlying": {
+          "value": false,
+          "source_id": "S46127e938216",
+          "state": "VERIFIED_AS_OF"
+        },
+        "principal_loss_possible": {
+          "value": true,
+          "source_id": "Sad92967c2650",
+          "state": "VERIFIED_AS_OF"
+        },
+        "deposit_protected": {
+          "value": false,
+          "source_id": "Sad92967c2650",
+          "state": "VERIFIED_AS_OF"
+        },
+        "leveraged_inverse": {
+          "value": false,
+          "source_id": "S46127e938216",
+          "state": "VERIFIED_AS_OF"
+        },
+        "listing_reference_confirmed": {
+          "value": true,
+          "source_id": "Sad92967c2650",
+          "state": "VERIFIED_AS_OF"
+        },
+        "issuer_id": {
+          "value": "SAMSUNG",
+          "source_id": "Sad92967c2650",
+          "state": "VERIFIED_AS_OF"
+        },
+        "cash_conversion": {
+          "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+          "source_id": "S5d95d76043a8",
+          "state": "REFERENCE_UNDATED"
+        },
+        "benchmark": {
+          "value": "KRW Cash Index(총수익)",
+          "source_id": "S46127e938216",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [],
+      "reasons": [],
+      "issues": [
+        "단기채권 운용전략의 확보 개별자료는 2025-01-31 기준. 최근 위험·비용 및 상장참조는 2026.10.13 공지에서 대조; 전략 변경 실시간 확인은 미지원."
+      ],
+      "reviewed_primary_candidate_urls": [
+        "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+        "https://m.samsungfund.com/sheet/20120911/SHEET51521Kodex%EB%8B%A8%EA%B8%B0%EC%B1%84%EA%B6%8C.pdf",
+        "https://m.samsungfund.com/sheet/20221118/2ETF35_20221031.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "214980",
+      "name": "KODEX 단기채권PLUS",
+      "identity_source_row": "02_채권형:3",
+      "identity_source_id": "S51ce0bf4c426",
+      "review_state": "VERIFIED_FOR_PREVIEW",
+      "service_role": "KRW_SHORT_BOND",
+      "recommendation_eligible": true,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 6,
+          "source_id": "S49d2d41afa62",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.150",
+          "source_id": "S49d2d41afa62",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_total_expense_percent": {
+          "value": "0.1663",
+          "source_id": "S49d2d41afa62",
+          "state": "VERIFIED_AS_OF"
+        },
+        "transaction_cost_percent": {
+          "value": "0.0003",
+          "source_id": "S49d2d41afa62",
+          "state": "VERIFIED_AS_OF"
+        },
+        "asset_class": {
+          "value": "BOND",
+          "source_id": "Sd6a0df82a566",
+          "state": "VERIFIED_AS_OF"
+        },
+        "fx_exposed": {
+          "value": false,
+          "source_id": "Sd6a0df82a566",
+          "state": "VERIFIED_AS_OF"
+        },
+        "foreign_underlying": {
+          "value": false,
+          "source_id": "Sd6a0df82a566",
+          "state": "VERIFIED_AS_OF"
+        },
+        "principal_loss_possible": {
+          "value": true,
+          "source_id": "S49d2d41afa62",
+          "state": "VERIFIED_AS_OF"
+        },
+        "deposit_protected": {
+          "value": false,
+          "source_id": "S49d2d41afa62",
+          "state": "VERIFIED_AS_OF"
+        },
+        "leveraged_inverse": {
+          "value": false,
+          "source_id": "Sd6a0df82a566",
+          "state": "VERIFIED_AS_OF"
+        },
+        "listing_reference_confirmed": {
+          "value": true,
+          "source_id": "S49d2d41afa62",
+          "state": "VERIFIED_AS_OF"
+        },
+        "issuer_id": {
+          "value": "SAMSUNG",
+          "source_id": "S49d2d41afa62",
+          "state": "VERIFIED_AS_OF"
+        },
+        "cash_conversion": {
+          "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+          "source_id": "S5d95d76043a8",
+          "state": "REFERENCE_UNDATED"
+        },
+        "benchmark": {
+          "value": "KRW Cash PLUS Index(총수익)",
+          "source_id": "Sd6a0df82a566",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [],
+      "reasons": [
+        "대체 후보로만 보존. 기본 배분 슬롯에 자동 추가·대체하지 않음"
+      ],
+      "issues": [
+        "단기채권 운용전략의 확보 개별자료는 2024-09-30 기준. 최근 위험·비용 및 상장참조는 2026.10.13 공지에서 대조; 전략 변경 실시간 확인은 미지원."
+      ],
+      "reviewed_primary_candidate_urls": [
+        "https://www.samsungfund.com/upload/guide/kodex_etf_bond_invest_bible_personal_2023.pdf",
+        "https://m.samsungfund.com/upload/guide/Kodex_ETF_bond_bible_2023.pdf",
+        "https://m.samsungfund.com/sheet/20231113/2ETF48_20231031.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "469830",
+      "name": "SOL 초단기채권액티브",
+      "identity_source_row": "02_채권형:4",
+      "identity_source_id": "Se4db94f2a569",
+      "review_state": "HOLD_EVIDENCE",
+      "service_role": "KRW_SHORT_BOND",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "annual_base_fee_percent": {
+          "value": "0.050",
+          "source_id": "S1648da216a71",
+          "state": "REFERENCE_UNDATED"
+        }
+      },
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "필수 공시 필드·기준일·비용 검증을 모두 통과하지 못함",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.soletf.co.kr/ko/fund",
+        "https://www.soletf.co.kr/ko/fund/etf/211038",
+        "https://www.soletf.co.kr/ko/fund/etf/211038?tabIndex=2"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "114820",
+      "name": "TIGER 국채3년",
+      "identity_source_row": "02_채권형:5",
+      "identity_source_id": "S3d09adf811f3",
+      "review_state": "HOLD_EVIDENCE",
+      "service_role": "KRW_GOVT_INTERMEDIATE",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "필수 공시 필드·기준일·비용 검증을 모두 통과하지 못함",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.tigeretf.com/upload/etf/20250708095820005220.pdf",
+        "https://www.tigeretf.com/upload/etf/20250611092528009834.pdf",
+        "https://www.tigeretf.com/upload/etf/20250513024027002457.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "114260",
+      "name": "KODEX 국고채3년",
+      "identity_source_row": "02_채권형:6",
+      "identity_source_id": "S760c3b57eaf5",
+      "review_state": "HOLD_EVIDENCE",
+      "service_role": "KRW_GOVT_INTERMEDIATE",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 5,
+          "source_id": "Sc7823d79df21",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.150",
+          "source_id": "Sc7823d79df21",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "필수 공시 필드·기준일·비용 검증을 모두 통과하지 못함",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://m.samsungfund.com/sheet/20220722/2ETF19_20220630.pdf",
+        "https://www.samsungfund.com/etf/search.do?searchText=114260",
+        "https://www.samsungfund.com/etf/product/pensionlist.do"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "471230",
+      "name": "KODEX 국고채10년액티브",
+      "identity_source_row": "02_채권형:7",
+      "identity_source_id": "S3f4b8d74b162",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "LONG_DURATION",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: LONG_DURATION",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://m.samsungfund.com/sheet/20240703/2ETFL6_20240630.pdf",
+        "https://m.samsungfund.com/sheet/20250402/2ETFL6_20250331.pdf",
+        "https://m.samsungfund.com/sheet/20250610/2ETFL6_20250530.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "439870",
+      "name": "KODEX 국고채30년액티브",
+      "identity_source_row": "02_채권형:8",
+      "identity_source_id": "S1a84e2b1f3cf",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "LONG_DURATION",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 5,
+          "source_id": "Sdf5978647aa4",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.050",
+          "source_id": "Sdf5978647aa4",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: LONG_DURATION",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.samsungfund.com/upload/kodex/newsroom/20250722174437650.pdf",
+        "https://www.samsungfund.com/upload/kodex/newsroom/20250723085615455.pdf",
+        "https://m.samsungfund.com/upload/kodex/newsroom/20250723085615455.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "298340",
+      "name": "PLUS 국채선물3년",
+      "identity_source_row": "02_채권형:9",
+      "identity_source_id": "Sfe8546394f4d",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SPECIAL_STRUCTURE",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 5,
+          "source_id": "Sa5f4bfe18403",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SPECIAL_STRUCTURE",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.plusetf.co.kr/upload/fund/PLUS_%EA%B5%AD%EC%B1%84%EC%84%A0%EB%AC%BC3%EB%85%84_20260228.pdf",
+        "https://www.plusetf.co.kr/upload/fund/PLUS_%EA%B5%AD%EC%B1%84%EC%84%A0%EB%AC%BC3%EB%85%84_20260430.pdf",
+        "https://www.plusetf.co.kr/upload/fund/PLUS_%EA%B5%AD%EC%B1%84%EC%84%A0%EB%AC%BC3%EB%85%84_20250630.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "273130",
+      "name": "KODEX 종합채권(AA-이상)액티브",
+      "identity_source_row": "02_채권형:10",
+      "identity_source_id": "S43c9124d02ce",
+      "review_state": "HOLD_EVIDENCE",
+      "service_role": "KRW_AGG_BOND",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 5,
+          "source_id": "S0597d880b275",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.045",
+          "source_id": "S0597d880b275",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_total_expense_percent": {
+          "value": "0.0595",
+          "source_id": "Sde7b3c4f25ca",
+          "state": "VERIFIED_AS_OF"
+        },
+        "transaction_cost_percent": {
+          "value": "0.0127",
+          "source_id": "Sde7b3c4f25ca",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "필수 공시 필드·기준일·비용 검증을 모두 통과하지 못함",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [
+        "2026.04.30 위험등급/총보수는 확인. 확보한 합성총보수·거래비용은 2025.06.30 자료라 서비스 최대 자료연령 365일을 초과하여 보류. 2026.04.30 듀레이션 5.36년으로 단기 현금 대체에서 제외."
+      ],
+      "reviewed_primary_candidate_urls": [
+        "https://m.samsungfund.com/upload/kodex/newsroom/20250722174437650.pdf",
+        "https://m.samsungfund.com/upload/kodex/newsroom/20250723085615455.pdf",
+        "https://m.samsungfund.com/sheet/20250103/2ETF88_20241231.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "436140",
+      "name": "SOL 종합채권(AA-이상)액티브",
+      "identity_source_row": "02_채권형:11",
+      "identity_source_id": "Sfa04dda91795",
+      "review_state": "HOLD_EVIDENCE",
+      "service_role": "KRW_AGG_BOND",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "annual_base_fee_percent": {
+          "value": "0.040",
+          "source_id": "S6898ad1b75b9",
+          "state": "REFERENCE_UNDATED"
+        }
+      },
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "필수 공시 필드·기준일·비용 검증을 모두 통과하지 못함",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.soletf.co.kr/ko/fund/etf/210932",
+        "https://www.soletf.co.kr/ko/fund/etf/210932?tabIndex=2",
+        "https://www.soletf.co.kr/ko/strategy/pension?tabIndex=2"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "356540",
+      "name": "ACE 종합채권(AA-이상)액티브",
+      "identity_source_row": "02_채권형:12",
+      "identity_source_id": "Sa422d94ad6eb",
+      "review_state": "HOLD_EVIDENCE",
+      "service_role": "KRW_AGG_BOND",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "필수 공시 필드·기준일·비용 검증을 모두 통과하지 못함",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "451540",
+      "name": "TIGER 종합채권(AA-이상)액티브",
+      "identity_source_row": "02_채권형:13",
+      "identity_source_id": "S37de95a8a0c8",
+      "review_state": "HOLD_EVIDENCE",
+      "service_role": "KRW_AGG_BOND",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "필수 공시 필드·기준일·비용 검증을 모두 통과하지 못함",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.tigeretf.com/upload/etf/20250708095911002264.pdf",
+        "https://www.tigeretf.com/upload/etf/20250804095349006169.pdf",
+        "https://investments.miraeasset.com/tigeretf/upload/etf/20250523021919003933.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "451000",
+      "name": "PLUS 종합채권(AA-이상)액티브",
+      "identity_source_row": "02_채권형:14",
+      "identity_source_id": "S5a159f69d049",
+      "review_state": "HOLD_EVIDENCE",
+      "service_role": "KRW_AGG_BOND",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 5,
+          "source_id": "S3c3200baef1a",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "필수 공시 필드·기준일·비용 검증을 모두 통과하지 못함",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.plusetf.co.kr/upload/fund/PLUS_%EC%A2%85%ED%95%A9%EC%B1%84%EA%B6%8C%28AA-%EC%9D%B4%EC%83%81%29_%EC%95%A1%ED%8B%B0%EB%B8%8C_20260228.pdf",
+        "https://www.plusetf.co.kr/product/detail?n=006358",
+        "https://www.plusetf.co.kr/upload/fund/PLUS_%EC%A2%85%ED%95%A9%EC%B1%84%EA%B6%8C%28AA-%EC%9D%B4%EC%83%81%29_%EC%95%A1%ED%8B%B0%EB%B8%8C_20260130.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "454780",
+      "name": "KIWOOM 종합채권(AA-이상)액티브",
+      "identity_source_row": "02_채권형:15",
+      "identity_source_id": "Sdcb70cc51aab",
+      "review_state": "HOLD_EVIDENCE",
+      "service_role": "KRW_AGG_BOND",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "annual_base_fee_percent": {
+          "value": "0.025",
+          "source_id": "Sc9237f6d6396",
+          "state": "REFERENCE_UNDATED"
+        }
+      },
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "필수 공시 필드·기준일·비용 검증을 모두 통과하지 못함",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.kiwoometf.com/service/etf/KO02010200M?gcode=454780",
+        "https://www.kiwoometf.com/service/report/KO03020000M",
+        "https://www.kiwoometf.com/?n_ad=nad-a001-04-000000399232487&n_ad_group=grp-a001-04-000000041380974&n_ad_group_type=5&n_campaign_type=4&n_contract=tct-a001-04-000000001132212&n_keyword=KIWOOMETF&n_keyword_id=nkw-a001-04-000006772254990&n_media=27758&n_query=KIWOOMETF&n_rank=1"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "472920",
+      "name": "HK 종합채권(AA-이상)액티브",
+      "identity_source_row": "02_채권형:16",
+      "identity_source_id": "Sc3e6567fcd5b",
+      "review_state": "HOLD_EVIDENCE",
+      "service_role": "KRW_AGG_BOND",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "필수 공시 필드·기준일·비용 검증을 모두 통과하지 못함",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://kind.krx.co.kr/external/2026/04/20/000521/20260420001454/68656.htm",
+        "https://kind.krx.co.kr/external/2026/01/13/000236/20260113000595/68656.htm",
+        "https://kind.krx.co.kr/external/2025/08/26/000195/20250826000643/68660.htm"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "0192Z0",
+      "name": "TIGER 중기종합채권(A-이상)액티브",
+      "identity_source_row": "02_채권형:17",
+      "identity_source_id": "Sa810e325e6f9",
+      "review_state": "HOLD_EVIDENCE",
+      "service_role": "KRW_AGG_BOND",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "필수 공시 필드·기준일·비용 검증을 모두 통과하지 못함",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "473290",
+      "name": "KODEX 26-12 회사채(AA-이상)액티브",
+      "identity_source_row": "02_채권형:18",
+      "identity_source_id": "S5a8f303ddf28",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "TARGET_MATURITY",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: TARGET_MATURITY",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [
+        "목표만기 2026.12.14. 일반적인 신규 월 적립 기본 후보에서는 제외; 상환일/최종거래일/분배 방식 별도 검증 필요."
+      ],
+      "reviewed_primary_candidate_urls": [
+        "https://m.samsungfund.com/sheet/20251013/2ETFL8_20250930.pdf",
+        "https://m.samsungfund.com/sheet/20260305/2ETFL8_20260228.pdf",
+        "https://m.samsungfund.com/sheet/20250204/2ETFL8_20250131.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "0091C0",
+      "name": "KODEX 미국10년국채액티브(H)",
+      "identity_source_row": "02_채권형:19",
+      "identity_source_id": "S0248b6018820",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "LONG_DURATION",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: LONG_DURATION",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [
+        "2026.10.13 공지의 총보수 0.225%와 기재 성분 합계 0.150%가 불일치. 비용 충돌 미해소로 배분 제외."
+      ],
+      "reviewed_primary_candidate_urls": [
+        "https://www.samsungfund.com/upload/kodex/newsroom/20251020144727705.pdf",
+        "https://www.samsungfund.com/upload/kodex/newsroom/20251016084306186.pdf",
+        "https://www.samsungfund.com/etf/lounge/notice-view.do?no=70376"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "0085P0",
+      "name": "ACE 미국10년국채액티브",
+      "identity_source_row": "02_채권형:20",
+      "identity_source_id": "Scc48619af97e",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "LONG_DURATION",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: LONG_DURATION",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.aceetf.co.kr/info/report/1160"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "453850",
+      "name": "ACE 미국30년국채액티브(H)",
+      "identity_source_row": "02_채권형:21",
+      "identity_source_id": "Sa5a27589c3a6",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "LONG_DURATION",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: LONG_DURATION",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "481340",
+      "name": "RISE 미국30년국채액티브",
+      "identity_source_row": "02_채권형:22",
+      "identity_source_id": "Seed04a128cfc",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "LONG_DURATION",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "annual_base_fee_percent": {
+          "value": "0.050",
+          "source_id": "S486fb8bf95fa",
+          "state": "REFERENCE_UNDATED"
+        }
+      },
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: LONG_DURATION",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://riseetf.co.kr/prod/finderDetail/44G6",
+        "https://www.riseetf.co.kr/pdf/viewer/14846?file=%2Fupload%2Fcdn%2F2026%2F04%2F09%2F20260409b02a0249084548d.pdf",
+        "https://www.riseetf.co.kr/pdf/viewer/14609?file=%2Fupload%2Fcdn%2F2026%2F03%2F10%2F20260310aae93c9a783e4cf.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "304660",
+      "name": "KODEX 미국30년국채울트라선물(H)",
+      "identity_source_row": "02_채권형:23",
+      "identity_source_id": "S0029bae2e91c",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SPECIAL_STRUCTURE",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SPECIAL_STRUCTURE",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://m.samsungfund.com/sheet/20260206/2ETFAA_20260131.pdf",
+        "https://m.samsungfund.com/upload/guide/Kodex_ETF_bond_bible_2023.pdf",
+        "https://m.samsungfund.com/sheet/20260106/2ETFAA_20251230.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "437350",
+      "name": "RISE 미국단기투자등급회사채액티브",
+      "identity_source_row": "02_채권형:24",
+      "identity_source_id": "Sdd8832ea40ca",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "FOREIGN_CREDIT",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "annual_base_fee_percent": {
+          "value": "0.100",
+          "source_id": "S8ebe5789fd54",
+          "state": "REFERENCE_UNDATED"
+        }
+      },
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: FOREIGN_CREDIT",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://riseetf.co.kr/prod/finderDetail/44D2",
+        "https://www.riseetf.co.kr/prod/finderDetail/44D2",
+        "https://riseetf.co.kr/upload/cdn/2026/06/10/202606105d0091ced8d446d.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "305080",
+      "name": "TIGER 미국채10년선물",
+      "identity_source_row": "02_채권형:25",
+      "identity_source_id": "Sfd0753ab5bb5",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SPECIAL_STRUCTURE",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SPECIAL_STRUCTURE",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://www.tigeretf.com/upload/etf/20250708095909001843.pdf",
+        "https://investments.miraeasset.com/tigeretf/upload/etf/20250611092633001958.pdf",
+        "https://investments.miraeasset.com/tigeretf/upload/etf/20250804095323003586.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "423160",
+      "name": "KODEX KOFR금리액티브(합성)",
+      "identity_source_row": "03_현금성:6",
+      "identity_source_id": "Sb8a1537f551b",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SPECIAL_STRUCTURE",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 2,
+          "source_id": "Scc3bda66a944",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.050",
+          "source_id": "Scc3bda66a944",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SPECIAL_STRUCTURE",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://m.samsungfund.com/sheet/20251204/2ETFG6_20251130.pdf",
+        "https://m.samsungfund.com/sheet/20240205/2ETFG6_20240131.pdf",
+        "https://m.samsungfund.com/sheet/20260604/2ETFG6_20260531.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "459580",
+      "name": "KODEX CD금리액티브(합성)",
+      "identity_source_row": "03_현금성:7",
+      "identity_source_id": "S923ed5704cb5",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SPECIAL_STRUCTURE",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 4,
+          "source_id": "S90c5bd19a8d6",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.020",
+          "source_id": "S90c5bd19a8d6",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SPECIAL_STRUCTURE",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://m.samsungfund.com/sheet/20250805/2ETFJ8_20250731.pdf",
+        "https://m.samsungfund.com/sheet/20250402/2ETFJ8_20250331.pdf",
+        "https://m.samsungfund.com/upload/kodex/newsroom/20241202171319440.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "475630",
+      "name": "TIGER CD1년금리액티브(합성)",
+      "identity_source_row": "03_현금성:8",
+      "identity_source_id": "S32ca012a9035",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SPECIAL_STRUCTURE",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SPECIAL_STRUCTURE",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://investments.miraeasset.com/tigeretf/upload/etf/20250919083237006014.pdf%3Bjsessionid%3DwVwCbT4Rrvhs9HJMaaC6MuJV.ip-172-31-2-74",
+        "https://investments.miraeasset.com/tigeretf/upload/etf/20250804095350007302.pdf%3Bjsessionid%3D5FMVS4yxNSC43SSaqBS7ejT1.ip-172-31-24-197",
+        "https://investments.miraeasset.com/tigeretf/upload/etf/20250312095724006520.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "481050",
+      "name": "KODEX CD1년금리플러스액티브(합성)",
+      "identity_source_row": "03_현금성:9",
+      "identity_source_id": "S8378b6f845a2",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SPECIAL_STRUCTURE",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 4,
+          "source_id": "S1ffbd7b76c33",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.050",
+          "source_id": "S1ffbd7b76c33",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SPECIAL_STRUCTURE",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://m.samsungfund.com/sheet/20250402/2ETFM7_20250331.pdf",
+        "https://www.samsungfund.com/etf/product/distribution.do?tab=annual",
+        "https://www.samsungfund.com/etf/lounge/notice-view.do?no=79834"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "488770",
+      "name": "KODEX 머니마켓액티브",
+      "identity_source_row": "03_현금성:10",
+      "identity_source_id": "S04b59b7deeb9",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "MONEY_MARKET",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 5,
+          "source_id": "S202a4cda99f6",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.050",
+          "source_id": "S202a4cda99f6",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_total_expense_percent": {
+          "value": "0.063",
+          "source_id": "S202a4cda99f6",
+          "state": "VERIFIED_AS_OF"
+        },
+        "transaction_cost_percent": {
+          "value": "0.0013",
+          "source_id": "S202a4cda99f6",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: MONEY_MARKET",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [
+        "같은 카드에 2026.03.31과 2025.12.31이 함께 기재됨. 보수·비용 기준일을 보수적으로 2025.12.31로 기록하고 기본 배분에서 제외."
+      ],
+      "reviewed_primary_candidate_urls": [
+        "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+        "https://www.samsungfund.com/upload/kodex/newsroom/20260211093328479.pdf",
+        "https://m.samsungfund.com/upload/kodex/newsroom/20260211093328479.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "0043B0",
+      "name": "TIGER 머니마켓액티브",
+      "identity_source_row": "03_현금성:11",
+      "identity_source_id": "Se72bb793f4bd",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "MONEY_MARKET",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: MONEY_MARKET",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [
+        "검색 발췌에 2/5등급이 함께 나타남. 0043B0 상품별 최신 공시 대조 전 위험등급 미확정. 머니마켓 ETF를 예금으로 분류하지 않음."
+      ],
+      "reviewed_primary_candidate_urls": [
+        "https://securities.miraeasset.com/public/hks4412/040/2025121501.pdf",
+        "https://securities.miraeasset.com/public/hks4412/040/20251204.pdf",
+        "https://investments.miraeasset.com/tigeretf/upload/etf/20250804095125001001.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "498400",
+      "name": "KODEX 200타겟위클리커버드콜",
+      "identity_source_row": "04_파생전략형:2",
+      "identity_source_id": "S0a134d690829",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SPECIAL_STRUCTURE",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 1,
+          "source_id": "Sf25b142dcb76",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.390",
+          "source_id": "Sf25b142dcb76",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_total_expense_percent": {
+          "value": "0.4228",
+          "source_id": "Sf25b142dcb76",
+          "state": "VERIFIED_AS_OF"
+        },
+        "transaction_cost_percent": {
+          "value": "0.1015",
+          "source_id": "Sf25b142dcb76",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SPECIAL_STRUCTURE",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://m.samsungfund.com/upload/kodex/newsroom/20260427141121713.pdf",
+        "https://m.samsungfund.com/upload/kodex/newsroom/20260325170636388.pdf",
+        "https://m.samsungfund.com/upload/kodex/newsroom/20260211093328479.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "441640",
+      "name": "KODEX 미국배당커버드콜액티브",
+      "identity_source_row": "04_파생전략형:3",
+      "identity_source_id": "S9ba1edb767b7",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SPECIAL_STRUCTURE",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {
+        "risk_grade": {
+          "value": 3,
+          "source_id": "S70bfc2dca6a0",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_base_fee_percent": {
+          "value": "0.190",
+          "source_id": "S70bfc2dca6a0",
+          "state": "VERIFIED_AS_OF"
+        },
+        "annual_total_expense_percent": {
+          "value": "0.2601",
+          "source_id": "S70bfc2dca6a0",
+          "state": "VERIFIED_AS_OF"
+        },
+        "transaction_cost_percent": {
+          "value": "0.1774",
+          "source_id": "S70bfc2dca6a0",
+          "state": "VERIFIED_AS_OF"
+        }
+      },
+      "unverified_fields": [
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SPECIAL_STRUCTURE",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [
+        "2025.12.16 카드의 2등급과 2026.10.13 공지의 3등급을 구분. 최근 확인값 3등급 채택; 커버드콜은 기본 배분 제외."
+      ],
+      "reviewed_primary_candidate_urls": [
+        "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+        "https://m.samsungfund.com/upload/kodex/newsroom/20260211093328479.pdf",
+        "https://m.samsungfund.com/upload/kodex/newsroom/20260427141121713.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    },
+    {
+      "code": "486290",
+      "name": "TIGER 미국나스닥100타겟데일리커버드콜",
+      "identity_source_row": "04_파생전략형:4",
+      "identity_source_id": "S7775a3101b58",
+      "review_state": "EXCLUDED_DEFAULT_POLICY",
+      "service_role": "SPECIAL_STRUCTURE",
+      "recommendation_eligible": false,
+      "verified_or_reference_fields": {},
+      "unverified_fields": [
+        "risk_grade",
+        "asset_class",
+        "fx_exposed",
+        "foreign_underlying",
+        "principal_loss_possible",
+        "deposit_protected",
+        "leveraged_inverse",
+        "annual_base_fee_percent",
+        "annual_total_expense_percent",
+        "transaction_cost_percent",
+        "benchmark",
+        "cash_conversion",
+        "listing_reference_confirmed",
+        "issuer_id"
+      ],
+      "reasons": [
+        "이번 기본 코어 배분의 대상 범위 밖: SPECIAL_STRUCTURE",
+        "미확인 필드는 null로 유지하며 타 상품 값으로 보충하지 않음"
+      ],
+      "issues": [],
+      "reviewed_primary_candidate_urls": [
+        "https://securities.miraeasset.com/public/hks4412/040/20251204.pdf",
+        "https://www.tigeretf.com/upload/etf/20250708095913002439.pdf",
+        "https://www.tigeretf.com/upload/etf/20250109031506001051.pdf"
+      ],
+      "live_tradability": "NOT_VERIFIED",
+      "account_eligibility": "ISA_IRP_PENSION_NOT_VERIFIED",
+      "cash_conversion_rule": {
+        "value": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "source_id": "S5d95d76043a8"
+      },
+      "actual_cost_scope": "BROKER_COMMISSION_SPREAD_TAX_PRICE_NOT_CALCULATED"
+    }
+  ]
+}

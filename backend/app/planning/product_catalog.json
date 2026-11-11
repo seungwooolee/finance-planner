@@ -1,7 +1,7 @@
 {
-  "schema_version": "DION-PRODUCT-CATALOG-0.1",
-  "version": "DION-PRODUCT-CATALOG-20261111-0.1",
-  "research_reviewed_on": "2026-11-10",
+  "schema_version": "DION-PRODUCT-CATALOG-0.2",
+  "version": "DION-PRODUCT-CATALOG-20261111-0.2",
+  "research_reviewed_on": "2026-11-11",
   "research_excluded_count": 22,
   "products": [
     {
@@ -9,8 +9,166 @@
       "name": "KODEX 200",
       "official_source": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
       "identity_source_row": "01_주식형:2",
-      "recommendation_eligible": false,
-      "facts": null
+      "recommendation_eligible": true,
+      "facts": {
+        "risk_grade": 2,
+        "annual_base_fee_percent": "0.150",
+        "annual_total_expense_percent": "0.1615",
+        "transaction_cost_percent": "0.0283",
+        "asset_class": "EQUITY",
+        "fx_exposed": false,
+        "foreign_underlying": false,
+        "principal_loss_possible": true,
+        "deposit_protected": false,
+        "leveraged_inverse": false,
+        "listing_reference_confirmed": true,
+        "issuer_id": "SAMSUNG",
+        "cash_conversion": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "benchmark": "KOSPI 200",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 14쪽, 종목코드 069500 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "Sf515d82b6900"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 14쪽, 종목코드 069500 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "Sf515d82b6900"
+          },
+          "annual_total_expense_percent": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 14쪽, 종목코드 069500 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "Sf515d82b6900"
+          },
+          "transaction_cost_percent": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 14쪽, 종목코드 069500 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "Sf515d82b6900"
+          },
+          "asset_class": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 14쪽, 종목코드 069500 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "Sf515d82b6900"
+          },
+          "fx_exposed": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 14쪽, 종목코드 069500 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "Sf515d82b6900"
+          },
+          "foreign_underlying": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 14쪽, 종목코드 069500 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "Sf515d82b6900"
+          },
+          "principal_loss_possible": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 14쪽, 종목코드 069500 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "Sf515d82b6900"
+          },
+          "deposit_protected": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 14쪽, 종목코드 069500 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "Sf515d82b6900"
+          },
+          "leveraged_inverse": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 14쪽, 종목코드 069500 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "Sf515d82b6900"
+          },
+          "listing_reference_confirmed": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 14쪽, 종목코드 069500 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "Sf515d82b6900"
+          },
+          "issuer_id": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 14쪽, 종목코드 069500 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "Sf515d82b6900"
+          },
+          "cash_conversion": {
+            "url": "https://regulation.krx.co.kr/contents/RGL/03/03060102/RGL03060102.jsp",
+            "kind": "OFFICIAL_MARKET_RULE",
+            "source_as_of": null,
+            "observed_on": "2026-11-11",
+            "locator": "ETF 거래 결제: 매매체결일로부터 2영업일. 휴장/매도 체결/개별 증권사 출금은 별도",
+            "source_id": "S5d95d76043a8"
+          },
+          "benchmark": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 14쪽, 종목코드 069500 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "Sf515d82b6900"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "OFFICIAL_DISCLOSURES_FOR_PREVIEW"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "KR_BROAD_EQUITY",
+        "benchmark_group": "KOSPI200",
+        "minimum_holding_days": 1825,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "VERIFIED_FOR_PREVIEW",
+      "audit_reason_codes": []
     },
     {
       "code": "102110",
@@ -18,7 +176,68 @@
       "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=10211",
       "identity_source_row": "01_주식형:3",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 2,
+        "annual_base_fee_percent": "0.050",
+        "annual_total_expense_percent": "0.070",
+        "transaction_cost_percent": "0.0183",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-13",
+            "observed_on": "2026-11-11",
+            "locator": "운용사 제작 자료 PDF 46쪽 102110 상품개요",
+            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
+            "source_id": "Sd3fd190ed2ec"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-13",
+            "observed_on": "2026-11-11",
+            "locator": "운용사 제작 자료 PDF 46쪽 102110 상품개요",
+            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
+            "source_id": "Sd3fd190ed2ec"
+          },
+          "annual_total_expense_percent": {
+            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-13",
+            "observed_on": "2026-11-11",
+            "locator": "운용사 제작 자료 PDF 46쪽 102110 상품개요",
+            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
+            "source_id": "Sd3fd190ed2ec"
+          },
+          "transaction_cost_percent": {
+            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-13",
+            "observed_on": "2026-11-11",
+            "locator": "운용사 제작 자료 PDF 46쪽 102110 상품개요",
+            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
+            "source_id": "Sd3fd190ed2ec"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "KR_BROAD_EQUITY",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "HOLD_EVIDENCE",
+      "audit_reason_codes": [
+        "DETAIL_EVIDENCE_HOLD"
+      ]
     },
     {
       "code": "229200",
@@ -26,31 +245,556 @@
       "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=22920",
       "identity_source_row": "01_주식형:4",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 1,
+        "annual_base_fee_percent": "0.250",
+        "annual_total_expense_percent": "0.2825",
+        "transaction_cost_percent": "0.0401",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 14쪽, 종목코드 229200 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S0f1498aad62f"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 14쪽, 종목코드 229200 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S0f1498aad62f"
+          },
+          "annual_total_expense_percent": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 14쪽, 종목코드 229200 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S0f1498aad62f"
+          },
+          "transaction_cost_percent": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 14쪽, 종목코드 229200 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S0f1498aad62f"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "GROWTH_CONCENTRATED",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "360200",
       "name": "ACE 미국S&P500",
       "official_source": "https://kind.krx.co.kr/external/2026/10/28/000603/20261028001589/68659.htm",
       "identity_source_row": "01_주식형:5",
-      "recommendation_eligible": false,
-      "facts": null
+      "recommendation_eligible": true,
+      "facts": {
+        "risk_grade": 2,
+        "annual_base_fee_percent": "0.0047",
+        "benchmark": "S&P 500 지수",
+        "annual_total_expense_percent": "0.0707",
+        "fx_exposed": true,
+        "principal_loss_possible": true,
+        "deposit_protected": false,
+        "asset_class": "EQUITY",
+        "foreign_underlying": true,
+        "leveraged_inverse": false,
+        "listing_reference_confirmed": true,
+        "issuer_id": "KIM",
+        "cash_conversion": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://papi.aceetf.co.kr/api/funds/K55101D78195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-11-10",
+            "observed_on": "2026-11-11",
+            "locator": "공식 사이트 공개 API: stockCd, riskLevelCode, stdDt",
+            "sha256": "a4f9cae52ae96848b3b9954d18599322c2563d52447ac52ea31002acb067eaa2",
+            "source_id": "Sa33fc4818f22"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://papi.aceetf.co.kr/api/funds/K55101D78195/product",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-11-10",
+            "observed_on": "2026-11-11",
+            "locator": "공식 사이트 공개 API: baseIndexName, total_FEE와 보수 성분",
+            "sha256": "a4f9cae52ae96848b3b9954d18599322c2563d52447ac52ea31002acb067eaa2",
+            "source_id": "Se9620dbc4e50"
+          },
+          "benchmark": {
+            "url": "https://papi.aceetf.co.kr/api/funds/K55101D78195/product",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-11-10",
+            "observed_on": "2026-11-11",
+            "locator": "공식 사이트 공개 API: baseIndexName, total_FEE와 보수 성분",
+            "sha256": "a4f9cae52ae96848b3b9954d18599322c2563d52447ac52ea31002acb067eaa2",
+            "source_id": "Se9620dbc4e50"
+          },
+          "annual_total_expense_percent": {
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00028/20260209/215758/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS%26P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81%28%EC%A3%BC%EC%8B%9D%29%EA%B0%84%EC%9D%B4%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-12-31",
+            "observed_on": "2026-11-11",
+            "locator": "간이투자설명서 1쪽 위험등급/비용표, 2~3쪽 환율위험. 효력발생일 20260213",
+            "sha256": "a79df46f21860f8fb767e0789e1de6db4fbc0daa325bd8ff6a8fbd10ef418276",
+            "source_id": "S753a5f608399"
+          },
+          "fx_exposed": {
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00028/20260209/215758/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS%26P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81%28%EC%A3%BC%EC%8B%9D%29%EA%B0%84%EC%9D%B4%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-12-31",
+            "observed_on": "2026-11-11",
+            "locator": "간이투자설명서 1쪽 위험등급/비용표, 2~3쪽 환율위험. 효력발생일 20260213",
+            "sha256": "a79df46f21860f8fb767e0789e1de6db4fbc0daa325bd8ff6a8fbd10ef418276",
+            "source_id": "S753a5f608399"
+          },
+          "principal_loss_possible": {
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00028/20260209/215758/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS%26P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81%28%EC%A3%BC%EC%8B%9D%29%EA%B0%84%EC%9D%B4%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-12-31",
+            "observed_on": "2026-11-11",
+            "locator": "간이투자설명서 1쪽 위험등급/비용표, 2~3쪽 환율위험. 효력발생일 20260213",
+            "sha256": "a79df46f21860f8fb767e0789e1de6db4fbc0daa325bd8ff6a8fbd10ef418276",
+            "source_id": "S753a5f608399"
+          },
+          "deposit_protected": {
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00028/20260209/215758/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS%26P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81%28%EC%A3%BC%EC%8B%9D%29%EA%B0%84%EC%9D%B4%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-12-31",
+            "observed_on": "2026-11-11",
+            "locator": "간이투자설명서 1쪽 위험등급/비용표, 2~3쪽 환율위험. 효력발생일 20260213",
+            "sha256": "a79df46f21860f8fb767e0789e1de6db4fbc0daa325bd8ff6a8fbd10ef418276",
+            "source_id": "S753a5f608399"
+          },
+          "asset_class": {
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00028/20260209/215758/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS%26P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81%28%EC%A3%BC%EC%8B%9D%29%EA%B0%84%EC%9D%B4%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-12-31",
+            "observed_on": "2026-11-11",
+            "locator": "간이투자설명서 1쪽 위험등급/비용표, 2~3쪽 환율위험. 효력발생일 20260213",
+            "sha256": "a79df46f21860f8fb767e0789e1de6db4fbc0daa325bd8ff6a8fbd10ef418276",
+            "source_id": "S753a5f608399"
+          },
+          "foreign_underlying": {
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00028/20260209/215758/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS%26P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81%28%EC%A3%BC%EC%8B%9D%29%EA%B0%84%EC%9D%B4%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-12-31",
+            "observed_on": "2026-11-11",
+            "locator": "간이투자설명서 1쪽 위험등급/비용표, 2~3쪽 환율위험. 효력발생일 20260213",
+            "sha256": "a79df46f21860f8fb767e0789e1de6db4fbc0daa325bd8ff6a8fbd10ef418276",
+            "source_id": "S753a5f608399"
+          },
+          "leveraged_inverse": {
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00028/20260209/215758/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS%26P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81%28%EC%A3%BC%EC%8B%9D%29%EA%B0%84%EC%9D%B4%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-12-31",
+            "observed_on": "2026-11-11",
+            "locator": "간이투자설명서 1쪽 위험등급/비용표, 2~3쪽 환율위험. 효력발생일 20260213",
+            "sha256": "a79df46f21860f8fb767e0789e1de6db4fbc0daa325bd8ff6a8fbd10ef418276",
+            "source_id": "S753a5f608399"
+          },
+          "listing_reference_confirmed": {
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00028/20260209/215758/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS%26P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81%28%EC%A3%BC%EC%8B%9D%29%EA%B0%84%EC%9D%B4%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-12-31",
+            "observed_on": "2026-11-11",
+            "locator": "간이투자설명서 1쪽 위험등급/비용표, 2~3쪽 환율위험. 효력발생일 20260213",
+            "sha256": "a79df46f21860f8fb767e0789e1de6db4fbc0daa325bd8ff6a8fbd10ef418276",
+            "source_id": "S753a5f608399"
+          },
+          "issuer_id": {
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00028/20260209/215758/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS%26P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81%28%EC%A3%BC%EC%8B%9D%29%EA%B0%84%EC%9D%B4%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-12-31",
+            "observed_on": "2026-11-11",
+            "locator": "간이투자설명서 1쪽 위험등급/비용표, 2~3쪽 환율위험. 효력발생일 20260213",
+            "sha256": "a79df46f21860f8fb767e0789e1de6db4fbc0daa325bd8ff6a8fbd10ef418276",
+            "source_id": "S753a5f608399"
+          },
+          "cash_conversion": {
+            "url": "https://regulation.krx.co.kr/contents/RGL/03/03060102/RGL03060102.jsp",
+            "kind": "OFFICIAL_MARKET_RULE",
+            "source_as_of": null,
+            "observed_on": "2026-11-11",
+            "locator": "ETF 거래 결제: 매매체결일로부터 2영업일. 휴장/매도 체결/개별 증권사 출금은 별도",
+            "source_id": "S5d95d76043a8"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "OFFICIAL_DISCLOSURES_FOR_PREVIEW"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "US_BROAD_EQUITY",
+        "benchmark_group": "SP500",
+        "minimum_holding_days": 1825,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "VERIFIED_FOR_PREVIEW",
+      "audit_reason_codes": []
     },
     {
       "code": "360750",
       "name": "TIGER 미국S&P500",
       "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?isuCd=KR7360750004&menuIndex=0&method=searchEftIsuDetail",
       "identity_source_row": "01_주식형:6",
-      "recommendation_eligible": false,
-      "facts": null
+      "recommendation_eligible": true,
+      "facts": {
+        "risk_grade": 2,
+        "annual_base_fee_percent": "0.0068",
+        "annual_total_expense_percent": "0.0868",
+        "transaction_cost_percent": "0.0396",
+        "asset_class": "EQUITY",
+        "fx_exposed": true,
+        "foreign_underlying": true,
+        "principal_loss_possible": true,
+        "deposit_protected": false,
+        "leveraged_inverse": false,
+        "listing_reference_confirmed": true,
+        "issuer_id": "MIRAE_ASSET",
+        "cash_conversion": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "benchmark": "S&P 500",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-13",
+            "observed_on": "2026-11-11",
+            "locator": "운용사 제작 자료 PDF 44쪽 360750 상품개요",
+            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
+            "source_id": "S23a21c0c23d4"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-13",
+            "observed_on": "2026-11-11",
+            "locator": "운용사 제작 자료 PDF 44쪽 360750 상품개요",
+            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
+            "source_id": "S23a21c0c23d4"
+          },
+          "annual_total_expense_percent": {
+            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-13",
+            "observed_on": "2026-11-11",
+            "locator": "운용사 제작 자료 PDF 44쪽 360750 상품개요",
+            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
+            "source_id": "S23a21c0c23d4"
+          },
+          "transaction_cost_percent": {
+            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-13",
+            "observed_on": "2026-11-11",
+            "locator": "운용사 제작 자료 PDF 44쪽 360750 상품개요",
+            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
+            "source_id": "S23a21c0c23d4"
+          },
+          "asset_class": {
+            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-13",
+            "observed_on": "2026-11-11",
+            "locator": "운용사 제작 자료 PDF 44쪽 360750 상품개요",
+            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
+            "source_id": "S23a21c0c23d4"
+          },
+          "fx_exposed": {
+            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-13",
+            "observed_on": "2026-11-11",
+            "locator": "운용사 제작 자료 PDF 44쪽 360750 상품개요",
+            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
+            "source_id": "S23a21c0c23d4"
+          },
+          "foreign_underlying": {
+            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-13",
+            "observed_on": "2026-11-11",
+            "locator": "운용사 제작 자료 PDF 44쪽 360750 상품개요",
+            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
+            "source_id": "S23a21c0c23d4"
+          },
+          "principal_loss_possible": {
+            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-13",
+            "observed_on": "2026-11-11",
+            "locator": "운용사 제작 자료 PDF 44쪽 360750 상품개요",
+            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
+            "source_id": "S23a21c0c23d4"
+          },
+          "deposit_protected": {
+            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-13",
+            "observed_on": "2026-11-11",
+            "locator": "운용사 제작 자료 PDF 44쪽 360750 상품개요",
+            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
+            "source_id": "S23a21c0c23d4"
+          },
+          "leveraged_inverse": {
+            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-13",
+            "observed_on": "2026-11-11",
+            "locator": "운용사 제작 자료 PDF 44쪽 360750 상품개요",
+            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
+            "source_id": "S23a21c0c23d4"
+          },
+          "listing_reference_confirmed": {
+            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-13",
+            "observed_on": "2026-11-11",
+            "locator": "운용사 제작 자료 PDF 44쪽 360750 상품개요",
+            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
+            "source_id": "S23a21c0c23d4"
+          },
+          "issuer_id": {
+            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-13",
+            "observed_on": "2026-11-11",
+            "locator": "운용사 제작 자료 PDF 44쪽 360750 상품개요",
+            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
+            "source_id": "S23a21c0c23d4"
+          },
+          "cash_conversion": {
+            "url": "https://regulation.krx.co.kr/contents/RGL/03/03060102/RGL03060102.jsp",
+            "kind": "OFFICIAL_MARKET_RULE",
+            "source_as_of": null,
+            "observed_on": "2026-11-11",
+            "locator": "ETF 거래 결제: 매매체결일로부터 2영업일. 휴장/매도 체결/개별 증권사 출금은 별도",
+            "source_id": "S5d95d76043a8"
+          },
+          "benchmark": {
+            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-13",
+            "observed_on": "2026-11-11",
+            "locator": "운용사 제작 자료 PDF 44쪽 360750 상품개요",
+            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
+            "source_id": "S23a21c0c23d4"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "OFFICIAL_DISCLOSURES_FOR_PREVIEW"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "US_BROAD_EQUITY",
+        "benchmark_group": "SP500",
+        "minimum_holding_days": 1825,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "VERIFIED_FOR_PREVIEW",
+      "audit_reason_codes": []
     },
     {
       "code": "379800",
       "name": "KODEX 미국S&P500",
       "official_source": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
       "identity_source_row": "01_주식형:7",
-      "recommendation_eligible": false,
-      "facts": null
+      "recommendation_eligible": true,
+      "facts": {
+        "risk_grade": 2,
+        "annual_base_fee_percent": "0.0062",
+        "annual_total_expense_percent": "0.0738",
+        "transaction_cost_percent": "0.0345",
+        "asset_class": "EQUITY",
+        "fx_exposed": true,
+        "foreign_underlying": true,
+        "principal_loss_possible": true,
+        "deposit_protected": false,
+        "leveraged_inverse": false,
+        "listing_reference_confirmed": true,
+        "issuer_id": "SAMSUNG",
+        "cash_conversion": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "benchmark": "S&P 500",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 15쪽, 종목코드 379800 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S8680bb0dff4e"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 15쪽, 종목코드 379800 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S8680bb0dff4e"
+          },
+          "annual_total_expense_percent": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 15쪽, 종목코드 379800 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S8680bb0dff4e"
+          },
+          "transaction_cost_percent": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 15쪽, 종목코드 379800 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S8680bb0dff4e"
+          },
+          "asset_class": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 15쪽, 종목코드 379800 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S8680bb0dff4e"
+          },
+          "fx_exposed": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 15쪽, 종목코드 379800 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S8680bb0dff4e"
+          },
+          "foreign_underlying": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 15쪽, 종목코드 379800 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S8680bb0dff4e"
+          },
+          "principal_loss_possible": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 15쪽, 종목코드 379800 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S8680bb0dff4e"
+          },
+          "deposit_protected": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 15쪽, 종목코드 379800 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S8680bb0dff4e"
+          },
+          "leveraged_inverse": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 15쪽, 종목코드 379800 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S8680bb0dff4e"
+          },
+          "listing_reference_confirmed": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 15쪽, 종목코드 379800 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S8680bb0dff4e"
+          },
+          "issuer_id": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 15쪽, 종목코드 379800 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S8680bb0dff4e"
+          },
+          "cash_conversion": {
+            "url": "https://regulation.krx.co.kr/contents/RGL/03/03060102/RGL03060102.jsp",
+            "kind": "OFFICIAL_MARKET_RULE",
+            "source_as_of": null,
+            "observed_on": "2026-11-11",
+            "locator": "ETF 거래 결제: 매매체결일로부터 2영업일. 휴장/매도 체결/개별 증권사 출금은 별도",
+            "source_id": "S5d95d76043a8"
+          },
+          "benchmark": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 15쪽, 종목코드 379800 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S8680bb0dff4e"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "OFFICIAL_DISCLOSURES_FOR_PREVIEW"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "US_BROAD_EQUITY",
+        "benchmark_group": "SP500",
+        "minimum_holding_days": 1825,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "VERIFIED_FOR_PREVIEW",
+      "audit_reason_codes": []
     },
     {
       "code": "133690",
@@ -58,7 +802,58 @@
       "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?isuCd=KR7133690008&menuIndex=0&method=searchEftIsuDetail",
       "identity_source_row": "01_주식형:8",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 2,
+        "annual_base_fee_percent": "0.0068",
+        "annual_total_expense_percent": "0.1268",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-13",
+            "observed_on": "2026-11-11",
+            "locator": "운용사 제작 자료 PDF 45쪽 133690 상품개요",
+            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
+            "source_id": "S2c31458081a1"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-13",
+            "observed_on": "2026-11-11",
+            "locator": "운용사 제작 자료 PDF 45쪽 133690 상품개요",
+            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
+            "source_id": "S2c31458081a1"
+          },
+          "annual_total_expense_percent": {
+            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-13",
+            "observed_on": "2026-11-11",
+            "locator": "운용사 제작 자료 PDF 45쪽 133690 상품개요",
+            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
+            "source_id": "S2c31458081a1"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "GROWTH_CONCENTRATED",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "379810",
@@ -66,7 +861,68 @@
       "official_source": "https://www.samsungfund.com/upload/kodex/newsroom/20260211093328479.pdf",
       "identity_source_row": "01_주식형:9",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 2,
+        "annual_base_fee_percent": "0.0062",
+        "annual_total_expense_percent": "0.1003",
+        "transaction_cost_percent": "0.0558",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 15쪽, 종목코드 379810 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S2b9c6ffe841f"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 15쪽, 종목코드 379810 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S2b9c6ffe841f"
+          },
+          "annual_total_expense_percent": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 15쪽, 종목코드 379810 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S2b9c6ffe841f"
+          },
+          "transaction_cost_percent": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 15쪽, 종목코드 379810 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S2b9c6ffe841f"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "GROWTH_CONCENTRATED",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "367380",
@@ -74,7 +930,118 @@
       "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=36738",
       "identity_source_row": "01_주식형:10",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 2,
+        "annual_base_fee_percent": "0.0062",
+        "benchmark": "NASDAQ100 지수 (NASDAQ100 Index)",
+        "annual_total_expense_percent": "0.0971",
+        "fx_exposed": true,
+        "principal_loss_possible": true,
+        "deposit_protected": false,
+        "asset_class": "EQUITY",
+        "foreign_underlying": true,
+        "evidence": {
+          "risk_grade": {
+            "url": "https://papi.aceetf.co.kr/api/funds/K55101DB1182",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-11-10",
+            "observed_on": "2026-11-11",
+            "locator": "공식 사이트 공개 API: stockCd, riskLevelCode, stdDt",
+            "sha256": "38ffbc00fa6e9f6758864752181c42f262a5bda6fc71de2a0c709634a45540a4",
+            "source_id": "Sc9b341c88595"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://papi.aceetf.co.kr/api/funds/K55101DB1182/product",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-11-10",
+            "observed_on": "2026-11-11",
+            "locator": "공식 사이트 공개 API: baseIndexName, total_FEE와 보수 성분",
+            "sha256": "38ffbc00fa6e9f6758864752181c42f262a5bda6fc71de2a0c709634a45540a4",
+            "source_id": "S9f0ffc4674ad"
+          },
+          "benchmark": {
+            "url": "https://papi.aceetf.co.kr/api/funds/K55101DB1182/product",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-11-10",
+            "observed_on": "2026-11-11",
+            "locator": "공식 사이트 공개 API: baseIndexName, total_FEE와 보수 성분",
+            "sha256": "38ffbc00fa6e9f6758864752181c42f262a5bda6fc71de2a0c709634a45540a4",
+            "source_id": "S9f0ffc4674ad"
+          },
+          "annual_total_expense_percent": {
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00028/20260511/218566/1/9002A_20260515_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%AD%EB%82%98%EC%8A%A4%EB%8B%A5100%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81%28%EC%A3%BC%EC%8B%9D%29%EA%B0%84%EC%9D%B4%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-12-31",
+            "observed_on": "2026-11-11",
+            "locator": "간이투자설명서 1쪽 위험등급/비용표, 2~3쪽 환율위험. 효력발생일 20260515",
+            "sha256": "40e74cc8f85c8d2ef6c6e287379adde9738879b8636a93e6b4a37abea6bf86c6",
+            "source_id": "S1591832e1f55"
+          },
+          "fx_exposed": {
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00028/20260511/218566/1/9002A_20260515_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%AD%EB%82%98%EC%8A%A4%EB%8B%A5100%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81%28%EC%A3%BC%EC%8B%9D%29%EA%B0%84%EC%9D%B4%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-12-31",
+            "observed_on": "2026-11-11",
+            "locator": "간이투자설명서 1쪽 위험등급/비용표, 2~3쪽 환율위험. 효력발생일 20260515",
+            "sha256": "40e74cc8f85c8d2ef6c6e287379adde9738879b8636a93e6b4a37abea6bf86c6",
+            "source_id": "S1591832e1f55"
+          },
+          "principal_loss_possible": {
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00028/20260511/218566/1/9002A_20260515_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%AD%EB%82%98%EC%8A%A4%EB%8B%A5100%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81%28%EC%A3%BC%EC%8B%9D%29%EA%B0%84%EC%9D%B4%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-12-31",
+            "observed_on": "2026-11-11",
+            "locator": "간이투자설명서 1쪽 위험등급/비용표, 2~3쪽 환율위험. 효력발생일 20260515",
+            "sha256": "40e74cc8f85c8d2ef6c6e287379adde9738879b8636a93e6b4a37abea6bf86c6",
+            "source_id": "S1591832e1f55"
+          },
+          "deposit_protected": {
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00028/20260511/218566/1/9002A_20260515_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%AD%EB%82%98%EC%8A%A4%EB%8B%A5100%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81%28%EC%A3%BC%EC%8B%9D%29%EA%B0%84%EC%9D%B4%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-12-31",
+            "observed_on": "2026-11-11",
+            "locator": "간이투자설명서 1쪽 위험등급/비용표, 2~3쪽 환율위험. 효력발생일 20260515",
+            "sha256": "40e74cc8f85c8d2ef6c6e287379adde9738879b8636a93e6b4a37abea6bf86c6",
+            "source_id": "S1591832e1f55"
+          },
+          "asset_class": {
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00028/20260511/218566/1/9002A_20260515_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%AD%EB%82%98%EC%8A%A4%EB%8B%A5100%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81%28%EC%A3%BC%EC%8B%9D%29%EA%B0%84%EC%9D%B4%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-12-31",
+            "observed_on": "2026-11-11",
+            "locator": "간이투자설명서 1쪽 위험등급/비용표, 2~3쪽 환율위험. 효력발생일 20260515",
+            "sha256": "40e74cc8f85c8d2ef6c6e287379adde9738879b8636a93e6b4a37abea6bf86c6",
+            "source_id": "S1591832e1f55"
+          },
+          "foreign_underlying": {
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00028/20260511/218566/1/9002A_20260515_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%AD%EB%82%98%EC%8A%A4%EB%8B%A5100%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81%28%EC%A3%BC%EC%8B%9D%29%EA%B0%84%EC%9D%B4%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-12-31",
+            "observed_on": "2026-11-11",
+            "locator": "간이투자설명서 1쪽 위험등급/비용표, 2~3쪽 환율위험. 효력발생일 20260515",
+            "sha256": "40e74cc8f85c8d2ef6c6e287379adde9738879b8636a93e6b4a37abea6bf86c6",
+            "source_id": "S1591832e1f55"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "GROWTH_CONCENTRATED",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "232080",
@@ -82,7 +1049,68 @@
       "official_source": "https://www.tigeretf.com/upload/etf/20250611092530009636.pdf",
       "identity_source_row": "01_주식형:11",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 1,
+        "annual_base_fee_percent": "0.190",
+        "annual_total_expense_percent": "0.220",
+        "transaction_cost_percent": "0.0499",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://securities.miraeasset.com/public/hks4412/040/260310.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-12",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 1쪽 232080 상품개요 및 준법감시인 심사 날짜; 거래비용 회계기간 2024.12.31~2025.12.31",
+            "sha256": "0e5500f4bc52d733ef9ec975b647ea8a09616532e9bdb45ca581f7966aa2a49e",
+            "source_id": "Se7b3961b128c"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://securities.miraeasset.com/public/hks4412/040/260310.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-12",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 1쪽 232080 상품개요 및 준법감시인 심사 날짜; 거래비용 회계기간 2024.12.31~2025.12.31",
+            "sha256": "0e5500f4bc52d733ef9ec975b647ea8a09616532e9bdb45ca581f7966aa2a49e",
+            "source_id": "Se7b3961b128c"
+          },
+          "annual_total_expense_percent": {
+            "url": "https://securities.miraeasset.com/public/hks4412/040/260310.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-12",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 1쪽 232080 상품개요 및 준법감시인 심사 날짜; 거래비용 회계기간 2024.12.31~2025.12.31",
+            "sha256": "0e5500f4bc52d733ef9ec975b647ea8a09616532e9bdb45ca581f7966aa2a49e",
+            "source_id": "Se7b3961b128c"
+          },
+          "transaction_cost_percent": {
+            "url": "https://securities.miraeasset.com/public/hks4412/040/260310.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-12",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 1쪽 232080 상품개요 및 준법감시인 심사 날짜; 거래비용 회계기간 2024.12.31~2025.12.31",
+            "sha256": "0e5500f4bc52d733ef9ec975b647ea8a09616532e9bdb45ca581f7966aa2a49e",
+            "source_id": "Se7b3961b128c"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "GROWTH_CONCENTRATED",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "148020",
@@ -90,7 +1118,55 @@
       "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=14802",
       "identity_source_row": "01_주식형:12",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "annual_base_fee_percent": "0.017",
+        "annual_total_expense_percent": "0.040",
+        "transaction_cost_percent": "0.0139",
+        "evidence": {
+          "annual_base_fee_percent": {
+            "url": "https://www.riseetf.co.kr/upload/cdn/2026/01/09/20260109a7fff17c400a415.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-12-30",
+            "observed_on": "2026-11-11",
+            "locator": "148020 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S1f265d4571d7"
+          },
+          "annual_total_expense_percent": {
+            "url": "https://www.riseetf.co.kr/upload/cdn/2026/01/09/20260109a7fff17c400a415.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-12-30",
+            "observed_on": "2026-11-11",
+            "locator": "148020 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S1f265d4571d7"
+          },
+          "transaction_cost_percent": {
+            "url": "https://www.riseetf.co.kr/upload/cdn/2026/01/09/20260109a7fff17c400a415.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-12-30",
+            "observed_on": "2026-11-11",
+            "locator": "148020 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S1f265d4571d7"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "KR_BROAD_EQUITY",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "HOLD_EVIDENCE",
+      "audit_reason_codes": [
+        "DETAIL_EVIDENCE_HOLD"
+      ]
     },
     {
       "code": "278530",
@@ -98,7 +1174,46 @@
       "official_source": "https://www.samsungfund.com/upload/kodex/newsroom/20250723085615455.pdf",
       "identity_source_row": "01_주식형:13",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 2,
+        "annual_base_fee_percent": "0.050",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://m.samsungfund.com/sheet/20251204/2ETF92_20251130.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-11-30",
+            "observed_on": "2026-11-11",
+            "locator": "278530 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S7b768281f599"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://m.samsungfund.com/sheet/20251204/2ETF92_20251130.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-11-30",
+            "observed_on": "2026-11-11",
+            "locator": "278530 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S7b768281f599"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "KR_BROAD_EQUITY",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "HOLD_EVIDENCE",
+      "audit_reason_codes": [
+        "DETAIL_EVIDENCE_HOLD"
+      ]
     },
     {
       "code": "458730",
@@ -106,7 +1221,27 @@
       "official_source": "https://www.tigeretf.com/upload/etf/20250611092637005053.pdf",
       "identity_source_row": "01_주식형:14",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "FACTOR_DIVIDEND",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "446720",
@@ -114,7 +1249,37 @@
       "official_source": "https://www.soletf.co.kr/ko/fund/etf/210942",
       "identity_source_row": "01_주식형:15",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "annual_base_fee_percent": "0.010",
+        "evidence": {
+          "annual_base_fee_percent": {
+            "url": "https://www.soletf.co.kr/ko/fund/etf/210942",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": null,
+            "observed_on": "2026-11-11",
+            "locator": "446720 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S87e7e82f53ca"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "FACTOR_DIVIDEND",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "489250",
@@ -122,7 +1287,64 @@
       "official_source": "https://m.samsungfund.com/sheet/20250805/2ETFN9_20250731.pdf",
       "identity_source_row": "01_주식형:16",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 2,
+        "annual_base_fee_percent": "0.0099",
+        "annual_total_expense_percent": "0.0887",
+        "transaction_cost_percent": "0.0863",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 489250; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "Sbaa4651d3002"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 489250; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "Sbaa4651d3002"
+          },
+          "annual_total_expense_percent": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 489250; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "Sbaa4651d3002"
+          },
+          "transaction_cost_percent": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 489250; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "Sbaa4651d3002"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "FACTOR_DIVIDEND",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "402970",
@@ -130,7 +1352,58 @@
       "official_source": "https://kind.krx.co.kr/external/2026/10/13/000298/20261013000823/68659.htm",
       "identity_source_row": "01_주식형:17",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 3,
+        "annual_base_fee_percent": "0.01",
+        "benchmark": "Dow Jones U.S. Dividend 100 Price return Index",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://papi.aceetf.co.kr/api/funds/K55101DN4471",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-11-10",
+            "observed_on": "2026-11-11",
+            "locator": "공식 사이트 공개 API: stockCd, riskLevelCode, stdDt",
+            "sha256": "e30085636d39533716fa80e221d11384416ff8e468401c13d2f172f24dfdb75c",
+            "source_id": "S43530172ab79"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://papi.aceetf.co.kr/api/funds/K55101DN4471/product",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-11-10",
+            "observed_on": "2026-11-11",
+            "locator": "공식 사이트 공개 API: baseIndexName, total_FEE와 보수 성분",
+            "sha256": "e30085636d39533716fa80e221d11384416ff8e468401c13d2f172f24dfdb75c",
+            "source_id": "Sb74b83d91d8f"
+          },
+          "benchmark": {
+            "url": "https://papi.aceetf.co.kr/api/funds/K55101DN4471/product",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-11-10",
+            "observed_on": "2026-11-11",
+            "locator": "공식 사이트 공개 API: baseIndexName, total_FEE와 보수 성분",
+            "sha256": "e30085636d39533716fa80e221d11384416ff8e468401c13d2f172f24dfdb75c",
+            "source_id": "Sb74b83d91d8f"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "FACTOR_DIVIDEND",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "161510",
@@ -138,7 +1411,55 @@
       "official_source": "https://www.plusetf.co.kr/product/detail?n=006273",
       "identity_source_row": "01_주식형:18",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 2,
+        "annual_base_fee_percent": "0.230",
+        "annual_total_expense_percent": "0.2838",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://plusetf.co.kr/insight/report/detail?n=1805",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-06-18",
+            "observed_on": "2026-11-11",
+            "locator": "161510 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "Sa350d7478c51"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://plusetf.co.kr/insight/report/detail?n=1805",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-06-18",
+            "observed_on": "2026-11-11",
+            "locator": "161510 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "Sa350d7478c51"
+          },
+          "annual_total_expense_percent": {
+            "url": "https://plusetf.co.kr/insight/report/detail?n=1805",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-06-18",
+            "observed_on": "2026-11-11",
+            "locator": "161510 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "Sa350d7478c51"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "FACTOR_DIVIDEND",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "325020",
@@ -146,7 +1467,27 @@
       "official_source": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=75493",
       "identity_source_row": "01_주식형:19",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "FACTOR_DIVIDEND",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "210780",
@@ -154,7 +1495,27 @@
       "official_source": "https://www.tigeretf.com/upload/etf/20250404024858003268.pdf",
       "identity_source_row": "01_주식형:20",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "FACTOR_DIVIDEND",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "091170",
@@ -162,7 +1523,27 @@
       "official_source": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=79834",
       "identity_source_row": "01_주식형:21",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SECTOR_THEME",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "223190",
@@ -170,7 +1551,27 @@
       "official_source": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=75493",
       "identity_source_row": "01_주식형:22",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "FACTOR_DIVIDEND",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "279540",
@@ -178,7 +1579,46 @@
       "official_source": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=75493",
       "identity_source_row": "01_주식형:23",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 3,
+        "annual_base_fee_percent": "0.300",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://m.samsungfund.com/sheet/20241108/2ETF97_20241031.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2024-10-31",
+            "observed_on": "2026-11-11",
+            "locator": "279540 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "Sabc64657edad"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://m.samsungfund.com/sheet/20241108/2ETF97_20241031.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2024-10-31",
+            "observed_on": "2026-11-11",
+            "locator": "279540 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "Sabc64657edad"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "FACTOR_DIVIDEND",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "495050",
@@ -186,7 +1626,46 @@
       "official_source": "https://www.riseetf.co.kr/prod/finderDetail/44H7",
       "identity_source_row": "01_주식형:24",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "annual_total_expense_percent": "0.028",
+        "transaction_cost_percent": "0.010",
+        "evidence": {
+          "annual_total_expense_percent": {
+            "url": "https://www.riseetf.co.kr/pdf/viewer/15425?file=%2Fupload%2Fcdn%2F2026%2F07%2F08%2F2026070898881336e9994bf.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-06-30",
+            "observed_on": "2026-11-11",
+            "locator": "495050 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S95bddf21e712"
+          },
+          "transaction_cost_percent": {
+            "url": "https://www.riseetf.co.kr/pdf/viewer/15425?file=%2Fupload%2Fcdn%2F2026%2F07%2F08%2F2026070898881336e9994bf.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-06-30",
+            "observed_on": "2026-11-11",
+            "locator": "495050 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S95bddf21e712"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "FACTOR_DIVIDEND",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "496120",
@@ -194,7 +1673,27 @@
       "official_source": "https://kind.krx.co.kr/external/2026/10/28/000603/20261028001589/68659.htm",
       "identity_source_row": "01_주식형:25",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "FACTOR_DIVIDEND",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "381170",
@@ -202,7 +1701,27 @@
       "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=38117",
       "identity_source_row": "01_주식형:26",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SECTOR_THEME",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "465580",
@@ -210,7 +1729,27 @@
       "official_source": "https://www.aceetf.co.kr/cs/notice/5102",
       "identity_source_row": "01_주식형:27",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SECTOR_THEME",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "426030",
@@ -218,7 +1757,46 @@
       "official_source": "https://timeetf.co.kr/m11_view.php?cate=&idx=2",
       "identity_source_row": "01_주식형:28",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 1,
+        "annual_base_fee_percent": "0.800",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://www.timeetf.co.kr/m11_view.php?idx=2",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": null,
+            "observed_on": "2026-11-11",
+            "locator": "426030 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S60a0acf4c2db"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://www.timeetf.co.kr/m11_view.php?idx=2",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": null,
+            "observed_on": "2026-11-11",
+            "locator": "426030 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S60a0acf4c2db"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "GROWTH_CONCENTRATED",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "139260",
@@ -226,7 +1804,27 @@
       "official_source": "https://www.tigeretf.com/upload/etf/20250611092528006050.pdf",
       "identity_source_row": "01_주식형:29",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SECTOR_THEME",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "091160",
@@ -234,7 +1832,68 @@
       "official_source": "https://m.samsungfund.com/etf/product/view.do?id=2ETF07",
       "identity_source_row": "01_주식형:31",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 1,
+        "annual_base_fee_percent": "0.450",
+        "annual_total_expense_percent": "0.4625",
+        "transaction_cost_percent": "0.0479",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 16쪽, 종목코드 091160 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "Saac087ad61ac"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 16쪽, 종목코드 091160 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "Saac087ad61ac"
+          },
+          "annual_total_expense_percent": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 16쪽, 종목코드 091160 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "Saac087ad61ac"
+          },
+          "transaction_cost_percent": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 16쪽, 종목코드 091160 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "Saac087ad61ac"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SECTOR_THEME",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "381180",
@@ -242,7 +1901,27 @@
       "official_source": "https://www.tigeretf.com/upload/etf/20240311033416007155.pdf",
       "identity_source_row": "01_주식형:32",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SECTOR_THEME",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "395270",
@@ -250,7 +1929,64 @@
       "official_source": "https://www.hanaroetf.com/fund/etf-data-board",
       "identity_source_row": "01_주식형:33",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 1,
+        "annual_base_fee_percent": "0.450",
+        "annual_total_expense_percent": "0.5087",
+        "transaction_cost_percent": "0.0256",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://www.hanaroetf.com/investment/insight/1efi8yV2oQUEF02q",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": null,
+            "observed_on": "2026-11-11",
+            "locator": "395270 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "Sa6b65809f6e0"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://www.hanaroetf.com/investment/insight/1efi8yV2oQUEF02q",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": null,
+            "observed_on": "2026-11-11",
+            "locator": "395270 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "Sa6b65809f6e0"
+          },
+          "annual_total_expense_percent": {
+            "url": "https://www.hanaroetf.com/investment/insight/1efi8yV2oQUEF02q",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": null,
+            "observed_on": "2026-11-11",
+            "locator": "395270 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "Sa6b65809f6e0"
+          },
+          "transaction_cost_percent": {
+            "url": "https://www.hanaroetf.com/investment/insight/1efi8yV2oQUEF02q",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": null,
+            "observed_on": "2026-11-11",
+            "locator": "395270 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "Sa6b65809f6e0"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SECTOR_THEME",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "471990",
@@ -258,7 +1994,27 @@
       "official_source": "https://m.samsungfund.com/upload/kodex/newsroom/20260325170636388.pdf",
       "identity_source_row": "01_주식형:34",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SECTOR_THEME",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "152100",
@@ -266,7 +2022,55 @@
       "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=15210",
       "identity_source_row": "01_주식형:37",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 2,
+        "annual_base_fee_percent": "0.017",
+        "annual_total_expense_percent": "0.0374",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://www.plusetf.co.kr/insight/report/detail?n=1063",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-10-22",
+            "observed_on": "2026-11-11",
+            "locator": "152100 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S37dd727b9012"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://www.plusetf.co.kr/insight/report/detail?n=1063",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-10-22",
+            "observed_on": "2026-11-11",
+            "locator": "152100 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S37dd727b9012"
+          },
+          "annual_total_expense_percent": {
+            "url": "https://www.plusetf.co.kr/insight/report/detail?n=1063",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-10-22",
+            "observed_on": "2026-11-11",
+            "locator": "152100 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S37dd727b9012"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "KR_BROAD_EQUITY",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "HOLD_EVIDENCE",
+      "audit_reason_codes": [
+        "DETAIL_EVIDENCE_HOLD"
+      ]
     },
     {
       "code": "469070",
@@ -274,7 +2078,46 @@
       "official_source": "https://www.riseetf.co.kr/prod/finderDetail/44F5",
       "identity_source_row": "01_주식형:38",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "annual_total_expense_percent": "0.471",
+        "transaction_cost_percent": "0.051",
+        "evidence": {
+          "annual_total_expense_percent": {
+            "url": "https://riseetf.co.kr/pdf/viewer/14974?file=%2Fupload%2Fcdn%2F2026%2F05%2F12%2F202605122fa85cb2ba43487.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-04-30",
+            "observed_on": "2026-11-11",
+            "locator": "469070 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S1c581675ad29"
+          },
+          "transaction_cost_percent": {
+            "url": "https://riseetf.co.kr/pdf/viewer/14974?file=%2Fupload%2Fcdn%2F2026%2F05%2F12%2F202605122fa85cb2ba43487.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-04-30",
+            "observed_on": "2026-11-11",
+            "locator": "469070 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S1c581675ad29"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SECTOR_THEME",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "244580",
@@ -282,7 +2125,27 @@
       "official_source": "https://www.samsungfund.com/upload/kodex/newsroom/20251020144727705.pdf",
       "identity_source_row": "01_주식형:39",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SECTOR_THEME",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "143860",
@@ -290,7 +2153,27 @@
       "official_source": "https://www.tigeretf.com/upload/etf/20250513024051006675.pdf",
       "identity_source_row": "01_주식형:40",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SECTOR_THEME",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "449450",
@@ -298,7 +2181,37 @@
       "official_source": "https://www.plusetf.co.kr/insight/report/detail?n=2046",
       "identity_source_row": "01_주식형:42",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 2,
+        "evidence": {
+          "risk_grade": {
+            "url": "https://www.plusetf.co.kr/upload/fund/PLUS_K%EB%B0%A9%EC%82%B0_20260430.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-04-30",
+            "observed_on": "2026-11-11",
+            "locator": "449450 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S3635a931bff9"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SECTOR_THEME",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "466920",
@@ -306,7 +2219,37 @@
       "official_source": "https://www.soletf.co.kr/ko/fund/etf/211028",
       "identity_source_row": "01_주식형:44",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "annual_base_fee_percent": "0.450",
+        "evidence": {
+          "annual_base_fee_percent": {
+            "url": "https://www.soletf.co.kr/ko/fund/etf/211028",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": null,
+            "observed_on": "2026-11-11",
+            "locator": "466920 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S794b88646525"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SECTOR_THEME",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "494670",
@@ -314,7 +2257,27 @@
       "official_source": "https://www.tigeretf.com/upload/etf/20250708095908009201.pdf",
       "identity_source_row": "01_주식형:45",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SECTOR_THEME",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "305540",
@@ -322,7 +2285,27 @@
       "official_source": "https://investments.miraeasset.com/tigeretf/upload/etf/20250804095323002538.pdf",
       "identity_source_row": "01_주식형:46",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SECTOR_THEME",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "305720",
@@ -330,7 +2313,46 @@
       "official_source": "https://m.samsungfund.com/etf/product/view.do?id=2ETFB1",
       "identity_source_row": "01_주식형:47",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 1,
+        "annual_base_fee_percent": "0.450",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://m.samsungfund.com/sheet/20260305/2ETFB1_20260228.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-28",
+            "observed_on": "2026-11-11",
+            "locator": "305720 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S3a1ad9b08cbe"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://m.samsungfund.com/sheet/20260305/2ETFB1_20260228.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-28",
+            "observed_on": "2026-11-11",
+            "locator": "305720 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S3a1ad9b08cbe"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SECTOR_THEME",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "117680",
@@ -338,7 +2360,27 @@
       "official_source": "https://www.samsungfund.com/etf/product/pensionlist.do",
       "identity_source_row": "01_주식형:48",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SECTOR_THEME",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "487230",
@@ -346,7 +2388,68 @@
       "official_source": "https://www.samsungfund.com/upload/kodex/newsroom/2026011317101936.pdf",
       "identity_source_row": "01_주식형:49",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 2,
+        "annual_base_fee_percent": "0.450",
+        "annual_total_expense_percent": "0.5315",
+        "transaction_cost_percent": "0.3685",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 17쪽, 종목코드 487230 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S95edf6eda33d"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 17쪽, 종목코드 487230 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S95edf6eda33d"
+          },
+          "annual_total_expense_percent": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 17쪽, 종목코드 487230 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S95edf6eda33d"
+          },
+          "transaction_cost_percent": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 17쪽, 종목코드 487230 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S95edf6eda33d"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SECTOR_THEME",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "102970",
@@ -354,7 +2457,27 @@
       "official_source": "https://www.samsungfund.com/upload/kodex/newsroom/20250723085615455.pdf",
       "identity_source_row": "01_주식형:50",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SECTOR_THEME",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "464600",
@@ -362,23 +2485,343 @@
       "official_source": "https://www.soletf.co.kr/ko/fund/etf/211016",
       "identity_source_row": "01_주식형:51",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "annual_base_fee_percent": "0.450",
+        "evidence": {
+          "annual_base_fee_percent": {
+            "url": "https://www.soletf.co.kr/ko/fund/etf/211016",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": null,
+            "observed_on": "2026-11-11",
+            "locator": "464600 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "Sfa3124f4f857"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SECTOR_THEME",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "153130",
       "name": "KODEX 단기채권",
       "official_source": "https://www.samsungfund.com/etf/product/ytm.do",
       "identity_source_row": "02_채권형:2",
-      "recommendation_eligible": false,
-      "facts": null
+      "recommendation_eligible": true,
+      "facts": {
+        "risk_grade": 6,
+        "annual_base_fee_percent": "0.150",
+        "annual_total_expense_percent": "0.1671",
+        "transaction_cost_percent": "0.0064",
+        "asset_class": "BOND",
+        "fx_exposed": false,
+        "foreign_underlying": false,
+        "principal_loss_possible": true,
+        "deposit_protected": false,
+        "leveraged_inverse": false,
+        "listing_reference_confirmed": true,
+        "issuer_id": "SAMSUNG",
+        "cash_conversion": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "benchmark": "KRW Cash Index(총수익)",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 153130; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "Sad92967c2650"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 153130; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "Sad92967c2650"
+          },
+          "annual_total_expense_percent": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 153130; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "Sad92967c2650"
+          },
+          "transaction_cost_percent": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 153130; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "Sad92967c2650"
+          },
+          "asset_class": {
+            "url": "https://m.samsungfund.com/sheet/20250204/2ETF35_20250131.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-01-31",
+            "observed_on": "2026-11-11",
+            "locator": "153130 기초지수와 원화 단기채권 운용전략; 위험·비용·상장참조는 2026.10.13 공지 별도 대조",
+            "source_id": "S46127e938216"
+          },
+          "fx_exposed": {
+            "url": "https://m.samsungfund.com/sheet/20250204/2ETF35_20250131.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-01-31",
+            "observed_on": "2026-11-11",
+            "locator": "153130 기초지수와 원화 단기채권 운용전략; 위험·비용·상장참조는 2026.10.13 공지 별도 대조",
+            "source_id": "S46127e938216"
+          },
+          "foreign_underlying": {
+            "url": "https://m.samsungfund.com/sheet/20250204/2ETF35_20250131.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-01-31",
+            "observed_on": "2026-11-11",
+            "locator": "153130 기초지수와 원화 단기채권 운용전략; 위험·비용·상장참조는 2026.10.13 공지 별도 대조",
+            "source_id": "S46127e938216"
+          },
+          "principal_loss_possible": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 153130; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "Sad92967c2650"
+          },
+          "deposit_protected": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 153130; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "Sad92967c2650"
+          },
+          "leveraged_inverse": {
+            "url": "https://m.samsungfund.com/sheet/20250204/2ETF35_20250131.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-01-31",
+            "observed_on": "2026-11-11",
+            "locator": "153130 기초지수와 원화 단기채권 운용전략; 위험·비용·상장참조는 2026.10.13 공지 별도 대조",
+            "source_id": "S46127e938216"
+          },
+          "listing_reference_confirmed": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 153130; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "Sad92967c2650"
+          },
+          "issuer_id": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 153130; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "Sad92967c2650"
+          },
+          "cash_conversion": {
+            "url": "https://regulation.krx.co.kr/contents/RGL/03/03060102/RGL03060102.jsp",
+            "kind": "OFFICIAL_MARKET_RULE",
+            "source_as_of": null,
+            "observed_on": "2026-11-11",
+            "locator": "ETF 거래 결제: 매매체결일로부터 2영업일. 휴장/매도 체결/개별 증권사 출금은 별도",
+            "source_id": "S5d95d76043a8"
+          },
+          "benchmark": {
+            "url": "https://m.samsungfund.com/sheet/20250204/2ETF35_20250131.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-01-31",
+            "observed_on": "2026-11-11",
+            "locator": "153130 기초지수와 원화 단기채권 운용전략; 위험·비용·상장참조는 2026.10.13 공지 별도 대조",
+            "source_id": "S46127e938216"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "OFFICIAL_DISCLOSURES_FOR_PREVIEW"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "KRW_SHORT_BOND",
+        "benchmark_group": "KRW_SHORT_GOVT",
+        "minimum_holding_days": 180,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "VERIFIED_FOR_PREVIEW",
+      "audit_reason_codes": []
     },
     {
       "code": "214980",
       "name": "KODEX 단기채권PLUS",
       "official_source": "https://www.samsungfund.com/etf/product/ytm.do",
       "identity_source_row": "02_채권형:3",
-      "recommendation_eligible": false,
-      "facts": null
+      "recommendation_eligible": true,
+      "facts": {
+        "risk_grade": 6,
+        "annual_base_fee_percent": "0.150",
+        "annual_total_expense_percent": "0.1663",
+        "transaction_cost_percent": "0.0003",
+        "asset_class": "BOND",
+        "fx_exposed": false,
+        "foreign_underlying": false,
+        "principal_loss_possible": true,
+        "deposit_protected": false,
+        "leveraged_inverse": false,
+        "listing_reference_confirmed": true,
+        "issuer_id": "SAMSUNG",
+        "cash_conversion": "KRX_T_PLUS_2_BUSINESS_DAYS",
+        "benchmark": "KRW Cash PLUS Index(총수익)",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 214980; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "S49d2d41afa62"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 214980; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "S49d2d41afa62"
+          },
+          "annual_total_expense_percent": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 214980; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "S49d2d41afa62"
+          },
+          "transaction_cost_percent": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 214980; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "S49d2d41afa62"
+          },
+          "asset_class": {
+            "url": "https://m.samsungfund.com/sheet/20241021/2ETF48_20240930.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2024-09-30",
+            "observed_on": "2026-11-11",
+            "locator": "214980 기초지수와 원화 단기채권 운용전략; 위험·비용·상장참조는 2026.10.13 공지 별도 대조",
+            "source_id": "Sd6a0df82a566"
+          },
+          "fx_exposed": {
+            "url": "https://m.samsungfund.com/sheet/20241021/2ETF48_20240930.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2024-09-30",
+            "observed_on": "2026-11-11",
+            "locator": "214980 기초지수와 원화 단기채권 운용전략; 위험·비용·상장참조는 2026.10.13 공지 별도 대조",
+            "source_id": "Sd6a0df82a566"
+          },
+          "foreign_underlying": {
+            "url": "https://m.samsungfund.com/sheet/20241021/2ETF48_20240930.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2024-09-30",
+            "observed_on": "2026-11-11",
+            "locator": "214980 기초지수와 원화 단기채권 운용전략; 위험·비용·상장참조는 2026.10.13 공지 별도 대조",
+            "source_id": "Sd6a0df82a566"
+          },
+          "principal_loss_possible": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 214980; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "S49d2d41afa62"
+          },
+          "deposit_protected": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 214980; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "S49d2d41afa62"
+          },
+          "leveraged_inverse": {
+            "url": "https://m.samsungfund.com/sheet/20241021/2ETF48_20240930.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2024-09-30",
+            "observed_on": "2026-11-11",
+            "locator": "214980 기초지수와 원화 단기채권 운용전략; 위험·비용·상장참조는 2026.10.13 공지 별도 대조",
+            "source_id": "Sd6a0df82a566"
+          },
+          "listing_reference_confirmed": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 214980; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "S49d2d41afa62"
+          },
+          "issuer_id": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 214980; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "S49d2d41afa62"
+          },
+          "cash_conversion": {
+            "url": "https://regulation.krx.co.kr/contents/RGL/03/03060102/RGL03060102.jsp",
+            "kind": "OFFICIAL_MARKET_RULE",
+            "source_as_of": null,
+            "observed_on": "2026-11-11",
+            "locator": "ETF 거래 결제: 매매체결일로부터 2영업일. 휴장/매도 체결/개별 증권사 출금은 별도",
+            "source_id": "S5d95d76043a8"
+          },
+          "benchmark": {
+            "url": "https://m.samsungfund.com/sheet/20241021/2ETF48_20240930.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2024-09-30",
+            "observed_on": "2026-11-11",
+            "locator": "214980 기초지수와 원화 단기채권 운용전략; 위험·비용·상장참조는 2026.10.13 공지 별도 대조",
+            "source_id": "Sd6a0df82a566"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "OFFICIAL_DISCLOSURES_FOR_PREVIEW"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "KRW_SHORT_BOND",
+        "benchmark_group": "KRW_SHORT_PLUS",
+        "minimum_holding_days": 180,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "VERIFIED_FOR_PREVIEW",
+      "audit_reason_codes": []
     },
     {
       "code": "469830",
@@ -386,7 +2829,37 @@
       "official_source": "https://www.soletf.co.kr/ko/fund/etf/211038",
       "identity_source_row": "02_채권형:4",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "annual_base_fee_percent": "0.050",
+        "evidence": {
+          "annual_base_fee_percent": {
+            "url": "https://www.soletf.co.kr/ko/fund/etf/211038",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": null,
+            "observed_on": "2026-11-11",
+            "locator": "469830 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S1648da216a71"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "KRW_SHORT_BOND",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "HOLD_EVIDENCE",
+      "audit_reason_codes": [
+        "DETAIL_EVIDENCE_HOLD"
+      ]
     },
     {
       "code": "114820",
@@ -394,7 +2867,27 @@
       "official_source": "https://www.tigeretf.com/upload/etf/20250708095820005220.pdf",
       "identity_source_row": "02_채권형:5",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "KRW_GOVT_INTERMEDIATE",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "HOLD_EVIDENCE",
+      "audit_reason_codes": [
+        "DETAIL_EVIDENCE_HOLD"
+      ]
     },
     {
       "code": "114260",
@@ -402,7 +2895,46 @@
       "official_source": "https://www.samsungfund.com/etf/product/ytm.do",
       "identity_source_row": "02_채권형:6",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 5,
+        "annual_base_fee_percent": "0.150",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://m.samsungfund.com/sheet/20220722/2ETF19_20220630.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2022-06-30",
+            "observed_on": "2026-11-11",
+            "locator": "114260 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "Sc7823d79df21"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://m.samsungfund.com/sheet/20220722/2ETF19_20220630.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2022-06-30",
+            "observed_on": "2026-11-11",
+            "locator": "114260 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "Sc7823d79df21"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "KRW_GOVT_INTERMEDIATE",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "HOLD_EVIDENCE",
+      "audit_reason_codes": [
+        "DETAIL_EVIDENCE_HOLD"
+      ]
     },
     {
       "code": "471230",
@@ -410,7 +2942,27 @@
       "official_source": "https://www.samsungfund.com/etf/product/ytm.do",
       "identity_source_row": "02_채권형:7",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "LONG_DURATION",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "439870",
@@ -418,7 +2970,46 @@
       "official_source": "https://www.samsungfund.com/etf/product/ytm.do",
       "identity_source_row": "02_채권형:8",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 5,
+        "annual_base_fee_percent": "0.050",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20250722174437650.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-06-30",
+            "observed_on": "2026-11-11",
+            "locator": "439870 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "Sdf5978647aa4"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20250722174437650.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-06-30",
+            "observed_on": "2026-11-11",
+            "locator": "439870 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "Sdf5978647aa4"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "LONG_DURATION",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "298340",
@@ -426,7 +3017,37 @@
       "official_source": "https://www.plusetf.co.kr/product/detail?n=006317",
       "identity_source_row": "02_채권형:9",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 5,
+        "evidence": {
+          "risk_grade": {
+            "url": "https://www.plusetf.co.kr/upload/fund/PLUS_%EA%B5%AD%EC%B1%84%EC%84%A0%EB%AC%BC3%EB%85%84_20260228.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-28",
+            "observed_on": "2026-11-11",
+            "locator": "298340 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "Sa5f4bfe18403"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SPECIAL_STRUCTURE",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": true,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "273130",
@@ -434,7 +3055,64 @@
       "official_source": "https://m.samsungfund.com/upload/kodex/newsroom/20250722174437650.pdf",
       "identity_source_row": "02_채권형:10",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 5,
+        "annual_base_fee_percent": "0.045",
+        "annual_total_expense_percent": "0.0595",
+        "transaction_cost_percent": "0.0127",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://m.samsungfund.com/sheet/20260511/2ETF88_20260430.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-04-30",
+            "observed_on": "2026-11-11",
+            "locator": "273130 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S0597d880b275"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://m.samsungfund.com/sheet/20260511/2ETF88_20260430.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-04-30",
+            "observed_on": "2026-11-11",
+            "locator": "273130 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S0597d880b275"
+          },
+          "annual_total_expense_percent": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20250722174437650.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-06-30",
+            "observed_on": "2026-11-11",
+            "locator": "273130 상품 카드: 직전 회계연도 비용",
+            "source_id": "Sde7b3c4f25ca"
+          },
+          "transaction_cost_percent": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20250722174437650.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-06-30",
+            "observed_on": "2026-11-11",
+            "locator": "273130 상품 카드: 직전 회계연도 비용",
+            "source_id": "Sde7b3c4f25ca"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "KRW_AGG_BOND",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "HOLD_EVIDENCE",
+      "audit_reason_codes": [
+        "DETAIL_EVIDENCE_HOLD"
+      ]
     },
     {
       "code": "436140",
@@ -442,7 +3120,37 @@
       "official_source": "https://www.soletf.co.kr/ko/fund/etf/210932",
       "identity_source_row": "02_채권형:11",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "annual_base_fee_percent": "0.040",
+        "evidence": {
+          "annual_base_fee_percent": {
+            "url": "https://www.soletf.co.kr/ko/fund/etf/210932",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": null,
+            "observed_on": "2026-11-11",
+            "locator": "436140 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S6898ad1b75b9"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "KRW_AGG_BOND",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "HOLD_EVIDENCE",
+      "audit_reason_codes": [
+        "DETAIL_EVIDENCE_HOLD"
+      ]
     },
     {
       "code": "356540",
@@ -450,7 +3158,27 @@
       "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=35654",
       "identity_source_row": "02_채권형:12",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "KRW_AGG_BOND",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "HOLD_EVIDENCE",
+      "audit_reason_codes": [
+        "DETAIL_EVIDENCE_HOLD"
+      ]
     },
     {
       "code": "451540",
@@ -458,7 +3186,27 @@
       "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=45154",
       "identity_source_row": "02_채권형:13",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "KRW_AGG_BOND",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "HOLD_EVIDENCE",
+      "audit_reason_codes": [
+        "DETAIL_EVIDENCE_HOLD"
+      ]
     },
     {
       "code": "451000",
@@ -466,7 +3214,37 @@
       "official_source": "https://www.plusetf.co.kr/product/detail?n=006358",
       "identity_source_row": "02_채권형:14",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 5,
+        "evidence": {
+          "risk_grade": {
+            "url": "https://www.plusetf.co.kr/upload/fund/PLUS_%EC%A2%85%ED%95%A9%EC%B1%84%EA%B6%8C%28AA-%EC%9D%B4%EC%83%81%29_%EC%95%A1%ED%8B%B0%EB%B8%8C_20260228.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-02-28",
+            "observed_on": "2026-11-11",
+            "locator": "451000 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S3c3200baef1a"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "KRW_AGG_BOND",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "HOLD_EVIDENCE",
+      "audit_reason_codes": [
+        "DETAIL_EVIDENCE_HOLD"
+      ]
     },
     {
       "code": "454780",
@@ -474,7 +3252,37 @@
       "official_source": "https://www.kiwoometf.com/service/etf/KO02010200M?gcode=454780",
       "identity_source_row": "02_채권형:15",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "annual_base_fee_percent": "0.025",
+        "evidence": {
+          "annual_base_fee_percent": {
+            "url": "https://www.kiwoometf.com/service/etf/KO02010200M?gcode=454780",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": null,
+            "observed_on": "2026-11-11",
+            "locator": "454780 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "Sc9237f6d6396"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "KRW_AGG_BOND",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "HOLD_EVIDENCE",
+      "audit_reason_codes": [
+        "DETAIL_EVIDENCE_HOLD"
+      ]
     },
     {
       "code": "472920",
@@ -482,7 +3290,27 @@
       "official_source": "https://kind.krx.co.kr/external/2026/01/13/000236/20260113000595/68656.htm",
       "identity_source_row": "02_채권형:16",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "KRW_AGG_BOND",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "HOLD_EVIDENCE",
+      "audit_reason_codes": [
+        "DETAIL_EVIDENCE_HOLD"
+      ]
     },
     {
       "code": "0192Z0",
@@ -490,7 +3318,27 @@
       "official_source": "https://kind.krx.co.kr/external/2026/08/07/000092/20260807000169/68656.htm",
       "identity_source_row": "02_채권형:17",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "KRW_AGG_BOND",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "HOLD_EVIDENCE",
+      "audit_reason_codes": [
+        "DETAIL_EVIDENCE_HOLD"
+      ]
     },
     {
       "code": "473290",
@@ -498,7 +3346,27 @@
       "official_source": "https://www.samsungfund.com/etf/product/ytm.do",
       "identity_source_row": "02_채권형:18",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "TARGET_MATURITY",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "0091C0",
@@ -506,7 +3374,27 @@
       "official_source": "https://www.samsungfund.com/etf/lounge/notice-view.do?no=80195",
       "identity_source_row": "02_채권형:19",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "LONG_DURATION",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "0085P0",
@@ -514,7 +3402,27 @@
       "official_source": "https://kind.krx.co.kr/external/2026/10/28/000603/20261028001589/68659.htm",
       "identity_source_row": "02_채권형:20",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "LONG_DURATION",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "453850",
@@ -522,7 +3430,27 @@
       "official_source": "https://kind.krx.co.kr/external/2026/07/07/000259/20260707000645/68671.htm",
       "identity_source_row": "02_채권형:21",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "LONG_DURATION",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "481340",
@@ -530,7 +3458,37 @@
       "official_source": "https://www.riseetf.co.kr/prod/finderDetail/44G6",
       "identity_source_row": "02_채권형:22",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "annual_base_fee_percent": "0.050",
+        "evidence": {
+          "annual_base_fee_percent": {
+            "url": "https://riseetf.co.kr/prod/finderDetail/44G6",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": null,
+            "observed_on": "2026-11-11",
+            "locator": "481340 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S486fb8bf95fa"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "LONG_DURATION",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "304660",
@@ -538,7 +3496,27 @@
       "official_source": "https://www.samsungfund.com/etf/lounge/notice-view.do?no=58735",
       "identity_source_row": "02_채권형:23",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SPECIAL_STRUCTURE",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": true,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "437350",
@@ -546,7 +3524,37 @@
       "official_source": "https://www.riseetf.co.kr/prod/finderDetail/44D2",
       "identity_source_row": "02_채권형:24",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "annual_base_fee_percent": "0.100",
+        "evidence": {
+          "annual_base_fee_percent": {
+            "url": "https://riseetf.co.kr/prod/finderDetail/44D2",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": null,
+            "observed_on": "2026-11-11",
+            "locator": "437350 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S8ebe5789fd54"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "FOREIGN_CREDIT",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "305080",
@@ -554,7 +3562,27 @@
       "official_source": "https://www.tigeretf.com/upload/etf/20250708095909001843.pdf",
       "identity_source_row": "02_채권형:25",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SPECIAL_STRUCTURE",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": true,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "423160",
@@ -562,7 +3590,46 @@
       "official_source": "https://www.samsungfund.com/upload/guide/230525_Kodex_bond_guidebook.pdf",
       "identity_source_row": "03_현금성:6",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 2,
+        "annual_base_fee_percent": "0.050",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://m.samsungfund.com/sheet/20251204/2ETFG6_20251130.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-11-30",
+            "observed_on": "2026-11-11",
+            "locator": "423160 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "Scc3bda66a944"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://m.samsungfund.com/sheet/20251204/2ETFG6_20251130.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-11-30",
+            "observed_on": "2026-11-11",
+            "locator": "423160 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "Scc3bda66a944"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SPECIAL_STRUCTURE",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": true,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "459580",
@@ -570,7 +3637,46 @@
       "official_source": "https://m.samsungfund.com/sheet/20250805/2ETFJ8_20250731.pdf",
       "identity_source_row": "03_현금성:7",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 4,
+        "annual_base_fee_percent": "0.020",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://m.samsungfund.com/sheet/20250805/2ETFJ8_20250731.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-07-31",
+            "observed_on": "2026-11-11",
+            "locator": "459580 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S90c5bd19a8d6"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://m.samsungfund.com/sheet/20250805/2ETFJ8_20250731.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-07-31",
+            "observed_on": "2026-11-11",
+            "locator": "459580 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S90c5bd19a8d6"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SPECIAL_STRUCTURE",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": true,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "475630",
@@ -578,7 +3684,27 @@
       "official_source": "https://www.tigeretf.com/upload/etf/20241007064830005296.pdf",
       "identity_source_row": "03_현금성:8",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SPECIAL_STRUCTURE",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": true,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "481050",
@@ -586,7 +3712,46 @@
       "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=48105",
       "identity_source_row": "03_현금성:9",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 4,
+        "annual_base_fee_percent": "0.050",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://m.samsungfund.com/sheet/20250402/2ETFM7_20250331.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "481050 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S1ffbd7b76c33"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://m.samsungfund.com/sheet/20250402/2ETFM7_20250331.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-03-31",
+            "observed_on": "2026-11-11",
+            "locator": "481050 상품 행/상품개요; 날짜가 없으면 최신성 미확정",
+            "source_id": "S1ffbd7b76c33"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SPECIAL_STRUCTURE",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": true,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "488770",
@@ -594,7 +3759,68 @@
       "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=48877",
       "identity_source_row": "03_현금성:10",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 5,
+        "annual_base_fee_percent": "0.050",
+        "annual_total_expense_percent": "0.063",
+        "transaction_cost_percent": "0.0013",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-12-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 22쪽, 종목코드 488770 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S202a4cda99f6"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-12-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 22쪽, 종목코드 488770 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S202a4cda99f6"
+          },
+          "annual_total_expense_percent": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-12-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 22쪽, 종목코드 488770 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S202a4cda99f6"
+          },
+          "transaction_cost_percent": {
+            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-12-31",
+            "observed_on": "2026-11-11",
+            "locator": "PDF 22쪽, 종목코드 488770 상품 카드",
+            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
+            "source_id": "S202a4cda99f6"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "MONEY_MARKET",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "0043B0",
@@ -602,7 +3828,27 @@
       "official_source": "https://investments.miraeasset.com/tigeretf/upload/etf/20250804095125001001.pdf",
       "identity_source_row": "03_현금성:11",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "MONEY_MARKET",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": false,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "498400",
@@ -610,7 +3856,64 @@
       "official_source": "https://m.samsungfund.com/etf/product/view.do?id=2ETFP4",
       "identity_source_row": "04_파생전략형:2",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 1,
+        "annual_base_fee_percent": "0.390",
+        "annual_total_expense_percent": "0.4228",
+        "transaction_cost_percent": "0.1015",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 498400; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "Sf25b142dcb76"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 498400; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "Sf25b142dcb76"
+          },
+          "annual_total_expense_percent": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 498400; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "Sf25b142dcb76"
+          },
+          "transaction_cost_percent": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 498400; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "Sf25b142dcb76"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SPECIAL_STRUCTURE",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": true,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "441640",
@@ -618,7 +3921,64 @@
       "official_source": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
       "identity_source_row": "04_파생전략형:3",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "risk_grade": 3,
+        "annual_base_fee_percent": "0.190",
+        "annual_total_expense_percent": "0.2601",
+        "transaction_cost_percent": "0.1774",
+        "evidence": {
+          "risk_grade": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 441640; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "S70bfc2dca6a0"
+          },
+          "annual_base_fee_percent": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 441640; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "S70bfc2dca6a0"
+          },
+          "annual_total_expense_percent": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 441640; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "S70bfc2dca6a0"
+          },
+          "transaction_cost_percent": {
+            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2026-10-13",
+            "observed_on": "2026-11-11",
+            "locator": "상품정보: 441640; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
+            "source_id": "S70bfc2dca6a0"
+          }
+        }
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SPECIAL_STRUCTURE",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": true,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     },
     {
       "code": "486290",
@@ -626,7 +3986,38 @@
       "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=48629",
       "identity_source_row": "04_파생전략형:4",
       "recommendation_eligible": false,
-      "facts": null
+      "facts": {
+        "evidence": {}
+      },
+      "review": {
+        "reviewed_on": "2026-11-11",
+        "valid_until": "2026-12-11",
+        "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
+      },
+      "service_constraints": {
+        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "role": "SPECIAL_STRUCTURE",
+        "benchmark_group": null,
+        "minimum_holding_days": null,
+        "account_scope": "GENERAL_TAXABLE_ONLY",
+        "complex": true,
+        "requires_etf_experience": true
+      },
+      "audit_state": "EXCLUDED_DEFAULT_POLICY",
+      "audit_reason_codes": [
+        "DEFAULT_POLICY_EXCLUDED"
+      ]
     }
-  ]
+  ],
+  "detail_review": {
+    "reviewed_count": 78,
+    "enabled_for_preview_count": 6,
+    "state_counts": {
+      "VERIFIED_FOR_PREVIEW": 6,
+      "HOLD_EVIDENCE": 15,
+      "EXCLUDED_DEFAULT_POLICY": 57
+    },
+    "ledger_ref": "data/product-detail-review-20261111.json",
+    "live_tradability": "NOT_VERIFIED"
+  }
 }

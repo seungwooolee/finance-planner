@@ -9,7 +9,14 @@ import pytest
 
 from app.be.question_bridge import run_frontend_questions
 from app.planning.common import ContractError, digest
-from app.planning.product_allocation import allocate_budget, block_product_budget, review_products
+from app.planning.product_allocation import (
+    allocate_budget,
+    block_product_budget,
+    filter_product,
+    guarded_targets,
+    profile_from_raw,
+    review_products,
+)
 from app.planning.question_v12 import run_question_v12
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -56,19 +63,31 @@ def change(d, qid, key, value):
 
 def synthetic_catalog():
     facts = {"risk_grade": 3, "asset_class": "BOND", "fx_exposed": False, "principal_loss_possible": True,
-             "complex": False, "deposit_protected": False, "leveraged_inverse": False, "foreign_underlying": False,
-             "annual_total_fee_percent": "0.1", "cash_conversion": "TEST_ONLY_T_PLUS_2",
-             "account_scope": "GENERAL_TAXABLE_ONLY", "minimum_holding_days": 365,
-             "reviewed_on": "2026-10-01", "valid_until": "2026-12-31", "tradable": True}
-    facts["evidence"] = {key: "https://example.invalid/synthetic-only" for key in facts}
-    return {"schema_version": "DION-PRODUCT-CATALOG-0.1", "version": "SYNTHETIC_ONLY", "research_excluded_count": 0,
+             "deposit_protected": False, "leveraged_inverse": False, "foreign_underlying": False,
+             "annual_base_fee_percent": "0.1", "annual_total_expense_percent": "0.2",
+             "cash_conversion": "TEST_ONLY_T_PLUS_2", "issuer_id": "TEST", "benchmark": "TEST",
+             "listing_reference_confirmed": True}
+    facts["evidence"] = {key: {"kind": "OFFICIAL_DISCLOSURE", "url": "https://example.invalid/synthetic-only",
+                               "source_as_of": "2026-10-01", "observed_on": "2026-10-01", "locator": "TEST ONLY"}
+                         for key in facts}
+    return {"schema_version": "DION-PRODUCT-CATALOG-0.2", "version": "SYNTHETIC_ONLY", "research_excluded_count": 0,
             "products": [{"code": code, "name": "SYNTHETIC " + code, "facts": copy.deepcopy(facts),
+                          "review": {"reviewed_on": "2026-10-01", "valid_until": "2026-11-30"},
+                          "service_constraints": {"policy_ref": "SYNTHETIC_ONLY", "role": "TEST_BOND",
+                                                  "benchmark_group": code, "minimum_holding_days": 365,
+                                                  "complex": False, "requires_etf_experience": False,
+                                                  "account_scope": "GENERAL_TAXABLE_ONLY"},
                           "recommendation_eligible": True, "official_source": "https://example.invalid/synthetic"}
                          for code in ("TEST01", "TEST02")]}
 
 
 def synthetic_policy():
-    return {"schema_version": "DION-PRODUCT-POLICY-0.1", "version": "SYNTHETIC_ONLY", "state": "REVIEWED_FOR_PREVIEW",
+    return {"schema_version": "DION-PRODUCT-POLICY-0.2", "version": "SYNTHETIC_ONLY", "state": "REVIEWED_FOR_PREVIEW",
+            "reviewed_on": "2026-10-01", "valid_until": "2026-11-30", "review_ttl_days": 90,
+            "source_max_age_days": 365, "maximum_product_bps": 6000, "maximum_issuer_bps": 10000,
+            "maximum_benchmark_bps": 6000, "maximum_equity_bps": 6000, "maximum_foreign_bps": 6000,
+            "minimum_holding_days_by_role": {"TEST_BOND": 365}, "scenario_shock_bps_by_role": {"TEST_BOND": 1000},
+            "stress_budget_bps_by_loss_band": {"LOSS_NONE": 0, "LOSS_20_30": 2000},
             "risk_floor_by_preference": {"PREF_BALANCED": 3}, "risk_floor_by_loss_band": {"LOSS_20_30": 3},
             "risk_floor_by_loss_response": {"LOSS_RESPONSE_RAW_03": 3},
             "target_slots_by_preference": {"PREF_BALANCED": [
@@ -105,7 +124,7 @@ def test_invalid_caps_duplicates_and_weights_fail_closed(slots):
         allocate_budget("100", slots, {"X"})
 
 
-def test_real_catalog_all78_are_screened_but_not_promoted():
+def test_historical_snapshot_does_not_backfill_newly_researched_facts():
     d = document()
     before = copy.deepcopy(d)
     r = run_question_v12(d)
@@ -113,8 +132,10 @@ def test_real_catalog_all78_are_screened_but_not_promoted():
     assert x["catalog"]["identity_verified_count"] == 78
     assert x["catalog"]["research_excluded_count"] == 22
     assert x["catalog"]["eligible_for_review_count"] == 0
-    assert all("PRODUCT_FACTS_UNVERIFIED" in p["reason_codes"] for p in x["products"])
-    assert x["product_policy"]["state"] == "DRAFT"
+    assert all(p["reason_codes"] for p in x["products"])
+    assert x["catalog"]["detail_review"]["enabled_for_preview_count"] == 6
+    assert x["product_policy"]["state"] == "REVIEWED_FOR_PREVIEW"
+    assert "POLICY_DISCLOSURE_STALE" in x["reason_codes"]
     assert x["recommended_new_investment_krw"] is None
     assert x["input_source_sha256"] == digest(d)
     assert r["adapter"]["source_snapshot"] == before == d
@@ -162,7 +183,7 @@ def test_risk_grade_direction_is_not_inverted_or_redistributed():
 
 def test_stale_facts_horizon_fx_and_restrictions_exclude_products():
     cat = synthetic_catalog()
-    cat["products"][0]["facts"]["valid_until"] = "2026-10-01"
+    cat["products"][0]["review"]["valid_until"] = "2026-10-01"
     assert "PRODUCT_DISCLOSURE_STALE" in review(catalog=cat)["products"][0]["reason_codes"]
     cat = synthetic_catalog()
     cat["products"][0]["facts"]["fx_exposed"] = True
@@ -223,3 +244,187 @@ def test_monthly_fund_link_is_explicit_and_survives_adapter_provenance():
     assert run_question_v12(d)["adapter"]["source_snapshot"]["confirmations"] == d["confirmations"]
     d["confirmations"] = [c for c in d["confirmations"] if c["question_id"] != "F15"]
     assert "F15" in review(d)["missing_question_ids"]
+
+
+def actual_config():
+    folder = ROOT / 'app/planning'
+    return tuple(json.loads((folder / name).read_text()) for name in ('product_catalog.json', 'product_policy.json'))
+
+
+def current_product_document():
+    """Synthetic current raw investment answers, independent of old cashflow fixtures."""
+    d = document()
+    d['context']['evaluation_on'] = '2026-11-11'
+    for answer in d['raw_bundle']['answers']:
+        answer['envelope']['context']['as_of'] = '2026-11-11'
+    fx = copy.deepcopy(d['raw_bundle']['answers'][-1])
+    fx['answer_revision_id'] = 'risk-D18'
+    fx['envelope']['question_ref']['design_id'] = 'D18'
+    fx['envelope']['fields'] = {'fx_preference_raw_v2': field('FX_ACCEPT')}
+    d['raw_bundle']['answers'].append(fx)
+    return d
+
+
+def current_review(d=None, catalog=None, policy=None, period='2026-11'):
+    cat, pol = actual_config()
+    # Literal trusted OUT-05 contract input; no return assumption or portfolio amount is invented.
+    budgets = {'results': {'OUT-05': {'calc_state': 'CALCULATED', 'candidates': [
+        {'calc_state': 'CALCULATED_MONTHLY_SCENARIO', 'strategy_id': strategy,
+         'rows': [{'period': period, 'new_investment_krw': amount}]}
+        for strategy, amount in [('STABILITY_FIRST', '300000'), ('INVESTMENT_FIRST', '480000')]]}}}
+    return review_products(d or current_product_document(), budgets, catalog=catalog or cat, policy=policy or pol)
+
+
+def test_current_verified_subset_has_literal_budget_and_cost_oracles():
+    x = current_review()
+    assert x['catalog']['eligible_for_review_count'] == 6
+    assert x['catalog']['detail_review']['state_counts'] == {
+        'VERIFIED_FOR_PREVIEW': 6, 'HOLD_EVIDENCE': 15, 'EXCLUDED_DEFAULT_POLICY': 57}
+    rows = [c['rows'][0] for c in x['candidates']]
+    assert [[a['review_allocated_krw'] for a in row['allocations']] for row in rows] == [
+        ['90000', '30000', '60000'], ['144000', '48000', '96000']]
+    assert [(r['allocated_total_krw'], r['unallocated_krw']) for r in rows] == [('180000', '120000'), ('288000', '192000')]
+    assert rows[0]['stress_review']['scenario_loss_krw_ceil'] == '58500'
+    assert rows[0]['stress_review']['full_loss_scenario_krw'] == '180000'
+    assert rows[0]['stress_review']['scenario_is_loss_limit'] is False
+    assert x['recommended_new_investment_krw'] is None and x['all_in_cost'] == 'NOT_CALCULATED'
+    codes = {p['code']: p for p in x['products']}
+    assert codes['360200']['disclosure']['annual_base_fee_percent'] == '0.0047'
+    assert codes['360200']['disclosure']['annual_total_expense_percent'] == '0.0707'
+    assert codes['360200']['disclosure']['transaction_cost_percent'] is None
+    assert codes['232080']['disclosure']['risk_grade'] == 1  # Not the neighbouring product's 2.
+    assert codes['402970']['disclosure']['risk_grade'] == 3  # Do not copy another issuer's dividend grade.
+    assert codes['441640']['disclosure']['risk_grade'] == 3
+    assert codes['273130']['state'] == 'EXCLUDED_FROM_ALLOCATION'
+    assert codes['0091C0']['state'] == 'EXCLUDED_FROM_ALLOCATION'
+
+
+def test_stress_sizing_uses_original_slots_before_exclusions():
+    d = current_product_document()
+    change(d, 'NEW-10', 'loss_tolerance_band_raw', field('LOSS_10_20'))
+    first = current_review(d)['candidates'][0]['rows'][0]
+    assert [a['target_bps'] for a in first['allocations']] == [1538, 512, 1025]
+    assert [a['policy_target_bps'] for a in first['allocations']] == [3000, 1000, 2000]
+    assert [a['review_allocated_krw'] for a in first['allocations']] == ['46140', '15360', '30750']
+    assert first['unallocated_krw'] == '207750'
+    assert first['stress_review']['scenario_loss_krw_ceil'] == '29973'
+    change(d, 'D18', 'fx_preference_raw_v2', field('FX_REJECT'))
+    blocked = current_review(d)['candidates'][0]['rows'][0]
+    assert [a['review_allocated_krw'] for a in blocked['allocations']] == ['46140', '15360']
+    assert blocked['unallocated_krw'] == '238500'
+    assert blocked['weight_renormalized'] is False
+    assert blocked['stress_review']['sizing_basis'] == 'ORIGINAL_TARGETS_BEFORE_FILTERING'
+
+
+def test_ambiguous_small_loss_band_and_stability_are_deliberately_unallocated():
+    for band in ('LOSS_NONE', 'LOSS_UNDER_5'):
+        d = current_product_document()
+        change(d, 'NEW-10', 'loss_tolerance_band_raw', field(band))
+        x = current_review(d)
+        assert all(c['rows'][0]['allocated_total_krw'] == '0' for c in x['candidates'])
+    d = current_product_document()
+    change(d, 'F17', 'risk_preference_choice_raw', field('PREF_STABILITY'))
+    x = current_review(d)
+    assert 'STABILITY_POLICY_UNALLOCATED' in x['reason_codes']
+    assert x['candidates'][0]['rows'][0]['unallocated_krw'] == '300000'
+
+
+def test_expiry_and_near_use_date_never_shift_money_to_other_products():
+    x = current_review(period='2027-01')
+    assert x['candidates'][0]['rows'][0]['allocated_total_krw'] == '0'
+    assert 'POLICY_DISCLOSURE_STALE' in x['candidates'][0]['rows'][0]['reason_codes']
+    d = current_product_document()
+    fund = next(r for r in d['raw_bundle']['answers'] if r['envelope']['question_ref']['design_id'] == 'F15')[
+        'envelope']['fields']['investment_funds']['raw_value'][0]
+    fund['earliest_use_date'] = field('2030-11-11', 'DATE')
+    short_only = current_review(d)['candidates'][0]['rows'][0]
+    assert [(a['code'], a['review_allocated_krw']) for a in short_only['allocations']] == [('153130', '90000')]
+    assert short_only['unallocated_krw'] == '210000'
+
+
+def test_recent_research_date_does_not_make_old_cost_disclosures_current():
+    cat, _ = actual_config()
+    product = next(p for p in cat['products'] if p['code'] == '360200')
+    product['facts']['evidence']['annual_total_expense_percent']['source_as_of'] = '2025-06-30'
+    x = current_review(catalog=cat)
+    actual = next(p for p in x['products'] if p['code'] == '360200')
+    assert 'PRODUCT_DISCLOSURE_STALE' in actual['reason_codes']
+    assert [(a['code'], a['review_allocated_krw']) for a in x['candidates'][0]['rows'][0]['allocations']] == [
+        ('153130', '90000'), ('069500', '30000')]
+
+
+@pytest.mark.parametrize('bad', ['http://example.invalid', 'internal:invented-source'])
+def test_official_fields_cannot_use_service_policy_as_evidence(bad):
+    cat, _ = actual_config()
+    product = next(p for p in cat['products'] if p['code'] == '360200')
+    product['facts']['evidence']['risk_grade']['url'] = bad
+    x = current_review(catalog=cat)
+    assert 'PRODUCT_FACTS_UNVERIFIED' in next(p for p in x['products'] if p['code'] == '360200')['reason_codes']
+
+
+def test_configured_issuer_benchmark_and_equity_caps_are_checked_even_when_filtered():
+    cat, pol = actual_config()
+    slots = pol['target_slots_by_preference']['PREF_BALANCED']
+    for key, cap in [('maximum_issuer_bps', 3999), ('maximum_benchmark_bps', 1999),
+                     ('maximum_equity_bps', 2999), ('maximum_foreign_bps', 1999)]:
+        bad = copy.deepcopy(pol)
+        bad[key] = cap
+        with pytest.raises(ContractError):
+            guarded_targets(slots, cat['products'], bad, 'LOSS_20_30')
+
+
+def test_all_profiles_loss_responses_and_horizons_preserve_risk_and_money_invariants():
+    from datetime import date
+    cat, pol = actual_config()
+    profile, missing, invalid, _ = profile_from_raw(current_product_document())
+    assert missing == invalid == []
+    for preference, targets in pol['target_slots_by_preference'].items():
+        for band in pol['stress_budget_bps_by_loss_band']:
+            for response in pol['risk_floor_by_loss_response']:
+                scaled, stress = guarded_targets(targets, cat['products'], pol, band)
+                previous_equity = 0
+                for use in ['2026-12-01', '2027-11-11', '2036-10-01']:
+                    p = copy.deepcopy(profile)
+                    p.update(risk_preference_choice_raw=preference, loss_tolerance_band_raw=band, loss_response_raw=response)
+                    p['fund']['use_on'] = use
+                    eligible = {r['code'] for r in cat['products'] if not filter_product(r, p, [], [], pol, date(2026, 11, 11))}
+                    result = allocate_budget('300001', scaled, eligible)
+                    assert int(result['allocated_total_krw']) + int(result['unallocated_krw']) == 300001
+                    alloc = {a['code']: a for a in result['allocations']}
+                    equity = sum(int(a['review_allocated_krw']) for c, a in alloc.items() if c in {'069500', '360200'})
+                    assert equity >= previous_equity  # More remaining time cannot reduce eligibility.
+                    previous_equity = equity
+                    shock_sum = sum(int(a['review_allocated_krw']) * (500 if c == '153130' else 6000) for c, a in alloc.items())
+                    assert shock_sum <= 300001 * stress['stress_budget_bps']
+                    assert all(a['target_bps'] <= a['cap_bps'] <= 4000 for a in alloc.values())
+                    if band in {'LOSS_NONE', 'LOSS_UNDER_5'}:
+                        assert not alloc
+                    if preference == 'PREF_LEAN_STABILITY' or response in {'LOSS_RESPONSE_RAW_01', 'LOSS_RESPONSE_RAW_02'}:
+                        assert equity == 0
+
+
+def test_audit_ledger_covers_exactly_78_with_no_silent_reactivation():
+    ledger = json.loads((ROOT.parent / 'data/product-detail-review-20261111.json').read_text())
+    cat, _ = actual_config()
+    assert {p['code'] for p in ledger['products']} == {p['code'] for p in cat['products']}
+    assert len(ledger['products']) == len({p['code'] for p in ledger['products']}) == 78
+    assert {p['code'] for p in cat['products'] if p['recommendation_eligible']} == {
+        '069500', '360200', '360750', '379800', '153130', '214980'}
+    for row in ledger['products']:
+        assert row['live_tradability'] == 'NOT_VERIFIED'
+        assert row['cash_conversion_rule']['source_id'] in ledger['sources']
+        assert all(v['source_id'] in ledger['sources'] for v in row['verified_or_reference_fields'].values())
+
+
+def test_past_month_and_host_budget_gate_clear_all_allocated_money_metrics():
+    past = current_review(period='2026-10')['candidates'][0]['rows'][0]
+    assert past['allocated_total_krw'] == '0'
+    assert 'BUDGET_PERIOD_PAST' in past['reason_codes']
+    result = {'calc_state': 'CALCULATED', 'results': {'OUT-06': current_review()}}
+    assert result['results']['OUT-06']['candidates'][0]['rows'][0]['stress_review']['scenario_loss_krw_ceil'] == '58500'
+    block_product_budget(result)
+    for candidate in result['results']['OUT-06']['candidates']:
+        for row in candidate['rows']:
+            assert row['allocated_total_krw'] == row['stress_review']['scenario_loss_krw_ceil'] == '0'
+            assert row['stress_review']['full_loss_scenario_krw'] == '0'
+            assert row['unallocated_krw'] == row['scenario_budget_krw']

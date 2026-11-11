@@ -1,3 +1,9 @@
+# 2026-11-11 — 상품 검토0.2 관련 검사
+
+상품 상세·등급 방향·비중/집중·동시 하락 시나리오·기간/공시 만료·과거 소급 방지·미배분 원 보존과 미리보기/저장·복원 관련 pytest136개, 변경 Python Ruff, TypeScript, ESLint, production Webpack Build 통과. 상품 테스트32개 내부360조합은136개에 별도 합산하지 않는다. 검사 명령·독립 정답·미실행 범위는 [현행 상품 계약](product-allocation-0.2.md)과 개발 로그를 따른다. 전체 Core/E2E/실계정/원격DB·과거 시계열 백테스트·배포를 완료한 결과가 아니다.
+
+---
+
 # Git 통합 검사 — 2026-11-11
 
 이번 검사는 `C:\Users\LG\Projects\DION-git`에서 새로 설치한 환경으로 실행했다. Core의 pytest429통과/7skip, Ruff/pip check/TypeScript/ESLint와 production Build를 확인했다. 조건부 부동산 의존성 보완 후 전체pytest429통과/7skip과 Ruff도 재검사했다. v2 출력7쌍/독립 금액/연결데모12건을 함께 확인했다.
@@ -135,3 +141,4 @@ Core: pytest369통과/7skip, Ruff·pip check·TypeScript·ESLint 통과. Build �
 4. 프론트 경유 동일 요청을 확인하고 백엔드 access/error 로그와 대조한다.
 5. 연결 거부는 서버/포트 문제, 404는 경로, 422는 입력 검증, 실행 중 API의 500은 서버 로그를 우선 조사한다. 프록시 연결 실패도 프론트에서 500으로 보일 수 있다.
 6. 브라우저는 same-origin `/api/*`를 사용하므로 직접 교차 출처 요청이 확인되지 않았다면 CORS 변경을 먼저 하지 않는다.
+
