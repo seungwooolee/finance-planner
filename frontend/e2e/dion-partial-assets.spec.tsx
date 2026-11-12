@@ -20,8 +20,8 @@ test('adapter-blocked asset diagnostic zeros stay unknown while independent cash
   await page.setContent(html);
   for (const title of ['전체 자산', '전체 채무', '순자산']) {
     const metric = page.locator('.d-metric').filter({has: page.locator('span', {hasText: new RegExp(`^${title}$`)})});
-    await expect(metric).toContainText('확인 필요');
+    await expect(metric).toContainText('확인 대기');
     await expect(metric).not.toContainText('0만원');
   }
-  await expect(page.locator('.d-metric').filter({hasText: '납입까지 반영한 월 잔여'})).toContainText('90');
+  await expect(page.locator('.d-metric').filter({hasText: '저축·투자까지 반영하고 남는 돈'})).toContainText('90');
 });

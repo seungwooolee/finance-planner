@@ -17,12 +17,12 @@ async function preview(page: Page) {
 test('numeric input rejects letters; exact one-off breakdown is not double counted', async ({ page }) => {
   await sample(page);
   await nav(page).getByRole('button', { name: /한 달 소득/ }).click();
-  const input = page.getByRole('textbox', { name: '한 달 소득', exact: true });
+  const input = page.getByRole('textbox', { name: '한 달 평균 세후 소득은 얼마인가요?', exact: true });
   await expect(page.locator('input[placeholder]')).toHaveCount(0);
   await input.fill('');
   await input.pressSequentially('abc300xyz');
   await expect(input).toHaveValue('300');
-  await expect(page.locator('.d-won-value')).toContainText('3,000,000원');
+  await expect(page.locator('.d-money-field').filter({ has: input }).locator('.d-won-value')).toContainText('300만원');
   await page.getByRole('button', { name: '이번에만 받은 돈도 있어요', exact: true }).click();
   await page.getByRole('textbox', { name: '그중 이번에만 받은 돈', exact: true }).fill('00050.0001');
   const one = await preview(page);
@@ -49,7 +49,7 @@ test('property input adds ownership value to real engine assets and preserves mo
   expect(response.result.results['OUT-02'].total_assets.value).toBe('262000000');
   expect(response.result.frontend_integration.presentation_gates).toEqual([]);
   expect(response.result.results['OUT-05'].candidates.map((r: any) => r.rows[0].new_investment_krw)).toEqual(['300000', '480000']);
-  await expect(page.locator('.d-metric').filter({ hasText: '전체 자산' })).toContainText('26,200');
+  await expect(page.locator('.d-metric').filter({ hasText: '전체 자산' })).toContainText('2억 6,200만원');
   await expect(page.getByText('부동산의 대략적인 시세가 포함된 자산 추정치예요.')).toBeVisible();
 });
 

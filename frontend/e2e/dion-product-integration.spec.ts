@@ -13,7 +13,8 @@ async function load(page: Page) {
   return (await response.json()).result;
 }
 async function thirdScreen(page: Page, result: any) {
-  await page.locator('.d-tabs button').nth(2).click();
+  // Screen 4 holds product allocation for the plan chosen in the plan selector.
+  await page.locator('.d-tabs button').nth(3).click();
   const screen = page.getByRole('region', { name: '상품 적합성·배분 검토' });
   await expect(screen).toBeVisible();
   await expect(screen.getByRole('heading', { name: '기본 배분 상품 3개 · 비교 대안 3개' })).toBeVisible();
@@ -24,19 +25,27 @@ async function thirdScreen(page: Page, result: any) {
   expect(review.products.filter((p: any) => p.allocation_role === 'DEFAULT_SLOT')).toHaveLength(3);
   expect(review.products.filter((p: any) => p.allocation_role === 'COMPARISON_ALTERNATIVE')).toHaveLength(3);
   const rendered = screen.locator('[data-allocation-month]');
-  await expect(rendered).toHaveCount(2);
-  for (const [i, c] of review.candidates.entries()) {
+  for (const c of review.candidates) {
+    await page.getByRole('group', { name: '비교할 재무안', exact: true }).getByRole('button', { name: c.strategy_id === 'STABILITY_FIRST' ? '생활 안정 우선' : '투자 여력 확대', exact: true }).click();
+    await expect(rendered).toHaveCount(1);
     const row = c.rows[0];
     const budget = result.results['OUT-05'].candidates.find((p: any) => p.strategy_id === c.strategy_id).rows[0].new_investment_krw;
     expect(row.scenario_budget_krw).toBe(budget);
     expect(row.allocations.reduce((sum: bigint, a: any) => sum + BigInt(a.review_allocated_krw), 0n)).toBe(BigInt(row.allocated_total_krw));
     expect(BigInt(row.allocated_total_krw) + BigInt(row.unallocated_krw)).toBe(BigInt(budget));
     expect(row.allocations.every((a: any) => ['153130', '069500', '360200'].includes(a.code))).toBe(true);
-    await expect(rendered.nth(i)).toHaveAttribute('data-budget', budget);
-    await expect(rendered.nth(i)).toHaveAttribute('data-allocated', row.allocated_total_krw);
-    await expect(rendered.nth(i)).toHaveAttribute('data-unallocated', row.unallocated_krw);
+    await expect(rendered.first()).toHaveAttribute('data-budget', budget);
+    await expect(rendered.first()).toHaveAttribute('data-allocated', row.allocated_total_krw);
+    await expect(rendered.first()).toHaveAttribute('data-unallocated', row.unallocated_krw);
   }
   return screen;
+}
+async function editTiming(page: Page) {
+  // The timing edit link lives in the investment answer summary on screen 3, collapsed once answers are complete.
+  await page.locator('.d-tabs button').nth(2).click();
+  const edit = page.getByRole('button', { name: '돈을 사용할 시점 수정 →', exact: true });
+  if (!(await edit.isVisible())) await page.getByText('투자 답변 확인 완료 · 답변 보기 ▾', { exact: true }).click();
+  await edit.click();
 }
 async function recalculate(page: Page) {
   const pending = preview(page);
@@ -65,7 +74,7 @@ test('normal: actual OUT-05 to OUT-06, three defaults and three comparison alter
 test('FX restriction: foreign slot excluded, no redistribution, same monthly budget', async ({ page }, info) => {
   const initial = await load(page);
   await thirdScreen(page, initial);
-  await page.getByRole('button', { name: '돈을 사용할 시점 수정 →', exact: true }).click();
+  await editTiming(page);
   const fx = page.locator('[data-question="D18"]');
   await fx.getByRole('button', { name: '환헤지 상품을 선호해요', exact: true }).click();
   const { result } = await recalculate(page);
@@ -82,7 +91,7 @@ test('FX restriction: foreign slot excluded, no redistribution, same monthly bud
 test('unknown: unallocated budget, preserved unknown, actionable missing question on mobile', async ({ page }, info) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await thirdScreen(page, await load(page));
-  await page.getByRole('button', { name: '돈을 사용할 시점 수정 →', exact: true }).click();
+  await editTiming(page);
   await page.locator('[data-question="D19"]').getByRole('button', { name: '잘 모르겠음', exact: true }).click();
   const { result, posted } = await recalculate(page);
   const field = posted.raw_bundle.answers.find((a: any) => a.envelope.question_ref.design_id === 'D19').envelope.fields.product_understanding;
