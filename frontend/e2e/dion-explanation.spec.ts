@@ -74,6 +74,7 @@ test('R3 confirms a separate monthly income comparison without changing diagnosi
     await panel.getByRole('button',{name:'요청 보내기',exact:true}).click();
   }else{
     await panel.getByRole('button',{name:'가상 조건 기록',exact:true}).click();
+    await expect(panel.getByRole('heading',{name:'가상 조건 추가',exact:true})).toBeVisible();
     await panel.getByLabel('상담 금액 (만원)',{exact:true}).fill('350');
     await panel.getByRole('button',{name:'답변 검토하기',exact:true}).click();
   }
@@ -97,10 +98,13 @@ test('R3 expense comparison retains total-outflow basis and never combines anoth
   const panel=page.getByRole('region',{name:'결과 상담',exact:true});
   await panel.getByRole('button',{name:'임시 상담 시작',exact:true}).click();
   await panel.getByRole('button',{name:'가상 조건 기록',exact:true}).click();
+  // The answer form remounts per session version; fill only after the intent response replaces it.
+  await expect(panel.getByRole('heading',{name:'가상 조건 추가',exact:true})).toBeVisible();
   await panel.getByRole('combobox',{name:'확인할 항목',exact:true}).selectOption('F03/monthly_net_income_krw');
   await panel.getByLabel('상담 금액 (만원)',{exact:true}).fill('350');
   await panel.getByRole('button',{name:'답변 검토하기',exact:true}).click();
   await panel.getByRole('button',{name:'가상 조건 확인',exact:true}).click();
+  await expect(panel.getByRole('button',{name:'월평균 세후소득 비교 조건 보기',exact:true})).toBeVisible();
   await panel.getByRole('combobox',{name:'확인할 항목',exact:true}).selectOption('F04/living');
   await panel.getByLabel('상담 금액 (만원)',{exact:true}).fill('240');
   await panel.getByRole('button',{name:'답변 검토하기',exact:true}).click();
@@ -112,7 +116,7 @@ test('R3 expense comparison retains total-outflow basis and never combines anoth
   await expect(panel).toContainText('다른 상담 가정은 합산하지 않고');
   await expect(panel.getByText('기존 납입 후 월 잔여액 비교',{exact:true})).toHaveCount(0);
   await panel.getByRole('button',{name:'이 가정으로 월 잔여액 비교',exact:true}).click();
-  await expect(panel).toContainText('기준 90만원 · 가정 60만원 · 차이 -30만원');
+  await expect(panel).toContainText('기준 90만원 · 가정 60만원 · 차이 −30만원');
   await expect(panel).toContainText('월 전체 출금액 210만원 → 240만원');
   await expect(panel).toContainText('임시 비교 결과 · 진단 미반영');
   expect(await (await request.get(`${base}/history`,{headers})).json()).toEqual(before);
