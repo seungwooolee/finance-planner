@@ -1,0 +1,101 @@
+{
+  "scope": "INTERNAL_ASSUMPTION_SENSITIVITY_NOT_HISTORICAL_BACKTEST",
+  "cases": [
+    {
+      "equity_shock_bps": 4000,
+      "loss_band": "LOSS_10_20",
+      "target_bps": {
+        "153130": 2222,
+        "069500": 740,
+        "360200": 1481
+      },
+      "allocated_target_bps": 4443,
+      "scenario_loss_numerator": 9995000,
+      "stress_budget_bps": 1000
+    },
+    {
+      "equity_shock_bps": 4000,
+      "loss_band": "LOSS_20_30",
+      "target_bps": {
+        "153130": 3000,
+        "069500": 1000,
+        "360200": 2000
+      },
+      "allocated_target_bps": 6000,
+      "scenario_loss_numerator": 13500000,
+      "stress_budget_bps": 2000
+    },
+    {
+      "equity_shock_bps": 6000,
+      "loss_band": "LOSS_10_20",
+      "target_bps": {
+        "153130": 1538,
+        "069500": 512,
+        "360200": 1025
+      },
+      "allocated_target_bps": 3075,
+      "scenario_loss_numerator": 9991000,
+      "stress_budget_bps": 1000
+    },
+    {
+      "equity_shock_bps": 6000,
+      "loss_band": "LOSS_20_30",
+      "target_bps": {
+        "153130": 3000,
+        "069500": 1000,
+        "360200": 2000
+      },
+      "allocated_target_bps": 6000,
+      "scenario_loss_numerator": 19500000,
+      "stress_budget_bps": 2000
+    },
+    {
+      "equity_shock_bps": 8000,
+      "loss_band": "LOSS_10_20",
+      "target_bps": {
+        "153130": 1176,
+        "069500": 392,
+        "360200": 784
+      },
+      "allocated_target_bps": 2352,
+      "scenario_loss_numerator": 9996000,
+      "stress_budget_bps": 1000
+    },
+    {
+      "equity_shock_bps": 8000,
+      "loss_band": "LOSS_20_30",
+      "target_bps": {
+        "153130": 2352,
+        "069500": 784,
+        "360200": 1568
+      },
+      "allocated_target_bps": 4704,
+      "scenario_loss_numerator": 19992000,
+      "stress_budget_bps": 2000
+    },
+    {
+      "equity_shock_bps": 10000,
+      "loss_band": "LOSS_10_20",
+      "target_bps": {
+        "153130": 952,
+        "069500": 317,
+        "360200": 634
+      },
+      "allocated_target_bps": 1903,
+      "scenario_loss_numerator": 9986000,
+      "stress_budget_bps": 1000
+    },
+    {
+      "equity_shock_bps": 10000,
+      "loss_band": "LOSS_20_30",
+      "target_bps": {
+        "153130": 1904,
+        "069500": 634,
+        "360200": 1269
+      },
+      "allocated_target_bps": 3807,
+      "scenario_loss_numerator": 19982000,
+      "stress_budget_bps": 2000
+    }
+  ]
+}

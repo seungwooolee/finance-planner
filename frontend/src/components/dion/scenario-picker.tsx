@@ -2,10 +2,11 @@
 
 import { useRef } from "react";
 import source from "@/lib/dion/review-scenarios.json";
+import productScenario from "@/lib/dion/product-review-scenario.json";
 import { Document, states } from "@/lib/dion/model";
 
 export type Scenario = {id:string;title:string;group:string;purpose:string;assumptions:string[];document:Document};
-export const scenarios = source as unknown as Scenario[];
+export const scenarios = [...source, productScenario] as unknown as Scenario[];
 
 export function ScenarioPicker({disabled,onLoad}:{disabled:boolean;onLoad:(s:Scenario)=>void}) {
   const dialog = useRef<HTMLDialogElement>(null);

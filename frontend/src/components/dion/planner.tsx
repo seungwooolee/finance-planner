@@ -19,7 +19,7 @@ function stable(v: unknown): string {
 function signature(doc:Document) {
   const { case_id: caseId, snapshot_id: snapshotId, profile_version: profileVersion, ...context }=doc.context;
   void caseId; void snapshotId; void profileVersion;
-  return stable({context,scope_ref:doc.scope_ref,answers:doc.raw_bundle.answers.map(r=>r.envelope).sort((a,b)=>a.question_ref.design_id.localeCompare(b.question_ref.design_id)),confirmations:doc.confirmations});
+  return stable({context,scope_ref:doc.scope_ref,answers:doc.raw_bundle.answers.map(r=>r.envelope).sort((a,b)=>a.question_ref.design_id.localeCompare(b.question_ref.design_id)),confirmations:doc.confirmations,requested_outputs:doc.requested_outputs});
 }
 class ApiError extends Error { constructor(public status:number,public code:string){super(code);} }
 async function request(path:string, method="GET", body?:unknown, token?:string, signal?:AbortSignal) {
@@ -124,6 +124,8 @@ export function DionPlanner() {
   async function calculate(input?:Document) {
     if(busy&&!input)return;
     const captured=clone(input??docRef.current), seq=++sequence.current;
+    captured.requested_outputs=[...new Set([...captured.requested_outputs,"OUT-06"])];
+    if (!(input??docRef.current).requested_outputs.includes("OUT-06")) {docRef.current={...docRef.current,requested_outputs:captured.requested_outputs};setDoc(docRef.current);}
     abort.current?.abort();const controller=new AbortController();abort.current=controller;
     let timedOut=false;
     const timeout=setTimeout(()=>{timedOut=true;controller.abort();},120_000);
@@ -221,6 +223,7 @@ export function DionPlanner() {
   async function saveAndCalculate() {await serverAction(async()=>{const version=await persistAnswers();await persistCalculation(false,version);});}
   async function persistCalculation(engineV2=false, version=serverVersion){
     if(connectedCase.current!==caseId||serverVersion===null)throw new ApiError(409,"RESTORE_OR_CREATE_CASE_FIRST");
+    if(!engineV2&&!docRef.current.requested_outputs.includes("OUT-06")){docRef.current={...docRef.current,requested_outputs:[...docRef.current.requested_outputs,"OUT-06"]};setDoc(docRef.current);}
     const captured=clone(docRef.current);
     if(captured.raw_bundle.answers.some(r=>saved.current[r.envelope.question_ref.design_id]!==stable(r.envelope)))throw new ApiError(409,"SAVE_CURRENT_ANSWERS_FIRST");
     const {case_id:ignoredCase,snapshot_id:ignoredSnapshot,profile_version:ignoredVersion,...context}=captured.context;void ignoredCase;void ignoredSnapshot;void ignoredVersion;
