@@ -1,3 +1,9 @@
+# 2026-11-13 — AI 9·10단계 운영·통합 검토
+
+현재 작업본에 R1/R2, ModelProposal, R3 단일 비교, 등록 근거 계약과 화면이 있다. 실제 자료 등록은 8단계에서 보류했다. 이번 공개 운영 API에서 `/health` 200, auth 설정 플래그 true, `/readyz` 404 및 OpenAPI에 상담·해설 경로 미노출을 확인했다. 운영 schema·실계정·worker·비용 원장은 미확인이다. 관련 합성/회귀 검사 252개는 이번 실행에서 통과했다. 다중 worker 상담의 저장 상태와 임시 캐시 충돌, 원장 유실 후 예산 초기화 위험을 운영 차단으로 기록했다. [운영 확인과 승인안](integration/2026-11-13-agent-operations-plan.md) · [최종 검토와 게이트](integration/2026-11-13-agent-release-review.md)
+
+---
+
 # 2026-11-12 — 다른 노트북 스키마 개발 재인계
 
 근거자료 조사는 팀원이 담당한다. 현재 로컬 설계/운영 준비와 원격 AI 브랜치의 CI·R2 재개·OnePort 차단 후속4커밋을 보존해 통합했다. 이번 병합 관련 pytest69통과·변경 Python Ruff 통과이며 전체 검사·새 모델 호출·원격 DB·배포는 하지 않았다. [최신 인계·첫 구현 프롬프트](integration/2026-11-12-agent-schema-resume-prompt.md)를 시작점으로 삼는다. ModelProposal 서버 연결, R3, RAG/LangChain은 아직 후속이며 이번 백업을 구현 완료로 보지 않는다. 아래는 이전 시점의 현황이다.

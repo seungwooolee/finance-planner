@@ -66,3 +66,18 @@
 .d-explanation-evidence li { margin: 10px 0; }
 .d-explanation-source { color: #426051; font-size: .85rem; }
 .d-explanation-panel :focus-visible { outline: 3px solid #358267; outline-offset: 4px; }
+.d-agent-session { min-width: 0; overflow-wrap: anywhere; scroll-margin-block-start: 1rem; }
+.d-agent-session :focus-visible, .d-agent-session:focus-visible { outline: 3px solid #3848ce; outline-offset: 3px; }
+.d-agent-session :is(input, select) { min-width: 0; max-width: 100%; }
+.d-scheme-selects { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 12px; margin-block: 12px; }
+.d-scheme-evidence h4, .d-scheme-evidence h5, .d-agent-session [aria-label="답변 충돌 확인"] h5 { font-weight: 700; }
+.d-scheme-scope { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 12px; margin-block: 12px; }
+.d-scheme-scope dt { font-weight: 650; }
+.d-scheme-claim { border-block-start: 1px solid #dce5df; margin-block-start: 12px; padding-block-start: 12px; }
+.d-scheme-claim ul, .d-scheme-evidence .d-explanation-evidence ul { padding-inline-start: 1rem; }
+.d-scheme-evidence .d-explanation-evidence li span { display: block; }
+.d-scheme-evidence .d-explanation-evidence a { text-decoration: underline; }
+@media (max-width: 480px) {
+  .d-scheme-selects, .d-scheme-scope { grid-template-columns: minmax(0, 1fr); }
+  .d-scheme-scope dd { margin-block-end: 6px; }
+}

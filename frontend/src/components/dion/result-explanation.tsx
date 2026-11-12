@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { catalog, object, textValue, won } from "@/lib/dion/model";
 import type { ViewResult } from "./results";
+import { EvidenceDisclosure } from "./evidence-disclosure";
 
 type Detail = "SHORT" | "DETAILED";
 type Explanation = {
@@ -91,13 +92,14 @@ export function ResultExplanation({view,token,editVersion,selectedCaseId,stale,o
         <p>계산 기준일 {response.evaluation_on??"확인 필요"} · 저장 입력버전 {response.input_version}</p>
         {response.blocks.map(b=><p className={b.kind==="LIMITATION"||b.kind==="UNAVAILABLE"?"d-note":""} key={b.claim_id}>{b.text}</p>)}
         {!!response.next_checks.length&&<div><h3>다음에 확인할 내용</h3><ul>{response.next_checks.map(c=><li key={c.check_id}>{c.text} {c.question_id==="NEW-09"?<span>보증금 상세 입력·계산 연결은 준비 중이에요.</span>:<button className="d-text-button" onClick={()=>onEdit(c.question_id)}>관련 답변 보기</button>}</li>)}</ul></div>}
-        <details className="d-explanation-evidence"><summary>근거 보기</summary>
+        <EvidenceDisclosure>
           <p>이 저장 기록에 연결된 결과와 원응답 기준입니다. 다른 계산의 값을 합치지 않아요.</p>
           <ul>{response.facts.map(f=><li key={f.fact_id}><strong>{names[f.locator.metric]??"계산 결과"}: {won(f.value)}만원</strong><br/>{f.locator.strategy_id?(f.locator.strategy_id==="STABILITY_FIRST"?"안정 후보 · ":"확대 후보 · "):""}{f.locator.period}{f.locator.period_end?` ~ ${f.locator.period_end}`:""}</li>)}</ul>
           <h3>연결된 질문</h3><ul>{evidence.map(e=><li key={e.answer_revision_id}>{catalog.questions.find(q=>q.id===e.question_id)?.source["항목"]??"관련 질문"} · 정의 {e.definition_version} · {e.period_start??"기간 미확인"} ~ {e.period_end??"기간 미확인"}</li>)}</ul>
           {!response.facts.length&&<p>현재 표시할 수 있는 수치 근거가 없어 보완 안내만 제공합니다.</p>}
-        </details>
+        </EvidenceDisclosure>
       </>}
+      <a className="d-text-button" href="#dion-agent-consultation">결과 상담으로 이동</a>
       {available&&!current?.loading&&<button className="d-secondary" onClick={()=>void explain(detail)}>해설 다시 확인</button>}
     </aside>}
   </div>;

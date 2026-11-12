@@ -1,7 +1,7 @@
 """Local durable receipts, separate from customer/engine storage.
 
 All workers must share this file on one host. Pending/unknown calls never expire
-or regenerate. Store only validated ID selections and sanitized operational data.
+or regenerate. Only R1's validated ID selections may be retained as drafts.
 """
 import json
 import sqlite3
@@ -64,7 +64,7 @@ class OnePortLedger:
         with self.connection() as db:
             db.execute("UPDATE calls SET telemetry=? WHERE operation=?", (json.dumps(telemetry), operation))
 
-    def finish(self, operation, draft, telemetry):
+    def finish(self, operation, draft, telemetry, *, validated):
         with self.connection() as db:
             db.execute("BEGIN IMMEDIATE")
             row = db.execute("SELECT charge FROM calls WHERE operation=?", (operation,)).fetchone()
@@ -72,6 +72,6 @@ class OnePortLedger:
             # Never treat unknown settlement as zero or release an uncertain hold.
             charge = max(Decimal(row[0]), Decimal(cost)) if cost is not None else Decimal(row[0])
             db.execute("UPDATE calls SET charge=?,state=?,draft=?,telemetry=? WHERE operation=?", (
-                str(charge), "VALIDATED" if draft is not None else "FAILED",
+                str(charge), "VALIDATED" if validated else "FAILED",
                 json.dumps(draft) if draft is not None else None, json.dumps(telemetry), operation))
             db.execute("COMMIT")

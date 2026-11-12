@@ -1,5 +1,16 @@
 # 다른 노트북에서 AI 스키마 개발 재개
 
+## 2026-11-13 최신 인계
+
+`codex/result-explanation-r1`의 최신 HEAD에서 이어간다. 아래 11/12 내용은 이전 인계 기록이다. 기존 checkout에 변경이 있으면 먼저 `git status`와 diff를 확인한다. 기존 변경을 지우거나 `ccbe682`로 reset하지 않는다.
+
+- 0~7단계에서 로컬 개발 환경, R2 ModelProposal, OnePort 후보 어댑터, R3 단일 비교, 등록 RAG/LangChain과 상담 화면을 연결했다. 8단계 실제 자료 등록은 팀 자료와 정책 승인 기록이 비어 있어 보류 중이다. 9·10단계는 운영 절차와 코드 검토를 마쳤다. 제품 운영 준비 완료로 해석하지 않는다.
+- 새 Windows checkout에서 Python 3.12 가상환경에 `backend/requirements-be.txt`를 설치하고, Node 22로 `frontend`의 `npm.cmd ci`를 실행한다. 한글 질문 원본을 읽기 전에 새 PowerShell에서 `$env:PYTHONUTF8='1'`을 설정한다. 합성 브라우저 경로는 기존 `tests.fe_http_harness --scheme-fixture`를 사용한다. 운영 .env, 키, 원장 DB, 가상환경, node_modules는 이관하지 않는다.
+- 이번 최종 검토에서 기존 R1/R2와 새 기능의 관련 백엔드 검사 252개가 통과했다. 전체 Core/Build/E2E, 실계정, 현재 원격 schema, 실제 worker와 비용 원장 및 유료 모델은 미확인 또는 미실행이다. [실행 로그](../development-log.md)와 [운영 절차](2026-11-13-agent-operations-plan.md)를 먼저 읽는다.
+- 다음 작업은 [최종 검토](2026-11-13-agent-release-review.md)의 첫 P0다. 두 독립 앱/DB 연결로 임시 상담과 저장 상태의 경합을 확인하고, 저장 행 우선순위와 전이 규칙의 변경 범위를 정한다. 두 번째 P0는 기존 예약·비용·중복 키를 보존하는 OnePort 원장 보호다. 합성 자료를 운영 근거로 등록하거나 유료 호출·원격 DB 쓰기·배포를 수행하려면 별도 지시를 받는다.
+
+## 2026-11-12 이전 인계 기록
+
 사용자 결정: 근거자료 조사는 팀원이 담당한다. 개발은 [AI 구조 설계 0.2](../customer-ai-agent-architecture.md)의 순서대로 작은 기능씩 진행한다. 이번 인계 자체에서는 신규 에이전트 기능을 구현하지 않았다.
 
 ## 1. 가져올 소스

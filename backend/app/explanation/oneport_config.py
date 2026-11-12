@@ -81,7 +81,7 @@ class OnePortConfig:
                 or self.ledger_scope not in {"UNCONFIRMED", "SINGLE_HOST_DURABLE", "MULTI_HOST"}):
             raise ConfigurationError("ONEPORT_CONFIG_INVALID")
 
-    def readiness(self, *, synthetic=False):
+    def readiness(self, *, synthetic=False, data_allowed=None):
         self.validate()
         if not self.enabled:
             return "ONEPORT_DISABLED"
@@ -91,7 +91,9 @@ class OnePortConfig:
             return "ONEPORT_SHARED_LEDGER_REQUIRED" if self.ledger_scope == "MULTI_HOST" else "ONEPORT_DURABILITY_UNCONFIRMED"
         if not self.ledger_path.is_absolute():
             return "ONEPORT_ABSOLUTE_LEDGER_PATH_REQUIRED"
-        if not synthetic and not self.allow_saved_results:
+        if data_allowed is None:
+            data_allowed = self.allow_saved_results
+        if not synthetic and not data_allowed:
             return "ONEPORT_SYNTHETIC_ONLY"
         if (not self.budget_scope or self.budget_credits <= 0 or self.reserve_credits <= 0
                 or self.reserve_credits > self.budget_credits):

@@ -1,5 +1,9 @@
 # 고객용 AI 개발 방향·구조 스키마
 
+현재 구현에는 기존 R2 흐름에 연결된 합성 mock과 OnePort 후보 어댑터, 확인 후 월평균 세후소득을 비교하는 R3 첫 단위가 포함된다. 아래의 설계 시점 상태와 실제 모델·운영 적용 여부를 구분한다. [구현 계약과 설정](integration/2026-11-12-model-proposal-r3.md)
+
+R2-b의 등록 자료 검색과 LangChain 검증은 별도 `scheme-evidence` API에 구현했다. 기본 등록 자료는 비어 있으며 실제 자료 등록과 운영 연결은 별도 단계다. [등록 근거 계약과 설정](integration/2026-11-13-rag-registered-evidence.md)
+
 기준일: 2026-11-12. 설계 버전: `DION-AGENT-ARCHITECTURE-0.2`.
 
 상태: 사용자와 검토한 개발 방향을 기록한 **후속 개발 설계**. 이번 변경은 문서와 문서용 JSON Schema뿐이며 API·DB·모델·엔진에 적용하지 않았다. 현재 R1/R2 계약을 대체하거나 모델의 실행 권한을 확대하지 않는다.
@@ -68,7 +72,7 @@ LLM에서 DB/엔진/도구로 직접 연결되는 경로는 없다. 검색 문�
 | 고객 화면 | Next.js16.4.3, React19.3.1, TypeScript6.0.3 | 기존 질문·결과·상담 UI와 타입을 재사용 | 적용. [package.json](../frontend/package.json), [planner.tsx](../frontend/src/components/dion/planner.tsx) |
 | FE→BE 요청 | Next.js rewrite, Fetch API, AbortController | 같은 origin의 `/api/*` 전달, 오래된 요청 취소·응답 폐기 | 적용. [next.config.ts](../frontend/next.config.ts), [상담 UI](../frontend/src/components/dion/agent-consultation.tsx) |
 | HTTP 서버 | Python3.12.4, FastAPI0.162.0, Uvicorn0.54.0 | 기존 API·인증 dependency·오류 계약을 유지 | 적용. [be_server.py](../backend/app/be_server.py). Python은 로컬 실행 버전 |
-| 요청·응답 계약 | Pydantic2.14.1, JSON, JSON Schema | enum·길이·추가 필드·정확한 자료형 검사 | 기존 R1/R2 적용. 신규 ModelProposal의 Pydantic 모델 연결은 후속 |
+| 요청·응답 계약 | Pydantic2.14.1, JSON, JSON Schema | enum·길이·추가 필드·정확한 자료형 검사 | 기존 R1/R2와 opt-in 합성 ModelProposal 검증에 적용 |
 | 상담 제어 | 일반 Python 함수·명시 상태 전이·등록 필드 정책 | 모델 호출 없이도 의도 선택·질문·충돌·확인·재개 처리 | 적용. [policy.py](../backend/app/consultation/policy.py), [service.py](../backend/app/consultation/service.py). 별도 agent 프레임워크 없음 |
 | 로그인·권한 | Supabase Auth, Bearer 토큰, 서버의 case 소유권 검사 | 인증한 actor와 저장 데이터 소유자를 서버에서 연결 | 적용 코드 있음. [auth.py](../backend/app/be/auth.py), [postgres.py](../backend/app/be/postgres.py). 매 요청 원격 확인, JWT 로컬 검증/인증 캐시는 미적용 |
 | 진단·저장 상담 | Supabase PostgreSQL, Psycopg3.3.8, 직접 SQL | 기존 원응답/snapshot/run을 보존하고 transaction으로 상태 저장 | 적용 코드 있음. 원격R2 schema·실계정 확인 상태는 운영 기록 참조. 서버 PostgreSQL 버전은 이번 미확인 |
@@ -92,7 +96,7 @@ BE 고정 버전은 [requirements.txt](../backend/requirements.txt)와 [requirem
 
 ### 2.3 RAG·LangChain을 포함한 AI 에이전트 확장 스키마
 
-**이 절 전체는 미구현 확장 설계다.** RAG는 검색한 근거를 모델 문맥에 넣는 처리 방식이고, LangChain은 그 검색·프롬프트·모델 연결을 구성하는 라이브러리다. 둘을 같은 기능으로 취급하지 않는다. 먼저 서버가 검색하고 이어서 모델이 설명하는2단계 RAG를 기본안으로 삼는다. 모델이 검색/계산 도구를 반복 실행하는 자율 루프는 첫 범위에 넣지 않는다. [공식 검색/RAG 설명](https://docs.langchain.com/oss/python/deepagents/retrieval)
+아래 그림은 확장 설계다. 현행 R2-b는 서버의 등록 자료 정확 조회, context 구성, 선택·검증·렌더를 구현했다. 저장 방식과 검색 확장은 [현행 등록 근거 계약](integration/2026-11-13-rag-registered-evidence.md)의 범위를 따른다. RAG는 검색한 근거를 모델 문맥에 넣는 방식이며 LangChain은 이 흐름을 연결하는 라이브러리다. [공식 검색/RAG 설명](https://docs.langchain.com/oss/python/deepagents/retrieval)
 
 ```mermaid
 flowchart TD
@@ -131,13 +135,13 @@ flowchart TD
 
 | 기술/구성 | DION에서 맡을 역할 | 도입 상태·제약 |
 | --- | --- | --- |
-| LangChain `langchain-core` Runnable·Prompt 계층 | 조회→context 구성→기존 모델 어댑터→검증의 연결 | 후속 도입 설계. 패키지 버전은 Python/Pydantic·기존 어댑터 호환 검사 후 고정 |
+| LangChain `langchain-core` Runnable 계층 | 조회→context 구성→기존 모델 어댑터→검증의 연결 | 1.7.7 고정, 합성 MockTransport로 검증 |
 | Document Loader·Text Splitter | 검토 자료 수집과 절/조건 단위 분할 | 선택 모듈. 기존 수집기가 있으면 재사용하고 문맥/예외 조항을 분할로 잃지 않음 |
-| RAG Retriever | 허용된 항목·과세연도·효력·검토 상태에 맞는 근거 조회 | 후속 구현. LLM이 조건을 완화할 수 없고 모델 호출 전에 서버가 검색 범위 확정 |
+| RAG Retriever | 허용된 항목·과세연도·효력·검토 상태에 맞는 근거 조회 | 등록 파일에서 서버가 정확 조회하며 모델 호출 전에 검색 범위 확정 |
 | Embedding | 검토 chunk와 비식별 검색어의 의미 검색 벡터 생성 | 선택 경로·모델/차원 미정. 사용자 원응답/상담 전체를 공용 지식베이스에 넣지 않음 |
 | PostgreSQL + pgvector | 기존 DB 계열에서 chunk 참조와 벡터 검색 연결 | 목표 저장 후보. 운영 확장 지원·권한·migration·용량/검색 품질 미검증 |
-| OnePort + 기존 어댑터 | 검색 context와 저장 facts로 구조화된 설명 선택 | R1 어댑터 재사용 계획. RAG·LangChain 연결은 미구현 |
-| Pydantic·기존 의미 검증기 확장 | 응답 구조와 근거 ID·동일 run·주장 범위 대조 | 기존 계층 재사용 + RAG 출처 검증 후속 추가 |
+| OnePort + 기존 어댑터 | R2-b context의 허용 주장·인용 ID 선택 | 기존 전송·예산·중복·시간 제한 재사용. R1은 동일 run의 저장 facts를 별도로 사용 |
+| Pydantic·서버 의미 검증 | 응답 구조와 근거 ID·주장 범위·등록 원문 대조 | R2-b context·출처 검증 적용 |
 | LangGraph | 장기 작업·복수 확인·실패 후 중단점 복구 | 조건부 후보. RAG/LangChain 추가만으로 필요하다고 판단하지 않음 |
 
 LangChain은 Runnable을 연결할 수 있고, 모델은 자율 agent 루프 밖에서도 호출할 수 있다. DION에서는 기존 OnePort 서비스 호출을 감싼 작은 Runnable/어댑터를 우선 설계한다. 새 ChatModel을 OnePort에 직접 연결해 기존 예산·idempotency·타임아웃 검사를 우회하지 않는다. 라이브러리의 자동 재시도·모델 교체·추가 요약/재질문 호출도 허용한 호출 수에 포함해야 한다. [Runnable 공식 API](https://reference.langchain.com/python/langchain-core/runnables), [모델 직접 사용](https://docs.langchain.com/oss/python/langchain/models)
@@ -154,7 +158,7 @@ pgvector는 PostgreSQL의 벡터 유사도 검색 확장이다. SQL에 범위/�
 | 공통 상담 R2-a | 규칙 기반 의도·11개 단일 필드·충돌·명시 확인·기억 | 자연어 후보 추출을 기존 서버 흐름 앞에 연결 |
 | 세션 기억 | 기존 agent_sessions와 구조화 evidence, 기본 임시/명시 저장 | 대화 요약은 보조 자료로만 추가 검토 |
 | R3 | 비교 계산·진단 반영 미구현 | 확인한 patch로 기존 엔진 전체 실행, 별도 결과/반영 선택 |
-| 제도 근거 상담 R2-b | 소스/계약 통합이 선행 과제 | LangChain+RAG 조회·연도/요건 질문·근거 검증·지원 계산 연결 |
+| 제도 근거 상담 R2-b | 등록 자료 조회·연도 확인·LangChain 선택·근거 검증 | 실제 자료 등록, 상담 화면 연결, 개인 요건과 지원 계산 검토 |
 | 상품 설명 | AI 작업본에 상품 원장/정책 통합 미확인 | 기준 소스/OUT-06·상품 판정 계약을 확인한 뒤 사유 설명 |
 | 운영 준비 후속 | 별도 미커밋 구현/검증 기록 존재 | 원격 schema·실계정·worker/디스크·비용 원장 검증 |
 
@@ -263,7 +267,7 @@ EXPLANATION_FACTS의 fact_id와 상담 evidence_id는 별도 식별자이며 자
 | 데이터 스키마 | 구현에 연결할 기술 | 보장 범위·경계 |
 | --- | --- | --- |
 | ExecutionContext | FastAPI dependency·Supabase Auth·Psycopg 조회 | actor·case/run/version을 서버에서 결정. 프론트/모델의 임의 actor를 신뢰하지 않음 |
-| ModelProposal | JSON Schema Draft-07·문서 검사용 Ajv, 후속 서버 Pydantic·의미 검사 | JSON 형식 검사는 사실/금액의 정확성 검증과 다름. 모델 출력 지원 확인·서버 연결은 아직 후속 |
+| ModelProposal | JSON Schema Draft-07·문서 검사용 Ajv, 서버 Pydantic·의미 검사 | 합성 mock을 기존 R2 확인 흐름에 연결했다. [지원 문장과 R2 매핑](consultation-r2.md). 실제 모델 출력 지원 확인은 후속 |
 | ConsultationEvidence | 기존 Pydantic EvidenceInput, Python 비교 정책, agent_sessions의 state_json | 요청 검사·충돌·확인과 저장 상태를 분리. 원응답은 별도 immutable revision에서 재사용 |
 | ChangeProposal | 후속 Pydantic 계약·정규화 JSON·hashlib SHA-256·서버 시각/만료 | hash는 내용 일치 확인용이며 인증 서명이나 사용자 승인 자체가 아님. 소유권·버전·확인 범위 검사를 별도로 수행 |
 | ConfirmationReceipt | 기존 확인 API 패턴·transaction·expected_session_version·request_key | 제안 내용과 명시 확인을 연결. CONSULTATION_ONLY receipt를 R3 실행 승인으로 재사용하지 않음 |
@@ -274,7 +278,7 @@ EXPLANATION_FACTS의 fact_id와 상담 evidence_id는 별도 식별자이며 자
 
 ### 5.6 RAG 근거 데이터 스키마 — 논리 레코드
 
-아래는 RAG 구현 전에 확정할 논리 데이터형이며 DB migration·현재 Pydantic 모델·신규 API를 만든 것이 아니다. 계산 run/fact/evidence 식별자는 기존 것을 재사용하고 검색 근거 source/chunk 식별자와 구분한다.
+아래는 목표 논리 데이터형이다. 현행 Pydantic 계약과 API에는 출처·chunk·인용 구간·조회 요청·검색 결과·context·허용 주장·답변 draft를 적용했다. 실제 필드와 등록 절차는 [현행 계약](integration/2026-11-13-rag-registered-evidence.md)을 따른다. 계산 run/fact/evidence 식별자와 검색 출처 식별자는 구분한다.
 
 | 레코드 | 핵심 필드 | 역할·기술 |
 | --- | --- | --- |

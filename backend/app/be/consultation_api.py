@@ -1,12 +1,29 @@
 """Authenticated R2 state operations; model output cannot select arbitrary tools."""
 from functools import lru_cache
+from os import environ
+from pathlib import Path
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
+from starlette.concurrency import run_in_threadpool
 
-from ..consultation.contract import Confirmation, CreateSession, DeleteSession, Persistence, Turn
+from ..consultation.contract import (
+    Confirmation,
+    ConfirmScenario,
+    CreateScenarioProposal,
+    CreateSession,
+    DeleteSession,
+    Persistence,
+    Turn,
+)
+from ..consultation.model_proposal import mock_proposal
+from ..consultation.oneport_proposal import OnePortProposalProvider
+from ..consultation.rag import OnePortEvidenceSelector, SchemeEvidenceService
+from ..consultation.rag_contract import RetrievalRequest, SchemeEvidenceRequest
+from ..consultation.rag_registry import RegisteredCorpus
 from ..consultation.service import ConsultationService
+from ..explanation.oneport_config import ConfigurationError, OnePortConfig
 from .api import body, call, get_store
 from .auth import get_actor
 
@@ -15,7 +32,28 @@ router = APIRouter(prefix="/api/be/v1/cases/{case_id}/agent-sessions", tags=["Co
 
 @lru_cache
 def get_consultation_service():
-    return ConsultationService()
+    if environ.get("DION_R2_ONEPORT_PROPOSAL") == "1":
+        try:
+            provider = OnePortProposalProvider(
+                OnePortConfig.from_env(), allow_messages=environ.get("DION_R2_ONEPORT_ALLOW_MESSAGES") == "1",
+            )
+        except ConfigurationError:
+            return ConsultationService(oneport_configuration_error=True)
+        return ConsultationService(oneport_provider=provider)
+    provider = mock_proposal if environ.get("DION_R2_MOCK_PROPOSAL") == "1" else None
+    return ConsultationService(proposal_provider=provider)
+
+
+@lru_cache
+def get_scheme_evidence_service():
+    path = environ.get("DION_RAG_REGISTRY_PATH")
+    registry = RegisteredCorpus(Path(path) if path else None)
+    if environ.get("DION_RAG_ONEPORT") == "1":
+        try:
+            return SchemeEvidenceService(registry, provider=OnePortEvidenceSelector(OnePortConfig.from_env()))
+        except ConfigurationError:
+            return SchemeEvidenceService(registry, configuration_error=True)
+    return SchemeEvidenceService(registry)
 
 
 def parse(model, value):
@@ -45,6 +83,27 @@ def resume(case_id: str, sid: str, actor=Depends(get_actor), store=Depends(get_s
     return respond(call(service.get, store, actor, case_id, sid))
 
 
+@router.post("/{sid}/scheme-evidence")
+async def scheme_evidence(case_id: str, sid: str, value=Depends(body), actor=Depends(get_actor), store=Depends(get_store),
+                          consultation=Depends(get_consultation_service), service=Depends(get_scheme_evidence_service)):
+    request = parse(SchemeEvidenceRequest, value)
+    scope_args = (consultation.evidence_scope, store, actor, case_id, sid, request.expected_session_version)
+    scope = await run_in_threadpool(call, *scope_args)
+    query = RetrievalRequest(item_id=request.item_id, tax_year=request.tax_year, **scope)
+    answer = await service.answer(query, request.request_key)
+    if scope != await run_in_threadpool(call, *scope_args):
+        raise HTTPException(409, detail={"code": "SCHEME_EVIDENCE_SCOPE_CHANGED"})
+    return respond(answer)
+
+
+@router.get("/{sid}/scheme-evidence")
+def scheme_catalog(case_id: str, sid: str, expected_session_version: int = Query(ge=0), actor=Depends(get_actor),
+                   store=Depends(get_store), consultation=Depends(get_consultation_service),
+                   service=Depends(get_scheme_evidence_service)):
+    scope = call(consultation.evidence_scope, store, actor, case_id, sid, expected_session_version)
+    return respond(service.options(scope))
+
+
 def operation(name, model):
     def endpoint(case_id: str, sid: str, value=Depends(body), actor=Depends(get_actor), store=Depends(get_store),
                  service=Depends(get_consultation_service)):
@@ -55,4 +114,6 @@ def operation(name, model):
 router.add_api_route("/{sid}/turns", operation("turn", Turn), methods=["POST"])
 router.add_api_route("/{sid}/confirmations", operation("confirm", Confirmation), methods=["POST"])
 router.add_api_route("/{sid}/persistence", operation("persist", Persistence), methods=["POST"])
+router.add_api_route("/{sid}/scenario-proposals", operation("scenario_propose", CreateScenarioProposal), methods=["POST"])
+router.add_api_route("/{sid}/scenario-confirmations", operation("scenario_confirm", ConfirmScenario), methods=["POST"])
 router.add_api_route("/{sid}", operation("delete", DeleteSession), methods=["DELETE"])

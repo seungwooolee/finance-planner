@@ -174,3 +174,22 @@ node node_modules/@playwright/test/cli.js test e2e/dion-explanation.spec.ts --gr
 통과한 핵심 경계: 답변 재사용·미확인/거절, 대상/기간/단위/월연/정의 충돌, 자동 덮어쓰기 방지, 가상/추정 분리, 확인 hash/만료, 동시 요청·재시작 idempotency, 저장 동의·임시 만료·삭제, 입력 버전 변경, 타사용자404/미인증401, DB 실패 rollback·원응답/run 불변.
 
 **R2-a 로컬 범위의 브라우저 재개 경로는 통과했다(1회 실행).** 실계정·원격 migration·배포 검증 전에는 운영 완료로 표시하지 않는다. R2-b의 공식 근거·과세연도·제도별 질문과 R3의 확인 patch·비교 계산은 별도 후속 구현이다.
+
+# ModelProposal 0.1 서버 계약과 합성 mock 연결 — 2026-11-12
+
+후속 단계에서 동일 검증기를 OnePort 후보 어댑터에 연결했다. 별도 확인으로 월평균 세후소득 가정을 비교하는 R3도 추가했다. [OnePort 설정과 R3 계약](integration/2026-11-12-model-proposal-r3.md)
+
+기존 `POST /api/be/v1/cases/{case_id}/agent-sessions/{sid}/turns`의 `message`로 실행한다. 로컬 백엔드를 시작하는 PowerShell에 `$env:DION_R2_MOCK_PROPOSAL='1'`을 설정한다. 기본값은 기존 규칙 기반 상담이다. 명시 입력·의도 선택·항목 다시 확인·일시 정지는 기존 경로로 들어간다. 합성 예문은 “이 진단 기간 제 월 세후소득은 350만원이에요.”와 “이 진단 기간 제 월 세후소득을 400만원으로 가정하면?”이다.
+
+| 위치 | 문서 스키마와 R2 사이의 차이 | 서버 처리 |
+| --- | --- | --- |
+| `model_proposal.py`의 `ModelProposal` | 문서의 최대 5개 후보와 5종 값 형식을 Pydantic으로 검사한다. `DION-AGENT-TURN-1.0`의 본문은 그대로다. | 모의 문법은 한 턴에 후보 1개 또는 확인 안내만 지원한다. 모델 payload를 요청 본문에서 받지 않으며 중첩된 추가 필드도 거부한다. |
+| `FieldRef`, `PHRASES`, 기존 `policy.REGISTRY` | 문서의 11개 `field_ref`를 기존 질문/필드에 그대로 연결한다. 모델 payload에는 정의 버전, 대상·범위·기간·측정 기준이 없다. | 등록부에서 정의·측정 기준·허용 결과를 찾고 서버가 불러온 세션의 대상·범위·기간으로 `EvidenceInput`을 만든다. 이 문법의 대상은 `person_self`, 기간은 저장 run에서 확인한 유일한 기간이다. 한쪽이라도 불명확하면 확인 안내를 반환한다. `field_ref=null` 또는 해당 결과에서 지원하지 않는 필드는 보류한다. |
+| `review_proposal`의 `source_text`, `value` | 문서는 원문 일부를 허용한다. mock의 의미 검사는 앞뒤 공백을 제외한 전체 발화를 요구한다. | 원문에서 읽은 필드·값·단위·연산과 후보가 정확히 일치해야 한다. 부분 인용으로 부정·다른 금액을 숨긴 후보는 거부한다. `만원`은 `KRW_10000`이며 기존 Decimal 정규화를 적용한다. 일회성 소득은 TEXT의 YES/NO, 지출 기준은 TEXT의 LIVING_ONLY/TOTAL_OUTFLOW, 부채·부동산 보유는 BOOLEAN으로 매핑한다. DATE는 유효한 ISO 날짜여야 한다. |
+| `MISSING`과 R2 `EvidenceInput` | 문서에서는 값과 단위가 null이다. R2는 단위를 필수로 받는다. | 등록 필드의 단위를 사용하고 값·정규화 결과는 null로 유지한다. 모름·해당 없음·보류·거절은 명시 표현만 지원한다. 미입력과 미질문은 자연어로 추정하지 않는다. |
+| `operation`과 기존 확인 API | R2 확인에는 모델 연산 대신 서버의 `CONFIRM_CONSULTATION_ONLY`가 들어간다. | `OBSERVE`는 사용자 보고 후보, `SET`은 명시 가정의 총액 또는 값 후보로 연결한다. `INCREASE_BY`와 `DECREASE_BY`는 원문과 금액을 검증한 뒤 보류한다. 검토는 기존 proposal ID/hash, 세션 버전, 명시 확인을 사용한다. |
+| `ConsultationService.mutate` | actor·case·run·세션/입력 버전과 확인 상태는 기존 서버 컨텍스트에 속한다. | 소유권·저장 run 무결성·버전·중복 요청을 먼저 확인한다. 검증 실패는 422 `MODEL_PROPOSAL_INVALID`, mock 예외와 시간 초과는 503 `MODEL_PROPOSAL_UNAVAILABLE` / `MODEL_PROPOSAL_TIMEOUT`으로 응답한다. 실패 시 세션 버전과 요청 키를 소비하지 않으므로 명시 입력이나 규칙 경로로 다시 요청할 수 있다. |
+
+정상 후보는 기존 `pending_proposal`과 충돌 검토로 이어진다. 같은 답은 재사용한다. 같은 대상·기간·정의·근거의 거절이나 보류를 반복 제안하려면 먼저 기존 항목 다시 확인 경로를 사용한다. 가정은 별도 기억으로 분류하며 mock에서 추출한 미확인 값으로 기존 사실을 대체하지 않는다. 저장 run과 원응답은 기존 확인 절차를 마쳐도 그대로 유지된다.
+
+이 구현의 원문 검증 범위는 `PHRASES`와 함께 정의한 합성 문장 형식이다. 자유 발화의 의미 추론과 실제 외부 제공자 시간 제한은 후속 검증 범위다. 테스트는 인위적인 `TimeoutError`를 발생시켜 세션 보존을 확인한다.

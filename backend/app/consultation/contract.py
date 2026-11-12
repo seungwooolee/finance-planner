@@ -91,3 +91,15 @@ class Persistence(Mutation):
 
 class DeleteSession(Mutation):
     contract_version: Literal["DION-AGENT-DELETE-1.0"]
+
+
+class CreateScenarioProposal(Mutation):
+    contract_version: Literal["DION-SCENARIO-PROPOSAL-1.0"]
+    evidence_id: str = Field(min_length=1, max_length=100)
+
+
+class ConfirmScenario(Mutation):
+    contract_version: Literal["DION-SCENARIO-CONFIRMATION-1.0"]
+    proposal_id: str = Field(min_length=1, max_length=100)
+    proposal_hash: str = Field(pattern=r"^[0-9a-f]{64}$")
+    decision: Literal["CONFIRM"]
