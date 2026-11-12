@@ -35,3 +35,20 @@
 이 실계정 화면에서 FE 브랜치의 metricValue가 adapter 차단된 `NEEDS_INPUT.partial_result`의 진단용0 합계를 고객 전체 자산/채무/순자산으로 노출하는 회귀를 발견했다. 엔진 원문은 바꾸지 않고 최상위 결과가 CALCULATED/PARTIAL일 때 직접 계산 지표만 표시하도록 보완했다. NEEDS_INPUT의 전체 금액은 확인 필요로 보존한다. 기존 저장 응답의 어댑터/실행상태/조회 입력버전을 ViewResult에 연결하고, 없는 메타데이터의 빈 라벨도 숨겼다.
 
 새 `dion-partial-assets.spec.tsx`는 실제 API가 만든 NEEDS_INPUT·진단용0을 확인한 뒤 Results를 렌더해 전체 금액3개가 확인 필요이며 독립 현금흐름90만원은 유지되는지 검사한다. **1건 통과**. 전체52건은 이 FE 보완 전의 기록이며 최종 FE 검사/빌드와 공개 URL 재확인은 이어 기록한다. BE/금융정책·데이터·원응답/저장 API는 이 보완에서 바꾸지 않았다.
+
+## 최종 배포 완료
+
+최종 runtime 커밋 **`84e2b5633d0f4980cc264480477df365435c2965`**. 선별 통합/보완 커밋은 fd2102e·d508b28·cdab2e7·fa3178e·84e2b56이다. `codex/investment-deploy-20261112`와 `dion/integration-20261111`에 atomic push했다. main/별도 FE 작업본·기존 사용자 서버는 보존했다.
+
+| 대상 | 최종 URL | 최종 배포 ID / 확인 |
+| --- | --- | --- |
+| FE | https://dion-review.vercel.app/dion | Vercel `dpl_E7Gw9xkkEfxATxHed458ugZsDVW6`, READY. production alias의 소스 SHA도84e2b56 확인 |
+| BE | https://dion-api-review.onrender.com | Render `dep-dbql9hgn74is73chv0bg`, live.14:56:34 KST 완료, 소스 SHA84e2b56 |
+
+- 최종 FE 보완 뒤 `npm.cmd run typecheck`, 전체 `npm.cmd run lint`, `scripts/verify.ps1 -Mode Build` 재실행 통과. BE/정책을 바꾸지 않았으므로535통과/8skip의 Python 게이트는 반복하지 않았다. 마지막 빌드는 FE 서버가 없는 같은 checkout에서 실행했다.
+- **최종 공개 URL 브라우저9건 모두 통과(2.3분)**: 상품 정상/환노출 제외/모름3개, 기존 투자 질문·모바일 재사용·독립 부분 결과/오류 보존3개, 답변 근거2개, adapter 차단 자산의0 노출 방지1개. 명령은 frontend에서 BaseUrl을 공개 URL, channel을 msedge로 설정하고 `npm.cmd run test:e2e -- e2e/dion-product-integration.spec.ts e2e/dion-result-basis.spec.tsx e2e/dion-fe-review.spec.ts e2e/dion-partial-assets.spec.tsx --workers=1`.
+- 실제 로그인 탭을 최종 배포 후 다시 새로고침해 상담13의 새 저장 run을 조회했다. 전체 자산/전체 채무/순자산은 모두 확인 필요, 상환 후 월 차액140만원, 입력버전/조회버전 모두13·어댑터1.0 표시를 UI에서 확인했다. 원응답13개/과거 계산은 앞의 해시 비교로 보존을 확인했으며 이 마지막 조회는 새 데이터를 쓰지 않았다.
+- 최종 BE health=ok, FE 경유 auth/status configured=true. 새 유료 서비스·환경변수·의존성 변경·DB 마이그레이션/삭제는 없다.
+- 검증용 FE3105/BE8105/하네스8106은 본 작업이 시작한 프로세스와 생성시각을 확인한 뒤 종료했다. 기존3000/3102/8001/8202는 유지했다. 최종 `git diff --check` 통과, 로그/인증/브라우저 산출물은 커밋 제외.
+
+확인 방법: 배포 페이지 새로고침 → 가상 사례 불러오기 → 상품 배분 검토 → 결과3번 투자구성 또는4번 상품 정보. 실제 상담은 투자 검토 질문·월 후보에 필요한 확인을 채우고 답변 저장·계산으로 새 결과를 만든다. 과거 저장 run은 당시 결과 그대로이며 재계산 전 상품 비중을 덧붙이지 않는다. 검토 비중/배분액/미배분 잔액은 기존 정책0.2의 초안으로, 고객별 최종 권장·채택·거래 승인을 뜻하지 않는다. 팀원의 별도 PC/네트워크 접속 확인은 기존 기록과 같이 미실행이다.
