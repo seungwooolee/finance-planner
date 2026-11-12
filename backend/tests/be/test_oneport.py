@@ -25,7 +25,7 @@ def config(tmp_path):
     korea = timezone(timedelta(hours=9))
     end = datetime.combine(datetime.now(korea).date(), time(23, 59, 59), korea)
     return OnePortConfig(api_key="test-only-key", model="synthetic-chat", enabled=True,
-                         allow_saved_results=True, ledger_path=tmp_path / "receipts.sqlite3",
+                         allow_saved_results=True, ledger_path=tmp_path / "receipts.sqlite3", ledger_persistent=True,
                          budget_scope="test-budget", budget_credits=Decimal(10), reserve_credits=Decimal(2),
                          max_calls=3, expires_at=end.isoformat())
 
@@ -212,6 +212,7 @@ def test_unconfigured_disabled_and_synthetic_only_never_network(config, run):
     for changes, code in [({"enabled": False}, "ONEPORT_DISABLED"), ({"api_key": ""}, "ONEPORT_NOT_CONFIGURED"),
                           ({"model": ""}, "ONEPORT_NOT_CONFIGURED"), ({"allow_saved_results": False}, "ONEPORT_SYNTHETIC_ONLY"),
                           ({"budget_credits": Decimal(0)}, "ONEPORT_BUDGET_NOT_CONFIGURED"),
+                          ({"ledger_persistent": False}, "ONEPORT_LEDGER_NOT_CONFIRMED"),
                           ({"expires_at": "2000-01-01T00:00:00Z"}, "ONEPORT_BUDGET_EXPIRED")]:
         gateway = Gateway()
         response = asyncio.run(call(service(replace(config, **changes), gateway), run))
