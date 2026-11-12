@@ -515,7 +515,8 @@ def map_question_v121(q, fields, extra, context, basis, *, extended=False):
         return {
             "scope": value("assessment_scope"),
             "owner_ids": value("included_owner_ids"),
-            "asset_coverage": value("asset_coverage"),
+            "asset_coverage": value("asset_coverage")
+            if fields.get("asset_coverage", {}).get("state") == "KNOWN" else "unknown",
         }
     if q == "F04":
         result = {k: cash(k) for k in ("living", "essential_living", "included_debt", "included_contributions")}
@@ -833,6 +834,12 @@ def run_question_v12(document):
         for oid, row in result.get("results", {}).items():
             issues = [i for i in adapted["issues"] if oid in i["affected_outputs"]]
             if issues:
+                # Missing contribution evidence cannot invalidate the independent
+                # living-cost and after-debt figures already calculated by the engine.
+                independent_flow = (
+                    {k: row[k] for k in ("normalized_living", "before_debt_difference", "base_surplus") if k in row}
+                    if oid == "OUT-03" and all(i["question_id"] == "NEW-03" for i in issues) else {}
+                )
                 row = {
                     "calc_state": "INVALID_INPUT"
                     if any(i["code"] == "INVALID_INPUT" for i in issues)
@@ -843,6 +850,7 @@ def run_question_v12(document):
                     "issues": issues,
                     "partial_result": row,
                     "recommendation": False,
+                    **independent_flow,
                 }
                 result["results"][oid] = row
             if oid == "OUT-05":

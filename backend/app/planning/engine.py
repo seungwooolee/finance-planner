@@ -57,7 +57,14 @@ def cashflow_with_kept(answers, current):
     cf = current["result"]["cashflow"]
     if cf.get("base_surplus", {}).get("value") is None:
         return output(cf.get("calc_state", "NEEDS_INPUT"), **{k: v for k, v in cf.items() if k != "calc_state"})
-    rows = contributions(answers)
+    try:
+        rows = contributions(answers)
+    except Missing as exc:
+        # An unconfirmed contribution inventory blocks the after-contribution balance,
+        # not the already calculated same-period living costs and after-debt balance.
+        return output("PARTIAL", **{k: v for k, v in cf.items() if k != "calc_state"},
+                      missing=[str(exc)], existing_cash_contributions_krw=None,
+                      after_existing_contributions_krw=None, investment_available_krw=None)
     kept = sum(int(r["amount_krw"]) for r in rows if not r["already_deducted_from_net_income"])
     costs = answers.get("F04") or {}
     included = money(costs.get("included_contributions"))

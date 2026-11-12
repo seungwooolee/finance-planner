@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([int]$FrontendPort = 3000, [int]$BackendPort = 8000, [switch]$BackendOnly)
+param([int]$FrontendPort = 3000, [int]$BackendPort = 8001, [switch]$BackendOnly)
 
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
@@ -35,7 +35,7 @@ $started = @()
 $previousBackendUrl = $env:BACKEND_URL
 try {
     $api = Start-Process -FilePath $pythonPath -WorkingDirectory $backendDirectory `
-        -ArgumentList @('-m', 'uvicorn', 'app.main:app', '--host', '127.0.0.1', '--port', "$BackendPort") `
+        -ArgumentList @('-m', 'uvicorn', 'app.be_server:app', '--host', '127.0.0.1', '--port', "$BackendPort") `
         -WindowStyle Hidden -PassThru `
         -RedirectStandardOutput (Join-Path $logDirectory 'backend.stdout.log') `
         -RedirectStandardError (Join-Path $logDirectory 'backend.stderr.log')
@@ -63,14 +63,18 @@ try {
             $health = Invoke-WebRequest -Uri "http://127.0.0.1:$BackendPort/health" -UseBasicParsing -TimeoutSec 2
             if ($health.StatusCode -eq 200) {
                 if ($BackendOnly) { $ready = $true; break }
-                $page = Invoke-WebRequest -Uri "http://127.0.0.1:$FrontendPort" -UseBasicParsing -TimeoutSec 5
+                $page = Invoke-WebRequest -Uri "http://127.0.0.1:$FrontendPort/dion" -UseBasicParsing -TimeoutSec 5
                 if ($page.StatusCode -eq 200) { $ready = $true; break }
             }
         } catch { Start-Sleep -Milliseconds 500 }
     }
     if (-not $ready) { throw 'Servers did not become ready within 60 seconds. Check logs/.' }
+    & (Join-Path $PSScriptRoot 'check-dion-connection.ps1') -BaseUrl "http://127.0.0.1:$BackendPort"
+    if (-not $BackendOnly) {
+        & (Join-Path $PSScriptRoot 'check-dion-connection.ps1') -BaseUrl "http://127.0.0.1:$FrontendPort"
+    }
     if ($BackendOnly) { Write-Output "Backend ready: http://127.0.0.1:$BackendPort/health" }
-    else { Write-Output "LifePath AI: http://127.0.0.1:$FrontendPort" }
+    else { Write-Output "DION: http://127.0.0.1:$FrontendPort/dion" }
     Write-Output "API documentation: http://127.0.0.1:$BackendPort/docs"
     Write-Output 'Stop with: .\scripts\stop-dev.ps1'
 } catch {

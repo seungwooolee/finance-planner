@@ -1,5 +1,7 @@
 # dion — Git 통합 작업본
 
+**2026-11-12 진단 결과 복구:** 빠른·정밀 입력의 독립 현금흐름 보존, 계산/오류/대기 화면 이동, 마지막 질문의 결과 보기를 수정했다. [배포 대상·원인·변경·실제 검증](docs/integration/2026-11-12-result-delivery.md)을 우선한다. 로컬 시작은 `scripts/start-dev.ps1`의 통합BE8001/FE3000이며 실제 DION preview로 준비 상태를 검사한다.
+
 **2026-11-11 Git 통합:** 원본 v6 대비 Codex의 전체 변경분을 엔진 v2 기준본(구현 릴리스 `DION-ENGINE-1.2`)과 병합했다. 작업 경로는 `C:\Users\LG\Projects\DION-git`, 브랜치는 `dion/integration-20261111`이다. [파일 비교·충돌 해결·이번 검사](docs/integration/2026-11-11-git-integration.md)와 [Windows 실행](RUN_INTEGRATED.md)을 현재 기준으로 읽는다. 별도 BE 패치 ZIP은 총괄의 후속 반영 범위다.
 
 현재 `/dion`에는 질문·빠른/정밀 5뷰·금액/부동산 입력·고양이·이메일 로그인 화면·FAQ가 있다. 실제 계정 로그인과 원격 DB는 이 통합 검사에 포함하지 않는다. FE 원응답 어댑터1.0은 기존 의미로 유지하고, 엔진 어댑터1.1의 추가보호금/선언 지급일 검증은 직접 엔진 경로에 보존한다. `engine_version`은 입력 계약, `engine_release`는 구현 릴리스다. [2차 화면 이력](docs/integration/2026-11-11-feedback-2.md)을 함께 보되 이력의 이전 실행 결과를 이번 검사로 해석하지 않는다.

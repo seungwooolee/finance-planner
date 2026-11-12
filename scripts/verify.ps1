@@ -70,6 +70,9 @@ try {
             $sample = Invoke-WebRequest -Uri "$($env:PLAYWRIGHT_BASE_URL)/api/sample-profile" `
                 -UseBasicParsing -TimeoutSec 10
             if ($sample.StatusCode -ne 200) { throw 'The sample-profile API is not ready.' }
+            # A legacy app.main server can pass /health and /api/sample-profile while
+            # every DION diagnosis returns 404. Verify the real DION engine route too.
+            & (Join-Path $PSScriptRoot 'check-dion-connection.ps1') -BaseUrl $env:PLAYWRIGHT_BASE_URL
             Set-Location -LiteralPath $frontendDirectory
             Invoke-Check 'Playwright against the running app' { & $npmPath run test:e2e }
         }
