@@ -1,3 +1,7 @@
+## 2026-11-12 GitHub Actions Core
+
+`.github/workflows/core.yml`은 `scripts/verify.ps1 -Mode Core`와 같은 범위(pytest·Ruff·pip check, TypeScript·ESLint)를 리눅스에서 실행한다. 트리거는 PR·`dion/**` 푸시·수동 실행이며 개발 브랜치 푸시마다 돌지 않는다. 배포·비밀값·외부 AI 호출·브라우저 E2E·production Build는 포함하지 않는다. 워크플로 자체는 Actions에서 아직 실행되지 않았다. 같은 명령을 Python3.13·Node22 샌드박스에서 실행해 pytest637통과/8skip, Ruff·pip check·TypeScript·ESLint 통과를 확인했다(CI의 Python3.12 환경과는 다름).
+
 ## 2026-11-12 공통 상담 R2-a
 
 `backend/tests/be/test_consultation.py`는 실제 SQLite/엔진/상담 API와 mock 인증으로 의도·허용 작업·필요 질문·사실 충돌·자동 덮어쓰기 방지·가상/추정 분리·저장/재개·동시성·권한·만료·삭제를 검사한다. 새32개와 기존 해설49개, 고유81개의 통과를 확인했다(최초 실패와 집중 재검사를 합친 수치).
