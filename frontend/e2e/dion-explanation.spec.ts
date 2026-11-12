@@ -77,10 +77,14 @@ test('R2 consultation confirmation, conflict, saved resume and memory deletion p
   await expect(page.getByRole('button',{name:'로그아웃',exact:true})).toBeVisible();
   await page.getByRole('button',{name:'내 상담',exact:true}).click();
   await page.getByRole('button',{name:new RegExp(`${id} .*다시 열기`)}).click();
+  // Case restore opens the input screen by contract; open the saved run that owns the consultation.
+  const saved=(await (await request.get(`${base}/agent-sessions`,{headers})).json()).items;
+  expect(saved).toHaveLength(1);
+  await page.getByRole('button',{name:new RegExp(saved[0].base_run_id)}).click();
   await panel.getByRole('button',{name:'저장 상담 목록',exact:true}).click();
   await panel.getByRole('button',{name:/저장 상담 재개/}).click();
   await expect(panel).toContainText('이어서 저장 중');
-  await panel.getByLabel('확인할 항목',{exact:true}).selectOption('F03/monthly_net_income_krw');
+  await panel.getByRole('combobox',{name:'확인할 항목',exact:true}).selectOption('F03/monthly_net_income_krw');
   await panel.getByLabel('상담 금액 (만원)',{exact:true}).fill('400');
   await panel.getByRole('button',{name:'답변 검토하기',exact:true}).click();
   await expect(panel).toContainText('VALUE_CONFLICT');

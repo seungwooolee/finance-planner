@@ -2,7 +2,7 @@
 
 `backend/tests/be/test_consultation.py`는 실제 SQLite/엔진/상담 API와 mock 인증으로 의도·허용 작업·필요 질문·사실 충돌·자동 덮어쓰기 방지·가상/추정 분리·저장/재개·동시성·권한·만료·삭제를 검사한다. 새32개와 기존 해설49개, 고유81개의 통과를 확인했다(최초 실패와 집중 재검사를 합친 수치).
 
-`frontend/e2e/dion-explanation.spec.ts --grep 'R2 '`는 브라우저2건 중1통과/1실패다. 재개 실패를 한 번 수정·재검사했으나 run 결과를 여는 단계 누락으로 미통과이며 추가 반복하지 않았다. 전체Core/Build/E2E·실인증·원격PG는 미실행이다. [정확한 명령·실패 원인·남은 검증](consultation-r2.md)을 따른다.
+`frontend/e2e/dion-explanation.spec.ts --grep 'R2 '`는 당시 브라우저2건 중1통과/1실패였다. 후속으로 테스트에 저장 run 열기 단계와 콤보박스 locator를 보완해 재개 시나리오(`--grep 'R2 consultation'`) 1 passed를 확인했다(제품 코드·기대값 변경 없음). 전체Core/Build/E2E·실인증·원격PG는 미실행이다. [정확한 명령·실패 원인·남은 검증](consultation-r2.md)을 따른다.
 
 ## 2026-11-12 원포트 R1-c
 

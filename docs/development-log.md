@@ -1,3 +1,9 @@
+# 2026-11-12 — R2 재개 브라우저 시나리오 보완
+
+원인은 테스트 흐름이었다. case 복원 후 상담이 저장된 run을 여는 단계를 추가(`GET agent-sessions`의 base_run_id 사용)하고, 처음 도달한 "확인할 항목" 선택을 콤보박스 역할 locator로 바꿨다. 제품 코드·기대값은 유지했다. 노트북 checkout에서 테스트 전용 BE8318/FE3318로 해당 시나리오만 실행: 1차 87행 locator 실패, 2차(수정 미반영) 무효, 3차 1 passed(15.5초). 다른 R2 사례·전체 Core/Build/E2E·실인증·원격PG·배포는 미실행. [상세](consultation-r2.md).
+
+---
+
 # 2026-11-12 — AI 개발 작업본 커밋·푸시 준비
 
 사용자가 `codex/result-explanation-r1`의 코드·설계·검증 기록 커밋과 푸시를 명시적으로 지시했다. P0 b4f1f5a 기반의 현재 AI 작업본만 대상으로 하며, 다른 checkout의 미커밋 FE·엔진 변경은 포함하지 않는다. 공통 AGENTS.md와 새 노트북의 실행·설정·브랜치·검증 한계를 [개발 인계](integration/2026-11-12-ai-development-handoff.md)에 연결했다.
