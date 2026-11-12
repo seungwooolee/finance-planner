@@ -1,6 +1,6 @@
 # 고객용 AI 개발 방향·구조 스키마
 
-현재 구현에는 기존 R2 흐름에 연결된 합성 mock과 OnePort 후보 어댑터, 확인 후 월평균 세후소득을 비교하는 R3 첫 단위가 포함된다. 아래의 설계 시점 상태와 실제 모델·운영 적용 여부를 구분한다. [구현 계약과 설정](integration/2026-11-12-model-proposal-r3.md)
+현재 구현에는 기존 R2 흐름의 합성 mock·OnePort 후보 어댑터와, 확인 후 월평균 세후소득 또는 월 지출 총액을 한 항목씩 비교하는 R3가 포함된다. 지출은 생활비/전체 출금액 기준과 포함 상환·저축 이체액을 보존한다. 아래의 설계 시점 상태와 실제 모델·운영 적용 여부를 구분한다. [현재 R3 범위·실행 검증](integration/2026-11-13-r3-expense-expansion.md) · [첫 구현·제공자 설정](integration/2026-11-12-model-proposal-r3.md)
 
 R2-b의 등록 자료 검색과 LangChain 검증은 별도 `scheme-evidence` API에 구현했다. 기본 등록 자료는 비어 있으며 실제 자료 등록과 운영 연결은 별도 단계다. [등록 근거 계약과 설정](integration/2026-11-13-rag-registered-evidence.md)
 

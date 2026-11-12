@@ -8,7 +8,7 @@ export const riskFields: Record<string, string[]> = {
   F16: ["investment_experience_products", "experience_duration"], "NEW-10": ["loss_tolerance_band_raw"],
   F18: ["loss_response_raw"], F17: ["risk_preference_choice_raw"],
 };
-export const unknownOptions = new Set(["EARLIEST_USE_STATUS_03", "LOSS_AFFECTS_ESSENTIALS_03", "EXPERIENCE_DURATION_06", "LOSS_UNKNOWN", "LOSS_RESPONSE_RAW_05", "PREF_UNKNOWN"]);
+export const unknownOptions = new Set(["EARLIEST_USE_STATUS_03", "LOSS_AFFECTS_ESSENTIALS_03", "EXPERIENCE_DURATION_06", "LOSS_UNKNOWN", "LOSS_RESPONSE_RAW_05", "PREF_UNKNOWN", "FX_UNKNOWN", "PRODUCT_UNDERSTANDING_04"]);
 export const answeredField = (f: Field | undefined) => !!f && f.state === "KNOWN" && f.raw_value !== null && f.raw_value !== "" && !(typeof f.raw_value === "string" && unknownOptions.has(f.raw_value));
 export function riskNeeds(doc: Document, id: string): string[] {
   const env = record(doc, id)?.envelope;

@@ -27,6 +27,7 @@ REQUIRED = {
     "analysis_drafts": {"draft_id", "case_id", "run_id", "input_version", "status"},
     "case_plan_links": {"case_id", "adopted_plan_ref"},
     "agent_sessions": {"session_id", "case_id", "session_version", "expires_at", "state_json"},
+    "agent_session_heads": {"session_id", "case_id", "session_version", "status", "owner_id", "expires_at"},
 }
 HISTORY = {"answer_revisions", "raw_snapshots", "analysis_runs", "analysis_drafts"}
 
@@ -49,9 +50,9 @@ def schema_check(store):
             WHERE n.nspname='dion_be' AND a.grantee=0) AS exposed""").fetchone()["exposed"]
         permissions = conn.execute("""SELECT c.relname AS table_name,
             (has_table_privilege(c.oid,'SELECT') AND has_table_privilege(c.oid,'INSERT')
-             AND (c.relname NOT IN ('cases','answer_heads','case_plan_links','agent_sessions')
+             AND (c.relname NOT IN ('cases','answer_heads','case_plan_links','agent_sessions','agent_session_heads')
                   OR has_table_privilege(c.oid,'UPDATE'))
-             AND (c.relname<>'agent_sessions' OR has_table_privilege(c.oid,'DELETE'))) AS usable
+             AND (c.relname NOT IN ('agent_sessions','agent_session_heads') OR has_table_privilege(c.oid,'DELETE'))) AS usable
             FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
             WHERE n.nspname='dion_be' AND c.relkind='r'""").fetchall()
     found = {}

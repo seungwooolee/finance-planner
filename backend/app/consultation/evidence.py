@@ -6,9 +6,20 @@ from ..be.raw_store import _digest
 from ..planning.common import ContractError, money
 from .policy import REGISTRY
 
+ACTUAL_BASES = {"USER_REPORTED", "ACTUAL", "OFFICIAL_VALUE"}
+QUESTION_HISTORY_VERSION = "DION-AGENT-QUESTION-HISTORY-1.0"
+VALIDATION_VERSION = "DION-AGENT-EVIDENCE-VALIDATION-1.1"
+UNITS = {"MONEY": {"KRW", "KRW_10000"}, "BOOLEAN": {"BOOLEAN"}, "DATE": {"DATE"},
+         "YES_NO": {"TEXT"}, "EXPENSE_BASIS": {"TEXT"}}
+
 
 def normalize(raw, kind, *, strict=True):
+    allowed = UNITS[kind] | ({"TEXT"} if not strict and kind == "DATE" else set())
+    if raw["unit"] not in allowed:
+        raise ValueError("field unit mismatch")
     if raw["state"] != "KNOWN":
+        if raw["raw_value"] is not None:
+            raise ValueError("missing value must remain null")
         return None
     value = raw["raw_value"]
     if kind == "MONEY":
@@ -61,13 +72,45 @@ def base_evidence(run):
     return result
 
 
+def _revisions(state):
+    """Validate old revisions on copies: never rewrite stored raw values or receipts."""
+    rows = deepcopy(state["evidence_revisions"])
+    for row in rows:
+        spec = REGISTRY.get(row["question_id"] + "/" + row["field_id"])
+        try:
+            if spec is None:
+                raise ValueError("unregistered field")
+            normalize(row, spec["kind"])
+        except (KeyError, ValueError, TypeError):
+            row["validation_issue"] = "EVIDENCE_VALUE_INVALID"
+    return rows
+
+
 def all_evidence(state, run):
-    return base_evidence(run) + deepcopy(state["evidence_revisions"])
+    return base_evidence(run) + _revisions(state)
+
+
+def question_history(state):
+    """A context-bound view of terminal decisions, including legacy confirmations."""
+    keys = ("question_id", "field_id", "subject_ref", "scope_ref", "entity_ref", "period_start", "period_end",
+            "definition_version", "measurement_basis", "basis", "state", "evidence_id", "confirmation_status")
+    return [{**{key: row.get(key) for key in keys},
+             "group": "ACTUAL" if row["basis"] in ACTUAL_BASES else row["basis"],
+             "valid": not row.get("validation_issue")}
+            for row in _revisions(state) if row["confirmation_status"] in {"USER_CONFIRMED", "REJECTED"}]
+
+
+def _matches_context(row, state, spec):
+    return (row["question_id"] == spec["question_id"] and row["field_id"] == spec["field_id"]
+            and all(row.get(key) == state[key] for key in ("subject_ref", "scope_ref", "period_start", "period_end"))
+            and row["definition_version"] == spec["definition_version"] and row.get("entity_ref") is None
+            and row["measurement_basis"] == spec["measurement_basis"])
 
 
 def active_evidence(state, run):
     all_rows = all_evidence(state, run)
-    superseded = {ref for r in all_rows if r["confirmation_status"] == "USER_CONFIRMED" for ref in r["supersedes"]}
+    superseded = {ref for r in all_rows if r["confirmation_status"] == "USER_CONFIRMED" and not r.get("validation_issue")
+                  for ref in r["supersedes"]}
     return [r for r in all_rows if r["evidence_id"] not in superseded
             and r["confirmation_status"] in {"SOURCE_RECORDED", "USER_CONFIRMED"}]
 
@@ -117,6 +160,8 @@ def select_question(state, run):
         return None
     dependencies = {i.get("question_id") for i in gates + issues} or set(output.get("dependency_question_ids", []))
     current = active_evidence(state, run)
+    actual = [r for r in current if r["basis"] in ACTUAL_BASES and not r.get("validation_issue")]
+    history = question_history(state)
     for key, spec in REGISTRY.items():
         if state["output_id"] not in spec["output_ids"] or (forced and key != forced):
             continue
@@ -124,17 +169,13 @@ def select_question(state, run):
             continue
         # Supplemental included amounts only matter for TOTAL_OUTFLOW.
         if spec["field_id"] in {"included_debt", "included_contributions"}:
-            if not any(r["field_id"] == "expense_basis" and r["normalized_value"] == "TOTAL_OUTFLOW" for r in current):
+            if not any(_matches_context(r, state, REGISTRY["F04/expense_basis"])
+                       and r["state"] == "KNOWN" and r["normalized_value"] == "TOTAL_OUTFLOW" for r in actual):
                 continue
-        matches = [r for r in current if r["question_id"] == spec["question_id"] and r["field_id"] == spec["field_id"]
-                   and r["subject_ref"] == state["subject_ref"] and r["scope_ref"] == state["scope_ref"]
-                   and r["period_start"] == state["period_start"] and r["period_end"] == state["period_end"]
-                   and r["definition_version"] == spec["definition_version"] and r["entity_ref"] is None
-                   and r["basis"] in {"USER_REPORTED", "ACTUAL", "OFFICIAL_VALUE"} and not r.get("validation_issue")
-                   and r["measurement_basis"] == spec["measurement_basis"]]
+        matches = [r for r in actual if _matches_context(r, state, spec)]
         if not forced and any(r["state"] in {"KNOWN", "NOT_APPLICABLE", "DEFERRED", "DECLINED"} for r in matches):
             continue
-        if not forced and key in state["asked_fields"]:
+        if not forced and any(r["group"] == "ACTUAL" and r["valid"] and _matches_context(r, state, spec) for r in history):
             continue
         return {**spec, "field_ref": key, "subject_ref": state["subject_ref"], "scope_ref": state["scope_ref"],
                 "period_start": state["period_start"], "period_end": state["period_end"],

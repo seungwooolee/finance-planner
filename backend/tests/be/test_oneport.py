@@ -15,6 +15,7 @@ from app.be.store import BackendStore
 from app.explanation.contract import ExplanationRequest
 from app.explanation.oneport import OnePortProvider, price_ceiling, strict_json, transport_schema
 from app.explanation.oneport_config import ConfigurationError, OnePortConfig
+from app.explanation.oneport_ledger import OnePortLedger
 from app.explanation.providers import MockProvider
 from app.explanation.service import ExplanationService
 from tests.be.test_explanation import document, request_for, saved_run, tamper
@@ -24,11 +25,12 @@ from tests.be.test_explanation import document, request_for, saved_run, tamper
 def config(tmp_path):
     korea = timezone(timedelta(hours=9))
     end = datetime.combine(datetime.now(korea).date(), time(23, 59, 59), korea)
-    return OnePortConfig(api_key="test-only-key", model="synthetic-chat", enabled=True,
+    value = OnePortConfig(api_key="test-only-key", model="synthetic-chat", enabled=True,
                          allow_saved_results=True, ledger_path=tmp_path / "receipts.sqlite3", ledger_persistent=True,
                          ledger_scope="SINGLE_HOST_DURABLE",
                          budget_scope="test-budget", budget_credits=Decimal(10), reserve_credits=Decimal(2),
                          max_calls=3, expires_at=end.isoformat())
+    return replace(value, ledger_id=OnePortLedger.provision(value))
 
 
 @pytest.fixture
@@ -38,7 +40,7 @@ def run(tmp_path):
 
 class Gateway:
     def __init__(self, *, mutation=None, status=200, error_type=None, headers=None, delay=0, fault=None,
-                 usage=True, key_limit=None, model=True, price=True, content=None):
+                 usage=True, key_limit=10, model=True, price=True, content=None):
         self.calls = []
         self.mutation, self.status, self.error_type, self.headers = mutation, status, error_type, headers or {}
         self.delay, self.fault, self.usage, self.key_limit = delay, fault, usage, key_limit

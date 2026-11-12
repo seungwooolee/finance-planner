@@ -1,4 +1,6 @@
-"""Bounded R2 state machine. Only explicit memory consent writes session data.
+"""Bounded R2 state machine. Only explicit consent writes consultation content.
+
+Minimal lifecycle metadata coordinates workers without persisting temporary answers.
 
 No raw-answer mutations, financial execution, or transcript log.
 """
@@ -16,7 +18,17 @@ from ..explanation.facts import build_context
 from ..oneport_transport import ProviderFailure
 from . import scenario
 from .contract import CONTRACT, NOTICE, POLICY
-from .evidence import active_evidence, all_evidence, compare, context_key, normalize, select_question
+from .evidence import (
+    QUESTION_HISTORY_VERSION,
+    VALIDATION_VERSION,
+    active_evidence,
+    all_evidence,
+    compare,
+    context_key,
+    normalize,
+    question_history,
+    select_question,
+)
 from .model_proposal import VERSION as MODEL_PROPOSAL_VERSION
 from .model_proposal import review_proposal
 from .policy import ALLOWED, REGISTRY, VERSION_HASH, classify, guidance
@@ -33,6 +45,7 @@ class ConsultationService:
         self.oneport_provider = oneport_provider
         self.oneport_configuration_error = oneport_configuration_error
         self.temporary = {}
+        self.worker_id = uuid4().hex
         self.lock = RLock()
 
     def _run(self, conn, case, run_id):
@@ -58,15 +71,34 @@ class ConsultationService:
         with store._transaction(write=True) as conn:
             store._authorize(conn, actor, case_id)
             conn.execute("DELETE FROM agent_sessions WHERE case_id=? AND expires_at<=?", (case_id, now))
+            conn.execute("DELETE FROM agent_session_heads WHERE case_id=? AND expires_at<=?", (case_id, now))
 
     def _load(self, conn, actor, case_id, session_id):
-        memory = self.temporary.get((actor, case_id, session_id))
-        if memory:
-            return deepcopy(memory)
         row = conn.execute("SELECT state_json FROM agent_sessions WHERE case_id=? AND session_id=?", (case_id, session_id)).fetchone()
-        if row is None:
-            fail("AGENT_SESSION_NOT_FOUND_OR_EXPIRED", 404)
-        return json.loads(row["state_json"])
+        head = conn.execute("SELECT * FROM agent_session_heads WHERE case_id=? AND session_id=?", (case_id, session_id)).fetchone()
+        key = (actor, case_id, session_id)
+        if row is not None:
+            if head and head["status"] != "SAVED":
+                fail("AGENT_SESSION_STORAGE_INCONSISTENT")
+            self.temporary.pop(key, None)
+            return json.loads(row["state_json"])
+        memory = self.temporary.get(key)
+        if (head and head["status"] == "EPHEMERAL" and head["owner_id"] == self.worker_id
+                and memory and memory["session_version"] == head["session_version"]
+                and head["expires_at"] > self.clock().isoformat()):
+            return deepcopy(memory)
+        self.temporary.pop(key, None)
+        if head and head["status"] == "SAVED":
+            fail("AGENT_SESSION_STORAGE_INCONSISTENT")
+        fail("AGENT_SESSION_NOT_FOUND_OR_EXPIRED", 404)
+
+    def _head(self, conn, state, status=None):
+        status = status or state["persistence_mode"]
+        conn.execute("INSERT INTO agent_session_heads VALUES(?,?,?,?,?,?) ON CONFLICT(session_id) DO UPDATE SET "
+                     "session_version=excluded.session_version,status=excluded.status,"
+                     "owner_id=excluded.owner_id,expires_at=excluded.expires_at",
+                     (state["session_id"], state["case_id"], state["session_version"], status,
+                      self.worker_id if status == "EPHEMERAL" else "", state["expires_at"]))
 
     def _persist(self, conn, state):
         if len(_json(state).encode()) > 262144:
@@ -75,8 +107,8 @@ class ConsultationService:
             conn.execute("INSERT INTO agent_sessions VALUES(?,?,?,?,?) ON CONFLICT(session_id) DO UPDATE SET "
                          "session_version=excluded.session_version,expires_at=excluded.expires_at,state_json=excluded.state_json",
                          (state["session_id"], state["case_id"], state["session_version"], state["expires_at"], _json(state)))
-        else:
-            conn.execute("DELETE FROM agent_sessions WHERE case_id=? AND session_id=?", (state["case_id"], state["session_id"]))
+        # Ordinary ephemeral mutations must never delete another worker's saved row.
+        self._head(conn, state)
 
     def _memory(self, actor, state):
         key = (actor, state["case_id"], state["session_id"])
@@ -92,7 +124,8 @@ class ConsultationService:
         if stale:
             view.update(progress="RECONFIRM_REQUIRED", guidance="기준 진단 또는 질문·상태 정책이 변경됐어요. 기존 기억을 유지하고 새 저장 결과에서 상담을 시작해 주세요.")
         proposal = view.get("scenario_proposal")
-        if proposal and (stale or proposal["session_version"] != state["session_version"]
+        if proposal and (stale or proposal.get("scenario_policy_hash") != scenario.SCENARIO_POLICY_HASH
+                         or proposal["session_version"] != state["session_version"]
                          or proposal["expires_at"] <= self.clock().isoformat()):
             view["scenario_proposal"] = None
         if view.get("scenario_result"):
@@ -100,6 +133,9 @@ class ConsultationService:
         rows = all_evidence(state, run)
         active_ids = {r["evidence_id"] for r in active_evidence(state, run)}
         view["evidence"] = [{**r, "active": r["evidence_id"] in active_ids} for r in rows]
+        view["question_history_version"] = QUESTION_HISTORY_VERSION
+        view["question_history"] = question_history(state)
+        view["evidence_validation_version"] = VALIDATION_VERSION
         view["memory"] = {
             "confirmed": [r["evidence_id"] for r in rows if r["evidence_id"] in active_ids and r["state"] == "KNOWN"
                           and r["basis"] in {"USER_REPORTED", "ACTUAL", "OFFICIAL_VALUE"} and not r.get("validation_issue")],
@@ -117,6 +153,7 @@ class ConsultationService:
                                 ["RESUME", "DELETE_MEMORY"] if view["progress"] == "PAUSED" else
                                 ["SEND_TURN", "PAUSE", "SAVE_MEMORY", "STOP_SAVING", "DELETE_MEMORY"])
         view["field_options"] = [s for s in REGISTRY.values() if state["output_id"] in s["output_ids"]]
+        view["scenario_fields"] = scenario.field_options(state)
         view["notice"] = {"version": NOTICE, "ephemeral_minutes": 30, "saved_days": 7,
                           "text": "임시 상담은 최대 30분이며 서버 재시작 시 사라져요. 이어서 저장하면 7일 동안 다시 열 수 있어요. 만료된 기억은 이 진단의 상담에 다시 접근할 때 정리하며, 저장 취소·삭제로 직접 지울 수 있어요. 진단 답변에는 반영하지 않아요."}
         mode = "지원 문장의 후보 추출에 OnePort 사용" if self.oneport_provider else "규칙 기반 공통 상담이며 외부 AI 호출 없음"
@@ -133,7 +170,10 @@ class ConsultationService:
             with store._transaction(write=True) as conn:
                 case = store._authorize(conn, actor, case_id)
                 existing = conn.execute("SELECT state_json FROM agent_sessions WHERE case_id=? AND session_id=?", (case_id, sid)).fetchone()
-                old = self.temporary.get((actor, case_id, sid)) or (json.loads(existing[0]) if existing else None)
+                head = conn.execute("SELECT * FROM agent_session_heads WHERE case_id=? AND session_id=?", (case_id, sid)).fetchone()
+                if head and not existing and (head["status"] != "EPHEMERAL" or head["owner_id"] != self.worker_id):
+                    fail("AGENT_SESSION_WORKER_CONFLICT")
+                old = self._load(conn, actor, case_id, sid) if existing or head else None
                 if old:
                     if old["create_hash"] != fingerprint:
                         fail("IDEMPOTENCY_CONFLICT")
@@ -231,7 +271,11 @@ class ConsultationService:
                 if state["session_version"] != request.expected_session_version:
                     fail("SESSION_VERSION_CONFLICT")
                 if operation == "delete":
-                    conn.execute("DELETE FROM agent_sessions WHERE case_id=? AND session_id=?", (case_id, sid))
+                    conn.execute("DELETE FROM agent_sessions WHERE case_id=? AND session_id=? AND session_version=?",
+                                 (case_id, sid, state["session_version"]))
+                    state["session_version"] += 1
+                    state["expires_at"] = (self.clock() + timedelta(minutes=30)).isoformat()
+                    self._head(conn, state, "DELETED")
                     state = None
                     view = {"session_id": sid, "status": "DELETED", "diagnosis_changed": False}
                 else:
@@ -246,6 +290,9 @@ class ConsultationService:
                     elif operation in {"scenario_propose", "scenario_confirm"}:
                         self._scenario(state, run, request, operation)
                     elif operation == "persist":
+                        if request.action == "STOP_SAVING":
+                            conn.execute("DELETE FROM agent_sessions WHERE case_id=? AND session_id=? AND session_version=?",
+                                         (case_id, sid, state["session_version"]))
                         state["persistence_mode"] = "SAVED" if request.action == "SAVE" else "EPHEMERAL"
                         state["notice_version"] = request.notice_version
                         state["expires_at"] = (self.clock() + (timedelta(days=7) if request.action == "SAVE" else timedelta(minutes=30))).isoformat()
@@ -396,19 +443,26 @@ class ConsultationService:
                          namespace="DION-DESIGN", source={"kind": "USER_CONSULTATION", "turn_id": turn_id,
                          "definition_ref": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#" + spec["question_id"]},
                          confirmed_at=None, confirmation_status="PROPOSED", supersedes=[])
-        current = active_evidence(state, run)
+        current = [row for row in active_evidence(state, run) if not row.get("validation_issue")]
         if from_model:
             candidate["source"]["proposal_schema_version"] = MODEL_PROPOSAL_VERSION
             if state["revisit_field"] != key and any(
                 row["confirmation_status"] == "REJECTED" or row["state"] in {"DECLINED", "DEFERRED"}
-                for row in current + [r for r in state["evidence_revisions"] if r["confirmation_status"] == "REJECTED"]
+                for row in current + [r for r in all_evidence(state, run)
+                                      if r["confirmation_status"] == "REJECTED" and not r.get("validation_issue")]
                 if context_key(row) == context_key(candidate)
-                and all(row[k] == candidate[k] for k in ("period_start", "period_end", "basis", "definition_version"))
+                and all(row[k] == candidate[k]
+                        for k in ("period_start", "period_end", "basis", "definition_version", "measurement_basis"))
             ):
                 state["guidance"] = "이 항목은 이전에 거절하거나 보류했어요. 다시 다루려면 항목을 직접 선택해 주세요."
                 return False
         conflicts, identical = compare(candidate, current)
-        if identical and not conflicts:
+        # Explicitly acknowledging a missing source answer is a consultation
+        # decision, even when its null value equals the saved source's null.
+        missing_acknowledgement = (candidate["basis"] == "USER_REPORTED" and candidate["state"] != "KNOWN"
+                                   and any(row["evidence_id"] == identical and row["confirmation_status"] == "SOURCE_RECORDED"
+                                           for row in current))
+        if identical and not conflicts and not missing_acknowledgement:
             state["guidance"] = "같은 대상·기간·정의의 답변이 이미 있어 재사용했어요. 새 사실로 덮어쓰지 않았어요."
             state["revisit_field"] = None
             return False
@@ -444,12 +498,16 @@ class ConsultationService:
         if request.decision == "CONFIRM":
             if evidence["definition_version"] != REGISTRY[key]["definition_version"] or evidence["measurement_basis"] != REGISTRY[key]["measurement_basis"]:
                 fail("CONFLICT_NEEDS_SCOPE_REVIEW")
+            try:
+                normalize(evidence, REGISTRY[key]["kind"])
+            except (ValueError, TypeError):
+                fail("EVIDENCE_VALUE_INVALID", 422)
             evidence.update(confirmation_status="USER_CONFIRMED", confirmed_at=self.clock().isoformat())
             state["confirmation_receipts"].append({"receipt_id": "confirm_" + uuid4().hex, "proposal_hash": proposal["proposal_hash"],
                                                   "evidence_id": evidence["evidence_id"], "operation": "CONSULTATION_ONLY"})
         else:
             evidence.update(confirmation_status="REJECTED", supersedes=[])
-        if key not in state["asked_fields"]:
-            state["asked_fields"].append(key)
+        # Keep legacy field-only history intact. Context-bound history is derived
+        # from these immutable confirmation/rejection revisions instead.
         state.update(pending_proposal=None, conflicts=[], revisit_field=None, progress="ACTIVE",
                      guidance="상담 기억만 갱신했어요. 저장된 진단 답변과 계산 결과는 그대로예요.")

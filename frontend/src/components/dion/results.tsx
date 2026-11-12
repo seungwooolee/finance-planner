@@ -1,22 +1,31 @@
 "use client";
 
-import { type ReactNode, useEffect, useRef } from "react";
-import { Document, Json, list, object, question, textValue, won } from "@/lib/dion/model";
+import { type ReactNode, useEffect, useRef, useState } from "react";
+import { Document, Json, list, object, question, textValue } from "@/lib/dion/model";
 import { copy, customerStep, goalName } from "@/lib/dion/customer-flow";
-import { CashChart } from "./cash-chart";
+import { FinancialOverview } from "./financial-overview";
+import { PlanComparison, PlanSelector, planName } from "./plan-comparison";
+import { PortfolioChoice } from "./portfolio-choice";
+import { ProductAllocation } from "./product-allocation";
+import { ResultBasis } from "./result-basis";
+import { resultHints } from "@/lib/dion/result-guidance";
+import { formatKrw } from "@/lib/dion/money-format";
 import { InvestmentSummary } from "./investment-review";
 import displayCatalog from "@/lib/dion/result-display-catalog.json";
 
 const stateLabels: Record<string,string> = { CALCULATED:"계산됨", PARTIAL:"부분 결과", NEEDS_INPUT:"정보 보완 필요", INVALID_INPUT:"입력 확인 필요", NOT_SUPPORTED:"미지원", NOT_IMPLEMENTED:"미구현", NOT_APPLICABLE:"해당 없음", NOT_REQUESTED:"요청하지 않음", REVIEW_ONLY:"검토 목록", INTERNAL_ERROR:"계산 오류", INFEASIBLE:"월 예산 부족", CALCULATED_MONTHLY_SCENARIO:"월 예산 시나리오" };
 export type ViewResult = { result: Record<string,Json>; sourceSignature: string; localVersion: number; storage: string; runId?: string; serverVersion?: number; isCurrent?: boolean; source: Json; inputHash?:string; rawSnapshotId?:string };
 function metricValue(out:Record<string,Json>,key:string) {
+  if (["INVALID_INPUT","INTERNAL_ERROR"].includes(String(out.calc_state))) return null;
   const v=out[key];return typeof v==="string"?v:object(v).calc_state==="CALCULATED"?object(v).value:null;
 }
-function Metric({title,value,note}:{title:string;value:unknown;note?:string}) {return <article className="d-metric"><span>{title}</span><strong>{won(value)}{typeof value==="string" && <small> 만원</small>}</strong>{note&&<small>{note}</small>}</article>;}
-function Missing({row,title}:{row:Record<string,Json>;title:string}) {return <div className="d-note"><strong>{title} · {stateLabels[textValue(row.calc_state)]??"확인 필요"}</strong><p>{row.calc_state==="NOT_SUPPORTED"?"이 결과의 계산은 아직 지원하지 않아요.":"관련 답변과 계산에 필요한 가정을 확인하면 이어서 살펴볼 수 있어요."}</p></div>;}
+function Metric({title,value,note}:{title:string;value:unknown;note?:string}) {return <article className="d-metric"><span>{title}</span><strong>{formatKrw(value)}</strong>{note&&<small>{note}</small>}</article>;}
+function Missing({row,title}:{row:Record<string,Json>;title:string}) {return <div className="d-note"><strong>{title} · {stateLabels[textValue(row.calc_state)]??"확인 필요"}</strong><p>{row.calc_state==="NOT_SUPPORTED"?"이 결과의 계산은 아직 지원하지 않아요. 입력은 보관하고 다른 재무 결과를 유지해요.":row.calc_state==="NOT_IMPLEMENTED"?"이 계산 기능은 아직 구현되지 않았어요. 추가 입력으로 완료되는 단계가 아니에요.":row.calc_state==="NOT_APPLICABLE"?"현재 확인한 답변에는 해당하는 항목이 없어요.":row.calc_state==="INVALID_INPUT"?"금액·기간·소유 관계가 맞지 않아 계산을 보류했어요. 관련 답변을 확인해주세요.":"추가 확인 필요 · 관련 답변과 계산에 필요한 가정을 확인해주세요."}</p></div>;}
 
 export function Results({view,deep,tab,setTab,stale,onEdit,explanation}:{view:ViewResult;deep:boolean;tab:number;setTab:(n:number)=>void;stale:boolean;onEdit:(id:string)=>void;explanation?:ReactNode}) {
   const heading=useRef<HTMLHeadingElement>(null);
+  const [selectedPlan,setSelectedPlan]=useState("STABILITY_FIRST");
+  const [selectedPortfolio,setSelectedPortfolio]=useState<string|null>(null);
   useEffect(()=>{
     heading.current?.focus({preventScroll:true});
     heading.current?.scrollIntoView({block:"start"});
@@ -34,6 +43,8 @@ export function Results({view,deep,tab,setTab,stale,onEdit,explanation}:{view:Vi
   const originalGoals=list(object(object(goalEnvelope.fields).goals).raw_value);
   const displayGoal=(id:Json)=>{const g=originalGoals.find(g=>g.goal_id===id);return g?(goalName(g.type)??question("F11").options.find(o=>o.code===g.type)?.label??"입력한 목표"):"입력한 목표";};
   const candidates=["CALCULATED","PARTIAL"].includes(textValue(plans.calc_state))?list(plans.candidates):[];
+  const actions=resultHints(result,sourceDoc).slice(0,3);
+  const actionList=<ol className="d-actions">{actions.map(a=><li key={a.id}><button onClick={()=>onEdit(a.id)}>{a.text}</button></li>)}</ol>;
   const tabs=deep?["자산·목표","두 방식의 자산 변화","투자선호·구성","상품·비중","요약·다음 확인"]:["재무현황","생활 안정·투자 확대","투자구성","상품 정보","결과·이번 달 행동"];
   return <section className="d-results" aria-label="계산 결과">
     <div className="d-result-heading"><div><span className="d-eyebrow">{deep?"DEEP REVIEW":"FAST DIAGNOSTIC"} · {String(object(result.context).evaluation_on??"기준일 확인 필요")}</span><h1 ref={heading} tabIndex={-1} style={{scrollMarginTop:96}}>{tabs[tab]}</h1><p>같은 입력과 기준시점으로 확인하는 나의 재무상황</p></div><button className="d-secondary" onClick={()=>onEdit("F03")}>입력 내용 수정 ↗</button></div>
@@ -42,23 +53,29 @@ export function Results({view,deep,tab,setTab,stale,onEdit,explanation}:{view:Vi
     {gates.map((g,i)=><div className="d-warning" key={i}><strong>연결 범위 확인 필요</strong><p>{String(g.reason)}</p><p>영향받는 결과만 보류했어요. 다른 결과와 엔진 원문은 유지해요.</p>{g.question_id!=="NEW-09"?<button className="d-text-button" onClick={()=>onEdit(String(g.question_id))}>관련 답변 확인 →</button>:<p>보증금 상세 입력·계산 연결은 준비 중이에요.</p>}</div>)}
     <nav className="d-tabs" aria-label={`${deep?"정밀":"빠른"} 결과 5뷰`}>{tabs.map((name,i)=><button aria-current={tab===i?"page":undefined} onClick={()=>setTab(i)} key={name}><small>{i+1} / 5</small>{name}</button>)}</nav>
     {tab===0 && <>
-      <h2>현재 재무 상태</h2><div className="d-metrics"><Metric title="상환·납입 제외 생활비" value={metricValue(flow,"normalized_living")} /><Metric title="상환 후 월 차액" value={metricValue(flow,"base_surplus")} /><Metric title="기존 저축·투자 납입" value={metricValue(flow,"existing_cash_contributions_krw")} /><Metric title="납입까지 반영한 월 잔여" value={metricValue(flow,"after_existing_contributions_krw")} note="목표·보호자금 배정 전 / 투자 권장액 아님" /></div>
+      <h2>현재 재무 상태</h2><div className="d-metrics"><Metric title="월 생활비 (대출 상환 제외)" value={metricValue(flow,"normalized_living")} /><Metric title="대출 상환 후 남는 돈" value={metricValue(flow,"base_surplus")} /><Metric title="매월 저축·투자 금액" value={metricValue(flow,"existing_cash_contributions_krw")} /><Metric title="저축·투자까지 반영하고 남는 돈" value={metricValue(flow,"after_existing_contributions_krw")} note="목표·보호자금 배정 전 / 투자 권장액 아님" /></div>
       <div className="d-columns"><article className="d-card"><h2>보유현황을 먼저 살펴봐요</h2><div className="d-metrics"><Metric title="전체 자산" value={metricValue(assets,"total_assets")} /><Metric title="전체 채무" value={metricValue(assets,"total_debt")} /><Metric title="순자산" value={metricValue(assets,"net_worth")} /></div>{estimatedProperty&&<p className="d-note">부동산의 대략적인 시세가 포함된 자산 추정치예요.</p>}<p>신규자금 우선 조정 · 필요한 금융자산 변경만 검토 · 부동산 기본 유지</p><button className="d-text-button" onClick={()=>onEdit("F06")}>자산 내역 확인·수정 →</button></article><article className="d-card d-lavender"><span className="d-eyebrow">NEXT CHECK</span><h2>주요 문제와 판단 근거</h2>{issues.length ? <ul>{issues.slice(0,3).map((i,n)=><li key={n}><button className="d-text-button" onClick={()=>onEdit(String(i.question_id))}>{copy[customerStep(String(i.question_id))]?.nav??"관련 정보"} 확인하기</button><p>이 답변을 확인해야 관련 결과를 계산할 수 있어요.</p></li>)}</ul>:flow.calc_state!=="CALCULATED"?<><p>소득·지출의 확인되지 않은 값은 0원으로 계산하지 않았어요. 계산 가능한 자산·목표 결과는 유지해요.</p><button className="d-text-button" onClick={()=>onEdit("F03")}>소득 확인 →</button><button className="d-text-button" onClick={()=>onEdit("F04")}>지출 확인 →</button></>:<p>확인된 입력으로 계산한 결과예요. 월 잔여 전액을 투자할 수 있다는 뜻은 아니에요. 목표·보호자금을 함께 확인하세요.</p>}<p>투자 적합성 미평가 · 전체 지급일 달력 미검증</p></article></div>
-      <article className="d-card"><CashChart rows={[{label:"생활비",value:metricValue(flow,"normalized_living")},{label:"기존 납입",value:metricValue(flow,"existing_cash_contributions_krw")},{label:"납입 후 잔여",value:metricValue(flow,"after_existing_contributions_krw")}]}/><h2>우선 확인할 행동</h2><ol className="d-actions"><li><button onClick={()=>onEdit("F04")}>생활비와 상환·저축이체 포함 관계 확인</button></li><li><button onClick={()=>onEdit("F11")}>목표금액과 실제 사용일 확인</button></li><li><button onClick={()=>setTab(1)}>가정을 확인하고 두 월별 후보 비교</button></li></ol></article>
+      <FinancialOverview flow={flow} assets={assets}/>
     </>}
+    {tab===0 && ["OUT-03","OUT-02"].map(id=><ResultBasis key={id} id={id} result={result} source={sourceDoc} inputVersion={view.serverVersion??view.localVersion} stale={stale} onEdit={onEdit}/>)}
     {tab===1 && <>
-      <article className="d-card"><h2>목표 준비와 장기 시나리오</h2>{list(goals.rows).length ? <div className="d-table-wrap"><table><thead><tr><th>목표·사용일</th><th>필요금액</th><th>준비금액</th><th>회당 추가 준비</th></tr></thead><tbody>{list(goals.rows).map((r,i)=><tr key={i}><th>{displayGoal(r.goal_id)}<small>{String(r.due_on??"")}</small></th><td>{won(r.target_krw)}만원</td><td>{won(r.prepared_krw)}만원</td><td>{won(r.level_contribution_krw)}만원</td></tr>)}</tbody></table></div>:<Missing row={goals} title="목표" />}<p>확인한 기간 안의 무수익 시나리오예요. 미래소득·장기수익을 임의로 채우지 않아요.</p></article>
-      <h2>두 재무관리 방식 비교</h2><p>검토 후보 · 실제 권장액 미정 · 고객 채택·거래 미실행</p>
-      {candidates.length ? <div className="d-columns">{candidates.map(c=><article className="d-card d-candidate" key={String(c.strategy_id)}><span className="d-badge">{stateLabels[textValue(c.calc_state)]??textValue(c.calc_state)}</span><h2>{c.strategy_id==="STABILITY_FIRST"?"생활 안정 우선":"투자 여력 확대"}</h2><p>기존 배정정책 1.0의 월 후보 · 상품 추천 아님</p>{list(c.rows).map((r,i)=><div key={i}><h3>{String(r.period)}월</h3><div className="d-metrics"><Metric title="신규 투자 배정 후보" value={r.new_investment_krw} /><Metric title="추가 현금 유지" value={r.additional_cash_krw} /></div><dl className="d-ledger">{[["월 소득 가정",r.income_krw],["생활비",r.living_krw],["채무 납부",r.debt_payment_krw],["유지할 기존 납입",r.kept_total_krw],["추가 목표 적립",r.goal_deposits_krw],["월말 현금",r.closing_cash_krw]].map(([k,v])=><div key={String(k)}><dt>{String(k)}</dt><dd>{won(v)}만원</dd></div>)}</dl></div>)}{c.failure&&<div className="d-warning">필수 지출·상환·납입·목표를 함께 충족할 월 예산이 부족해요. 소득·지출·목표를 확인해주세요. 투자 배정액을 임의로 만들지 않았어요.</div>}<small>실제 투자 권장액: 미정 · 지급일별 잔고 보장 없음</small></article>)}</div>:<Missing row={plans} title="두 월별 후보 보류" />}
+      <article className="d-card"><h2>목표 준비 현황</h2>{list(goals.rows).length ? <div className="d-table-wrap"><table><thead><tr><th>목표·사용일</th><th>필요금액</th><th>준비금액</th><th>회당 추가 준비</th></tr></thead><tbody>{list(goals.rows).map((r,i)=><tr key={i}><th>{displayGoal(r.goal_id)}<small>{String(r.due_on??"")}</small></th><td>{formatKrw(r.target_krw)}</td><td>{formatKrw(r.prepared_krw)}</td><td>{formatKrw(r.level_contribution_krw)}</td></tr>)}</tbody></table></div>:<Missing row={goals} title="목표" />}<p>확인한 기간 안의 무수익 시나리오예요. 미래소득·장기수익을 임의로 채우지 않아요.</p></article>
+      {candidates.length ? <PlanComparison candidates={candidates} selected={selectedPlan} onSelect={setSelectedPlan}/> : <><Missing row={plans} title="두 월별 후보 확인 대기"/><button className="d-secondary" onClick={()=>onEdit("ASSUMPTIONS")}>필요한 가정 확인 →</button></>}
+      <ResultBasis id="OUT-05" result={result} source={sourceDoc} inputVersion={view.serverVersion??view.localVersion} stale={stale} onEdit={onEdit}/>
+
     </>}
     {tab===2 && (sourceDoc?<InvestmentSummary doc={sourceDoc} onEdit={onEdit}/>:<Missing row={{calc_state:"NOT_SUPPORTED"}} title="이전 입력 형식의 투자 응답"/>)}
-    {tab===3 && <>
-      <article className="d-card"><span className="d-badge">상품 추천·적합성·배분 미구현</span><h2>월 투자 후보와 상품 배분은 달라요</h2><p>생활비·상환·목표·보호자금을 반영한 엔진의 월 후보를 먼저 살펴보세요. 아래 금액은 상품별 배정액이나 최종 권장액이 아니에요.</p>{candidates.length?candidates.map(c=><div key={String(c.strategy_id)}><h3>{c.strategy_id==="STABILITY_FIRST"?"생활 안정 우선":"투자 여력 확대"}</h3>{c.calc_state==="INFEASIBLE"&&<p className="d-warning">월 예산 부족 · 배정 가능한 투자금액 미산출</p>}{list(c.rows).map((r,i)=><Metric key={i} title={`${String(r.period)} 신규 투자 후보`} value={r.new_investment_krw} note={r.new_investment_krw==="0"?"후보가 0원이에요. 상품 배분을 만들지 않아요.":"상품별 배분 전 · 보호·목표자금 중복 배정 금지"}/>)}</div>):<Missing row={plans} title="월 투자 후보"/>}<button className="d-secondary" onClick={()=>setTab(1)}>후보 금액의 근거 보기</button></article>
-      <article className="d-card"><h2>상품 검토 시 확인할 항목</h2><p>예시 자산군 · 개인별 추천 목록이 아니에요. 검증된 상품 데이터와 공용 선정 정책이 연결되면 비중·배정액·선정 이유를 표시할 자리예요.</p><div className="d-table-wrap"><table><thead><tr><th>예시 자산군</th><th>필요한 상품 정보</th><th>비중·배정액</th><th>목표·기간 확인</th></tr></thead><tbody>{[["현금·예금","인출 조건·만기·보호 조건"],["채권","발행자·만기·신용·금리 위험·비용"],["주식·분산 펀드","기초 자산·가격 변동·총비용"]].map(([name,info])=><tr key={name}><th>{name}</th><td>{info}<small>상품 식별자·출처·확인일: 미확보</small></td><td>미산출</td><td>자금별 사용일과 목적을 확인한 뒤 검토</td></tr>)}</tbody></table></div><button className="d-text-button" onClick={()=>onEdit("F15")}>투자 검토에 필요한 답변 확인 →</button><p>상품명·수익률·비용·위험등급을 임의로 채우지 않아요. 현재는 배분 합계나 적합성을 검증한 투자안이 없어요.</p></article>
-    </>}
-    {tab===4 && <article className="d-card"><h2>이번 달 확인할 순서</h2><ol className="d-actions"><li><button onClick={()=>onEdit("F03")}>소득·지출·기간과 원응답을 확인해요</button></li><li><button onClick={()=>setTab(1)}>목표와 두 후보의 가정을 비교해요</button></li><li>필요하면 초안을 저장하고 담당자와 검토해요</li></ol><p>초안 저장은 계획 채택이나 실제 납입·금융거래가 아니에요. 실행·실적·사후점검은 아직 연결하지 않았어요.</p></article>}
+    {tab===2 && <PortfolioChoice doc={sourceDoc} review={visible("OUT-06")} selectedPlan={selectedPlan} onPlan={setSelectedPlan} chosen={selectedPortfolio} onChoose={id=>{setSelectedPortfolio(id);setTab(3);}}/>}
+    {tab===3 && <><article className="d-card"><h2>{planName(selectedPlan)} · 상품 후보</h2><PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/><p>포트폴리오 유형의 독립 변경은 정책 연결 대기예요. 확인된 투자 답변을 바꾸려면 투자 검토로 돌아가 다시 계산해주세요.</p></article><ProductAllocation review={visible("OUT-06")} selectedPlan={selectedPlan} onEdit={onEdit}/></>}
+    {tab===4 && <article className="d-card"><h2>이번 달 할 일</h2>{candidates.filter(c=>c.strategy_id===selectedPlan).map(c=>{const r=list(c.rows)[0];const tasks=r?[
+      {key:"protection_topup_krw",text:"보호자금 보충 검토 · 정책 최소와 확인한 유지목표 기준"},
+      {key:"operating_refill_krw",text:"생활 운영자금 보충 검토"},
+      {key:"goal_deposits_krw",text:"목표 적립금과 실제 적립 예정일 확인"},
+      {key:"new_investment_krw",text:"필수 배정 후 상품 검토·미배분 사유 확인"}
+    ].filter(t=>typeof r[t.key]==="string"&&BigInt(r[t.key] as string)>0n).slice(0,3):[];
+    return <div key={textValue(c.strategy_id)}>{r&&<p>{planName(c.strategy_id)} · {textValue(r.period)} · 정책 1.0의 월별 검토 기준</p>}<ol className="d-actions">{tasks.map(t=><li key={t.key}>{formatKrw(r[t.key])} · {t.text}{t.key==="new_investment_krw"&&<button onClick={()=>setTab(3)}>상품 후보 보기 →</button>}</li>)}{actions.slice(0,3-tasks.length).map(a=><li key={a.id}><button onClick={()=>onEdit(a.id)}>{a.text}</button></li>)}</ol></div>;})}{!candidates.length&&actionList}<p>정책상 부채 우선상환·기존 보유 편중의 개인별 판정은 미구현이며 임의의 상환액·행동 우선순위를 만들지 않아요. 초안 선택은 실제 거래·계획 채택이 아니에요.</p></article>}
     <details className="d-card d-output-status"><summary>결과 14개 · 연결 상태와 필요한 정보</summary><p>현재 어댑터의 계산 결과와 FE 연결 상태를 구분해요. 결과를 계산할 정보가 부족해도 다른 계산은 유지해요.</p><div className="d-table-wrap"><table><thead><tr><th>결과</th><th>현재 상태</th><th>근거·다음 확인</th></tr></thead><tbody>{displayCatalog.map(entry=>{
-      const row=visible(entry.id), connected=["OUT-01","OUT-02","OUT-03","OUT-04","OUT-05"].includes(entry.id);
+      const row=visible(entry.id), connected=["OUT-01","OUT-02","OUT-03","OUT-04","OUT-05","OUT-06"].includes(entry.id);
       const related=issues.filter(i=>Array.isArray(i.affected_outputs)&&i.affected_outputs.includes(entry.id));
       return <tr key={entry.id}><th>{entry.title}<small>{entry.id}</small></th><td>{connected?(entry.id==="OUT-01"?"현황 화면 연결 · 개별 결과 참조":stateLabels[textValue(row.calc_state)]??"응답 없음"):entry.id==="OUT-06"?"답변 확인 가능 · 판정 미구현":"FE 미연결"}<small>API: {textValue(object(outputs[entry.id]).calc_state)||"이번 응답에 없음"}</small></td><td>{connected?<><p>{related.length?"아래 답변의 값·기간·포함 관계를 확인해주세요.":row.calc_state==="CALCULATED"?"현재 원응답과 엔진의 확인된 가정 기준":row.calc_state==="NOT_APPLICABLE"?"해당 없음으로 확인된 결과예요.":"원응답과 미래 가정 확인이 필요해요."}</p>{[...new Set((related.length?related.map(i=>String(i.question_id)):entry.questions).map(customerStep))].filter(id=>copy[id]).map(id=><button className="d-text-button" key={id} onClick={()=>onEdit(id)}>{copy[id].nav} 확인 →</button>)}</>:entry.id==="OUT-06"?<button className="d-text-button" onClick={()=>onEdit("F17")}>투자 검토 답변 확인 →</button>:<p>별도 상세 입력·API 연결 필요. 법정 산식·실제 채택·거래 완료를 뜻하지 않아요.</p>}</td></tr>;
     })}</tbody></table></div></details>

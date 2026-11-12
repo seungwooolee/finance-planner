@@ -1,6 +1,7 @@
 "use client";
 
 import { Document, Field, Json, clone, emptyEnvelope, example, field, fieldValue, list, object, question, record, revise, textValue } from "@/lib/dion/model";
+import { DebtQuestion } from "./debt-question";
 import { PropertyQuestion } from "./property-question";
 import { MoneyField, StructuredEditor } from "./fields";
 import { AssetCompleteness, Choice, ExpenseQuestion, GoalsQuestion, IncomeQuestion, SituationQuestion } from "./customer-questions";
@@ -11,6 +12,7 @@ export function QuestionForm({ id, doc, onChange }: { id: string; doc: Document;
   if (["F11", "F12", "F13"].includes(id)) return <GoalsQuestion doc={doc} onChange={onChange} />;
   if (id === "F03") return <IncomeQuestion doc={doc} onChange={onChange} />;
   if (id === "F04") return <ExpenseQuestion doc={doc} onChange={onChange} />;
+  if (id === "F09+F10+D08") return <DebtQuestion doc={doc} onChange={onChange}/>;
   if (id === "F08") return <PropertyQuestion doc={doc} onChange={onChange} />;
   if (id === "F17") return <InvestmentQuestions doc={doc} onChange={onChange} />;
   const q = question(id), env = record(doc,id)?.envelope ?? emptyEnvelope(doc,id);
@@ -47,7 +49,7 @@ export function DetailedAnswerEditor({ id, doc, onChange }: { id: string; doc: D
   })}</details>;
 }
 
-export function Confirmations({ doc, onChange }: { doc: Document; onChange: (d: Document) => void }) {
+export function Confirmations({ doc, onChange, open }: { doc: Document; onChange: (d: Document) => void; open?: boolean }) {
   const update=(id:string,values:Record<string,Json>)=>{const next=clone(doc);const previous=next.confirmations.find(c=>c.question_id===id);next.confirmations=next.confirmations.filter(c=>c.question_id!==id);next.confirmations.push({question_id:id,definition_version:"DION-ADAPTER-CONFIRM-1.0",source_ref:previous?.source_ref??`user:confirmation:${id}`,values});next.raw_bundle.input_version++;onChange(next);};
   async function confirmIncome() {
     const f=record(doc,"F03")?.envelope.fields;
@@ -57,7 +59,7 @@ export function Confirmations({ doc, onChange }: { doc: Document; onChange: (d: 
     const bytes=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(JSON.stringify(sort(f as unknown as Json))));
     update("NEW-02",{...c.values,source_income_fingerprint:Array.from(new Uint8Array(bytes)).map(b=>b.toString(16).padStart(2,"0")).join(""),source_period_start:fieldValue(doc,"F03","income_period_start"),source_period_end:fieldValue(doc,"F03","income_period_end")});
   }
-  return <details className="d-card"><summary>월 후보 추가 확인 · 현재 입력과 별도인 미래 가정</summary><p>목표·확보자금·상환 일정·원소득의 미래 반복을 명시 확인한 경우에만 두 후보를 계산해요. 원질문에 없는 보충 계약이며 자동 채움은 하지 않아요.</p><div className="d-fields"><label className="d-field">미래 계산 시작일<input type="date" value={doc.context.projection_start??""} onChange={e=>{const next=clone(doc);next.context.projection_start=e.target.value;onChange(next);}} /></label><label className="d-field">미래 계산 종료일<input type="date" value={doc.context.projection_end??""} onChange={e=>{const next=clone(doc);next.context.projection_end=e.target.value;onChange(next);}} /></label></div>{example.confirmations.map(template=>{
+  return <details className="d-card" open={open||undefined}><summary>월 후보 추가 확인 · 현재 입력과 별도인 미래 가정</summary><p>목표·확보자금·상환 일정·원소득의 미래 반복을 명시 확인한 경우에만 두 후보를 계산해요. 원질문에 없는 보충 계약이며 자동 채움은 하지 않아요.</p><div className="d-fields"><label className="d-field">미래 계산 시작일<input type="date" value={doc.context.projection_start??""} onChange={e=>{const next=clone(doc);next.context.projection_start=e.target.value;onChange(next);}} /></label><label className="d-field">미래 계산 종료일<input type="date" value={doc.context.projection_end??""} onChange={e=>{const next=clone(doc);next.context.projection_end=e.target.value;onChange(next);}} /></label></div>{example.confirmations.map(template=>{
     const current=doc.confirmations.find(c=>c.question_id===template.question_id);
     const shape=clone(template.values);
     const itemSource:Record<string,[string,string]>={F06:["financial_assets","asset_id"],"F09+F10+D08":["debts","debt_id"],"NEW-03":["existing_contributions","contribution_id"],F12:["goals","goal_id"],F13:["goals","goal_id"]};

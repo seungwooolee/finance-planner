@@ -42,6 +42,7 @@ function calculationErrorText(e:unknown) {
 export function DionPlanner() {
   const [doc,setDoc]=useState<Document>(blankDocument), docRef=useRef(doc);
   const [mode,setMode]=useState<"welcome"|"quick"|"deep">("welcome");
+  const [assumptionsOpen,setAssumptionsOpen]=useState(false);
   const [current,setCurrent]=useState("NEW-01"),[showResults,setShowResults]=useState(false),[tab,setTab]=useState(0);
   const [view,setView]=useState<ViewResult|null>(null),[history,setHistory]=useState<ViewResult[]>([]);
   const [busy,setBusy]=useState(false),[message,setMessage]=useState(""),[error,setError]=useState("");
@@ -113,7 +114,7 @@ export function DionPlanner() {
     docRef.current=next;setDoc(next);sequence.current++;abort.current?.abort();setBusy(false);
     setError("");setMessage("");
   }
-  function edit(id:string) {const step=question(id)?customerStep(id):"NEW-01";setCurrent(step);setShowResults(false);if(!customerSteps(doc,false).includes(step)&&customerSteps(doc,true).includes(step))setMode("deep");else if(mode==="welcome")setMode("quick");}
+  function edit(id:string) {if(id==="ASSUMPTIONS"){setAssumptionsOpen(true);setMode("deep");setCurrent("NEW-02");setShowResults(false);return;}const step=question(id)?customerStep(id):"NEW-01";setCurrent(step);setShowResults(false);if(!customerSteps(doc,false).includes(step)&&customerSteps(doc,true).includes(step))setMode("deep");else if(mode==="welcome")setMode("quick");}
   function loadExample() {
     if(scenario){setMessage("원래 입력으로 돌아간 뒤 기존 검산 사례를 열어주세요.");return;}
     const previous={doc:clone(doc),fictional};
@@ -129,7 +130,7 @@ export function DionPlanner() {
     abort.current?.abort();const controller=new AbortController();abort.current=controller;
     let timedOut=false;
     const timeout=setTimeout(()=>{timedOut=true;controller.abort();},120_000);
-    setBusy(true);setError("");setMessage("");
+    setBusy(true);setError("");setMessage("");setLastError(null);
     try {
       const response=await request("/api/fe/v1/preview","POST",captured,undefined,controller.signal);
       if(seq!==sequence.current)return;
@@ -278,15 +279,16 @@ export function DionPlanner() {
 
         {busy&&<div ref={loadingRef} tabIndex={-1} style={{scrollMarginTop:96}} className="d-loading" role="status"><span className="d-spinner"/><span>입력한 정보로 계산 중이에요. 처음 연결할 때는 약 1분 걸릴 수 있어요. 작성값은 그대로 유지돼요.</span></div>}
         {showResults&&view?<Results view={view} deep={mode==="deep"} tab={tab} setTab={setTab} stale={stale} onEdit={edit} explanation={<><ResultExplanation view={view} token={token} editVersion={doc.raw_bundle.input_version} selectedCaseId={caseId} stale={stale} onEdit={edit} onSave={()=>{if(!token)setLoginOpen(true);else setAccountOpen(true);}}/><AgentConsultation view={view} token={token} selectedCaseId={caseId} editVersion={doc.raw_bundle.input_version} stale={stale}/></>}/>:<div className="d-input-layout"><aside className="d-sidebar"><span className="d-eyebrow">{mode==="deep"?"DEEP CHECK":"QUICK CHECK"}</span><h2>나의 재무정보</h2><p>확인한 값부터 한 걸음씩</p><div className="d-sidebar-coach"><Cat kind="coach" size={102}/><p>천천히 적어도 괜찮아요.<br/><strong>함께 살펴볼게요.</strong></p></div><nav aria-label="질문 이동">{ids.map((id,i)=><button key={id} aria-current={active===id?"step":undefined} onClick={()=>setCurrent(id)}><span>{stepComplete(doc,id)?<Check size={15}/>:String(i+1).padStart(2,"0")}</span>{copy[id]?.nav??question(id).source["항목"]}</button>)}</nav></aside>
-          <section className="d-question"><div className="d-progress-caption"><span>{count}/{ids.length}개 화면 작성</span><span>{progress}%</span></div><progress max={ids.length} value={count} aria-label="질문 응답 진행률"/>
+          <section className="d-question"><div className="d-progress-caption"><span>현재 {index+1}번째 화면 · {ids.length}개 중 {count}개 작성</span><span>{progress}%</span></div><progress max={ids.length} value={count} aria-label="질문 응답 진행률"/><div className="d-progress-cat-track" aria-hidden="true"><div key={count} style={{left:`calc(${progress}% - ${progress*.48}px)`}}><Cat size={48}/></div></div>
             <div className="d-question-title"><span className="d-badge">{currentCopy?.nav}</span><h1 ref={questionHeading} tabIndex={-1} style={{scrollMarginTop:96}}>{currentCopy?.title}</h1><p>{currentCopy?.help}</p></div>
             <QuestionForm key={active} id={active} doc={doc} onChange={change}/>
             <div className="d-step-buttons"><button className="d-secondary" disabled={index<=0} onClick={()=>setCurrent(ids[index-1])}><ArrowLeft size={17}/>이전</button>{index>=0&&index<ids.length-1?<button className="d-primary" onClick={()=>setCurrent(ids[index+1])}>다음<ArrowRight size={17}/></button>:<button className="d-primary" disabled={busy} onClick={()=>calculate()}>{busy?"계산 중…":"결과 보기"}<ArrowRight size={17}/></button>}</div>
             <p className="d-help">지금 답하기 어려우면 넘어가도 괜찮아요. 필요한 부분은 나중에 이어서 확인해요.</p>
           </section></div>}
-        <div className="d-calc-bar">{view&&!showResults&&<button className="d-secondary" onClick={()=>setShowResults(true)}>이전 결과 보기</button>}<div><strong>{stale?"작성값이 바뀌었어요":"확인한 정보로 결과 살펴보기"}</strong><small>계산과 서버 저장은 별도예요.</small></div><button className="d-primary" disabled={busy} onClick={()=>void calculate()}>{busy?"계산 중…":view?"재계산":"계산 미리보기"}<ArrowRight size={17}/></button></div>
+        {!showResults&&<Confirmations doc={doc} onChange={change} open={assumptionsOpen}/>}
+        <p className="d-help">개발 검토 환경 · 계산 미리보기는 입력한 재무 응답을 서버로 전송해요. 운영 수집·보유 기간과 동의 문구는 확정 대기이며 외부 AI 전송은 별도 설정·검증이 필요해요. 실제 개인정보 대신 가상 자료로 검토해주세요.</p><div className="d-calc-bar">{view&&!showResults&&<button className="d-secondary" onClick={()=>setShowResults(true)}>이전 결과 보기</button>}<div><strong>{stale?"작성값이 바뀌었어요":"확인한 정보로 결과 살펴보기"}</strong><small>계산과 서버 저장은 별도예요.</small></div><button className="d-primary" disabled={busy} onClick={()=>void calculate()}>{busy?"계산 중…":view?"재계산":"계산 미리보기"}<ArrowRight size={17}/></button></div>
         {reviewOpen&&<section className="d-review-tools" aria-label="통합 검토 도구"><h2>통합 검토 도구</h2><p>원응답·계산 가정·저장 API 연결을 확인하는 검토 영역이에요.</p><Link href="/" className="d-text-button">기존 검산 화면 열기 →</Link><button className="d-text-button" onClick={()=>setCatalogOpen(!catalogOpen)}>전체 질문·지원 범위 55개</button>{catalogOpen&&<div className="d-catalog">{catalog.questions.map(q=><details key={q.id}><summary>{q.id} · {q.source["항목"]}</summary><p>{q.source["고객에게 보여줄 질문"]}</p><p>{q.source["선택지·입력 안내"]}</p></details>)}</div>}
-        <DetailedAnswerEditor id={active} doc={doc} onChange={change}/><Confirmations doc={doc} onChange={change}/>
+        <DetailedAnswerEditor id={active} doc={doc} onChange={change}/>
         <details className="d-card d-review"><summary>검토 패널 · 원응답·엔진 입력·오류·버전</summary><p>사용자 화면과 분리한 통합 확인 자료예요. JSON에는 개인 재무정보가 포함될 수 있어요.</p><button className="d-secondary" onClick={exportReview}>검토 JSON 내보내기</button><details><summary>원응답과 필드 상태</summary><pre>{JSON.stringify(doc,null,2)}</pre></details><details><summary>엔진 전달 입력·출력·오류</summary><pre>{JSON.stringify({current_matches_result:!stale,view,latest_error:lastError},null,2)}</pre></details><h3>이 탭의 이전 계산 (최대 20개)</h3>{history.map((r,i)=><button className="d-run" key={i} onClick={()=>{setView(r);setShowResults(true);}}>편집버전 {r.localVersion} · {String(r.result.calc_state)} · {r.storage==="NOT_SAVED"?"미저장":"서버 기록"}</button>)}<p>이 탭의 미저장 기록은 새로고침하면 사라져요. 서버 저장본은 위 복원·이전 결과 조회를 사용하세요.</p></details></section>}
       </>}
         <details ref={accountPanel} style={{scrollMarginTop:96}} className="d-card" open={accountOpen} onToggle={e=>setAccountOpen(e.currentTarget.open)}><summary>내 상담 · 저장과 다시 열기</summary>

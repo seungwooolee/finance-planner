@@ -78,13 +78,42 @@ test('R3 confirms a separate monthly income comparison without changing diagnosi
     await panel.getByRole('button',{name:'답변 검토하기',exact:true}).click();
   }
   await panel.getByRole('button',{name:'가상 조건 확인',exact:true}).click();
-  await panel.getByRole('button',{name:'월 잔여액 비교 조건 보기',exact:true}).click();
+  await panel.getByRole('button',{name:'월평균 세후소득 비교 조건 보기',exact:true}).click();
   await expect(panel).toContainText('300만원 → 350만원');
   await expect(panel).toContainText('대상 본인 · 2026-10-01 ~ 2026-10-31');
   await expect(panel).toContainText('일회성 소득은 제외');
   await expect(panel.getByText('기존 납입 후 월 잔여액 비교',{exact:true})).toHaveCount(0);
   await panel.getByRole('button',{name:'이 가정으로 월 잔여액 비교',exact:true}).click();
   await expect(panel).toContainText('기준 90만원 · 가정 140만원 · 차이 50만원');
+  await expect(panel).toContainText('임시 비교 결과 · 진단 미반영');
+  expect(await (await request.get(`${base}/history`,{headers})).json()).toEqual(before);
+});
+
+test('R3 expense comparison retains total-outflow basis and never combines another hypothesis',async({page,request})=>{
+  test.setTimeout(75_000);
+  const {base,first}=await prepare(page,request,false,true);
+  await page.getByRole('button',{name:new RegExp(first.run_id)}).click();
+  const before=await (await request.get(`${base}/history`,{headers})).json();
+  const panel=page.getByRole('region',{name:'결과 상담',exact:true});
+  await panel.getByRole('button',{name:'임시 상담 시작',exact:true}).click();
+  await panel.getByRole('button',{name:'가상 조건 기록',exact:true}).click();
+  await panel.getByRole('combobox',{name:'확인할 항목',exact:true}).selectOption('F03/monthly_net_income_krw');
+  await panel.getByLabel('상담 금액 (만원)',{exact:true}).fill('350');
+  await panel.getByRole('button',{name:'답변 검토하기',exact:true}).click();
+  await panel.getByRole('button',{name:'가상 조건 확인',exact:true}).click();
+  await panel.getByRole('combobox',{name:'확인할 항목',exact:true}).selectOption('F04/living');
+  await panel.getByLabel('상담 금액 (만원)',{exact:true}).fill('240');
+  await panel.getByRole('button',{name:'답변 검토하기',exact:true}).click();
+  await panel.getByRole('button',{name:'가상 조건 확인',exact:true}).click();
+  await expect(panel.getByRole('button',{name:'월평균 세후소득 비교 조건 보기',exact:true})).toBeVisible();
+  await panel.getByRole('button',{name:'월 지출 금액 비교 조건 보기',exact:true}).click();
+  await expect(panel).toContainText('월 전체 출금액 변경안');
+  await expect(panel).toContainText('210만원 → 240만원');
+  await expect(panel).toContainText('다른 상담 가정은 합산하지 않고');
+  await expect(panel.getByText('기존 납입 후 월 잔여액 비교',{exact:true})).toHaveCount(0);
+  await panel.getByRole('button',{name:'이 가정으로 월 잔여액 비교',exact:true}).click();
+  await expect(panel).toContainText('기준 90만원 · 가정 60만원 · 차이 -30만원');
+  await expect(panel).toContainText('월 전체 출금액 210만원 → 240만원');
   await expect(panel).toContainText('임시 비교 결과 · 진단 미반영');
   expect(await (await request.get(`${base}/history`,{headers})).json()).toEqual(before);
 });
@@ -127,7 +156,7 @@ test('R2 consultation confirmation, conflict, saved resume and memory deletion p
   await expect(panel.getByRole('button',{name:'임시 상담 시작',exact:true})).toBeVisible();
   expect((await (await request.get(`${base}/agent-sessions`,{headers})).json()).items).toEqual([]);
   expect(await (await request.get(`${base}/history`,{headers})).json()).toEqual(before);
-  await expect(page.locator('.d-metric').filter({hasText:'납입까지 반영한 월 잔여'})).toContainText('90');
+  await expect(page.locator('.d-metric').filter({hasText:'저축·투자까지 반영하고 남는 돈'})).toContainText('90');
 });
 
 test('R2 ambiguous and unsupported requests collect no tax details; logout hides memory',async({page,request})=>{
@@ -224,7 +253,7 @@ test('RAG no registered material or request failure keeps the diagnosis visible'
   await scheme.getByRole('button',{name:'제도 목록 다시 확인',exact:true}).click();
   await expect(scheme.getByRole('status')).toContainText('등록 제도 근거가 없어요');
   await expect(scheme.getByRole('combobox',{name:'귀속연도'})).toHaveCount(0);
-  await expect(page.locator('.d-metric').filter({hasText:'납입까지 반영한 월 잔여'})).toContainText('90');
+  await expect(page.locator('.d-metric').filter({hasText:'저축·투자까지 반영하고 남는 돈'})).toContainText('90');
 });
 
 test('OnePort source display contract with validated mock transport; original result remains visible',async({page,request})=>{
@@ -246,14 +275,14 @@ test('OnePort source display contract with validated mock transport; original re
   await expect(panel).toContainText('정의 1.2');
   await panel.getByRole('button',{name:'자세히',exact:true}).click();
   await expect(panel).toContainText('생활비 160만원');
-  await expect(page.locator('.d-metric').filter({hasText:'납입까지 반영한 월 잔여'})).toContainText('90');
+  await expect(page.locator('.d-metric').filter({hasText:'저축·투자까지 반영하고 남는 돈'})).toContainText('90');
 });
 
 test('question input -> real saved engine -> validated mock explanation, evidence, detail, mobile keyboard',async({page,request},testInfo)=>{
   const {base}=await prepare(page,request);
   await page.getByRole('navigation',{name:'질문 이동'}).getByRole('button',{name:/한 달 소득/}).click();
-  await page.getByRole('textbox',{name:'한 달 소득',exact:true}).fill('');
-  await page.getByRole('textbox',{name:'한 달 소득',exact:true}).fill('00300.0000');
+  await page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true}).fill('');
+  await page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true}).fill('00300.0000');
   await saveResult(page);
   const before=await (await request.get(`${base}/history`,{headers})).json();
   const responsePromise=page.waitForResponse(r=>r.url().endsWith('/explanation'));
@@ -276,7 +305,7 @@ test('question input -> real saved engine -> validated mock explanation, evidenc
   await page.screenshot({path:testInfo.outputPath('explanation-mobile.png'),fullPage:true});
   await panel.getByRole('button',{name:'해설 닫기'}).focus();await page.keyboard.press('Enter');
   await expect(page.getByRole('button',{name:'이 결과 설명해 줘',exact:true})).toBeFocused();
-  await expect(page.locator('.d-metric').filter({hasText:'납입까지 반영한 월 잔여'})).toContainText('90');
+  await expect(page.locator('.d-metric').filter({hasText:'저축·투자까지 반영하고 남는 돈'})).toContainText('90');
 });
 
 test('missing input explanation keeps unknown and original result',async({page,request})=>{
@@ -290,6 +319,7 @@ test('missing input explanation keeps unknown and original result',async({page,r
 });
 
 test('API failure and cross-run response cannot replace existing results',async({page,request})=>{
+  test.setTimeout(75_000);
   await prepare(page,request);await saveResult(page);
   await page.route(explanationPath,r=>r.fulfill({status:503,json:{detail:{code:'SYNTHETIC_FAILURE'}}}));
   await page.getByRole('button',{name:'이 결과 설명해 줘',exact:true}).click();
@@ -314,7 +344,17 @@ test('API failure and cross-run response cannot replace existing results',async(
   await panel.getByRole('button',{name:'해설 다시 확인'}).click();
   await expect(panel.getByRole('alert')).toContainText('기준이 달라');
   await expect(panel).toContainText('기본 안내');
-  await expect(page.locator('.d-metric').filter({hasText:'납입까지 반영한 월 잔여'})).toContainText('90');
+  await expect(page.locator('.d-metric').filter({hasText:'저축·투자까지 반영하고 남는 돈'})).toContainText('90');
+  await page.unroute(explanationPath);
+  let calls=0;
+  await page.route(explanationPath,async route=>{calls++;await route.fulfill({response:await route.fetch({url:`${harness}${new URL(route.request().url()).pathname}`})});});
+  await panel.getByRole('button',{name:'해설 다시 확인'}).click();
+  await expect(panel).toContainText('월 잔여는 90만원');
+  await panel.getByRole('button',{name:'해설 닫기'}).click();
+  await page.getByRole('button',{name:'이 결과 설명해 줘',exact:true}).click();
+  await expect(panel).toContainText('월 잔여는 90만원');
+  expect(calls).toBe(1);
+
 });
 
 test('delayed response is discarded after logout and current result remains',async({page,request})=>{
@@ -333,7 +373,7 @@ test('delayed response is discarded after logout and current result remains',asy
   const panel=page.getByRole('complementary',{name:'결과 해설'});
   await expect(panel).toContainText('로그인이 필요');
   await expect(panel).not.toContainText('모의 해설');
-  await expect(page.locator('.d-metric').filter({hasText:'납입까지 반영한 월 잔여'})).toContainText('90');
+  await expect(page.locator('.d-metric').filter({hasText:'저축·투자까지 반영하고 남는 돈'})).toContainText('90');
 });
 
 test('browser deadline restores basic guidance, never hides result',async({page,request})=>{
@@ -344,5 +384,5 @@ test('browser deadline restores basic guidance, never hides result',async({page,
   const panel=page.getByRole('complementary',{name:'결과 해설'});
   await expect(panel).toContainText('기본 안내');
   await expect(panel.getByRole('alert')).toContainText('응답이 늦어',{timeout:25_000});
-  await expect(page.locator('.d-metric').filter({hasText:'납입까지 반영한 월 잔여'})).toContainText('90');
+  await expect(page.locator('.d-metric').filter({hasText:'저축·투자까지 반영하고 남는 돈'})).toContainText('90');
 });

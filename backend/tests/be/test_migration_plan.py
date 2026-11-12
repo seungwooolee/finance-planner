@@ -20,3 +20,11 @@ def test_rollback_cannot_be_selected_for_apply():
         with pytest.raises(SystemExit) as exc:
             main()
     assert exc.value.code == 2
+
+
+def test_session_heads_plan_is_additive_offline_and_keeps_previous_migrations(capsys):
+    with patch("sys.argv", ["migrate", "--only", "003_agent_session_heads.sql", "--plan"]), patch("psycopg.connect", side_effect=AssertionError("offline")):
+        main()
+    plan = json.loads(capsys.readouterr().out)
+    assert not plan["database_connected"] and not plan["database_changed"]
+    assert [p["file"] for p in plan["migrations"]] == ["003_agent_session_heads.sql"]

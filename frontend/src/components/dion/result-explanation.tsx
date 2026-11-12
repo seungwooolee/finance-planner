@@ -40,6 +40,8 @@ function validResponse(value:Explanation, view:ViewResult, caseId:string, detail
 
 export function ResultExplanation({view,token,editVersion,selectedCaseId,stale,onSave,onEdit}:Props) {
   const [open,setOpen]=useState(false),[detail,setDetail]=useState<Detail>("SHORT"),[state,setState]=useState<State|null>(null);
+  const cache=useRef(new Map<string,Explanation>());
+  useEffect(()=>{cache.current.clear();},[token]);
   const trigger=useRef<HTMLButtonElement>(null),heading=useRef<HTMLHeadingElement>(null);
   const abort=useRef<AbortController|null>(null),sequence=useRef(0),busy=useRef(false);
   const titleId=useId();
@@ -55,6 +57,9 @@ export function ResultExplanation({view,token,editVersion,selectedCaseId,stale,o
     const controller=new AbortController();abort.current=controller;busy.current=true;
     const own=++sequence.current;
     const binding={view,token,editVersion,selectedCaseId,detail:level};
+    const cacheKey=JSON.stringify([token,caseId,view.runId,view.inputHash,view.rawSnapshotId,view.serverVersion,level]);
+    const cached=cache.current.get(cacheKey);
+    if(cached){setState({...binding,loading:false,response:cached});busy.current=false;return;}
     setState({...binding,loading:true});
     const requestKey=`explain-${crypto.randomUUID()}`;
     const timer=setTimeout(()=>controller.abort(),20_000);
@@ -67,7 +72,7 @@ export function ResultExplanation({view,token,editVersion,selectedCaseId,stale,o
       if(!response.ok)throw new Error(response.status===401?"로그인 확인이 필요해요. 기존 결과는 계속 볼 수 있어요.":response.status===404?"이 계산 기록에 접근할 수 없어요. 내 상담에서 기록을 다시 확인해 주세요.":"해설을 불러오지 못했어요. 기본 안내와 기존 결과를 확인해 주세요.");
       const value:Explanation=await response.json();
       if(!validResponse(value,view,caseId,level,requestKey))throw new Error("표시 중인 결과와 해설의 기준이 달라 해설을 표시하지 않았어요.");
-      if(own===sequence.current&&!controller.signal.aborted)setState({...binding,loading:false,response:value});
+      if(own===sequence.current&&!controller.signal.aborted){if(cache.current.size>=4)cache.current.delete(cache.current.keys().next().value!);cache.current.set(cacheKey,value);setState({...binding,loading:false,response:value});}
     } catch(error) {
       if(own===sequence.current)setState({...binding,loading:false,error:controller.signal.aborted?"해설 응답이 늦어 기본 안내를 보여드려요. 기존 결과는 그대로 확인할 수 있어요.":error instanceof Error?error.message:"해설을 불러오지 못했어요."});
     } finally {clearTimeout(timer);if(own===sequence.current)busy.current=false;}
@@ -86,7 +91,7 @@ export function ResultExplanation({view,token,editVersion,selectedCaseId,stale,o
       {!available&&<button className="d-secondary" onClick={onSave}>{token?"계산 기록 저장·내 상담 열기":"로그인하고 계산 기록 저장"}</button>}
       {current?.loading&&<p role="status">저장된 결과와 근거를 확인하고 있어요. 아래 기본 안내와 기존 결과를 먼저 볼 수 있어요.</p>}
       {current?.error&&<p role="alert" className="d-warning">{current.error}</p>}
-      {!response&&<div className="d-explanation-basic"><h3>기본 안내</h3><p>월 현황의 잔여 금액은 상환·기존 납입을 반영한 값이며 목표·보호자금 배정 전 금액입니다. 투자 권장액으로 해석하지 않아요.</p><p>안정·확대 후보는 확인한 미래 가정에 따른 검토 자료예요. 입력이 부족하거나 보류된 결과는 미확인 금액을 채우지 않고 관련 답변을 먼저 확인해요.</p></div>}
+      {!response&&<div className="d-explanation-basic"><h3>기본 안내</h3><p>기존 AI 계약은 월 현황과 두 재무안만 해설해요. 상품별 선정 이유·이번 달 행동의 AI 전용 근거 계약은 연결 대기이며 화면의 엔진 근거를 먼저 확인해주세요.</p><p>월 현황의 잔여 금액은 상환·기존 납입을 반영한 값이며 목표·보호자금 배정 전 금액입니다. 투자 권장액으로 해석하지 않아요.</p><p>안정·확대 후보는 확인한 미래 가정에 따른 검토 자료예요. 입력이 부족하거나 보류된 결과는 미확인 금액을 채우지 않고 관련 답변을 먼저 확인해요.</p></div>}
       {response&&<>
         <p role="status" className="d-explanation-source">{response.status==="FALLBACK"?"해설 생성·검증을 완료하지 못해 저장 결과의 기본 설명을 표시했어요.":response.source==="MOCK"?"모의 해설 · 유료 AI 호출 없음":response.source==="ONEPORT"?"AI 해설 · 저장 결과의 근거를 확인했어요":"기본 설명"} · 저장 결과와 설명의 일치만 확인하며 금융정책 검증 완료를 뜻하지 않아요.</p>
         <p>계산 기준일 {response.evaluation_on??"확인 필요"} · 저장 입력버전 {response.input_version}</p>

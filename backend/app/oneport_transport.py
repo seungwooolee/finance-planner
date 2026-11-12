@@ -131,7 +131,7 @@ class OnePortChat:
             raise ProviderFailure("ONEPORT_INPUT_TOO_LARGE")
         alias = _digest([identity, request_key])
         try:
-            ledger = OnePortLedger(config.ledger_path)
+            ledger = OnePortLedger(config.ledger_path, config.ledger_id)
             operation, previous = ledger.reserve(operation, alias, fingerprint, config)
         except LedgerError as exc:
             raise ProviderFailure(str(exc)) from None
@@ -202,6 +202,8 @@ class OnePortChat:
             failure = "ONEPORT_TIMEOUT"
         except httpx.RequestError:
             failure = "ONEPORT_NETWORK_ERROR"
+        except LedgerError as exc:
+            failure = str(exc)
         except (ValueError, TypeError, KeyError):
             failure = "ONEPORT_RESPONSE_INVALID"
         except (OSError, sqlite3.Error):
@@ -211,6 +213,8 @@ class OnePortChat:
             # On cancellation/crash the receipt remains PENDING: never retry it.
         try:
             ledger.finish(operation, draft if retain_draft else None, telemetry, validated=draft is not None)
+        except LedgerError as exc:
+            raise ProviderFailure(str(exc), telemetry) from None
         except (OSError, sqlite3.Error):
             raise ProviderFailure("ONEPORT_LEDGER_UNAVAILABLE", telemetry) from None
         logger.info("oneport operation=%s metadata=%s", operation, json.dumps(telemetry, ensure_ascii=True))
@@ -231,6 +235,8 @@ class OnePortChat:
         telemetry["price_ceiling_credits"] = str(ceiling)
         telemetry["reserved_credits"] = str(self.config.reserve_credits)
         telemetry["gateway_daily_cap_verified"] = type(limit) in (int, Decimal) and 0 < limit <= self.config.budget_credits
+        if not telemetry["gateway_daily_cap_verified"]:
+            raise ProviderFailure("ONEPORT_GATEWAY_CAP_UNVERIFIED")
         if ceiling > self.config.reserve_credits:
             raise ProviderFailure("ONEPORT_RESERVATION_TOO_SMALL")
 

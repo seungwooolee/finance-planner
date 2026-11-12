@@ -26,6 +26,7 @@ class OnePortConfig:
     ledger_scope: str = "UNCONFIRMED"
     # Operator attestation that ledger_path is a persistent disk shared by all workers.
     ledger_persistent: bool = False
+    ledger_id: str = ""
     budget_scope: str = ""
     budget_credits: Decimal = Decimal("0")
     reserve_credits: Decimal = Decimal("0")
@@ -56,6 +57,7 @@ class OnePortConfig:
                 ledger_path=Path(env("LEDGER_PATH", "artifacts/oneport-receipts.sqlite3")),
                 ledger_scope=env("LEDGER_SCOPE", "UNCONFIRMED"),
                 ledger_persistent=boolean("LEDGER_PERSISTENT"),
+                ledger_id=env("LEDGER_ID"),
                 budget_scope=env("BUDGET_SCOPE"), budget_credits=Decimal(env("BUDGET_CREDITS", "0")),
                 reserve_credits=Decimal(env("RESERVE_CREDITS", "0")),
                 max_calls=int(env("MAX_CALLS", "1")), expires_at=env("EXPIRES_AT"),
@@ -78,7 +80,8 @@ class OnePortConfig:
                 or any(not c.isprintable() or c.isspace() or not c.isascii() for c in self.api_key)
                 or len(self.model) > 160 or any(not c.isprintable() or c.isspace() or not c.isascii() for c in self.model)
                 or self.model.lower() == "jev" or len(self.budget_scope) > 128
-                or self.ledger_scope not in {"UNCONFIRMED", "SINGLE_HOST_DURABLE", "MULTI_HOST"}):
+                or self.ledger_scope not in {"UNCONFIRMED", "SINGLE_HOST_DURABLE", "MULTI_HOST"}
+                or (self.ledger_id and (len(self.ledger_id) != 32 or any(c not in "0123456789abcdef" for c in self.ledger_id)))):
             raise ConfigurationError("ONEPORT_CONFIG_INVALID")
 
     def readiness(self, *, synthetic=False, data_allowed=None):
@@ -101,6 +104,8 @@ class OnePortConfig:
         # A lost ledger would reset spend/idempotency records, so fail closed until confirmed.
         if not self.ledger_persistent:
             return "ONEPORT_LEDGER_NOT_CONFIRMED"
+        if not self.ledger_id:
+            return "ONEPORT_LEDGER_ID_REQUIRED"
         try:
             end = datetime.fromisoformat(self.expires_at)
             now = datetime.now(timezone.utc)

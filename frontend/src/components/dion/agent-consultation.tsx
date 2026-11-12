@@ -10,13 +10,15 @@ type Evidence={evidence_id:string;question_id:string;field_id:string;definition_
   period_start:string;period_end:string;raw_value:string|boolean|null;unit:string;basis:string;state:string;
   confirmation_status:string;active:boolean;source:{kind:string;answer_revision_id?:string;turn_id?:string}};
 type ScenarioProposal={proposal_id:string;proposal_hash:string;session_version:number;subject_ref:string;
-  period_start:string;period_end:string;before:string;after:string;assumptions:string[];expires_at:string};
-type ScenarioResult={scenario_id:string;before:string;after:string;difference:string;storage:string};
+  field_ref:string;field_label:string;period_start:string;period_end:string;before:string;after:string;assumptions:string[];expires_at:string};
+type ScenarioResult={scenario_id:string;before:string;after:string;difference:string;storage:string;
+  field_label?:string;change_before?:string;change_after?:string};
 type Session={contract_version:string;session_id:string;session_version:number;case_id:string;base_run_id:string;subject_ref:string;
   scope_ref:string;period_start:string|null;period_end:string|null;persistence_mode:string;expires_at:string;progress:string;
   intent:string;guidance:string;next_question:(Field&{field_ref:string})|null;field_options:Field[];evidence:Evidence[];
   pending_proposal:{proposal_id:string;proposal_hash:string;evidence_id:string}|null;
   output_id:string;scenario_proposal?:ScenarioProposal|null;scenario_result?:ScenarioResult;
+  scenario_fields?:{field_ref:string;label:string}[];
   conflicts:{kind:string;existing_evidence_id:string|null;proposed_evidence_id:string}[];
   notice:{text:string};limitations:string[];allowed_actions:string[]};
 type Listed={session_id:string;expires_at:string;base_run_id:string;output_id:string};
@@ -95,9 +97,12 @@ export function AgentConsultation({view,token,selectedCaseId,editVersion,stale}:
         const code=(await response.json().catch(()=>null))?.detail?.code;
         if(code==='SCENARIO_PROPOSAL_INVALID_OR_EXPIRED'&&session)errorSession={...session,scenario_proposal:null};
         const scenarioMessage:Record<string,string>={
-          SCENARIO_BASE_UNSUPPORTED:'이 진단은 월평균 세후소득 비교 범위에 해당하지 않아요.',
-          SCENARIO_BASE_VALUE_UNCONFIRMED:'저장 진단에서 기존 소득을 확인해 주세요.',
-          SCENARIO_PERIOD_MISMATCH:'저장 진단과 가정의 소득 기간이 같아야 해요.',
+          SCENARIO_BASE_UNSUPPORTED:'이 진단은 해당 항목의 월 잔여액 비교 범위에 해당하지 않아요.',
+          SCENARIO_BASE_VALUE_UNCONFIRMED:'저장 진단에서 비교할 항목의 기존 금액을 확인해 주세요.',
+          SCENARIO_PERIOD_MISMATCH:'저장 진단과 가정의 기준기간이 같아야 해요.',
+          SCENARIO_EVIDENCE_UNSUPPORTED:'이 가정은 월 잔여액 비교에서 지원하지 않아요. 항목·대상·기간을 확인해 주세요.',
+          SCENARIO_EXPENSE_BASIS_UNCONFIRMED:'생활비만인지 전체 출금액인지, 포함된 상환·저축 이체액을 저장 진단에서 확인해 주세요.',
+          SCENARIO_EXPENSE_COMPONENT_CONFLICT:'가정한 지출이 기존 필수생활비나 포함된 상환·저축 이체액보다 작아요. 관련 금액을 먼저 확인해 주세요.',
           SCENARIO_NO_CHANGE:'가정 금액이 저장 진단과 같아요.',
           SCENARIO_OUT03_UNAVAILABLE:'저장 진단의 월 잔여액을 확인할 수 없어요.',
           SCENARIO_PROPOSAL_INVALID_OR_EXPIRED:'변경안이 만료됐거나 상담 내용이 바뀌었어요. 비교 조건을 다시 확인해 주세요.',
@@ -126,8 +131,9 @@ export function AgentConsultation({view,token,selectedCaseId,editVersion,stale}:
   const pending=session?.pending_proposal, proposed=session?.evidence.find(e=>e.evidence_id===pending?.evidence_id);
   const inactive=stale||session?.progress==='RECONFIRM_REQUIRED';
   const change=session?.scenario_proposal, comparison=session?.scenario_result;
-  const scenarioEvidence=session?.output_id==='OUT-03'?session.evidence.findLast(e=>e.active&&e.basis==='SCENARIO'
-    &&e.confirmation_status==='USER_CONFIRMED'&&e.question_id==='F03'&&e.field_id==='monthly_net_income_krw'&&e.state==='KNOWN'):undefined;
+  const scenarioEvidence=session?.evidence.filter(e=>e.active&&e.basis==='SCENARIO'
+    &&e.confirmation_status==='USER_CONFIRMED'&&e.state==='KNOWN'
+    &&session.scenario_fields?.some(f=>f.field_ref===`${e.question_id}/${e.field_id}`))??[];
   return <section id="dion-agent-consultation" tabIndex={-1} className="d-card d-agent-session" aria-label="결과 상담" aria-busy={current?.busy??false}>
     <h3>결과 상담</h3><p>필요한 답변, 등록 제도 근거, 가상 조건의 비교 결과를 확인할 수 있어요.</p>
     {!available?<p className="d-note">로그인 후 저장된 계산 결과에서 상담을 시작할 수 있어요.</p>:<>
@@ -150,14 +156,19 @@ export function AgentConsultation({view,token,selectedCaseId,editVersion,stale}:
           </section>}
           <button className="d-secondary" disabled={current?.busy||inactive} onClick={()=>mutate('/confirmations','DION-AGENT-CONFIRMATION-1.0',{proposal_id:pending.proposal_id,proposal_hash:pending.proposal_hash,decision:'CONFIRM'})}>{proposed.basis==='SCENARIO'?'가상 조건 확인':'이 내용으로 상담 사실 확인'}</button>
           <button className="d-text-button" disabled={current?.busy||inactive} onClick={()=>mutate('/confirmations','DION-AGENT-CONFIRMATION-1.0',{proposal_id:pending.proposal_id,proposal_hash:pending.proposal_hash,decision:'REJECT'})}>새 답변 취소</button></div>}
-        {!inactive&&!pending&&session.progress!=='PAUSED'&&scenarioEvidence&&<div className="d-note">
-          {!change&&<button className="d-secondary" disabled={current?.busy} onClick={()=>mutate('/scenario-proposals','DION-SCENARIO-PROPOSAL-1.0',{evidence_id:scenarioEvidence.evidence_id})}>월 잔여액 비교 조건 보기</button>}
-          {change&&<><h4>월평균 세후소득 변경안</h4>
+        {!inactive&&!pending&&session.progress!=='PAUSED'&&scenarioEvidence.length>0&&<div className="d-note">
+          <p>저장 진단과 한 항목씩 비교해요. 다른 가상 조건은 합산하지 않아요.</p>
+          {!change&&scenarioEvidence.map(e=><button key={e.evidence_id} className="d-secondary" disabled={current?.busy}
+            onClick={()=>mutate('/scenario-proposals','DION-SCENARIO-PROPOSAL-1.0',{evidence_id:e.evidence_id})}>
+            {session.scenario_fields?.find(f=>f.field_ref===`${e.question_id}/${e.field_id}`)?.label} 비교 조건 보기</button>)}
+          {change&&<><h4>{change.field_label} 변경안</h4>
             <p>{won(change.before)}만원 → {won(change.after)}만원<br/>대상 {change.subject_ref==='person_self'?'본인':change.subject_ref} · {change.period_start} ~ {change.period_end}</p>
             <ul>{change.assumptions.map(assumption=><li key={assumption}>{assumption}</li>)}</ul>
             <button className="d-secondary" disabled={current?.busy||change.session_version!==session.session_version} onClick={()=>mutate('/scenario-confirmations','DION-SCENARIO-CONFIRMATION-1.0',{proposal_id:change.proposal_id,proposal_hash:change.proposal_hash,decision:'CONFIRM'})}>이 가정으로 월 잔여액 비교</button></>}
         </div>}
         {comparison&&<div className="d-note"><h4>기존 납입 후 월 잔여액 비교</h4>
+          {comparison.field_label&&comparison.change_before!==undefined&&comparison.change_after!==undefined&&<p>
+            {comparison.field_label} {won(comparison.change_before)}만원 → {won(comparison.change_after)}만원</p>}
           <p>기준 {won(comparison.before)}만원 · 가정 {won(comparison.after)}만원 · 차이 {won(comparison.difference)}만원</p>
           <p>{comparison.storage==='SAVED_WITH_SESSION'?'상담에 저장한 비교 결과':'임시 비교 결과'} · 진단 미반영</p>
         </div>}

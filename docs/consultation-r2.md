@@ -1,8 +1,12 @@
+2026-11-13 후속: [P0 상담 경합·원장 보호](integration/2026-11-13-agent-p0-concurrency-ledger.md)에서 저장 행 우선 조회·내용 없는 session head·버전 조건 삭제와 원장 ID/승인 한도/유실 차단을 구현했다. 임시 내용은 동의 없이 DB에 저장하지 않는다. 명시003 migration·실제 PostgreSQL/운영/기존 비용 대사는 미완료다. 아래는 각 구현 시점의 이력이다.
+
 2026-11-12 후속: [운영 준비·R2 재개 검증](integration/2026-11-12-operational-followup.md)에서 기존 run을 여는 브라우저1건 통과와 원격 agent_sessions 누락·영속 원장 제약을 확인했다. 아래 검사 실패/미실행 기록은 당시 이력이며, 이번 로컬 통과를 실계정/원격 migration 완료로 해석하지 않는다.
 
 ---
 
 # R2-a 공통 상담 계약·구현 기록 — 2026-11-12
+
+2026-11-13 P1 후속: [질문 이력·미확인 단위 보완](integration/2026-11-13-agent-p1-history-units.md)에서 실제/가상/추정의 맥락별 확인·거절 이력을 분리하고, 모든 미확인 상태의 필드별 단위를 검사한다. 기존 field-only asked_fields와 원응답·확인 영수증은 보존하며, 잘못된 과거 단위를 자동 교정하거나 실제 질문의 생략/재사용 근거로 쓰지 않는다. 세션 API1.0은 유지하고 파생 이력1.0·값 검증1.1 버전을 추가한다. 아래는 첫 구현 시점의 이력이다.
 
 상태: **로컬 구현, 백엔드 검증 통과 / 브라우저 재개 시나리오 통과(2026-11-12 후속, 1회) / 미배포**. 계약은 `DION-AGENT-SESSION-1.0`, 정책은 `DION-AGENT-STATE-1.0`, 기억 고지는 `DION-AGENT-MEMORY-1.0`이다. [고객용 AI 설계](customer-ai-agent-design.md)의 R2-a를 OUT-03·OUT-05부터 연결했다. R2-b 절세 근거 상담, R3 재계산, 진단 반영·채택·거래는 후속이다.
 
@@ -178,6 +182,8 @@ node node_modules/@playwright/test/cli.js test e2e/dion-explanation.spec.ts --gr
 # ModelProposal 0.1 서버 계약과 합성 mock 연결 — 2026-11-12
 
 후속 단계에서 동일 검증기를 OnePort 후보 어댑터에 연결했다. 별도 확인으로 월평균 세후소득 가정을 비교하는 R3도 추가했다. [OnePort 설정과 R3 계약](integration/2026-11-12-model-proposal-r3.md)
+
+2026-11-13에는 F04/living(정의1.2.1)의 월 지출 총액 비교를 추가했다. 생활비만/전체 출금액 기준과 포함 상환·저축 이체액을 고정하며 원본 run·원응답을 바꾸지 않는다. [현행 지원 범위·정책1.1·검증](integration/2026-11-13-r3-expense-expansion.md)을 따른다. 위의 R2-a 시점 ‘R3 후속’ 표시는 당시 이력이다.
 
 기존 `POST /api/be/v1/cases/{case_id}/agent-sessions/{sid}/turns`의 `message`로 실행한다. 로컬 백엔드를 시작하는 PowerShell에 `$env:DION_R2_MOCK_PROPOSAL='1'`을 설정한다. 기본값은 기존 규칙 기반 상담이다. 명시 입력·의도 선택·항목 다시 확인·일시 정지는 기존 경로로 들어간다. 합성 예문은 “이 진단 기간 제 월 세후소득은 350만원이에요.”와 “이 진단 기간 제 월 세후소득을 400만원으로 가정하면?”이다.
 
