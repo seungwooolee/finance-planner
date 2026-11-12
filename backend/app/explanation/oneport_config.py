@@ -24,6 +24,8 @@ class OnePortConfig:
     max_response_bytes: int = 131072
     ledger_path: Path = Path("artifacts/oneport-receipts.sqlite3")
     ledger_scope: str = "UNCONFIRMED"
+    # Operator attestation that ledger_path is a persistent disk shared by all workers.
+    ledger_persistent: bool = False
     budget_scope: str = ""
     budget_credits: Decimal = Decimal("0")
     reserve_credits: Decimal = Decimal("0")
@@ -53,6 +55,7 @@ class OnePortConfig:
                 max_response_bytes=int(env("MAX_RESPONSE_BYTES", "131072")),
                 ledger_path=Path(env("LEDGER_PATH", "artifacts/oneport-receipts.sqlite3")),
                 ledger_scope=env("LEDGER_SCOPE", "UNCONFIRMED"),
+                ledger_persistent=boolean("LEDGER_PERSISTENT"),
                 budget_scope=env("BUDGET_SCOPE"), budget_credits=Decimal(env("BUDGET_CREDITS", "0")),
                 reserve_credits=Decimal(env("RESERVE_CREDITS", "0")),
                 max_calls=int(env("MAX_CALLS", "1")), expires_at=env("EXPIRES_AT"),
@@ -93,6 +96,9 @@ class OnePortConfig:
         if (not self.budget_scope or self.budget_credits <= 0 or self.reserve_credits <= 0
                 or self.reserve_credits > self.budget_credits):
             return "ONEPORT_BUDGET_NOT_CONFIGURED"
+        # A lost ledger would reset spend/idempotency records, so fail closed until confirmed.
+        if not self.ledger_persistent:
+            return "ONEPORT_LEDGER_NOT_CONFIRMED"
         try:
             end = datetime.fromisoformat(self.expires_at)
             now = datetime.now(timezone.utc)

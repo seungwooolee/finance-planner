@@ -4,7 +4,7 @@
 
 # R2-a 공통 상담 계약·구현 기록 — 2026-11-12
 
-상태: **로컬 구현, 백엔드 검증 통과 / 브라우저 재개 전체 경로 미완료 / 미배포**. 계약은 `DION-AGENT-SESSION-1.0`, 정책은 `DION-AGENT-STATE-1.0`, 기억 고지는 `DION-AGENT-MEMORY-1.0`이다. [고객용 AI 설계](customer-ai-agent-design.md)의 R2-a를 OUT-03·OUT-05부터 연결했다. R2-b 절세 근거 상담, R3 재계산, 진단 반영·채택·거래는 후속이다.
+상태: **로컬 구현, 백엔드 검증 통과 / 브라우저 재개 시나리오 통과(2026-11-12 후속, 1회) / 미배포**. 계약은 `DION-AGENT-SESSION-1.0`, 정책은 `DION-AGENT-STATE-1.0`, 기억 고지는 `DION-AGENT-MEMORY-1.0`이다. [고객용 AI 설계](customer-ai-agent-design.md)의 R2-a를 OUT-03·OUT-05부터 연결했다. R2-b 절세 근거 상담, R3 재계산, 진단 반영·채택·거래는 후속이다.
 
 ## 1. 작업본·책임
 
@@ -137,6 +137,8 @@ PostgreSQL 자동 DDL은 없다. 기존 `python -m app.be.migrate`가001·002를
 | TypeScript·해당 ESLint | 통과. 마지막 고지 문구 수정은 타입/흐름 변경 없음 |
 | Playwright R2 두 사례 | 1 passed / 1 failed,1.7분. 모호/미지원 요청·로그아웃 통과 |
 | Playwright 실패 단일 재검사 | 재개 시나리오1 failed,약1.3분. 재개 이후 전체 경로 미완료 |
+| 후속: 저장 run 열기 단계 추가 | 재개 성공 후 87행 `getByLabel('확인할 항목')`에서1 failed,1.3분 |
+| 후속: 콤보박스 역할 locator로 수정 | **1 passed,15.5초**. 충돌·저장 취소·삭제·진단 불변까지 통과 |
 | 전체Core·Build·전체E2E·실계정·원격PG | 미실행. 공통 개발 정책에 따라 관련 범위만 검사 |
 | commit/push·Vercel/Render 배포 | 미실행 |
 
@@ -147,6 +149,8 @@ PostgreSQL 자동 DDL은 없다. 기존 `python -m app.be.migrate`가001·002를
 브라우저 최초 실패는 새로고침 후 로그인 복원 대기 누락이었다. 로그아웃 버튼 표시를 기다리도록 한 차례 수정했다. 재검사에서는 case 복원이 성공했으나 입력 화면에서 바로 결과 상담 카드를 찾았다. `planner.tsx` restore는 `setShowResults(false)`이며 이전 run 버튼 선택이 필요하다. **브라우저 재개·충돌 취소·저장 취소·삭제 전체 경로는 미통과**다. 서버 API의 같은 기능 통과와 구분한다.
 
 [AGENTS.md](../AGENTS.md)의 “최초 관련 검증이 실패하면 동일하거나 유사한 오류에 대한 자동 수정·재검증은 원칙적으로 1회까지만 수행한다”에 따라 두 번째 UI 수정/재실행은 하지 않았다. 다음 작업은 이 테스트에 원래 저장 run을 여는 단계를 추가한 뒤 해당 사례만 검증하는 것이다.
+
+후속 보완(2026-11-12): 원인은 **테스트 흐름**이며 제품 동작은 계약대로다. case 복원은 입력 화면을 열고(`restore`), 상담 목록은 `base_run_id===view.runId`로 걸러진다. 시드 run과 저장 계산 run이 같은 입력버전으로 둘 다 표시되므로, 테스트가 `GET C/agent-sessions`의 `base_run_id`로 해당 run 버튼을 연다. 이어 처음 실행된 87행은 `<label>` 안 `<select>`의 선택지 텍스트 때문에 exact 라벨 일치가 안 되어 `getByRole('combobox',{name:'확인할 항목'})`로 바꿨다. 기대값·판정 기준과 제품 코드는 변경하지 않았다. 노트북 checkout(HEAD `678c3486`), 테스트 전용 BE8318/FE3318(이번 프로세스만 종료), Edge로 `--grep 'R2 consultation' --workers=1`을 실행해 1 passed(15.5초)를 확인했다. 중간에 수정 미반영 상태로 돈 1회는 무효 실행으로 판정에서 제외했다. 같은 파일의 다른 R2 사례·전체 Core/Build/E2E·실인증·원격PG는 이번에 미실행이다.
 
 실행 명령은 각 디렉터리에서 다음과 같다.
 
@@ -169,4 +173,4 @@ node node_modules/@playwright/test/cli.js test e2e/dion-explanation.spec.ts --gr
 
 통과한 핵심 경계: 답변 재사용·미확인/거절, 대상/기간/단위/월연/정의 충돌, 자동 덮어쓰기 방지, 가상/추정 분리, 확인 hash/만료, 동시 요청·재시작 idempotency, 저장 동의·임시 만료·삭제, 입력 버전 변경, 타사용자404/미인증401, DB 실패 rollback·원응답/run 불변.
 
-**R2-a 전체 완료 판정은 브라우저 재개 경로 통과 후 한다.** R2-b의 공식 근거·과세연도·제도별 질문과 R3의 확인 patch·비교 계산은 별도 후속 구현이다.
+**R2-a 로컬 범위의 브라우저 재개 경로는 통과했다(1회 실행).** 실계정·원격 migration·배포 검증 전에는 운영 완료로 표시하지 않는다. R2-b의 공식 근거·과세연도·제도별 질문과 R3의 확인 patch·비교 계산은 별도 후속 구현이다.
