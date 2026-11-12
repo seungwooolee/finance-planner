@@ -51,8 +51,8 @@ test('real store: all answers, retry, refresh, edit, old run and explicit input 
   await page.getByRole('button',{name:'내 상담',exact:true}).click();
   await page.getByRole('button',{name:new RegExp(`${id} .*다시 열기`)}).click();
   await page.getByRole('navigation',{name:'질문 이동'}).getByRole('button',{name:/한 달 소득/}).click();
-  await expect(page.getByRole('textbox',{name:'한 달 소득',exact:true})).toHaveValue('00300.0000');
-  await page.getByRole('textbox',{name:'한 달 소득',exact:true}).fill('00320.0000');
+  await expect(page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true})).toHaveValue('00300.0000');
+  await page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true}).fill('00320.0000');
   let drop=true;
   await page.route('**/api/be/v1/cases/*/answers',async route=>{
     const response=await route.fetch({url:`${harness}${new URL(route.request().url()).pathname}`});
@@ -60,7 +60,7 @@ test('real store: all answers, retry, refresh, edit, old run and explicit input 
   });
   await page.getByRole('button',{name:'답변 저장·계산',exact:true}).click();
   await expect(page.locator('.d-warning[role=alert]')).toContainText('연결 오류');
-  await expect(page.getByRole('textbox',{name:'한 달 소득',exact:true})).toHaveValue('00320.0000');
+  await expect(page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true})).toHaveValue('00320.0000');
   await page.getByRole('button',{name:'답변 저장·계산',exact:true}).click();
   await expect(page.getByRole('status').filter({hasText:'답변과 계산 결과를 저장했어요'})).toBeVisible();
   const history=await (await request.get(`${base}/history`,{headers})).json();
@@ -75,7 +75,7 @@ test('real store: all answers, retry, refresh, edit, old run and explicit input 
   await page.getByRole('button').filter({hasText:first.run_id}).click();
   await page.getByRole('button',{name:'이 결과의 입력 복원',exact:true}).click();
   await page.getByRole('navigation',{name:'질문 이동'}).getByRole('button',{name:/한 달 소득/}).click();
-  await expect(page.getByRole('textbox',{name:'한 달 소득',exact:true})).toHaveValue('00300.0000');
+  await expect(page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true})).toHaveValue('00300.0000');
   const unchanged=await (await request.get(`${base}/history`,{headers})).json();expect(unchanged).toEqual(history);
   await page.getByRole('button',{name:'답변 저장·계산',exact:true}).click();
   await expect(page.getByRole('status').filter({hasText:'답변과 계산 결과를 저장했어요'})).toBeVisible();
@@ -86,10 +86,10 @@ test('real store: all answers, retry, refresh, edit, old run and explicit input 
   income.fields.monthly_net_income_krw.raw_value='330';
   expect((await request.put(`${base}/answers`,{headers,data:{expected_version:current.input_version,request_key:'concurrent',envelope:income}})).ok()).toBeTruthy();
   await page.getByRole('button',{name:'입력 내용 수정 ↗'}).click();
-  await page.getByRole('textbox',{name:'한 달 소득',exact:true}).fill('340');
+  await page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true}).fill('340');
   await page.getByRole('button',{name:'답변 저장·계산',exact:true}).click();
   await expect(page.locator('.d-warning[role=alert]')).toContainText('수정 충돌');
-  await expect(page.getByRole('textbox',{name:'한 달 소득',exact:true})).toHaveValue('340');
+  await expect(page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true})).toHaveValue('340');
   await page.route('**/api/be/v1/auth/logout',r=>r.fulfill({json:{signed_out:true}}));
   await page.getByRole('button',{name:'로그아웃',exact:true}).click();await page.reload();
   await expect(page.getByRole('button',{name:'로그인',exact:true})).toBeVisible();
@@ -116,13 +116,15 @@ test('fresh UI saves every entered answer exactly and reopens after refresh',asy
   await page.getByRole('button',{name:/^나 혼자/}).click();
   const nav=page.getByRole('navigation',{name:'질문 이동'});
   await nav.getByRole('button',{name:/한 달 소득/}).click();
-  await page.getByRole('textbox',{name:'한 달 소득',exact:true}).fill('00300.0000');
+  await page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true}).fill('00300.0000');
+  await page.getByText('계산 기준기간 확인 · 필요할 때만',{exact:true}).click();
   await page.getByLabel('소득 기준월').fill(todayInSeoul().slice(0,7));
   await page.getByRole('button',{name:'평소 받는 돈만 적었어요',exact:true}).click();
   await nav.getByRole('button',{name:/한 달 지출/}).click();
   await page.getByRole('button',{name:/생활비만 알아요/}).click();
-  await page.getByRole('textbox',{name:'한 달 생활비',exact:true}).fill('160');
+  await page.getByRole('textbox',{name:'한 달 평균 생활비는 얼마인가요?',exact:true}).fill('160');
   await page.getByRole('checkbox',{name:/대출 갚는 돈과 저축/}).check();
+  await page.getByText('계산 기준기간 확인 · 필요할 때만',{exact:true}).click();
   await page.getByRole('checkbox',{name:/소득과 같은/}).check();
   await nav.getByRole('button',{name:/갚아야 할 돈/}).click();
   await page.getByRole('button',{name:'없어요',exact:true}).click();
@@ -143,5 +145,5 @@ test('fresh UI saves every entered answer exactly and reopens after refresh',asy
   await page.getByRole('button',{name:'내 상담',exact:true}).click();
   await page.getByRole('button',{name:new RegExp(`${id} .*다시 열기`)}).click();
   await page.getByRole('navigation',{name:'질문 이동'}).getByRole('button',{name:/한 달 소득/}).click();
-  await expect(page.getByRole('textbox',{name:'한 달 소득',exact:true})).toHaveValue('00300.0000');
+  await expect(page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true})).toHaveValue('00300.0000');
 });

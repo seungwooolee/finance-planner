@@ -2,11 +2,11 @@
 
 | 항목 | 상태 | 근거·남은 조건 |
 |---|---|---|
-| 기준 브랜치 | `dion/integration-20261111` = 최신 통합본 (`a7354ad`, PR #4로 `codex/result-explanation-r1` 병합) | `main`은 integration보다 뒤처짐. 승격은 E2E 게이트 통과 후 |
+| 기준 브랜치 | `main` = `dion/integration-20261111` 최신 통합본 (PR #4 r1 병합 → PR #6 E2E 정비 → integration→main 승격 PR) | 작업 브랜치는 integration에서 분기 |
 | CI Core (GitHub Actions) | 통과 — backend(pytest·Ruff·pip check), frontend(typecheck·lint) | PR #4 head `a9f2c5c`. 로컬 재실행: pytest 930통과/19skip |
 | R3 지출 화면 E2E | 해결 — 폼 재생성 전 입력 경합을 테스트 대기로 수정, 차이 금액 U+2212 기호 정렬 | `dion-explanation.spec.ts` R3 2경로 반복 4/4 통과 |
-| 전체 E2E | **미통과 — 25건 실패**(통합본, 로컬 Chrome·dev 서버·테스트 하네스) | 결과 화면 개편(금액 표기·`확인 대기`·입력 라벨)에 맞춰 갱신되지 않은 이전 사양으로 보임. 원인 확정·수정은 다음 작업 |
-| 미병합 브랜치 | `dion/fe-review-20261111`, `dion/product-filter-allocation-20261111`(PR #3), `codex/lifepath-cat-companion`(PR #1), `codex/portmew-design-handoff-20261102`(PR #2) | 앞의 둘은 integration에 같은 기능이 다른 커밋으로 반영됨. 포함·정리 여부는 결정 대기 |
+| 전체 E2E | 통과 — 67통과/1skip(새 하네스) + `--scheme-fixture` 하네스 explanation 12통과 = 알려진 실패 0건 | 로컬 Chrome·next dev·`app.be_server`·테스트 하네스. 25건은 r1 결과 화면 개편(질문형 입력 라벨, 기간 접힘, `확인 대기`·만원 표기, 상품 배분 4번째 화면·재무안 선택, 목표 보관/재선택)에 사양이 맞지 않던 것으로, 사용자 승인 후 기대값을 새 화면에 맞춤. 금액 정답값은 변경 없음 |
+| 미병합 브랜치 | PR #3 종료(기능은 integration에 반영). 고양이(PR #1)·디자인(PR #2)은 포함하지 않기로 결정 | `dion/fe-review-20261111`·`dion/product-filter-allocation-20261111` 원격 삭제는 이 세션 권한으로 불가 → GitHub에서 직접 삭제 필요 |
 | 운영 | 실계정·원격 DB·운영 원장·유료 모델 호출 미확인 | [P0 잔여 조건](integration/2026-11-13-agent-p0-concurrency-ledger.md) |
 | 작업 규칙 | `main` 직접 push 금지, 기능당 PR 1개, PR당 변경 20파일 이내 권장 | |
 

@@ -25,13 +25,14 @@ test('basic: real calculation, six risk answers, edit/reuse, product boundary an
   await page.goto('/dion');
   await page.getByRole('button',{name:/빠른진단 시작/}).click();
   await page.getByRole('navigation',{name:'질문 이동'}).getByRole('button',{name:/한 달 소득/}).click();
-  await page.getByRole('textbox',{name:'한 달 소득',exact:true}).fill('777');
+  await page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true}).fill('777');
   const first=await load(page,'사회초년생');
   expect(first.posted.schema_version).toBe('DION-QUESTION12-ADAPTER-1.0');
   expect(first.result.results['OUT-03'].after_existing_contributions_krw).toBe('1099000');
   await page.getByRole('button',{name:/투자구성/}).click();
   await expect(page.getByText('6개 항목의 답변이 있어요.',{exact:false})).toBeVisible();
   await expect(page.getByText('투자 검토 답변 · 상품 필터 연결',{exact:true})).toBeVisible();
+  if(!(await page.getByRole('button',{name:'돈을 사용할 시점 수정 →',exact:true}).isVisible()))await page.getByText('투자 답변 확인 완료 · 답변 보기 ▾',{exact:true}).click();
   await page.getByRole('button',{name:'돈을 사용할 시점 수정 →',exact:true}).click();
   await expect(page.locator('.d-risk-question')).toHaveCount(6);
   await page.locator('.d-risk-question').filter({hasText:'감수할 손실'}).locator('summary').click();
@@ -58,7 +59,7 @@ test('basic: real calculation, six risk answers, edit/reuse, product boundary an
   await expect(page.locator('.d-output-status tbody tr')).toHaveCount(14);
   await page.screenshot({path:info.outputPath('basic-products.png'),fullPage:true});
   await page.getByRole('button',{name:'원래 입력으로 돌아가기',exact:true}).click();
-  await expect(page.getByRole('textbox',{name:'한 달 소득',exact:true})).toHaveValue('777');
+  await expect(page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true})).toHaveValue('777');
   await expect(page.locator('.d-fictional')).toHaveCount(0);
   await expect(page.getByRole('region',{name:'계산 결과'})).toHaveCount(0);
 });

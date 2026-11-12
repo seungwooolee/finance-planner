@@ -66,5 +66,5 @@ test('result evidence is accessible beside the real financial results', async ({
   await expect(basis).toContainText('2026-10-31');
   await page.screenshot({ path: info.outputPath('result-basis.png'), fullPage: true });
   await basis.getByRole('button', { name: '현재 한 달 소득 답변 확인·수정 →', exact: true }).click();
-  await expect(page.getByRole('textbox', { name: '한 달 소득', exact: true })).toHaveValue('300');
+  await expect(page.getByRole('textbox', { name: '한 달 평균 세후 소득은 얼마인가요?', exact: true })).toHaveValue('300');
 });
