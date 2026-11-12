@@ -236,7 +236,7 @@ export function DionPlanner() {
     const receipt=await request(`${base()}/${engineV2?"analyses/question-v12":"question-analyses"}`,"POST",body,token);
     pendingAnalysis.current=null;
     const r=await request(`${base()}/analyses/${receipt.run_id}`,"GET",undefined,token);
-    const next:ViewResult={result:r.result,sourceSignature:signature(captured),localVersion:captured.raw_bundle.input_version,storage:"SAVED",runId:r.run_id,serverVersion:r.input_version,isCurrent:r.is_current,source:r.engine_input};
+    const next:ViewResult={result:r.result,sourceSignature:signature(captured),localVersion:captured.raw_bundle.input_version,storage:"SAVED",runId:r.run_id,serverVersion:r.input_version,isCurrent:r.is_current,adapterVersion:r.adapter_version,runStatus:r.status,currentInputVersion:r.current_input_version,source:r.engine_input};
     setHistory(h=>[next,...h].slice(0,20));
     if(signature(docRef.current)===signature(captured)){setView(next);setShowResults(true);}
     setRuns(await request(`${base()}/analyses`,"GET",undefined,token));setMessage(`답변과 계산 결과를 저장했어요. 입력버전 ${version}.`);
@@ -244,7 +244,7 @@ export function DionPlanner() {
   async function savedCalculation(engineV2=false){await serverAction(()=>persistCalculation(engineV2));}
   async function openRun(runId:string){await serverAction(async()=>{
     const r=await request(`${base()}/analyses/${encodeURIComponent(runId)}`,"GET",undefined,token);
-    const next:ViewResult={result:r.result,sourceSignature:["DION-QUESTION12-ADAPTER-1.0","DION-QUESTION12-ADAPTER-1.1"].includes(r.engine_input?.schema_version)?signature(r.engine_input):"legacy-input",localVersion:0,storage:"SAVED",runId:r.run_id,serverVersion:r.input_version,isCurrent:r.is_current,source:r.engine_input};
+    const next:ViewResult={result:r.result,sourceSignature:["DION-QUESTION12-ADAPTER-1.0","DION-QUESTION12-ADAPTER-1.1"].includes(r.engine_input?.schema_version)?signature(r.engine_input):"legacy-input",localVersion:0,storage:"SAVED",runId:r.run_id,serverVersion:r.input_version,isCurrent:r.is_current,adapterVersion:r.adapter_version,runStatus:r.status,currentInputVersion:r.current_input_version,source:r.engine_input};
     setView(next);setShowResults(true);if(mode==="welcome")setMode("quick");setMessage("과거 결과를 읽기 전용으로 열었어요. 작성 중인 답변은 바꾸지 않았어요.");
   });}
   async function restoreRunInputs(){

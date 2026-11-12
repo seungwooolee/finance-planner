@@ -16,12 +16,10 @@ import displayCatalog from "@/lib/dion/result-display-catalog.json";
 const stateLabels: Record<string,string> = { CALCULATED:"계산됨", PARTIAL:"부분 결과", NEEDS_INPUT:"정보 보완 필요", INVALID_INPUT:"입력 확인 필요", NOT_SUPPORTED:"미지원", NOT_IMPLEMENTED:"미구현", NOT_APPLICABLE:"해당 없음", NOT_REQUESTED:"요청하지 않음", REVIEW_ONLY:"검토 목록", REVIEW_REQUIRED:"검토 보류", INTERNAL_ERROR:"계산 오류", INFEASIBLE:"월 예산 부족", CALCULATED_MONTHLY_SCENARIO:"월 예산 시나리오" };
 export type ViewResult = { result: Record<string,Json>; sourceSignature: string; localVersion: number; storage: string; runId?: string; serverVersion?: number; isCurrent?: boolean; adapterVersion?: string; runStatus?: string; currentInputVersion?: number; source: Json; taxReview?: TaxReview };
 function metricValue(out:Record<string,Json>,key:string) {
-  if(["INVALID_INPUT","INTERNAL_ERROR"].includes(String(out.calc_state)))return null;
+  if(!["CALCULATED","PARTIAL"].includes(String(out.calc_state)))return null;
   const v=out[key];if(object(v).calc_state==="CALCULATED")return object(v).value;
-  if(typeof v==="string"&&["CALCULATED","PARTIAL"].includes(String(out.calc_state)))return v;
-  // Only expose explicitly calculated metrics from a retained partial result.
-  const partial=object(out.partial_result),nested=partial[key];
-  return object(nested).calc_state==="CALCULATED"?object(nested).value:null;
+  // Adapter-blocked diagnostic partial_result totals are not customer totals.
+  return typeof v==="string"?v:null;
 }
 function Metric({title,value,note}:{title:string;value:unknown;note?:string}) {return <article className="d-metric"><span>{title}</span><strong>{won(value)}{typeof value==="string" && <small> 만원</small>}</strong>{note&&<small>{note}</small>}</article>;}
 function Missing({row,title}:{row:Record<string,Json>;title:string}) {return <div className="d-note"><strong>{title} · {stateLabels[textValue(row.calc_state)]??"확인 필요"}</strong><p>{row.calc_state==="NOT_APPLICABLE"?"해당하는 목표나 항목이 없어 이 결과는 계산할 필요가 없어요.":row.calc_state==="NOT_IMPLEMENTED"?"이 기능은 아직 구현되지 않았어요. 추가 입력으로 완료할 수 있는 단계가 아니에요.":row.calc_state==="NOT_SUPPORTED"?"현재 계산 범위에서 지원하지 않아요. 입력은 보관하며 지원되는 다른 결과를 살펴볼 수 있어요.":row.calc_state==="INVALID_INPUT"?"금액·기간·소유 관계에 맞지 않는 입력이 있어요. 관련 답변을 수정해주세요.":"정보가 부족해 이 결과를 보류했어요. 아래 추가 확인에서 값과 가정을 확인해주세요."}</p></div>;}
@@ -48,7 +46,7 @@ export function Results({view,deep,tab,setTab,stale,onEdit,technical=false}:{tec
   return <section className="d-results" aria-label="계산 결과">
     <div className="d-result-heading"><div><span className="d-eyebrow">{deep?"DEEP REVIEW":"FAST DIAGNOSTIC"} · {String(object(result.context).evaluation_on??"기준일 확인 필요")}</span><h1 ref={heading} tabIndex={-1} style={{scrollMarginTop:96}}>{tabs[tab]}</h1><p>같은 입력과 기준시점으로 확인하는 나의 재무상황</p></div><button className="d-secondary" onClick={()=>onEdit("F03")}>입력 내용 수정 ↗</button></div>
     <div className={stale?"d-warning":"d-note"} role="status"><strong>{stale?"이전 입력 기준 · 현재 작성값과 다른 결과예요":view.runStatus==="FAILED"?"현재 입력의 계산 실패 기록":"현재 입력 기준 결과"}</strong><span> · {stateLabels[textValue(result.calc_state)]??textValue(result.calc_state)} · {view.storage==="NOT_SAVED"?"서버에 저장하지 않은 미리보기":"서버에 기록된 계산"}</span></div>
-    {view.storage==="SAVED"&&<p className="d-note">결과의 입력 버전 {view.serverVersion} · 조회 시 서버 입력 버전 {view.currentInputVersion} · {view.adapterVersion}{technical&&<small> · 실행 {view.runId}</small>}</p>}
+    {view.storage==="SAVED"&&<p className="d-note">결과의 입력 버전 {view.serverVersion}{view.currentInputVersion!==undefined&&<> · 조회 시 서버 입력 버전 {view.currentInputVersion}</>}{view.adapterVersion&&<> · {view.adapterVersion}</>}{technical&&<small> · 실행 {view.runId}</small>}</p>}
     {gates.map((g,i)=><div className="d-warning" key={i}><strong>연결 범위 확인 필요</strong><p>{String(g.reason)}</p><p>영향받는 결과만 보류했어요. 다른 결과와 엔진 원문은 유지해요.</p>{g.question_id!=="NEW-09"?<button className="d-text-button" onClick={()=>onEdit(String(g.question_id))}>관련 답변 확인 →</button>:<p>보증금 상세 입력·계산 연결은 준비 중이에요.</p>}</div>)}
     <nav className="d-tabs" aria-label={`${deep?"정밀":"빠른"} 결과 5뷰`}>{tabs.map((name,i)=><button aria-current={tab===i?"page":undefined} onClick={()=>setTab(i)} key={name}><small>{i+1} / 5</small>{name}</button>)}</nav>
     {tab===0 && <>

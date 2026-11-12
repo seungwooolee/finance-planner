@@ -25,3 +25,13 @@
 - `git diff --check` 통과. 마지막 runtime 변경 후 Core/Build를 다시 무효화하는 코드 변경은 없고 locator/문서만 정리했다. 검증 서버와 자료는 Git에 포함하지 않는다.
 
 배포 직전에 원격 DB를 READ ONLY로 조회해 등록 정의16개와 기존 합성 상담 `account-review-20261112-1410`의 revision13개/run3개 행 해시를 로컬 검사 산출물로 보관했다. 배포 후 비교는 다음 기록에 남긴다. 비밀번호·토큰·타 계정 원응답은 읽거나 기록하지 않았다.
+
+## 공개 URL·실계정 추가 검증과 표시 보완
+
+첫 배포 fa3178e에서 FE READY/BE live와 같은 commit을 확인했다(Render dep-dbql2uc9v7es73cu7fkg, Vercel dpl_8hMpg6LNYBchF7qQxWhUBSs6cCR8). 공개 주소의 상품3경로·기존 투자 질문/전환3경로·답변 근거2경로 **8건 모두 통과(1.9분)**. 이 검사들은 실제 preview API/엔진을 사용하며 판정 표시 fixture는 각 테스트에서 구분한다.
+
+기존 로그인 탭을 새로고침해 합성 상담의 버전13을 열었다. F03 원문00300.0000, 기준월2026-11,8/8 화면 복원을 확인했다. 답변 저장·계산이 성공해 OUT-06 요청/응답이 포함된 `run_fe544f3e6d3a48b388d791893edd2769`가 추가됐다. 기존 입력버전13/revision13개는 변하지 않았다. READ ONLY 해시 비교에서 등록 정의16개, 기존 revision13개, 기존 run3개가 모두 동일했고 run만4개가 됐다.
+
+이 실계정 화면에서 FE 브랜치의 metricValue가 adapter 차단된 `NEEDS_INPUT.partial_result`의 진단용0 합계를 고객 전체 자산/채무/순자산으로 노출하는 회귀를 발견했다. 엔진 원문은 바꾸지 않고 최상위 결과가 CALCULATED/PARTIAL일 때 직접 계산 지표만 표시하도록 보완했다. NEEDS_INPUT의 전체 금액은 확인 필요로 보존한다. 기존 저장 응답의 어댑터/실행상태/조회 입력버전을 ViewResult에 연결하고, 없는 메타데이터의 빈 라벨도 숨겼다.
+
+새 `dion-partial-assets.spec.tsx`는 실제 API가 만든 NEEDS_INPUT·진단용0을 확인한 뒤 Results를 렌더해 전체 금액3개가 확인 필요이며 독립 현금흐름90만원은 유지되는지 검사한다. **1건 통과**. 전체52건은 이 FE 보완 전의 기록이며 최종 FE 검사/빌드와 공개 URL 재확인은 이어 기록한다. BE/금융정책·데이터·원응답/저장 API는 이 보완에서 바꾸지 않았다.
