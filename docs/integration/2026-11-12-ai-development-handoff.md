@@ -1,5 +1,13 @@
 # AI·FE·BE 개발 작업본 인계 — 2026-11-12
 
+## 최신 재인계 — 스키마 개발 시작
+
+**새 노트북에서는 [가져오기·현재 상태·첫 구현 프롬프트](2026-11-12-agent-schema-resume-prompt.md)를 먼저 읽는다.** 아래는 최초 인계 이력이다. 이번에는 로컬 설계/운영 준비 `2bb2d8d`와 원격 `ffdd4cf`까지의 4개 후속 커밋을 통합(`6b5f24c`)했다. 강제 푸시·이력 삭제는 하지 않는다. 팀원이 근거자료 조사를 담당하며 첫 개발은 R2 자연어 후보의 서버 계약·검증·mock 연결이다. RAG/LangChain은 구조 설계0.2에 포함됐지만 미구현이다.
+
+병합 과정에서 OnePort 설정·예제·검사와 README/로그 충돌을 정리했다. 원격 ledger_persistent와 로컬 ledger_scope/절대경로 gate를 함께 유지한다. 이번 관련 pytest는 최초 미해결 충돌 표식으로 수집 오류2건, 표식 정리 후 1회 재검사 **69통과(48.20초)**, 변경 Python Ruff 통과다. 이번 전체 Core/Build/E2E·실계정·모델 호출·DB 변경은 미실행이다. R2 브라우저 재개는 이전 후속 기록에서 통과했고 이번에 다시 실행하지 않았다.
+
+푸시 전 Render는 실제 읽기 전용 조회에서 integration 브랜치·autoDeploy=no·미리보기 off를 확인했다. Vercel 관리 API는403으로 현재 설정을 재확인하지 못했으며 기존 `frontend/vercel.json`의 이 개발 브랜치 자동 배포 차단을 확인했다. 배포 설정 변경·배포 요청은 하지 않는다. GitHub 반영은 최종 원격 SHA 대조로 확인한다.
+
 ## 소스와 작업 범위
 
 - 저장소: `https://github.com/seungwooolee/finance-planner` (비공개).

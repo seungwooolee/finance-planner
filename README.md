@@ -1,3 +1,5 @@
+**2026-11-12 스키마 개발 재개:** 팀원이 근거자료 조사를 담당하고, 다음 개발은 R2 자연어 후보의 서버 계약·검증·mock 연결부터 진행한다. [새 노트북 준비·붙여넣을 프롬프트](docs/integration/2026-11-12-agent-schema-resume-prompt.md)에 현재 구현/미구현·운영 미검증과 범위를 구분했다.
+
 **2026-11-12 AI 개발 방향:** 서버가 상담 흐름·확인·실행을 관리하고 LLM은 후보를 제안하는 구조를 [구조도·데이터 스키마·개발 순서](docs/customer-ai-agent-architecture.md)에 기록했다.0.2에는 LangChain·RAG 확장 구조와 embedding/pgvector 후보, 근거 데이터 스키마를 추가했다. 문서 설계이며 런타임 적용·기존 금융 계약 변경은 없다.
 
 **2026-11-12 다른 노트북 개발 인계:** `codex/result-explanation-r1`의 AI·FE·BE 작업과 공통 정책, 기존 검증 결과·남은 미검증은 [개발 작업본 인계](docs/integration/2026-11-12-ai-development-handoff.md)를 따른다. 개발용 보존본이며 최종 통합·운영 DB 반영·배포는 별도 작업이다.

@@ -1,3 +1,9 @@
+# 2026-11-12 — 다른 노트북 스키마 개발 재인계
+
+근거자료 조사는 팀원이 담당한다. 현재 로컬 설계/운영 준비와 원격 AI 브랜치의 CI·R2 재개·OnePort 차단 후속4커밋을 보존해 통합했다. 이번 병합 관련 pytest69통과·변경 Python Ruff 통과이며 전체 검사·새 모델 호출·원격 DB·배포는 하지 않았다. [최신 인계·첫 구현 프롬프트](integration/2026-11-12-agent-schema-resume-prompt.md)를 시작점으로 삼는다. ModelProposal 서버 연결, R3, RAG/LangChain은 아직 후속이며 이번 백업을 구현 완료로 보지 않는다. 아래는 이전 시점의 현황이다.
+
+---
+
 # 2026-11-12 — RAG·LangChain 확장 구조 설계
 
 [AI 구조 설계0.2](customer-ai-agent-architecture.md)에 LangChain 연결 계층·2단계 RAG·근거 수집/분할·검색·OnePort·인용 검증 흐름과 RAG 논리 데이터 스키마를 추가했다. embedding 모델/차원·pgvector 운영 지원·패키지 버전은 미확정이고 설치/색인/실제 연결은 하지 않았다. 서버 소유권/확인·기존 엔진 계산 경계는 유지하며 이번에는 문서만 수정했다. 아래는 실행 작업의 기록이다.
