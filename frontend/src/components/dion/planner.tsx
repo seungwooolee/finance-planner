@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, Check, FolderOpen, LayoutDashboard, ShieldCheck } from "lucide-react";
 import { Document, Envelope, Json, Revision, blankDocument, catalog, clone, download, example, field, object, question, revise } from "@/lib/dion/model";
 import { copy, customerStep, customerSteps, stepComplete } from "@/lib/dion/customer-flow";
+import { clearSession, readSession, rememberSession } from "@/lib/dion/session";
 import { Confirmations, DetailedAnswerEditor, QuestionForm } from "./questions";
 import { Cat, ConsultationWidget, HeaderCat, LoginDialog } from "./companions";
 import { Results, ViewResult } from "./results";
@@ -44,6 +45,8 @@ export function DionPlanner() {
   const [busy,setBusy]=useState(false),[message,setMessage]=useState(""),[error,setError]=useState("");
   const [fictional,setFictional]=useState(false),[catalogOpen,setCatalogOpen]=useState(false),[reviewOpen,setReviewOpen]=useState(false);
   const [loginOpen,setLoginOpen]=useState(false),[expiresAt,setExpiresAt]=useState<number|null>(null);
+  const [accountOpen,setAccountOpen]=useState(false);
+  const accountPanel=useRef<HTMLDetailsElement>(null);
   const [undoDraft,setUndoDraft]=useState<{doc:Document;fictional:boolean}|null>(null);
   const [scenario,setScenario]=useState<Scenario|null>(null);
   const original=useRef<{doc:Document;mode:typeof mode;current:string;showResults:boolean;tab:number;view:ViewResult|null;history:ViewResult[];fictional:boolean}|null>(null);
@@ -64,10 +67,19 @@ export function DionPlanner() {
   const [saveBusy,setSaveBusy]=useState(false),[runs,setRuns]=useState<Record<string,Json>[]>([]);
   const [cases,setCases]=useState<{case_id:string;input_version:number}[]>([]),[nextAfter,setNextAfter]=useState<string|null>(null);
   const saved=useRef<Record<string,string>>({}), pending=useRef<{path:string;body:unknown;envelope?:Envelope}|null>(null);
+  const pendingAnalysis=useRef<{identity:string;body:unknown}|null>(null);
   const connectedCase=useRef<string|null>(null),saveLock=useRef(false),[lastError,setLastError]=useState<unknown>(null);
   const ids=customerSteps(doc,mode==="deep"), active=ids.includes(customerStep(current))?customerStep(current):ids[0], index=ids.indexOf(active),count=ids.filter(id=>stepComplete(doc,id)).length;
   const currentCopy=copy[active];
   const progress=Math.round(count/ids.length*100),stale=!!view&&(view.sourceSignature!==signature(doc)||view.isCurrent===false);
+  useEffect(()=>{if(accountOpen)accountPanel.current?.scrollIntoView({block:"start"});},[accountOpen]);
+  useEffect(()=>{
+    const session=readSession();
+    if(!session)return;
+    // Hydrate only the login session; saved answers always come from the owner-authorized API.
+    const timer=setTimeout(()=>{setToken(session.token);setExpiresAt(session.expiresAt);},0);
+    return ()=>clearTimeout(timer);
+  },[]);
   useEffect(()=>{
     if(!error)return;
     errorRef.current?.focus({preventScroll:true});
@@ -85,10 +97,11 @@ export function DionPlanner() {
   },[active,mode,showResults]);
   useEffect(()=>{
     if(expiresAt===null)return;
-    const timer=setTimeout(()=>{setToken("");setExpiresAt(null);setCases([]);setNextAfter(null);setServerVersion(null);connectedCase.current=null;setMessage("로그인 시간이 지났어요. 작성한 답변은 그대로 있어요. 저장하려면 다시 로그인해주세요.");},Math.max(0,expiresAt-Date.now()));
+    const timer=setTimeout(()=>{clearSession();setToken("");setExpiresAt(null);setCases([]);setRuns([]);setNextAfter(null);setServerVersion(null);connectedCase.current=null;setMessage("로그인 시간이 지났어요. 작성한 답변은 그대로 있어요. 저장하려면 다시 로그인해주세요.");},Math.max(0,expiresAt-Date.now()));
     return ()=>clearTimeout(timer);
   },[expiresAt]);
   async function signOut() {
+    clearSession();
     const previous=token;setToken("");setExpiresAt(null);setServerVersion(null);connectedCase.current=null;saved.current={};pending.current=null;pendingAnalysis.current=null;setRuns([]);setCases([]);setNextAfter(null);
     setMessage("로그아웃했어요. 이 탭의 작성값은 그대로 있어요.");
     try{await request("/api/be/v1/auth/logout","POST",undefined,previous);}catch{setMessage("이 탭에서 로그아웃했어요. 인증 서버의 세션 종료는 확인하지 못했어요.");}
@@ -127,12 +140,16 @@ export function DionPlanner() {
     finally {clearTimeout(timeout);if(seq===sequence.current)setBusy(false);}
   }
   const base=(id=caseId)=>`/api/be/v1/cases/${encodeURIComponent(id)}`;
+  function handleServerError(e:unknown){
+    if(e instanceof ApiError&&e.status===401){clearSession();setToken("");setExpiresAt(null);setCases([]);setRuns([]);setNextAfter(null);setServerVersion(null);connectedCase.current=null;}
+    setLastError(e instanceof Error?e.message:"CONNECTION_ERROR");setError(errorText(e));
+  }
   async function serverAction(action:()=>Promise<void>, targetCase=caseId) {
     if(saveLock.current)return;
     if(fictional){setError("가상 사례는 실제 상담에 저장하지 않아요. 원래 입력으로 돌아간 뒤 저장해주세요.");return;}
     if(!token||!targetCase){setError("서버 저장·복원에는 상담 ID와 로그인이 필요해요. 미리보기 계산은 저장 없이 사용할 수 있어요.");return;}
     saveLock.current=true;setSaveBusy(true);setError("");setMessage("");
-    try{await action();}catch(e){setLastError(e instanceof Error?e.message:"CONNECTION_ERROR");setError(errorText(e));}
+    try{await action();}catch(e){handleServerError(e);}
     finally{saveLock.current=false;setSaveBusy(false);}
   }
   async function fetchCases(more=false) {
@@ -147,16 +164,18 @@ export function DionPlanner() {
       setCases(previous=>more?[...previous,...page.items.filter((item:{case_id:string})=>!previous.some(p=>p.case_id===item.case_id))]:page.items);
       setNextAfter(typeof page.next_after==="string"?page.next_after:null);
       setMessage(page.items.length?"내 상담 목록을 불러왔어요.":"저장된 상담이 없어요. 새 상담을 만들 수 있어요.");
-    }catch(e){setLastError(e instanceof Error?e.message:"CONNECTION_ERROR");setError(errorText(e));}
+    }catch(e){handleServerError(e);}
     finally{saveLock.current=false;setSaveBusy(false);}
   }
-  async function createCase() {await serverAction(async()=>{const r=await request("/api/be/v1/cases","POST",{case_id:caseId},token);setServerVersion(r.input_version);connectedCase.current=caseId;saved.current={};pending.current=null;setRuns([]);setCases(previous=>previous.some(p=>p.case_id===caseId)?previous:[...previous,{case_id:caseId,input_version:0}]);setMessage("상담을 만들었어요. 작성 중인 답변은 ‘초안 저장’으로 별도 저장하세요.");});}
+  async function createCase() {
+    const id=caseId||`consultation-${crypto.randomUUID()}`;
+    await serverAction(async()=>{const r=await request("/api/be/v1/cases","POST",{case_id:id},token);setCaseId(id);setServerVersion(r.input_version);connectedCase.current=id;saved.current={};pending.current=null;pendingAnalysis.current=null;setRuns([]);setCases(previous=>previous.some(p=>p.case_id===id)?previous:[...previous,{case_id:id,input_version:0}]);setMessage("상담을 만들었어요. ‘답변 저장·계산’으로 작성값과 결과를 보관하세요.");},id);
+  }
   async function restore(targetCase=caseId) {
     await serverAction(async()=>{
       const raw=await request(base(targetCase),"GET",undefined,token);
       const runList=raw.analysis_refs as Record<string,Json>[];
       if(!Array.isArray(raw.answers)||!Array.isArray(runList)||!Number.isInteger(raw.input_version))throw new Error("invalid case response");
-      setRuns(runList);
       const rows=raw.answers as Revision[];
       if(new Set(rows.map(r=>r.envelope.question_ref.design_id)).size!==rows.length)throw new ApiError(422,"MULTIPLE_RAW_GROUPS_REQUIRE_EXPLICIT_SELECTION");
       if(rows.some(r=>!["1.2","1.2.1"].includes(r.envelope.question_ref.definition_version)||question(r.envelope.question_ref.design_id)?.version!==r.envelope.question_ref.definition_version))throw new ApiError(422,"EXPLICIT_DEFINITION_MIGRATION_REQUIRED");
@@ -165,16 +184,25 @@ export function DionPlanner() {
       if(first){next.context.evaluation_on=first.context.as_of??"";next.scope_ref=first.context.scope_ref;}
       if(scope){next.context.scope=String(scope.fields.assessment_scope?.raw_value??"");next.context.included_owner_ids=(scope.fields.included_owner_ids?.raw_value as string[])??[];}
       next.raw_bundle.input_version=Math.max(1,raw.input_version);next.context.profile_version=String(raw.input_version);next.context.snapshot_id=`local-restored-${raw.input_version}`;
+      next.raw_bundle.case_id=targetCase;
+      const latest=runList.find(r=>r.is_current);
+      if(latest){
+        const run=await request(`${base(targetCase)}/analyses/${encodeURIComponent(String(latest.run_id))}`,"GET",undefined,token);
+        if(run.input_version===raw.input_version&&run.is_current&&["DION-QUESTION12-ADAPTER-1.0","DION-QUESTION12-ADAPTER-1.1"].includes(run.engine_input?.schema_version)){
+          next.context=clone(run.engine_input.context);next.scope_ref=run.engine_input.scope_ref;
+          next.confirmations=clone(run.engine_input.confirmations);next.requested_outputs=clone(run.engine_input.requested_outputs);
+        }
+      }
       const previous={doc:clone(docRef.current),fictional};
-      change(next);setUndoDraft(previous);setCaseId(targetCase);setServerVersion(raw.input_version);connectedCase.current=targetCase;pending.current=null;
+      change(next);setUndoDraft(previous);setCaseId(targetCase);setServerVersion(raw.input_version);connectedCase.current=targetCase;pending.current=null;pendingAnalysis.current=null;setView(null);setHistory([]);
       saved.current=Object.fromEntries((raw.answers as Revision[]).map(r=>[r.envelope.question_ref.design_id,stable(r.envelope)]));
       setRuns(runList);setMode("quick");setCurrent("NEW-01");setShowResults(false);setFictional(false);
-      setMessage("서버 원응답을 복원했어요. 미래 가정은 자동 재사용하지 않아요. 이전 계산을 열어 기준·가정을 확인하세요.");
+      setMessage("서버 원응답을 복원했어요. 같은 입력버전에 저장된 계산이 있으면 그 기준·가정도 함께 불러와요. 이전 결과는 목록에서 확인하세요.");
     },targetCase);
   }
-  async function saveDraft() {await serverAction(async()=>{
+  async function persistAnswers() {
     if(connectedCase.current!==caseId||serverVersion===null)throw new ApiError(409,"RESTORE_OR_CREATE_CASE_FIRST");
-    if(!docRef.current.raw_bundle.answers.length){setMessage("저장할 작성값이 없어요.");return;}
+    if(!docRef.current.raw_bundle.answers.length)throw new ApiError(422,"NO_ANSWERS_TO_SAVE");
     let version=serverVersion;
     // Reuse the exact request after an ambiguous network failure; never generate a new key first.
     if(pending.current){const p=pending.current;const receipt=await request(p.path,"PUT",p.body,token);version=Math.max(version,receipt.input_version);setServerVersion(version);if(p.envelope)saved.current[p.envelope.question_ref.design_id]=stable(p.envelope);pending.current=null;}
@@ -187,18 +215,20 @@ export function DionPlanner() {
       version=receipt.input_version;setServerVersion(version);saved.current[env.question_ref.design_id]=stable(env);pending.current=null;
     }
     setMessage(`초안을 저장했어요. 서버 입력버전 ${version}. 계산 결과는 별도 저장하세요.`);
-  });}
-  const pendingAnalysis=useRef<{identity:string;body:unknown}|null>(null);
-  async function savedCalculation(engineV2=false){await serverAction(async()=>{
+    return version;
+  }
+  async function saveDraft() {await serverAction(async()=>{await persistAnswers();});}
+  async function saveAndCalculate() {await serverAction(async()=>{const version=await persistAnswers();await persistCalculation(false,version);});}
+  async function persistCalculation(engineV2=false, version=serverVersion){
     if(connectedCase.current!==caseId||serverVersion===null)throw new ApiError(409,"RESTORE_OR_CREATE_CASE_FIRST");
     const captured=clone(docRef.current);
     if(captured.raw_bundle.answers.some(r=>saved.current[r.envelope.question_ref.design_id]!==stable(r.envelope)))throw new ApiError(409,"SAVE_CURRENT_ANSWERS_FIRST");
     const {case_id:ignoredCase,snapshot_id:ignoredSnapshot,profile_version:ignoredVersion,...context}=captured.context;void ignoredCase;void ignoredSnapshot;void ignoredVersion;
     const assessment={...context,scope_ref:captured.scope_ref};
-    const identity=stable({caseId,serverVersion,context,confirmations:captured.confirmations,outputs:captured.requested_outputs,engineV2});
+    const identity=stable({caseId,serverVersion:version,context,confirmations:captured.confirmations,outputs:captured.requested_outputs,engineV2});
     const body=pendingAnalysis.current?.identity===identity?pendingAnalysis.current.body:engineV2
-      ? {expected_version:serverVersion,request_key:`fe-v2-${crypto.randomUUID()}`,assessment,confirmations:captured.confirmations,requested_outputs:["OUT-02","OUT-03","OUT-04","OUT-05"]}
-      : {expected_version:serverVersion,request_key:`fe-run-${crypto.randomUUID()}`,context,requested_outputs:captured.requested_outputs,scope_ref:captured.scope_ref,confirmations:captured.confirmations};
+      ? {expected_version:version,request_key:`fe-v2-${crypto.randomUUID()}`,assessment,confirmations:captured.confirmations,requested_outputs:["OUT-02","OUT-03","OUT-04","OUT-05"]}
+      : {expected_version:version,request_key:`fe-run-${crypto.randomUUID()}`,context,requested_outputs:captured.requested_outputs,scope_ref:captured.scope_ref,confirmations:captured.confirmations};
     pendingAnalysis.current={identity,body};
     const receipt=await request(`${base()}/${engineV2?"analyses/question-v12":"question-analyses"}`,"POST",body,token);
     pendingAnalysis.current=null;
@@ -206,16 +236,37 @@ export function DionPlanner() {
     const next:ViewResult={result:r.result,sourceSignature:signature(captured),localVersion:captured.raw_bundle.input_version,storage:"SAVED",runId:r.run_id,serverVersion:r.input_version,isCurrent:r.is_current,source:r.engine_input};
     setHistory(h=>[next,...h].slice(0,20));
     if(signature(docRef.current)===signature(captured)){setView(next);setShowResults(true);}
-    setRuns(await request(`${base()}/analyses`,"GET",undefined,token));setMessage(`계산 실행을 기록했어요: ${receipt.status}. 고객 채택은 변경하지 않았어요.`);
-  });}
+    setRuns(await request(`${base()}/analyses`,"GET",undefined,token));setMessage(`답변과 계산 결과를 저장했어요. 입력버전 ${version}.`);
+  }
+  async function savedCalculation(engineV2=false){await serverAction(()=>persistCalculation(engineV2));}
   async function openRun(runId:string){await serverAction(async()=>{
     const r=await request(`${base()}/analyses/${encodeURIComponent(runId)}`,"GET",undefined,token);
     const next:ViewResult={result:r.result,sourceSignature:["DION-QUESTION12-ADAPTER-1.0","DION-QUESTION12-ADAPTER-1.1"].includes(r.engine_input?.schema_version)?signature(r.engine_input):"legacy-input",localVersion:0,storage:"SAVED",runId:r.run_id,serverVersion:r.input_version,isCurrent:r.is_current,source:r.engine_input};
-    setView(next);setShowResults(true);setMessage("과거 결과를 읽기 전용으로 열었어요. 작성 중인 답변은 바꾸지 않았어요.");
+    setView(next);setShowResults(true);if(mode==="welcome")setMode("quick");setMessage("과거 결과를 읽기 전용으로 열었어요. 작성 중인 답변은 바꾸지 않았어요.");
   });}
+  async function restoreRunInputs(){
+    if(!view?.runId)return;
+    const runId=view.runId;
+    await serverAction(async()=>{
+      if(connectedCase.current!==caseId)throw new ApiError(409,"RESTORE_OR_CREATE_CASE_FIRST");
+      const run=await request(`${base()}/analyses/${encodeURIComponent(runId)}`,"GET",undefined,token);
+      const source=run.engine_input;
+      if(!["DION-QUESTION12-ADAPTER-1.0","DION-QUESTION12-ADAPTER-1.1"].includes(source?.schema_version))throw new ApiError(422,"EXPLICIT_DEFINITION_MIGRATION_REQUIRED");
+      const previous={doc:clone(docRef.current),fictional};
+      change(clone(source));setUndoDraft(previous);setFictional(false);setShowResults(false);setMode("quick");setCurrent("NEW-01");
+      setMessage("이전 결과의 입력·기준·가정을 편집 초안으로 복원했어요. 저장하면 새 수정 이력과 결과가 추가돼요. 기존 기록은 보존돼요.");
+    });
+  }
   const exportReview=()=>download({integration_version:"DION-FE-INTEGRATION-1.0",fictional,document:doc,result:view,previous_results:history,latest_error:lastError,server_input_version:serverVersion},"dion-review.json");
+  function handleLogin(value:string, seconds:number){
+    const expiry=rememberSession(value,seconds);
+    setToken(value);setExpiresAt(expiry);setServerVersion(null);
+    connectedCase.current=null;saved.current={};pending.current=null;pendingAnalysis.current=null;
+    setRuns([]);setCases([]);setNextAfter(null);
+    setMessage("로그인했어요. 작성한 답변은 그대로 있어요. 내 상담에서 상담을 조회하거나 저장할 수 있어요.");
+  }
   return <div className="dion-app">
-    <header className={`d-header ${mode==="welcome"?"d-header-welcome":""}`}><Link href="/dion" className="d-logo">dion<span>.</span></Link>{mode==="welcome"?<HeaderCat/>:<nav aria-label="진단 방식"><button className={mode==="quick"?"active":""} onClick={()=>{setMode("quick");setShowResults(false);}}>빠른진단</button><button className={mode==="deep"?"active":""} onClick={()=>{setMode("deep");setShowResults(false);}}>정밀진단</button></nav>}<div className="d-header-actions">{token?<button className="d-account-button" disabled={saveBusy} onClick={signOut}>로그아웃</button>:<button className="d-account-button" disabled={saveBusy} onClick={()=>setLoginOpen(true)}>로그인</button>}<button aria-expanded={reviewOpen} onClick={()=>setReviewOpen(!reviewOpen)}>검토 도구</button></div></header>
+    <header className={`d-header ${mode==="welcome"?"d-header-welcome":""}`}><Link href="/dion" className="d-logo">dion<span>.</span></Link>{mode==="welcome"?<HeaderCat/>:<nav aria-label="진단 방식"><button className={mode==="quick"?"active":""} onClick={()=>{setMode("quick");setShowResults(false);}}>빠른진단</button><button className={mode==="deep"?"active":""} onClick={()=>{setMode("deep");setShowResults(false);}}>정밀진단</button></nav>}<div className="d-header-actions"><button className="d-account-button" aria-expanded={accountOpen} onClick={()=>{setAccountOpen(!accountOpen);if(token)void fetchCases();}}>내 상담</button>{token?<button className="d-account-button" disabled={saveBusy} onClick={signOut}>로그아웃</button>:<button className="d-account-button" disabled={saveBusy} onClick={()=>setLoginOpen(true)}>로그인</button>}<button aria-expanded={reviewOpen} onClick={()=>setReviewOpen(!reviewOpen)}>검토 도구</button></div></header>
     <main className="d-main">
       {message&&<div className="d-notice" role="status">{message}</div>}{error&&<div ref={errorRef} tabIndex={-1} style={{scrollMarginTop:96}} className="d-warning" role="alert">{error}{view&&<p>마지막 결과는 이전 계산 기록으로 유지됩니다. 새 계산 성공을 뜻하지 않아요.</p>}</div>}
       {undoDraft&&<div className="d-undo" role="status">작성 화면을 바꿨어요.<button type="button" onClick={()=>{const previous=undoDraft;change(previous.doc);setFictional(previous.fictional);setServerVersion(null);connectedCase.current=null;pending.current=null;pendingAnalysis.current=null;saved.current={};setRuns([]);setShowResults(false);}}>이전 작성값으로 되돌리기</button></div>}
@@ -234,17 +285,17 @@ export function DionPlanner() {
         <div className="d-calc-bar">{view&&!showResults&&<button className="d-secondary" onClick={()=>setShowResults(true)}>이전 결과 보기</button>}<div><strong>{stale?"작성값이 바뀌었어요":"확인한 정보로 결과 살펴보기"}</strong><small>계산과 서버 저장은 별도예요.</small></div><button className="d-primary" disabled={busy} onClick={()=>void calculate()}>{busy?"계산 중…":view?"재계산":"계산 미리보기"}<ArrowRight size={17}/></button></div>
         {reviewOpen&&<section className="d-review-tools" aria-label="통합 검토 도구"><h2>통합 검토 도구</h2><p>원응답·계산 가정·저장 API 연결을 확인하는 검토 영역이에요.</p><Link href="/" className="d-text-button">기존 검산 화면 열기 →</Link><button className="d-text-button" onClick={()=>setCatalogOpen(!catalogOpen)}>전체 질문·지원 범위 55개</button>{catalogOpen&&<div className="d-catalog">{catalog.questions.map(q=><details key={q.id}><summary>{q.id} · {q.source["항목"]}</summary><p>{q.source["고객에게 보여줄 질문"]}</p><p>{q.source["선택지·입력 안내"]}</p></details>)}</div>}
         <DetailedAnswerEditor id={active} doc={doc} onChange={change}/><Confirmations doc={doc} onChange={change}/>
-        <details className="d-card"><summary>내 상담 · 저장과 다시 열기</summary>
-          <p>로그인한 계정의 상담을 불러오거나 새 상담 ID를 만들어주세요. 로그인 정보는 이 탭의 메모리에만 보관해요.</p>
+        <details className="d-card d-review"><summary>검토 패널 · 원응답·엔진 입력·오류·버전</summary><p>사용자 화면과 분리한 통합 확인 자료예요. JSON에는 개인 재무정보가 포함될 수 있어요.</p><button className="d-secondary" onClick={exportReview}>검토 JSON 내보내기</button><details><summary>원응답과 필드 상태</summary><pre>{JSON.stringify(doc,null,2)}</pre></details><details><summary>엔진 전달 입력·출력·오류</summary><pre>{JSON.stringify({current_matches_result:!stale,view,latest_error:lastError},null,2)}</pre></details><h3>이 탭의 이전 계산 (최대 20개)</h3>{history.map((r,i)=><button className="d-run" key={i} onClick={()=>{setView(r);setShowResults(true);}}>편집버전 {r.localVersion} · {String(r.result.calc_state)} · {r.storage==="NOT_SAVED"?"미저장":"서버 기록"}</button>)}<p>이 탭의 미저장 기록은 새로고침하면 사라져요. 서버 저장본은 위 복원·이전 결과 조회를 사용하세요.</p></details></section>}
+      </>}
+        <details ref={accountPanel} style={{scrollMarginTop:96}} className="d-card" open={accountOpen} onToggle={e=>setAccountOpen(e.currentTarget.open)}><summary>내 상담 · 저장과 다시 열기</summary>
+          <p>로그인한 계정의 상담을 불러오거나 새 상담 ID를 만들어주세요. 로그인은 만료 전까지 이 탭에서 새로고침해도 유지돼요. 답변과 결과는 서버에 저장한 뒤 다시 열 수 있어요.</p>
           <div className="d-toolbar"><button disabled={saveBusy || !token} className="d-secondary" onClick={()=>void fetchCases()}>내 상담 조회</button>{nextAfter&&<button disabled={saveBusy} className="d-secondary" onClick={()=>void fetchCases(true)}>더 보기</button>}</div>
           {cases.length>0&&<div aria-label="내 상담 목록" className="d-fields">{cases.map(item=><button key={item.case_id} className="d-run" disabled={saveBusy} onClick={()=>void restore(item.case_id)}>{item.case_id} · 입력버전 {item.input_version} · 다시 열기</button>)}</div>}
           <label className="d-field">상담 ID<input aria-label="상담 ID" disabled={saveBusy} value={caseId} onChange={e=>{setCaseId(e.target.value);setServerVersion(null);pending.current=null;pendingAnalysis.current=null;connectedCase.current=null;saved.current={};setRuns([]);}} /></label>
-          <div className="d-toolbar"><button disabled={saveBusy || !token} className="d-secondary" onClick={createCase}>새 상담 만들기</button><button disabled={saveBusy || !token} className="d-secondary" onClick={()=>void restore()}>상담 ID로 다시 열기</button><button disabled={saveBusy || !token} className="d-secondary" onClick={()=>serverAction(async()=>{setRuns(await request(`${base()}/analyses`,"GET",undefined,token));setMessage("이전 계산 목록을 불러왔어요. 작성값은 그대로 유지해요.");})}>이전 계산 전체 조회</button><button disabled={saveBusy || !token} className="d-secondary" onClick={saveDraft}>초안 저장·재시도</button><button disabled={saveBusy || !token} className="d-primary" onClick={()=>void savedCalculation()}>기존 저장 계산</button><button disabled={saveBusy || !token} className="d-primary" onClick={()=>void savedCalculation(true)}>엔진 v2 저장 계산</button></div>
-          <p role="status">서버 입력버전: {serverVersion??"조회 전"}{saveBusy?" · 처리 중…":""}</p>
+          <div className="d-toolbar"><button disabled={saveBusy || !token} className="d-primary" onClick={saveAndCalculate}>답변 저장·계산</button><button disabled={saveBusy || !token} className="d-secondary" onClick={createCase}>새 상담 만들기</button><button disabled={saveBusy || !token} className="d-secondary" onClick={()=>void restore()}>상담 ID로 다시 열기</button><button disabled={saveBusy || !token} className="d-secondary" onClick={()=>serverAction(async()=>{setRuns(await request(`${base()}/analyses`,"GET",undefined,token));setMessage("이전 계산 목록을 불러왔어요. 작성값은 그대로 유지해요.");})}>이전 계산 전체 조회</button><button disabled={saveBusy || !token} className="d-secondary" onClick={saveDraft}>초안 저장·재시도</button><button disabled={saveBusy || !token} className="d-primary" onClick={()=>void savedCalculation()}>기존 저장 계산</button><button disabled={saveBusy || !token} className="d-primary" onClick={()=>void savedCalculation(true)}>엔진 v2 저장 계산</button></div>
+          {view?.storage==="SAVED"&&<button className="d-secondary" disabled={saveBusy||!token} onClick={()=>void restoreRunInputs()}>이 결과의 입력 복원</button>}<p role="status">서버 입력버전: {serverVersion??"조회 전"}{saveBusy?" · 처리 중…":""}</p>
           {runs.map(r=><button key={String(r.run_id)} className="d-run" disabled={saveBusy} onClick={()=>openRun(String(r.run_id))}>입력버전 {String(r.input_version)} · {String(r.adapter_version??"이전 계약")} · {String(r.status)} · {r.is_current?"서버 최신 입력":"과거 입력"}<small>{String(r.run_id)}</small></button>)}
         </details>
-        <details className="d-card d-review"><summary>검토 패널 · 원응답·엔진 입력·오류·버전</summary><p>사용자 화면과 분리한 통합 확인 자료예요. JSON에는 개인 재무정보가 포함될 수 있어요.</p><button className="d-secondary" onClick={exportReview}>검토 JSON 내보내기</button><details><summary>원응답과 필드 상태</summary><pre>{JSON.stringify(doc,null,2)}</pre></details><details><summary>엔진 전달 입력·출력·오류</summary><pre>{JSON.stringify({current_matches_result:!stale,view,latest_error:lastError},null,2)}</pre></details><h3>이 탭의 이전 계산 (최대 20개)</h3>{history.map((r,i)=><button className="d-run" key={i} onClick={()=>{setView(r);setShowResults(true);}}>편집버전 {r.localVersion} · {String(r.result.calc_state)} · {r.storage==="NOT_SAVED"?"미저장":"서버 기록"}</button>)}<p>이 탭의 미저장 기록은 새로고침하면 사라져요. 서버 저장본은 위 복원·이전 결과 조회를 사용하세요.</p></details></section>}
-      </>}
-    </main><ScenarioPicker disabled={busy||saveBusy} onLoad={loadScenario}/>{loginOpen&&<LoginDialog onClose={()=>setLoginOpen(false)} onLogin={(value,seconds)=>{setToken(value);setExpiresAt(Date.now()+seconds*1000);setServerVersion(null);connectedCase.current=null;saved.current={};pending.current=null;pendingAnalysis.current=null;setRuns([]);setCases([]);setNextAfter(null);setMessage("로그인했어요. 작성한 답변은 그대로 있어요. 검토 도구에서 상담을 조회하거나 저장할 수 있어요.");}}/>}<ConsultationWidget compact={mode!=="welcome"}/><footer className="d-footer"><strong>dion.</strong><span>확인한 정보로, 나에게 맞는 다음 단계.</span><small>계산 미리보기 · 상품 추천과 금융거래는 준비 중</small></footer>
+    </main><ScenarioPicker disabled={busy||saveBusy} onLoad={loadScenario}/>{loginOpen&&<LoginDialog onClose={()=>setLoginOpen(false)} onLogin={(value,seconds)=>handleLogin(value,seconds)}/>}<ConsultationWidget compact={mode!=="welcome"}/><footer className="d-footer"><strong>dion.</strong><span>확인한 정보로, 나에게 맞는 다음 단계.</span><small>계산 미리보기 · 상품 추천과 금융거래는 준비 중</small></footer>
   </div>;
 }

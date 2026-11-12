@@ -219,50 +219,7 @@ test('DION direct deep entry and mobile input/result remain within viewport',asy
   await page.screenshot({path:info.outputPath('dion-feedback-mobile-candidates.png'),fullPage:true});
 });
 
-test('DION MOCK AUTH only: real BE store save retry conflict history and reconnect restore',async({page,request})=>{
-  const harness=process.env.DION_TEST_BE_URL;
-  test.skip(!harness,'Disposable SQLite/mock-auth harness not running; no production login claim.');
-  await page.route('**/api/be/v1/**',async route=>{const url=new URL(route.request().url());const response=await route.fetch({url:`${harness}${url.pathname}`});await route.fulfill({response});});
-  await sample(page);
-  await page.getByRole('button',{name:'검토 도구',exact:true}).click();
-  await page.getByText('서버 초안 저장·복원 · 로그인 필요',{exact:true}).click();
-  const id=`fictional-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-  await page.getByLabel('상담 ID',{exact:true}).fill(id);await page.getByLabel('로그인 access token',{exact:true}).fill('MOCK-FE-ONLY');
-  await page.getByRole('button',{name:'새 상담 만들기',exact:true}).click();
-  await expect(page.getByRole('status').filter({hasText:'상담을 만들었어요'})).toBeVisible();
-  let drop=true;
-  await page.route('**/api/be/v1/**/answers',async route=>{
-    const url=new URL(route.request().url());const response=await route.fetch({url:`${harness}${url.pathname}`});
-    if(drop&&route.request().method()==='PUT'){drop=false;await route.abort();}else await route.fulfill({response});
-  });
-  await page.getByRole('button',{name:'초안 저장·재시도',exact:true}).click();
-  await expect(page.locator('.d-warning[role=alert]')).toContainText('연결 오류');
-  await page.getByRole('button',{name:'초안 저장·재시도',exact:true}).click();
-  await expect(page.getByRole('status').filter({hasText:'초안을 저장했어요'})).toBeVisible();
-  await page.getByRole('button',{name:'저장된 입력으로 계산 기록',exact:true}).click();
-  await expect(page.getByRole('status').filter({hasText:'계산 실행을 기록했어요'})).toContainText('SUCCEEDED');
-  const raw=await (await request.get(`${harness}/api/be/v1/cases/${id}/answers`,{headers:{Authorization:'Bearer MOCK-FE-ONLY'}})).json();
-  const income=raw.answers.find((r:{envelope:{question_ref:{design_id:string}}})=>r.envelope.question_ref.design_id==='F03').envelope;
-  expect(income.fields.monthly_net_income_krw.raw_value).toBe('00300.0000');
-  income.fields.monthly_net_income_krw.raw_value='330';
-  await request.put(`${harness}/api/be/v1/cases/${id}/answers`,{headers:{Authorization:'Bearer MOCK-FE-ONLY'},data:{expected_version:raw.input_version,request_key:'concurrent-edit',envelope:income}});
-  await page.getByRole('button',{name:'입력 내용 수정 ↗'}).click();await page.getByRole('textbox',{name:'한 달 소득',exact:true}).fill('340');
-  await page.getByRole('button',{name:'초안 저장·재시도',exact:true}).click();
-  await expect(page.locator('.d-warning[role=alert]')).toContainText('수정 충돌');
-  await expect(page.getByRole('textbox',{name:'한 달 소득',exact:true})).toHaveValue('340');
-  await page.reload();await page.getByRole('button',{name:/빠른진단 시작/}).click();
-  await page.getByRole('button',{name:'검토 도구',exact:true}).click();
-  await page.getByText('서버 초안 저장·복원 · 로그인 필요',{exact:true}).click();
-  await page.getByLabel('상담 ID',{exact:true}).fill(id);await page.getByLabel('로그인 access token',{exact:true}).fill('MOCK-FE-ONLY');
-  await page.getByRole('button',{name:'현재 답변 복원',exact:true}).click();
-  await expect(page.getByRole('status').filter({hasText:'서버 원응답을 복원했어요'})).toBeVisible();
-  await questionNav(page).getByRole('button',{name:/한 달 소득/}).click();
-  await expect(page.getByRole('textbox',{name:'한 달 소득',exact:true})).toHaveValue('330');
-  await page.getByRole('button',{name:/입력버전 .*SUCCEEDED.*과거 입력/}).click();
-  await expect(page.getByRole('status').filter({hasText:'이전 입력 기준'})).toBeVisible();
-  await expect(page.locator('.d-metric').filter({hasText:'납입까지 반영한 월 잔여'})).toContainText('90');
-});
-
+// Persistence/retry/conflict coverage uses current account UI in dion-persistence.spec.ts.
 
 test('DION quick result investment button opens its deep question',async({page})=>{
   await sample(page);await calculate(page);

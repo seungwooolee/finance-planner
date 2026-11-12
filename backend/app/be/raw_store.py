@@ -58,6 +58,28 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def _definition_contract(definition):
+    """Compare known FE copy metadata and exact extracted-source aliases.
+
+    This comparison does not rewrite the registered definition or raw envelopes.
+    All actual question text, options, references and versions remain immutable.
+    """
+    value = json.loads(_json(definition))
+    if (value.get("namespace") == "DION-DESIGN"
+            and value.get("definition_version") in {"1.2", "1.2.1"}
+            and value.get("option_labels", {}).get("ui_presentation_version") == "DION-FE-COPY-1.1"):
+        del value["option_labels"]["ui_presentation_version"]
+    # The four 1.2.1 amendments were registered with the original archive locator.
+    # The extracted file is the same source, not a new question definition.
+    if (value.get("namespace") == "DION-DESIGN"
+            and value.get("definition_version") == "1.2.1"
+            and value.get("design_id") in {"NEW-01", "F04", "F09+F10+D08", "NEW-06"}):
+        source = "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#" + value["design_id"]
+        if value["definition_ref"] == "DION_questions_20261110_v1.zip:" + source:
+            value["definition_ref"] = source
+    return value
+
+
 def validate_envelope(envelope: dict) -> dict:
     required = {"wire_version", "question_ref", "subject_refs", "context", "fields"}
     if not isinstance(envelope, dict) or set(envelope) != required:
@@ -241,10 +263,11 @@ class RawAnswerStore:
     @staticmethod
     def _bind_definition(conn, definition):
         key = tuple(definition[k] for k in ["namespace", "design_id", "definition_version"])
-        row = conn.execute("SELECT definition_hash FROM question_definitions WHERE namespace=? AND design_id=? AND definition_version=?", key).fetchone()
+        row = conn.execute("SELECT definition_hash,definition_json FROM question_definitions WHERE namespace=? AND design_id=? AND definition_version=?", key).fetchone()
         digest = _digest(definition)
         if row is not None and row[0] != digest:
-            raise PocError("DEFINITION_VERSION_CONFLICT")
+            if _definition_contract(json.loads(row[1])) != _definition_contract(definition):
+                raise PocError("DEFINITION_VERSION_CONFLICT")
         if row is None:
             conn.execute("INSERT INTO question_definitions VALUES(?,?,?,?,?)", (*key, digest, _json(definition)))
 

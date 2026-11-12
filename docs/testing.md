@@ -1,3 +1,7 @@
+## 2026-11-12 계정 저장·복원
+
+`backend/tests/be/test_definition_compatibility.py`는 알려진 표시 버전과4개 정확한 원본경로 별칭만 허용하며 실제 정의 변경 거부·등록 hash/json·원응답 이력 보존을 검사한다. `frontend/e2e/dion-persistence.spec.ts`는 로그인 UI(인증만 MOCK)와 실제 임시 SQLite/API/엔진으로 저장·응답손실 재시도·새로고침·수정·과거 결과와 입력 복원·동시 수정 충돌을 검증한다. `DION_TEST_BE_URL=http://127.0.0.1:8106`의 기존 테스트 하네스가 필요하다. 전체 진입점은 `scripts/verify.ps1 -Mode Core|Build|E2E`이며 실제 배포 계정 확인과 구분한다. [이번 결과](integration/2026-11-12-account-persistence.md).
+
 # Git 통합 검사 — 2026-11-11
 
 이번 검사는 `C:\Users\LG\Projects\DION-git`에서 새로 설치한 환경으로 실행했다. Core의 pytest429통과/7skip, Ruff/pip check/TypeScript/ESLint와 production Build를 확인했다. 조건부 부동산 의존성 보완 후 전체pytest429통과/7skip과 Ruff도 재검사했다. v2 출력7쌍/독립 금액/연결데모12건을 함께 확인했다.

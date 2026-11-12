@@ -22,6 +22,8 @@ export type Document = {
 };
 export type Question = (typeof catalogSource.questions)[number];
 export const catalog = catalogSource;
+// Presentation metadata must never become part of an immutable question definition.
+export const presentationVersion = "DION-FE-COPY-1.1";
 export const example = exampleSource as unknown as Document;
 export const states: Record<State, string> = { KNOWN: "입력한 값", UNKNOWN: "모름", NOT_ENTERED: "미입력·비움", NOT_ASKED: "미질문", NOT_APPLICABLE: "해당 없음", DEFERRED: "나중에", DECLINED: "응답하지 않음" };
 export const navLabels: Record<string,string> = {"NEW-01":"진단 범위","LIFE-01":"생활단계",F11:"우선 목표",F03:"월평균 소득",F04:"생활비·전체출금",F06:"금융자산",N01:"부동산 여부",N02:"거주 형태","NEW-04":"채무 여부","F09+F10+D08":"채무 상세",F08:"부동산 상세",F12:"목표 시점",F13:"목표 금액","NEW-03":"기존 저축·투자","NEW-02":"미래 소득","NEW-05":"예정 지출","NEW-06":"보호·운영자금",F17:"투자선호"};
@@ -66,7 +68,6 @@ export function revise(doc: Document, id: string, change: (env: Envelope) => voi
   const next = clone(doc), previous = record(next, id);
   const env = previous ? clone(previous.envelope) : emptyEnvelope(next, id);
   change(env);
-  env.question_ref.option_labels.ui_presentation_version = "DION-FE-COPY-1.1";
   const version = next.raw_bundle.input_version + 1;
   env.context.source_ref = `user:revision:${id}:${version}`;
   const row: Revision = { answer_revision_id: `local-${crypto.randomUUID()}`, input_version: version,

@@ -139,7 +139,7 @@ test('desktop and mobile welcome, help sizing and signup pending flow stay hones
   expect(authPosts).toEqual([expect.stringContaining('/auth/signup'), expect.stringContaining('/auth/signup')]);
 });
 
-test('login failure and success are truthful; token does not enter review export or storage', async ({ page }) => {
+test('login failure and success are truthful; session is tab-scoped and excluded from review export', async ({ page }) => {
   // UI auth states only; provider protocol is separately tested with mocked HTTP in Python.
   await page.route('**/api/be/v1/auth/status', r => r.fulfill({ json: { configured: true } }));
   let attempts = 0;
@@ -167,7 +167,12 @@ test('login failure and success are truthful; token does not enter review export
   const chunks = []; for await (const chunk of stream!) chunks.push(chunk);
   const raw = Buffer.concat(chunks).toString();
   expect(raw).not.toContain('TEST-ACCESS-ONLY'); expect(raw).not.toContain('test-password');
-  expect(await page.evaluate(() => JSON.stringify({ ...localStorage, ...sessionStorage }))).not.toContain('TEST-ACCESS-ONLY');
+  expect(await page.evaluate(() => JSON.stringify(localStorage))).not.toContain('TEST-ACCESS-ONLY');
+  const session=await page.evaluate(() => JSON.parse(sessionStorage.getItem('dion.session.v1')??'null'));
+  expect(session.token).toBe('TEST-ACCESS-ONLY');
+  expect(session.expiresAt).toBeGreaterThan(Date.now());
+  expect(await page.evaluate(() => JSON.stringify(sessionStorage))).not.toContain('test-password');
   await page.getByRole('button', { name: '로그아웃', exact: true }).click();
   await expect(page.getByRole('button', { name: '로그인', exact: true })).toBeVisible();
+  expect(await page.evaluate(() => sessionStorage.getItem('dion.session.v1'))).toBeNull();
 });
