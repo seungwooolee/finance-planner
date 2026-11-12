@@ -110,7 +110,7 @@ test('unknown: no zero substitution, independent results, unknown risk and error
   await expect(page.locator('.d-metric').filter({hasText:'전체 자산'})).toContainText('1,200');
   await page.getByRole('button',{name:/투자구성/}).click();
   await expect(page.getByText('추가 확인 1개',{exact:false})).toBeVisible();
-  await page.getByRole('button',{name:'생활에 미치는 영향 확인 →',exact:true}).click();
+  await page.locator('.d-risk-summary').getByRole('button',{name:'생활에 미치는 영향 확인 →',exact:true}).click();
   await expect(page.locator('.d-risk-question').filter({hasText:'생활에 미치는 영향'})).toContainText('모르거나 비어 있는 답변');
   const risk=page.locator('.d-risk-question').filter({hasText:'생활에 미치는 영향'});
   await risk.getByRole('button',{name:'영향 없음',exact:true}).click();
