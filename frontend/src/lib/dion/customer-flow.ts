@@ -12,8 +12,8 @@ export function stepComplete(doc: Document, id: string) {
 export const copy: Record<string, { nav: string; title: string; help: string }> = {
   "NEW-01": { nav: "나의 상황", title: "나의 상황부터 알려주세요", help: "함께 살펴볼 사람과 현재 생활을 알려주세요." },
   F11: { nav: "목표 정하기", title: "어떤 일을 위해 돈을 준비하고 싶나요?", help: "목표를 고르고 필요한 금액을 함께 적어주세요. 여러 개를 선택해도 좋아요." },
-  F03: { nav: "한 달 소득", title: "한 달에 실제로 받는 돈은 얼마인가요?", help: "세금을 뺀 뒤 받는 월급·사업소득 등을 더해주세요." },
-  F04: { nav: "한 달 지출", title: "한 달에 쓰는 돈은 얼마인가요?", help: "생활비만 적거나, 통장에서 나간 전체 금액을 기준으로 적을 수 있어요." },
+  F03: { nav: "한 달 소득", title: "한 달 평균 세후 소득은 얼마인가요?", help: "실수령액을 기준으로, 불규칙 소득은 최근 3~6개월 평균을 참고해주세요." },
+  F04: { nav: "한 달 지출", title: "한 달 평균 생활비는 얼마인가요?", help: "식비·교통비·주거비 등 평소 생활비를 적고 대출 상환·저축·투자는 구분해주세요." },
   F06: { nav: "모아둔 돈", title: "지금 모아둔 돈을 살펴볼까요?", help: "예금·적금·주식 등 금융자산을 적어주세요. 집과 보증금은 뒤에서 따로 확인해요." },
   N01: { nav: "보유 부동산", title: "소유한 집이나 토지가 있나요?", help: "함께 살펴보기로 한 사람의 부동산을 기준으로 알려주세요." },
   N02: { nav: "살고 있는 집", title: "지금 어떤 집에서 살고 있나요?", help: "현재 살고 있는 집의 형태를 골라주세요." },
@@ -75,17 +75,41 @@ export function patchGoal(doc: Document, qid: "F12" | "F13", goalId: string, pat
   });
 }
 export function retainGoals(doc: Document, ids: string[]) {
-  let next = doc;
+  const removed = list(fieldValue(doc, "F11", "goals")).filter(g => !ids.includes(String(g.goal_id)));
+  const archived = list(fieldValue(doc, "F11", "inactive_goals"));
+  let next = revise(doc, "F11", env => {
+    env.fields.inactive_goals = field([...archived.filter(a => !removed.some(g => g.goal_id === a.goal_id)), ...removed.map(goal => ({
+      goal_id: goal.goal_id, goal,
+      timing: list(fieldValue(doc, "F12", "goals")).find(g => g.goal_id === goal.goal_id) ?? null,
+      amount: list(fieldValue(doc, "F13", "goals")).find(g => g.goal_id === goal.goal_id) ?? null,
+    }))], "JSON");
+  });
   for (const id of ["F11", "F12", "F13"]) next = revise(next, id, env => {
     env.fields.goals = field(list(env.fields.goals?.raw_value).filter(r => ids.includes(String(r.goal_id))), "JSON");
   });
   // Confirmations remain as historical evidence; the engine consumes only active IDs.
   return next;
 }
+// The raw envelope stores inactive answers too; only `goals` enters calculation.
+export function reactivateGoal(doc: Document, goalId: string) {
+  const archived = list(fieldValue(doc, "F11", "inactive_goals"));
+  const item = archived.find(g => g.goal_id === goalId);
+  if (!item) return doc;
+  let next = doc;
+  for (const [qid, key] of [["F11", "goal"], ["F12", "timing"], ["F13", "amount"]]) {
+    next = revise(next, qid, env => {
+      if (item[key]) env.fields.goals = field([...list(env.fields.goals?.raw_value).filter(g => g.goal_id !== goalId), item[key]], "JSON");
+      if (qid === "F11") env.fields.inactive_goals = field(archived.filter(g => g.goal_id !== goalId), "JSON");
+    });
+  }
+  return next;
+}
 export function restoreGoals(doc: Document, previous: Document) {
   let next = doc;
   for (const id of ["F11", "F12", "F13"]) next = revise(next, id, env => {
     env.fields = clone(record(previous, id)?.envelope.fields ?? { goals: field(null, "JSON") });
+    // A field already saved in the append-only envelope must not disappear on undo.
+    if (id === "F11" && !env.fields.inactive_goals) env.fields.inactive_goals = field([], "JSON");
   });
   return next;
 }

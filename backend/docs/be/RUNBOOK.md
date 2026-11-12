@@ -65,6 +65,14 @@ API.md의 JSON 계약과 examples/be/analysis_request.json을 따른다.
 저장 카드별 expected_version은 직전 응답 input_version을 사용한다.
 반복 전송 시 같은 request_key와 같은 본문을 재사용한다.
 
+## 4-1 운영 전 확인 — 단일 worker·OnePort 기록 (2026-11-12)
+
+- **worker 수:** 임시 상담(최대30분)은 서버 프로세스 메모리에만 있다. 배포는 worker 1개로 실행하고(`--workers`를 올리지 않는다), 재시작 시 임시 상담이 사라지는 것을 전제로 한다. 저장 상담(7일)은 DB에 있어 worker와 무관하다. 이 저장소에는 배포 설정 파일이 없어 호스팅 대시보드에서 직접 확인해야 한다.
+- **OnePort 기록 저장소:** 예산·중복 방지 기록은 `DION_ONEPORT_LEDGER_PATH`의 SQLite 파일이다. 재배포로 디스크가 지워지는 호스트에서는 기록이 초기화돼 예산·중복 방지가 무효가 된다. 영속 디스크를 확인한 뒤에만 `DION_ONEPORT_LEDGER_PERSISTENT=true`를 설정한다. 설정하지 않으면 실호출은 `ONEPORT_LEDGER_NOT_CONFIRMED`로 막히고 기존 결정적 해설이 표시된다.
+- 게이트웨이 키 자체의 사용 한도 설정은 이 코드와 별개의 추가 보호다.
+
+2026-11-13 후속: 현재는 원장 ID와 파일에 기록된 승인 한도도 확인하고, 원장 부재/교체/기존 형식 및 미확인 gateway cap에서 호출을 차단한다. 상담에는 명시003 migration이 필요하다. [P0 실행 기록과 운영 전제](../../../docs/integration/2026-11-13-agent-p0-concurrency-ledger.md)를 먼저 읽는다. 기존 실제 원장을 빈 파일로 교체하거나 자동 변환하지 않는다.
+
 ## 5 원격 통합 완료 판정 — 아직 미실행
 
 실제 로그인 A/B의 서로 다른 access token으로 검사한다.

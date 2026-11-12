@@ -1,8 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import source from "@/lib/dion/review-scenarios.json";
 import productScenario from "@/lib/dion/product-review-scenario.json";
+import source from "@/lib/dion/review-scenarios.json";
 import { Document, states } from "@/lib/dion/model";
 
 export type Scenario = {id:string;title:string;group:string;purpose:string;assumptions:string[];document:Document};

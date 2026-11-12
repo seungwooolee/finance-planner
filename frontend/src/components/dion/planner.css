@@ -56,3 +56,41 @@
 .d-login-dialog input[aria-invalid=true]{border-color:#b54336}
 .d-login-dialog .d-note{font-size:12px;text-align:left}
 @media(max-width:700px){.d-header-welcome{gap:12px}.d-header-cat{max-width:230px}.d-help-window{width:max-content;min-width:min(280px,calc(100vw - 32px));max-width:calc(100vw - 32px)}}
+
+/* Saved-result explanations preserve the existing results below the panel. */
+.d-explanation { margin: 18px 0; }
+.d-explanation-panel { margin-top: 16px; border: 1px solid #bdd8c9; overflow-wrap: anywhere; }
+.d-explanation-panel h2 { margin: 0; flex: 1; }
+.d-explanation-panel p { line-height: 1.8; }
+.d-explanation-panel [aria-pressed="true"] { background: #173d31; color: #fff; }
+.d-explanation-evidence { border-top: 1px solid #dce5df; margin-top: 20px; padding-top: 16px; }
+.d-explanation-evidence summary { cursor: pointer; font-weight: 700; }
+.d-explanation-evidence li { margin: 10px 0; }
+.d-explanation-source { color: #426051; font-size: .85rem; }
+.d-explanation-panel :focus-visible { outline: 3px solid #358267; outline-offset: 4px; }
+.d-agent-session { min-width: 0; overflow-wrap: anywhere; scroll-margin-block-start: 1rem; }
+.d-agent-session :focus-visible, .d-agent-session:focus-visible { outline: 3px solid #3848ce; outline-offset: 3px; }
+.d-agent-session :is(input, select) { min-width: 0; max-width: 100%; }
+.d-scheme-selects { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 12px; margin-block: 12px; }
+.d-scheme-evidence h4, .d-scheme-evidence h5, .d-agent-session [aria-label="답변 충돌 확인"] h5 { font-weight: 700; }
+.d-scheme-scope { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 12px; margin-block: 12px; }
+.d-scheme-scope dt { font-weight: 650; }
+.d-scheme-claim { border-block-start: 1px solid #dce5df; margin-block-start: 12px; padding-block-start: 12px; }
+.d-scheme-claim ul, .d-scheme-evidence .d-explanation-evidence ul { padding-inline-start: 1rem; }
+.d-scheme-evidence .d-explanation-evidence li span { display: block; }
+.d-scheme-evidence .d-explanation-evidence a { text-decoration: underline; }
+@media (max-width: 480px) {
+  .d-scheme-selects, .d-scheme-scope { grid-template-columns: minmax(0, 1fr); }
+  .d-scheme-scope dd { margin-block-end: 6px; }
+}
+
+/* Result flow additions: reuse the existing palette and avoid financial assumptions. */
+.d-waterfall>div{display:grid;grid-template-columns:minmax(150px,1fr) 2fr minmax(120px,1fr);gap:12px;align-items:center;margin:14px 0}
+.d-waterfall-track{height:20px;background:#eeedfb;border-radius:5px;overflow:hidden}.d-waterfall-track i{display:block;height:100%;background:#5453dd}.d-waterfall-track i.deduct{background:#a794d6}.d-waterfall strong{color:#272743}
+.d-plan-chart{width:100%;height:auto;max-height:330px}.d-plan-chart text{font-size:12px;fill:#353749}.d-selected-plan{outline:2px solid #5553d8}
+.d-portfolio-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.d-portfolio-card{padding:20px;border:1px solid #d5d4e5;border-radius:18px}.d-portfolio-card.selected{outline:2px solid #5553d8}.d-portfolio-card p{color:#454456}.d-donut-placeholder{height:100px;width:100px;border:16px solid #dad9ee;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;margin:auto;color:#343349}
+.d-progress-cat-track{height:48px;position:relative;margin-bottom:8px}.d-progress-cat-track>div{position:absolute;transition:left .45s ease;animation:d-answer-hop .5s ease}.d-progress-cat-track img{display:block}@keyframes d-answer-hop{50%{transform:translateY(-9px)}}
+@media(max-width:640px){.d-portfolio-grid{grid-template-columns:1fr}.d-waterfall>div{grid-template-columns:1fr 1fr}.d-waterfall-track{grid-column:1/-1;grid-row:auto}.d-waterfall strong{text-align:right}.d-portfolio-card{min-width:0}}
+@media(prefers-reduced-motion:reduce){.d-progress-cat-track>div{animation:none;transition:none;left:0!important}}
+
+.d-donut-placeholder>span{background:white;border-radius:50%;height:65px;width:65px;display:flex;align-items:center;justify-content:center}

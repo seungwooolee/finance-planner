@@ -15,6 +15,7 @@ from .engine import OUTPUTS, run_engine
 from .product_allocation import CONFIRMATION_VERSION as PRODUCT_CONFIRMATION_VERSION
 from .product_allocation import PRODUCT_QUESTION_IDS, attach_product_review
 from .questions import QUESTION_IDS
+from .result_presentation import attach_presentation
 from .statuses import attach_statuses, axes
 
 ADAPTER_VERSION = "DION-QUESTION12-ADAPTER-1.1"
@@ -886,6 +887,6 @@ def run_question_v12(document):
             from .dated_cash import attach_dated_cash
 
             attach_dated_cash(result, adapted["normalized_input"], document.get("payment_calendar"))
-        return attach_product_review(document, result)
+        return attach_presentation(attach_product_review(document, result))
     except (ContractError, KeyError, TypeError, ValueError, AttributeError) as exc:
         return attach_statuses(output("INVALID_INPUT", reason=str(exc), source_snapshot=copy.deepcopy(document)))

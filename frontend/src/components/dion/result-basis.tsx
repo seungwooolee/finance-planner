@@ -1,13 +1,14 @@
 "use client";
 
-import { Document, Json, list, object, states, textValue, won } from "@/lib/dion/model";
+import { formatKrw } from "@/lib/dion/money-format";
+import { Document, Json, list, object, states, textValue } from "@/lib/dion/model";
 import { copy, customerStep } from "@/lib/dion/customer-flow";
 
 const titles: Record<string, string> = { "OUT-02": "자산·채무 숫자의 근거", "OUT-03": "월 현금흐름 숫자의 근거", "OUT-04": "목표 준비 숫자의 근거", "OUT-05": "두 후보의 입력과 계산 기준" };
 const cashLabels: Record<string, string> = { monthly_net_income_krw: "세후 소득", reported_living_krw: "입력한 지출", included_debt_payment_krw: "입력 지출에 포함된 상환", included_contributions_krw: "입력 지출에 포함된 저축·투자 이체", required_debt_payment_krw: "별도로 확인한 상환액" };
 function Amount({ value }: { value: unknown }) {
   const item = object(value);
-  return <>{item.missing_status === "KNOWN" && typeof item.value === "string" ? `${won(item.value)}만원` : states[String(item.missing_status) as keyof typeof states] ?? "추가 확인 필요"}</>;
+  return <>{item.missing_status === "KNOWN" && typeof item.value === "string" ? formatKrw(item.value) : states[String(item.missing_status) as keyof typeof states] ?? "추가 확인 필요"}</>;
 }
 
 /** Read only the captured engine snapshot, never the currently edited document. */

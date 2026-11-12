@@ -412,7 +412,8 @@ def review_products(document, result, *, catalog=None, policy=None):
                          "detail_review_state": product.get("audit_state", "UNKNOWN"),
                          "disclosure": {**{k: (product.get("facts") or {}).get(k) for k in (
                              "risk_grade", "annual_base_fee_percent", "annual_total_expense_percent",
-                             "transaction_cost_percent")},
+                             "transaction_cost_percent", "asset_class", "fx_exposed", "principal_loss_possible",
+                             "deposit_protected")},
                              "source_as_of": {k: v.get("source_as_of") for k, v in
                                               (product.get("facts") or {}).get("evidence", {}).items()},
                              "source_urls": {k: v.get("url") for k, v in

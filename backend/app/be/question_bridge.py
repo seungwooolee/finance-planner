@@ -5,6 +5,7 @@ not new financial rules, amounts, or engine calculation states.
 """
 from ..planning.product_allocation import block_product_budget
 from ..planning.question_v12 import run_question_v12
+from ..planning.result_presentation import attach_presentation
 
 
 def run_frontend_questions(document):
@@ -54,4 +55,4 @@ def run_frontend_questions(document):
                                       "transaction_executed": False}
     if any("OUT-05" in gate["affected_outputs"] for gate in gates):
         block_product_budget(result)
-    return result
+    return attach_presentation(result)
