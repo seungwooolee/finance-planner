@@ -23,6 +23,7 @@ class OnePortConfig:
     max_request_bytes: int = 131072
     max_response_bytes: int = 131072
     ledger_path: Path = Path("artifacts/oneport-receipts.sqlite3")
+    ledger_scope: str = "UNCONFIRMED"
     budget_scope: str = ""
     budget_credits: Decimal = Decimal("0")
     reserve_credits: Decimal = Decimal("0")
@@ -51,6 +52,7 @@ class OnePortConfig:
                 max_request_bytes=int(env("MAX_REQUEST_BYTES", "131072")),
                 max_response_bytes=int(env("MAX_RESPONSE_BYTES", "131072")),
                 ledger_path=Path(env("LEDGER_PATH", "artifacts/oneport-receipts.sqlite3")),
+                ledger_scope=env("LEDGER_SCOPE", "UNCONFIRMED"),
                 budget_scope=env("BUDGET_SCOPE"), budget_credits=Decimal(env("BUDGET_CREDITS", "0")),
                 reserve_credits=Decimal(env("RESERVE_CREDITS", "0")),
                 max_calls=int(env("MAX_CALLS", "1")), expires_at=env("EXPIRES_AT"),
@@ -72,7 +74,8 @@ class OnePortConfig:
                 or self.budget_credits < 0 or self.reserve_credits < 0
                 or any(not c.isprintable() or c.isspace() or not c.isascii() for c in self.api_key)
                 or len(self.model) > 160 or any(not c.isprintable() or c.isspace() or not c.isascii() for c in self.model)
-                or self.model.lower() == "jev" or len(self.budget_scope) > 128):
+                or self.model.lower() == "jev" or len(self.budget_scope) > 128
+                or self.ledger_scope not in {"UNCONFIRMED", "SINGLE_HOST_DURABLE", "MULTI_HOST"}):
             raise ConfigurationError("ONEPORT_CONFIG_INVALID")
 
     def readiness(self, *, synthetic=False):
@@ -81,6 +84,10 @@ class OnePortConfig:
             return "ONEPORT_DISABLED"
         if not self.api_key or not self.model:
             return "ONEPORT_NOT_CONFIGURED"
+        if self.ledger_scope != "SINGLE_HOST_DURABLE":
+            return "ONEPORT_SHARED_LEDGER_REQUIRED" if self.ledger_scope == "MULTI_HOST" else "ONEPORT_DURABILITY_UNCONFIRMED"
+        if not self.ledger_path.is_absolute():
+            return "ONEPORT_ABSOLUTE_LEDGER_PATH_REQUIRED"
         if not synthetic and not self.allow_saved_results:
             return "ONEPORT_SYNTHETIC_ONLY"
         if (not self.budget_scope or self.budget_credits <= 0 or self.reserve_credits <= 0

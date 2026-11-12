@@ -1,3 +1,7 @@
+2026-11-12 후속: [운영 준비·R2 재개 검증](integration/2026-11-12-operational-followup.md)에서 기존 run을 여는 브라우저1건 통과와 원격 agent_sessions 누락·영속 원장 제약을 확인했다. 아래 검사 실패/미실행 기록은 당시 이력이며, 이번 로컬 통과를 실계정/원격 migration 완료로 해석하지 않는다.
+
+---
+
 # R2-a 공통 상담 계약·구현 기록 — 2026-11-12
 
 상태: **로컬 구현, 백엔드 검증 통과 / 브라우저 재개 전체 경로 미완료 / 미배포**. 계약은 `DION-AGENT-SESSION-1.0`, 정책은 `DION-AGENT-STATE-1.0`, 기억 고지는 `DION-AGENT-MEMORY-1.0`이다. [고객용 AI 설계](customer-ai-agent-design.md)의 R2-a를 OUT-03·OUT-05부터 연결했다. R2-b 절세 근거 상담, R3 재계산, 진단 반영·채택·거래는 후속이다.

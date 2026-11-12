@@ -1,3 +1,23 @@
+# 2026-11-12 — RAG·LangChain 확장 구조 설계
+
+[AI 구조 설계0.2](customer-ai-agent-architecture.md)에 LangChain 연결 계층·2단계 RAG·근거 수집/분할·검색·OnePort·인용 검증 흐름과 RAG 논리 데이터 스키마를 추가했다. embedding 모델/차원·pgvector 운영 지원·패키지 버전은 미확정이고 설치/색인/실제 연결은 하지 않았다. 서버 소유권/확인·기존 엔진 계산 경계는 유지하며 이번에는 문서만 수정했다. 아래는 실행 작업의 기록이다.
+
+---
+
+# 2026-11-12 — 운영 준비·R2 재개 후속 수정 (로컬)
+
+기존 run을 여는 단계를 포함한 R2 재개 브라우저1건이 통과했다. 준비 상태·OnePort·상담 관련98개, 추가 준비 상태/앱 lifespan/오프라인 migration 검사를 통과했고 변경 Ruff도 통과했다. 시작 설정 고지·`/readyz`·읽기 전용 카탈로그 검사, migration 단일 파일 계획, 불명확/다중 호스트 OnePort 원장 호출 차단을 추가했다.
+
+운영 조회에서는 디스크 없는 인스턴스1·worker 미명시 시작 명령을 확인했다. 원격 DB에는 `agent_sessions`가 없어 새 읽기 전용 검사에서 DB_SCHEMA_INCOMPLETE였다. 새 `/readyz`를 배포하면503으로 응답하는 상태이며, 이 endpoint는 아직 운영에 배포하지 않았다. 로컬/인증 mock 재개 통과와 원격 운영 성공을 구분한다. **P0 전체는 원격 migration·실계정 R2·영속/공유 원장 결정 전 미완료**다. 기본 분석 경로와 호환 정책, 원본/AI/배포본 절세 소스 차이를 [이번 수정·검증·후속 승인안](integration/2026-11-12-operational-followup.md)에 기록했다. 이번 변경은 로컬만이며 GitHub push·Vercel/Render 배포·유료 AI 호출은 하지 않았다. 아래는 이전 시점 기록이다.
+
+---
+
+# 2026-11-12 AI 개발 방향·구조 설계
+
+[개발 방향·구조 스키마](customer-ai-agent-architecture.md)에 서버 제어·LLM 후보 제안·엔진 계산의 책임, 기존/후속 도구, 기억·근거·변경 proposal과 확인 흐름을 정리했다. 자연어 후보 추출과 R3/R2-b는 후속 설계이며 이번에는 문서/문서용 JSON Schema만 추가했다. 운영 후속의 미커밋 수정은 보존했으며 테스트·실계정·DB 적용/배포 상태는 해당 [실행 기록](integration/2026-11-12-operational-followup.md)을 따른다. 아래는 이전 기록이다.
+
+---
+
 # 2026-11-12 AI 개발 작업본 원격 인계
 
 사용자 지시에 따라 `codex/result-explanation-r1`의 코드·설계·검증 기록과 공통 AGENTS.md를 개발용으로 커밋·푸시한다. [개발 인계](integration/2026-11-12-ai-development-handoff.md)에 기준 커밋, 새 노트북 실행, 배포 방지와 기존 검증의 한계를 정리했다. R2 브라우저 재개1건 미통과를 유지하며, 기존 검사 통과를 이번 재실행으로 보고하지 않는다. 최종 통합·운영 DB 반영·배포는 별도 작업이다. 아래는 기존 구현 당시 기록이다.

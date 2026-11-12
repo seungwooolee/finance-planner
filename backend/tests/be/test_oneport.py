@@ -26,6 +26,7 @@ def config(tmp_path):
     end = datetime.combine(datetime.now(korea).date(), time(23, 59, 59), korea)
     return OnePortConfig(api_key="test-only-key", model="synthetic-chat", enabled=True,
                          allow_saved_results=True, ledger_path=tmp_path / "receipts.sqlite3",
+                         ledger_scope="SINGLE_HOST_DURABLE",
                          budget_scope="test-budget", budget_credits=Decimal(10), reserve_credits=Decimal(2),
                          max_calls=3, expires_at=end.isoformat())
 
