@@ -1,0 +1,182 @@
+{
+  "baseline_version": "5",
+  "baseline_sha256": "64c799714399647626a62a1d898fcf0ff8ba48a31955038fadd21ddce5e16042",
+  "archive_root": "dion/",
+  "files": [
+    {
+      "path": "CHANGELOG.md",
+      "sha256": "8f68bad04306a86fb87fd6118c6ff77d781e7a9abc26ba95647dc3ace5337963",
+      "bytes": 5613
+    },
+    {
+      "path": "backend/app/be/__init__.py",
+      "sha256": "f5b23ecbe14bd4244bf8a6a6622fc34895b50ac580ce0586ef648d454290c4c1",
+      "bytes": 85
+    },
+    {
+      "path": "backend/app/be/adapter.py",
+      "sha256": "9c5000f78b376d3bd14af6368add25463cea509b39e6679044b30258ec5525c1",
+      "bytes": 3710
+    },
+    {
+      "path": "backend/app/be/api.py",
+      "sha256": "12dff3a66c49ced7332d6219b79e4a096c749b2b2ef150492b3216b5341bde17",
+      "bytes": 4457
+    },
+    {
+      "path": "backend/app/be/auth.py",
+      "sha256": "e3b741041756bbe384cc472135f68d3b236fa0f6c470c7927ffa080ef8ea02e3",
+      "bytes": 1528
+    },
+    {
+      "path": "backend/app/be/demo.py",
+      "sha256": "1bca69af445118a20958eb89986da5285ddfa21f8812ba6a1530d375c5681988",
+      "bytes": 2063
+    },
+    {
+      "path": "backend/app/be/migrate.py",
+      "sha256": "1217d4fe7c6e1b42321568f469e6329a64cab9278c1883a851459a2e20c48b3b",
+      "bytes": 681
+    },
+    {
+      "path": "backend/app/be/postgres.py",
+      "sha256": "99d3e4d0bbf0cb74305fa8ea31798338f5a700d1556502c4e0c48cd81918fc5d",
+      "bytes": 2953
+    },
+    {
+      "path": "backend/app/be/raw_store.py",
+      "sha256": "20c9232c8597717945e8c20df703892b59aec818b20ab630a89d175e5c1d5ce2",
+      "bytes": 16659
+    },
+    {
+      "path": "backend/app/be/store.py",
+      "sha256": "962a4968123bfb8e4140091995111422910dc74f4446aa06f31099ee12878946",
+      "bytes": 7265
+    },
+    {
+      "path": "backend/app/be_server.py",
+      "sha256": "7ca2551adbf5c9df3734471437b65d55211c8f504cfc14cf9a42e54f823439d0",
+      "bytes": 273
+    },
+    {
+      "path": "backend/docs/be/API.md",
+      "sha256": "f4b339721d483eb97d1d46567072b9a6bbbbef35f62fdca651e3f7d22e2a19c5",
+      "bytes": 7932
+    },
+    {
+      "path": "backend/docs/be/COORDINATOR_HANDOFF.md",
+      "sha256": "19fce4daa0a45e3624dfb5e48c63957c78981c88534f5e3327a292ed280d55a6",
+      "bytes": 3427
+    },
+    {
+      "path": "backend/docs/be/RUNBOOK.md",
+      "sha256": "e79771a83ea39f403b3d22375825b6f42b0631454e528a818c5331717f686d35",
+      "bytes": 5338
+    },
+    {
+      "path": "backend/docs/be/STATE_MAPPING.md",
+      "sha256": "5bf7fdc81b93ca7057148bc76f5f340c21fcd4b5d9d6ac4da3f36feff0f3e0eb",
+      "bytes": 1601
+    },
+    {
+      "path": "backend/docs/be/demo-verification.json",
+      "sha256": "e69814033694657196d2275c900e6879c9582f0526ff5c9b3b810116399e66ed",
+      "bytes": 4087
+    },
+    {
+      "path": "backend/docs/be/engine_handoff.received.json",
+      "sha256": "3b2028ab82e810ebb6a409f6fc3c6de7b16fe174143a1afb3837ee76e8a8c8dd",
+      "bytes": 3700
+    },
+    {
+      "path": "backend/docs/be/engine_handoff.template.json",
+      "sha256": "8f557c95393ca3f4638b01048b0327b650dcf20113d74c78c923dab7b4dd55ab",
+      "bytes": 1839
+    },
+    {
+      "path": "backend/docs/be/state-mapping.json",
+      "sha256": "06db024042f1584d479606c8d765b71e5c649e5f9253c2fff1efe9689756d2fb",
+      "bytes": 774
+    },
+    {
+      "path": "backend/docs/be/verification.json",
+      "sha256": "96047f9c3fb7912cc90dad04f135efa2867fb37408cb989d25e7fd9b29b52c43",
+      "bytes": 2687
+    },
+    {
+      "path": "backend/env.be.example",
+      "sha256": "fcba057ca835c35a20f8bbf6f50c7b6b9c781435a2925a5c19eef640f78809ad",
+      "bytes": 415
+    },
+    {
+      "path": "backend/examples/be/analysis_request.json",
+      "sha256": "49dcf6ce930a3c185e2a1584612ac8322e49a97a72e9293e7749aad987fa8870",
+      "bytes": 305
+    },
+    {
+      "path": "backend/examples/be/error_input.json",
+      "sha256": "861e7eaca91afb9752dd69e5318ce4d75d4d012a57b004e10b1f01b63b179a2a",
+      "bytes": 3522
+    },
+    {
+      "path": "backend/examples/be/error_output.json",
+      "sha256": "7c5a26f4629fb4eb8cd2195b6d78637853efdf3b3bb520864be73fbff0b1decb",
+      "bytes": 191
+    },
+    {
+      "path": "backend/examples/be/missing_input.json",
+      "sha256": "76fc879e4416dbc01cd8b6e22b7d707357fd63aa09a9a2a9b5f60e744e98f12d",
+      "bytes": 3087
+    },
+    {
+      "path": "backend/examples/be/missing_output.json",
+      "sha256": "239795f0e542f09b327dce0eccdb32e5018abfbf0f458a3b8ab3afb8be80402a",
+      "bytes": 15137
+    },
+    {
+      "path": "backend/examples/be/normal_input.json",
+      "sha256": "9e8a171b1fc4fe08ebfef0b335187b12d7eebfa29f58ee4a1e2b535c896f9876",
+      "bytes": 3529
+    },
+    {
+      "path": "backend/examples/be/normal_output.json",
+      "sha256": "3ac24e62c0840767bc3f5382e1385c4d73626c6e7cfd73ce153d53b2513ece7f",
+      "bytes": 18752
+    },
+    {
+      "path": "backend/examples/be/raw_cards.json",
+      "sha256": "eb4dcd5e7d02b4871f077bf332cf50ae00272a93e3dd81717bf4d91621d50c91",
+      "bytes": 6589
+    },
+    {
+      "path": "backend/migrations/be/001_raw_and_analysis.sql",
+      "sha256": "03cd41aa195a743e6b4d990e78b69214bd26d1ea97cddaf1fc3119d8d40b0acc",
+      "bytes": 3661
+    },
+    {
+      "path": "backend/requirements-be.txt",
+      "sha256": "4856e33015c423349d32251788b5d572fbba132d43fc097dd2e6636de2e5b9f4",
+      "bytes": 43
+    },
+    {
+      "path": "backend/tests/be/__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "backend/tests/be/test_integration.py",
+      "sha256": "3446be91869fb8f918b56a382f2cc7d85a04fd85e908031dcc294e4c6733690c",
+      "bytes": 15986
+    },
+    {
+      "path": "backend/tests/be/test_postgres.py",
+      "sha256": "9a8afb129710590d5defc0aa38d8bc6d36b266e4a9ae69d506c812dc06db06d6",
+      "bytes": 7692
+    },
+    {
+      "path": "backend/tests/be/test_raw_poc.py",
+      "sha256": "60cfd31aafdfb2b11cda4fa5158290724d27b46de0a2d626bbd682dfe7e07294",
+      "bytes": 14129
+    }
+  ]
+}

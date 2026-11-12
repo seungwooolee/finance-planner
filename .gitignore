@@ -21,3 +21,27 @@ logs/
 /npm
 /py
 /python
+
+# Credentials, local databases, and verification output
+*.pem
+*.key
+*.p12
+*.pfx
+*.sqlite
+*.sqlite3
+*.sqlite3-*
+*.db
+*.db-*
+.mypy_cache/
+.cache/
+.coverage
+htmlcov/
+docs/integration/2026-11-11-feedback/*.png
+docs/integration/2026-11-11-feedback-2/*.png
+docs/integration/2026-11-11-frontend/*.png
+
+# Preserved historical capture/verification outputs, kept local only
+/docs/submission/2026-11-10/captures/
+/docs/submission/2026-11-10/evidence/
+/docs/dion/08_ORIGINAL_INPUTS/py
+/docs/dion/09_UPDATED_FILES/py

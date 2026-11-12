@@ -1,0 +1,57 @@
+{
+  "source_tab": "POC-01 질문·계산 연결",
+  "source_state": "검토 초안",
+  "whole_tab_promoted": false,
+  "unchanged_draft_preserved": true,
+  "adopted": [
+    {
+      "id": "QD-01",
+      "decision": "ADOPT",
+      "issues": [
+        "R04"
+      ],
+      "scope": "LIVING_ONLY default; TOTAL_OUTFLOW optional; no unknown inclusion zero"
+    },
+    {
+      "id": "QD-02",
+      "decision": "ADOPT",
+      "issues": [
+        "R04",
+        "R12"
+      ],
+      "scope": "essential living conditional for OUT-05, not initial summary"
+    },
+    {
+      "id": "QD-03",
+      "decision": "ADOPT",
+      "issues": [
+        "R06"
+      ],
+      "scope": "current funded vs extra target vs policy minima; policy1.0 unchanged"
+    },
+    {
+      "id": "QD-04",
+      "decision": "ADOPT_WITH_TIMING_AND_FEES",
+      "issues": [
+        "R02"
+      ],
+      "scope": "remove total≤principal block; timing and fee extensions separately reviewed"
+    },
+    {
+      "id": "QD-05",
+      "decision": "ADOPT",
+      "issues": [
+        "R04"
+      ],
+      "scope": "NEW-07 optional for OUT-06, not OUT-05 common requirement"
+    },
+    {
+      "id": "QD-06",
+      "decision": "ADOPT_LIMITED_EXISTING_ENGINE",
+      "issues": [
+        "R04"
+      ],
+      "scope": "only explicit future assumptions already accepted by1.3-engine; not a new income forecasting model"
+    }
+  ]
+}

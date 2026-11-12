@@ -1,0 +1,125 @@
+{
+  "storage": "LOCAL_SQLITE",
+  "identity": "MOCK",
+  "engine": "ACTUAL",
+  "runs": [
+    {
+      "run_id": "run_7f8a3a83cfc845ab8a700a316504e687",
+      "raw_snapshot_id": "raw_95596b92961f4159ad19858b012b7895",
+      "input_version": 6,
+      "is_current": false,
+      "input_hash": "f6bc7abe667d02793e7e57da2b7283ad5087c413548181ce7e040f142a1ce604",
+      "status": "SUCCEEDED",
+      "draft_id": "draft_fa2408ce135f46c4983c789543e118f3",
+      "OUT-03": {
+        "calc_state": "CALCULATED",
+        "normalized_living": {
+          "calc_state": "CALCULATED",
+          "value": "2000000",
+          "unit": "KRW",
+          "reason_codes": []
+        },
+        "before_debt_difference": {
+          "calc_state": "CALCULATED",
+          "value": "1000000",
+          "unit": "KRW",
+          "reason_codes": []
+        },
+        "base_surplus": {
+          "calc_state": "CALCULATED",
+          "value": "1000000",
+          "unit": "KRW",
+          "reason_codes": []
+        },
+        "feasibility": "SURPLUS_BEFORE_RESERVES_AND_GOALS",
+        "recurring_projection": {
+          "calc_state": "NOT_IMPLEMENTED",
+          "value": null,
+          "unit": "KRW",
+          "reason_codes": [
+            "RECURRING_INCOME_AND_CALENDAR_NOT_NORMALIZED"
+          ]
+        },
+        "investment_available": {
+          "calc_state": "NEEDS_POLICY",
+          "value": null,
+          "unit": "KRW",
+          "reason_codes": [
+            "BASE_SURPLUS_IS_NOT_INVESTMENT_BUDGET"
+          ]
+        },
+        "existing_cash_contributions_krw": "500000",
+        "after_existing_contributions_krw": "500000",
+        "payroll_deducted_again": false,
+        "investment_available_krw": null,
+        "title": "월 가용흐름",
+        "source_refs": [
+          "answer:ans_79b79b15659a410aaf275da0e7c09005@1",
+          "answer:ans_36c9db02d1b7437eaff4c8f27e5cdb80@2",
+          "answer:ans_9cafab807a814832ab3b56671d577d38@3",
+          "answer:ans_cd2aa9eae55446f485697994ebc05f3c@5",
+          "answer:ans_b270c5f6806f47c8a4cb140cca607147@6"
+        ]
+      }
+    },
+    {
+      "run_id": "run_793cfbdd926548438e2703b4df566969",
+      "raw_snapshot_id": "raw_b7ae4af12b9f428e907fa38c7558dd1f",
+      "input_version": 7,
+      "is_current": true,
+      "input_hash": "7291dfa913a61fddbaa2d24da627b429706d80a84053ef9bd98dafb4f370e385",
+      "status": "SUCCEEDED",
+      "draft_id": "draft_0cf38e57d40a46069578b0b5f909977a",
+      "OUT-03": {
+        "calc_state": "CALCULATED",
+        "normalized_living": {
+          "calc_state": "CALCULATED",
+          "value": "2000000",
+          "unit": "KRW",
+          "reason_codes": []
+        },
+        "before_debt_difference": {
+          "calc_state": "CALCULATED",
+          "value": "1200000",
+          "unit": "KRW",
+          "reason_codes": []
+        },
+        "base_surplus": {
+          "calc_state": "CALCULATED",
+          "value": "1200000",
+          "unit": "KRW",
+          "reason_codes": []
+        },
+        "feasibility": "SURPLUS_BEFORE_RESERVES_AND_GOALS",
+        "recurring_projection": {
+          "calc_state": "NOT_IMPLEMENTED",
+          "value": null,
+          "unit": "KRW",
+          "reason_codes": [
+            "RECURRING_INCOME_AND_CALENDAR_NOT_NORMALIZED"
+          ]
+        },
+        "investment_available": {
+          "calc_state": "NEEDS_POLICY",
+          "value": null,
+          "unit": "KRW",
+          "reason_codes": [
+            "BASE_SURPLUS_IS_NOT_INVESTMENT_BUDGET"
+          ]
+        },
+        "existing_cash_contributions_krw": "500000",
+        "after_existing_contributions_krw": "700000",
+        "payroll_deducted_again": false,
+        "investment_available_krw": null,
+        "title": "월 가용흐름",
+        "source_refs": [
+          "answer:ans_79b79b15659a410aaf275da0e7c09005@1",
+          "answer:ans_7d9cb94173fe4e2a88a63f5d3340eb3e@7",
+          "answer:ans_9cafab807a814832ab3b56671d577d38@3",
+          "answer:ans_cd2aa9eae55446f485697994ebc05f3c@5",
+          "answer:ans_b270c5f6806f47c8a4cb140cca607147@6"
+        ]
+      }
+    }
+  ]
+}

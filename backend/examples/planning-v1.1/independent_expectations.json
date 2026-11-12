@@ -1,0 +1,17 @@
+{
+  "oracle_version": "DION-ORACLE-300-210-1.0",
+  "unit": "KRW",
+  "fictional": true,
+  "competition_customer_selected": false,
+  "normalized_living": "1600000",
+  "after_debt": "1100000",
+  "after_existing": "900000",
+  "additional_goal": "300000",
+  "residual": "600000",
+  "stability_investment": "300000",
+  "stability_cash": "300000",
+  "expansion_investment": "480000",
+  "expansion_cash": "120000",
+  "recommended_new_investment": null,
+  "active_legal_rules": 0
+}

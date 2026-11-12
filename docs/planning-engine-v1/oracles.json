@@ -1,0 +1,31 @@
+{
+  "basis": "HAND_CALCULATED_FICTIONAL_CASES",
+  "cases": [
+    {
+      "input": "backend/examples/planning/base_input.json",
+      "expected": {
+        "results/OUT-02/net_worth/value": "20000000",
+        "results/OUT-03/after_existing_contributions_krw": "2500000",
+        "results/OUT-04/rows/0/level_contribution_krw": "1000000",
+        "results/OUT-05/candidates/0/final_cash_krw": "20250000",
+        "results/OUT-05/candidates/1/final_cash_krw": "18900000",
+        "results/OUT-05/candidates/0/final_net_worth_krw": "24000000",
+        "results/OUT-05/candidates/1/final_net_worth_krw": "24000000"
+      }
+    },
+    {
+      "input": "backend/examples/planning/full_input.json",
+      "expected": {
+        "results/OUT-02/net_worth/value": "25000000",
+        "results/OUT-11/rows/0/net_amount_krw": "1600000",
+        "results/OUT-09/total_shortfall_krw": "1500000",
+        "results/OUT-13/own_estate/beneficiaries/0/amount_krw": "8000000",
+        "results/OUT-13/own_estate/beneficiaries/1/amount_krw": "16000000",
+        "results/OUT-05/candidates/0/final_cash_krw": "31650000",
+        "results/OUT-05/candidates/1/final_cash_krw": "30300000",
+        "results/OUT-05/candidates/0/final_net_worth_krw": "40400000",
+        "results/OUT-05/candidates/1/final_net_worth_krw": "40400000"
+      }
+    }
+  ]
+}

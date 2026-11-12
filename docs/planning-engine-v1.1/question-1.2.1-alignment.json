@@ -1,0 +1,24 @@
+{
+  "observed_question_patch": "https://drive.google.com/file/d/1TL31SmGbnwNo9x6CJkqyKjz9c-gEQlEH/view",
+  "zip_sha256": "4087f674bd0726a12fd4de6487d58bd8c937c0c62c40386a597066dc0b7ea645",
+  "contract_sha256": "948ce1f7a2e7e77482158de7f348072da325e13c5144ba4c2f46df433d09d155",
+  "supported_changed_questions": [
+    "NEW-01",
+    "F04",
+    "F09+F10+D08",
+    "NEW-06"
+  ],
+  "unsupported_customer_target_mode": "EXTRA_ABOVE_MINIMUM",
+  "supported_customer_target_modes": [
+    "POLICY_ONLY",
+    "TOTAL_TARGET"
+  ],
+  "unknown_target": "NEEDS_INPUT",
+  "source_fields": {
+    "NEW-01": "assessment_scope; included_owner_ids; asset_coverage; scope_acknowledged; scope_version; owner_confirmation_ref",
+    "F04": "expense_basis; living; exclusions_confirmed; included_debt; included_contributions; essential_living; period_start; period_end; response_definition_version",
+    "F09+F10+D08": "debts[].{debt_id,owner_ids,balance,balance_as_of,balance_timing,payment_period,pay_on,payment_total,principal_payment,interest_payment,fees,components_complete,value_basis,payment_basis,annual_rate,schedule}",
+    "NEW-06": "reservations[].{reservation_id,asset_ref,purpose,amount,goal_ref}; customer_target_mode; customer_protection_extra; customer_operating_extra; customer_protection_total; customer_operating_total; policy_version"
+  },
+  "other_part_files_modified": false
+}

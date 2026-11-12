@@ -1,0 +1,189 @@
+{
+  "schema_version": "FIN-CONTRACT-0.1",
+  "context": {
+    "case_id": "CONTRACT-01",
+    "profile_version": "1",
+    "snapshot_id": "contract01-v1",
+    "evaluation_date": "2026-11-10",
+    "scope": "personal",
+    "included_owner_ids": [
+      "self"
+    ],
+    "currency": "KRW",
+    "timezone": "Asia/Seoul",
+    "policy_refs": [],
+    "legal_rule_refs": []
+  },
+  "answers": [
+    {
+      "answer_id": "income-answer",
+      "namespace": "CURRENT40",
+      "question_id": "F03",
+      "definition_version": "current40-v1.1",
+      "raw_response": {
+        "amount": "300",
+        "unit": "만원",
+        "amount_status": "confirmed"
+      },
+      "unit": "KRW_10000",
+      "missing_status": "KNOWN"
+    }
+  ],
+  "coverage": {
+    "assets": "complete",
+    "debts": "complete"
+  },
+  "assets": [
+    {
+      "asset_id": "account",
+      "parent_asset_id": null,
+      "kind": "INVESTMENT",
+      "origin": "CURRENT",
+      "detail_coverage": "partial",
+      "owner_ids": [
+        "self"
+      ],
+      "value_krw": {
+        "value": "10000000",
+        "missing_status": "KNOWN",
+        "basis": "SCENARIO",
+        "source_ref": "fixture:CONTRACT-01"
+      },
+      "valued_on": "2026-11-10",
+      "value_basis": "SCOPE_SHARE",
+      "share_numerator": "1",
+      "share_denominator": "1"
+    },
+    {
+      "asset_id": "holding",
+      "parent_asset_id": "account",
+      "kind": "INVESTMENT",
+      "origin": "CURRENT",
+      "detail_coverage": "partial",
+      "owner_ids": [
+        "self"
+      ],
+      "value_krw": {
+        "value": "8000000",
+        "missing_status": "KNOWN",
+        "basis": "SCENARIO",
+        "source_ref": "fixture:CONTRACT-01"
+      },
+      "valued_on": "2026-11-10",
+      "value_basis": "SCOPE_SHARE",
+      "share_numerator": "1",
+      "share_denominator": "1"
+    },
+    {
+      "asset_id": "pension",
+      "parent_asset_id": null,
+      "kind": "PENSION",
+      "origin": "CURRENT",
+      "detail_coverage": "partial",
+      "owner_ids": [
+        "self"
+      ],
+      "value_krw": {
+        "value": "5000000",
+        "missing_status": "KNOWN",
+        "basis": "SCENARIO",
+        "source_ref": "fixture:CONTRACT-01"
+      },
+      "valued_on": "2026-11-10",
+      "value_basis": "SCOPE_SHARE",
+      "share_numerator": "1",
+      "share_denominator": "1"
+    },
+    {
+      "asset_id": "house",
+      "parent_asset_id": null,
+      "kind": "REAL_ESTATE",
+      "origin": "CURRENT",
+      "detail_coverage": "partial",
+      "owner_ids": [
+        "self"
+      ],
+      "value_krw": {
+        "value": "600000000",
+        "missing_status": "KNOWN",
+        "basis": "SCENARIO",
+        "source_ref": "fixture:CONTRACT-01"
+      },
+      "valued_on": "2026-11-10",
+      "value_basis": "TOTAL_VALUE",
+      "share_numerator": "1",
+      "share_denominator": "2"
+    }
+  ],
+  "debts": [
+    {
+      "debt_id": "loan",
+      "owner_ids": [
+        "self"
+      ],
+      "value_krw": {
+        "value": "10000000",
+        "missing_status": "KNOWN",
+        "basis": "SCENARIO",
+        "source_ref": "fixture:CONTRACT-01"
+      },
+      "valued_on": "2026-11-10",
+      "value_basis": "SCOPE_SHARE",
+      "share_numerator": "1",
+      "share_denominator": "1"
+    }
+  ],
+  "cashflow": {
+    "monthly_net_income_krw": {
+      "value": "3000000",
+      "missing_status": "KNOWN",
+      "basis": "SCENARIO",
+      "source_ref": "fixture:CONTRACT-01"
+    },
+    "reported_living_krw": {
+      "value": "2100000",
+      "missing_status": "KNOWN",
+      "basis": "SCENARIO",
+      "source_ref": "fixture:CONTRACT-01"
+    },
+    "included_debt_payment_krw": {
+      "value": "300000",
+      "missing_status": "KNOWN",
+      "basis": "SCENARIO",
+      "source_ref": "fixture:CONTRACT-01"
+    },
+    "included_contributions_krw": {
+      "value": "200000",
+      "missing_status": "KNOWN",
+      "basis": "SCENARIO",
+      "source_ref": "fixture:CONTRACT-01"
+    },
+    "required_debt_payment_krw": {
+      "value": "300000",
+      "missing_status": "KNOWN",
+      "basis": "SCENARIO",
+      "source_ref": "fixture:CONTRACT-01"
+    },
+    "income_basis": "NET",
+    "period_start": "2026-10-01",
+    "period_end": "2026-10-31",
+    "definition_version": "scenario-current-month-1",
+    "includes_one_off_income": "NO"
+  },
+  "extension_payloads": {
+    "incoming_inheritance": {
+      "amount_krw": {
+        "value": "80000000",
+        "missing_status": "KNOWN",
+        "basis": "SCENARIO",
+        "source_ref": "fixture:CONTRACT-01"
+      },
+      "certainty": "UNCONFIRMED",
+      "expected_on": "2036-11-10"
+    },
+    "pension": {
+      "balance_asset_ref": "pension",
+      "current_income_ref": "income-answer"
+    }
+  }
+}

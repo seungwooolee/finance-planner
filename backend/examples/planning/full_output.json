@@ -1,0 +1,2355 @@
+{
+  "schema_version": "DION-ENGINE-1.0",
+  "engine_version": "DION-ENGINE-1.0",
+  "question_binding_version": "1.3-engine",
+  "policy_version": "DION-ALLOCATION-1.0",
+  "active_legal_rules": [],
+  "input_state": "VALIDATED_ENVELOPE",
+  "calc_state": "PARTIAL",
+  "context": {
+    "case_id": "DEMO-FICTIONAL-01",
+    "snapshot_id": "snapshot-1",
+    "profile_version": "1",
+    "evaluation_on": "2026-12-31",
+    "scope": "personal",
+    "included_owner_ids": [
+      "person-1"
+    ],
+    "currency": "KRW",
+    "timezone": "Asia/Seoul",
+    "projection_start": "2027-01-01",
+    "projection_end": "2027-03-31"
+  },
+  "input_snapshot": {
+    "schema_version": "DION-ENGINE-1.0",
+    "context": {
+      "case_id": "DEMO-FICTIONAL-01",
+      "snapshot_id": "snapshot-1",
+      "profile_version": "1",
+      "evaluation_on": "2026-12-31",
+      "scope": "personal",
+      "included_owner_ids": [
+        "person-1"
+      ],
+      "currency": "KRW",
+      "timezone": "Asia/Seoul",
+      "projection_start": "2027-01-01",
+      "projection_end": "2027-03-31"
+    },
+    "answers": [
+      {
+        "answer_id": "a:NEW-01",
+        "question_id": "NEW-01",
+        "definition_version": "1.3-engine",
+        "revision": 1,
+        "raw_response": {
+          "scope": "personal",
+          "owner_ids": [
+            "person-1"
+          ],
+          "asset_coverage": "complete"
+        }
+      },
+      {
+        "answer_id": "a:F03",
+        "question_id": "F03",
+        "definition_version": "1.3-engine",
+        "revision": 1,
+        "raw_response": {
+          "monthly_net_income": {
+            "value": "5000000",
+            "state": "KNOWN",
+            "unit": "KRW",
+            "basis": "SCENARIO"
+          },
+          "period_start": "2026-12-01",
+          "period_end": "2026-12-31",
+          "includes_one_off": "NO"
+        }
+      },
+      {
+        "answer_id": "a:F04",
+        "question_id": "F04",
+        "definition_version": "1.3-engine",
+        "revision": 1,
+        "raw_response": {
+          "living": {
+            "value": "2000000",
+            "state": "KNOWN",
+            "unit": "KRW",
+            "basis": "SCENARIO"
+          },
+          "expense_basis": "LIVING_ONLY",
+          "exclusions_confirmed": true,
+          "essential_living": {
+            "value": "2000000",
+            "state": "KNOWN",
+            "unit": "KRW",
+            "basis": "SCENARIO"
+          },
+          "period_start": "2026-12-01",
+          "period_end": "2026-12-31"
+        }
+      },
+      {
+        "answer_id": "a:F06",
+        "question_id": "F06",
+        "definition_version": "1.3-engine",
+        "revision": 1,
+        "raw_response": {
+          "items": [
+            {
+              "asset_id": "cash-1",
+              "kind": "CASH",
+              "parent_asset_id": null,
+              "owner_ids": [
+                "person-1"
+              ],
+              "value": {
+                "value": "20000000",
+                "state": "KNOWN",
+                "unit": "KRW",
+                "basis": "SCENARIO"
+              },
+              "valuation_on": "2026-12-31",
+              "value_basis": "SCOPE_SHARE",
+              "share_numerator": "1",
+              "share_denominator": "1",
+              "detail_coverage": "complete",
+              "available_on": "2026-12-31",
+              "withdrawal_constraint": "NONE_CONFIRMED"
+            },
+            {
+              "asset_id": "pension-asset",
+              "kind": "PENSION",
+              "parent_asset_id": null,
+              "owner_ids": [
+                "person-1"
+              ],
+              "value": {
+                "value": "5000000",
+                "state": "KNOWN",
+                "unit": "KRW",
+                "basis": "SCENARIO"
+              },
+              "valuation_on": "2026-12-31",
+              "value_basis": "SCOPE_SHARE",
+              "share_numerator": "1",
+              "share_denominator": "1",
+              "detail_coverage": "complete",
+              "available_on": "2026-12-31",
+              "withdrawal_constraint": "LOCKED"
+            }
+          ]
+        }
+      },
+      {
+        "answer_id": "a:NEW-04",
+        "question_id": "NEW-04",
+        "definition_version": "1.3-engine",
+        "revision": 1,
+        "raw_response": {
+          "status": "NONE"
+        }
+      },
+      {
+        "answer_id": "a:NEW-03",
+        "question_id": "NEW-03",
+        "definition_version": "1.3-engine",
+        "revision": 1,
+        "raw_response": {
+          "status": "KNOWN",
+          "items": [
+            {
+              "contribution_id": "invest-existing",
+              "owner_ref": "person-1",
+              "purpose": "INVESTMENT",
+              "amount": {
+                "value": "500000",
+                "state": "KNOWN",
+                "unit": "KRW",
+                "basis": "SCENARIO"
+              },
+              "destination": "NONCASH",
+              "pay_day": 15,
+              "period_basis": "CONFIRMED_CONSTANT",
+              "already_deducted_from_net_income": false
+            }
+          ]
+        }
+      },
+      {
+        "answer_id": "a:NEW-02",
+        "question_id": "NEW-02",
+        "definition_version": "1.3-engine",
+        "revision": 1,
+        "raw_response": {
+          "carry_forward_snapshot": true,
+          "zero_return": true,
+          "unchanged_living_confirmed": true,
+          "income_basis": "CONFIRMED_CONSTANT"
+        }
+      },
+      {
+        "answer_id": "a:NEW-05",
+        "question_id": "NEW-05",
+        "definition_version": "1.3-engine",
+        "revision": 1,
+        "raw_response": {
+          "status": "NONE",
+          "items": []
+        }
+      },
+      {
+        "answer_id": "a:NEW-06",
+        "question_id": "NEW-06",
+        "definition_version": "1.3-engine",
+        "revision": 1,
+        "raw_response": {
+          "coverage": "complete",
+          "customer_protection_target": {
+            "value": "6000000",
+            "state": "KNOWN",
+            "unit": "KRW",
+            "basis": "SCENARIO"
+          },
+          "customer_operating_target": {
+            "value": "2000000",
+            "state": "KNOWN",
+            "unit": "KRW",
+            "basis": "SCENARIO"
+          },
+          "items": [
+            {
+              "reservation_id": "r-p",
+              "asset_ref": "cash-1",
+              "purpose": "PROTECTION",
+              "amount": {
+                "value": "6000000",
+                "state": "KNOWN",
+                "unit": "KRW",
+                "basis": "SCENARIO"
+              }
+            },
+            {
+              "reservation_id": "r-o",
+              "asset_ref": "cash-1",
+              "purpose": "OPERATING",
+              "amount": {
+                "value": "2000000",
+                "state": "KNOWN",
+                "unit": "KRW",
+                "basis": "SCENARIO"
+              }
+            },
+            {
+              "reservation_id": "r-g",
+              "asset_ref": "cash-1",
+              "purpose": "GOAL",
+              "goal_ref": "goal-1",
+              "amount": {
+                "value": "2000000",
+                "state": "KNOWN",
+                "unit": "KRW",
+                "basis": "SCENARIO"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "answer_id": "a:F11",
+        "question_id": "F11",
+        "definition_version": "1.3-engine",
+        "revision": 1,
+        "raw_response": {
+          "status": "KNOWN",
+          "items": [
+            {
+              "goal_id": "goal-1",
+              "type": "EDUCATION",
+              "priority": 1,
+              "owner_ref": "person-1",
+              "confirmed": true
+            }
+          ]
+        }
+      },
+      {
+        "answer_id": "a:F12",
+        "question_id": "F12",
+        "definition_version": "1.3-engine",
+        "revision": 1,
+        "raw_response": {
+          "items": [
+            {
+              "goal_id": "goal-1",
+              "due_on": "2027-03-31",
+              "contribution_dates": [
+                "2027-01-15",
+                "2027-02-15",
+                "2027-03-15"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "answer_id": "a:F13",
+        "question_id": "F13",
+        "definition_version": "1.3-engine",
+        "revision": 1,
+        "raw_response": {
+          "items": [
+            {
+              "goal_id": "goal-1",
+              "price_basis": "FUTURE_NOMINAL",
+              "return_basis": "ZERO_RETURN",
+              "prepared_reservation_ids": [
+                "r-g"
+              ],
+              "payments": [
+                {
+                  "on": "2027-03-31",
+                  "amount": {
+                    "value": "5000000",
+                    "state": "KNOWN",
+                    "unit": "KRW",
+                    "basis": "SCENARIO"
+                  },
+                  "economic_event_id": "tuition-1"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "answer_id": "a:PEN-01",
+        "question_id": "PEN-01",
+        "definition_version": "1.3-engine",
+        "revision": 1,
+        "raw_response": {
+          "status": "KNOWN",
+          "items": [
+            {
+              "pension_id": "personal-pension",
+              "owner_ref": "person-1",
+              "kind": "PERSONAL",
+              "balance_asset_ref": "pension-asset",
+              "contribution_ref": null,
+              "current_monthly_net": {
+                "value": "0",
+                "state": "KNOWN",
+                "unit": "KRW",
+                "basis": "SCENARIO"
+              },
+              "current_income_included": true
+            }
+          ]
+        }
+      },
+      {
+        "answer_id": "a:PEN-02",
+        "question_id": "PEN-02",
+        "definition_version": "1.3-engine",
+        "revision": 1,
+        "raw_response": {
+          "coverage": "complete",
+          "items": [
+            {
+              "pension_id": "personal-pension",
+              "basis": "SCENARIO",
+              "price_basis": "FUTURE_NOMINAL",
+              "source_ref": "fictional-scenario",
+              "queried_on": "2026-12-01",
+              "start_on": "2050-01-01",
+              "end_on": "2050-03-31",
+              "monthly_net": {
+                "value": "2000000",
+                "state": "KNOWN",
+                "unit": "KRW",
+                "basis": "SCENARIO"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "answer_id": "a:RET-01",
+        "question_id": "RET-01",
+        "definition_version": "1.3-engine",
+        "revision": 1,
+        "raw_response": {
+          "price_basis": "FUTURE_NOMINAL",
+          "partial_month_basis": "FULL_MONTH_SCENARIO",
+          "monthly_living": {
+            "value": "3000000",
+            "state": "KNOWN",
+            "unit": "KRW",
+            "basis": "SCENARIO"
+          },
+          "monthly_debt": {
+            "value": "0",
+            "state": "KNOWN",
+            "unit": "KRW",
+            "basis": "SCENARIO"
+          },
+          "monthly_other_net": {
+            "value": "500000",
+            "state": "KNOWN",
+            "unit": "KRW",
+            "basis": "SCENARIO"
+          },
+          "retire_on": "2050-01-01",
+          "end_on": "2050-03-31"
+        }
+      },
+      {
+        "answer_id": "a:TAX-04",
+        "question_id": "TAX-04",
+        "definition_version": "1.3-engine",
+        "revision": 1,
+        "raw_response": {
+          "status": "KNOWN",
+          "items": [
+            {
+              "tax_event_id": "tax-case-1",
+              "owner_ref": "person-1",
+              "status": "CONFIRMED_AMOUNT",
+              "receipt_kind": "EXTERNAL_INCOME",
+              "amount_basis": "GROSS",
+              "gross_amount": {
+                "value": "2000000",
+                "state": "KNOWN",
+                "unit": "KRW",
+                "basis": "SCENARIO"
+              },
+              "withheld_tax": {
+                "value": "300000",
+                "state": "KNOWN",
+                "unit": "KRW",
+                "basis": "SCENARIO"
+              },
+              "fees": {
+                "value": "100000",
+                "state": "KNOWN",
+                "unit": "KRW",
+                "basis": "SCENARIO"
+              },
+              "additional_tax": {
+                "value": "200000",
+                "state": "KNOWN",
+                "unit": "KRW",
+                "basis": "SCENARIO"
+              },
+              "already_in_snapshot": false,
+              "included_in_income": false,
+              "receipt_on": "2027-01-20",
+              "pay_on": "2027-02-15",
+              "receipt_event_id": "receipt-1",
+              "payment_event_id": "tax-payment-1"
+            }
+          ]
+        }
+      },
+      {
+        "answer_id": "a:INH-01",
+        "question_id": "INH-01",
+        "definition_version": "1.3-engine",
+        "revision": 1,
+        "raw_response": {
+          "direction": "BOTH"
+        }
+      },
+      {
+        "answer_id": "a:INH-02",
+        "question_id": "INH-02",
+        "definition_version": "1.3-engine",
+        "revision": 1,
+        "raw_response": {
+          "coverage": "complete",
+          "owner_ref": "person-1",
+          "asset_refs": [
+            "cash-1",
+            "pension-asset"
+          ],
+          "debt_refs": [],
+          "beneficiaries": [
+            {
+              "beneficiary_ref": "beneficiary-a",
+              "numerator": "1",
+              "denominator": "3"
+            },
+            {
+              "beneficiary_ref": "beneficiary-b",
+              "numerator": "2",
+              "denominator": "3"
+            }
+          ]
+        }
+      },
+      {
+        "answer_id": "a:INH-03",
+        "question_id": "INH-03",
+        "definition_version": "1.3-engine",
+        "revision": 1,
+        "raw_response": {
+          "incoming": [
+            {
+              "case_id": "inheritance-1",
+              "owner_ref": "person-1",
+              "status": "CONFIRMED",
+              "net_receipt": {
+                "value": "10000000",
+                "state": "KNOWN",
+                "unit": "KRW",
+                "basis": "SCENARIO"
+              },
+              "receipt_on": "2027-02-20",
+              "economic_event_id": "inheritance-receipt-1"
+            }
+          ],
+          "own_estate": {
+            "assumed_on": "2027-12-31",
+            "confirmed_tax": {
+              "value": "1000000",
+              "state": "KNOWN",
+              "unit": "KRW",
+              "basis": "SCENARIO"
+            },
+            "costs": {
+              "value": "0",
+              "state": "KNOWN",
+              "unit": "KRW",
+              "basis": "SCENARIO"
+            },
+            "liquid_asset_refs": [
+              "cash-1"
+            ]
+          }
+        }
+      }
+    ],
+    "requested_outputs": [
+      "OUT-01",
+      "OUT-02",
+      "OUT-03",
+      "OUT-04",
+      "OUT-05",
+      "OUT-06",
+      "OUT-07",
+      "OUT-08",
+      "OUT-09",
+      "OUT-10",
+      "OUT-11",
+      "OUT-12",
+      "OUT-13",
+      "OUT-14"
+    ]
+  },
+  "input_sha256": "a1e7531596b08d1ffa4dfb5b5cd66735ad9c5ed77c553afd6a885ec762b450d8",
+  "question_trace": [
+    {
+      "question_id": "F03",
+      "answer_id": "a:F03",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "monthly_net_income",
+        "period_start",
+        "period_end",
+        "includes_one_off"
+      ]
+    },
+    {
+      "question_id": "F04",
+      "answer_id": "a:F04",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "living",
+        "expense_basis",
+        "exclusions_confirmed",
+        "essential_living",
+        "period_start",
+        "period_end",
+        "included_debt",
+        "included_contributions"
+      ]
+    },
+    {
+      "question_id": "F06",
+      "answer_id": "a:F06",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "items",
+        "coverage"
+      ]
+    },
+    {
+      "question_id": "F11",
+      "answer_id": "a:F11",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "status",
+        "items"
+      ]
+    },
+    {
+      "question_id": "F12",
+      "answer_id": "a:F12",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "items"
+      ]
+    },
+    {
+      "question_id": "F13",
+      "answer_id": "a:F13",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "items"
+      ]
+    },
+    {
+      "question_id": "INH-01",
+      "answer_id": "a:INH-01",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "direction"
+      ]
+    },
+    {
+      "question_id": "INH-02",
+      "answer_id": "a:INH-02",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "coverage",
+        "owner_ref",
+        "asset_refs",
+        "debt_refs",
+        "beneficiaries"
+      ]
+    },
+    {
+      "question_id": "INH-03",
+      "answer_id": "a:INH-03",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "incoming",
+        "own_estate"
+      ]
+    },
+    {
+      "question_id": "NEW-01",
+      "answer_id": "a:NEW-01",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "scope",
+        "owner_ids",
+        "asset_coverage"
+      ]
+    },
+    {
+      "question_id": "NEW-02",
+      "answer_id": "a:NEW-02",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "carry_forward_snapshot",
+        "zero_return",
+        "unchanged_living_confirmed",
+        "income_basis",
+        "income_periods",
+        "pension_treatment"
+      ]
+    },
+    {
+      "question_id": "NEW-03",
+      "answer_id": "a:NEW-03",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "status",
+        "items",
+        "adjustment_options",
+        "requested_reductions"
+      ]
+    },
+    {
+      "question_id": "NEW-04",
+      "answer_id": "a:NEW-04",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "status"
+      ]
+    },
+    {
+      "question_id": "NEW-05",
+      "answer_id": "a:NEW-05",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "status",
+        "items"
+      ]
+    },
+    {
+      "question_id": "NEW-06",
+      "answer_id": "a:NEW-06",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "coverage",
+        "items",
+        "customer_protection_target",
+        "customer_operating_target"
+      ]
+    },
+    {
+      "question_id": "PEN-01",
+      "answer_id": "a:PEN-01",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "status",
+        "items"
+      ]
+    },
+    {
+      "question_id": "PEN-02",
+      "answer_id": "a:PEN-02",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "coverage",
+        "items"
+      ]
+    },
+    {
+      "question_id": "RET-01",
+      "answer_id": "a:RET-01",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "price_basis",
+        "partial_month_basis",
+        "monthly_living",
+        "monthly_debt",
+        "monthly_other_net",
+        "retire_on",
+        "end_on"
+      ]
+    },
+    {
+      "question_id": "TAX-04",
+      "answer_id": "a:TAX-04",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "binding": "CALCULATION_INPUT",
+      "normalized_fields": [
+        "status",
+        "items"
+      ]
+    }
+  ],
+  "results": {
+    "OUT-01": {
+      "calc_state": "PARTIAL",
+      "overview": {
+        "reported_root_assets_krw": "25000000",
+        "known_debts_krw": "0",
+        "total_assets": {
+          "calc_state": "CALCULATED",
+          "value": "25000000",
+          "unit": "KRW",
+          "reason_codes": []
+        },
+        "total_debt": {
+          "calc_state": "CALCULATED",
+          "value": "0",
+          "unit": "KRW",
+          "reason_codes": []
+        },
+        "net_worth": {
+          "calc_state": "CALCULATED",
+          "value": "25000000",
+          "unit": "KRW",
+          "reason_codes": []
+        },
+        "issues": [],
+        "investment_available": {
+          "calc_state": "NEEDS_POLICY",
+          "value": null,
+          "unit": "KRW",
+          "reason_codes": [
+            "FUNDING_POLICY_NOT_APPLIED"
+          ]
+        }
+      },
+      "cashflow": {
+        "normalized_living": {
+          "calc_state": "CALCULATED",
+          "value": "2000000",
+          "unit": "KRW",
+          "reason_codes": []
+        },
+        "before_debt_difference": {
+          "calc_state": "CALCULATED",
+          "value": "3000000",
+          "unit": "KRW",
+          "reason_codes": []
+        },
+        "base_surplus": {
+          "calc_state": "CALCULATED",
+          "value": "3000000",
+          "unit": "KRW",
+          "reason_codes": []
+        },
+        "feasibility": "NOT_EVALUATED",
+        "recurring_projection": {
+          "calc_state": "NOT_IMPLEMENTED",
+          "value": null,
+          "unit": "KRW",
+          "reason_codes": [
+            "RECURRING_INCOME_AND_CALENDAR_NOT_NORMALIZED"
+          ]
+        },
+        "investment_available": {
+          "calc_state": "NEEDS_POLICY",
+          "value": null,
+          "unit": "KRW",
+          "reason_codes": [
+            "BASE_SURPLUS_IS_NOT_INVESTMENT_BUDGET"
+          ]
+        }
+      },
+      "title": "첫 현황",
+      "source_refs": [
+        "answer:a:NEW-01@1",
+        "answer:a:F03@1",
+        "answer:a:F04@1",
+        "answer:a:F06@1",
+        "answer:a:NEW-04@1"
+      ]
+    },
+    "OUT-02": {
+      "calc_state": "CALCULATED",
+      "reported_root_assets_krw": "25000000",
+      "known_debts_krw": "0",
+      "total_assets": {
+        "calc_state": "CALCULATED",
+        "value": "25000000",
+        "unit": "KRW",
+        "reason_codes": []
+      },
+      "total_debt": {
+        "calc_state": "CALCULATED",
+        "value": "0",
+        "unit": "KRW",
+        "reason_codes": []
+      },
+      "net_worth": {
+        "calc_state": "CALCULATED",
+        "value": "25000000",
+        "unit": "KRW",
+        "reason_codes": []
+      },
+      "issues": [],
+      "investment_available": {
+        "calc_state": "NEEDS_POLICY",
+        "value": null,
+        "unit": "KRW",
+        "reason_codes": [
+          "FUNDING_POLICY_NOT_APPLIED"
+        ]
+      },
+      "title": "전체 순자산",
+      "source_refs": [
+        "answer:a:NEW-01@1",
+        "answer:a:F06@1",
+        "answer:a:NEW-04@1"
+      ]
+    },
+    "OUT-03": {
+      "calc_state": "CALCULATED",
+      "normalized_living": {
+        "calc_state": "CALCULATED",
+        "value": "2000000",
+        "unit": "KRW",
+        "reason_codes": []
+      },
+      "before_debt_difference": {
+        "calc_state": "CALCULATED",
+        "value": "3000000",
+        "unit": "KRW",
+        "reason_codes": []
+      },
+      "base_surplus": {
+        "calc_state": "CALCULATED",
+        "value": "3000000",
+        "unit": "KRW",
+        "reason_codes": []
+      },
+      "feasibility": "SURPLUS_BEFORE_RESERVES_AND_GOALS",
+      "recurring_projection": {
+        "calc_state": "NOT_IMPLEMENTED",
+        "value": null,
+        "unit": "KRW",
+        "reason_codes": [
+          "RECURRING_INCOME_AND_CALENDAR_NOT_NORMALIZED"
+        ]
+      },
+      "investment_available": {
+        "calc_state": "NEEDS_POLICY",
+        "value": null,
+        "unit": "KRW",
+        "reason_codes": [
+          "BASE_SURPLUS_IS_NOT_INVESTMENT_BUDGET"
+        ]
+      },
+      "existing_cash_contributions_krw": "500000",
+      "after_existing_contributions_krw": "2500000",
+      "payroll_deducted_again": false,
+      "investment_available_krw": null,
+      "title": "월 가용흐름",
+      "source_refs": [
+        "answer:a:NEW-01@1",
+        "answer:a:F03@1",
+        "answer:a:F04@1",
+        "answer:a:NEW-04@1",
+        "answer:a:NEW-03@1"
+      ]
+    },
+    "OUT-04": {
+      "calc_state": "CALCULATED",
+      "rows": [
+        {
+          "goal_id": "goal-1",
+          "type": "EDUCATION",
+          "priority": 1,
+          "calc_state": "CALCULATED",
+          "due_on": "2027-03-31",
+          "target_krw": "5000000",
+          "prepared_krw": "2000000",
+          "gap_krw": "3000000",
+          "contribution_count": 3,
+          "level_contribution_krw": "1000000",
+          "funding_schedule": [
+            {
+              "on": "2027-01-15",
+              "amount_krw": "1000000"
+            },
+            {
+              "on": "2027-02-15",
+              "amount_krw": "1000000"
+            },
+            {
+              "on": "2027-03-15",
+              "amount_krw": "1000000"
+            }
+          ],
+          "payments": [
+            {
+              "on": "2027-03-31",
+              "amount_krw": "5000000",
+              "economic_event_id": "tuition-1"
+            }
+          ],
+          "readiness": {
+            "numerator": "2000000",
+            "denominator": "5000000"
+          },
+          "price_basis": "FUTURE_NOMINAL",
+          "return_basis": "ZERO_RETURN"
+        }
+      ],
+      "cash_events": [
+        {
+          "on": "2027-03-31",
+          "amount_krw": "5000000",
+          "economic_event_id": "tuition-1",
+          "event_id": "goal:tuition-1",
+          "direction": "OUT",
+          "goal_id": "goal-1",
+          "source_ref": "answer:a:F13@1"
+        }
+      ],
+      "allocation_policy": "DION-GOAL-CALENDAR-1.0",
+      "future_return_assumed": false,
+      "level_payment_rule": "max-prefix-ceiling; final contributions capped to remaining gap",
+      "title": "목표 준비·필요적립",
+      "source_refs": [
+        "answer:a:NEW-01@1",
+        "answer:a:F06@1",
+        "answer:a:NEW-06@1",
+        "answer:a:F11@1",
+        "answer:a:F12@1",
+        "answer:a:F13@1"
+      ]
+    },
+    "OUT-05": {
+      "calc_state": "CALCULATED",
+      "policy_version": "DION-ALLOCATION-1.0",
+      "composition_version": "DION-PROJECTION-1.0",
+      "candidates": [
+        {
+          "calc_state": "CALCULATED_MONTHLY_SCENARIO",
+          "strategy_id": "STABILITY_FIRST",
+          "rows": [
+            {
+              "period": "2027-01",
+              "income_krw": "5000000",
+              "pension_component_krw": "0",
+              "living_krw": "2000000",
+              "debt_payment_krw": "0",
+              "debt_principal_krw": "0",
+              "event_in_krw": "1600000",
+              "event_out_krw": "0",
+              "events": [
+                {
+                  "event_id": "tax-case-1:receipt",
+                  "economic_event_id": "receipt-1",
+                  "on": "2027-01-20",
+                  "direction": "IN",
+                  "amount_krw": "1600000",
+                  "source_ref": "answer:a:TAX-04@1",
+                  "goal_id": null,
+                  "source_refs": [
+                    "answer:a:TAX-04@1"
+                  ]
+                }
+              ],
+              "event_cost_from_income_krw": "0",
+              "policy_resource_income_krw": "5000000",
+              "income_field_is_budget_resource": true,
+              "kept_total_krw": "500000",
+              "kept_noncash_krw": "500000",
+              "payroll_excluded_from_cashflow_krw": "0",
+              "goal_deposits_krw": "1000000",
+              "goal_paid_krw": "0",
+              "goals": [
+                {
+                  "goal_id": "goal-1",
+                  "minimum_krw": "1000000",
+                  "kept_krw": "0",
+                  "additional_krw": "1000000",
+                  "paid_krw": "0",
+                  "closing_cash_krw": "3000000"
+                }
+              ],
+              "operating_refill_krw": "0",
+              "protection_topup_krw": "0",
+              "new_investment_krw": "750000",
+              "additional_cash_krw": "750000",
+              "opening_cash_krw": "20000000",
+              "closing_cash_krw": "23350000",
+              "closing_earmarks_krw": {
+                "free": "12350000",
+                "protection": "6000000",
+                "operating": "2000000",
+                "other": "0"
+              },
+              "cash_difference_krw": "0",
+              "closing_debt_krw": "0",
+              "modeled_total_assets_krw": "29600000",
+              "modeled_asset_coverage": "FULL_DECLARED_SCOPE",
+              "modeled_net_worth_krw": "29600000",
+              "protection": {
+                "customer_target_krw": "6000000",
+                "service_minimum_krw": "6000000",
+                "target_krw": "6000000",
+                "funded_at_open_krw": "6000000",
+                "gap_at_open_krw": "0",
+                "kept_topup_krw": "0",
+                "extra_topup_krw": "0",
+                "closing_gap_krw": "0",
+                "rebuild_state": "FUNDED"
+              },
+              "operating": {
+                "target_krw": "2000000",
+                "funded_at_open_krw": "2000000",
+                "required_h_krw": "0",
+                "allocated_h_krw": "0",
+                "closing_gap_krw": "0"
+              },
+              "allocation_reason": "PRESET_BUDGET_ONLY",
+              "policy_input_sha256": "6b8da7db7b0bfe921c43310065a2c3972dfb0e8498b4654c1df9425a4fe9d318",
+              "review": {
+                "priority": "B1_EXPLICIT_FLEXIBLE_CONTRIBUTION_REVIEW",
+                "options": [
+                  {
+                    "contribution_id": "invest-existing",
+                    "state": "NEEDS_INPUT",
+                    "current_krw": "500000",
+                    "reduction_cap_krw": null
+                  }
+                ],
+                "required_reduction_before_krw": "0",
+                "explicit_reductions_krw": "0",
+                "automatic_reductions": false
+              }
+            },
+            {
+              "period": "2027-02",
+              "income_krw": "5000000",
+              "pension_component_krw": "0",
+              "living_krw": "2000000",
+              "debt_payment_krw": "0",
+              "debt_principal_krw": "0",
+              "event_in_krw": "10000000",
+              "event_out_krw": "200000",
+              "events": [
+                {
+                  "event_id": "tax-case-1:tax",
+                  "economic_event_id": "tax-payment-1",
+                  "on": "2027-02-15",
+                  "direction": "OUT",
+                  "amount_krw": "200000",
+                  "source_ref": "answer:a:TAX-04@1",
+                  "goal_id": null,
+                  "source_refs": [
+                    "answer:a:TAX-04@1"
+                  ]
+                },
+                {
+                  "event_id": "inheritance-1",
+                  "economic_event_id": "inheritance-receipt-1",
+                  "on": "2027-02-20",
+                  "direction": "IN",
+                  "amount_krw": "10000000",
+                  "source_ref": "answer:a:INH-03@1",
+                  "goal_id": null,
+                  "source_refs": [
+                    "answer:a:INH-03@1"
+                  ]
+                }
+              ],
+              "event_cost_from_income_krw": "0",
+              "policy_resource_income_krw": "5000000",
+              "income_field_is_budget_resource": true,
+              "kept_total_krw": "500000",
+              "kept_noncash_krw": "500000",
+              "payroll_excluded_from_cashflow_krw": "0",
+              "goal_deposits_krw": "1000000",
+              "goal_paid_krw": "0",
+              "goals": [
+                {
+                  "goal_id": "goal-1",
+                  "minimum_krw": "1000000",
+                  "kept_krw": "0",
+                  "additional_krw": "1000000",
+                  "paid_krw": "0",
+                  "closing_cash_krw": "4000000"
+                }
+              ],
+              "operating_refill_krw": "0",
+              "protection_topup_krw": "0",
+              "new_investment_krw": "750000",
+              "additional_cash_krw": "750000",
+              "opening_cash_krw": "23350000",
+              "closing_cash_krw": "34900000",
+              "closing_earmarks_krw": {
+                "free": "22900000",
+                "protection": "6000000",
+                "operating": "2000000",
+                "other": "0"
+              },
+              "cash_difference_krw": "0",
+              "closing_debt_krw": "0",
+              "modeled_total_assets_krw": "42400000",
+              "modeled_asset_coverage": "FULL_DECLARED_SCOPE",
+              "modeled_net_worth_krw": "42400000",
+              "protection": {
+                "customer_target_krw": "6000000",
+                "service_minimum_krw": "6000000",
+                "target_krw": "6000000",
+                "funded_at_open_krw": "6000000",
+                "gap_at_open_krw": "0",
+                "kept_topup_krw": "0",
+                "extra_topup_krw": "0",
+                "closing_gap_krw": "0",
+                "rebuild_state": "FUNDED"
+              },
+              "operating": {
+                "target_krw": "2000000",
+                "funded_at_open_krw": "2000000",
+                "required_h_krw": "0",
+                "allocated_h_krw": "0",
+                "closing_gap_krw": "0"
+              },
+              "allocation_reason": "PRESET_BUDGET_ONLY",
+              "policy_input_sha256": "a039244a8fea13672d26b1ee4f1b8f0358be1f0fe6d98997082f5e468a47b3f8",
+              "review": {
+                "priority": "B1_EXPLICIT_FLEXIBLE_CONTRIBUTION_REVIEW",
+                "options": [
+                  {
+                    "contribution_id": "invest-existing",
+                    "state": "NEEDS_INPUT",
+                    "current_krw": "500000",
+                    "reduction_cap_krw": null
+                  }
+                ],
+                "required_reduction_before_krw": "0",
+                "explicit_reductions_krw": "0",
+                "automatic_reductions": false
+              }
+            },
+            {
+              "period": "2027-03",
+              "income_krw": "5000000",
+              "pension_component_krw": "0",
+              "living_krw": "2000000",
+              "debt_payment_krw": "0",
+              "debt_principal_krw": "0",
+              "event_in_krw": "0",
+              "event_out_krw": "0",
+              "events": [],
+              "event_cost_from_income_krw": "0",
+              "policy_resource_income_krw": "5000000",
+              "income_field_is_budget_resource": true,
+              "kept_total_krw": "500000",
+              "kept_noncash_krw": "500000",
+              "payroll_excluded_from_cashflow_krw": "0",
+              "goal_deposits_krw": "1000000",
+              "goal_paid_krw": "5000000",
+              "goals": [
+                {
+                  "goal_id": "goal-1",
+                  "minimum_krw": "1000000",
+                  "kept_krw": "0",
+                  "additional_krw": "1000000",
+                  "paid_krw": "5000000",
+                  "closing_cash_krw": "0"
+                }
+              ],
+              "operating_refill_krw": "0",
+              "protection_topup_krw": "0",
+              "new_investment_krw": "750000",
+              "additional_cash_krw": "750000",
+              "opening_cash_krw": "34900000",
+              "closing_cash_krw": "31650000",
+              "closing_earmarks_krw": {
+                "free": "23650000",
+                "protection": "6000000",
+                "operating": "2000000",
+                "other": "0"
+              },
+              "cash_difference_krw": "0",
+              "closing_debt_krw": "0",
+              "modeled_total_assets_krw": "40400000",
+              "modeled_asset_coverage": "FULL_DECLARED_SCOPE",
+              "modeled_net_worth_krw": "40400000",
+              "protection": {
+                "customer_target_krw": "6000000",
+                "service_minimum_krw": "6000000",
+                "target_krw": "6000000",
+                "funded_at_open_krw": "6000000",
+                "gap_at_open_krw": "0",
+                "kept_topup_krw": "0",
+                "extra_topup_krw": "0",
+                "closing_gap_krw": "0",
+                "rebuild_state": "FUNDED"
+              },
+              "operating": {
+                "target_krw": "2000000",
+                "funded_at_open_krw": "2000000",
+                "required_h_krw": "0",
+                "allocated_h_krw": "0",
+                "closing_gap_krw": "0"
+              },
+              "allocation_reason": "PRESET_BUDGET_ONLY",
+              "policy_input_sha256": "05d4cc26c7b4d4c83afc7fadd8d7dce28a937aa60ddfbbf78822ca29175de30a",
+              "review": {
+                "priority": "B1_EXPLICIT_FLEXIBLE_CONTRIBUTION_REVIEW",
+                "options": [
+                  {
+                    "contribution_id": "invest-existing",
+                    "state": "NEEDS_INPUT",
+                    "current_krw": "500000",
+                    "reduction_cap_krw": null
+                  }
+                ],
+                "required_reduction_before_krw": "0",
+                "explicit_reductions_krw": "0",
+                "automatic_reductions": false
+              }
+            }
+          ],
+          "failure": null,
+          "completed_months": 3,
+          "requested_months": 3,
+          "final_cash_krw": "31650000",
+          "final_net_worth_krw": "40400000",
+          "excluded_asset_growth": null,
+          "total_new_investment_krw": "2250000",
+          "goal_horizon_status": {
+            "goal-1": "PAYMENTS_WITHIN_HORIZON"
+          },
+          "full_cash_calendar_verified": false,
+          "recommendation": false,
+          "execution": false,
+          "opening_basis": "CURRENT_BALANCES_CARRIED_FORWARD_SCENARIO",
+          "return_basis": "ZERO_RETURN"
+        },
+        {
+          "calc_state": "CALCULATED_MONTHLY_SCENARIO",
+          "strategy_id": "INVESTMENT_CAPACITY",
+          "rows": [
+            {
+              "period": "2027-01",
+              "income_krw": "5000000",
+              "pension_component_krw": "0",
+              "living_krw": "2000000",
+              "debt_payment_krw": "0",
+              "debt_principal_krw": "0",
+              "event_in_krw": "1600000",
+              "event_out_krw": "0",
+              "events": [
+                {
+                  "event_id": "tax-case-1:receipt",
+                  "economic_event_id": "receipt-1",
+                  "on": "2027-01-20",
+                  "direction": "IN",
+                  "amount_krw": "1600000",
+                  "source_ref": "answer:a:TAX-04@1",
+                  "goal_id": null,
+                  "source_refs": [
+                    "answer:a:TAX-04@1"
+                  ]
+                }
+              ],
+              "event_cost_from_income_krw": "0",
+              "policy_resource_income_krw": "5000000",
+              "income_field_is_budget_resource": true,
+              "kept_total_krw": "500000",
+              "kept_noncash_krw": "500000",
+              "payroll_excluded_from_cashflow_krw": "0",
+              "goal_deposits_krw": "1000000",
+              "goal_paid_krw": "0",
+              "goals": [
+                {
+                  "goal_id": "goal-1",
+                  "minimum_krw": "1000000",
+                  "kept_krw": "0",
+                  "additional_krw": "1000000",
+                  "paid_krw": "0",
+                  "closing_cash_krw": "3000000"
+                }
+              ],
+              "operating_refill_krw": "0",
+              "protection_topup_krw": "0",
+              "new_investment_krw": "1200000",
+              "additional_cash_krw": "300000",
+              "opening_cash_krw": "20000000",
+              "closing_cash_krw": "22900000",
+              "closing_earmarks_krw": {
+                "free": "11900000",
+                "protection": "6000000",
+                "operating": "2000000",
+                "other": "0"
+              },
+              "cash_difference_krw": "0",
+              "closing_debt_krw": "0",
+              "modeled_total_assets_krw": "29600000",
+              "modeled_asset_coverage": "FULL_DECLARED_SCOPE",
+              "modeled_net_worth_krw": "29600000",
+              "protection": {
+                "customer_target_krw": "6000000",
+                "service_minimum_krw": "6000000",
+                "target_krw": "6000000",
+                "funded_at_open_krw": "6000000",
+                "gap_at_open_krw": "0",
+                "kept_topup_krw": "0",
+                "extra_topup_krw": "0",
+                "closing_gap_krw": "0",
+                "rebuild_state": "FUNDED"
+              },
+              "operating": {
+                "target_krw": "2000000",
+                "funded_at_open_krw": "2000000",
+                "required_h_krw": "0",
+                "allocated_h_krw": "0",
+                "closing_gap_krw": "0"
+              },
+              "allocation_reason": "PRESET_BUDGET_ONLY",
+              "policy_input_sha256": "6b8da7db7b0bfe921c43310065a2c3972dfb0e8498b4654c1df9425a4fe9d318",
+              "review": {
+                "priority": "B1_EXPLICIT_FLEXIBLE_CONTRIBUTION_REVIEW",
+                "options": [
+                  {
+                    "contribution_id": "invest-existing",
+                    "state": "NEEDS_INPUT",
+                    "current_krw": "500000",
+                    "reduction_cap_krw": null
+                  }
+                ],
+                "required_reduction_before_krw": "0",
+                "explicit_reductions_krw": "0",
+                "automatic_reductions": false
+              }
+            },
+            {
+              "period": "2027-02",
+              "income_krw": "5000000",
+              "pension_component_krw": "0",
+              "living_krw": "2000000",
+              "debt_payment_krw": "0",
+              "debt_principal_krw": "0",
+              "event_in_krw": "10000000",
+              "event_out_krw": "200000",
+              "events": [
+                {
+                  "event_id": "tax-case-1:tax",
+                  "economic_event_id": "tax-payment-1",
+                  "on": "2027-02-15",
+                  "direction": "OUT",
+                  "amount_krw": "200000",
+                  "source_ref": "answer:a:TAX-04@1",
+                  "goal_id": null,
+                  "source_refs": [
+                    "answer:a:TAX-04@1"
+                  ]
+                },
+                {
+                  "event_id": "inheritance-1",
+                  "economic_event_id": "inheritance-receipt-1",
+                  "on": "2027-02-20",
+                  "direction": "IN",
+                  "amount_krw": "10000000",
+                  "source_ref": "answer:a:INH-03@1",
+                  "goal_id": null,
+                  "source_refs": [
+                    "answer:a:INH-03@1"
+                  ]
+                }
+              ],
+              "event_cost_from_income_krw": "0",
+              "policy_resource_income_krw": "5000000",
+              "income_field_is_budget_resource": true,
+              "kept_total_krw": "500000",
+              "kept_noncash_krw": "500000",
+              "payroll_excluded_from_cashflow_krw": "0",
+              "goal_deposits_krw": "1000000",
+              "goal_paid_krw": "0",
+              "goals": [
+                {
+                  "goal_id": "goal-1",
+                  "minimum_krw": "1000000",
+                  "kept_krw": "0",
+                  "additional_krw": "1000000",
+                  "paid_krw": "0",
+                  "closing_cash_krw": "4000000"
+                }
+              ],
+              "operating_refill_krw": "0",
+              "protection_topup_krw": "0",
+              "new_investment_krw": "1200000",
+              "additional_cash_krw": "300000",
+              "opening_cash_krw": "22900000",
+              "closing_cash_krw": "34000000",
+              "closing_earmarks_krw": {
+                "free": "22000000",
+                "protection": "6000000",
+                "operating": "2000000",
+                "other": "0"
+              },
+              "cash_difference_krw": "0",
+              "closing_debt_krw": "0",
+              "modeled_total_assets_krw": "42400000",
+              "modeled_asset_coverage": "FULL_DECLARED_SCOPE",
+              "modeled_net_worth_krw": "42400000",
+              "protection": {
+                "customer_target_krw": "6000000",
+                "service_minimum_krw": "6000000",
+                "target_krw": "6000000",
+                "funded_at_open_krw": "6000000",
+                "gap_at_open_krw": "0",
+                "kept_topup_krw": "0",
+                "extra_topup_krw": "0",
+                "closing_gap_krw": "0",
+                "rebuild_state": "FUNDED"
+              },
+              "operating": {
+                "target_krw": "2000000",
+                "funded_at_open_krw": "2000000",
+                "required_h_krw": "0",
+                "allocated_h_krw": "0",
+                "closing_gap_krw": "0"
+              },
+              "allocation_reason": "PRESET_BUDGET_ONLY",
+              "policy_input_sha256": "8ad2229079c923d0e7c6a37338104fb6f2fd01b8f560699029e12943805759ef",
+              "review": {
+                "priority": "B1_EXPLICIT_FLEXIBLE_CONTRIBUTION_REVIEW",
+                "options": [
+                  {
+                    "contribution_id": "invest-existing",
+                    "state": "NEEDS_INPUT",
+                    "current_krw": "500000",
+                    "reduction_cap_krw": null
+                  }
+                ],
+                "required_reduction_before_krw": "0",
+                "explicit_reductions_krw": "0",
+                "automatic_reductions": false
+              }
+            },
+            {
+              "period": "2027-03",
+              "income_krw": "5000000",
+              "pension_component_krw": "0",
+              "living_krw": "2000000",
+              "debt_payment_krw": "0",
+              "debt_principal_krw": "0",
+              "event_in_krw": "0",
+              "event_out_krw": "0",
+              "events": [],
+              "event_cost_from_income_krw": "0",
+              "policy_resource_income_krw": "5000000",
+              "income_field_is_budget_resource": true,
+              "kept_total_krw": "500000",
+              "kept_noncash_krw": "500000",
+              "payroll_excluded_from_cashflow_krw": "0",
+              "goal_deposits_krw": "1000000",
+              "goal_paid_krw": "5000000",
+              "goals": [
+                {
+                  "goal_id": "goal-1",
+                  "minimum_krw": "1000000",
+                  "kept_krw": "0",
+                  "additional_krw": "1000000",
+                  "paid_krw": "5000000",
+                  "closing_cash_krw": "0"
+                }
+              ],
+              "operating_refill_krw": "0",
+              "protection_topup_krw": "0",
+              "new_investment_krw": "1200000",
+              "additional_cash_krw": "300000",
+              "opening_cash_krw": "34000000",
+              "closing_cash_krw": "30300000",
+              "closing_earmarks_krw": {
+                "free": "22300000",
+                "protection": "6000000",
+                "operating": "2000000",
+                "other": "0"
+              },
+              "cash_difference_krw": "0",
+              "closing_debt_krw": "0",
+              "modeled_total_assets_krw": "40400000",
+              "modeled_asset_coverage": "FULL_DECLARED_SCOPE",
+              "modeled_net_worth_krw": "40400000",
+              "protection": {
+                "customer_target_krw": "6000000",
+                "service_minimum_krw": "6000000",
+                "target_krw": "6000000",
+                "funded_at_open_krw": "6000000",
+                "gap_at_open_krw": "0",
+                "kept_topup_krw": "0",
+                "extra_topup_krw": "0",
+                "closing_gap_krw": "0",
+                "rebuild_state": "FUNDED"
+              },
+              "operating": {
+                "target_krw": "2000000",
+                "funded_at_open_krw": "2000000",
+                "required_h_krw": "0",
+                "allocated_h_krw": "0",
+                "closing_gap_krw": "0"
+              },
+              "allocation_reason": "PRESET_BUDGET_ONLY",
+              "policy_input_sha256": "1e5494ca37bbf3983a7fc779dd7962f5996313d4aa3ace63b91acde91443aba7",
+              "review": {
+                "priority": "B1_EXPLICIT_FLEXIBLE_CONTRIBUTION_REVIEW",
+                "options": [
+                  {
+                    "contribution_id": "invest-existing",
+                    "state": "NEEDS_INPUT",
+                    "current_krw": "500000",
+                    "reduction_cap_krw": null
+                  }
+                ],
+                "required_reduction_before_krw": "0",
+                "explicit_reductions_krw": "0",
+                "automatic_reductions": false
+              }
+            }
+          ],
+          "failure": null,
+          "completed_months": 3,
+          "requested_months": 3,
+          "final_cash_krw": "30300000",
+          "final_net_worth_krw": "40400000",
+          "excluded_asset_growth": null,
+          "total_new_investment_krw": "3600000",
+          "goal_horizon_status": {
+            "goal-1": "PAYMENTS_WITHIN_HORIZON"
+          },
+          "full_cash_calendar_verified": false,
+          "recommendation": false,
+          "execution": false,
+          "opening_basis": "CURRENT_BALANCES_CARRIED_FORWARD_SCENARIO",
+          "return_basis": "ZERO_RETURN"
+        }
+      ],
+      "event_registry": [
+        {
+          "event_id": "tax-case-1:receipt",
+          "economic_event_id": "receipt-1",
+          "on": "2027-01-20",
+          "direction": "IN",
+          "amount_krw": "1600000",
+          "source_ref": "answer:a:TAX-04@1",
+          "goal_id": null,
+          "source_refs": [
+            "answer:a:TAX-04@1"
+          ]
+        },
+        {
+          "event_id": "tax-case-1:tax",
+          "economic_event_id": "tax-payment-1",
+          "on": "2027-02-15",
+          "direction": "OUT",
+          "amount_krw": "200000",
+          "source_ref": "answer:a:TAX-04@1",
+          "goal_id": null,
+          "source_refs": [
+            "answer:a:TAX-04@1"
+          ]
+        },
+        {
+          "event_id": "inheritance-1",
+          "economic_event_id": "inheritance-receipt-1",
+          "on": "2027-02-20",
+          "direction": "IN",
+          "amount_krw": "10000000",
+          "source_ref": "answer:a:INH-03@1",
+          "goal_id": null,
+          "source_refs": [
+            "answer:a:INH-03@1"
+          ]
+        },
+        {
+          "on": "2027-03-31",
+          "amount_krw": "5000000",
+          "economic_event_id": "tuition-1",
+          "event_id": "goal:tuition-1",
+          "direction": "OUT",
+          "goal_id": "goal-1",
+          "source_ref": "answer:a:F13@1",
+          "source_refs": [
+            "answer:a:F13@1"
+          ]
+        }
+      ],
+      "events_outside_horizon": [],
+      "goal_minimum_aggregation": "SUM_OF_INDEPENDENT_DATE_CONSTRAINED_MINIMA_NO_CROSS_GOAL_OFFSET",
+      "daily_cash_safety": "NEEDS_COMPLETE_DATED_INCOME_AND_EXPENSE_CALENDAR",
+      "lump_sum_generation": "NOT_IMPLEMENTED",
+      "recommendation": false,
+      "title": "두 재무안의 월별 시나리오",
+      "source_refs": [
+        "answer:a:NEW-01@1",
+        "answer:a:F03@1",
+        "answer:a:F04@1",
+        "answer:a:F06@1",
+        "answer:a:NEW-04@1",
+        "answer:a:NEW-03@1",
+        "answer:a:NEW-02@1",
+        "answer:a:NEW-05@1",
+        "answer:a:NEW-06@1",
+        "answer:a:F11@1",
+        "answer:a:F12@1",
+        "answer:a:F13@1",
+        "answer:a:TAX-04@1",
+        "answer:a:INH-01@1",
+        "answer:a:INH-03@1",
+        "answer:a:PEN-02@1"
+      ]
+    },
+    "OUT-06": {
+      "calc_state": "NOT_SUPPORTED",
+      "reason": "상품별 적합성·매매·개인화 투자비중 추천은 구현 범위 밖입니다.",
+      "further_detail_collection": false,
+      "title": "개인화 투자 검토",
+      "source_refs": []
+    },
+    "OUT-07": {
+      "calc_state": "CALCULATED",
+      "rows": [
+        {
+          "goal_id": "goal-1",
+          "type": "EDUCATION",
+          "priority": 1,
+          "calc_state": "CALCULATED",
+          "due_on": "2027-03-31",
+          "target_krw": "5000000",
+          "prepared_krw": "2000000",
+          "gap_krw": "3000000",
+          "contribution_count": 3,
+          "level_contribution_krw": "1000000",
+          "funding_schedule": [
+            {
+              "on": "2027-01-15",
+              "amount_krw": "1000000"
+            },
+            {
+              "on": "2027-02-15",
+              "amount_krw": "1000000"
+            },
+            {
+              "on": "2027-03-15",
+              "amount_krw": "1000000"
+            }
+          ],
+          "payments": [
+            {
+              "on": "2027-03-31",
+              "amount_krw": "5000000",
+              "economic_event_id": "tuition-1"
+            }
+          ],
+          "readiness": {
+            "numerator": "2000000",
+            "denominator": "5000000"
+          },
+          "price_basis": "FUTURE_NOMINAL",
+          "return_basis": "ZERO_RETURN"
+        }
+      ],
+      "cash_events": [
+        {
+          "on": "2027-03-31",
+          "amount_krw": "5000000",
+          "economic_event_id": "tuition-1",
+          "event_id": "goal:tuition-1",
+          "direction": "OUT",
+          "goal_id": "goal-1",
+          "source_ref": "answer:a:F13@1"
+        }
+      ],
+      "allocation_policy": "DION-GOAL-CALENDAR-1.0",
+      "future_return_assumed": false,
+      "level_payment_rule": "max-prefix-ceiling; final contributions capped to remaining gap",
+      "scope": "명시한 본인부담 목표 지급액·날짜; 생활비에 포함된 비용은 목표에 재등록하지 않음",
+      "title": "교육·가족지원 목표 달력",
+      "source_refs": [
+        "answer:a:NEW-01@1",
+        "answer:a:F06@1",
+        "answer:a:NEW-06@1",
+        "answer:a:F11@1",
+        "answer:a:F12@1",
+        "answer:a:F13@1"
+      ]
+    },
+    "OUT-08": {
+      "calc_state": "CALCULATED",
+      "rows": [
+        {
+          "pension_id": "personal-pension",
+          "kind": "PERSONAL",
+          "balance_asset_ref": "pension-asset",
+          "contribution_ref": null,
+          "current_monthly_net_krw": "0",
+          "income_included_in_F03": true,
+          "balance_added_again": false
+        }
+      ],
+      "balance_addition_krw": "0",
+      "income_added_krw": "0",
+      "title": "연금 현황",
+      "source_refs": [
+        "answer:a:NEW-01@1",
+        "answer:a:F06@1",
+        "answer:a:NEW-03@1",
+        "answer:a:PEN-01@1"
+      ]
+    },
+    "OUT-09": {
+      "calc_state": "CALCULATED",
+      "rows": [
+        {
+          "period": "2050-01",
+          "pension_net_krw": "2000000",
+          "other_net_krw": "500000",
+          "required_outflow_krw": "3000000",
+          "net_cashflow_krw": "-500000",
+          "shortfall_krw": "500000"
+        },
+        {
+          "period": "2050-02",
+          "pension_net_krw": "2000000",
+          "other_net_krw": "500000",
+          "required_outflow_krw": "3000000",
+          "net_cashflow_krw": "-500000",
+          "shortfall_krw": "500000"
+        },
+        {
+          "period": "2050-03",
+          "pension_net_krw": "2000000",
+          "other_net_krw": "500000",
+          "required_outflow_krw": "3000000",
+          "net_cashflow_krw": "-500000",
+          "shortfall_krw": "500000"
+        }
+      ],
+      "total_shortfall_krw": "1500000",
+      "first_shortfall_period": "2050-01",
+      "partial_first_and_last_month": "FULL_MONTH_SCENARIO_EXPLICIT",
+      "pension_formula": "OFFICIAL_OR_SCENARIO_INPUT",
+      "lifetime_benefit_assumed": false,
+      "asset_drawdown_not_simulated": true,
+      "title": "은퇴 후 월별 부족액",
+      "source_refs": [
+        "answer:a:PEN-01@1",
+        "answer:a:PEN-02@1",
+        "answer:a:RET-01@1"
+      ]
+    },
+    "OUT-10": {
+      "calc_state": "NOT_SUPPORTED",
+      "reason": "공제자격·법정세액 자동산출은 비활성 상태입니다.",
+      "active_legal_rules": 0,
+      "further_detail_collection": false,
+      "title": "공제·계좌 세후효과",
+      "source_refs": []
+    },
+    "OUT-11": {
+      "calc_state": "CALCULATED",
+      "rows": [
+        {
+          "tax_event_id": "tax-case-1",
+          "calc_state": "CALCULATED",
+          "net_amount_krw": "1600000",
+          "additional_tax_krw": "200000",
+          "withholding_charged_again": false,
+          "basis": "CONFIRMED_INPUT_NOT_STATUTORY_CALCULATION"
+        }
+      ],
+      "missing": [],
+      "cash_events": [
+        {
+          "event_id": "tax-case-1:receipt",
+          "economic_event_id": "receipt-1",
+          "on": "2027-01-20",
+          "direction": "IN",
+          "amount_krw": "1600000",
+          "source_ref": "answer:a:TAX-04@1",
+          "goal_id": null
+        },
+        {
+          "event_id": "tax-case-1:tax",
+          "economic_event_id": "tax-payment-1",
+          "on": "2027-02-15",
+          "direction": "OUT",
+          "amount_krw": "200000",
+          "source_ref": "answer:a:TAX-04@1",
+          "goal_id": null
+        }
+      ],
+      "legal_tax_calculation": "NOT_IMPLEMENTED",
+      "title": "확인 세액·납부현금",
+      "source_refs": [
+        "answer:a:TAX-04@1"
+      ]
+    },
+    "OUT-12": {
+      "calc_state": "CALCULATED",
+      "incoming": [
+        {
+          "case_id": "inheritance-1",
+          "status": "CONFIRMED",
+          "net_receipt_krw": "10000000",
+          "added_to_current_assets": false,
+          "included_in_confirmed_projection": true
+        }
+      ],
+      "own_estate": {
+        "asset_value_krw": "25000000",
+        "debt_value_krw": "0",
+        "net_estate_raw_krw": "24000000",
+        "confirmed_tax_krw": "1000000",
+        "costs_krw": "0",
+        "beneficiaries": [
+          {
+            "beneficiary_ref": "beneficiary-a",
+            "amount_krw": "8000000"
+          },
+          {
+            "beneficiary_ref": "beneficiary-b",
+            "amount_krw": "16000000"
+          }
+        ],
+        "tax_cost_liquidity_shortfall_krw": "0",
+        "valuation_on": "2026-12-31",
+        "assumed_on": "2027-12-31",
+        "basis": "USER_EXPLICIT_ALLOCATION_NOT_LEGAL_SHARES",
+        "legal_estate_tax": "NOT_IMPLEMENTED"
+      },
+      "cash_events": [
+        {
+          "event_id": "inheritance-1",
+          "economic_event_id": "inheritance-receipt-1",
+          "on": "2027-02-20",
+          "direction": "IN",
+          "amount_krw": "10000000",
+          "source_ref": "answer:a:INH-03@1",
+          "goal_id": null
+        }
+      ],
+      "title": "받을 상속 시나리오",
+      "source_refs": [
+        "answer:a:INH-01@1",
+        "answer:a:INH-03@1"
+      ]
+    },
+    "OUT-13": {
+      "calc_state": "CALCULATED",
+      "incoming": [
+        {
+          "case_id": "inheritance-1",
+          "status": "CONFIRMED",
+          "net_receipt_krw": "10000000",
+          "added_to_current_assets": false,
+          "included_in_confirmed_projection": true
+        }
+      ],
+      "own_estate": {
+        "asset_value_krw": "25000000",
+        "debt_value_krw": "0",
+        "net_estate_raw_krw": "24000000",
+        "confirmed_tax_krw": "1000000",
+        "costs_krw": "0",
+        "beneficiaries": [
+          {
+            "beneficiary_ref": "beneficiary-a",
+            "amount_krw": "8000000"
+          },
+          {
+            "beneficiary_ref": "beneficiary-b",
+            "amount_krw": "16000000"
+          }
+        ],
+        "tax_cost_liquidity_shortfall_krw": "0",
+        "valuation_on": "2026-12-31",
+        "assumed_on": "2027-12-31",
+        "basis": "USER_EXPLICIT_ALLOCATION_NOT_LEGAL_SHARES",
+        "legal_estate_tax": "NOT_IMPLEMENTED"
+      },
+      "cash_events": [
+        {
+          "event_id": "inheritance-1",
+          "economic_event_id": "inheritance-receipt-1",
+          "on": "2027-02-20",
+          "direction": "IN",
+          "amount_krw": "10000000",
+          "source_ref": "answer:a:INH-03@1",
+          "goal_id": null
+        }
+      ],
+      "title": "명시 배분·확인 상속세 유동성",
+      "source_refs": [
+        "answer:a:NEW-01@1",
+        "answer:a:F06@1",
+        "answer:a:NEW-04@1",
+        "answer:a:INH-01@1",
+        "answer:a:INH-02@1",
+        "answer:a:INH-03@1"
+      ]
+    },
+    "OUT-14": {
+      "calc_state": "REVIEW_ONLY",
+      "input_revision_hash": "a1e7531596b08d1ffa4dfb5b5cd66735ad9c5ed77c553afd6a885ec762b450d8",
+      "plan_adoption": "NOT_IMPLEMENTED",
+      "actual_transaction": "NOT_EXECUTED",
+      "actual_performance": "NOT_CALCULATED",
+      "checks": [
+        "입력 범위·기간·정확한 금액 확인",
+        "월 후보와 일자별 지급 가능성 구분",
+        "공식 예상연금·확인 세액의 기준일 재확인",
+        "채택·저장·수정 이력은 백엔드 계약으로 연결"
+      ],
+      "title": "계산 검토·연결 체크리스트",
+      "source_refs": []
+    }
+  },
+  "next_question_ids": [],
+  "normalization": {
+    "normalized": {
+      "schema_version": "FIN-CONTRACT-0.1",
+      "context": {
+        "case_id": "DEMO-FICTIONAL-01",
+        "profile_version": "1",
+        "snapshot_id": "snapshot-1",
+        "evaluation_date": "2026-12-31",
+        "scope": "personal",
+        "included_owner_ids": [
+          "person-1"
+        ],
+        "currency": "KRW",
+        "timezone": "Asia/Seoul",
+        "policy_refs": [
+          "DION-ALLOCATION-1.0"
+        ],
+        "legal_rule_refs": []
+      },
+      "answers": [],
+      "coverage": {
+        "assets": "complete",
+        "debts": "complete"
+      },
+      "assets": [
+        {
+          "asset_id": "cash-1",
+          "parent_asset_id": null,
+          "kind": "CASH",
+          "origin": "CURRENT",
+          "owner_ids": [
+            "person-1"
+          ],
+          "value_krw": {
+            "value": "20000000",
+            "missing_status": "KNOWN",
+            "basis": "SCENARIO",
+            "source_ref": "answer:a:F06@1"
+          },
+          "valued_on": "2026-12-31",
+          "value_basis": "SCOPE_SHARE",
+          "share_numerator": "1",
+          "share_denominator": "1",
+          "detail_coverage": "complete"
+        },
+        {
+          "asset_id": "pension-asset",
+          "parent_asset_id": null,
+          "kind": "PENSION",
+          "origin": "CURRENT",
+          "owner_ids": [
+            "person-1"
+          ],
+          "value_krw": {
+            "value": "5000000",
+            "missing_status": "KNOWN",
+            "basis": "SCENARIO",
+            "source_ref": "answer:a:F06@1"
+          },
+          "valued_on": "2026-12-31",
+          "value_basis": "SCOPE_SHARE",
+          "share_numerator": "1",
+          "share_denominator": "1",
+          "detail_coverage": "complete"
+        }
+      ],
+      "debts": [],
+      "cashflow": {
+        "monthly_net_income_krw": {
+          "value": "5000000",
+          "missing_status": "KNOWN",
+          "basis": "SCENARIO",
+          "source_ref": "answer:a:F03@1"
+        },
+        "reported_living_krw": {
+          "value": "2000000",
+          "missing_status": "KNOWN",
+          "basis": "SCENARIO",
+          "source_ref": "answer:a:F04@1"
+        },
+        "included_debt_payment_krw": {
+          "value": "0",
+          "missing_status": "KNOWN",
+          "basis": "USER_REPORTED",
+          "source_ref": "answer:a:F04@1"
+        },
+        "included_contributions_krw": {
+          "value": "0",
+          "missing_status": "KNOWN",
+          "basis": "USER_REPORTED",
+          "source_ref": "answer:a:F04@1"
+        },
+        "required_debt_payment_krw": {
+          "value": "0",
+          "missing_status": "KNOWN",
+          "basis": "USER_REPORTED",
+          "source_ref": "missing:F09+F10+D08"
+        },
+        "income_basis": "NET",
+        "period_start": "2026-12-01",
+        "period_end": "2026-12-31",
+        "definition_version": "DION-CASHFLOW-1.0",
+        "includes_one_off_income": "NO"
+      }
+    },
+    "result": {
+      "schema_version": "FIN-CONTRACT-0.1",
+      "engine_version": "DION-CURRENT-0.1.1",
+      "recommendation": false,
+      "adoption_state": "NOT_IMPLEMENTED",
+      "input_state": "VALIDATED_HEADER_ONLY",
+      "input_snapshot": {
+        "schema_version": "FIN-CONTRACT-0.1",
+        "context": {
+          "case_id": "DEMO-FICTIONAL-01",
+          "profile_version": "1",
+          "snapshot_id": "snapshot-1",
+          "evaluation_date": "2026-12-31",
+          "scope": "personal",
+          "included_owner_ids": [
+            "person-1"
+          ],
+          "currency": "KRW",
+          "timezone": "Asia/Seoul",
+          "policy_refs": [
+            "DION-ALLOCATION-1.0"
+          ],
+          "legal_rule_refs": []
+        },
+        "answers": [],
+        "coverage": {
+          "assets": "complete",
+          "debts": "complete"
+        },
+        "assets": [
+          {
+            "asset_id": "cash-1",
+            "parent_asset_id": null,
+            "kind": "CASH",
+            "origin": "CURRENT",
+            "owner_ids": [
+              "person-1"
+            ],
+            "value_krw": {
+              "value": "20000000",
+              "missing_status": "KNOWN",
+              "basis": "SCENARIO",
+              "source_ref": "answer:a:F06@1"
+            },
+            "valued_on": "2026-12-31",
+            "value_basis": "SCOPE_SHARE",
+            "share_numerator": "1",
+            "share_denominator": "1",
+            "detail_coverage": "complete"
+          },
+          {
+            "asset_id": "pension-asset",
+            "parent_asset_id": null,
+            "kind": "PENSION",
+            "origin": "CURRENT",
+            "owner_ids": [
+              "person-1"
+            ],
+            "value_krw": {
+              "value": "5000000",
+              "missing_status": "KNOWN",
+              "basis": "SCENARIO",
+              "source_ref": "answer:a:F06@1"
+            },
+            "valued_on": "2026-12-31",
+            "value_basis": "SCOPE_SHARE",
+            "share_numerator": "1",
+            "share_denominator": "1",
+            "detail_coverage": "complete"
+          }
+        ],
+        "debts": [],
+        "cashflow": {
+          "monthly_net_income_krw": {
+            "value": "5000000",
+            "missing_status": "KNOWN",
+            "basis": "SCENARIO",
+            "source_ref": "answer:a:F03@1"
+          },
+          "reported_living_krw": {
+            "value": "2000000",
+            "missing_status": "KNOWN",
+            "basis": "SCENARIO",
+            "source_ref": "answer:a:F04@1"
+          },
+          "included_debt_payment_krw": {
+            "value": "0",
+            "missing_status": "KNOWN",
+            "basis": "USER_REPORTED",
+            "source_ref": "answer:a:F04@1"
+          },
+          "included_contributions_krw": {
+            "value": "0",
+            "missing_status": "KNOWN",
+            "basis": "USER_REPORTED",
+            "source_ref": "answer:a:F04@1"
+          },
+          "required_debt_payment_krw": {
+            "value": "0",
+            "missing_status": "KNOWN",
+            "basis": "USER_REPORTED",
+            "source_ref": "missing:F09+F10+D08"
+          },
+          "income_basis": "NET",
+          "period_start": "2026-12-01",
+          "period_end": "2026-12-31",
+          "definition_version": "DION-CASHFLOW-1.0",
+          "includes_one_off_income": "NO"
+        }
+      },
+      "trace": {
+        "input_sha256": "9084138affc39bbd867872b7dbc829208b30c013eeb45bc513d6a9d5551b5b70",
+        "case_id": "DEMO-FICTIONAL-01",
+        "profile_version": "1",
+        "snapshot_id": "snapshot-1",
+        "evaluation_date": "2026-12-31",
+        "scope": "personal",
+        "included_owner_ids": [
+          "person-1"
+        ],
+        "currency": "KRW",
+        "timezone": "Asia/Seoul",
+        "policy_refs": [
+          "DION-ALLOCATION-1.0"
+        ],
+        "legal_rule_refs": []
+      },
+      "overview": {
+        "reported_root_assets_krw": "25000000",
+        "known_debts_krw": "0",
+        "total_assets": {
+          "calc_state": "CALCULATED",
+          "value": "25000000",
+          "unit": "KRW",
+          "reason_codes": []
+        },
+        "total_debt": {
+          "calc_state": "CALCULATED",
+          "value": "0",
+          "unit": "KRW",
+          "reason_codes": []
+        },
+        "net_worth": {
+          "calc_state": "CALCULATED",
+          "value": "25000000",
+          "unit": "KRW",
+          "reason_codes": []
+        },
+        "issues": [],
+        "investment_available": {
+          "calc_state": "NEEDS_POLICY",
+          "value": null,
+          "unit": "KRW",
+          "reason_codes": [
+            "FUNDING_POLICY_NOT_APPLIED"
+          ]
+        }
+      },
+      "cashflow": {
+        "normalized_living": {
+          "calc_state": "CALCULATED",
+          "value": "2000000",
+          "unit": "KRW",
+          "reason_codes": []
+        },
+        "before_debt_difference": {
+          "calc_state": "CALCULATED",
+          "value": "3000000",
+          "unit": "KRW",
+          "reason_codes": []
+        },
+        "base_surplus": {
+          "calc_state": "CALCULATED",
+          "value": "3000000",
+          "unit": "KRW",
+          "reason_codes": []
+        },
+        "feasibility": "NOT_EVALUATED",
+        "recurring_projection": {
+          "calc_state": "NOT_IMPLEMENTED",
+          "value": null,
+          "unit": "KRW",
+          "reason_codes": [
+            "RECURRING_INCOME_AND_CALENDAR_NOT_NORMALIZED"
+          ]
+        },
+        "investment_available": {
+          "calc_state": "NEEDS_POLICY",
+          "value": null,
+          "unit": "KRW",
+          "reason_codes": [
+            "BASE_SURPLUS_IS_NOT_INVESTMENT_BUDGET"
+          ]
+        }
+      },
+      "modules": {
+        "tax": {
+          "calc_state": "NOT_IMPLEMENTED",
+          "value": null,
+          "unit": "KRW",
+          "reason_codes": [
+            "DESIGN_ONLY_RULES_INACTIVE"
+          ]
+        },
+        "pension": {
+          "calc_state": "NOT_IMPLEMENTED",
+          "value": null,
+          "unit": "KRW",
+          "reason_codes": [
+            "DESIGN_ONLY_RULES_INACTIVE"
+          ]
+        },
+        "inheritance": {
+          "calc_state": "NOT_IMPLEMENTED",
+          "value": null,
+          "unit": "KRW",
+          "reason_codes": [
+            "DESIGN_ONLY_RULES_INACTIVE"
+          ]
+        }
+      },
+      "plan_generation": {
+        "calc_state": "NEEDS_POLICY",
+        "value": null,
+        "unit": "KRW",
+        "reason_codes": [
+          "DEC02_FULL_GENERATION_POLICY_INCOMPLETE"
+        ]
+      }
+    }
+  },
+  "module_states": {
+    "tax": "CALCULATED",
+    "retirement": "CALCULATED",
+    "pension": "CALCULATED",
+    "inheritance": "CALCULATED"
+  },
+  "boundaries": {
+    "api_db_connected": false,
+    "raw_answer_persisted": false,
+    "recommendation": false,
+    "plan_adopted": false,
+    "transactions_executed": false,
+    "daily_cash_calendar_verified": false
+  }
+}

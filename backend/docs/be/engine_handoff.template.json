@@ -1,0 +1,89 @@
+{
+  "manifest_version": "POC-HANDOFF-0.1",
+  "items": [
+    {
+      "id": "H01",
+      "title": "첫 연결 범위",
+      "status": "PENDING",
+      "artifact_ref": null,
+      "review_note": null
+    },
+    {
+      "id": "H02",
+      "title": "입력 계약",
+      "status": "PENDING",
+      "artifact_ref": null,
+      "review_note": null
+    },
+    {
+      "id": "H03",
+      "title": "단위와 값 상태",
+      "status": "PENDING",
+      "artifact_ref": null,
+      "review_note": null
+    },
+    {
+      "id": "H04",
+      "title": "귀속과 기간",
+      "status": "PENDING",
+      "artifact_ref": null,
+      "review_note": null
+    },
+    {
+      "id": "H05",
+      "title": "출력 계약",
+      "status": "PENDING",
+      "artifact_ref": null,
+      "review_note": null
+    },
+    {
+      "id": "H06",
+      "title": "상태와 오류",
+      "status": "PENDING",
+      "artifact_ref": null,
+      "review_note": null
+    },
+    {
+      "id": "H07",
+      "title": "버전과 식별자",
+      "status": "PENDING",
+      "artifact_ref": null,
+      "review_note": null
+    },
+    {
+      "id": "H08",
+      "title": "호출 방법",
+      "status": "PENDING",
+      "artifact_ref": null,
+      "review_note": null
+    },
+    {
+      "id": "H09",
+      "title": "재현 예시",
+      "status": "PENDING",
+      "artifact_ref": null,
+      "review_note": null
+    },
+    {
+      "id": "H10",
+      "title": "지원과 승인 근거",
+      "status": "PENDING",
+      "artifact_ref": null,
+      "review_note": null
+    },
+    {
+      "id": "H11",
+      "title": "실행 제약",
+      "status": "PENDING",
+      "artifact_ref": null,
+      "review_note": null
+    },
+    {
+      "id": "H12",
+      "title": "변경과 호환성",
+      "status": "PENDING",
+      "artifact_ref": null,
+      "review_note": null
+    }
+  ]
+}

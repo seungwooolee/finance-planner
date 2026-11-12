@@ -1,155 +1,76 @@
-# LifePath AI
+**2026-11-12 스키마 개발 재개:** 팀원이 근거자료 조사를 담당하고, 다음 개발은 R2 자연어 후보의 서버 계약·검증·mock 연결부터 진행한다. [새 노트북 준비·붙여넣을 프롬프트](docs/integration/2026-11-12-agent-schema-resume-prompt.md)에 현재 구현/미구현·운영 미검증과 범위를 구분했다.
 
-사회초년생이 현재 자산과 월 현금흐름을 바탕으로 주거자금 목표를 확인하는 한국어 재무설계 서비스입니다. 현재 개발 범위는 **Iteration 1: 기본 재무설계**입니다. AI API와 이후 단계의 시나리오는 연결하지 않습니다.
+**2026-11-12 AI 개발 방향:** 서버가 상담 흐름·확인·실행을 관리하고 LLM은 후보를 제안하는 구조를 [구조도·데이터 스키마·개발 순서](docs/customer-ai-agent-architecture.md)에 기록했다.0.2에는 LangChain·RAG 확장 구조와 embedding/pgvector 후보, 근거 데이터 스키마를 추가했다. 문서 설계이며 런타임 적용·기존 금융 계약 변경은 없다.
 
-## 문서 안내
+**2026-11-12 다른 노트북 개발 인계:** `codex/result-explanation-r1`의 AI·FE·BE 작업과 공통 정책, 기존 검증 결과·남은 미검증은 [개발 작업본 인계](docs/integration/2026-11-12-ai-development-handoff.md)를 따른다. 개발용 보존본이며 최종 통합·운영 DB 반영·배포는 별도 작업이다.
 
-| 문서 | 관리하는 내용 |
+**2026-11-12 R2-a 공통 상담:** 의도·허용 작업·추가 질문·답변 충돌·확인·상담 기억 저장/재개를 로컬 구현했다. OUT-03/05의11개 단일 필드를 지원한다. 백엔드 관련 고유81개 통과, 브라우저는 당시 1개 통과·재개1개 미통과였고 후속 테스트 보완 뒤 재개 시나리오가 1회 통과했다. 전체 완료/배포 상태는 아니다. [계약·검증·남은 작업](docs/consultation-r2.md)을 따른다.
+
+**2026-11-12 R1-c 원포트:** 서버 어댑터·환경설정·영속 중복/비용 제한과 기존 검증기를 연결했다. 지정 모델 gpt-6.1-terra의 합성 실제 호출1건이 통과했고 비용은 약6원이었다. 고객 데이터 실호출·배포는 활성화하지 않았다. [설정·계약·이번 검증](docs/integration/2026-11-12-oneport-r1c.md)을 따른다.
+
+**2026-11-12 계정 저장 복원:** 질문 정의의 화면 메타데이터/원본경로 충돌을 호환 수정하고 내 상담·새로고침 로그인 유지·답변 저장 계산·과거 결과의 입력 복원을 연결했다. [계약과 실제 검증](docs/integration/2026-11-12-account-persistence.md)을 따른다.
+
+**2026-11-12 R1-a/R1-b:** 저장된 OUT-03·OUT-05의 해설 계약·검증기·정해진 설명/mock과 결과 패널을 추가했다. [해설 계약](docs/result-explanation-r1.md)과 [실제 검증/미검증 범위](docs/integration/2026-11-12-result-explanation.md)를 따른다. 유료 AI·배포 적용은 이번 범위가 아니다.
+
+# dion — Git 통합 작업본
+
+**2026-11-12 진단 결과 복구:** 빠른·정밀 입력의 독립 현금흐름 보존, 계산/오류/대기 화면 이동, 마지막 질문의 결과 보기를 수정했다. [배포 대상·원인·변경·실제 검증](docs/integration/2026-11-12-result-delivery.md)을 우선한다. 로컬 시작은 `scripts/start-dev.ps1`의 통합BE8001/FE3000이며 실제 DION preview로 준비 상태를 검사한다.
+
+**2026-11-11 Git 통합:** 원본 v6 대비 Codex의 전체 변경분을 엔진 v2 기준본(구현 릴리스 `DION-ENGINE-1.2`)과 병합했다. 작업 경로는 `C:\Users\LG\Projects\DION-git`, 브랜치는 `dion/integration-20261111`이다. [파일 비교·충돌 해결·이번 검사](docs/integration/2026-11-11-git-integration.md)와 [Windows 실행](RUN_INTEGRATED.md)을 현재 기준으로 읽는다. 별도 BE 패치 ZIP은 총괄의 후속 반영 범위다.
+
+현재 `/dion`에는 질문·빠른/정밀 5뷰·금액/부동산 입력·고양이·이메일 로그인 화면·FAQ가 있다. 실제 계정 로그인과 원격 DB는 이 통합 검사에 포함하지 않는다. FE 원응답 어댑터1.0은 기존 의미로 유지하고, 엔진 어댑터1.1의 추가보호금/선언 지급일 검증은 직접 엔진 경로에 보존한다. `engine_version`은 입력 계약, `engine_release`는 구현 릴리스다. [2차 화면 이력](docs/integration/2026-11-11-feedback-2.md)을 함께 보되 이력의 이전 실행 결과를 이번 검사로 해석하지 않는다.
+
+아래는 각 수령 시점의 이력이다.
+
+**2026-11-11 엔진 v2 통합 중간본:** 통합 실행본 v6에 엔진 구현 릴리스 1.2를 반영했다. BE의 저장 검증과 질문 원본 해시를 현행 계약에 맞춰 수정했다. [실행 안내](RUN_INTEGRATED.md)와 [통합 기록](docs/integration/2026-11-11-engine-v2-checkpoint.md)을 먼저 읽는다. Codex 프론트 변경분은 아직 접수되지 않아 아래 Next.js 화면은 v6 그대로다.
+
+**2026-11-11 고객 입력 UX 1차 반영:** [현재 화면](http://127.0.0.1:3000/dion)은 기본11개 질문 계약을 **8개 고객 화면**으로 묶었다. 진단 범위+생활단계, 목표+금액+시점을 통합하고 새 진단 기준일은 한국시간 오늘로 설정한다. 금액 상태 드롭다운·구성원 별칭·소득 시작/종료일 입력을 줄였다. 원응답·금융 산식은 유지한다. [피드백별 변경·검증·남은 개선](docs/integration/2026-11-11-frontend-feedback.md)을 현행 화면 기준으로 우선한다. 아래 FE 첫 구현은 이전 이력이다.
+
+**2026-11-11 FE 첫 계산 흐름:** [새 질문·결과 화면](http://127.0.0.1:3000/dion)을 실제 엔진1.1과 연결했다. 빠른11+해당 상세, 정밀 직접 진입, 빠른5/정밀5 결과뷰, 인증된 저장·복원·이전 결과 API를 연결했다. 전체55 상세 입력·로그인 화면·원격DB 검증·상품추천·채택·거래 완료를 뜻하지 않는다. [이번 구현·검증·Stitch 대조](docs/integration/2026-11-11-frontend.md), [변경 목록](CHANGELOG.md), [Windows 실행](RUN_INTEGRATED.md)을 우선한다. 아래는 통합본 v6의 이전 기록이다.
+
+**2026-11-10 통합 실행본 v6:** 질문1.2.1·엔진1.1·BE API1.0·화면/제출 시연 변경 ZIP을 기준 v5에 병합했다. [실행·검증 안내](RUN_INTEGRATED.md)와 [통합 기록](docs/integration/2026-11-10-final-merge.md)을 먼저 읽는다. 아래의 v1.0 안내는 기준 v5의 기록이며, Next.js 제품 화면과 새 BE API의 직접 연결 완료를 뜻하지 않는다.
+
+기준일: 2026-11-10 (한국시간). 기존 실행 코드와 최신 질문·설계·검산 자료, 추가 디자인을 한 프로젝트에 모았다.
+
+**독립 재무엔진 v1.0을 구현했다. [실행 안내](docs/planning-engine-v1/README.md)부터 확인한다.** 질문 원응답→정규화→현재 현황·목표 달력·두 월별 후보·확인 세금/연금/상속 결과를 연결했다. 기존 배정정책1.0과 검산 정답을 유지했다. 질문55개 중22개 묶음이 계산에 연결되며 나머지는 보존/후속 범위를 표시한다. 법정세액 자동산출·투자 적합성·목돈/전체 일별 달력·앱 연결은 남아 있다.
+
+**먼저 [업데이트 안내](docs/update-guide.md)를 읽는다.** 기존 앱은 Iteration 1 기본 계산 버전이다. 조건부55질문·두 재무안·DB·새 디자인의 실제 앱 연결은 후속 작업이다.
+
+| 필요한 작업 | 시작할 파일 |
 | --- | --- |
-| [작업 지침](AGENTS.md) | 변경 범위·승인·개발 사이클·회귀 검증 원칙 |
-| [프로젝트 현황](docs/project-status.md) | 실제 구조와 스택, 요구사항별 진행 상태, 다음 작은 기능 제안 |
-| [Iteration 1 명세](docs/iteration-1-spec.md) | 현재 입력·응답 계약과 고정 정답 |
-| [계산 정책](docs/calculation-policy.md) | 사용자 지정 기준, 구현 가정, 미확정 정책의 구분 |
-| [테스트 안내](docs/testing.md) | 자동 검증 명령·범위·공백·연결 오류 진단 |
-| [개발 로그](docs/development-log.md) | 실제 실행 결과와 오류·수정 이력 |
+| 새 재무엔진 실행·검산 | [재무엔진 v1.0](docs/planning-engine-v1/README.md) |
+| 질문–데이터–계산–결과55행 | [실행 연결표1.3-engine](docs/questions/v1.3-engine/question-data-calculation-results.md) |
+| 백엔드 H01–H12 인계 | [개발 인계](docs/planning-engine-v1/handoff.md) |
+| 생애단계·최소입력 질문55·결과연결 | [질문 설계 v1.2](docs/questions/v1.2/README.md) |
+| 재무엔진 범위·계약·다음 결정 | [확장 명세 FIN-CONTRACT-0.1](docs/financial-engine-spec.md) |
+| 남은 네 정책 비교·확정·검사 | [정책1.0 실행 기록](docs/integration/2026-11-10-allocation-rules.md) |
+| 법령 근거·비활성 규칙 | [근거 등록부](docs/financial-engine-rule-registry.json) |
+| A1/B1 확정·월 배정 검사 | [이번 실행 기록](docs/integration/2026-11-10-a1b1.md) |
+| 첫 엔진 검사 | [실행 기록](docs/integration/2026-11-10-engine-foundation.md) |
+| 현재 완료/미완료 | [프로젝트 현황](docs/project-status.md) |
+| 앞으로 자료 전달 | [업데이트 안내](docs/update-guide.md) |
+| 이번 변경과 실제 검사 | [통합·검증 기록](docs/integration/2026-11-10.md) |
+| 디자인3개와 수정할 부분 | [디자인 목록](docs/design/2026-11-10/README.md) |
+| 현행 질문55·원문 선택지 | [질문 원문](docs/dion/09_UPDATED_FILES/DION_Current_Question_Source.json) |
+| v1.1 질문40/37/영속Q-ID60 이력 | [연결 감사](docs/dion/09_UPDATED_FILES/DION_Question_Contract_Audit.md) |
+| DEC-02와 자금원장 | [정책 검토](docs/dion/09_UPDATED_FILES/DION_DEC02_REVIEW.md) |
+| 엔진 FIN-DATA/FIN-MAP | [본문v1.6](docs/dion/07_REFERENCE_SNAPSHOTS/engine/DION_Data_and_Design_Handoff_v1_0.md) |
+| 기존 앱 설치·실행 | [실행 안내](docs/reference/README_repository_20261027.md) |
+| 다음 개발 단위 | [다음 작업](docs/dion/04_NEXT_ACTIONS.md) |
 
-## 실행 환경
+## 파일 사용 기준
 
-- Node.js 24 LTS / npm 11
-- Python 3.12
-- Windows PowerShell 또는 PowerShell 7
-- Git (이 작업 환경에서는 `C:\Program Files\Git\cmd\git.exe`)
+- 실제 실행 프로젝트는 루트의 frontend/·backend/·data/·scripts/다.
+- docs/dion/은 최신 Continuation 88개 파일을 원래 상대경로 그대로 보존한 설계·근거·검산 묶음이다. 인계 문서의 09_UPDATED_FILES 등은 docs/dion/ 기준으로 해석한다.
+- docs/design/2026-11-10/은 이번 첨부에서 분리한 검토용 HTML3개다. 기존 앱 화면·DB·계좌·알림 연결은 아직이다.
+- docs/reference/는 과거 안내·지침의 보존본이다. 과거 고객 대상과 개발 순서가 현재 제품 방향을 덮어쓰지 않는다.
+- 현행 질문은55개(기존40+신규15), 영속Q-ID는60개를 보존하고 결과는빠른5/정밀5뷰를 따른다. 기존 계산 정답·의존성은 유지한다.
 
-현재 환경의 `python` 명령은 Windows 앱 별칭으로 연결되어 있어 `py -3.12` 또는 가상환경의 Python을 사용합니다. PowerShell의 실행 정책에 따른 npm 스크립트 오류를 피하도록 `npm.cmd`를 사용합니다.
+통합본은 GitHub main 2baa2be548b949d5bfb67a46e81a1a721291ef39의 44개 파일 내보내기를 바탕으로 만들었다. 원격 커밋·PR·배포는 수행하지 않았다. ZIP에는 .git 이력이 없으며 기존 저장소에서 적용할 때 사용자 변경과 먼저 비교한다.
 
-## 설치와 실행
+Windows 압축 경로를 줄이기 위해 최상위는 `dion/`, 긴 HTML2개의 이름은 `DION_Design_Studio.html`로 축약했다. 원문 내용은 유지했다. 짧은 새 폴더에 풀고 안의 README부터 읽는다.
 
-프로젝트 루트 `C:\finance planner`에서 최초 한 번 설치합니다.
 
-```powershell
-py -3.12 -m venv backend/.venv
-& .\backend\.venv\Scripts\python.exe -m pip install -r backend/requirements.txt
-Set-Location frontend
-npm.cmd ci
-Set-Location ..
-```
+## 상품 조건 필터·배분 검토
 
-두 서버를 함께 시작하고 준비 상태를 확인합니다. 터미널 창을 추가로 띄우지 않으며 로그는 `logs/`에 저장됩니다.
-
-```powershell
-.\scripts\start-dev.ps1
-```
-
-**화면만 열리고 “서버에 연결할 수 없습니다”가 나오면** Python API도 실행 중인지 확인하세요. `npm.cmd run dev`는 Next.js만 시작합니다. 프론트엔드가 이미 3000번 포트에서 실행 중이고 8000번 포트의 백엔드가 꺼져 있다면, 기존 화면을 유지하면서 다음 명령으로 백엔드만 시작할 수 있습니다.
-
-```powershell
-Set-Location 'C:\finance planner'
-.\scripts\start-dev.ps1 -BackendOnly
-```
-
-이때 `stop-dev.ps1`의 관리 대상은 새로 시작한 백엔드뿐입니다. 백엔드 준비 후 현재 화면의 **기본 예시 불러오기**를 누르거나 새로고침하세요. 이미 기록된 개발 세션이 있으면 스크립트가 중복 시작을 막습니다. 기존 프로세스를 임의 종료하거나 기록 파일을 지워 우회하지 말고 실행 상태를 먼저 확인하세요.
-
-- 앱: [http://127.0.0.1:3000](http://127.0.0.1:3000)
-- API 문서: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-- 종료: `.\scripts\stop-dev.ps1`
-- 포트 변경: `.\scripts\start-dev.ps1 -FrontendPort 3001 -BackendPort 8001`
-
-직접 실행하려면 **터미널 1에서 백엔드를 먼저 시작하고** `http://127.0.0.1:8000/health`가 응답한 뒤 **터미널 2에서 프론트엔드**를 시작합니다. 두 터미널을 실행한 상태로 유지하세요.
-
-```powershell
-# 터미널 1
-Set-Location 'C:\finance planner\backend'
-& .\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000
-```
-
-```powershell
-# 터미널 2
-Set-Location 'C:\finance planner\frontend'
-$env:BACKEND_URL = 'http://127.0.0.1:8000'
-npm.cmd run dev -- --port 3000
-```
-
-Next.js는 브라우저의 `/api/*` 요청을 FastAPI에 전달합니다. 백엔드 주소는 환경변수 `BACKEND_URL`로 지정하며 기본값은 `http://127.0.0.1:8000`입니다. 인터넷 공개나 서비스 배포는 이번 단계의 범위가 아닙니다.
-
-실제 백엔드 진입점은 `backend/app/main.py`의 `app`이고 실행 모듈은 `app.main:app`입니다. `frontend/.env.example`은 예시 파일이며 자동으로 로드되지 않습니다. 필요하면 `frontend/.env.local`로 복사하거나 위처럼 환경변수를 지정합니다. 주소를 바꾸면 이미 실행 중인 Next.js에도 적용되도록 해당 프론트엔드를 다시 시작해야 합니다. 브라우저 호출은 상대 주소 `/api/sample-profile`, `/api/calculate`이므로 백엔드 포트를 프론트 코드에 별도로 하드코딩하지 않습니다.
-
-실행 후 `http://127.0.0.1:3000/api/sample-profile`이 HTTP 200인지 확인하세요. 자동 실행 로그는 `logs/backend.stdout.log`, `logs/backend.stderr.log`, `logs/frontend.stdout.log`, `logs/frontend.stderr.log`에 기록됩니다. 수동 실행 로그는 해당 터미널에 표시됩니다.
-
-## 사용 방법과 계산 기준
-
-초기 화면에서 JSON 가상 고객을 불러와 실제 API로 계산합니다. 고객정보를 수정한 뒤 **재무계획 계산하기**를 누르면 요약·그래프·월별 기록이 함께 갱신됩니다. 편집 중인 값과 이전 계산 결과는 상태 표시로 구분합니다. **기본 예시 불러오기**로 초기 고객으로 돌아갑니다. 사용자 입력은 데이터베이스에 저장하지 않으며 페이지를 새로 열면 기본 예시로 시작합니다.
-
-| 기준 고객 결과 | 금액 |
-| --- | ---: |
-| 현재 순자산 | 22,000,000원 |
-| 월 저축 가능액 | 800,000원 |
-| 60개월 저축 증가 | 48,000,000원 |
-| 60개월 후 주거 저축 | 52,000,000원 |
-| 목표월 반환 보증금 | 10,000,000원 |
-| 목표재원 | 62,000,000원 |
-| 70,000,000원 목표 부족액 | 8,000,000원 |
-| 목표 달성률 | 88.57% |
-
-화면의 값은 고정된 예시 숫자가 아니라 Python 계산 응답입니다. 순자산은 네 자산에서 현재 부채를 차감합니다. 비상자금과 장기투자는 목표재원에서 제외합니다. 보증금은 즉시 사용 가능한 현금이 아니며 **목표월 반환 가정이 켜진 경우에만 마지막 월의 목표재원에 추가**합니다. 그래프의 마지막 월 변화는 보증금 반환에 따른 가용성 변화이고 투자수익이 아닙니다.
-
-소득·지출은 일정하고 수익률·물가상승률은 0%입니다. 월 적자는 주거 저축에서 차감하고 저축 소진 이후는 별도 미충당 적자로 표시합니다. 비상자금 자동 인출이나 추가 대출을 가정하지 않습니다. 기존 부채의 원리금 상환도 반영하지 않으며, 부채를 입력하면 한계가 화면에 표시됩니다. 미충당 적자가 있으면 목표재원이 충분해도 실행 가능한 목표 달성으로 표시하지 않습니다.
-
-## 구조
-
-```text
-frontend/                Next.js · TypeScript · Tailwind · shadcn/ui · Recharts
-  src/                   화면, 입력, API 계약, 공통 컴포넌트
-  e2e/                   실제 API와 연결하는 Playwright 사용자 흐름
-backend/
-  app/main.py            FastAPI 입력 검증과 엔진 호출
-  app/models.py          Pydantic 고객·소득·지출·자산·부채·목표 모델
-  app/engine.py          프레임워크와 독립된 Decimal 계산 엔진
-  tests/                 고정 정답, 경계값, HTTP 계약 검증
-data/sample-profile.json 가상 고객 원본
-docs/                    개발 명세와 개발 로그
-scripts/                 로컬 서버 시작·종료
-```
-
-금액은 정수 원 단위 Decimal이며 JSON 응답에서 문자열로 전달합니다. 프론트엔드는 표시 형식과 차트 좌표만 변환하며 금융 결과를 다시 계산하지 않습니다. API는 검증된 입력을 `input`으로 함께 돌려주어 표시값의 계산 기준을 확인할 수 있습니다. 전체 계약과 경계조건은 [최소 개발 명세](docs/iteration-1-spec.md)를 참고하세요.
-
-## 검증
-
-루트에서 다음 명령으로 반복 검사할 수 있습니다. 서버 실행 중에는 Core와 E2E를 사용하고, Build는 같은 checkout의 서버를 종료한 뒤 별도로 실행합니다. 스크립트가 사용자 서버를 종료하지는 않습니다.
-
-```powershell
-.\scripts\verify.ps1 -Mode Core
-.\scripts\verify.ps1 -Mode E2E -BrowserChannel msedge
-# 서버가 실행되지 않을 때
-.\scripts\verify.ps1 -Mode Build
-```
-
-개별 명령과 검사 범위는 [테스트 안내](docs/testing.md)에 있으며, 직접 실행하려면 다음을 사용합니다.
-
-```powershell
-Set-Location 'C:\finance planner\backend'
-& .\.venv\Scripts\python.exe -m pytest -q
-
-Set-Location 'C:\finance planner\frontend'
-npm.cmd run typecheck
-npm.cmd run lint
-npm.cmd run build
-```
-
-로컬 서버가 실행 중인 상태에서 실제 브라우저 테스트를 실행합니다. 이 환경에 설치된 Edge를 사용하므로 추가 브라우저 다운로드가 필요하지 않습니다.
-
-```powershell
-$env:PLAYWRIGHT_BROWSER_CHANNEL = 'msedge'
-npm.cmd exec playwright test
-```
-
-Edge가 없는 환경에서는 `npm.cmd exec playwright install chromium`으로 Playwright Chromium을 설치하고 `PLAYWRIGHT_BROWSER_CHANNEL` 환경변수를 비운 뒤 실행합니다. 테스트 서버 주소는 `PLAYWRIGHT_BASE_URL`로 변경할 수 있습니다. 개발 서버가 `.next/`를 사용하므로 production build는 개발 서버를 종료한 상태에서 실행합니다.
-
-실제로 수행한 검증 결과, 발견한 문제와 수정 내용은 [개발 로그](docs/development-log.md)에 기록합니다. 의존성은 `frontend/package-lock.json`과 `backend/requirements.txt`로 고정합니다.
-
-2026-10-27 최초 개발 검증: **pytest 78개 + Playwright 14개 통과**, 타입 검사·린트·production build 및 로컬 서버 시작·종료 확인 완료. 이후 환경 정비·연결 오류 복구의 실제 결과와 서버 상태는 [개발 로그](docs/development-log.md)의 후속 기록을 참고하세요. 화면 기록은 `artifacts/lifepath-desktop.png`, `artifacts/lifepath-mobile.png`에 남겨 두었습니다.
-
-## 다음 단계
-
-다음 작은 기능으로는 기존 응답의 “현재 사용 가능한 주거 저축” 보조지표 표시를 제안합니다. [현황 문서](docs/project-status.md)에 완료 조건만 기록했으며 구현하지 않았습니다. 이후 Iteration 2의 지출 항목별 물가상승률과 이직·주거 전환·12개 시나리오·AI를 순차 검토합니다. 새 계산 기준은 별도 검토와 승인을 거칩니다.
-
-환경 호환성은 [Next.js 공식 설치 문서](https://nextjs.org/docs/app/getting-started/installation)와 [FastAPI 공식 릴리스 기록](https://fastapi.tiangolo.com/release-notes/) 및 패키지 레지스트리를 기준으로 확인했습니다.
+[상품 상세·위험/비중 검토0.2](docs/product-allocation-0.2.md): 공식 자료78개 대조 후 검토 후보6/근거 보류15/기본 범위 제외57을 기록했다. 기본 슬롯3·집중/기간/하락 시나리오·미배분 보존을 연결했으며 최종 추천·계좌 적합성·실거래는 미완료다.

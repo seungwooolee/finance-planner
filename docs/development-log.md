@@ -1,4 +1,330 @@
+# 2026-11-13 — GitHub 보존 요청·개발 체크포인트 인계
+
+사용자의 명시 요청으로 `codex/result-explanation-r1`의 지금까지 작업을 커밋·푸시할 준비를 했다. 시작 HEAD733bb47, 원격 fetch 뒤 ahead0/behind0이었다. 변경63파일(기존 수정36·추가27), 합계1,816,999바이트의 경로·알려진 비밀 패턴·충돌 표식·금지 파일0, JSON6개 파싱 통과다. 인계 문서를 추가하고 staged 검사 후 일반 푸시와 원격 SHA 대조를 수행한다. 기존 검증 기록을 보존하며 전체 테스트·실계정·유료 API·DB migration·배포는 새로 실행하지 않는다.
+
+Render 관리 API 읽기 전용 재확인에서 integration 브랜치·autoDeploy=no·preview generation=off였다. Vercel은 해당 개발 브랜치의 저장소 자동 배포 차단, CI는 codex 개발 push 비대상임을 확인했다. 실제 .env/키/DB/원장/의존성/테스트 산출물은 제외한다. [전체 인계·제약·재개 방법](integration/2026-11-13-ai-checkpoint-handoff.md). 최종 원격 SHA와 푸시 성공은 실행 응답으로 확인한다.
+
+---
+
+# 2026-11-13 — P1-1 질문 이력 맥락 분리·P1-2 미확인 단위 검사
+
+사용자 요청의 두 P1만 진행했다. 수정 전 가상 답변의 field-only asked_fields가 실제 질문을 숨기는 현상과 UNKNOWN 금액의 DATE 단위 허용을 대표2개 실패(6.35초)로 재현했다. 기존 terminal revision에서 실제/가상/추정 맥락별 파생 이력을 구성하고 질문 생략·TOTAL_OUTFLOW 전제에 대상/기간/정의/측정 기준을 검사했다. asked_fields는 원형 보존하되 생략 근거로 쓰지 않는다. 모든 미확인 상태도 먼저 단위를 검사하며 null을0으로 바꾸지 않는다. 이전 날짜 TEXT는 원응답 읽기에만 명시 호환하고, 잘못된 과거 revision은 원문/영수증을 보존하며 재사용을 막는다.
+
+직접 관련6파일 pytest202통과(165.76초), Ruff 최초 F8411건은 대기 상태 assert로1회 수정 후 통과했다. 정적 검토에서 invalid 과거 답변의 동일 값 재사용/보류 판단도 제외하고 측정 기준을 추가 대조했다. 해당 보존·재사용·모델·대기 확인 영향5개만 재검사5통과(23.04초)했다.5개는 기존202개와 중복이다. 변경 Python3파일 Ruff·문서 링크/공백 및 git diff --check 통과다. [명령·계약·호환·전체 실행 기록](integration/2026-11-13-agent-p1-history-units.md).
+
+실제 엔진/임시 SQLite/API·모의 인증/모델 기준이다. 금융 계산/원응답 정의·DB migration·FE·.env·기존 서버를 바꾸지 않았으며, 전체Core/Build/E2E·실계정/원격PG·유료API·Git 커밋/푸시·Vercel/Render 배포는 미실행이다. R3 지출 화면 실패와 P0 운영 잔여 조건은 별도 유지한다.
+
+---
+
+# 2026-11-13 — R3 지출 총액 SET 비교 확장
+
+요청 범위를 R3로 확인한 뒤 소득 비교의 공통 필드 검사를 재사용하고 F04/living(정의1.2.1)을 추가했다. 생활비/전체 출금액 구분과 포함 상환·저축 이체액·기간·대상을 고정한다. 기존 필수생활비/포함액과 충돌하는 지출은 안내하고, 다른 가정은 합산하지 않는다. 정책1.1/해시를 변경 확인에 연결했으며 과거 미소비 제안은 새 확인을 요구한다. 비교 필드별 UI·오류 문구와 원본 보존·0/소수 만원/적자·저장 재개 검사를 추가했다.
+
+첫 pytest는 tuple을 기존 엄격 JSON 해시에 넘겨 수집 오류4건(15.88초)이 났다. 배열로1회 수정 후 같은 관련 묶음108통과(266.69초)다. 이후 잘못된 저장 금액 단위·소수 원의 안내 처리 및 미확인 필수생활비 보존을 보완하고 영향 파일/소득 대표만31통과(193.60초)했다. 합집합113개이며 단일 전체 검사113개를 실행한 것은 아니다. 변경 Python Ruff·frontend 타입/변경 lint 통과다. 브라우저 최초 소득1통과/지출1실패는 combobox locator 오류였으며 해당 locator를1회 수정하고 지출만 재검사했다. 재검사도 가상 조건 확인 버튼 대기75초 제한으로 실패해 자동 반복을 중단했다. 상담 버전1·빈 금액 폼 스냅샷에서 의도 요청 완료/폼 초기화 시점의 경합 가능성이 남으며 원인은 미확정이다. 지출 UI는 검증 미완료다. 결과와 명령은 [R3 확장 기록](integration/2026-11-13-r3-expense-expansion.md)에 기록한다.
+
+실제 엔진/임시 SQLite·합성 인증/모델 기준이다. 기존 P0와 결과·상품 미커밋 작업 및 사용자 서버·.env를 보존했다. 원격 migration·실계정·유료 호출·Core/Build/전체 E2E·GitHub·배포는 미실행이다. 필수생활비의 OUT-05 비교, 상환·납입 원장 변경, 상대 증감·다중 필드·진단 반영은 이번 지원 대상이 아니다.
+
+---
+
+# 2026-11-13 — AI P0 상담 저장 경합·원장 유실 차단
+
+사용자 요청으로733bb47 기준 두 독립 ASGI 앱/서비스/DB 연결의 캐시 우선 문제를 재현했다. 원본 서비스의 격리 재현에서 저장 행1개가 다른 서비스의 오래된 임시 mutation 후0개가 됐다. 저장 행 우선·일반 임시 mutation 삭제 제거·내용 없는 agent_session_heads/worker 소유권·명시 삭제/저장 취소의 버전 조건을 구현했다. SQLite용 schema와 명시003 migration/준비 검사를 추가했으며 원격에는 적용하지 않았다.
+
+이어 임시 비용 원장 삭제 후 같은 요청을 새 예약으로 취급하는 문제를 재현했다. 런타임 자동 생성 제거·매 연결 ID 확인·승인 scope/예산/호출/기한 상한·gateway cap 검증을 추가했다. 기존 파일은 자동 변환하거나 초기화하지 않는다. 새 provisioning은 명시 합성 준비용이며 실제 원장·키·비용은 변경하지 않았다.
+
+초기 재현 fixture의 RLock 복사 오류를1회 고친 뒤 실제 결함을 재현했다. 상담 묶음56통과/2실패/11skip 후 불완전 캐시 주입 fixture를1회 수정해 실패2개만2통과/2skip. 원장 묶음108통과/1실패 후 Windows 핸들 종료를1회 수정하고 실패1+신규003계획+영향 회귀102통과. 중복 제외 고유268통과/11skip(279개 수집), 변경 Python10파일 Ruff 통과다. 테스트·수정·제약은 [상세 기록](integration/2026-11-13-agent-p0-concurrency-ledger.md)에 남긴다.
+
+PG runtime 부재로 실제 PG 경합은 미검증이다. 기존 원장 대사/복구·중앙 원장·실계정/worker·전체Core/Build/E2E·유료 호출·Git/배포는 미실행이다. 기존 질문·결과·상품 FE/엔진 미커밋 작업과 서버/.env를 보존했다. 이번 작업은 로컬 P0 보호이며 운영 승인 완료가 아니다.
+
+---
+
+# 2026-11-13 — AI 개발본 기반 설문·재무현황·재무안·상품 흐름 (로컬)
+
+`codex/result-explanation-r1`의733bb47을 기준으로, 원응답/부분 결과와 R1/R2/R3/RAG를 보존하며 FE 상품 통합본의 정책0.2·상품78행·기본3/대안3을 재사용했다. 129.9만원은 소득300−생활비160−원금10−이자0.1이며 기존 납입20까지 반영하면109.9만원이다. 은퇴기1,500만원은 현금성 금융자산이다. 계산 정의를 바꾸지 않고 현금흐름 표/그래프, 자산 분류, 목표 보존·월/미정·반복 입력, 대출 핵심 입력, 두 안 선택·월말 목적별 대사·상품 갱신·이번 달 행동, R1 사용자/run별 메모리 캐시를 연결했다.
+
+관련 Python 고유155개 통과(최초153통과/상품 호스트 차단1실패 → 기존 차단 연결 후 영향 범위15통과 → 복수대출 추가1통과), Ruff·pip check·최종 타입/변경 린트 통과. 실제 Edge3경로+오프라인1검사 통과, 선택 보존 보완 후 해당 상품 경로만1회 통과했다. 인증·AI는 모의, SQLite는 임시, 재무엔진은 실제다. 실계정/원격DB/유료AI/운영동의/Build·전체Core·전체E2E·GitHub·배포는 미실행이다. 독립3유형 정책·상품AI 근거 계약·보유 후 구성·총액형 할부 계산 등 결정 사항은 [변경·검산·실행·인계](integration/2026-11-13-integrated-result-flow.md)에 기록했다.
+
+가상 자료 전용 FE http://127.0.0.1:3113/dion, 테스트 BE8213. 기존 사용자3000/8202 및 DION-git 미커밋 작업은 보존했다.
+
+---
+
+# 2026-11-12 — GitHub 보존·다른 노트북 재개 프롬프트
+
+사용자가 지금까지의 작업을 GitHub에 저장하고 다른 노트북에서 스키마 개발을 이어갈 프롬프트를 요청했다. 로컬 미커밋19파일을 비밀값/산출물 제외 검사 후2bb2d8d로 보존했다. 원격ffdd4cf가 시작HEAD678c348보다4커밋 앞서 있어 강제 푸시 대신 병합했다. README·개발 로그와 OnePort 설정/예제/검사 충돌을 해소하고6b5f24c로 통합했다. CI와 원격 R2 재개 기록을 유지했다.
+
+OnePort는 원격 PERSISTENT 확인과 로컬 SCOPE/절대경로 검사를 모두 보존했다. 최초 관련 pytest에서 미해결 표식으로 수집 오류2건이 났고 정리 후 1회 재검사69통과(48.20초), 변경 Python7파일 Ruff 통과다. 반복/전체 검사와 브라우저 재실행은 하지 않았다. 원격 Render는 integration·autoDeploy=no·preview off를 읽기 전용으로 확인했다. Vercel 관리 조회는403이며 개발 브랜치 git.deploymentEnabled=false 설정을 확인했다. 배포/모델 호출/원격 DB 쓰기는0이다.
+
+[최신 인계 프롬프트](integration/2026-11-12-agent-schema-resume-prompt.md)에 clone/설치·제외 자료·실제/모의 검증·첫 R2 계약/검증/mock 범위와 후속 R3/RAG 순서를 기록했다. 기존 인계/README/상태에서 연결했다. 팀원의 자료 조사를 기다리지 않고 합성 데이터로 개발하며, 조사표를 Git의 원문 근거로 오인하지 않게 했다. 최종 staged 문서·비밀 패턴·공백 검사를 마친 뒤 승인된 개발 브랜치만 일반 푸시하고 원격 SHA를 대조한다. 이번 스키마 기능 구현·운영 배포는 요청 범위가 아니다.
+
+푸시 대상 차이20파일의 알려진 비밀 패턴/금지 경로/충돌 표식0, 관련 문서 상대 링크199개 누락0, staged 공백 검사 통과, 개발 브랜치 자동 배포 차단 설정을 확인했다. 실제 .env·DB·원포트 영수증·의존성·브라우저 산출물은 제외했다.
+
+---
+
+# 2026-11-12 — 공유 근거자료 점검·보완 조사표
+
+공유 폴더의 조사표·안내문과 로컬 AI 구조 설계를 대조했다. 기존 조사표는 세금40행·상품 개념11행·상품 공시21행이며, 확인한 새 조사 결과 입력칸은 모두 공란이었다. 기존 상품 참고값은 존재하며 이번에 최신성/정확성을 재검증하지 않았다. 같은 조사표에 보완 과제18개·근거 시작행8개·질문 연결8개·합성 검증 사례20개·개발 준비8개를 5개 탭으로 추가했다. 원문·법령·상품값을 임의 작성하거나 조사/검증 완료로 표시하지 않았다.
+
+원격 readback에서 새 셀803개 일치, 기존3탭의 읽은 셀/입력 규칙/주석/서식/속성 동일, 새 native Table 범위와 상태 선택 목록을 확인했다. 브라우저가 비활성화돼 원격 화면 검증은 미실행이다. XLSX 미리보기의 빈 문자열 인덱스 표시 문제는 원격 값과 원문 공란을 대조했으며 시각 검증 통과로 보고하지 않는다. 문서 상대 링크28개 누락0·후행 공백0·`git diff --check` 통과를 확인했다. 앱 테스트·법령/상품 신규 조사·설치·모델/embedding 호출·DB·Git 배포 작업은 수행하지 않았다. [범위·추가 탭·담당별 준비·첫 완료 조건](integration/2026-11-12-rag-source-audit.md)을 따른다. 다른 작업의 미커밋 변경을 보존했다.
+
+---
+
+# 2026-11-12 — RAG·LangChain 확장 스키마 문서
+
+사용자가 AI 에이전트 스키마에 RAG/LangChain 등의 기술을 포함하도록 요청했다. [구조 설계0.2](customer-ai-agent-architecture.md)의2.3절에 문서 수집·검토·분할/선택 embedding·검색→LangChain 연결→기존 OnePort→서버 검증 흐름을,5.6절에 source/chunk/index/retrieval/context/grounded draft 논리 스키마를 추가했다. LangChain 공식 검색·Runnable·모델/구조화 출력과 pgvector 공식 필터 문서를 확인했다. 임의 원문/검색 결과를 금융 사실로 사용하지 않고 연도·효력·검토 상태·개인 범위·인용을 서버에서 검사하도록 설계했다.
+
+현재 코드/서버 제어와 후속 목표 구조를 구분하고 기존 ‘미도입’ 문구를 이번 확장 설계와 일치하도록 보완했다. 기존 ModelProposal JSON Schema0.1은 유지했다. 구조 문서 상대 링크24개·공백·`git diff --check` 통과, Mermaid5개 정의 확인/별도 렌더링 미실행. 라이브러리/DB 확장 설치·의존성 변경·색인·embedding/모델 호출·런타임 테스트·원격DB migration·커밋/푸시/배포는 수행하지 않았다. 다른 작업의 미커밋 수정은 보존했다.
+
+---
+
+# 2026-11-12 — AI 구조·데이터 스키마 기술 표 보완
+
+사용자 요청으로 [구조 설계](customer-ai-agent-architecture.md)의 구조도에 실제 기술명을 표시하고 구성요소별 기술/버전·역할·선택 이유·현재/후속 상태와 데이터 스키마별 기술 연결을 추가했다. frontend 설치 package.json, backend 설치 metadata, 고정 requirements/소스와 대조했다. 기존 Python 상태 관리·Pydantic·Decimal·Supabase/Psycopg·OnePort/HTTPX를 재사용하고 LangGraph·검색/분산 도구의 미도입 상태를 명시했다.
+
+이번에는 문서2개만 수정했다. 설치/의존성/앱 코드/DB/모델 호출/운영 설정 변경0, 커밋/푸시/배포0이다. 문서 링크·공백만 확인하며 앞선 JSON Schema·앱 테스트 기록을 이번 재실행 결과로 보고하지 않는다. 다른 작업의 미커밋 운영 후속 변경은 보존했다.
+
+---
+
+# 2026-11-12 — P0 운영 준비·R2 재개 보완
+
+시작 HEAD678c348과 미커밋 재개 테스트 수정6줄을 확인해 보존했다. 운영 설정/스키마 읽기 전용 점검에서 디스크 없음·agent_sessions 미적용을 확인했다. 시작 설정 고지/독립 readiness·OnePort 원장 선언 gate·오프라인 단일 migration 계획을 로컬에 추가했다. schema/key/token/원응답 원문을 공개 준비 응답에 넣지 않는다. DB 대체 저장/자동 DDL·인증 캐시는 추가하지 않았다.
+
+직접 관련pytest98통과, 후속 강화 준비 상태12통과, 실제앱 health/ready 분리1통과, 오프라인 migration2통과. Ruff 최초 import 순서1실패를1회 수정 후 통과했다. 기존 R2 재개 브라우저는1회 실행47.2초 통과(경로31.1초): 새로고침·기존run·저장상담 재개/충돌취소/저장취소/삭제·진단 이력불변 확인. 운영migration·실인증R2·중앙원장/worker 실제수·인증latency·전체검사는 미실행이다. 명령·정확한소스·P1경로정책·P2순서·남은승인은 [기록](integration/2026-11-12-operational-followup.md)을 따른다. 이번 push/배포/유료AI 호출은0이다.
+
+---
+
+# 2026-11-12 — AI 개발 방향 문서·구조 스키마
+
+사용자가 클로드 검토에 대한 보완 방향을 문서에 기록하고 구조 스키마를 요청했다. [구조 설계](customer-ai-agent-architecture.md)와 문서용 [LLM 후보 JSON Schema](schemas/customer-agent-proposal-0.1.schema.json)를 추가하고 기존 고객용 AI 설계·README·상태 문서에서 연결했다. 서버가 권한/상태/질문/확인/실행을 결정하고 모델은 제한된 후보만 제안하도록 정리했다. R3는 확인 후 기존 엔진 전체 계산부터 시작하며 구조화 기억을 사실의 기준으로 유지한다.
+
+기준 HEAD678c348의 기존 미커밋 운영 준비·OnePort 설정·브라우저 재개 수정은 보존했다. 이번 범위는 문서뿐이며 앱·금융 산식·DB·모델 호출·설정·커밋/푸시·배포를 변경하지 않았다. 상대 링크 누락0, 설치된 Ajv로 Draft-07 schema/내부 참조·본문 예시1건 검증 통과, 새 파일 공백·`git diff --check` 통과. 의존성 설치와 런타임 검사, Mermaid 별도 이미지 렌더링 검사는 하지 않았다. 운영 후속 기록의 검증 결과는 다른 작업의 기존 기록으로 인용한다.
+
+---
+
+# 2026-11-12 — R2 재개 브라우저 시나리오 보완
+
+원인은 테스트 흐름이었다. case 복원 후 상담이 저장된 run을 여는 단계를 추가(`GET agent-sessions`의 base_run_id 사용)하고, 처음 도달한 "확인할 항목" 선택을 콤보박스 역할 locator로 바꿨다. 제품 코드·기대값은 유지했다. 노트북 checkout에서 테스트 전용 BE8318/FE3318로 해당 시나리오만 실행: 1차 87행 locator 실패, 2차(수정 미반영) 무효, 3차 1 passed(15.5초). 다른 R2 사례·전체 Core/Build/E2E·실인증·원격PG·배포는 미실행. [상세](consultation-r2.md).
+
+---
+
+# 2026-11-12 — AI 개발 작업본 커밋·푸시 준비
+
+사용자가 `codex/result-explanation-r1`의 코드·설계·검증 기록 커밋과 푸시를 명시적으로 지시했다. P0 b4f1f5a 기반의 현재 AI 작업본만 대상으로 하며, 다른 checkout의 미커밋 FE·엔진 변경은 포함하지 않는다. 공통 AGENTS.md와 새 노트북의 실행·설정·브랜치·검증 한계를 [개발 인계](integration/2026-11-12-ai-development-handoff.md)에 연결했다.
+
+관리 API의 읽기 전용 조회에서 Vercel은 frontend 루트·운영 integration 브랜치를 사용하며 Render는 자동 배포와 PR 미리보기가 꺼져 있음을 확인했다. 이 개발 브랜치만 Vercel Git 자동 배포를 차단하는 frontend/vercel.json을 추가했다. 계정·환경변수·운영 DB·배포 설정의 원격 변경은 하지 않았다.
+
+이번 인계 검사: 커밋 대상46파일, 알려진 비밀키 형식 발견0, 새 인계 문서 상대 링크5개 존재, 브랜치별 Vercel JSON 설정·staged 공백 검사 통과. 실제 비밀값·DB·산출물은 대상에서 제외했다. R1/R2의 기존 검사는 재실행하지 않고 아래 기록으로 보존한다. R2 브라우저 재개1건은 이 시점에 미통과였다(후속 통과는 위 최신 항목 참조). 푸시 뒤 원격 SHA와 배포 생성 여부를 확인하며 전체 테스트·빌드·E2E·외부 AI 호출·DB migration·배포는 실행하지 않는다.
+
+---
+
+# R2-a 공통 상담 — 2026-11-12
+
+기존 R1 worktree에서 공통 상담 API·상태 전이·11필드 근거/질문·확인 충돌·기억 저장/재개/삭제와 결과 카드를 추가했다. 임시30분/저장 후 재개7일·명시 고지·만료 지연 정리로 구현했으며 원응답/엔진/선택 계획을 보존했다. [계약·수정 파일·실행 명령·결과](consultation-r2.md)에 기록했다.
+
+최초 pytest78통과/2실패 후 실패2개 단일 수정·재검사 통과, 추정값 보완 관련3개 통과로 고유81개(신규R2 32+기존R1 49)를 확인했다. Ruff·타입·해당ESLint 통과. 브라우저1통과/1실패 후 재개1건만 수정·재실행했으나 결과 화면을 여는 테스트 단계 누락으로 여전히 실패했다. 공통 정책에 따라 추가 반복을 중단했으며 전체 완료로 표시하지 않았다(당시 기록. 후속 통과는 문서 맨 위 항목). 외부 AI·실계정·원격DB migration·전체Core/Build/E2E·commit/push·배포는 하지 않았다.
+
+---
+
+# R1-c 원포트 모델 연결 — 2026-11-12
+
+`codex/result-explanation-r1`의 기존 미커밋 R1 변경을 유지하고 원포트 어댑터를 추가했다. 발급 API/공식 문서와 정확한 지정 모델을 확인하고 70,000원 승인 안에서 합성 실호출을1건으로 제한했다. 실제 run 검증 통과,8,937ms,2.9876크레딧(5.9752원). 관련pytest103·Ruff·TypeScript·변경FE lint·모의표시E2E1건 통과. [실행 명령·결과·비용·후속](integration/2026-11-12-oneport-r1c.md)에 기록했다. 키는 저장하지 않았고 고객 데이터·기존 원응답/엔진·다른 작업 서버를 보존했다. 전체Core/Build/전체E2E·GitHub push·배포는 미실행이다.
+
+---
+
+# R1-a/R1-b 저장 결과 해설 — 2026-11-12
+
+P0 b4f1f5a 기준 `codex/result-explanation-r1` 독립 작업본에서 저장 run의 해설을 구현했다. 질문 정의/원응답/계산정책/DB 스키마는 유지하고 별도 해설 API와 검증기, 정해진 설명/mock, 결과 패널을 연결했다. [구현 계약](result-explanation-r1.md)과 [실행 명령·결과·제약](integration/2026-11-12-result-explanation.md)을 따른다. 다른 작업의 서버/checkout을 보존하며 유료 AI 호출·배포는 수행하지 않는다.
+# 투자선호·상품비중 배포 통합 — 2026-11-12
+
+배포 계정 수정c286610을 기준으로 FE의 절세/상품/답변 근거3개 커밋을 선별 반영했다. 계정 UI 전면 변경은 제외하고 F03·탭 로그인·저장·복원을 유지했다. 기존 정책/데이터의 OUT-06을 미리보기와 저장 계산에 연결하며 원응답 정의를 바꾸지 않는 selection_codes 입력을 사용한다. Core535/8skip, Build, 고유 브라우저52개 통과와 전체 실행 실패4개/수정·단독 재검사 결과를 [통합 기록](integration/2026-11-12-investment-deployment.md)에 남겼다. 동일 커밋 FE/BE 배포와 공개 URL 확인을 이어 진행한다.
+
+완료: 실계정에서 확인한 adapter 차단 자산의 진단용0 표시를 수정하고 새 실제 API/컴포넌트 회귀를 추가했다. 최종 타입·전체 lint·Build 통과, 공개 URL9건 통과(2.3분),84e2b56 FE/BE live/READY와 production alias를 확인했다. 실계정 상담13은 원문/원응답13개/과거 run3개를 보존하고 OUT-06 저장 run1개만 추가했다. 최종 새로고침/저장 결과 조회에서 미확인 금액·입력/조회버전13과 어댑터 표시를 확인했다. 검사 서버만 정리했으며 최종 배포 ID/명령/제약은 위 통합 기록에 남겼다.
+
+---
+
+# 계정 저장·복원 — 2026-11-12
+
+---
+
+
+---
+
+# 2026-11-12 — 질문 흐름 점검·결과 계산 근거 표시
+
+사용자가 다른 작업에서 해결한 F03 저장 충돌은 제외했다. 현금흐름·자산/채무·목표·두 후보에 계산 당시 원응답 연결과 정규화 금액·기준기간·버전의 펼쳐보기를 추가하고 관련 답변 수정으로 연결했다. 현재 수정값과 이전 결과의 근거를 섞지 않는다. BE·엔진·API·질문 정의·저장 코드는 변경하지 않았고 화면 재배치는 제안 상태로 유지한다.
+
+타입·린트, 임시 SQLite 원응답 검사6개, API/정적 렌더 검사1개, 기존 모바일 overlap UI1개, 새 데스크톱 근거 UI1개, 격리 production build가 통과했다. 사용자가 실행한 FE3103과 BE8202에서 실제 사례 계산·근거·소득 질문 복귀를 확인했다. 실계정/원격DB, F03 해결 여부, 정밀 직접 진입 전체 수동 완주, 새 근거 패널 모바일은 미검증이다. [변경·검사·제약 기록](integration/2026-11-12-question-result-basis.md).
+
+---
+# 2026-11-12 — PR #3 상품 검토·월별 배분 FE 통합
+
+최신 FE 작업본과 PR `e481951`을3방향 비교해 상품 원장·정책·소비자를 통합했다. 계정/원응답 복원·부분 결과·결과 최신성·절세 안내를 보존하고 3번 결과화면에 OUT-05→OUT-06 실제 배분을 연결했다. 기본3개/대안3개를 구분하고 환율·제외조건·이해도 입력과 미배분 질문 복귀를 제공한다. 정책/원장 원문은 유지하며 응답의 표시용 allocation_role만 부가했다.
+
+관련 pytest97, 변경 Ruff, FE 타입·린트, 격리 webpack Build, 실제 Edge3경로(정상/환노출 제외/모름,39.7초)가 통과했다. BE 직접3경로도 예산 대사가 일치했다. 3000 구v6 서버는 보존하고 사용자가 검증용 FE3102를 실행했다. 실계정/원격DB·전체 회귀·최종 투자 승인/거래는 미검증·비범위다. [충돌·변경·금액·명령·검사 기록](integration/2026-11-12-pr3-product-integration.md).
+
+---
+
+# 2026-11-11 — 결과 화면 절세 제도 안내 8개
+
+FE 브랜치 `dion/fe-review-20261111`, 코드 `35ce0b0`에서 기존 인증 환경 기록을 보존하고 구현했다. 사용자가 정한 연금 추가납입·ISA 가입/유형·ISA 만기활용·월세·중소기업 취업자 감면·혼인세액공제·혼인/출산 증여공제·연금 수령 방식의8개 제도를 결과 화면에 추가했다. 관련 명시 답변의 안내 우선순위만 정하며, 초기 질문 추가0·생애단계 자격 추정0·개인별 세액 생성0이다. 추천 후보와 네 자격 표시 상태를 분리하고 출처/미확인/적용연도·제도 설명/신청 경로·AI 미연결 안내와 메모리 전달 초안을 제공한다.
+
+타입·린트와 대표3경로 최종 통과: 실제 Edge/실제 엔진의 관련 정보·정보 부족2경로, 제안된 BE 응답을 사용한 컴포넌트 표시 fixture1경로. 초점 복귀와 실제 모바일 캡처의 창 폭 문제를 수정하고 관련 경로만 재검사했다. 격리 webpack production build는 Windows 메모리 부족 이후 검사용 복사본의 메모리 최적화/1worker/512MB heap 설정에서 최종 통과했다. 앱 설정·서버·환경·BE/엔진/API·adapter1.0은 그대로 유지한다.
+
+현행 BE 추천/자격판정 API·AI 상담은 없으며 새 wire 계약을 만들지 않았다. 운영 화면에서 요건 충족/대상 아님을 임의 판정하지 않는다. 개인별 적용 과세연도·공제 대상액/세금 감소/환급도 미확인 상태다. 실제 연결과 fixture 표시 검사를 구분한다. [변경 파일·실행·검사·BE/AI 인계 초안](integration/2026-11-11-fe-tax-guidance.md).
+
+---
+
+# 2026-11-11 — 로컬 계정 인증 실행 환경 연결
+
+`DION-git`, `dion/fe-review-20261111`, 코드 HEAD `35ce0b0`. FE3000과 BE8202의 실행 폴더가 각각 이 저장소의 `frontend`/`backend`임을 확인했다. 사용자가 지정한 `DION-be-check/backend/.env`에서 인증용 두 설정만 현재 BE의 `DION_SUPABASE_URL`/`DION_SUPABASE_PUBLIC_KEY`로 반영했다. 원본 설정과 다른 설정은 보존했으며 DB 비밀번호는 복사하지 않았다. FE의 `.env.local`에는 `BACKEND_URL=http://127.0.0.1:8202`를 설정했다. 두 환경 파일은 Git 제외를 확인했고 비밀값은 기록하지 않는다.
+
+지정한 BE8202만 재시작했다. FE3000 재시작 도구 실행은 자동 승인 검토에서 거부되어 사용자가 해당 서버를 직접 재시작했다. 현재 명령은 FE `node node_modules/next/dist/bin/next dev --hostname 127.0.0.1 --port 3000`, BE `python -m uvicorn app.be_server:app --host 127.0.0.1 --port 8202 --no-access-log`이다. 다른 작업 서버는 종료하지 않았다.
+
+이번 확인: BE 직접 호출과 FE 경유 `/api/be/v1/auth/status` 모두 HTTP200·`configured=true`. Supabase 설정 조회도 HTTP200이며 이메일 가입 활성·이메일 확인 필요 상태를 확인했다. 실제 브라우저의 `http://localhost:3000/dion` → 로그인 → 회원가입에서 설정 조회 HTTP200, 미연결 안내 제거, 가입 버튼 활성화를 확인했다. 실제 이메일/비밀번호로 가입 요청·인증메일 수신·로그인은 사용자 직접 입력 대기이며 아직 검증하지 않았다. 설정 확인을 계정 생성·메일 발송·로그인 성공으로 기록하지 않는다.
+
+애플리케이션 코드·BE/엔진/API 계약 변경은 없다. 환경 연결만 변경하여 타입·린트·빌드·전체 회귀는 재실행하지 않았다. 아래 이전 구현 검사의 모의 인증 결과와 이번 실제 설정/화면 확인을 구분한다.
+
+후속 실사용 확인: 사용자가 가입 요청 뒤 현행 FE의 `CHECK_EMAIL_OR_SIGN_IN` 전용 안내가 표시됐으며 메일은 도착하지 않았다고 보고했다. 검사용 브라우저와 사용자의 브라우저가 달라 해당 POST의 네트워크 응답을 직접 관측한 결과는 아니다. 이 상태는 기존 계정 중복 요청도 포함하므로 신규 계정 생성·메일 발송 완료로 판정하지 않는다. 동일 계정으로 로그인 1회 확인을 요청했다. 사용자 브라우저/관리 화면 연결 도구는 kernel assets 경로 오류로 실행되지 않아 Supabase Auth 로그·개별 계정 확인 상태·SMTP 설정은 미확인이다. [Supabase SMTP 문서](https://supabase.com/docs/guides/auth/auth-smtp)의 기본 서비스 수신자·발송량 제한은 가능한 원인이지 이 프로젝트의 확정 원인이 아니다.
+
+최종 사용자 확인: 동일 이메일·비밀번호로 실제 로그인이 됐으며 ‘내 상담’을 열 수 있다고 보고했다. 따라서 설정 연결(직접 HTTP 확인), 가입 대기 응답(사용자 화면 안내), 실제 로그인·내 상담 진입(사용자 확인)을 각각 구분해 기록한다. 인증메일 수신은 확인되지 않았고 신규 생성/기존 계정 여부 및 원격 DB 저장·복원은 이번 실행에서 검증하지 않았다. 가입 재시도나 인증 우회는 하지 않았다. 최종 접속 주소는 `http://localhost:3000/dion`이다.
+
+---
+
+# 2026-11-11 — FE 회원가입·내 상담 저장/재개 연결
+
+완료 기록: 커밋b4f1f5a를 기존 Render/Vercel에 동일 배포했다. 공개주소12건 통과와 사용자 로그인 계정의 새 합성 상담11개 전체 답변 저장, 새로고침, 재개, 수정, 과거 결과/입력 복원 후 새 버전13 저장을 확인했다. F03 원문300→320→300의 문자열/단위/기준월과 이전 revision 연결, 기존12개 응답/2개 run/16개 정의의 복원 저장 전후 해시 보존을 READ ONLY로 검증했다. 별도 팀원 PC 확인은 아직 없으며 코드 회귀·실계정·팀원 확인을 구분한다.
+
+배포 복구9af8193 이후 별도 변경 없는 작업본을 사용했다. 실제 DB 정의14개를 읽기 전용으로 대조해 표시 버전 삽입과1.2.1의 원본 ZIP 경로 차이를 확인했다. 원응답/등록 정의/run을 덮어쓰지 않는 호환 비교와 계정 화면 흐름을 구현했다. [변경 계약·실제 검사·배포 결과](integration/2026-11-12-account-persistence.md)에 이번 실행을 기록한다. 기존 사용자3000/8001 서버와 다른 체크아웃 변경은 보존한다.
+
+---
+
+# 2026-11-12 — 배포본 진단 결과 복구
+
+후속 완료: 커밋9af8193을 Render `dep-dbqi3at6e07s73f96vrg`와 Vercel `dpl_GgDAANHUiu4BhdNrybvykgRJceJ2`에 배포했고, 실제 별칭의 같은 커밋을 확인했다. 실제 주소 브라우저 관련12건이1.2분에 통과했다. 새 빠른/정밀 월 차액140만원, 가상사례 잔여90만원·소득 수정 후110만원, 미확인 보존과 오류 후 재시도를 확인했다. DB 저장 검사는 이 완료 범위에 포함하지 않는다.
+
+사용자가 제공한 Vercel 주소에서 가상사례의 HTTP200/정상 금액과 화면 밖 결과 제목, 새 빠른·정밀 입력의 독립 현금흐름 누락을 재현했다. 배포된6d8e805에서 분리한 `fix/dion-result-visibility-20261112`에 최소 수정하며 다른 작업의 DION-git 미커밋 파일을 보존한다. 원응답/DB/계산정책은 유지한다. [상세 실행·검증 기록](integration/2026-11-12-result-delivery.md)을 따른다.
+
+---
+
+요청 제한/재시도·오류 분리·부분 결과·현재 입력 표시, 일반 화면의 저장/가정 접근, 자산 소유자/계좌 연결, 목표 해제 후 ID/금액/날짜의 저장·복원, 구/신규 가상 사례 격리, 쉼표 입력 오류 표시를 보완했다. 실제 저장소 검사에서 질문 정의 변경 충돌도 발견해 기존 정의를 불변으로 유지하고 선택 코드를 응답 필드에 보관했다. backend/엔진/API 계약 파일·환경·의존성 변경 없음.
+
+타입·린트·격리 production build 통과. 실제 Edge에서 일반 입력/기존 검산/수정 재계산·실패 복구와 기존 위험 응답/원래 입력 복원 경로2개 최종 통과(30.9초), 기존 데스크톱/모바일 마스코트·도움말·가입 UI 검사 통과(28.3초). 원응답 임시 SQLite 저장/복원·목표 비활성 제외 검사 통과. 검사 중 발견한 저장 오류를 수정한 뒤 관련 타입/린트/빌드/경로만 재실행했다. 실제 로그인·원격DB·회원가입, 전체 엔진/BE/E2E는 이번 통과 범위에 포함하지 않는다.
+
+[변경 파일·원인·정확한 검사/미검증 범위·실행 안내](integration/2026-11-11-result-recovery.md). 검증 주소는 `http://127.0.0.1:3101/dion`이며 원본과 실행 소스32파일의 SHA-256 일치를 확인했다. 이번 작업은 로컬 수정으로 남겼으며 브랜치 병합·ZIP 생성은 하지 않았다.
+# 2026-11-11 — 상품 상세/위험·비중 정책0.2 검증
+
+사용자 요청으로 기존 식별78개를 공식 자료에서 재검색·대조했다. 후보6/근거 보류15/기본 범위 제외57을 원장에 보존했다. 기록 위험등급35/총보수41/보수·비용25에는 과거·무기준일 참고값이 포함되므로 모두 최신 검증값이라고 보고하지 않는다. 공식 공시 증거와 내부 역할/최소기간/TTL/비중을 분리하고 보수·비용 종류를 교정했다.
+
+실제 실행: `python -m pytest -q tests/planning/test_product_allocation.py tests/be/test_question_frontend.py tests/planning/test_question_v12.py tests/planning/test_engine_v12.py`136통과(상품32개, 그 내부360조합), 변경 Python Ruff, `npm run typecheck`, `npm run lint`, `npm run build -- --webpack` 통과. 주식 충격40/60/80/100%×허용 구간2개의8개 내부 민감도도 기록했다. 관련 검사 환경은 기존release-venv/httpx를 사용했고 의존성/lockfile은 바꾸지 않았다.
+
+최종 검토에서 예산 보류 후 하락 시나리오 금액이 남는 경계를 발견해 배분액과 시나리오 손실액을 함께0으로 정리했다. 과거 납입월에 현재 자료로 배분하지 않는 검사도 추가하고 관련136개를 재실행해 통과했다.
+
+월 후보30/48만원과 이전2026.10.31 고정 입력은 유지했다. 현재 공시를 사용할 수 있는 합성 투자 응답/OUT-05 금액 계약에서는18만/28.8만원 배분·12만/19.2만원 미배분을 독립 검산했다. 이는 실고객의 현재 권장액이나 실거래 결과가 아니다. 전체 Core·E2E·실계정/원격DB·금번 HTTP smoke·시계열 백테스트·배포는 미실행. 직전 Chromium socket 제한과0.1 HTTP 결과는 과거 이력으로 유지한다. 계약·출처·금액 표는 [0.2 현행 문서](product-allocation-0.2.md)에 모았다. 최초 원격 GitHub 업로드는 자동 승인 검토가 게시 허가 부족으로 거절해 로컬 커밋에 보존했다. 이후 사용자가 기존 PR#3 게시 질문에 계속 진행하도록 승인했으므로 같은 저장소·브랜치에 검증 결과와 코드 변경을 반영한다. 병합·배포는 수행하지 않는다.
+
+---
+
+# 2026-11-11 — 상품 조건 필터·월별 배분 검토 연결
+
+사용자 요청으로 `dion/integration-20261111`의 `6d8e805`를 기준으로 상품 소비자 `DION-PRODUCT-REVIEW-0.1`을 연결했다. 조사 상품78개·제외22개와 공식 근거를 카탈로그에 담고 원응답/카탈로그/정책/기존 월 후보 SHA를 결과에 보존한다. `OUT-06`은 입력 부족·상품 제외 사유와 두 방식 각각의 배분액/미배분을 반환한다. 미리보기와 인증된 저장·복원에 같은 엔진을 사용한다. FE가 실제 상태·금액·공식 출처를 표시하고 옛 결과에는 재계산을 안내한다.
+
+실제 상품 상세 검증0개, 비중·위험 한도 정책 DRAFT다. 실제 추천 활성0개이며 배분0원·전액 미배분이 현재 정답이다. TEST01/TEST02는 테스트 전용 합성 상품이다. 최종 권장액·채택·거래·기존 보유 집중/중복·계좌별 적합성·실시간 갱신은 미완료다. 기존 배정정책1.0과 코어의 고정 정답은 보존한다. 상세 계약은 [상품 연결 명세](product-allocation-0.1.md)를 따른다.
+
+이번 검증:
+
+- 관련 `pytest` 125개 통과(상품21개·기존 어댑터·월 후보·FE 미리보기/저장·복원). 명령: `python -m pytest -q tests/planning/test_product_allocation.py tests/be/test_question_frontend.py tests/planning/test_question_v12.py tests/planning/test_engine_v12.py`.
+- 변경 Python 파일 Ruff, `npm run typecheck`, `npm run lint`, `npm run build -- --webpack` 통과. 데이터 합계78+22=100과 코드 중복 없음, 30/48만원의 배분+미배분 대사를 확인했다.
+- 임시 모의 인증·SQLite 하네스와 별도 FE 포트로 Next → FastAPI 실제 HTTP 프록시를 확인했다. `/dion` HTTP200, OUT-06 78개 심사·활성0·월 후보30/48만원 전액 미배분. 검사용 프로세스는 종료했다.
+- Chromium E2E는 sandbox의 socket() 차단으로 브라우저가 시작되지 않았다. 통과로 처리하지 않았다. 기존 UI 검사 기대값은 변경된 상품 화면/API에 맞춰 갱신했다. Turbopack은 외부 의존성 symlink 해석 제한으로 실행하지 못해 별도 설정 변경 없이 Webpack 빌드로 확인했다.
+- 처음 사용한 검사 환경에 httpx가 없어 API 검사 수집이 중단됐고, httpx가 설치된 기존 검증용 가상환경으로 관련125개를 실행했다. 의존성 파일은 바꾸지 않았다. 전체 Core·전체 E2E·실계정·원격DB·배포는 미실행이다.
+
+---
+
+# 2026-11-11 — 시작화면 고양이·도움말·회원가입 UI
+
+`C:\Users\LG\Projects\DION-git`, `dion/fe-review-20261111`의 깨끗한 작업 트리에서 시작했다. 시작화면 상단 선택 UI를 기존 `cat-welcome.png`의 CSS 이동·멈춤·방향 전환·짧은 점프로 교체했다. 빠른/정밀 진입 카드와 진단 중 전환은 유지했다. 고양이는 클릭을 받지 않으며 `prefers-reduced-motion`에서는 정지한다. 새 이미지나 애니메이션 의존성은 추가하지 않았다.
+
+상담 말풍선은 내용 너비/자동 높이와 화면 최대 너비를 사용하고 줄바꿈·긴 URL을 보존한다. 기존 로그인 dialog 안에 이메일·비밀번호·확인 입력, 필수/형식/일치 검증, 로그인 복귀를 추가했다. 로그인 제목은 ‘만나서 반가워요’로 변경했다. backend/엔진/API 계약·질문/계산/저장 경로와 환경 파일은 수정하지 않았다.
+
+현행 인증에는 status/login/logout만 있으며 회원가입 API와 가입 비밀번호 정책은 없다. 가입 폼에 미연결·정책 미확정을 표시하고 어떤 가입 요청도 보내지 않는다. 가입 성공·인증메일 발송·자동 로그인은 표시하지 않는다. 실제 연결은 BE의 가입 요청/응답·비밀번호 정책·이메일 인증 상태 계약이 준비된 뒤 별도 작업이다.
+
+이번 실행 결과:
+
+- `frontend`: `npm.cmd run typecheck`, `npm.cmd run lint` 각 1회 통과.
+- `scripts/verify.ps1 -Mode Build` 1회 통과. 같은 checkout의 실행 중 서버가 없는 상태에서 실행했다.
+- `PLAYWRIGHT_BASE_URL=http://127.0.0.1:3101`, `PLAYWRIGHT_BROWSER_CHANNEL=msedge`, `npm.cmd run test:e2e -- e2e/dion-feedback2.spec.ts --grep 'desktop and mobile welcome' --workers=1`: 1개 시나리오 통과(18.3초), 데스크톱 1280×900·모바일 390×900. 기존 검사를 변경 범위로 확장했다. 첫 실행의 이미지 로드 대기 누락만 고쳐 같은 검사만 재실행했다.
+- 실제 Edge에서 상단 선택 제거/두 진입 경로, 고양이 영역 경계·이동/멈춤/점프/방향 전환·클릭 통과·동작 줄이기, 짧은/긴/줄바꿈+긴 URL 말풍선, 가입 열기/닫기·필수/이메일/불일치 오류·로그인 복귀·비밀번호 비우기를 확인했다. 문장 모양 검사는 표시 DOM에 임시 문장을 넣고 원문을 복원했다. 데스크톱/모바일 캡처도 검토했다.
+- 인증 상태 응답은 UI 검사에서 `configured:false`로 모의 처리했다. 가입 POST 0건을 확인했으며 실제 가입·이메일 인증·실제 로그인은 미검증이다. 전체 엔진/BE 회귀·전체 E2E는 변경 범위 밖이라 실행하지 않았다.
+
+검사 산출물은 Git에서 제외한다. 검사용 FE3101만 실행 후 정리하며 기존 사용자 서버는 건드리지 않는다.
+
+---
+
+# 2026-11-11 FE 질문·결과 검토
+
+`dion/fe-review-20261111`에서 위험 질문6개·원응답 요약, 가상사례9개와 원래 입력 복원, 결과14 상태·상품 미구현 경계를 구현했다. backend/엔진/API 계약은 변경하지 않았고 기존 adapter1.0 미리보기·저장 경로를 유지했다.
+
+타입·ESLint·production Build 통과. 오프라인9사례의 원응답/조건분기/엔진/월배분·현금 대사 통과. 실제 Edge UI 대표3경로 통과(39.2초). 초기 새 UI 검사3건의 해시 기대/선택자 오류를 수정해 같은 범위만 재실행했다. 전체 백엔드/기존 전체E2E·실제 인증/원격DB 검사는 이번 범위에서 미실행이다. 금융 적합성·상품 배분·연금/세금/상속 상세 연결은 미완료로 표시한다.
+
+[FE 연결표·사례·검증·BE 인계](integration/2026-11-11-fe-review.md)를 따른다. 사용자 서버와 환경 파일을 보존하고 검사용 별도 프로세스만 정리한다.
+
+---
+
+# 2026-11-11 — Git 전환과 Codex/엔진 v2 3방향 통합
+
+새 저장소 top-level/독립 .git/브랜치를 확인하고, 원본 v6 ZIP·Codex 전체 작업본·엔진 v2·기존 복사본을 경로/SHA256으로 대조했다. 안전한 합집합389경로, Codex 추가32·수정15·삭제0, 엔진 추가29·수정11·삭제0을 확인했다. Codex 전용42개를 반영하고 엔진 전용35개를 보존했으며 양쪽 수정5개를 내용 통합했다. BE 별도 패치 ZIP은 사용자의 후속 결정으로 제외했다.
+
+저장 시 기존 어댑터1.0이 엔진 상수1.1로 자동 승격되지 않게 고정했다. 엔진 계약1.0/구현릴리스1.2와 원본/정규화 해시 검사를 합쳤고, 부동산/일회성 바인딩·v2 EXTRA/지급일을 보존했다. 부동산이 없는 v2 기준 샘플의 의존성 표기가 달라진 문제는 조건부 처리로 해결했다. 기대값 파일과 원정책은 바꾸지 않았다.
+
+새 환경에서 Core429통과/7skip, 보완 후 전체pytest429통과/7skip, Ruff/pip check·타입·린트·Build, 독립16금액/샘플7쌍/기존데모12검사를 실행했다. 중간 실패와 브라우저 최종 상태, 제외한 파일과 미검증 경계는 [이번 통합 기록](integration/2026-11-11-git-integration.md)에 남겼다. 기존 폴더에서 Git 명령을 실행하지 않았고 사용자 서버·Projects/GovAIance를 수정하지 않았다.
+
+---
+
+# 2026-11-11 — 고객 입력 UX 2차 피드백
+
+같은 dion 폴더에 금액 안내/문자 제한/팝업 제거/지출 카드/고양이/로그인/우측 하단 FAQ를 반영했다. F03의 일회성 금액은 총소득에 포함된 내역으로 보존한다. F08은 명시 실행 정의를 붙여 기존 지분·자산 엔진에 연결했다. 시세·소유 범위·기준일·누락 검증 없이 합계를 확정하지 않는다. 원본 질문 1.2/1.2.1과 기존 금융 산식은 변경하지 않았다.
+
+Core388통과/7skip 후 추가 저장 왕복 검사 포함 관련23통과, 최종 순자산 단언10통과. dialog ref 경고 수정 뒤 ESLint0경고, Ruff/최종Build 통과. E2E28통과/1skip 뒤 하네스 환경값을 설정한 변경부/저장 검사5통과로 총29개 고유 브라우저 시나리오를 확인했다. 상세 명령·변경 파일·미검증 범위는 [2차 피드백 기록](integration/2026-11-11-feedback-2.md)에 남겼다.
+
+FE3000/BE8001은 최종 코드로 유지하고 자체 테스트 하네스8002만 종료했다. 현재 `.env`와 사용자 requirements-be는 시작 해시 그대로 보존했다. 실제 계정 로그인/원격DB, AI/상담원 연결은 검증 완료로 표시하지 않는다. 새 ZIP은 생성하지 않았다.
+
+---
+
+# 2026-11-11 — 고객 입력 UX 1차 피드백
+
+상황+생활단계, 목표+금액+날짜를 통합해 기본11개 질문 계약을8개 고객 화면으로 표시했다. 오늘 기준일·가족 관계 선택·월 기준 소득/지출·금액 지우기와 원 단위 보조 표시, 원문 상태 유지, 목표 없음/되돌리기, 검토 도구 분리와 결과 이동을 반영했다. 원문55/정의버전·BE 계산 규칙·의존성은 변경하지 않았다.
+
+최종 `scripts/verify.ps1 -Mode Core`:369통과/7skip(pgserver 선택 의존성 미설치), Ruff/pip check/TypeScript/ESLint 통과. `-Mode Build` 통과. `-Mode E2E -BrowserChannel msedge`는 production25통과(기존14+새11). 초기 TypeScript import 누락과 개발 서버19통과/4실패, 첫 production23통과 뒤 추가 보완·최종25통과 경과는 [피드백 기록](integration/2026-11-11-frontend-feedback.md)에 보존했다.
+
+현재 FE3000/BE8001을 유지하고 tests 전용8002만 종료한다. 저장 검사는 가상 데이터/모의 인증/임시 SQLite이며 실제 원격 인증/DB는 미검증이다. `.env`는 이번 작업에서 편집하지 않았으나 시작 해시와 달라짐을 발견해 현재 파일을 보존하고 ZIP에서 제외했다. 사용자 requirements-be 변경도 보존·제외한다. v2는 v6 기준 누적 패치로 v1을 덮어쓰지 않는다.
+
+남은 고객용 상세 입력은 자산/대출/미래 가정이다. 다음 작은 단위는 자산·대출의 소유자/계좌/상환 내역 입력 단순화와 정상/누락/충돌 검증이다.
+
+---
+
+# 2026-11-11 — Stitch 기반 FE 첫 계산 흐름
+
+`/dion`의 질문1.2/1.2.1→기존 엔진1.1→빠른5/정밀5 결과를 연결했다. 원응답 상태/문자열·단위·기간·정의버전, 부분 결과·재계산/오류·저장 재시도·충돌·이전 결과를 보존한다. 세부 계약과 파일/검사 이력은 [FE 통합 기록](integration/2026-11-11-frontend.md), [CHANGELOG](../CHANGELOG.md)를 따른다.
+
+Core369통과/7skip 및 Ruff/pip check/TypeScript/ESLint 통과, Build 통과, production E2E21통과(기존14+신규7). 질문계약55/414선택지 검사도 통과했다. 개발 서버 E2E의 프록시 ECONNRESET 1건과 초기 카탈로그/SQLite 검사 실패·수정은 통합 기록에 남겼다. 이전 통과를 이번 결과로 재사용하지 않았다.
+
+실제 로그인·원격 PostgreSQL·법정산식·적합성·채택/거래는 미검증/미연결이다. 이번 저장 검사는 tests 전용 모의 인증·임시 SQLite로 수행했다. `.env`와 기존 requirements-be 사용자 변경은 보존하고 변경 ZIP에서 제외했다. 사용자 서버는 종료하지 않았고 Build에는 이번 작업 소유 FE만 중단했다. 다음 작은 기능은 실제 인증 세션 UI/검증 환경 연결 또는 부동산·보증금 원응답의 명시 어댑터 계약이다.
+
+---
+
+# 재무엔진 v1.0 구현·검토 — 2026-11-10
+
+사용자 위임으로 중간 PoC 검토를 생략하고 독립 실행 엔진을 구현했다. 55개 설계 ID를 유지한 [질문 실행 계약1.3-engine](questions/v1.3-engine/README.md), 현재 원장·목표 달력·다중목표 월 후보·확인 세금/연금/상속 결과를 연결했다. [실행 안내](planning-engine-v1/README.md)와 [개발 인계](planning-engine-v1/handoff.md)를 우선한다.
+
+기존187+신규66, 전체 pytest253개 통과. Python 정적 검사·기존 질문/원장 검사·독립 가상사례16개 금액·기존 ASGI6건도 통과했다. 상세 [검증 기록](planning-engine-v1/verification.md)을 따른다. 금융상품 추천·법정세액 자동산출·목돈/전체 일별 달력·API/DB/UI는 완료되지 않았다. 아래 이전 항목은 당시 기록이다.
+
+---
+
 # 개발 로그
+
+## 2026-11-10 — 남은 네 배정정책 비교·확정
+
+사용자가 네 정책의 비교·확정을 위임했다. 중심 명세7.3절에 대안·선택 이유·수치 영향·입출력·비범위를 기록하고 DION-ALLOCATION-1.0을 확정했다. 기존 원장/B1 허용검사를 재사용한 월 후보 코드, 수기 기대값8건과 신규44검사를 추가했다. 기존 정답/질문/앱 코드는 보존했다.
+
+실제 전체 pytest187통과(기존143+신규44), Ruff·기존unittest29통과/1skip·JS/CSV·기존엔진/ASGI6건 통과. 현재 환경/경고·명령·미실행은 [실행 기록](integration/2026-11-10-allocation-rules.md)을 따른다. 앞선 Windows 긴 HTML2개 축약도 내용 지문을 유지해 이어 반영했다. 세 모듈 법령산식·전체 기간/목돈·투자 적합성·앱 연결은 미완료다. 아래 기록은 각 단계 당시 이력이다.
 
 ## 2026-10-27 — Iteration 1
 
@@ -96,3 +422,110 @@
 - 자동 부팅/서비스 등록은 하지 않았다. 서버를 종료하거나 PC를 재시작하면 README의 명령으로 다시 실행해야 한다.
 - Build 재실행은 사용자가 프론트엔드를 종료한 뒤 수행할 수 있다. CI/다중 브라우저/실기기/부하 검증은 미구현 범위로 남는다.
 - 다음 작은 기능은 기존 응답 기반 “현재 사용 가능한 주거 저축” 보조지표 표시를 추천했다. 완료 조건만 문서화했으며 구현하지 않았다.
+
+
+## 2026-11-10 — 통합 작업본과 디자인 추가
+
+GitHub main 2baa2be의44개 파일을 내보내 blob 지문을 확인했다. 실행파일35개는 보존하고 최신 Continuation88개·디자인원본3개·업데이트 안내를 통합했다. 기존 문서5개를 최신 기준 경로로 연결했다. 원격 커밋·PR·Drive·배포 변경은 없다.
+
+이번 실행: 질문/원장 unittest30/30, 스튜디오JS/CSV, 기존엔진 고정정답과 ASGI6건 통과. 새디자인 inline JS3블록/onclick7개 구문,원본바이트·예시산술·문서링크·공백·압축지문 확인. 실제 실행명령·결과·환경·미실행 범위는 [통합 기록](integration/2026-11-10.md)과 결과JSON을 따른다. 전체Core/E2E/Build·디자인브라우저 시각검증·새DB/엔진/UI 통합은 미실행/미완료다. 과거 기록의 실행중서버·PID는 현재 환경 상태가 아니다.
+
+
+## 2026-11-10 — 재무엔진 범위·공통 계약 첫 단위
+
+세금·연금·상속 포함 결정을 현행 범위에 반영하고 원문·과거결정은 보존했다. [확장 명세](financial-engine-spec.md)에 분야별 지원 제안·공통 계약·확장 질문·중복방지·정책 선택지를 정리했다. 독립 현황/생활비 정규화 계약을 추가했고 기존 앱/API·질문40·원장·고정정답은 변경하지 않았다.
+
+실제 검사: 기존78+새34 pytest112통과(고정 의존성과 다른 런타임), 새파일Ruff통과, 기존unittest29통과/1skip, JS/CSV·기존엔진/ASGI6건통과. 초기 검사도구 설치/런처 문제는 별도 경로 설치로 해소했다. [실행 기록](integration/2026-11-10-engine-foundation.md)에 명령·환경·경고·미실행을 기록했다. 세 모듈 법령산식·두안 생성·API/DB/UI·E2E/Build는 미완료/미실행이며 활성 법령규칙은0개다.
+
+## 2026-11-10 — A1·B1 확정 및 원장 재사용 월 배정
+
+사용자가 A1 보호보충 우선·B1 허용 유연납입 검토 우선을 선택했다. 중심 명세7절을 확정 상태로 갱신하고 `allocation_policy.py`·독립 사례·검사를 추가했다. 기존 funding_ledger를 직접 재사용하며 자동 감액/실제실행·두안 전체생성은 하지 않는다. 현황계약의 전체생성 보류 사유만 부분 승인에 맞게 수정하고 엔진 버전을0.1.1로 기록했다.
+
+실제 검사: 전체 pytest143통과(기존112+신규31), Ruff통과, 기존unittest29통과/1skip, JS/CSV·독립CLI통과. 목표미정 복합상태 게이트를 발견·수정 후 재검사했다. 명령·환경·독립 기대값·미실행·한계는 [A1/B1 실행 기록](integration/2026-11-10-a1b1.md)을 따른다. 보호최소·H·최종 투자벡터·세금/연금/상속 법령산식·앱 연결은 아직이다.
+
+
+# 2026-11-10 질문 v1.2 반영·검증
+
+실제 수행: Google 시트8개 탭의5,526개 셀 값·수식 원안 대조 일치, 수식 집계55/11/2/1/10 확인, 기존 native table5개의 범위·드롭다운 허용값 확장/재검사, 반영 후 native XLSX 직접 내보내기, artifact-tool로8개 탭의 변경범위 렌더 확인.
+
+브라우저는 CDP focus 명령 시간초과로 화면 검사를 완료하지 못했다. Google 내보내기 XLSX를 가져와 레이아웃을 확인하고 새 분기·결과표와 추가행의 높이를 보완했다. 로컬 렌더러의 한글 시트 참조 COUNTA/COUNTIF 미리보기는0으로 표시되는 호환성 문제가 있었으나, Google 실제 계산과 직접 내보낸 XLSX의 수식 캐시는55/11/2/1/10임을 별도로 확인했다. XLSX 원문 수식/캐시를 수정하지 않았다.
+
+|검사|이번 결과|
+|---|---|
+|python docs/questions/v1.2/check_question_design.py|통과:55고유·기존40ID/304선택지 보존·15추가·405선택지·11+0~2·61화면·14결과게이트·14분기/재사용 예시|
+|node docs/dion/12_CHECKS/check_updated_files.cjs|통과:v1.1 스튜디오/CSV·304선택지·분기·모름/실제0·직접진입 회귀|
+|python -m unittest discover -s docs/dion/12_CHECKS -p test_contract_and_funding.py -v|30개 중29통과·1skip. 이 패키지 상대경로에서 이전 원본 첨부가 없어 원본첨부 바이트대조1개 생략|
+|기존 코드·배정정책·고정정답·의존성 보존|원본ZIP의 backend/frontend/data/scripts 및 배정 tools를 SHA-256으로 대조|
+|python scripts/check-package-integrity.py|마지막 패키징 후 새 SHA-256 manifest 검사|
+|Core/E2E/Build·전체pytest|이번 질문·문서 변경에서는 미실행. 과거187통과를 이번 결과로 보고하지 않음|
+
+질문 설계 반영과 법령·금융정책 검증/앱 구현은 다르다. 배정정책1.0 유지, 세금·연금·상속 법령 활성0개, 실제 새 질문 API/DB/앱 어댑터 미구현 상태를 유지했다.
+# 2026-11-12 — AI 개발 0단계 환경 준비
+
+- 시작 상태: `codex/result-explanation-r1`, HEAD `ccbe6824bee7bf124bfe1f4ada607ebbd4b1dd98`, 작업 트리와 staged/unstaged diff 깨끗함. 앞서 빈 폴더에 해당 원격 브랜치를 clone했다. reset/pull/push는 하지 않았다.
+- 도구: Git 2.56.0 (`C:\Program Files\WindowsApps\OpenAI.CodexPrimaryRuntime.v26-1105-1297-0_26.1105.1297.0_x64__3k8sg7r9htsxt\dependencies\native\git\cmd\git.exe`), Python 3.12.10 (`%LOCALAPPDATA%\Programs\Python\Python312\python.exe`, 사용자 설치), Node 22.23.5/npm 10.9.9 (`%LOCALAPPDATA%\DionDevTools\node-v22.23.5-win-x64`, 공식 ZIP SHA-256 대조), PowerShell 7.6.9 (`...\dependencies\native\powershell\pwsh.exe`), Windows PowerShell (`C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`). 기존 Python 3.13과 Node 24도 유지한다. Node 22는 전역 PATH를 변경하지 않았으므로 새 셸에서 아래 PATH 지정이 필요하다.
+- `py -3.12 -m venv backend/.venv`, `backend/.venv/Scripts/python.exe -m pip install -r backend/requirements-be.txt`, frontend에서 `npm.cmd ci` 실행 완료. requirements/lockfile은 변경하지 않았다. `pip check` 통과. npm은 정리 중 선택 패키지 디렉터리 EPERM 경고, deprecated ESLint 경고와 moderate 취약점 8건을 보고했다. 자동 수정/업그레이드는 하지 않았고 개별 취약점 영향은 미검토다.
+- 직접 검사: backend에서 `python -m pytest -q tests/be/test_consultation.py tests/be/test_explanation.py tests/be/test_oneport.py` 최초 실행은 Windows CP949로 UTF-8 질문 원본을 읽는 과정에서 수집 오류 3건. 같은 셸에 `$env:PYTHONUTF8='1'` 설정 후 한 번 재검증하여 **135 passed**. 합성 데이터·mock 인증/전송을 사용하는 기존 테스트이며 실제 인증·원격 DB·유료 호출 검증이 아니다. frontend에서 `npm.cmd run typecheck`, `npm.cmd run lint` 각각 통과.
+- 새 PowerShell의 실행 예: `$env:PYTHONUTF8='1'; $env:Path="$env:LOCALAPPDATA\DionDevTools\node-v22.23.5-win-x64;$env:Path"`. 이후 백엔드는 `Push-Location backend; .\.venv\Scripts\python.exe -m pytest -q tests/be/test_consultation.py tests/be/test_explanation.py tests/be/test_oneport.py; Pop-Location`, 프론트는 `Push-Location frontend; npm.cmd run typecheck; npm.cmd run lint; Pop-Location`. 관련 Python 정적 검사는 backend에서 `.\.venv\Scripts\python.exe -m ruff check app tests`를 사용한다. 서버 실행은 `scripts/start-dev.ps1`, 통합 검사는 `scripts/verify.ps1`의 Core/Build/E2E 지침과 서버 소유권 조건을 따른다. 이번에는 서버를 시작하거나 종료하지 않았다.
+- 현행 R1 해설/mock과 R2 규칙 기반 상담은 구현되어 있다. ModelProposal 서버 계약·자연어 mock 연결은 후속이며 R3 재계산, RAG/LangChain 및 검토된 법령·상품 자료는 미구현/미연결이다. 모델 후보는 확인 사실·계산 결과·실행 권한이 아니다.
+- 변경 파일은 이 개발 로그뿐이며 제품 코드/API 변경 없음. 전체 Core/Build/E2E, 브라우저, 실제 인증·원격 PostgreSQL/migration, 운영 영속 원장, 실제 OnePort·유료 호출과 배포는 미실행. `.env`와 사용자 서버는 건드리지 않았다. 남은 설정은 새 셸의 Node 22 PATH 및 Python UTF-8 모드이며, npm 경고·취약점 영향은 별도 검토가 필요하다. 다음 작은 작업은 별도 지시 시 R2 ModelProposal 서버 계약·의미 검증과 합성 mock 연결이다.
+
+## 2026-11-12 — AI 개발 1단계 ModelProposal 계약·의미 검증
+
+- `codex/result-explanation-r1`의 HEAD `ccbe682`에서 시작했다. 0단계 개발 로그 변경을 보존했다. `backend/app/consultation/model_proposal.py`에서 문서 스키마 0.1을 엄격한 Pydantic 타입으로 검증하고 기존 R2 등록 필드 11개를 명시 연결했다. `docs/consultation-r2.md`에 형식·값·기간·연산·기존 확인 계약의 차이와 처리 방식을 기록했고, 구조 문서의 런타임 상태를 갱신했다. JSON Schema 파일과 공개 요청 계약은 유지했다.
+- 직접 검사에서 등록부·문서 enum 대조, 11개 필드의 값/정의/측정 기준, 원문 전체와 추출값·단위·연산 대조, 0원·만원 소수·미확인, 모호한 대상/기간·미지원 필드 보류를 확인했다. 적용 범위는 합성 문장 형식이다. 후속 작은 작업에서 자유 발화 검증을 확대하려면 지원 문장과 부정·복합 요청 사례를 먼저 정의한다.
+
+## 2026-11-12 — AI 개발 2단계 R2 합성 mock 연결
+
+- `backend/app/be/consultation_api.py`, `backend/app/consultation/service.py`에서 서버 설정 `DION_R2_MOCK_PROPOSAL=1`일 때 기존 turns API의 자연어 요청을 합성 mock과 동일 검증기에 연결했다. 기존 요청/응답 타입과 확인 API를 재사용한다. 잘못된 후보는 422, mock 예외와 모의 timeout은 503을 반환한다. 명시 입력과 기존 규칙 기반 처리를 유지했다.
+- `backend/tests/be/test_model_proposal.py`에서 임시 SQLite·실제 저장 run·mock 인증으로 정상 검토, 기존 사실 유지, 가정/미확인 분리, 거절 및 동일 답 재제안 방지, 다른 사용자/run·세션 및 입력 버전 충돌, 잘못된 후보·실패 후 상태와 요청 키 보존을 검사했다. backend에서 `PYTHONUTF8=1`로 `python -m pytest -q tests/be/test_model_proposal.py tests/be/test_consultation.py tests/be/test_explanation.py` **125개 통과**. 복합/질문형 경계 보강 후 `test_model_proposal.py` **46개 통과**. Ruff는 fixture import 표기에서 F811이 발생해 1회 수정 후 변경 Python 4개 파일 통과.
+- 실제 모델·인증·원격 DB, 화면, 전체 Core/Build/E2E, 재계산 및 원응답 반영은 미실행이다. GitHub push·배포도 미실행이다. 현재 mock은 단일 문장과 저장 run의 유일한 기간을 사용한다. 다음 작은 작업은 별도 지시에 따라 R3의 명시 확인 계약과 비교 계산을 검토하는 것이다.
+
+## 2026-11-13 — AI 개발 3단계 OnePort 후보 어댑터
+
+- `codex/result-explanation-r1`, HEAD `ccbe682`에서 시작했다. 이전 0~2단계 작업 트리를 보존했다. `backend/app/oneport_transport.py`로 전송·시간/크기 제한·가격 사전 확인·예산 예약·중복 처리를 분리했다. `explanation/oneport.py`의 기존 R1 프롬프트, 계약, 검증, 영수증 키는 유지했다. `oneport_config.py`는 발화 전송 허용을 별도로 적용하고 `oneport_ledger.py`는 검증 결과 상태와 초안 보관 여부를 분리한다.
+- `consultation/oneport_proposal.py`, `consultation/service.py`, `be/consultation_api.py`로 기존 turns API에 서버 opt-in 경로를 추가했다. 지원 문장과 허용된 전송 설정에서만 요청하고 기존 ModelProposal 의미 검증을 적용한다. R2 원장에 후보 JSON을 저장하지 않는다. mock, 명시 입력, 규칙 기반 처리를 계속 지원한다.
+- `tests/be/test_oneport_proposal.py`의 MockTransport 7개가 통과했다. 정상·JSON 오류/중복 키·의미 불일치·지연·오류, 기존 상태 보존, 재전송 방지, 모델 변경 시 중복 차단, R1과 공유 비용 상한, 발화 미보관을 확인했다. 기존 R1 OnePort·해설과 R2 후보·상담 회귀도 첫 관련 검사에서 통과했다.
+
+## 2026-11-13 — AI 개발 4단계 R3 첫 비교
+
+- 구현 전 범위와 실제 연결 준비를 [OnePort/R3 계약](integration/2026-11-12-model-proposal-r3.md)에 기록했다. `consultation/scenario.py`와 `contract.py`, 기존 서비스/API에 `/scenario-proposals`와 `/scenario-confirmations`를 추가했다. 저장 개인 진단의 월평균 세후소득(F03, 정의 1.2) 총액 교체만 지원한다. 비교 전후 값·대상·기간·가정, 별도 비교 확인, 결과 및 보관 상태를 `frontend/src/components/dion/agent-consultation.tsx`에 표시한다.
+- 현재 proposal hash·버전·만료를 확인한 뒤 입력 복사본으로 기존 질문 어댑터와 전체 엔진을 실행한다. 합성 자료의 월 잔여액 90만→140만원, 차이 50만원을 독립 기대값으로 확인했다. 중복 확인·다른 run·낡은 버전·만료·미확인 원값·엔진 실패를 `backend/tests/be/test_scenario.py`에서 검사했다. 비교 요약 보관은 상담 저장 상태를 따르며 원응답·진단 run·채택은 그대로다.
+- backend에서 `PYTHONUTF8=1`로 `python -m pytest -q tests/be/test_oneport_proposal.py tests/be/test_scenario.py tests/be/test_oneport.py tests/be/test_model_proposal.py tests/be/test_consultation.py tests/be/test_explanation.py` 실행. 최초 190 통과·R3 3 실패였다. 기준 fixture의 가상 근거가 지원 계약에 따라 차단돼 기준 자료를 사용자 보고값으로 바로잡았고, R3만 1회 재검증해 5개 통과했다. proposal 계약 버전과 정규화 지문 검사를 추가한 뒤 해당 R3 5개도 통과했다. Ruff는 R1 import 공백 오류 1건을 수정한 뒤 변경 파일 검사 통과. `npm.cmd run typecheck`와 변경 TS 파일 ESLint도 통과했다.
+- Edge에서 `dion-explanation.spec.ts --grep 'R3 confirms|R2 consultation confirmation' --workers=1` 2개 통과. 임시 SQLite 하네스(8319)와 Next 개발 서버(3319), 모의 인증·로컬 엔진을 사용하고 이번 서버만 종료했다. 실제 모델 호출·발화 전송·실인증·원격 DB·전체 Core/Build/E2E·push·배포는 미실행이다. 실제 연결에는 지원 문장 계약의 모델별 출력 검증, 발화 전송 허용, 영속 원장과 승인된 비용 설정이 남아 있다. 다음 작은 작업은 별도 지시가 있을 때 지정 모델에 대한 합성 출력 확인 범위를 정하는 것이다.
+
+## 2026-11-13 — AI 개발 5단계 등록 자료 계약과 검색
+
+- `codex/result-explanation-r1`의 HEAD `ccbe682`에서 기존 0~4단계 변경을 보존했다. `backend/app/consultation/rag_contract.py`, `rag_registry.py`에 출처·chunk·인용 구간·허용 주장·검색·context 자료형과 정확 조회를 추가했다. 승인된 버전·원문/구간 지문·절·연도·효력·검토기한·조건·예외를 대조한다. 미조사/검토 대기/철회는 제외하며 상충·근거 없음·검토 만료는 보류한다.
+- `backend/tests/be/test_rag.py`에서 검색 범위, 원문 위치와 지문, 검토 상태, 상충, `START-*`와 추가 필드 차단, 운영 로더의 합성 자료 거부를 확인했다. 운영 corpus는 빈 상태다. 등록 경로·검토 절차와 형식은 [등록 근거 계약](integration/2026-11-13-rag-registered-evidence.md)에 기록했다.
+
+## 2026-11-13 — AI 개발 6단계 LangChain 근거 답변 검증
+
+- `backend/app/consultation/rag.py`, `service.py`, `backend/app/be/consultation_api.py`에 조회·선택·재검증 흐름과 읽기 전용 `POST /api/be/v1/cases/{case_id}/agent-sessions/{sid}/scheme-evidence`를 추가했다. OnePort에 항목·연도·context 지문과 허용 주장/인용 ID만 전달한다. 서버는 같은 범위의 최신 등록 자료에서 설명·조건·예외를 구성한다. R1 해설 경로는 그대로다.
+- `backend/requirements-be.txt`에 `langchain-core==1.7.7`과 필요한 전이 의존성만 고정했다. Python 3.12.10에서 설치 후 `pip check` 통과. Pydantic 2.14.1·HTTPX 0.28.1 유지. MockTransport로 가짜 인용·타연도/다른 context·예외 누락·문서 지시문 비전송·비정상 JSON·지연·오류·비용/중복·호출 중 철회를 확인했다. 인증 모의와 임시 SQLite로 다른 사용자의 접근 차단, 세션 버전과 저장 진단 보존을 확인했다.
+- `PYTHONUTF8=1`로 `pytest -q tests/be/test_rag.py tests/be/test_consultation.py tests/be/test_explanation.py tests/be/test_oneport.py` **168개 통과**. 검색 추적 지문과 접근 검사 추가 후 `pytest -q tests/be/test_rag.py tests/be/test_model_proposal.py tests/be/test_oneport_proposal.py tests/be/test_scenario.py` **91개 통과**, RAG 33개 포함. Ruff는 테스트 import 형식 오류 1건 수정 후 통과했다. `git diff --check` 통과.
+- 실제 등록 자료·유료 호출·실인증·원격 DB·브라우저·전체 Core/Build/E2E·push·배포는 미실행이다. LangGraph, embedding, pgvector, 자동 수집은 미도입이다. 다음 작은 작업은 팀의 검토 완료 자료가 준비되면 항목 하나의 원문·조건·예외·적용연도를 대조하고 운영 등록 전에 동일 검사를 실행하는 것이다.
+
+## 2026-11-13 — AI 개발 7단계 결과·상담 화면 연결
+
+- `codex/result-explanation-r1`, HEAD `ccbe682`와 기존 0~6단계 작업 트리를 확인했다. `backend/app/be/consultation_api.py`, `consultation/rag*.py`에 같은 `scheme-evidence` 경로의 GET을 추가했다. 현재 조회 가능한 제도·귀속연도만 제공한다. 기존 POST·R1·상담 및 비교 확인 계약을 재사용한다.
+- `frontend/src/components/dion/`의 `result-explanation.tsx`, `evidence-disclosure.tsx`, `agent-consultation.tsx`, `scheme-evidence.tsx`, `planner.css`에서 기존 해설/짧게·자세히/근거 펼치기를 재사용했다. 상담으로 이동, 추가 질문·충돌·답변 후보·가상 조건·비교 조건과 결과를 구분했다. 일반 제도 안내에 조건·예외와 출처·위치·연도·검토 상태를 표시한다. 제도 화면에는 상세 세무정보 입력을 표시하지 않는다. 실패·늦은 응답·새로고침은 기존 저장 진단을 계속 볼 수 있는 경로를 유지한다.
+- backend에서 `PYTHONUTF8=1`, `pytest -q tests/be/test_rag.py tests/be/test_consultation.py tests/be/test_scenario.py` **71개 통과**, 변경 Python Ruff 통과. 설치된 Next 16.4.3 지침 확인 후 `npm.cmd run typecheck` 및 변경 TS/TSX ESLint 통과.
+- `frontend/e2e/dion-explanation.spec.ts`의 직접 관련 Edge 사례 **고유 8개 통과**. 320px 키보드 탐색·인용 펼치기·긴 출처명과 문서 overflow, 제도 조회 실패·빈 목록·늦은 응답, 질문 편집→저장 계산→해설, R2 충돌·저장/새로고침 재개, 자연어 mock→R3 명시 확인·비교 및 원응답/진단 이력 보존을 확인했다. 최초 RAG 2건은 테스트의 select 탐색과 StrictMode 요청에 대한 오류 주입 조건 때문에 실패했다. 해당 조건을 수정하고 한 번 재검증해 2개 통과했다. 상세 입력 숨김과 상담 후보 문구를 보강한 뒤 관련 변경 경로를 검증했다.
+- `backend/tests/rag_fixture.py`와 `tests/fe_http_harness.py --scheme-fixture`의 합성 등록 자료, 모의 인증, 임시 SQLite와 기존 계산 엔진으로 검증했다. 로컬 테스트 서버 8327/3327만 시작·종료했다. 실제 모델·실계정·원격 DB·전체 Core/Build/E2E·push·배포는 미실행이다.
+
+## 2026-11-13 — AI 개발 8단계 실제 자료 등록 보류
+
+- 공유 조사표를 읽기 전용으로 확인했다. 세금 조건 조사 결과 0/40행, RAG 근거관리 8/8행 미조사, 확인된 URL·연도·검토자 0행, 질문 매핑 8/8행 검토 필요, 검증사례의 실제 source/chunk 연결 0/20건이다. `START-*` 및 합성 자료는 실제 등록에 사용하지 않았다. 제도·귀속연도 선정, 원문·효력·예외 검증, 승인된 질문 매핑, 사례의 실제 출처 연결과 실제 자료 실행은 보류했다.
+- [누락 자료와 후보 매핑 점검](integration/2026-11-13-scheme-evidence-ui.md)에 조사 완료와 정책 검토 승인, 실제 카탈로그 정의 버전, 검증 사례의 기대 행동을 기록했다. 공유 조사표와 운영 corpus는 변경하지 않았다. 다음 작은 작업은 검토 완료 자료 한 묶음을 확보해 제도 1개·귀속연도 1개의 원문/예외와 승인 기록을 대조하는 것이다.
+
+## 2026-11-13 — AI 개발 9단계 운영 연결 준비
+
+- `codex/result-explanation-r1`, HEAD `ccbe682`와 0~7단계 미커밋 변경을 확인했다. 공개 Render GET에서 `/health` 첫 응답 18초 시간 초과 후 200 `ok`, `/readyz` 404, `/openapi.json` 200(상담·해설 경로 없음), `/api/be/v1/auth/status` 200 `configured=true`를 확인했다. 로컬 설정은 DB/Auth 미설정, DB/실인증/provider 연결 미실행이다. 현 원격 schema, 실제 worker·원장·실계정 상태는 확인할 접근이 없었다. 11/12 카탈로그의 `agent_sessions` 누락 및 Render 상태는 이전 기록이다.
+- `app.be.migrate --only 002_agent_sessions.sql --plan`은 DB 연결/변경 없이 예상 SHA-256을 반환했다. [운영 승인안](integration/2026-11-13-agent-operations-plan.md)에 적용 대상·기존 데이터/역할·비용 상한·복구, 중앙 원장의 additive 설계와 기존 예약/비용/alias 보존, 두 독립 연결의 테스트와 이관 대사·스위치백 절차를 작성했다. 실제 적용 SQL이나 runtime은 변경하지 않았다.
+
+## 2026-11-13 — AI 개발 10단계 최종 검토
+
+- [검토 결과와 수정 우선순위](integration/2026-11-13-agent-release-review.md)에 두 P0를 기록했다. 두 worker에서 동일 임시 SID가 저장 row를 가리거나 지울 수 있으며, SQLite 원장 손실/경로 변경 뒤 이전 차감 없이 빈 원장이 생성될 수 있다. 가상/추정 확인이 실제 추가 질문을 숨기는 문제, 미확인 명시 입력의 필드별 단위 검증 공백과 R2/RAG readiness 한계도 기록했다. 산식·계약·제품 코드는 수정하지 않았다.
+- 기존 R1/R2·OnePort, 신규 ModelProposal/R3/RAG, readiness/migration plan/모의 계정 저장 관련 pytest **252개 통과(56.98초)**. 기본 임시 경로 fixture 오류로 중단 후 작업 폴더 안 별도 임시 경로를 사용했다. 샌드박스 ASGI fixture 및 최소 로컬 IPC 확인이 멈춰 로컬 IPC가 허용된 실행 환경에서 검사했다. 실제 데이터·실계정·PostgreSQL 다중 연결·중앙 원장·유료 모델은 미검증이다. 이번 브라우저·전체 Core/Build/E2E는 미실행이며 이전 기록을 합산하지 않았다.
+- 운영 schema 적용, 신규/유료 자원, 실제 AI 호출, GitHub push와 Vercel/Render 배포는 미실행. 다음 작은 작업은 두 독립 앱/DB 연결로 저장 상태 경합을 확인하고 저장/임시 우선순위 수정 범위를 합의하는 것이다. 비용 원장 활성화는 기존 기록의 완전한 대사와 별도 승인 이후다.

@@ -1,0 +1,9 @@
+﻿원응답 상태,뜻,엔진 상태,값,생략사유,질문 제시 상태,보존/주의
+KNOWN,실제0 또는 확인값,KNOWN,exact integer KRW string; zero remains0,,SHOWN_ANSWERED,원응답·정의·상태 보존
+UNKNOWN,모름,UNKNOWN,null,,SHOWN_ANSWERED_UNKNOWN,원응답·정의·상태 보존
+NOT_ENTERED,미입력·명시 비움,UNKNOWN,null,,SHOWN_UNANSWERED_OR_CLEARED,engine unknown is computational only; BE state NOT_ENTERED remains separately stored
+NOT_ASKED,명시 미질문,NOT_ASKED,null,,NOT_SHOWN_CONFIRMED,원응답·정의·상태 보존
+NOT_APPLICABLE,해당없음,NOT_APPLICABLE,null,,BRANCH_EXCLUDED_CONFIRMED,원응답·정의·상태 보존
+DEFERRED,나중에,UNKNOWN,null,LATER,SHOWN_DEFERRED,원응답·정의·상태 보존
+DECLINED,응답거절,UNKNOWN,null,DECLINED,SHOWN_DECLINED,원응답·정의·상태 보존
+ABSENT_RECORD,저장기록 없음,자동생성 안함,null,,UNDETERMINED,no synthetic answer; never infer NOT_ASKED or0

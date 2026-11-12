@@ -1,0 +1,65 @@
+{
+  "version": "DION-QUESTION-RESULT-1.2.1",
+  "baseline": {
+    "library_version": 5,
+    "archive_sha256": "64c799714399647626a62a1d898fcf0ff8ba48a31955038fadd21ddce5e16042",
+    "engine_version": "DION-ENGINE-1.0",
+    "engine_definition": "1.3-engine",
+    "allocation_policy": "DION-ALLOCATION-1.0",
+    "engine_bindings_sha256": "e0989a267f89e4cfc876b4ef017c9da77c4ce9f51dd77bbbd6dfada2538f28cb"
+  },
+  "commands": [
+    {
+      "command": "python docs/questions/v1.2/check_question_design.py",
+      "exit_code": 0,
+      "stdout": "PASS: 55 unique questions; 40 legacy IDs and 304 option rows preserved; 15 additions; 414 total options; 11+0~2 quick cards; 61 flow screens; 14 output gates and 14 routing/reuse examples; six life stages plus overlap/other/unknown; no automatic migration or legal activation.\n",
+      "stderr": ""
+    },
+    {
+      "command": "python -m unittest discover -s docs/questions/v1.2 -p test_question_review.py -v",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "test_existing_engine_accepts_interest_over_balance (test_question_review.InheritedEngineTests.test_existing_engine_accepts_interest_over_balance) ... ok\ntest_no_investment_wish_required (test_question_review.InheritedEngineTests.test_no_investment_wish_required) ... ok\ntest_total_outflow_matches_excluded_living (test_question_review.InheritedEngineTests.test_total_outflow_matches_excluded_living) ... ok\ntest_unknown_inclusion_holds_cashflow_preserves_assets (test_question_review.InheritedEngineTests.test_unknown_inclusion_holds_cashflow_preserves_assets) ... ok\ntest_all_routes_reuse_and_no_context_overcollection (test_question_review.QuestionContractTests.test_all_routes_reuse_and_no_context_overcollection) ... ok\ntest_changed_definition_preserves_old_raw (test_question_review.QuestionContractTests.test_changed_definition_preserves_old_raw) ... ok\ntest_debt_valid_interest_counterexample (test_question_review.QuestionContractTests.test_debt_valid_interest_counterexample) ... ok\ntest_extra_entities_not_reask_same_entity (test_question_review.QuestionContractTests.test_extra_entities_not_reask_same_entity) ... ok\ntest_ids_counts_and_consumers (test_question_review.QuestionContractTests.test_ids_counts_and_consumers) ... ok\ntest_living_definitions (test_question_review.QuestionContractTests.test_living_definitions) ... ok\ntest_out05_dependencies (test_question_review.QuestionContractTests.test_out05_dependencies) ... ok\ntest_principal_only_validation (test_question_review.QuestionContractTests.test_principal_only_validation) ... ok\ntest_reserve_policy_not_pending (test_question_review.QuestionContractTests.test_reserve_policy_not_pending) ... ok\ntest_same_facts_in_quick_to_deep_and_overlap (test_question_review.QuestionContractTests.test_same_facts_in_quick_to_deep_and_overlap) ... ok\ntest_stage_alone_does_not_add_goal_or_pension_fields (test_question_review.QuestionContractTests.test_stage_alone_does_not_add_goal_or_pension_fields) ... ok\ntest_states_and_units (test_question_review.QuestionContractTests.test_states_and_units) ... ok\ntest_unknown_not_repeated_automatically (test_question_review.QuestionContractTests.test_unknown_not_repeated_automatically) ... ok\n\n----------------------------------------------------------------------\nRan 17 tests in 0.024s\n\nOK\n"
+    }
+  ],
+  "offline_unit_tests": {
+    "run": 17,
+    "passed": 17,
+    "skipped": 0
+  },
+  "legacy_design_routing_examples": {
+    "run": 14,
+    "passed": 14
+  },
+  "live_sheet": {
+    "native_tabs_read": 11,
+    "planned_exact_match": true,
+    "poc_cells_and_native_metadata_unchanged": true,
+    "formula_errors": 0,
+    "question_rows": 55,
+    "output_rows": 14,
+    "visible_paths": 7
+  },
+  "native_table_ranges": "PASS",
+  "visual_qa": {
+    "source": "final native XLSX direct export",
+    "artifact_render_ranges": [
+      "필드·결과 연결1.2.1!A6:F10",
+      "상태·경로 검증1.2.1!A17:G24",
+      "결과·질문 연결!A10:D11"
+    ],
+    "status": "PASS"
+  },
+  "actual_product_ui": {
+    "status": "NOT_RUN",
+    "reason": "new55-question contract is not integrated with current frontend/API/DB",
+    "attempted_browser_sheet_inspection": "technical focus timeout; not counted as UI pass",
+    "coordinator_chat_thread": "browser host blocked; no attempt to bypass; handoff via authorized project review document comment"
+  },
+  "burden_scope": "76 explicitly enumerated common/monthly facts; composite ownership/assumption confirmations remain labeled. Full tax/pension/estate raw structures and22 engine bindings are recorded separately; not a production DOM census.",
+  "remaining": [
+    "production1.2.1→1.3-engine adapter",
+    "fees/timing engine support",
+    "actual UI E2E and full nested pension/tax/estate field census"
+  ]
+}

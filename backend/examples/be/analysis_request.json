@@ -1,0 +1,17 @@
+{
+  "expected_version": 6,
+  "request_key": "demo-analyze-v1",
+  "context": {
+    "evaluation_on": "2026-12-31",
+    "scope": "personal",
+    "included_owner_ids": [
+      "person-1"
+    ],
+    "currency": "KRW",
+    "timezone": "Asia/Seoul"
+  },
+  "requested_outputs": [
+    "OUT-01",
+    "OUT-03"
+  ]
+}

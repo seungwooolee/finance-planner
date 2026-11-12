@@ -1,0 +1,141 @@
+{
+  "schema_version": "DION-ENGINE-1.0",
+  "context": {
+    "evaluation_on": "2026-12-31",
+    "scope": "personal",
+    "included_owner_ids": [
+      "person-1"
+    ],
+    "currency": "KRW",
+    "timezone": "Asia/Seoul",
+    "case_id": "BE-FICTIONAL-01",
+    "snapshot_id": "example-raw-1",
+    "profile_version": "6"
+  },
+  "answers": [
+    {
+      "answer_id": "fixture:F06",
+      "question_id": "F06",
+      "definition_version": "1.3-engine",
+      "revision": 4,
+      "raw_response": {
+        "items": [
+          {
+            "asset_id": "cash-1",
+            "kind": "CASH",
+            "parent_asset_id": null,
+            "owner_ids": [
+              "person-1"
+            ],
+            "value": {
+              "value": "20000000",
+              "state": "KNOWN",
+              "unit": "KRW",
+              "basis": "SCENARIO"
+            },
+            "valuation_on": "2026-12-31",
+            "value_basis": "SCOPE_SHARE",
+            "share_numerator": "1",
+            "share_denominator": "1",
+            "detail_coverage": "complete",
+            "available_on": "2026-12-31",
+            "withdrawal_constraint": "NONE_CONFIRMED"
+          }
+        ]
+      }
+    },
+    {
+      "answer_id": "fixture:NEW-03",
+      "question_id": "NEW-03",
+      "definition_version": "1.3-engine",
+      "revision": 6,
+      "raw_response": {
+        "status": "KNOWN",
+        "items": [
+          {
+            "contribution_id": "invest-existing",
+            "owner_ref": "person-1",
+            "purpose": "INVESTMENT",
+            "amount": {
+              "value": "500000",
+              "state": "KNOWN",
+              "unit": "KRW",
+              "basis": "SCENARIO"
+            },
+            "destination": "NONCASH",
+            "pay_day": 15,
+            "period_basis": "CONFIRMED_CONSTANT",
+            "already_deducted_from_net_income": false
+          }
+        ]
+      }
+    },
+    {
+      "answer_id": "fixture:F03",
+      "question_id": "F03",
+      "definition_version": "1.3-engine",
+      "revision": 2,
+      "raw_response": {
+        "monthly_net_income": {
+          "value": "00300.0000",
+          "state": "KNOWN",
+          "unit": "KRW_10000",
+          "basis": "SCENARIO"
+        },
+        "includes_one_off": "NO",
+        "period_start": "2026-12-01",
+        "period_end": "2026-12-31"
+      }
+    },
+    {
+      "answer_id": "fixture:NEW-01",
+      "question_id": "NEW-01",
+      "definition_version": "1.3-engine",
+      "revision": 1,
+      "raw_response": {
+        "scope": "personal",
+        "owner_ids": [
+          "person-1"
+        ],
+        "asset_coverage": "complete"
+      }
+    },
+    {
+      "answer_id": "fixture:F04",
+      "question_id": "F04",
+      "definition_version": "1.3-engine",
+      "revision": 3,
+      "raw_response": {
+        "living": {
+          "value": "2000000",
+          "state": "KNOWN",
+          "unit": "KRW",
+          "basis": "SCENARIO"
+        },
+        "expense_basis": "LIVING_ONLY",
+        "exclusions_confirmed": true,
+        "essential_living": {
+          "value": "2000000",
+          "state": "KNOWN",
+          "unit": "KRW",
+          "basis": "SCENARIO"
+        },
+        "period_start": "2026-12-01",
+        "period_end": "2026-12-31"
+      }
+    },
+    {
+      "answer_id": "fixture:NEW-04",
+      "question_id": "NEW-04",
+      "definition_version": "1.3-engine",
+      "revision": 5,
+      "raw_response": {
+        "status": "NONE"
+      }
+    }
+  ],
+  "requested_outputs": [
+    "OUT-01",
+    "OUT-03"
+  ]
+}

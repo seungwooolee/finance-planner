@@ -1,0 +1,92 @@
+{
+  "manifest_version": "DION-BE-HANDOFF-1.0",
+  "baseline_library_version": "5",
+  "engine_version": "DION-ENGINE-1.0",
+  "status": "RECEIVED_FOR_LIMITED_OUT01_OUT03_INTEGRATION",
+  "items": [
+    {
+      "id": "H01",
+      "status": "RECEIVED",
+      "artifact_ref": "docs/planning-engine-v1/README.md",
+      "sha256": "dde81baa32a1a9eade083823b87ff8833de76fb5593a5b8ce337f3c568a3292d",
+      "review_note": "OUT-01/03 first integration only"
+    },
+    {
+      "id": "H02",
+      "status": "RECEIVED",
+      "artifact_ref": "docs/questions/v1.3-engine/bindings.json",
+      "sha256": "e0989a267f89e4cfc876b4ef017c9da77c4ce9f51dd77bbbd6dfada2538f28cb",
+      "review_note": "Received 1.3-engine executable binding; 1.2 auto-migration rejected"
+    },
+    {
+      "id": "H03",
+      "status": "RECEIVED",
+      "artifact_ref": "docs/planning-engine-v1/contract.md",
+      "sha256": "e44445b200be268dc14e1d3cd6c90e57f55379ecf85b680c312061cb489c7cec",
+      "review_note": "Exact text and explicit 7→4 states mapping, no BE financial normalization"
+    },
+    {
+      "id": "H04",
+      "status": "RECEIVED",
+      "artifact_ref": "docs/planning-engine-v1/contract.md",
+      "sha256": "e44445b200be268dc14e1d3cd6c90e57f55379ecf85b680c312061cb489c7cec",
+      "review_note": "Scope, ownership, periods preserved; consent delegation still unsupported"
+    },
+    {
+      "id": "H05",
+      "status": "RECEIVED",
+      "artifact_ref": "backend/app/planning/engine.py",
+      "sha256": "04591321d1ae2b0722e3db7a934510aefae800ccdcbec63fc996788b82f6f140",
+      "review_note": "Actual engine results plus normalization and source_refs persisted"
+    },
+    {
+      "id": "H06",
+      "status": "RECEIVED",
+      "artifact_ref": "docs/planning-engine-v1/contract.md",
+      "sha256": "e44445b200be268dc14e1d3cd6c90e57f55379ecf85b680c312061cb489c7cec",
+      "review_note": "HTTP / execution / per-OUT calc_state kept separate"
+    },
+    {
+      "id": "H07",
+      "status": "RECEIVED",
+      "artifact_ref": "backend/app/planning/common.py",
+      "sha256": "debc99fecb60fbe3593226d13702c561eba2433222f34dceabfe39b7a15c4427",
+      "review_note": "Engine1.0 / question1.3 / allocation1.0 retained"
+    },
+    {
+      "id": "H08",
+      "status": "RECEIVED",
+      "artifact_ref": "backend/app/planning/__init__.py",
+      "sha256": "2097732385709988f8be01d56a6a0a018f956d169d543559489bb7b567d93358",
+      "review_note": "Direct run_engine(document), no mock by default"
+    },
+    {
+      "id": "H09",
+      "status": "RECEIVED",
+      "artifact_ref": "backend/examples/be/normal_output.json",
+      "sha256": "3ac24e62c0840767bc3f5382e1385c4d73626c6e7cfd73ce153d53b2513ece7f",
+      "review_note": "Normal/missing/error samples executed with actual engine; independent OUT03 500000/700000"
+    },
+    {
+      "id": "H10",
+      "status": "RECEIVED",
+      "artifact_ref": "docs/planning-engine-v1/handoff.md",
+      "sha256": "2e60c3ba2046ab69db278f356c44143618d25a8cc0e2b5e2533e33681b842b9d",
+      "review_note": "Received support/evidence boundaries; no legal or product approvals inferred"
+    },
+    {
+      "id": "H11",
+      "status": "RECEIVED",
+      "artifact_ref": "backend/docs/be/RUNBOOK.md",
+      "sha256": "e79771a83ea39f403b3d22375825b6f42b0631454e528a818c5331717f686d35",
+      "review_note": "Local engine executes; remote DB/auth and PG transaction tests unverified"
+    },
+    {
+      "id": "H12",
+      "status": "RECEIVED",
+      "artifact_ref": "backend/docs/be/COORDINATOR_HANDOFF.md",
+      "sha256": "19fce4daa0a45e3624dfb5e48c63957c78981c88534f5e3327a292ed280d55a6",
+      "review_note": "Legacy API and 1.2 original preserved; repeated card merge unsupported"
+    }
+  ]
+}

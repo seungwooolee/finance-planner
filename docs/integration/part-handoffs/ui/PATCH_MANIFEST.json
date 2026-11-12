@@ -1,0 +1,538 @@
+{
+  "patch": "DION_UI_SUBMISSION_20261110_v1",
+  "archive": "DION_ui_submission_20261110_v1.zip",
+  "baseline": {
+    "name": "finance-planner_DION_Integrated_20261110.zip",
+    "library_version": 5,
+    "sha256": "64c799714399647626a62a1d898fcf0ff8ba48a31955038fadd21ddce5e16042"
+  },
+  "dependency": {
+    "name": "DION_RawAnswer_PoC_v0_1_20261110.zip",
+    "contract": "POC-RAW-0.1",
+    "sha256": "77e7d899d4c85f259b49fe93fd63a943990aedc66797e9135ec5f618297b97ad"
+  },
+  "scope": "UI demo and submission changes only; no production backend/engine/question source changes",
+  "self_excluded_from_hash_list": "dion/PATCH_MANIFEST.json",
+  "files": [
+    {
+      "path": "dion/CHANGELOG.md",
+      "operation": "added",
+      "size_bytes": 13722,
+      "sha256": "134935676d0b1a243f3e45cc22f126e3945e0dc04f32fb4c8e988af2568dfb3d",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/design/2026-11-10/README.md",
+      "operation": "modified",
+      "size_bytes": 4101,
+      "sha256": "68e21135062f890ede20bc95b879036b55e8753237756a30d9ec88c0e540dc64",
+      "baseline_sha256": "cc1503ddaa5f63301991c9b7ec45b3bbd738fe5ca647d2943c06f17cd7679dfa",
+      "issue_ids": [
+        "R03",
+        "R10"
+      ]
+    },
+    {
+      "path": "dion/docs/design/2026-11-10/connected-demo/README.md",
+      "operation": "added",
+      "size_bytes": 5247,
+      "sha256": "85c69c1587fc375ed4598cff551efa348d7f51f0079d92bebf7a4ee1b28b283a",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R03",
+        "R09",
+        "R10",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/design/2026-11-10/connected-demo/app.js",
+      "operation": "added",
+      "size_bytes": 14843,
+      "sha256": "cf0457f1808d1c5d4a8c6a4f5d73f1ea6f372138b137bf29cad1b4eae4dd17e6",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R03",
+        "R09",
+        "R10",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/design/2026-11-10/connected-demo/index.html",
+      "operation": "added",
+      "size_bytes": 4293,
+      "sha256": "7be3e5764f4de6ae1ecdb4b6afc3ba688ef4a4f38db59463b02648ef5c95b11e",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R03",
+        "R09",
+        "R10",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/design/2026-11-10/connected-demo/monthly-input.json",
+      "operation": "added",
+      "size_bytes": 790,
+      "sha256": "6572609b21b0cc15bab4bfc3501c2cae56584ddbfc5c9ab60c22ef0299a1ec2b",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R03",
+        "R09",
+        "R10",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/design/2026-11-10/connected-demo/server.py",
+      "operation": "added",
+      "size_bytes": 13926,
+      "sha256": "3cf4a01ae35cc4173d306cb71620162a8f04b69f7134de3e4ae5f6a7533b3c05",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R03",
+        "R09",
+        "R10",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/design/2026-11-10/connected-demo/style.css",
+      "operation": "added",
+      "size_bytes": 4707,
+      "sha256": "f4c590f7c47dbfcce0d71584db5b1cddc488e1561ab00fff61bbf15353df9f4d",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R03",
+        "R09",
+        "R10",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/design/2026-11-10/connected-demo/submission-input.json",
+      "operation": "added",
+      "size_bytes": 7452,
+      "sha256": "3afcb98cef3729aee85e19aff9075ea2a78795e7cb9f91e2261bf1a2ddae5bb4",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R03",
+        "R09",
+        "R10",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/design/2026-11-10/connected-demo/test_demo.py",
+      "operation": "added",
+      "size_bytes": 7873,
+      "sha256": "8d7613e1497f8e97f501dd5b3cf2df14eef020fa6c7c005252f1d339a093661f",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R03",
+        "R09",
+        "R10",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/B안_DION_참가작.docx",
+      "operation": "added",
+      "size_bytes": 178812,
+      "sha256": "28487793773d3835d0e5a1c884ecd68c4fcb45143558db19354fdbf2e9c65bae",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/Consent_Unsigned.docx",
+      "operation": "added",
+      "size_bytes": 84699,
+      "sha256": "68faee734da86282f4ba07b2f701b5a54da0ac45890986357636e83ef1e91d63",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/HANDOFF_TO_COORDINATOR.md",
+      "operation": "added",
+      "size_bytes": 3167,
+      "sha256": "17744f2a00a869fe79f974a72d5d84eaa808f38792543f4fe964362c23d92516",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/OTHER_PART_PROPOSALS.md",
+      "operation": "added",
+      "size_bytes": 1740,
+      "sha256": "e59f01d473d45ea786c321dd1ba4132579f172570db62781fe88923a69a4fc7d",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/SUBMISSION_READINESS.md",
+      "operation": "added",
+      "size_bytes": 3174,
+      "sha256": "b2fe998a7c049d2959f425c03f5c2b04d2342e554dce86e6be9af772574add8a",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/build_submission.py",
+      "operation": "added",
+      "size_bytes": 30137,
+      "sha256": "6ee54832e807122eafdf849f9e4a875a681ebcdc2dc583195e322c98fd15b0b5",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/captures/monthly-desktop.jpg",
+      "operation": "added",
+      "size_bytes": 76952,
+      "sha256": "34eedafed4e809724e6cabd679de5bc24740fe36b5398bbc046ef3f8a2ddd7a4",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/captures/monthly-narrow-progress.jpg",
+      "operation": "added",
+      "size_bytes": 20283,
+      "sha256": "b8b09020d905b955b873bc720553dad78a8399b3fee5acff92aa99f52d8baa8d",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/captures/monthly-narrow-record.jpg",
+      "operation": "added",
+      "size_bytes": 18254,
+      "sha256": "94488a71376caa9af7f18665622ab340366309160331f91e943960de71bdbb1a",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/captures/representative-actions.jpg",
+      "operation": "added",
+      "size_bytes": 92014,
+      "sha256": "c67aa10fe403d89736b08e144ef2df5088de48af143058616a14a72b3691965f",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/captures/representative-partial.jpg",
+      "operation": "added",
+      "size_bytes": 98427,
+      "sha256": "c72c2fcd3a12164d912d8852e6dc5e775104fcc93bd1b31e7e8e6983506734a1",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/captures/representative-plans.jpg",
+      "operation": "added",
+      "size_bytes": 110204,
+      "sha256": "80d5f580c335b3752aecf06d03adcd6b202ae5f9ddb24f09b33f9551685ce5c5",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/captures/representative-revised.jpg",
+      "operation": "added",
+      "size_bytes": 110349,
+      "sha256": "43b1826c92d9338cd8e2ba9935579b882567452e335956bc8a40b550086fcf8a",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/evidence/actual-ai-response.txt",
+      "operation": "added",
+      "size_bytes": 1070,
+      "sha256": "b3b5951550de844c3b0f18b239e99c3d33ff4046323cda4eac4ed28203ccecdf",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/evidence/actual-prompt.txt",
+      "operation": "added",
+      "size_bytes": 3046,
+      "sha256": "0b1073c8ab6bc8865247a13dfdb9bbd3f687c1687a53249e315704048b8536fd",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/evidence/browser-observations.json",
+      "operation": "added",
+      "size_bytes": 5934,
+      "sha256": "570c4dde9c2bd31cb81e4d12897d58497f9e292419fd37979c5b8c3636de895f",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/evidence/demo-tests.txt",
+      "operation": "added",
+      "size_bytes": 1457,
+      "sha256": "4bdd26ff7d2ee94429fddf2ec65f906e561e1c587d45933e0e4f10b28d3807ce",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/evidence/document-checks.json",
+      "operation": "added",
+      "size_bytes": 1158,
+      "sha256": "8739abd640da376bdb0bbcdc71736b88b9ee0a9e525f7948060490a5da03724a",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/evidence/document-source.json",
+      "operation": "added",
+      "size_bytes": 723,
+      "sha256": "73ea2acac1a11c6c9f9005514bc5ae91d573545d0aabd4fee1c0b1698b8977d9",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/evidence/engine-oracles.txt",
+      "operation": "added",
+      "size_bytes": 59,
+      "sha256": "eda0dfac5b79f2c49862756e93d938402186e60d71ca9544e49fc82fed1d05d2",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/evidence/initial-snapshot.json",
+      "operation": "added",
+      "size_bytes": 81993,
+      "sha256": "3239e6460ac8bdb6cc7044705562a6a8b881164a2654de23156443f3a5452d5c",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/evidence/partial-snapshot.json",
+      "operation": "added",
+      "size_bytes": 59302,
+      "sha256": "6013f4976621ca930f4570bcd5e3c7f4f8df8907a7a7c6d6bbb19b4476a16c19",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/evidence/poc-tests.txt",
+      "operation": "added",
+      "size_bytes": 128,
+      "sha256": "2a7a62917fe25675f156a92b8a2f56c8cf1699380e2b6927aefa841529244b6f",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/evidence/revised-snapshot.json",
+      "operation": "added",
+      "size_bytes": 82035,
+      "sha256": "fc93b821182b97980f7e9c4401f37fe013f09ce8acad3fb42bd8127e5773c84f",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/evidence/verification.json",
+      "operation": "added",
+      "size_bytes": 3362,
+      "sha256": "f72c5ed4774d0449cee9fa6f02fda8f68c8df6515cffa41d16683ec59a8ee10f",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    },
+    {
+      "path": "dion/docs/submission/2026-11-10/verify_submission.py",
+      "operation": "added",
+      "size_bytes": 2969,
+      "sha256": "cdf98501b4136fbf77af928fea91c2da414f62d0e5b1259de2f1fae0613df722",
+      "baseline_sha256": null,
+      "issue_ids": [
+        "R01",
+        "R03",
+        "R09",
+        "R10",
+        "R11",
+        "R12"
+      ]
+    }
+  ]
+}

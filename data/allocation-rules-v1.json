@@ -1,0 +1,54 @@
+{
+  "version": "DION-ALLOCATION-1.0",
+  "decided_on": "2026-11-10",
+  "timezone": "Asia/Seoul",
+  "decision_authority": "User delegated comparison and finalization of four remaining allocation policies in this session",
+  "classification": "SERVICE_POLICY_NOT_LEGAL_RULE",
+  "scope": "Explicit KRW normalized funding scenarios; monthly drafts implemented",
+  "protection_minimum_months": 3,
+  "operating_target_months": 1,
+  "investment_template_percent": {
+    "STABILITY_FIRST": 50,
+    "INVESTMENT_CAPACITY": 80
+  },
+  "priority": [
+    "NORMALIZED_LIVING_AND_DEBT",
+    "EXISTING_KEPT_CONTRIBUTIONS",
+    "OPERATING_RESTORE",
+    "PROTECTION_RESTORE",
+    "CONFIRMED_GOAL_MINIMUM",
+    "NEW_INVESTMENT_AND_EXTRA_CASH"
+  ],
+  "h_definition": "Replenishment to operating stock target, not automatic recurring fixed saving",
+  "opening_protection_or_operating_gap_blocks_new_investment_for_month": true,
+  "rounding": "floor proposed investment to integer KRW; exact remainder stays cash",
+  "customer_adoption_authorized": false,
+  "investment_suitability_verified": false,
+  "lump_sum_template_implementation": "NOT_IMPLEMENTED",
+  "active_legal_rules_added": 0,
+  "guidance_sources": [
+    {
+      "publisher": "CFPB",
+      "url": "https://www.consumerfinance.gov/an-essential-guide-to-building-an-emergency-fund/",
+      "retrieved_on": "2026-11-10",
+      "verified_scope": "Emergency target depends on personal circumstances; cash flow timing matters",
+      "jurisdiction": "US",
+      "supports_exact_DION_numbers": false
+    },
+    {
+      "publisher": "Florida Department of Financial Services",
+      "url": "https://myfloridacfo.com/ymm/LifeEvents/HandlingTheUnexpected",
+      "retrieved_on": "2026-11-10",
+      "verified_scope": "Consumer education illustrates three to six months of living expenses",
+      "jurisdiction": "US",
+      "supports_exact_DION_numbers": false
+    }
+  ],
+  "limitations": [
+    "No Korean statutory minimum established by these references",
+    "No claim that 3 months is sufficient for every customer",
+    "Operating one month and 50/80 percent are chosen service presets, not externally validated optima",
+    "Known payment calendar shortfalls remain separately visible",
+    "No automatic existing-account sale or contribution execution"
+  ]
+}

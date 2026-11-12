@@ -1,0 +1,416 @@
+{
+  "schema": "DION-REPOSITORY-FIELD-EVIDENCE-1",
+  "verified_date": "2026-11-10",
+  "repository": "seungwooolee/finance-planner",
+  "source_commit": "2baa2be548b949d5bfb67a46e81a1a721291ef39",
+  "source_tree_sha": "935038d56d6c168e6a1f8a44f9e1d3ec1ae184ff",
+  "tree_truncated": false,
+  "tracked_file_count": 44,
+  "read_and_blob_verified_file_count": 23,
+  "access": "READ_ONLY_CONNECTED_GITHUB_PINNED_SOURCE",
+  "is_local_checkout": false,
+  "user_windows_worktree_verified": false,
+  "remote_modified": false,
+  "question40_adapter_implemented": false,
+  "request_contract": {
+    "model": "Profile",
+    "file": "backend/app/models.py",
+    "endpoint": "POST /api/calculate",
+    "extra_fields": "forbid",
+    "required_leaf_fields": [
+      {
+        "path": "customer.age",
+        "class": "Customer",
+        "line": 50,
+        "type_expression": "Annotated[StrictInt, Field(ge=18, le=100)]"
+      },
+      {
+        "path": "income.monthly_net",
+        "class": "Income",
+        "line": 54,
+        "type_expression": "Money"
+      },
+      {
+        "path": "expenses.monthly_living",
+        "class": "Expenses",
+        "line": 58,
+        "type_expression": "Money"
+      },
+      {
+        "path": "assets.rental_deposit",
+        "class": "Assets",
+        "line": 62,
+        "type_expression": "Money"
+      },
+      {
+        "path": "assets.housing_savings",
+        "class": "Assets",
+        "line": 63,
+        "type_expression": "Money"
+      },
+      {
+        "path": "assets.emergency_fund",
+        "class": "Assets",
+        "line": 64,
+        "type_expression": "Money"
+      },
+      {
+        "path": "assets.long_term_investments",
+        "class": "Assets",
+        "line": 65,
+        "type_expression": "Money"
+      },
+      {
+        "path": "liabilities.current_balance",
+        "class": "Liabilities",
+        "line": 69,
+        "type_expression": "Money"
+      },
+      {
+        "path": "goal.target_amount",
+        "class": "Goal",
+        "line": 73,
+        "type_expression": "TargetMoney"
+      },
+      {
+        "path": "goal.horizon_months",
+        "class": "Goal",
+        "line": 74,
+        "type_expression": "Annotated[StrictInt, Field(ge=1, le=600)]"
+      },
+      {
+        "path": "assumptions.deposit_returned_at_goal",
+        "class": "Assumptions",
+        "line": 78,
+        "type_expression": "StrictBool"
+      }
+    ]
+  },
+  "legacy_question_field_references": {
+    "F01": [
+      "customer.age"
+    ],
+    "F03": [
+      "income.monthly_net"
+    ],
+    "F04": [
+      "expenses.monthly_living"
+    ],
+    "F06": [
+      "assets.housing_savings",
+      "assets.emergency_fund",
+      "assets.long_term_investments"
+    ],
+    "NEW-09": [
+      "assets.rental_deposit",
+      "assumptions.deposit_returned_at_goal"
+    ],
+    "F09+F10+D08": [
+      "liabilities.current_balance"
+    ],
+    "F12": [
+      "goal.horizon_months"
+    ],
+    "F13": [
+      "goal.target_amount"
+    ],
+    "NEW-06": [
+      "assets.emergency_fund",
+      "assets.housing_savings"
+    ]
+  },
+  "engine_contract": {
+    "file": "backend/app/engine.py",
+    "git_blob_sha": "8466d79e48639b9de9e2090be17b131251c0136c",
+    "input_fields": [
+      "monthly_net",
+      "monthly_living",
+      "rental_deposit",
+      "housing_savings",
+      "emergency_fund",
+      "long_term_investments",
+      "current_balance",
+      "target_amount",
+      "horizon_months",
+      "deposit_returned_at_goal"
+    ],
+    "monthly_debt_payment_supported": false,
+    "policy_DEC02_supported": false
+  },
+  "persistence": {
+    "status": "NOT_IMPLEMENTED_IN_PINNED_SOURCE",
+    "db_fields": [],
+    "basis": [
+      "44개 추적파일 전체 트리에서 DB/schema/migration 파일 없음. 사용자 로컬 상태는 별도.",
+      "backend/app/main.py의3개엔드포인트는health/가상프로필/계산이며저장호출없음",
+      "frontend/src/components/financial-planner.tsx의571행이하form/result는React상태이며확인한코드에영구저장호출없음"
+    ]
+  },
+  "tracked_paths": [
+    ".gitattributes",
+    ".gitignore",
+    "AGENTS.md",
+    "README.md",
+    "backend/app/__init__.py",
+    "backend/app/engine.py",
+    "backend/app/main.py",
+    "backend/app/models.py",
+    "backend/pyproject.toml",
+    "backend/requirements.txt",
+    "backend/tests/conftest.py",
+    "backend/tests/test_api.py",
+    "backend/tests/test_engine.py",
+    "data/sample-profile.json",
+    "docs/calculation-policy.md",
+    "docs/development-log.md",
+    "docs/iteration-1-spec.md",
+    "docs/project-status.md",
+    "docs/testing.md",
+    "frontend/.env.example",
+    "frontend/AGENTS.md",
+    "frontend/components.json",
+    "frontend/e2e/financial-planner.spec.ts",
+    "frontend/eslint.config.mjs",
+    "frontend/next.config.ts",
+    "frontend/package-lock.json",
+    "frontend/package.json",
+    "frontend/playwright.config.ts",
+    "frontend/postcss.config.mjs",
+    "frontend/src/app/globals.css",
+    "frontend/src/app/layout.tsx",
+    "frontend/src/app/page.tsx",
+    "frontend/src/components/financial-planner.tsx",
+    "frontend/src/components/projection-chart.tsx",
+    "frontend/src/components/ui/button.tsx",
+    "frontend/src/components/ui/card.tsx",
+    "frontend/src/components/ui/input.tsx",
+    "frontend/src/components/ui/label.tsx",
+    "frontend/src/lib/profile.ts",
+    "frontend/src/lib/utils.ts",
+    "frontend/tsconfig.json",
+    "scripts/start-dev.ps1",
+    "scripts/stop-dev.ps1",
+    "scripts/verify.ps1"
+  ],
+  "source_files": [
+    {
+      "path": "README.md",
+      "git_blob_sha": "2b228ff8f042e1826ec345cf2fbbe25fd7bf3f9b",
+      "sha256": "42fad19cb3cf3969beba857971abc7cddf091960e40cc30b9eb35a6229144f0c",
+      "url": "https://github.com/seungwooolee/finance-planner/blob/2baa2be548b949d5bfb67a46e81a1a721291ef39/README.md"
+    },
+    {
+      "path": "backend/app/__init__.py",
+      "git_blob_sha": "1cd2f14eca65587b4cacc9fc1e319cc0c1eb9667",
+      "sha256": "a9674771c15ebf46641146b701c4598599a5fcb702fa924315b5d03f3c4041c5",
+      "url": "https://github.com/seungwooolee/finance-planner/blob/2baa2be548b949d5bfb67a46e81a1a721291ef39/backend/app/__init__.py"
+    },
+    {
+      "path": "backend/app/engine.py",
+      "git_blob_sha": "8466d79e48639b9de9e2090be17b131251c0136c",
+      "sha256": "05b9a986f8acda215a20f318d52b3fe1476dd405412cc9df537a7fd13e2fc606",
+      "url": "https://github.com/seungwooolee/finance-planner/blob/2baa2be548b949d5bfb67a46e81a1a721291ef39/backend/app/engine.py"
+    },
+    {
+      "path": "backend/app/main.py",
+      "git_blob_sha": "3af6c26fdd9642b60ad0dd73edb02ce91dc75477",
+      "sha256": "54ff8135d8bc904214b1228f41416327bfade91170a49e8a83301c32ae9ebed4",
+      "url": "https://github.com/seungwooolee/finance-planner/blob/2baa2be548b949d5bfb67a46e81a1a721291ef39/backend/app/main.py"
+    },
+    {
+      "path": "backend/app/models.py",
+      "git_blob_sha": "25327386590097a8056374819dea293141d8e9c9",
+      "sha256": "719efdd8a5d80bc6743f10d7033696cdfbd1925a16741cad443b5283dc317cd4",
+      "url": "https://github.com/seungwooolee/finance-planner/blob/2baa2be548b949d5bfb67a46e81a1a721291ef39/backend/app/models.py"
+    },
+    {
+      "path": "backend/pyproject.toml",
+      "git_blob_sha": "1246c81b83ba08a342663b6e6317bea5680ef826",
+      "sha256": "927dc7ee48f0cd2a9a1be29b92f855fb196055d862395235953e0c21f7ae78fc",
+      "url": "https://github.com/seungwooolee/finance-planner/blob/2baa2be548b949d5bfb67a46e81a1a721291ef39/backend/pyproject.toml"
+    },
+    {
+      "path": "backend/requirements.txt",
+      "git_blob_sha": "1b6be3e06431b63d036cb2d75fc980dfe7f22adf",
+      "sha256": "5d2610200847bb7c62f20ed7f449f38894b84a7e6db9b11dc7cb08e97a6c83d0",
+      "url": "https://github.com/seungwooolee/finance-planner/blob/2baa2be548b949d5bfb67a46e81a1a721291ef39/backend/requirements.txt"
+    },
+    {
+      "path": "backend/tests/conftest.py",
+      "git_blob_sha": "65f0bca55c10e55510a8bf2b8e08064d725698b0",
+      "sha256": "76176bef0fb0d40df900f546d735da7cdb37f4266e899fdca9f315b35c10a8e9",
+      "url": "https://github.com/seungwooolee/finance-planner/blob/2baa2be548b949d5bfb67a46e81a1a721291ef39/backend/tests/conftest.py"
+    },
+    {
+      "path": "backend/tests/test_api.py",
+      "git_blob_sha": "0977338610ffbccbf85865b75b134719975d1b7f",
+      "sha256": "86f5eab05891a863af9c8f0fe72eba5f6f3b2d7c20079bdd5e445a248cacc275",
+      "url": "https://github.com/seungwooolee/finance-planner/blob/2baa2be548b949d5bfb67a46e81a1a721291ef39/backend/tests/test_api.py"
+    },
+    {
+      "path": "backend/tests/test_engine.py",
+      "git_blob_sha": "a73ccebd6ad3cf9bf7a17c56ed8f4c3c208da87b",
+      "sha256": "0f0c70fc37695edd015f0b55bc0c769671586dfffee0c9f2835302acc728886a",
+      "url": "https://github.com/seungwooolee/finance-planner/blob/2baa2be548b949d5bfb67a46e81a1a721291ef39/backend/tests/test_engine.py"
+    },
+    {
+      "path": "data/sample-profile.json",
+      "git_blob_sha": "2c8dc25f908c25d5c9d480413d49f8cfd9201d8f",
+      "sha256": "6e714316b84b2062d8d8c196195f2544c2c461de889dee21f9df5ba9a4b961fe",
+      "url": "https://github.com/seungwooolee/finance-planner/blob/2baa2be548b949d5bfb67a46e81a1a721291ef39/data/sample-profile.json"
+    },
+    {
+      "path": "frontend/AGENTS.md",
+      "git_blob_sha": "af3b7c84114bafeee578bf1adff2ef74af2cc6a2",
+      "sha256": "063098f6cb31bb44c6f8fbea25b3876de7ee1e5f7d00a50dbab506f6415eb7f0",
+      "url": "https://github.com/seungwooolee/finance-planner/blob/2baa2be548b949d5bfb67a46e81a1a721291ef39/frontend/AGENTS.md"
+    },
+    {
+      "path": "frontend/next.config.ts",
+      "git_blob_sha": "cd79b9c66fc4a7e8391f4f8f863528b44b057ae3",
+      "sha256": "0140d12a999fcce53df68fdc64e46914cfa12c6cad293d3f7ac96f29896829d9",
+      "url": "https://github.com/seungwooolee/finance-planner/blob/2baa2be548b949d5bfb67a46e81a1a721291ef39/frontend/next.config.ts"
+    },
+    {
+      "path": "frontend/package.json",
+      "git_blob_sha": "47257a02aaf44a9fdcb09cdfd09a0b22b2d2649a",
+      "sha256": "2bb6fc8d8c72f9449d289c480ed76d3b1c89f547d544e32d0718cda27c406ff0",
+      "url": "https://github.com/seungwooolee/finance-planner/blob/2baa2be548b949d5bfb67a46e81a1a721291ef39/frontend/package.json"
+    },
+    {
+      "path": "frontend/src/components/financial-planner.tsx",
+      "git_blob_sha": "94741d417aa23d974586860cdbe3c1c0e22f4c36",
+      "sha256": "23b725e748f1761e3ac5e236a45f3e2b959ed611dfa268f6be5507f725e5cf90",
+      "url": "https://github.com/seungwooolee/finance-planner/blob/2baa2be548b949d5bfb67a46e81a1a721291ef39/frontend/src/components/financial-planner.tsx"
+    },
+    {
+      "path": "frontend/src/lib/profile.ts",
+      "git_blob_sha": "43536f413ce8b7947e95683a2396d2a695ae550f",
+      "sha256": "af60134ac6c6429d08ae18e04da06d86e9e58ce4bd541fb1a861e4e4676ff3cf",
+      "url": "https://github.com/seungwooolee/finance-planner/blob/2baa2be548b949d5bfb67a46e81a1a721291ef39/frontend/src/lib/profile.ts"
+    },
+    {
+      "path": "scripts/verify.ps1",
+      "git_blob_sha": "0b31130a886d39e7f1448305b17785c68adcb3ce",
+      "sha256": "95abbc2a5e827d582317394ca4f6758ba009cc1def332dc56096452de9d5eefe",
+      "url": "https://github.com/seungwooolee/finance-planner/blob/2baa2be548b949d5bfb67a46e81a1a721291ef39/scripts/verify.ps1"
+    },
+    {
+      "path": "AGENTS.md",
+      "git_blob_sha": "44c87ec10cb3011001b519cc1c5638ec0fae4a7f",
+      "sha256": "7bbebe88653def057c24e21e82301fbe21972cedd469abee04cc93579548a66f",
+      "url": "https://github.com/seungwooolee/finance-planner/blob/2baa2be548b949d5bfb67a46e81a1a721291ef39/AGENTS.md"
+    },
+    {
+      "path": "docs/project-status.md",
+      "git_blob_sha": "245641e24146a4c63eb324bbd6bf2e460689154b",
+      "sha256": "4e2ae3aec3c5c63c4150d2e7bd759e57ff203f471ce5ee5b3759788c76329e2f",
+      "url": "https://github.com/seungwooolee/finance-planner/blob/2baa2be548b949d5bfb67a46e81a1a721291ef39/docs/project-status.md"
+    },
+    {
+      "path": "docs/iteration-1-spec.md",
+      "git_blob_sha": "489c12bd6f6c2b95b91c49fa2902c452f796a6d6",
+      "sha256": "de7af15ef9e3b090128001a4f41dd088027b71fb3508584d782c42d28c7c30e9",
+      "url": "https://github.com/seungwooolee/finance-planner/blob/2baa2be548b949d5bfb67a46e81a1a721291ef39/docs/iteration-1-spec.md"
+    },
+    {
+      "path": "docs/calculation-policy.md",
+      "git_blob_sha": "2cabb3b21f0efa56f59ba67195fa7c4fd9727a4d",
+      "sha256": "5d1fa3ef25629c9fdbab8f9672b626ae1b9adea4b93e7746100c4c2389949bb7",
+      "url": "https://github.com/seungwooolee/finance-planner/blob/2baa2be548b949d5bfb67a46e81a1a721291ef39/docs/calculation-policy.md"
+    },
+    {
+      "path": "docs/testing.md",
+      "git_blob_sha": "5b46ff3321952bebd561afe77cb9d95827e53ce1",
+      "sha256": "35d31868b3345ac71fb100d1ddebda19bc192e57316f1598c202cc6c31e23078",
+      "url": "https://github.com/seungwooolee/finance-planner/blob/2baa2be548b949d5bfb67a46e81a1a721291ef39/docs/testing.md"
+    },
+    {
+      "path": "docs/development-log.md",
+      "git_blob_sha": "024e4f9c2d6921f9279b109a9148c674716ef942",
+      "sha256": "48873ecb1240a361a4b674762b758ae26041dcb6431ed8da861e239105bb0605",
+      "url": "https://github.com/seungwooolee/finance-planner/blob/2baa2be548b949d5bfb67a46e81a1a721291ef39/docs/development-log.md"
+    }
+  ],
+  "uploaded_file_intake": [
+    {
+      "uploaded_name": ".gitattributes",
+      "sha256": "8480c5b5d6bb83ecee84d438a26dfaf0cca8cf8441387bbd9720d6da92630d4e",
+      "matches_08_original": true,
+      "matches_09_updated": true
+    },
+    {
+      "uploaded_name": ".gitignore",
+      "sha256": "0002c3e7f4a797f93cd6a7e76ead7ff1670aa1c4a14f5fc2b050a53d87287918",
+      "matches_08_original": true,
+      "matches_09_updated": true
+    },
+    {
+      "uploaded_name": "AGENTS.md",
+      "sha256": "de7140f3180ef916ad5a2a68f0e891b53a91e3c1e4a448cac37a240b59ca8521",
+      "matches_08_original": true,
+      "matches_09_updated": false
+    },
+    {
+      "uploaded_name": "LifePath_3%EB%AC%B8%EC%84%9C_%ED%86%B5%ED%95%A9%EC%84%A4%EA%B3%84%EC%8A%A4%ED%8A%9C%EB%94%94%EC%98%A4_v4_%EA%B0%84%ED%8E%B8%EC%A0%95%EB%B0%80 (1).html",
+      "sha256": "382569a18296abd51ec70f714239a03e07958d00979b7afc79e6c0b10b88fb2c",
+      "matches_08_original": true,
+      "matches_09_updated": false
+    },
+    {
+      "uploaded_name": "LifePath_Question_Table_Starter.csv",
+      "sha256": "86a8a0f86290fb1903caef280bbb66dfa1590318159dbef7ee2d3ac0cd94e0c9",
+      "matches_08_original": true,
+      "matches_09_updated": false
+    },
+    {
+      "uploaded_name": "py",
+      "sha256": "218e12367fbb5e80c05c02026048a2052fb02151d0cba3b34cef53cf82601f0f",
+      "matches_08_original": true,
+      "matches_09_updated": true
+    },
+    {
+      "uploaded_name": "README.md",
+      "sha256": "42fad19cb3cf3969beba857971abc7cddf091960e40cc30b9eb35a6229144f0c",
+      "matches_08_original": true,
+      "matches_09_updated": false
+    }
+  ],
+  "smoke_verification": {
+    "date": "2026-11-10",
+    "source_commit": "2baa2be548b949d5bfb67a46e81a1a721291ef39",
+    "engine_oracle": {
+      "current_net_worth": "22000000",
+      "monthly_cash_flow": "800000",
+      "final_goal_funds": "62000000",
+      "goal_shortfall": "8000000",
+      "achievement_rate": "88.57"
+    },
+    "monthly_rows": 61,
+    "in_process_asgi_checks": {
+      "health": 200,
+      "sample_profile": 200,
+      "calculate_fixed_oracle": 200,
+      "unsupported_monthly_debt_field": 422,
+      "unknown_income_not_zero": 422,
+      "fractional_won_exact_json": 422
+    },
+    "runtime_versions": {
+      "fastapi": "0.141.1",
+      "pydantic": "2.13.4",
+      "starlette": "1.6.0",
+      "httpx": "0.28.1"
+    },
+    "matches_repository_pinned_dependencies": false,
+    "pytest_78_executed": false,
+    "core_e2e_build_executed": false,
+    "external_server_started": false,
+    "notes": "Pinned source code smoke checks using available runtime; not a locked-dependency app test or full regression suite."
+  },
+  "limitations": [
+    "새40→기존Profile의자동어댑터·Q-ID이관·DB저장완료가아님",
+    "스냅샷23개파일검증이며전체checkout의Core/E2E/Build미실행",
+    "현재런타임은저장소requirements고정버전과다름;pytest/ruff미설치",
+    "Drive원본문서및사용자로컬코드와배포상태는이번접근대상이아님"
+  ]
+}

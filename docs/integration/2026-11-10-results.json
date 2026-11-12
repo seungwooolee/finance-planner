@@ -1,0 +1,46 @@
+{
+  "date_kst": "2026-11-10",
+  "scope": "Documentation/design integration; runtime unchanged",
+  "checks": [
+    {
+      "kind": "studio_js_csv",
+      "result": {
+        "status": "fulfilled",
+        "value": {
+          "chunk_id": "768500",
+          "wall_time_seconds": 0.108668322,
+          "exit_code": 0,
+          "original_token_count": 49,
+          "output": "PASS: script syntax (3),40 IDs,11 quick basics,CSV lossless roundtrip304 options,legacy storage isolation,property branches,unknown/zero,deep entry,product gate,edit metadata,3 unchanged files.\n"
+        }
+      }
+    },
+    {
+      "kind": "legacy_engine_asgi_smoke",
+      "result": {
+        "status": "fulfilled",
+        "value": {
+          "chunk_id": "3c0011",
+          "wall_time_seconds": 0.343797055,
+          "exit_code": 0,
+          "original_token_count": 166,
+          "output": "{\n  \"engine_oracle\": {\n    \"current_net_worth\": \"22000000\",\n    \"monthly_cash_flow\": \"800000\",\n    \"final_goal_funds\": \"62000000\",\n    \"goal_shortfall\": \"8000000\",\n    \"achievement_rate\": \"88.57\"\n  },\n  \"monthly_rows\": 61,\n  \"in_process_asgi_checks\": {\n    \"health\": 200,\n    \"sample_profile\": 200,\n    \"calculate_fixed_oracle\": 200,\n    \"unsupported_monthly_debt_field\": 422,\n    \"unknown_income_not_zero\": 422,\n    \"fractional_won_exact_json\": 422\n  },\n  \"runtime_versions\": {\n    \"fastapi\": \"0.141.1\",\n    \"pydantic\": \"2.13.4\",\n    \"starlette\": \"1.6.0\",\n    \"httpx\": \"0.28.1\"\n  },\n  \"app_core_e2e_build_executed\": false,\n  \"external_server_started\": false\n}\n"
+        }
+      }
+    },
+    {
+      "kind": "question_contract_and_funding_unittest",
+      "result": {
+        "status": "fulfilled",
+        "value": {
+          "chunk_id": "ec6f47",
+          "wall_time_seconds": 0.230789406,
+          "exit_code": 0,
+          "original_token_count": 1116,
+          "output": "test_37_to_40_additions_no_deletion (test_contract_and_funding.ContractAuditTests.test_37_to_40_additions_no_deletion) ... ok\ntest_60_qids_preserved_and_all_links_exist (test_contract_and_funding.ContractAuditTests.test_60_qids_preserved_and_all_links_exist) ... ok\ntest_all_current_rows_and_304_option_rows_exact (test_contract_and_funding.ContractAuditTests.test_all_current_rows_and_304_option_rows_exact) ... ok\ntest_changed_field_enum_and_conditional_guards (test_contract_and_funding.ContractAuditTests.test_changed_field_enum_and_conditional_guards) ... ok\ntest_five_plus_five_result_views_only (test_contract_and_funding.ContractAuditTests.test_five_plus_five_result_views_only) ... ok\ntest_inspected_legacy_fields_never_become_current_adapters_or_db (test_contract_and_funding.ContractAuditTests.test_inspected_legacy_fields_never_become_current_adapters_or_db) ... ok\ntest_no_migration_or_unseen_production_binding (test_contract_and_funding.ContractAuditTests.test_no_migration_or_unseen_production_binding) ... ok\ntest_quick_eleven_and_deep_direct_entry_from_flow (test_contract_and_funding.ContractAuditTests.test_quick_eleven_and_deep_direct_entry_from_flow) ... ok\ntest_reference_source_and_studio_bytes_preserved (test_contract_and_funding.ContractAuditTests.test_reference_source_and_studio_bytes_preserved) ... ok\ntest_duplicate_sources_cannot_inflate_budget (test_contract_and_funding.FundingTests.test_duplicate_sources_cannot_inflate_budget) ... ok\ntest_fast_demo02_fixed_answer (test_contract_and_funding.FundingTests.test_fast_demo02_fixed_answer) ... ok\ntest_goal_none_cannot_mask_explicit_goal_allocation (test_contract_and_funding.FundingTests.test_goal_none_cannot_mask_explicit_goal_allocation) ... ok\ntest_large_integer_precision_and_determinism (test_contract_and_funding.FundingTests.test_large_integer_precision_and_determinism) ... ok\ntest_malformed_scope_is_reported_without_crashing_other_scopes (test_contract_and_funding.FundingTests.test_malformed_scope_is_reported_without_crashing_other_scopes) ... ok\ntest_missing_context_version_does_not_validate (test_contract_and_funding.FundingTests.test_missing_context_version_does_not_validate) ... ok\ntest_mixed_examples_exceed_income_by60 (test_contract_and_funding.FundingTests.test_mixed_examples_exceed_income_by60) ... ok\ntest_mx09_existing_goal_not_deducted_twice (test_contract_and_funding.FundingTests.test_mx09_existing_goal_not_deducted_twice) ... ok\ntest_mx23_reduction_permission_not_reset (test_contract_and_funding.FundingTests.test_mx23_reduction_permission_not_reset) ... ok\ntest_mx26_middle_of_month_cash_shortfall (test_contract_and_funding.FundingTests.test_mx26_middle_of_month_cash_shortfall) ... ok\ntest_same_day_order_unknown_does_not_assume_income_first (test_contract_and_funding.FundingTests.test_same_day_order_unknown_does_not_assume_income_first) ... ok\ntest_same_event_replayed_once_conflict_rejected (test_contract_and_funding.FundingTests.test_same_event_replayed_once_conflict_rejected) ... ok\ntest_same_money_cannot_be_reserved_again_after_future_use (test_contract_and_funding.FundingTests.test_same_money_cannot_be_reserved_again_after_future_use) ... ok\ntest_source_overallocation_not_clamped_away (test_contract_and_funding.FundingTests.test_source_overallocation_not_clamped_away) ... ok\ntest_strategy_generation_policy_gate_stays_closed (test_contract_and_funding.FundingTests.test_strategy_generation_policy_gate_stays_closed) ... ok\ntest_ui_inv01_cap110_is_conditional_not_error_or_recommendation (test_contract_and_funding.FundingTests.test_ui_inv01_cap110_is_conditional_not_error_or_recommendation) ... ok\ntest_unconfirmed_sale_and_late_availability_never_pass (test_contract_and_funding.FundingTests.test_unconfirmed_sale_and_late_availability_never_pass) ... ok\ntest_unknown_later_order_does_not_erase_known_earlier_shortfall (test_contract_and_funding.FundingTests.test_unknown_later_order_does_not_erase_known_earlier_shortfall) ... ok\ntest_unsafe_numeric_formats_rejected (test_contract_and_funding.FundingTests.test_unsafe_numeric_formats_rejected) ... ok\ntest_valid_deficit_is_financial_result (test_contract_and_funding.FundingTests.test_valid_deficit_is_financial_result) ... ok\ntest_zero_and_unknown_affect_only_dependent_scope (test_contract_and_funding.FundingTests.test_zero_and_unknown_affect_only_dependent_scope) ... ok\n\n----------------------------------------------------------------------\nRan 30 tests in 0.178s\n\nOK\n"
+        }
+      }
+    }
+  ],
+  "full_core_e2e_build_executed": false
+}

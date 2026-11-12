@@ -1,0 +1,34 @@
+{
+  "state": "PASSED",
+  "check_count": 16,
+  "checks": [
+    "BE restore -> adapter -> FIN-CONTRACT -> goal ledger -> two candidates",
+    "raw decimal string/labels survive persistence",
+    "real process restart restores identical raw input",
+    "restart reproduces entire deterministic engine response",
+    "frozen baseline candidates reproduce literal oracle",
+    "changed income recalculates current surplus independently",
+    "stale future assumption cannot silently reuse changed income",
+    "explicitly reconfirmed 320 income gives 40/40 and 64/16",
+    "old raw snapshot is stale and kept immutable",
+    "historical snapshot reproduces old calculated amounts",
+    "normalized source hash distinguishes latest revision",
+    "same old normalized input hash preserved",
+    "BE rejects optimistic-lock stale edit",
+    "BE rejects different actor",
+    "no personalized recommendation or execution",
+    "BE source file unchanged"
+  ],
+  "be_source_sha256": "ef0d5882e191f539770339ae26ee628afaebe0fcc51cf71f36986f579328240f",
+  "be_wire_version": "POC-RAW-0.1",
+  "fictional_input": true,
+  "database_scope": "TEMPORARY_LOCAL_SQLITE",
+  "api_ui_integration": "NOT_CONNECTED",
+  "financial_assumptions": "SCENARIO_NOT_CUSTOMER_VALIDATED",
+  "active_legal_rules": 0,
+  "statutory_verification": "NOT_IMPLEMENTED",
+  "be_errors": {
+    "stale_edit": "VERSION_CONFLICT",
+    "other_actor": "NO_ACCESS"
+  }
+}

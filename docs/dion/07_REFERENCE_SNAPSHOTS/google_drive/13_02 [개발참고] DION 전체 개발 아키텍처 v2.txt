@@ -1,0 +1,246 @@
+﻿dion — 전체 개발 아키텍처 v2.0
+기준일: 2026-11-02
+근거: 현재 seungwooolee/finance-planner GitHub main 브랜치 코드, Google Drive 통합기획서 v3.3 및 데이터 원장 LP-DATA-4.1. 기존 구현과 제안 설계를 구분한다.
+1. 서비스 전체 구조
+flowchart TB
+    U[고객 브라우저]
+    subgraph FE[FRONTEND — Next.js / React / TypeScript]
+      UI[질문 카드 · 진단 · 계획 3안 · 실행·점검 · 마스코트]
+      BFF[Next.js Route Handler / API Proxy]
+      UI --> BFF
+    end
+    subgraph BE[BACKEND — FastAPI / Python]
+      API[Router · 인증/권한 · 에러 처리]
+      P[ Pydantic 입력/출력 계약 · 금액 Decimal 직렬화 ]
+      S[ Application / Domain Services ]
+      API --> P --> S
+      subgraph CORE[재무 도메인 — LLM 없이 계산]
+       E[Decimal 계산 엔진]
+       G[가드레일 · 누락값/위험/실행가능성]
+       PLAN[계획안 3종 · 자산/투자 배분]
+       E --> G --> PLAN
+      end
+      subgraph AI[AI 오케스트레이션 — 필요 시]
+       LG[LangGraph 상태/노드]
+       LC[LangChain 모델·도구·구조화 출력]
+       VERIFY[숫자·출처·fact_id 검증]
+       LG --> LC --> VERIFY
+      end
+      S --> CORE
+      S -. 사용자 요청 시 .-> AI
+      AI -. 검증된 도구 접근 .-> CORE
+    end
+    subgraph DATA[DATA · 관측]
+      PG[(PostgreSQL: 프로필, 변경버전, 실행·실적, AI 감사)]
+      CAT[검증된 질문·규칙·공식 상품 데이터]
+      OBS[LangSmith · OpenTelemetry · 오류/성능 기록]
+      LLM[외부 LLM 제공자 API]
+    end
+    U --> UI
+    BFF --> API
+    S <--> PG
+    CAT --> S
+    LC --> LLM
+    AI --> OBS
+    S --> OBS
+구현 상태: GitHub 현재 구현은 frontend/ Next.js+React+Tailwind+Recharts, backend/app/main.py FastAPI, models.py Pydantic, engine.py Decimal, GET /health, GET /api/sample-profile, POST /api/calculate 및 pytest/Playwright이다. PostgreSQL, 인증/세션, 3안 플래너, LangChain/Graph/Smith, 배포·관측은 제안된 확장이며 현재 코드에 구현됐다는 뜻이 아니다.
+2. 백엔드 내부 세부 설계
+flowchart TB
+   R[FastAPI Router]
+   A[권한 · 요청 추적 · Rate Limit]
+   V[Pydantic v2 계약 검증]
+   D[Domain Service / Transaction Manager]
+   R --> A --> V --> D
+   D --> Q[InterviewService\n질문 스키마 · 조건부 질문 · 정보 누락]
+   D --> FIN[DiagnosisService\n월 잉여금 · 순자산 · 자금 접근성]
+   D --> PO[PortfolioService\n사용 목적 배분 · 투자 가능 자금]
+   D --> PL[PlanService\n3안 비교 · 명시적 채택]
+   D --> EXEC[ActionReviewService\n실행 기록 · 가상 한 달 후 재점검]
+   D --> AG[AgentService\nLangGraph 선택 호출]
+   Q --> DB[(PostgreSQL)]
+   FIN --> C[Pure Python Decimal Engine]
+   PO --> C
+   PL --> C
+   EXEC --> DB
+   PL --> DB
+   AG --> TOOLS[승인 도구: get_missing_questions, calculate_diagnosis, compare_plans, explain_facts]
+   TOOLS --> C
+   AG --> CHECK[답변 fact_id/run_id 교차 검증]
+   CHECK --> DB
+책임 분리: API 라우터는 HTTP, 서비스 계층은 업무 흐름, 재무 엔진은 계산, 저장 계층은 변경 이력을 담당한다. 금융 계산은 OpenAI API나 LangChain 코드에 의존하지 않게 유지한다. Decimal 금액을 원 단위 문자열로 직렬화하고 원/월/연·개인/가구 기준을 검사한다.
+Backend 권장 디렉터리
+backend/
+  app/
+    main.py                 # 기존 API 진입점 유지
+    models.py               # 기존 API 모델 유지·버전 확장
+    engine.py               # 기존 Decimal 엔진 보존 및 단위 테스트
+    api/v1/                # 신규 엔드포인트 계층
+      interview.py
+      diagnosis.py
+      portfolio.py
+      plans.py
+      actions.py
+      review.py
+      analyze.py
+    schemas/               # Pydantic 요청/응답·enum
+    services/              # 서비스 및 비즈니스 트랜잭션
+    domain/
+      calculation/          # 수치 계산·기준·정규화
+      guards/               # G-ID 검증 규칙
+      portfolio/            # 자산/투자 분리, 계획 3안
+    agents/                # LangGraph · LangChain · 도구
+    repositories/          # DB 쿼리/트랜잭션
+    db/                    # SQLAlchemy 모델 · Alembic
+    integrations/          # 검증된 금융상품 데이터 적재, LLM 어댑터
+    observability/         # 로깅, trace, 데이터 보호
+  tests/                   # 기존 테스트 보존 + 계약/계산/에이전트 테스트
+3. AI 에이전트 흐름
+flowchart TD
+    START[사용자 '왜 이런 결과인가요?' / 추가 설명 요청]
+    LOAD[DB에서 case_id, profile_version, run_id 조회]
+    MISSING{필요한 입력이 빠졌나?}
+    QUESTION[검증된 질문 원장의 Q-ID만 반환]
+    TOOL[FastAPI 승인된 계산 도구 호출]
+    FACT[계산 엔진: 수치·가정·fact_id 반환]
+    EXPLAIN[LangChain LLM: 자연어 해설 초안]
+    CHECK{숫자·근거·제약 일치?}
+    OK[검증된 설명 UI 출력]
+    FALLBACK[정적 설명 템플릿 반환 + 로그]
+    START --> LOAD --> MISSING
+    MISSING -- 예 --> QUESTION
+    MISSING -- 아니요 --> TOOL --> FACT --> EXPLAIN --> CHECK
+    CHECK -- 통과 --> OK
+    CHECK -- 실패 --> FALLBACK
+* LangChain: 모델 호출, Tool Calling, 구조화된 JSON 출력, 프롬프트 버전.
+* LangGraph: 노드 전이, 대화/요청 상태, 재시도, 조건 분기, 체크포인트. 장기적 멀티 에이전트는 MVP 제외.
+* LangSmith: AI 응답 추적, hallucination 검증 케이스, 비용·지연 평가. 개인정보/재무 실입력값 자동 업로드 방지.
+* AI 없는 경로: 간편 진단·금액 계산은 LLM 호출 0회로 동작 가능해야 함.
+* 사용자 계획 채택, 자금이체, 실제 금융상품 권유는 LLM이 자동 확정할 수 없음.
+4. 데이터베이스
+PostgreSQL 권장 (초기 단일 데모는 SQLite 가능), SQLAlchemy 2 + Alembic 마이그레이션.
+엔터티
+	핵심 필드
+	역할
+	cases
+	id, scope, mode
+	데모 고객의 진단 건
+	profile_versions
+	id, case_id, version, created_at
+	변경 전후 입력 이력
+	field_values
+	profile_id, field_key, value, unit, provenance, status, as_of
+	모름·0 구분, 원천/단위 보존
+	analysis_runs
+	id, profile_version, rule_version, status
+	분석 실행의 고유 ID
+	calc_facts
+	run_id, fact_id, amount, unit, assumptions
+	검증된 결과 숫자와 근거
+	plans
+	id, run_id, plan_kind, state
+	3안과 상태
+	allocations
+	plan_id, asset_id, purpose, amount, period_type
+	목적별 중복 없는 배분
+	plan_adoptions
+	plan_id, user_confirmation, adopted_at
+	계획 미리보기와 채택 구분
+	actions
+	plan_id, due_date, amount, state
+	실행 체크리스트
+	reviews
+	prior_plan_id, actuals, diff, adopted_revision
+	한 달 후 점검과 재설계
+	agent_audits
+	run_id, model, prompt_version, validation, cost
+	AI 오류 및 비용 검증
+	catalog_versions
+	version, source, approval_status, as_of
+	상품 데이터·규칙 원장 버전
+	
+
+고객 실명·계좌번호를 필수 수집하지 않는 가상 고객 시연을 기본으로 한다. 운영 서비스로 확장할 때는 인증, 접근통제, 암호화, 비밀값 관리, 데이터 파기·보존정책이 선행되어야 한다.
+5. API 계약 (기존 유지 + 신규 제안)
+API
+	상태
+	목적
+	GET /health
+	기존
+	서버 상태
+	GET /api/sample-profile
+	기존
+	가상 프로필 로드
+	POST /api/calculate
+	기존
+	기존 Decimal 재무 계산
+	POST /api/v1/interview/next
+	신규
+	조건부 다음 질문
+	POST /api/v1/cases
+	신규
+	진단 건 및 프로필 버전
+	POST /api/v1/diagnoses
+	신규
+	순자산·현금흐름·목표 격차
+	POST /api/v1/portfolios
+	신규
+	사용 목적·투자 배분 검사
+	POST /api/v1/plans/compare
+	신규
+	3가지 계획 비교
+	POST /api/v1/plans/{id}/adopt
+	신규
+	고객의 명시적 채택
+	POST /api/v1/plans/{id}/actions
+	신규
+	월 실행 행동
+	POST /api/v1/reviews
+	신규
+	실제 실적·재진단·수정안
+	POST /api/v1/analyze
+	신규
+	선택형 AI 해설/질문
+	
+
+모든 결과의 상위 메타는 case_id, profile_version, run_id, rule_version, status, missing_fields, assumptions, facts, applied_guard_ids를 권장한다. 기존 계약을 무조건 덮어쓰지 않고 /api/v1 신규 계약으로 점진 확장한다.
+6. 외부 데이터와 RAG
+* Google Sheets: 사람·재무 담당자가 편집하는 승인 전 설계 원장. 운영 요청 시 실시간으로 시트 내용을 무검증 반영하지 말고, 검증·버전 고정·서버 적재 단계를 거친다.
+* 실제 상품: 공식 공시, 기준일, 자격, 위험등급, 비용, 유동성, 출처 URL을 검증한 상품만 비교 대상으로 사용한다. 현재 검증 상품 0건이므로 MVP는 상품군 교육 중심.
+* RAG/pgvector: 공식 문서 수가 적으면 단순 SQL·JSON 근거조회로 충분하다. 문서가 커지고 검색 품질 평가가 확보될 때 pgvector 등 검색 계층 도입.
+* LLM Provider: 어댑터 뒤에 두어 바꿀 수 있도록 한다. 유료 API는 최소한의 설명 요청에서만 사용한다.
+7. DEV / QA / CI-CD 구조
+flowchart LR
+    A[Google Drive 원장·재무 검증] --> B[VS Code + Codex + ECC]
+    B --> C[GitHub 변경 브랜치 / PR]
+    C --> D[GitHub Actions CI]
+    D --> E{필수 검사 통과?}
+    E -- 아니요 --> B
+    E -- 예 --> F[승인 후 배포]
+    F --> G[Vercel: Next.js]
+    F --> H[Backend Hosting: FastAPI]
+    H --> I[(Managed PostgreSQL)]
+    G --> J[브라우저 E2E / 상태 모니터링]
+    H --> J
+    J --> B
+* Codex/ECC: 코드를 작성하는 개발 도구, 고객 웹 앱에서 작동하는 금융 AI가 아니다.
+* ECC: 계획→테스트→구현→코드리뷰→검증 루프와 보안·리팩터링 룰을 Codex에 붙이는 선택 도구. 공식 github.com/affaan-m/ECC을 확인하고 하나의 설치 경로만 선택한다.
+* 테스트: Ruff, pytest, pip check, TypeScript, ESLint, Playwright, 빌드. GitHub Actions에서는 임의의 금융 공식 변경이 golden test를 깨는지 확인.
+* 배포: Vercel과 Render 등은 후보이며 실제 요금·스케일·보안 적합성 검토 후 결정. 프로덕션 DB는 관리형 Postgres 선택 가능.
+* 모니터링: OpenTelemetry/구조화 로그/AI 검증 trace. 원본 개인정보는 tracing에 직접 전송 금지.
+8. 단계별 도입 순서
+1. 기존 GitHub 코드·회귀 테스트 보존; 60개 질문 중 대표 데모 P0 질문과 OpenAPI v1 계약 우선 확정.
+2. FastAPI services/ 도메인 구조 + 계산 엔진의 상태 판정 강화(보증금, 대출, missing fields).
+3. PostgreSQL·Alembic으로 profile/version, run_id, plans, 실행·리뷰 이력.
+4. Next.js 카드형 UX와 진단·3안 비교 화면; 프론트 숫자 재계산 금지.
+5. 3안 계획 비교와 고객 채택/행동/한 달 후 점검 수직 슬라이스 완성.
+6. LangChain을 활용한 하나의 선택형 AI 해설 기능 추가; 수치·근거 대조 후 LangSmith 평가.
+7. 필요성이 증명되면 LangGraph 다단계 상태 전이·체크포인트 도입(처음부터 멀티 에이전트 불필요).
+8. GitHub Actions·배포·보안·접근성/모바일·E2E 데모 및 공모전 보고서 근거 확보.
+9. 핵심 미확정 사항
+비상자금 보호 개월 수, 계획 3안별 허용 조정 범위, 투자 자산군/배분 비중, 기존 장기투자금 200만원의 목적 배정, 특정 금융상품 제공 범위와 공식 자료 검증, 실서비스 인증·개인정보 처리 정책. 미승인 항목은 오류가 아니라 REVIEW_REQUIRED / NEEDS_INPUT 상태로 표시한다.
+참고:
+* https://github.com/seungwooolee/finance-planner (현재 코드)
+* https://docs.google.com/document/d/1RUSrG-tYQtrBfVPPzklBn16rwq5t6oQZQiiF1kPOeo0/edit (MVP 설계서)
+* https://docs.google.com/spreadsheets/d/10WBsawSs2kWrYKZS5lB6D7evH_pD_7-9uy_TFMBcM5g/edit (원장)
+* https://www.langchain.com/oss-overview (LangChain/LangGraph 구분)
+* https://github.com/affaan-m/ECC (ECC 공식 저장소)

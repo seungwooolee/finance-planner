@@ -1,0 +1,56 @@
+﻿단계,변수명,고객 질문,답변 형식,선택지,필수 여부,조건 질문,조건 값,설명,자료 출처 구분,확정 상태
+기본 정보,age,현재 나이가 어떻게 되나요?,number,,필수,,,실명이나 주민등록번호는 받지 않습니다.,기존 문서,draft
+기본 정보,household,현재 가구 형태는 무엇인가요?,single,single=1인 가구; couple=부부·2인; family=가족과 동거; other=기타,필수,,,부양가족 유무는 추가로 확인할 수 있습니다.,기존 문서,draft
+기본 정보,dependents,부양해야 하는 가족이 있나요?,single,yes=있음; no=없음,선택,,,부양 부담은 필수지출·유동성에 영향을 줍니다.,추가 제안,draft
+기본 정보,employment_status,현재 소득활동 상태는 무엇인가요?,single,employed=직장인; self=자영업·프리랜서; unemployed=현재 미취업,필수,,,소득 유형에 따라 추가 질문이 달라집니다.,기존 문서,draft
+소득 · 지출,net_monthly_income_krw,현재 월 세후소득은 얼마인가요?,number,,필수,employment_status,employed,원 단위 숫자로 입력. 0원과 미응답을 구분합니다.,기존 문서,draft
+소득 · 지출,gross_annual_income_krw,세전 연봉은 얼마인가요?,number,,선택,employment_status,employed,세금·연금 추정에 사용. 모르면 계산 보류 가능.,기존 문서,draft
+소득 · 지출,job_tenure_months,현재 직장에서 얼마나 근무했나요? (개월),number,,선택,employment_status,employed,퇴직급여 등은 별도의 공식 확인이 필요합니다.,추가 제안,draft
+소득 · 지출,self_income_annual_krw,최근 1년간 사업·프리랜서 순소득은 얼마인가요?,number,,필수,employment_status,self,소득 유형·비용·변동성을 추가 검증합니다.,추가 제안,draft
+소득 · 지출,job_start_expected,취업 또는 소득 재개 예상일은 언제인가요?,date,,선택,employment_status,unemployed,확정 예정이 아니면 미확인 상태를 유지합니다.,추가 제안,draft
+소득 · 지출,monthly_expense_krw,월평균 생활비는 얼마인가요?,number,,필수,,,저축 이체와 대출 원금상환을 생활 소비로 중복 반영하지 않습니다.,기존 문서,draft
+소득 · 지출,essential_expense_krw,그중 반드시 지출해야 하는 월 필수 생활비는 얼마인가요?,number,,필수,,,비상자금 목표와 소득 공백 시나리오에 사용합니다.,추가 제안,draft
+소득 · 지출,insurance_nhis_status,현재 국민건강보험 가입 형태는 무엇인가요?,single,employee=직장가입자; local=지역가입자; dependent=피부양자; unknown=잘 모르겠음,필수,,,직장가입·지역가입·피부양자 상태에 따라 실제 보험료 부담이 달라집니다.,추가 제안,draft
+소득 · 지출,insurance_nhis_monthly_paid_krw,현재 본인이 실제 부담하는 월 건강보험료는 얼마인가요?,number,,선택,,,장기요양보험료 포함 여부를 별도로 확인. 세후소득 공제·생활비 반영과 중복 차감 금지.,추가 제안,draft
+소득 · 지출,insurance_nhis_payroll_deducted,건강보험료가 세후 월급을 받기 전에 급여에서 공제되나요?,single,yes=네; no=아니요; unknown=잘 모르겠음,필수,employment_status,employed,세후 급여에 이미 반영된 보험료를 지출로 다시 차감하지 않습니다.,추가 제안,draft
+소득 · 지출,insurance_nhis_in_expenses,건강보험료가 앞서 입력한 월 생활비에 포함되어 있나요?,single,yes=포함됨; no=포함되지 않음; unknown=잘 모르겠음,선택,,,보험료가 급여공제와 생활비 중 어디에 반영됐는지 확인하여 중복 계산 방지.,추가 제안,draft
+소득 · 지출,private_health_insurance_exists,실손의료보험 등 민간 의료·건강보험에 가입해 있나요?,single,yes=있음; no=없음; unknown=잘 모르겠음,필수,,,국민건강보험과 민간보험을 구분해 관리합니다.,추가 제안,draft
+소득 · 지출,private_health_insurance_types,가입한 민간 의료·건강보험 종류는 무엇인가요?,multi,indemnity=실손의료보험; disease=질병·상해 보장; other=기타; unknown=잘 모르겠음,선택,private_health_insurance_exists,yes,보험상품별 보장 범위 확인이 필요하며 중복가입만으로 해지를 권고하지 않습니다.,추가 제안,draft
+소득 · 지출,private_health_insurance_monthly_paid_krw,민간 의료·건강보험 보험료를 매달 얼마 납부하나요?,number,,필수,private_health_insurance_exists,yes,본인이 실제 납부하는 금액만 기입. 여러 상품이 있으면 합계 입력.,추가 제안,draft
+소득 · 지출,private_health_insurance_in_expenses,민간보험료가 앞서 입력한 월 생활비에 포함되어 있나요?,single,yes=포함됨; no=포함되지 않음; unknown=잘 모르겠음,필수,private_health_insurance_exists,yes,월 지출과 보험료를 중복 차감하지 않도록 확인합니다.,추가 제안,draft
+소득 · 지출,insurance_premium_change_expected,향후 1년 내 보험료나 가입 형태가 달라질 예정인가요?,single,yes=예상됨; no=없음; unknown=잘 모르겠음,선택,,,취업·퇴사·가입변경에 따른 보험료 변화가 있으면 추후 재무계획을 점검합니다.,추가 제안,draft
+소득 · 지출,income_stability,향후 1년간 소득이 유지될 가능성을 어떻게 보나요?,single,stable=대체로 일정함; variable=변동 가능성이 큼; unknown=판단하기 어려움,선택,,,단순 예상이며 실제 소득 변화 확률이 아닙니다.,추가 제안,draft
+자산 · 주거 · 부채,liquid_cash_krw,현재 바로 인출 가능한 현금·예금은 얼마인가요?,number,,필수,,,사용 목적이 정해진 예금은 다른 질문에서 분리합니다.,기존 문서,draft
+자산 · 주거 · 부채,investment_assets_krw,현재 주식·펀드·ETF 등 투자자산 평가금액은 얼마인가요?,number,,선택,,,연금계좌 안의 동일 자산을 이중 집계하지 않도록 주의.,기존 문서,draft
+자산 · 주거 · 부채,investment_holdings,현재 투자상품을 보유하고 있나요?,single,yes=네; no=아니요,필수,,,보유 종목·계좌·자산군을 추가로 확인합니다.,기존 문서,draft
+자산 · 주거 · 부채,holdings_detail,현재 보유한 상품명·종류·평가금액을 적어주세요.,text,,선택,investment_holdings,yes,공식 보유정보가 아닌 고객 자가 신고 자료입니다.,추가 제안,draft
+자산 · 주거 · 부채,housing_status,현재 주거 형태는 무엇인가요?,single,rent=월세; jeonse=전세; own=자가; family=가족과 거주,필수,,,계약 조건과 자금 회수 가능일을 분리합니다.,기존 문서,draft
+자산 · 주거 · 부채,rent_deposit_krw,월세 보증금은 얼마인가요?,number,,필수,housing_status,rent,보증금은 즉시 현금으로 사용할 수 없습니다.,기존 문서,draft
+자산 · 주거 · 부채,monthly_rent_krw,매월 월세는 얼마인가요?,number,,필수,housing_status,rent,월 생활비 합계에 이미 포함됐는지 확인합니다.,기존 문서,draft
+자산 · 주거 · 부채,jeonse_deposit_krw,전세보증금은 얼마인가요?,number,,필수,housing_status,jeonse,반환 시점을 조사해야 가용자금에 반영합니다.,기존 문서,draft
+자산 · 주거 · 부채,home_value_krw,보유 주택의 현재 추정가치는 얼마인가요?,number,,필수,housing_status,own,평가 기준일·출처를 확인해야 합니다.,기존 문서,draft
+자산 · 주거 · 부채,has_debt,현재 대출이나 갚아야 할 부채가 있나요?,single,yes=있음; no=없음,필수,,,부채가 없어도 ‘없음’을 명시적으로 선택해야 합니다.,기존 문서,draft
+자산 · 주거 · 부채,debt_balance_krw,현재 대출 원금 잔액은 얼마인가요?,number,,필수,has_debt,yes,대출 종류·계약 조건 확인이 추가로 필요합니다.,기존 문서,draft
+자산 · 주거 · 부채,debt_interest_rate,현재 대출 연이자율은 몇 %인가요?,number,,선택,has_debt,yes,UI에 %로 입력하고 계산 시 소수로 변환합니다.,추가 제안,draft
+자산 · 주거 · 부채,debt_monthly_payment_krw,매월 상환하는 대출 원리금은 얼마인가요?,number,,필수,has_debt,yes,생활비와 중복 계상하지 않습니다.,추가 제안,draft
+재무 목표,primary_goal,현재 가장 중요한 재무목표는 무엇인가요?,single,house=주거·주택자금; retirement=은퇴 준비; growth=장기 자산 증식; marriage=결혼·가족 계획; other=기타,필수,,,이 답변에 따라 필요한 질문이 추가됩니다.,기존 문서,draft
+재무 목표,goal_amount_krw,가장 중요한 목표에 필요한 금액은 얼마인가요?,number,,필수,,,원 단위. 목표의 명목/실질 구분은 계산 단계에서 명시합니다.,기존 문서,draft
+재무 목표,goal_date,언제까지 이 목표를 달성하고 싶나요?,date,,필수,,,목표 시점과 투자기간은 다른 개념입니다.,기존 문서,draft
+재무 목표,house_purchase_plan,주택 마련에 필요한 자기자금은 별도로 얼마나 준비하려고 하나요?,number,,선택,primary_goal,house,대출 가능액은 자동 확정하지 않습니다.,추가 제안,draft
+재무 목표,large_expense_krw,향후 1~5년 내 예정된 큰 지출은 총 얼마인가요?,number,,선택,,,단기 확정 지출은 투자 가능 금액에서 우선 제외합니다.,추가 제안,draft
+재무 목표,emergency_months,최소 몇 개월치 필수 생활비를 비상자금으로 남기고 싶나요?,number,,필수,,,통일된 정답을 강제하지 않으며 전문가 검토 기준을 둡니다.,추가 제안,draft
+재무 목표,monthly_saving_krw,매달 저축·투자에 배분할 수 있는 금액은 얼마인가요?,number,,선택,,,가용 현금보다 큰 값이면 검증이 필요합니다.,추가 제안,draft
+투자 성향 · 경험,invest_experience,투자상품을 거래하거나 보유해 본 경험이 있나요?,single,none=없음; some=조금 있음; many=다양한 상품을 경험함,필수,,,투자상품의 이해도를 대신하지는 못합니다.,기존 문서,draft
+투자 성향 · 경험,invest_horizon,이번에 투자할 자금을 언제 사용할 예정인가요?,single,short=1년 이내; medium=1~3년; long=3~5년; verylong=5년 초과,필수,,,고객의 목표 사용 시점과 모순이 없는지 확인합니다.,추가 제안,draft
+투자 성향 · 경험,risk_preference,투자 손실 가능성이 어느 정도인 상품을 선호하나요?,single,low=원금 변동을 최소화하고 싶음; mid=일부 손실을 감수할 수 있음; high=큰 변동도 받아들일 수 있음,필수,,,심리적 위험 선호도입니다.,기존 문서,draft
+투자 성향 · 경험,loss_response,투자금이 20% 줄어든 상황이라면 어떻게 대응할 것 같나요?,single,sell=매도하여 손실을 줄이고 싶음; wait=계획을 점검하며 기다림; buy=추가 매수를 고려함; unsure=잘 모르겠음,필수,,,가상 질문의 답만으로 실제 감내 능력을 확정하지 않습니다.,추가 제안,draft
+투자 성향 · 경험,risk_loss_capacity,투자 손실이 발생해도 필수 생활비·부채 상환에 문제가 없나요?,single,yes=문제없음; no=영향이 큼; unsure=잘 모르겠음,필수,,,재무적 위험 감내 능력의 초기 질문. 다른 재무정보와 교차 확인합니다.,추가 제안,draft
+투자 성향 · 경험,restricted_assets,투자하고 싶지 않은 상품·자산이 있나요?,text,,선택,,,고객이 원치 않는 자산군·상품의 제외 규칙입니다.,추가 제안,draft
+세금 · 연금,tax_calc_requested,세금·세액공제 효과를 추정해 보고 싶나요?,single,yes=네; no=아니요,선택,,,세법 버전과 과세연도를 확인해야 합니다.,추가 제안,draft
+세금 · 연금,tax_year,어느 과세연도를 기준으로 계산할까요?,number,,필수,tax_calc_requested,yes,공식 과세연도별 자료 확인 필요.,추가 제안,draft
+세금 · 연금,pension_calc_requested,국민연금·퇴직연금 수령액 추정을 보고 싶나요?,single,yes=네; no=아니요,선택,,,정확한 추정을 위해 가입 이력이 필요할 수 있습니다.,기존 문서,draft
+세금 · 연금,nps_months,국민연금 가입기간은 총 몇 개월인가요?,number,,필수,pension_calc_requested,yes,가입정보 없이 추정액을 확정해 보여주지 않습니다.,기존 문서,draft
+세금 · 연금,pension_account_types,현재 이용하는 연금·절세 계좌가 있나요?,multi,nps=국민연금; irp=IRP; pension=연금저축; isa=ISA; none=없음,선택,,,계좌는 자산군이 아니며 보유 상품과 구분합니다.,추가 제안,draft
+사후 모니터링,review_cycle,재무계획을 얼마나 자주 점검하고 싶나요?,single,monthly=매월; quarterly=3개월마다; halfyear=6개월마다; yearly=1년마다,선택,,,모니터링 주기는 사용자 선택이며 MVP는 수동 재입력입니다.,추가 제안,draft
+사후 모니터링,upcoming_change,앞으로 1년 내 소득·주거·가구 변화가 예상되나요?,single,yes=예상되는 변화가 있음; no=현재로서는 없음; unsure=잘 모르겠음,선택,,,변화가 있다면 필요한 질문을 추가하도록 확장 가능합니다.,추가 제안,draft
+사후 모니터링,planned_change_detail,예상되는 변화는 무엇인가요?,text,,선택,upcoming_change,yes,실제 발생 확정으로 취급하지 않습니다.,추가 제안,draft

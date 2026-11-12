@@ -1,0 +1,63 @@
+{
+  "date": "2026-11-10",
+  "scope": "offline supplied snapshots and explicit scenario candidates",
+  "whitespace_check": {
+    "command": "git diff --no-index --check baseline working-copy",
+    "exit_code": 1,
+    "output": "",
+    "result": "No whitespace diagnostics; exit1 is content differences in no-index mode",
+    "added_line_trailing_whitespace_violations": 0,
+    "actual_git_checkout": false
+  },
+  "unit_tests": {
+    "command": "python -m unittest discover -s 12_CHECKS -p 'test_contract_and_funding.py' -v",
+    "exit_code": 0,
+    "run": 30,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "record": "Observed followup execution after pinned source evidence integration; initial29 not added again"
+  },
+  "existing_studio_check": {
+    "command": "node 12_CHECKS/check_updated_files.cjs",
+    "exit_code": 0,
+    "record": "Observed preceding execution in this session"
+  },
+  "cli": {
+    "command": "python 09_UPDATED_FILES/tools/funding_ledger.py candidate_ui.json",
+    "exit_code": 0,
+    "record": "Observed preceding execution; UI conditional110 NEEDS_INPUT; DEC-02 NEEDS_POLICY"
+  },
+  "unavailable_project": "ZIP unavailable; pinned source accessed directly through connected GitHub; no reupload needed",
+  "app_core_e2e_build_run": false,
+  "live_drive_read_or_write": false,
+  "source_zip_sha256": "69e7ec11c776e3fed66a2914f40598cd376aa7a9af9ce5838355d059782666fe",
+  "packaging": {
+    "zip_integrity": "PASS",
+    "manifest_entries_verified": 87,
+    "generated_cache_files_excluded": true,
+    "record": "Initial archive verified; final archive rechecked after adding this record"
+  },
+  "initial_unit_tests_phase": {
+    "command": "python -m unittest discover -s 12_CHECKS -p 'test_contract_and_funding.py' -v",
+    "exit_code": 0,
+    "run": 29,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "record": "Observed preceding execution in this session"
+  },
+  "github_followup": {
+    "repository": "seungwooolee/finance-planner",
+    "commit": "2baa2be548b949d5bfb67a46e81a1a721291ef39",
+    "tracked_files": 44,
+    "read_blob_verified_files": 23,
+    "legacy_request_leaf_fields": 11,
+    "partial_question_refs": 9,
+    "current40_adapter_implemented": false,
+    "remote_modified": false,
+    "api_smoke_checks": 6,
+    "same_as_repo_locked_runtime": false,
+    "pytest78_executed": false
+  }
+}

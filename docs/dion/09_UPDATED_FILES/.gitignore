@@ -1,0 +1,23 @@
+# Local environment and dependencies
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.pyc
+node_modules/
+.next/
+next-env.d.ts
+out/
+.env
+.env.*
+!.env.example
+*.tsbuildinfo
+playwright-report/
+test-results/
+artifacts/
+logs/
+# Preserved pre-existing command output files
+/node
+/npm
+/py
+/python

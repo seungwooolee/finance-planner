@@ -1,0 +1,107 @@
+{
+  "base_commit": "adcb79fc07bb55903826e083447f10c34529d728",
+  "branch": "dion/be-live-check-20261111",
+  "date_kst": "2026-11-11",
+  "changes": [
+    "operator CLI for actual login/API/PostgreSQL acceptance",
+    "explicit legacy1.0 versus v2/1.1 modes",
+    "no application API, engine, schema or frontend change"
+  ],
+  "checks": [
+    {
+      "command": "python -m pytest tests/be/test_live_storage_check.py -q",
+      "result": "PASS",
+      "passed": 10,
+      "identity": "MOCK provider",
+      "storage": "SQLite plus MOCK database observer",
+      "engine": "ACTUAL"
+    },
+    {
+      "command": "python -m pytest tests -q",
+      "result": "PASS_WITH_SKIPS",
+      "passed": 442,
+      "skipped": 7,
+      "warnings": 2
+    },
+    {
+      "command": "python -m ruff check tools tests/be/test_live_storage_check.py",
+      "result": "PASS"
+    },
+    {
+      "command": "python tools/check_live_storage.py --help",
+      "result": "PASS"
+    },
+    {
+      "check": "fetched/reused Git blob hashes at pinned commit",
+      "result": "PASS",
+      "verified_files": 305
+    },
+    {
+      "check": "actual Supabase login / remote PostgreSQL / API socket restart",
+      "result": "NOT_EXECUTED",
+      "reason": "user-local .env and test-user credentials remain on Windows; pending operator CLI output"
+    },
+    {
+      "check": "PostgreSQL test suite",
+      "result": "SKIPPED",
+      "count": 7,
+      "reason": "execution host local sockets unavailable; not remote DB evidence"
+    },
+    {
+      "check": "Windows Git status / PowerShell / FE type-lint-build-browser",
+      "result": "NOT_EXECUTED",
+      "reason": "Windows checkout unavailable; BE-only operator-tool change"
+    }
+  ],
+  "runtime": {
+    "python": "3.12.14",
+    "pytest": "9.2.0",
+    "ruff": "0.17.4",
+    "fastapi": "0.141.1",
+    "pydantic": "2.13.4",
+    "httpx": "0.28.1",
+    "psycopg": "3.3.8"
+  },
+  "warnings": [
+    "anyio pytest plugin deprecation",
+    "ambient Starlette/httpx TestClient deprecation"
+  ],
+  "next_required_evidence": [
+    "Actual frontend-to-remote-storage acceptance",
+    "Optional v2 contract remote acceptance; legacy evidence does not cover adapter1.1"
+  ],
+  "operator_validation": {
+    "date_kst": "2026-11-11",
+    "source": "User-reported Windows terminal output in this conversation",
+    "checkout": "DION-be-check",
+    "api_port": 8201,
+    "contract": "DION-QUESTION12-ADAPTER-1.0",
+    "doctor": {
+      "status": "PASS_REPORTED",
+      "evidence": "POSTGRES_CONNECTION_AND_TABLES PASS"
+    },
+    "seed": {
+      "status": "PASS_REPORTED",
+      "evidence": "User replied pass after the seed instructions; complete raw output not collected"
+    },
+    "verify": {
+      "status": "PASS_REPORTED",
+      "evidence": [
+        "REAL_LOGIN PASS",
+        "RAW_RESTORE PASS",
+        "STORAGE_CHECK_COMPLETE"
+      ]
+    },
+    "restart_evidence": "Operator followed the instructed restart/verify sequence; process restart was not independently observed by the assistant",
+    "cross_account_access": {
+      "status": "PASS_REPORTED",
+      "evidence": "DIFFERENT_REAL_USER_ACCESS_DENIED PASS",
+      "note": "Operator completed the different-real-user check after initially asking whether it could be skipped."
+    },
+    "boundaries": [
+      "This updates reported acceptance evidence; the assistant did not use credentials or execute against the remote project",
+      "No production readiness, frontend integration or v2 remote acceptance is inferred"
+    ],
+    "acceptance_status": "LEGACY_SINGLE_ACCOUNT_STORAGE_AND_CROSS_ACCOUNT_API_CHECKS_PASSED_BY_OPERATOR"
+  }
+}

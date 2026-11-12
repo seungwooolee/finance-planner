@@ -1,0 +1,76 @@
+{
+  "date": "2026-11-10",
+  "engine_release": "DION-ENGINE-1.2",
+  "state": "PASSED_WITH_EXTERNAL_POSTGRES_SKIPS",
+  "baseline_archive_sha256": "64c799714399647626a62a1d898fcf0ff8ba48a31955038fadd21ddce5e16042",
+  "baseline_version": 5,
+  "baseline_changed_files": [
+    "backend/app/planning/__main__.py",
+    "backend/app/planning/bindings.py",
+    "backend/app/planning/engine.py",
+    "backend/app/planning/projection.py",
+    "backend/app/planning/questions.py"
+  ],
+  "baseline_unchanged_count": 205,
+  "protected_file_sha256": {
+    "backend/app/engine.py": "05b9a986f8acda215a20f318d52b3fe1476dd405412cc9df537a7fd13e2fc606",
+    "backend/app/financial_contract.py": "ba8fd46ece3f8d8d015a4c7763f4413463fda77c6fcaebd144653a959500f75e",
+    "backend/app/main.py": "54ff8135d8bc904214b1228f41416327bfade91170a49e8a83301c32ae9ebed4",
+    "backend/app/planning/policies/allocation_policy.py": "7b125989f8dfea87e8d0c9ff074f625d37e68604f7cc50e594f959afbc2ac175",
+    "backend/app/planning/policies/allocation_rules.py": "095825ddad585a7c7727fbf3851abac0bed43898da4c734efde8b97bbd2470e3",
+    "backend/app/planning/policies/funding_ledger.py": "8dd18874aee8f44557607603fbb79041d60b2aa8ffd4b35083b8c3aa1555d387",
+    "docs/financial-engine-rule-registry.json": "769e07d94ad78df8608a4e8e741a40ef0671d8889c09ad074a693ffef4605947",
+    "docs/planning-engine-v1/oracles.json": "ce08008b1f6c0a60396bd26078d43cd7bb92918d4171c12106394922e1146173",
+    "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json": "f11b332e7be9d4768f28a65bb4d2d4db5ec0b9de75e4a335e6c562d020be281e"
+  },
+  "test_counts": {
+    "engine_pytest": 342,
+    "baseline_tests": 253,
+    "v1_added_tests": 50,
+    "v2_added_tests": 39,
+    "engine_plus_BE_overlay": 396,
+    "BE_included_in_overlay": 54,
+    "BE_postgres_skipped": 7,
+    "external_submission_demo": 12,
+    "sample_pairs": 7,
+    "legacy_oracle_cases": 2,
+    "legacy_fixed_amount_checks": 16
+  },
+  "checks": {
+    "engine_pytest": "342 passed",
+    "ruff_app_tests": "PASSED",
+    "ruff_handoff_scripts": "PASSED",
+    "sample_replay": "PASSED",
+    "legacy_oracles": "PASSED",
+    "external_integration_log": "docs/planning-engine-v1.2/host-integration-results.json",
+    "old_v1_with_latest_BE": {
+      "method": "actual v1 source + BE patch, BackendStore.analyze default engine, fictional seed fixture",
+      "status": "FAILED",
+      "result_calc_state": "INTERNAL_ERROR",
+      "cause": "BE requires engine_version == DION-ENGINE-1.0; v1 returned DION-ENGINE-1.1"
+    },
+    "v2_with_latest_BE": "54 BE checks passed; actual release separated from wire compatibility"
+  },
+  "financial_assumptions": {
+    "status": "EXPLICIT_FICTIONAL_NOT_CUSTOMER_VALIDATED",
+    "historical_income_period": "2026-10-01/2026-10-31",
+    "representative_future_period": "2026-11-01/2026-11-30",
+    "zero_return": true,
+    "dated_schedule": "EXPLICIT_SYNTHETIC_ASSUMPTIONS_NOT_BANK_VERIFIED",
+    "personalized_recommendation": null
+  },
+  "legal_verification": {
+    "active_rule_count": 0,
+    "statutory_formula_verified": false,
+    "user_supplied_official_estimates_independently_verified": false
+  },
+  "integration_scope": {
+    "local_SQLite_analysis_result_storage": true,
+    "mock_auth_only": true,
+    "actual_remote_DB": false,
+    "question12_new_API_connection": false,
+    "dated_calendar_UI_connection": false,
+    "existing_local_HTTP_demo_regression": true,
+    "full_bank_calendar": false
+  }
+}

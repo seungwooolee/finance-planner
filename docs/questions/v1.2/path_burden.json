@@ -1,0 +1,723 @@
+{
+  "scope": "76 explicitly enumerated common/monthly facts; composite ownership/assumption confirmations remain labeled. Full tax/pension/estate raw structures and22 engine bindings are recorded separately; not a production DOM census.",
+  "measurement": "semantic fact fields including labeled composite ownership/scenario confirmations; editor controls assuming KNOWN amounts; no elapsed-time measurement",
+  "paths": [
+    {
+      "path": "QUICK",
+      "fixture": {
+        "owner": "self:a",
+        "period": "2026-10-01/2026-10-31",
+        "entities": {
+          "assets": [
+            "cash:a"
+          ],
+          "reservations": [
+            "cash:a:operating"
+          ],
+          "goals": [
+            "education:a"
+          ],
+          "debts": [
+            "debt:a"
+          ],
+          "contributions": [
+            "saving:a"
+          ],
+          "pensions": [
+            "pension:a"
+          ],
+          "debt_schedule": [
+            "debt:a/2026-11",
+            "debt:a/2026-12",
+            "debt:a/2027-01"
+          ]
+        },
+        "id": "QUICK",
+        "mode": "quick",
+        "flags": [
+          "living_only"
+        ]
+      },
+      "counts": {
+        "visible_fact_fields": 16,
+        "known_amount_editor_controls": 20,
+        "repeated_groups": 0,
+        "repeated_entity_rows": 0,
+        "reused_fact_fields": 0,
+        "deferred_fact_fields": 0,
+        "duplicate_fact_requests": 0,
+        "evidence_lookup_candidates": 2
+      },
+      "visible_field_refs": [
+        "scope|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "owners|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "life_primary|self:a|2026-10-01/2026-10-31|case|1.2",
+        "goal_selection|self:a|2026-10-01/2026-10-31|case|1.2",
+        "income|self:a|2026-10-01/2026-10-31|case|1.2",
+        "period|self:a|2026-10-01/2026-10-31|case|1.2",
+        "one_off|self:a|2026-10-01/2026-10-31|case|1.2",
+        "expense_basis|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "living|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "exclusions_confirmed|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "financial_total|self:a|2026-10-01/2026-10-31|case|1.2",
+        "property_presence|self:a|2026-10-01/2026-10-31|case|1.2",
+        "housing|self:a|2026-10-01/2026-10-31|case|1.2",
+        "debt_presence|self:a|2026-10-01/2026-10-31|case|1.2",
+        "goal_horizon|self:a|2026-10-01/2026-10-31|case|1.2",
+        "goal_estimate|self:a|2026-10-01/2026-10-31|case|1.2"
+      ]
+    },
+    {
+      "path": "DEEP_DIRECT",
+      "fixture": {
+        "owner": "self:a",
+        "period": "2026-10-01/2026-10-31",
+        "entities": {
+          "assets": [
+            "cash:a"
+          ],
+          "reservations": [
+            "cash:a:operating"
+          ],
+          "goals": [
+            "education:a"
+          ],
+          "debts": [
+            "debt:a"
+          ],
+          "contributions": [
+            "saving:a"
+          ],
+          "pensions": [
+            "pension:a"
+          ],
+          "debt_schedule": [
+            "debt:a/2026-11",
+            "debt:a/2026-12",
+            "debt:a/2027-01"
+          ]
+        },
+        "id": "DEEP_DIRECT",
+        "mode": "deep",
+        "flags": [
+          "living_only",
+          "complete_assets",
+          "monthly_candidate",
+          "has_goals",
+          "has_debt",
+          "has_contributions",
+          "extra_targets",
+          "monthly_contributions",
+          "debt_projection"
+        ]
+      },
+      "counts": {
+        "visible_fact_fields": 60,
+        "known_amount_editor_controls": 77,
+        "repeated_groups": 6,
+        "repeated_entity_rows": 8,
+        "reused_fact_fields": 0,
+        "deferred_fact_fields": 0,
+        "duplicate_fact_requests": 0,
+        "evidence_lookup_candidates": 13
+      },
+      "visible_field_refs": [
+        "scope|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "owners|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "asset_coverage|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "life_primary|self:a|2026-10-01/2026-10-31|case|1.2",
+        "goal_selection|self:a|2026-10-01/2026-10-31|case|1.2",
+        "income|self:a|2026-10-01/2026-10-31|case|1.2",
+        "period|self:a|2026-10-01/2026-10-31|case|1.2",
+        "one_off|self:a|2026-10-01/2026-10-31|case|1.2",
+        "expense_basis|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "living|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "exclusions_confirmed|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "essential|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "asset_kind|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_value|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_valuation_on|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_available_on|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_constraint|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "debt_presence|self:a|2026-10-01/2026-10-31|case|1.2",
+        "debt_balance|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_balance_as_of|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_payment_total|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_payment_period|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_balance_timing|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_pay_on|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "goal_amount|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_due|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_dates|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_prepared|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "contribution_presence|self:a|2026-10-01/2026-10-31|case|1.2",
+        "kept_amount|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "payroll|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "reservation_source|self:a|2026-10-01/2026-10-31|cash:a:operating|1.2.1",
+        "reservation_amount|self:a|2026-10-01/2026-10-31|cash:a:operating|1.2.1",
+        "reservation_purpose|self:a|2026-10-01/2026-10-31|cash:a:operating|1.2.1",
+        "customer_target_mode|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "protection_extra|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "operating_extra|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "projection_period|self:a|2026-10-01/2026-10-31|case|1.2",
+        "projection_assumptions|self:a|2026-10-01/2026-10-31|case|1.2",
+        "planned_events|self:a|2026-10-01/2026-10-31|case|1.2",
+        "asset_ownership|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_detail_coverage|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "contribution_purpose|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "contribution_destination|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "contribution_payday|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "contribution_period|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "contribution_goal_ref|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "debt_schedule_period|self:a|2026-10-01/2026-10-31|debt:a/2026-11|1.2.1",
+        "debt_schedule_period|self:a|2026-10-01/2026-10-31|debt:a/2026-12|1.2.1",
+        "debt_schedule_period|self:a|2026-10-01/2026-10-31|debt:a/2027-01|1.2.1",
+        "debt_schedule_payment|self:a|2026-10-01/2026-10-31|debt:a/2026-11|1.2.1",
+        "debt_schedule_payment|self:a|2026-10-01/2026-10-31|debt:a/2026-12|1.2.1",
+        "debt_schedule_payment|self:a|2026-10-01/2026-10-31|debt:a/2027-01|1.2.1",
+        "debt_schedule_principal|self:a|2026-10-01/2026-10-31|debt:a/2026-11|1.2.1",
+        "debt_schedule_principal|self:a|2026-10-01/2026-10-31|debt:a/2026-12|1.2.1",
+        "debt_schedule_principal|self:a|2026-10-01/2026-10-31|debt:a/2027-01|1.2.1",
+        "goal_price_basis|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_return_basis|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_priority|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "reservation_coverage|self:a|2026-10-01/2026-10-31|case|1.2.1"
+      ]
+    },
+    {
+      "path": "OVERLAP",
+      "fixture": {
+        "owner": "self:a",
+        "period": "2026-10-01/2026-10-31",
+        "entities": {
+          "assets": [
+            "cash:a"
+          ],
+          "reservations": [
+            "cash:a:operating"
+          ],
+          "goals": [
+            "education:a"
+          ],
+          "debts": [
+            "debt:a"
+          ],
+          "contributions": [
+            "saving:a"
+          ],
+          "pensions": [
+            "pension:a"
+          ],
+          "debt_schedule": [
+            "debt:a/2026-11",
+            "debt:a/2026-12",
+            "debt:a/2027-01"
+          ]
+        },
+        "id": "OVERLAP",
+        "mode": "deep",
+        "flags": [
+          "living_only",
+          "complete_assets",
+          "monthly_candidate",
+          "has_goals",
+          "has_debt",
+          "has_contributions",
+          "extra_targets",
+          "monthly_contributions",
+          "debt_projection",
+          "overlap",
+          "education_goal",
+          "pension_review"
+        ],
+        "stages": [
+          "LC_SCHOOL_AGE",
+          "LC_RETIRED"
+        ]
+      },
+      "counts": {
+        "visible_fact_fields": 63,
+        "known_amount_editor_controls": 80,
+        "repeated_groups": 7,
+        "repeated_entity_rows": 9,
+        "reused_fact_fields": 0,
+        "deferred_fact_fields": 0,
+        "duplicate_fact_requests": 0,
+        "evidence_lookup_candidates": 14
+      },
+      "visible_field_refs": [
+        "scope|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "owners|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "asset_coverage|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "life_primary|self:a|2026-10-01/2026-10-31|case|1.2",
+        "life_overlap|self:a|2026-10-01/2026-10-31|case|1.2",
+        "goal_selection|self:a|2026-10-01/2026-10-31|case|1.2",
+        "income|self:a|2026-10-01/2026-10-31|case|1.2",
+        "period|self:a|2026-10-01/2026-10-31|case|1.2",
+        "one_off|self:a|2026-10-01/2026-10-31|case|1.2",
+        "expense_basis|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "living|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "exclusions_confirmed|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "essential|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "asset_kind|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_value|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_valuation_on|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_available_on|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_constraint|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "debt_presence|self:a|2026-10-01/2026-10-31|case|1.2",
+        "debt_balance|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_balance_as_of|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_payment_total|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_payment_period|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_balance_timing|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_pay_on|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "goal_amount|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_due|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_dates|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_prepared|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "contribution_presence|self:a|2026-10-01/2026-10-31|case|1.2",
+        "kept_amount|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "payroll|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "reservation_source|self:a|2026-10-01/2026-10-31|cash:a:operating|1.2.1",
+        "reservation_amount|self:a|2026-10-01/2026-10-31|cash:a:operating|1.2.1",
+        "reservation_purpose|self:a|2026-10-01/2026-10-31|cash:a:operating|1.2.1",
+        "customer_target_mode|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "protection_extra|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "operating_extra|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "projection_period|self:a|2026-10-01/2026-10-31|case|1.2",
+        "projection_assumptions|self:a|2026-10-01/2026-10-31|case|1.2",
+        "planned_events|self:a|2026-10-01/2026-10-31|case|1.2",
+        "education_support|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "pension_reference|self:a|2026-10-01/2026-10-31|pension:a|1.2",
+        "asset_ownership|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_detail_coverage|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "contribution_purpose|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "contribution_destination|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "contribution_payday|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "contribution_period|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "contribution_goal_ref|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "debt_schedule_period|self:a|2026-10-01/2026-10-31|debt:a/2026-11|1.2.1",
+        "debt_schedule_period|self:a|2026-10-01/2026-10-31|debt:a/2026-12|1.2.1",
+        "debt_schedule_period|self:a|2026-10-01/2026-10-31|debt:a/2027-01|1.2.1",
+        "debt_schedule_payment|self:a|2026-10-01/2026-10-31|debt:a/2026-11|1.2.1",
+        "debt_schedule_payment|self:a|2026-10-01/2026-10-31|debt:a/2026-12|1.2.1",
+        "debt_schedule_payment|self:a|2026-10-01/2026-10-31|debt:a/2027-01|1.2.1",
+        "debt_schedule_principal|self:a|2026-10-01/2026-10-31|debt:a/2026-11|1.2.1",
+        "debt_schedule_principal|self:a|2026-10-01/2026-10-31|debt:a/2026-12|1.2.1",
+        "debt_schedule_principal|self:a|2026-10-01/2026-10-31|debt:a/2027-01|1.2.1",
+        "goal_price_basis|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_return_basis|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_priority|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "reservation_coverage|self:a|2026-10-01/2026-10-31|case|1.2.1"
+      ]
+    },
+    {
+      "path": "TOTAL_OUTFLOW",
+      "fixture": {
+        "owner": "self:a",
+        "period": "2026-10-01/2026-10-31",
+        "entities": {
+          "assets": [
+            "cash:a"
+          ],
+          "reservations": [
+            "cash:a:operating"
+          ],
+          "goals": [
+            "education:a"
+          ],
+          "debts": [
+            "debt:a"
+          ],
+          "contributions": [
+            "saving:a"
+          ],
+          "pensions": [
+            "pension:a"
+          ],
+          "debt_schedule": [
+            "debt:a/2026-11",
+            "debt:a/2026-12",
+            "debt:a/2027-01"
+          ]
+        },
+        "id": "TOTAL_OUTFLOW",
+        "mode": "deep",
+        "flags": [
+          "complete_assets",
+          "monthly_candidate",
+          "has_goals",
+          "has_debt",
+          "has_contributions",
+          "extra_targets",
+          "monthly_contributions",
+          "debt_projection",
+          "total_outflow",
+          "debt_breakdown"
+        ]
+      },
+      "counts": {
+        "visible_fact_fields": 65,
+        "known_amount_editor_controls": 88,
+        "repeated_groups": 6,
+        "repeated_entity_rows": 8,
+        "reused_fact_fields": 0,
+        "deferred_fact_fields": 0,
+        "duplicate_fact_requests": 0,
+        "evidence_lookup_candidates": 13
+      },
+      "visible_field_refs": [
+        "scope|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "owners|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "asset_coverage|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "life_primary|self:a|2026-10-01/2026-10-31|case|1.2",
+        "goal_selection|self:a|2026-10-01/2026-10-31|case|1.2",
+        "income|self:a|2026-10-01/2026-10-31|case|1.2",
+        "period|self:a|2026-10-01/2026-10-31|case|1.2",
+        "one_off|self:a|2026-10-01/2026-10-31|case|1.2",
+        "expense_basis|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "living|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "included_debt|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "included_contributions|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "essential|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "asset_kind|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_value|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_valuation_on|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_available_on|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_constraint|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "debt_presence|self:a|2026-10-01/2026-10-31|case|1.2",
+        "debt_balance|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_balance_as_of|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_payment_total|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_payment_period|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_balance_timing|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_pay_on|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_principal|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_interest|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_fees|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_service|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "goal_amount|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_due|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_dates|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_prepared|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "contribution_presence|self:a|2026-10-01/2026-10-31|case|1.2",
+        "kept_amount|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "payroll|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "reservation_source|self:a|2026-10-01/2026-10-31|cash:a:operating|1.2.1",
+        "reservation_amount|self:a|2026-10-01/2026-10-31|cash:a:operating|1.2.1",
+        "reservation_purpose|self:a|2026-10-01/2026-10-31|cash:a:operating|1.2.1",
+        "customer_target_mode|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "protection_extra|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "operating_extra|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "projection_period|self:a|2026-10-01/2026-10-31|case|1.2",
+        "projection_assumptions|self:a|2026-10-01/2026-10-31|case|1.2",
+        "planned_events|self:a|2026-10-01/2026-10-31|case|1.2",
+        "asset_ownership|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_detail_coverage|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "contribution_purpose|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "contribution_destination|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "contribution_payday|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "contribution_period|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "contribution_goal_ref|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "debt_schedule_period|self:a|2026-10-01/2026-10-31|debt:a/2026-11|1.2.1",
+        "debt_schedule_period|self:a|2026-10-01/2026-10-31|debt:a/2026-12|1.2.1",
+        "debt_schedule_period|self:a|2026-10-01/2026-10-31|debt:a/2027-01|1.2.1",
+        "debt_schedule_payment|self:a|2026-10-01/2026-10-31|debt:a/2026-11|1.2.1",
+        "debt_schedule_payment|self:a|2026-10-01/2026-10-31|debt:a/2026-12|1.2.1",
+        "debt_schedule_payment|self:a|2026-10-01/2026-10-31|debt:a/2027-01|1.2.1",
+        "debt_schedule_principal|self:a|2026-10-01/2026-10-31|debt:a/2026-11|1.2.1",
+        "debt_schedule_principal|self:a|2026-10-01/2026-10-31|debt:a/2026-12|1.2.1",
+        "debt_schedule_principal|self:a|2026-10-01/2026-10-31|debt:a/2027-01|1.2.1",
+        "goal_price_basis|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_return_basis|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_priority|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "reservation_coverage|self:a|2026-10-01/2026-10-31|case|1.2.1"
+      ]
+    },
+    {
+      "path": "TWO_DEBTS_TWO_GOALS",
+      "fixture": {
+        "owner": "self:a",
+        "period": "2026-10-01/2026-10-31",
+        "entities": {
+          "assets": [
+            "cash:a"
+          ],
+          "reservations": [
+            "cash:a:operating"
+          ],
+          "goals": [
+            "education:a",
+            "housing:a"
+          ],
+          "debts": [
+            "debt:a",
+            "debt:b"
+          ],
+          "contributions": [
+            "saving:a"
+          ],
+          "pensions": [
+            "pension:a"
+          ],
+          "debt_schedule": [
+            "debt:a/2026-11",
+            "debt:a/2026-12",
+            "debt:a/2027-01",
+            "debt:b/2026-11",
+            "debt:b/2026-12",
+            "debt:b/2027-01"
+          ]
+        },
+        "id": "TWO_DEBTS_TWO_GOALS",
+        "mode": "deep",
+        "flags": [
+          "complete_assets",
+          "monthly_candidate",
+          "has_goals",
+          "has_debt",
+          "has_contributions",
+          "extra_targets",
+          "monthly_contributions",
+          "debt_projection",
+          "total_outflow",
+          "debt_breakdown"
+        ]
+      },
+      "counts": {
+        "visible_fact_fields": 91,
+        "known_amount_editor_controls": 127,
+        "repeated_groups": 6,
+        "repeated_entity_rows": 13,
+        "reused_fact_fields": 0,
+        "deferred_fact_fields": 0,
+        "duplicate_fact_requests": 0,
+        "evidence_lookup_candidates": 18
+      },
+      "visible_field_refs": [
+        "scope|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "owners|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "asset_coverage|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "life_primary|self:a|2026-10-01/2026-10-31|case|1.2",
+        "goal_selection|self:a|2026-10-01/2026-10-31|case|1.2",
+        "income|self:a|2026-10-01/2026-10-31|case|1.2",
+        "period|self:a|2026-10-01/2026-10-31|case|1.2",
+        "one_off|self:a|2026-10-01/2026-10-31|case|1.2",
+        "expense_basis|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "living|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "included_debt|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "included_contributions|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "essential|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "asset_kind|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_value|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_valuation_on|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_available_on|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_constraint|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "debt_presence|self:a|2026-10-01/2026-10-31|case|1.2",
+        "debt_balance|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_balance|self:a|2026-10-01/2026-10-31|debt:b|1.2.1",
+        "debt_balance_as_of|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_balance_as_of|self:a|2026-10-01/2026-10-31|debt:b|1.2.1",
+        "debt_payment_total|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_payment_total|self:a|2026-10-01/2026-10-31|debt:b|1.2.1",
+        "debt_payment_period|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_payment_period|self:a|2026-10-01/2026-10-31|debt:b|1.2.1",
+        "debt_balance_timing|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_balance_timing|self:a|2026-10-01/2026-10-31|debt:b|1.2.1",
+        "debt_pay_on|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_pay_on|self:a|2026-10-01/2026-10-31|debt:b|1.2.1",
+        "debt_principal|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_principal|self:a|2026-10-01/2026-10-31|debt:b|1.2.1",
+        "debt_interest|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_interest|self:a|2026-10-01/2026-10-31|debt:b|1.2.1",
+        "debt_fees|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_fees|self:a|2026-10-01/2026-10-31|debt:b|1.2.1",
+        "debt_service|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_service|self:a|2026-10-01/2026-10-31|debt:b|1.2.1",
+        "goal_amount|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_amount|self:a|2026-10-01/2026-10-31|housing:a|1.2",
+        "goal_due|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_due|self:a|2026-10-01/2026-10-31|housing:a|1.2",
+        "goal_dates|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_dates|self:a|2026-10-01/2026-10-31|housing:a|1.2",
+        "goal_prepared|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_prepared|self:a|2026-10-01/2026-10-31|housing:a|1.2",
+        "contribution_presence|self:a|2026-10-01/2026-10-31|case|1.2",
+        "kept_amount|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "payroll|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "reservation_source|self:a|2026-10-01/2026-10-31|cash:a:operating|1.2.1",
+        "reservation_amount|self:a|2026-10-01/2026-10-31|cash:a:operating|1.2.1",
+        "reservation_purpose|self:a|2026-10-01/2026-10-31|cash:a:operating|1.2.1",
+        "customer_target_mode|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "protection_extra|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "operating_extra|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "projection_period|self:a|2026-10-01/2026-10-31|case|1.2",
+        "projection_assumptions|self:a|2026-10-01/2026-10-31|case|1.2",
+        "planned_events|self:a|2026-10-01/2026-10-31|case|1.2",
+        "asset_ownership|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_detail_coverage|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "contribution_purpose|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "contribution_destination|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "contribution_payday|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "contribution_period|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "contribution_goal_ref|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "debt_schedule_period|self:a|2026-10-01/2026-10-31|debt:a/2026-11|1.2.1",
+        "debt_schedule_period|self:a|2026-10-01/2026-10-31|debt:a/2026-12|1.2.1",
+        "debt_schedule_period|self:a|2026-10-01/2026-10-31|debt:a/2027-01|1.2.1",
+        "debt_schedule_period|self:a|2026-10-01/2026-10-31|debt:b/2026-11|1.2.1",
+        "debt_schedule_period|self:a|2026-10-01/2026-10-31|debt:b/2026-12|1.2.1",
+        "debt_schedule_period|self:a|2026-10-01/2026-10-31|debt:b/2027-01|1.2.1",
+        "debt_schedule_payment|self:a|2026-10-01/2026-10-31|debt:a/2026-11|1.2.1",
+        "debt_schedule_payment|self:a|2026-10-01/2026-10-31|debt:a/2026-12|1.2.1",
+        "debt_schedule_payment|self:a|2026-10-01/2026-10-31|debt:a/2027-01|1.2.1",
+        "debt_schedule_payment|self:a|2026-10-01/2026-10-31|debt:b/2026-11|1.2.1",
+        "debt_schedule_payment|self:a|2026-10-01/2026-10-31|debt:b/2026-12|1.2.1",
+        "debt_schedule_payment|self:a|2026-10-01/2026-10-31|debt:b/2027-01|1.2.1",
+        "debt_schedule_principal|self:a|2026-10-01/2026-10-31|debt:a/2026-11|1.2.1",
+        "debt_schedule_principal|self:a|2026-10-01/2026-10-31|debt:a/2026-12|1.2.1",
+        "debt_schedule_principal|self:a|2026-10-01/2026-10-31|debt:a/2027-01|1.2.1",
+        "debt_schedule_principal|self:a|2026-10-01/2026-10-31|debt:b/2026-11|1.2.1",
+        "debt_schedule_principal|self:a|2026-10-01/2026-10-31|debt:b/2026-12|1.2.1",
+        "debt_schedule_principal|self:a|2026-10-01/2026-10-31|debt:b/2027-01|1.2.1",
+        "goal_price_basis|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_price_basis|self:a|2026-10-01/2026-10-31|housing:a|1.2",
+        "goal_return_basis|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_return_basis|self:a|2026-10-01/2026-10-31|housing:a|1.2",
+        "goal_priority|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_priority|self:a|2026-10-01/2026-10-31|housing:a|1.2",
+        "reservation_coverage|self:a|2026-10-01/2026-10-31|case|1.2.1"
+      ]
+    },
+    {
+      "path": "QUICK_TO_DEEP",
+      "counts": {
+        "visible_fact_fields": 49,
+        "known_amount_editor_controls": 64,
+        "repeated_groups": 6,
+        "repeated_entity_rows": 8,
+        "reused_fact_fields": 11,
+        "deferred_fact_fields": 0,
+        "duplicate_fact_requests": 0,
+        "evidence_lookup_candidates": 11
+      },
+      "visible_field_refs": [
+        "asset_coverage|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "essential|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "asset_kind|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_value|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_valuation_on|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_available_on|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_constraint|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "debt_balance|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_balance_as_of|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_payment_total|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_payment_period|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_balance_timing|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_pay_on|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "goal_amount|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_due|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_dates|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_prepared|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "contribution_presence|self:a|2026-10-01/2026-10-31|case|1.2",
+        "kept_amount|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "payroll|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "reservation_source|self:a|2026-10-01/2026-10-31|cash:a:operating|1.2.1",
+        "reservation_amount|self:a|2026-10-01/2026-10-31|cash:a:operating|1.2.1",
+        "reservation_purpose|self:a|2026-10-01/2026-10-31|cash:a:operating|1.2.1",
+        "customer_target_mode|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "protection_extra|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "operating_extra|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "projection_period|self:a|2026-10-01/2026-10-31|case|1.2",
+        "projection_assumptions|self:a|2026-10-01/2026-10-31|case|1.2",
+        "planned_events|self:a|2026-10-01/2026-10-31|case|1.2",
+        "asset_ownership|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_detail_coverage|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "contribution_purpose|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "contribution_destination|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "contribution_payday|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "contribution_period|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "contribution_goal_ref|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "debt_schedule_period|self:a|2026-10-01/2026-10-31|debt:a/2026-11|1.2.1",
+        "debt_schedule_period|self:a|2026-10-01/2026-10-31|debt:a/2026-12|1.2.1",
+        "debt_schedule_period|self:a|2026-10-01/2026-10-31|debt:a/2027-01|1.2.1",
+        "debt_schedule_payment|self:a|2026-10-01/2026-10-31|debt:a/2026-11|1.2.1",
+        "debt_schedule_payment|self:a|2026-10-01/2026-10-31|debt:a/2026-12|1.2.1",
+        "debt_schedule_payment|self:a|2026-10-01/2026-10-31|debt:a/2027-01|1.2.1",
+        "debt_schedule_principal|self:a|2026-10-01/2026-10-31|debt:a/2026-11|1.2.1",
+        "debt_schedule_principal|self:a|2026-10-01/2026-10-31|debt:a/2026-12|1.2.1",
+        "debt_schedule_principal|self:a|2026-10-01/2026-10-31|debt:a/2027-01|1.2.1",
+        "goal_price_basis|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_return_basis|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_priority|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "reservation_coverage|self:a|2026-10-01/2026-10-31|case|1.2.1"
+      ]
+    },
+    {
+      "path": "QUICK_TO_OVERLAP",
+      "counts": {
+        "visible_fact_fields": 52,
+        "known_amount_editor_controls": 67,
+        "repeated_groups": 7,
+        "repeated_entity_rows": 9,
+        "reused_fact_fields": 11,
+        "deferred_fact_fields": 0,
+        "duplicate_fact_requests": 0,
+        "evidence_lookup_candidates": 12
+      },
+      "visible_field_refs": [
+        "asset_coverage|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "life_overlap|self:a|2026-10-01/2026-10-31|case|1.2",
+        "essential|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "asset_kind|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_value|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_valuation_on|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_available_on|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_constraint|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "debt_balance|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_balance_as_of|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_payment_total|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_payment_period|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_balance_timing|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "debt_pay_on|self:a|2026-10-01/2026-10-31|debt:a|1.2.1",
+        "goal_amount|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_due|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_dates|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_prepared|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "contribution_presence|self:a|2026-10-01/2026-10-31|case|1.2",
+        "kept_amount|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "payroll|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "reservation_source|self:a|2026-10-01/2026-10-31|cash:a:operating|1.2.1",
+        "reservation_amount|self:a|2026-10-01/2026-10-31|cash:a:operating|1.2.1",
+        "reservation_purpose|self:a|2026-10-01/2026-10-31|cash:a:operating|1.2.1",
+        "customer_target_mode|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "protection_extra|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "operating_extra|self:a|2026-10-01/2026-10-31|case|1.2.1",
+        "projection_period|self:a|2026-10-01/2026-10-31|case|1.2",
+        "projection_assumptions|self:a|2026-10-01/2026-10-31|case|1.2",
+        "planned_events|self:a|2026-10-01/2026-10-31|case|1.2",
+        "education_support|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "pension_reference|self:a|2026-10-01/2026-10-31|pension:a|1.2",
+        "asset_ownership|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "asset_detail_coverage|self:a|2026-10-01/2026-10-31|cash:a|1.2",
+        "contribution_purpose|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "contribution_destination|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "contribution_payday|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "contribution_period|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "contribution_goal_ref|self:a|2026-10-01/2026-10-31|saving:a|1.2",
+        "debt_schedule_period|self:a|2026-10-01/2026-10-31|debt:a/2026-11|1.2.1",
+        "debt_schedule_period|self:a|2026-10-01/2026-10-31|debt:a/2026-12|1.2.1",
+        "debt_schedule_period|self:a|2026-10-01/2026-10-31|debt:a/2027-01|1.2.1",
+        "debt_schedule_payment|self:a|2026-10-01/2026-10-31|debt:a/2026-11|1.2.1",
+        "debt_schedule_payment|self:a|2026-10-01/2026-10-31|debt:a/2026-12|1.2.1",
+        "debt_schedule_payment|self:a|2026-10-01/2026-10-31|debt:a/2027-01|1.2.1",
+        "debt_schedule_principal|self:a|2026-10-01/2026-10-31|debt:a/2026-11|1.2.1",
+        "debt_schedule_principal|self:a|2026-10-01/2026-10-31|debt:a/2026-12|1.2.1",
+        "debt_schedule_principal|self:a|2026-10-01/2026-10-31|debt:a/2027-01|1.2.1",
+        "goal_price_basis|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_return_basis|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "goal_priority|self:a|2026-10-01/2026-10-31|education:a|1.2",
+        "reservation_coverage|self:a|2026-10-01/2026-10-31|case|1.2.1"
+      ]
+    }
+  ]
+}

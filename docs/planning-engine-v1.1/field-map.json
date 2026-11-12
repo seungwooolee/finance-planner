@@ -1,0 +1,471 @@
+{
+  "version": "DION-QUESTION12-ADAPTER-1.0",
+  "source_question_version": "1.2",
+  "source_question_file": "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json",
+  "source_question_sha256": "f11b332e7be9d4768f28a65bb4d2d4db5ec0b9de75e4a335e6c562d020be281e",
+  "persistent_id_aliasing": false,
+  "ext_key_aliasing": false,
+  "confirmation_definition": "DION-ADAPTER-CONFIRM-1.0",
+  "mappings": [
+    {
+      "design_id": "F03",
+      "source_fields_verbatim": "monthly_net_income_krw; income_amount_status; income_reference_period; income_period_start; income_period_end; includes_one_off_income; income_definition_version; income_sources[].{income_source_id,owner_ref,type,net_amount,period,tax_basis,tax_event_refs,pension_ref}",
+      "sample_top_level_fields": [
+        "monthly_net_income_krw",
+        "income_amount_status",
+        "income_reference_period",
+        "income_period_start",
+        "income_period_end",
+        "includes_one_off_income",
+        "income_definition_version"
+      ],
+      "derived_engine_response_fields": [
+        "monthly_net_income",
+        "period_start",
+        "period_end",
+        "includes_one_off"
+      ],
+      "implementation": "backend/app/planning/question_v12.py:map_question",
+      "affected_outputs": [
+        "OUT-01",
+        "OUT-03",
+        "OUT-05"
+      ]
+    },
+    {
+      "design_id": "F04",
+      "source_fields_verbatim": "monthly_living_cost_krw; monthly_essential_cost_krw; expense_reference_period; expense_inclusions.{debt_payment_status,debt_payment_amount,contribution_status,contribution_amount,pension_premium_status,rent_status,tax_payment_status}; expense_item_refs",
+      "sample_top_level_fields": [
+        "monthly_living_cost_krw",
+        "monthly_essential_cost_krw",
+        "expense_reference_period",
+        "expense_inclusions"
+      ],
+      "derived_engine_response_fields": [
+        "living",
+        "expense_basis",
+        "exclusions_confirmed",
+        "essential_living",
+        "period_start",
+        "period_end",
+        "included_debt",
+        "included_contributions"
+      ],
+      "implementation": "backend/app/planning/question_v12.py:map_question",
+      "affected_outputs": [
+        "OUT-01",
+        "OUT-03",
+        "OUT-05"
+      ]
+    },
+    {
+      "design_id": "F06",
+      "source_fields_verbatim": "financial_assets_total_reported_krw; financial_assets_detail_status; financial_assets[].{asset_id,owner_refs,share_basis,asset_class,investment_vehicle,market_value_krw,amount_status,account_ref,withdrawal_constraint,available_date,valuation_on}; accounts[].{account_id,owner_ref,type}",
+      "sample_top_level_fields": [
+        "financial_assets_total_reported_krw",
+        "financial_assets_detail_status",
+        "financial_assets",
+        "accounts"
+      ],
+      "derived_engine_response_fields": [
+        "items",
+        "coverage"
+      ],
+      "implementation": "backend/app/planning/question_v12.py:map_question",
+      "affected_outputs": [
+        "OUT-01",
+        "OUT-02",
+        "OUT-04",
+        "OUT-05",
+        "OUT-07",
+        "OUT-08",
+        "OUT-13"
+      ]
+    },
+    {
+      "design_id": "F09+F10+D08",
+      "source_fields_verbatim": "liabilities[]",
+      "sample_top_level_fields": [
+        "liabilities"
+      ],
+      "derived_engine_response_fields": [
+        "coverage",
+        "items"
+      ],
+      "implementation": "backend/app/planning/question_v12.py:map_question",
+      "affected_outputs": [
+        "OUT-02",
+        "OUT-03",
+        "OUT-05",
+        "OUT-13"
+      ]
+    },
+    {
+      "design_id": "F11",
+      "source_fields_verbatim": "goals[].{goal_id,type,priority,owner_refs,beneficiary_ref,confirmed,question_version}",
+      "sample_top_level_fields": [
+        "goals"
+      ],
+      "derived_engine_response_fields": [
+        "status",
+        "items"
+      ],
+      "implementation": "backend/app/planning/question_v12.py:map_question",
+      "affected_outputs": [
+        "OUT-04",
+        "OUT-05",
+        "OUT-07"
+      ]
+    },
+    {
+      "design_id": "F12",
+      "source_fields_verbatim": "goals[].horizon_band; goals[].target_date",
+      "sample_top_level_fields": [
+        "goals"
+      ],
+      "derived_engine_response_fields": [
+        "items"
+      ],
+      "implementation": "backend/app/planning/question_v12.py:map_question",
+      "affected_outputs": [
+        "OUT-04",
+        "OUT-05",
+        "OUT-07"
+      ]
+    },
+    {
+      "design_id": "F13",
+      "source_fields_verbatim": "goals[].{target_amount_krw,amount_status,payment_type,price_basis,price_base_date,payment_start,payment_end,frequency,prepared_asset_refs}",
+      "sample_top_level_fields": [
+        "goals"
+      ],
+      "derived_engine_response_fields": [
+        "items"
+      ],
+      "implementation": "backend/app/planning/question_v12.py:map_question",
+      "affected_outputs": [
+        "OUT-04",
+        "OUT-05",
+        "OUT-07"
+      ]
+    },
+    {
+      "design_id": "INH-01",
+      "source_fields_verbatim": "inheritance_cases[].{case_id,direction,status,actual_event_on,assumed_event_on,certainty,review_level}",
+      "sample_top_level_fields": [
+        "inheritance_cases"
+      ],
+      "derived_engine_response_fields": [
+        "direction"
+      ],
+      "implementation": "backend/app/planning/question_v12.py:map_question",
+      "affected_outputs": [
+        "OUT-05",
+        "OUT-12",
+        "OUT-13"
+      ]
+    },
+    {
+      "design_id": "INH-03",
+      "source_fields_verbatim": "inheritance_cases[].{allocations,own_share,gross_or_net,tax_cost_refs,payer_refs,distribution_status,receipt_on,liquidation_on,payment_on,funding_asset_refs,resulting_asset_ref,economic_event_ref}",
+      "sample_top_level_fields": [
+        "inheritance_cases"
+      ],
+      "derived_engine_response_fields": [
+        "incoming",
+        "own_estate"
+      ],
+      "implementation": "backend/app/planning/question_v12.py:map_question",
+      "affected_outputs": [
+        "OUT-05",
+        "OUT-12",
+        "OUT-13"
+      ]
+    },
+    {
+      "design_id": "NEW-01",
+      "source_fields_verbatim": "assessment_scope; included_owner_ids; owners[].{person_ref,relationship,confirmed}; scope_acknowledged; scope_version",
+      "sample_top_level_fields": [
+        "assessment_scope",
+        "included_owner_ids",
+        "owners",
+        "scope_acknowledged",
+        "scope_version"
+      ],
+      "derived_engine_response_fields": [
+        "scope",
+        "owner_ids",
+        "asset_coverage"
+      ],
+      "implementation": "backend/app/planning/question_v12.py:map_question",
+      "affected_outputs": [
+        "OUT-01",
+        "OUT-02",
+        "OUT-03",
+        "OUT-04",
+        "OUT-05",
+        "OUT-07",
+        "OUT-08",
+        "OUT-13"
+      ]
+    },
+    {
+      "design_id": "NEW-02",
+      "source_fields_verbatim": "income_change_status; income_change_amount_krw; income_change_date; events[].{event_id,owner_ref,type,amount_basis,start_on,end_on,certainty,income_source_ref}",
+      "sample_top_level_fields": [
+        "income_change_status",
+        "events"
+      ],
+      "derived_engine_response_fields": [
+        "carry_forward_snapshot",
+        "zero_return",
+        "unchanged_living_confirmed",
+        "income_basis",
+        "income_periods",
+        "pension_treatment"
+      ],
+      "implementation": "backend/app/planning/question_v12.py:map_question",
+      "affected_outputs": [
+        "OUT-05"
+      ]
+    },
+    {
+      "design_id": "NEW-03",
+      "source_fields_verbatim": "existing_contributions[].{contribution_id,owner_ref,account_ref,purpose_ref,amount,frequency,employee_or_employer,payroll_deducted,adjustment_permission,minimum_amount,max_reduction,contract_status,tax_cost_status,source_ref,profile_version}",
+      "sample_top_level_fields": [
+        "existing_contributions"
+      ],
+      "derived_engine_response_fields": [
+        "status",
+        "items",
+        "adjustment_options",
+        "requested_reductions"
+      ],
+      "implementation": "backend/app/planning/question_v12.py:map_question",
+      "affected_outputs": [
+        "OUT-03",
+        "OUT-05",
+        "OUT-08"
+      ]
+    },
+    {
+      "design_id": "NEW-04",
+      "source_fields_verbatim": "has_liabilities",
+      "sample_top_level_fields": [
+        "has_liabilities"
+      ],
+      "derived_engine_response_fields": [
+        "status"
+      ],
+      "implementation": "backend/app/planning/question_v12.py:map_question",
+      "affected_outputs": [
+        "OUT-01",
+        "OUT-02",
+        "OUT-03",
+        "OUT-05",
+        "OUT-13"
+      ]
+    },
+    {
+      "design_id": "NEW-05",
+      "source_fields_verbatim": "planned_expenses[].{event_id,obligation_id,owner_ref,beneficiary_ref,type,amount,price_basis,payment_on,end_on,certainty,existing_goal_ref,existing_debt_ref}",
+      "sample_top_level_fields": [
+        "planned_expenses"
+      ],
+      "derived_engine_response_fields": [
+        "status",
+        "items"
+      ],
+      "implementation": "backend/app/planning/question_v12.py:map_question",
+      "affected_outputs": [
+        "OUT-05"
+      ]
+    },
+    {
+      "design_id": "NEW-06",
+      "source_fields_verbatim": "fund_reservations[]",
+      "sample_top_level_fields": [
+        "fund_reservations"
+      ],
+      "derived_engine_response_fields": [
+        "coverage",
+        "items",
+        "customer_protection_target",
+        "customer_operating_target"
+      ],
+      "implementation": "backend/app/planning/question_v12.py:map_question",
+      "affected_outputs": [
+        "OUT-04",
+        "OUT-05",
+        "OUT-07"
+      ]
+    },
+    {
+      "design_id": "PEN-01",
+      "source_fields_verbatim": "pensions[].{pension_id,owner_ref,type,retirement_scheme,status,account_ref,balance_asset_ref,contribution_ref,income_source_ref,current_payment_basis,payroll_deducted,coverage}",
+      "sample_top_level_fields": [
+        "pensions"
+      ],
+      "derived_engine_response_fields": [
+        "status",
+        "items"
+      ],
+      "implementation": "backend/app/planning/question_v12.py:map_question",
+      "affected_outputs": [
+        "OUT-05",
+        "OUT-08",
+        "OUT-09"
+      ]
+    },
+    {
+      "design_id": "PEN-02",
+      "source_fields_verbatim": "pensions[].forecast.{amount,source_ref,queried_on,price_basis,tax_basis,start_on,end_condition,future_contribution_assumption,certainty}",
+      "sample_top_level_fields": [
+        "pensions"
+      ],
+      "derived_engine_response_fields": [
+        "coverage",
+        "items"
+      ],
+      "implementation": "backend/app/planning/question_v12.py:map_question",
+      "affected_outputs": [
+        "OUT-05",
+        "OUT-09"
+      ]
+    },
+    {
+      "design_id": "RET-01",
+      "source_fields_verbatim": "retirement_goal.{goal_ref,retirement_on,monthly_spending,price_basis,price_base_date,planning_end,planning_period_status,other_income_refs,debt_refs}",
+      "sample_top_level_fields": [
+        "retirement_goal"
+      ],
+      "derived_engine_response_fields": [
+        "price_basis",
+        "partial_month_basis",
+        "monthly_living",
+        "monthly_debt",
+        "monthly_other_net",
+        "retire_on",
+        "end_on"
+      ],
+      "implementation": "backend/app/planning/question_v12.py:map_question",
+      "affected_outputs": [
+        "OUT-09"
+      ]
+    },
+    {
+      "design_id": "TAX-04",
+      "source_fields_verbatim": "tax_events[].{tax_event_id,economic_event_ref,taxpayer_ref,account_ref,holding_ref,type,event_on,tax_year,gross_amount,net_amount,cost_basis,acquired_on,realized_gain,fees,withheld,prepaid,additional_tax,pay_on,tax_status,rule_ref}",
+      "sample_top_level_fields": [
+        "tax_events"
+      ],
+      "derived_engine_response_fields": [
+        "status",
+        "items"
+      ],
+      "implementation": "backend/app/planning/question_v12.py:map_question",
+      "affected_outputs": [
+        "OUT-05",
+        "OUT-11"
+      ]
+    }
+  ],
+  "output_dependency_sets": {
+    "OUT-01": [
+      "F03",
+      "F04",
+      "F06",
+      "NEW-01",
+      "NEW-04"
+    ],
+    "OUT-02": [
+      "F06",
+      "F08",
+      "F09+F10+D08",
+      "NEW-01",
+      "NEW-04",
+      "NEW-09"
+    ],
+    "OUT-03": [
+      "F03",
+      "F04",
+      "F09+F10+D08",
+      "NEW-01",
+      "NEW-03",
+      "NEW-04"
+    ],
+    "OUT-04": [
+      "F06",
+      "F11",
+      "F12",
+      "F13",
+      "NEW-01",
+      "NEW-06"
+    ],
+    "OUT-05": [
+      "F03",
+      "F04",
+      "F06",
+      "F08",
+      "F09+F10+D08",
+      "F11",
+      "F12",
+      "F13",
+      "INH-01",
+      "INH-02",
+      "INH-03",
+      "NEW-01",
+      "NEW-02",
+      "NEW-03",
+      "NEW-04",
+      "NEW-05",
+      "NEW-06",
+      "NEW-09",
+      "PEN-01",
+      "PEN-02",
+      "TAX-04"
+    ],
+    "OUT-06": [],
+    "OUT-07": [
+      "F06",
+      "F11",
+      "F12",
+      "F13",
+      "NEW-01",
+      "NEW-06"
+    ],
+    "OUT-08": [
+      "F06",
+      "NEW-01",
+      "NEW-03",
+      "PEN-01"
+    ],
+    "OUT-09": [
+      "PEN-01",
+      "PEN-02",
+      "RET-01"
+    ],
+    "OUT-10": [],
+    "OUT-11": [
+      "TAX-04"
+    ],
+    "OUT-12": [
+      "INH-01",
+      "INH-02",
+      "INH-03"
+    ],
+    "OUT-13": [
+      "F06",
+      "F08",
+      "F09+F10+D08",
+      "INH-01",
+      "INH-02",
+      "INH-03",
+      "NEW-01",
+      "NEW-04",
+      "NEW-09"
+    ],
+    "OUT-14": []
+  },
+  "conditional_dependencies": "debt detail only when liability exists; supplied optional module evidence must not be deleted; unbound submitted asset/estate evidence blocks dependent outputs"
+}

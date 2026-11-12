@@ -1,0 +1,114 @@
+{
+  "date": "2026-11-10",
+  "engine_release": "DION-ENGINE-1.1",
+  "state": "PASSED",
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "checks": [
+    {
+      "name": "engine_full_pytest",
+      "command": "python -m pytest -q",
+      "cwd_relative": "backend",
+      "exit_code": 0,
+      "stdout": "........................................................................ [ 23%]\n........................................................................ [ 47%]\n........................................................................ [ 71%]\n........................................................................ [ 95%]\n...............                                                          [100%]\n=============================== warnings summary ===============================\n../../../../../../opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/fastapi/testclient.py:1\n  /opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n    from starlette.testclient import TestClient as TestClient  # noqa\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n303 passed, 1 warning in 1.03s\n",
+      "stderr": ""
+    },
+    {
+      "name": "engine_ruff",
+      "command": "python -m ruff check app tests",
+      "cwd_relative": "backend",
+      "exit_code": 0,
+      "stdout": "All checks passed!\n",
+      "stderr": ""
+    },
+    {
+      "name": "integration_script_ruff",
+      "command": "python -m ruff check --config pyproject.toml ../docs/planning-engine-v1.1/check_be_integration.py",
+      "cwd_relative": "backend",
+      "exit_code": 0,
+      "stdout": "All checks passed!\n",
+      "stderr": ""
+    },
+    {
+      "name": "legacy_fixed_oracles",
+      "command": "python docs/planning-engine-v1/check_oracles.py",
+      "cwd_relative": ".",
+      "exit_code": 0,
+      "stdout": "{\"cases\": 2, \"fixed_amount_checks\": 16, \"state\": \"PASSED\"}\n",
+      "stderr": ""
+    },
+    {
+      "name": "be_actual_sqlite_engine_integration",
+      "command": "python docs/planning-engine-v1.1/check_be_integration.py --be-source /workspace/scratch/2804e29d9449/revision_be_reference/DION_RawAnswer_PoC_v0_1 --output docs/planning-engine-v1.1/be-integration-results.json",
+      "cwd_relative": ".",
+      "exit_code": 0,
+      "stdout": "{\n  \"state\": \"PASSED\",\n  \"check_count\": 16,\n  \"checks\": [\n    \"BE restore -> adapter -> FIN-CONTRACT -> goal ledger -> two candidates\",\n    \"raw decimal string/labels survive persistence\",\n    \"real process restart restores identical raw input\",\n    \"restart reproduces entire deterministic engine response\",\n    \"frozen baseline candidates reproduce literal oracle\",\n    \"changed income recalculates current surplus independently\",\n    \"stale future assumption cannot silently reuse changed income\",\n    \"explicitly reconfirmed 320 income gives 40/40 and 64/16\",\n    \"old raw snapshot is stale and kept immutable\",\n    \"historical snapshot reproduces old calculated amounts\",\n    \"normalized source hash distinguishes latest revision\",\n    \"same old normalized input hash preserved\",\n    \"BE rejects optimistic-lock stale edit\",\n    \"BE rejects different actor\",\n    \"no personalized recommendation or execution\",\n    \"BE source file unchanged\"\n  ],\n  \"be_source_sha256\": \"ef0d5882e191f539770339ae26ee628afaebe0fcc51cf71f36986f579328240f\",\n  \"be_wire_version\": \"POC-RAW-0.1\",\n  \"fictional_input\": true,\n  \"database_scope\": \"TEMPORARY_LOCAL_SQLITE\",\n  \"api_ui_integration\": \"NOT_CONNECTED\",\n  \"financial_assumptions\": \"SCENARIO_NOT_CUSTOMER_VALIDATED\",\n  \"active_legal_rules\": 0,\n  \"statutory_verification\": \"NOT_IMPLEMENTED\",\n  \"be_errors\": {\n    \"stale_edit\": \"VERSION_CONFLICT\",\n    \"other_actor\": \"NO_ACCESS\"\n  }\n}\n",
+      "stderr": ""
+    },
+    {
+      "name": "be_original_unittest",
+      "command": "python -m unittest -q",
+      "cwd_relative": "EXTERNAL_BE_SOURCE_READ_ONLY",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "----------------------------------------------------------------------\nRan 29 tests in 0.088s\n\nOK\n"
+    },
+    {
+      "name": "handoff_status",
+      "command": "python /workspace/scratch/2804e29d9449/revision_be_reference/DION_RawAnswer_PoC_v0_1/check_handoff.py /workspace/scratch/2804e29d9449/engine_revision_v1/dion/docs/planning-engine-v1.1/engine_handoff.json",
+      "cwd_relative": ".",
+      "exit_code": 0,
+      "stdout": "{\n  \"status\": \"WAITING_FOR_ENGINE_CONTRACT\",\n  \"pending_ids\": [\n    \"H01\",\n    \"H02\",\n    \"H03\",\n    \"H04\",\n    \"H05\",\n    \"H06\",\n    \"H07\",\n    \"H08\",\n    \"H09\",\n    \"H10\",\n    \"H11\",\n    \"H12\"\n  ],\n  \"automatic_financial_approval\": false,\n  \"contract_content_verified_by_this_script\": false,\n  \"note\": \"Manifest completeness is separate from engineering review, financial validation, and app integration.\"\n}\n",
+      "stderr": ""
+    }
+  ],
+  "counts": {
+    "engine_pytest_total": 303,
+    "preexisting_tests_unchanged": 253,
+    "added_adapter_tests": 50,
+    "be_integration_checks": 16,
+    "external_be_tests": 29,
+    "legacy_oracle_cases": 2,
+    "legacy_oracle_value_checks": 16
+  },
+  "baseline_archive_sha256": "64c799714399647626a62a1d898fcf0ff8ba48a31955038fadd21ddce5e16042",
+  "baseline_unchanged_file_count": 206,
+  "baseline_changed_files": [
+    "backend/app/planning/__main__.py",
+    "backend/app/planning/engine.py",
+    "backend/app/planning/projection.py",
+    "backend/app/planning/questions.py"
+  ],
+  "protected_file_sha256": {
+    "backend/app/engine.py": "05b9a986f8acda215a20f318d52b3fe1476dd405412cc9df537a7fd13e2fc606",
+    "backend/app/financial_contract.py": "ba8fd46ece3f8d8d015a4c7763f4413463fda77c6fcaebd144653a959500f75e",
+    "backend/app/main.py": "54ff8135d8bc904214b1228f41416327bfade91170a49e8a83301c32ae9ebed4",
+    "backend/app/planning/policies/allocation_policy.py": "7b125989f8dfea87e8d0c9ff074f625d37e68604f7cc50e594f959afbc2ac175",
+    "backend/app/planning/policies/allocation_rules.py": "095825ddad585a7c7727fbf3851abac0bed43898da4c734efde8b97bbd2470e3",
+    "backend/app/planning/policies/funding_ledger.py": "8dd18874aee8f44557607603fbb79041d60b2aa8ffd4b35083b8c3aa1555d387",
+    "docs/financial-engine-rule-registry.json": "769e07d94ad78df8608a4e8e741a40ef0671d8889c09ad074a693ffef4605947",
+    "docs/planning-engine-v1/oracles.json": "ce08008b1f6c0a60396bd26078d43cd7bb92918d4171c12106394922e1146173",
+    "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json": "f11b332e7be9d4768f28a65bb4d2d4db5ec0b9de75e4a335e6c562d020be281e"
+  },
+  "financial_assumptions": {
+    "status": "EXPLICIT_FICTIONAL_SCENARIO_NOT_CUSTOMER_VALIDATED",
+    "historical_income_period": "2026-10-01/2026-10-31",
+    "assumed_future_period": "2026-11-01/2026-11-30",
+    "zero_return": true,
+    "protection_and_operating_funded": true,
+    "investment_suitability": "NOT_EVALUATED"
+  },
+  "legal_verification": {
+    "active_rule_count": 0,
+    "statutory_formula_verified": false,
+    "user_supplied_official_estimates_independently_verified": false
+  },
+  "integration_scope": {
+    "actual_BE_raw_store": true,
+    "process_restart": true,
+    "raw_history_and_snapshot_restore": true,
+    "financial_result_persistence": false,
+    "production_API_UI": false,
+    "production_authentication": false,
+    "complete_daily_cash_calendar": false
+  }
+}

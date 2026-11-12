@@ -1,0 +1,60 @@
+{
+  "basis": "INDEPENDENT_LITERAL_ARITHMETIC_NOT_COPIED_FROM_ENGINE_OUTPUT",
+  "fictional": true,
+  "currency": "KRW",
+  "representative": {
+    "net_income": "3000000",
+    "outflow": "2100000",
+    "included_debt": "300000",
+    "included_existing": "200000",
+    "living": "1600000",
+    "after_debt": "1100000",
+    "after_existing": "900000",
+    "additional_goal": "300000",
+    "remaining": "600000",
+    "stability_investment": "300000",
+    "stability_cash": "300000",
+    "expansion_investment": "480000",
+    "expansion_cash": "120000"
+  },
+  "funded_dated": {
+    "opening_cash": "12000000",
+    "closing_cash": [
+      "12300000",
+      "12120000"
+    ],
+    "minimum_cash": "9900000",
+    "minimum_after_protection_and_goal_reservation": "3900000"
+  },
+  "reserved_shortfall": {
+    "opening_cash": "7600000",
+    "protection": "5700000",
+    "operating": "1900000",
+    "pre_salary_living": "1600000",
+    "pre_salary_debt": "300000",
+    "pre_salary_existing": "200000",
+    "pre_salary_goal_reserve": "300000",
+    "minimum_cash": "5500000",
+    "minimum_available": "-500000",
+    "closing_cash": [
+      "7900000",
+      "7720000"
+    ]
+  },
+  "extra_modes": {
+    "essential": "1600000",
+    "extra_protection": "100000",
+    "extra_operating": "50000",
+    "debt300000_targets": [
+      "5800000",
+      "1950000"
+    ],
+    "debt100000_targets": [
+      "5200000",
+      "1750000"
+    ]
+  },
+  "recommended_new_investment_krw": null,
+  "personalized_investment_cap_krw": null,
+  "active_legal_rule_count": 0
+}

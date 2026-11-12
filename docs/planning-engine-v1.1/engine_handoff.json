@@ -1,0 +1,89 @@
+{
+  "manifest_version": "POC-HANDOFF-0.1",
+  "items": [
+    {
+      "id": "H01",
+      "title": "첫 연결 범위",
+      "status": "PROVIDED",
+      "artifact_ref": "docs/planning-engine-v1.1/README.md",
+      "review_note": "엔진 담당 제공. BE 접수·검토 전이며 REVIEWED로 승격하지 않음."
+    },
+    {
+      "id": "H02",
+      "title": "입력 계약",
+      "status": "PROVIDED",
+      "artifact_ref": "docs/planning-engine-v1.1/adapter-contract.md",
+      "review_note": "엔진 담당 제공. BE 접수·검토 전이며 REVIEWED로 승격하지 않음."
+    },
+    {
+      "id": "H03",
+      "title": "단위와 값 상태",
+      "status": "PROVIDED",
+      "artifact_ref": "docs/planning-engine-v1.1/adapter-contract.md",
+      "review_note": "엔진 담당 제공. BE 접수·검토 전이며 REVIEWED로 승격하지 않음."
+    },
+    {
+      "id": "H04",
+      "title": "귀속과 기간",
+      "status": "PROVIDED",
+      "artifact_ref": "docs/planning-engine-v1.1/adapter-contract.md",
+      "review_note": "엔진 담당 제공. BE 접수·검토 전이며 REVIEWED로 승격하지 않음."
+    },
+    {
+      "id": "H05",
+      "title": "출력 계약",
+      "status": "PROVIDED",
+      "artifact_ref": "backend/examples/planning-v1.1/representative_output.json",
+      "review_note": "엔진 담당 제공. BE 접수·검토 전이며 REVIEWED로 승격하지 않음."
+    },
+    {
+      "id": "H06",
+      "title": "상태와 오류",
+      "status": "PROVIDED",
+      "artifact_ref": "backend/examples/planning-v1.1/partial_unknown_inclusion_output.json",
+      "review_note": "엔진 담당 제공. BE 접수·검토 전이며 REVIEWED로 승격하지 않음."
+    },
+    {
+      "id": "H07",
+      "title": "버전과 식별자",
+      "status": "PROVIDED",
+      "artifact_ref": "patch-manifest.json",
+      "review_note": "엔진 담당 제공. BE 접수·검토 전이며 REVIEWED로 승격하지 않음."
+    },
+    {
+      "id": "H08",
+      "title": "호출 방법",
+      "status": "PROVIDED",
+      "artifact_ref": "docs/planning-engine-v1.1/README.md",
+      "review_note": "엔진 담당 제공. BE 접수·검토 전이며 REVIEWED로 승격하지 않음."
+    },
+    {
+      "id": "H09",
+      "title": "재현 예시",
+      "status": "PROVIDED",
+      "artifact_ref": "docs/planning-engine-v1.1/check_be_integration.py",
+      "review_note": "엔진 담당 제공. BE 접수·검토 전이며 REVIEWED로 승격하지 않음."
+    },
+    {
+      "id": "H10",
+      "title": "지원과 승인 근거",
+      "status": "PROVIDED",
+      "artifact_ref": "docs/planning-engine-v1.1/README.md",
+      "review_note": "엔진 담당 제공. BE 접수·검토 전이며 REVIEWED로 승격하지 않음."
+    },
+    {
+      "id": "H11",
+      "title": "실행 제약",
+      "status": "PROVIDED",
+      "artifact_ref": "docs/planning-engine-v1.1/README.md",
+      "review_note": "엔진 담당 제공. BE 접수·검토 전이며 REVIEWED로 승격하지 않음."
+    },
+    {
+      "id": "H12",
+      "title": "변경과 호환성",
+      "status": "PROVIDED",
+      "artifact_ref": "CHANGELOG.md",
+      "review_note": "엔진 담당 제공. BE 접수·검토 전이며 REVIEWED로 승격하지 않음."
+    }
+  ]
+}
