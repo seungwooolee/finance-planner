@@ -12,6 +12,8 @@ from fractions import Fraction
 
 from .common import ContractError, Missing, Unsupported, digest, money, output, require
 from .engine import OUTPUTS, run_engine
+from .product_allocation import CONFIRMATION_VERSION as PRODUCT_CONFIRMATION_VERSION
+from .product_allocation import PRODUCT_QUESTION_IDS, attach_product_review
 from .questions import QUESTION_IDS
 from .statuses import attach_statuses, axes
 
@@ -649,6 +651,8 @@ def normalize_question_v12(document):
         raise ContractError("raw_snapshot_id and context snapshot_id differ")
     confirmations = index(document.get("confirmations", []), "question_id")
     for q, c in confirmations.items():
+        if q == "F15" and c["definition_version"] == PRODUCT_CONFIRMATION_VERSION and c["source_ref"]:
+            continue  # Versioned fund-to-monthly-budget link, consumed only by the product layer.
         if q not in SUPPORTED or c["definition_version"] != CONFIRMATION_VERSION or not c["source_ref"]:
             raise ContractError("confirmation identity/version/source")
     answers, issues, provenance, seen = [], [], [], set()
@@ -701,6 +705,8 @@ def normalize_question_v12(document):
                     }
                 )
             if q not in SUPPORTED:
+                if q in PRODUCT_QUESTION_IDS and "OUT-06" in document["requested_outputs"]:
+                    continue  # Separate source-bound product consumer; original answers stay intact.
                 raise Unsupported("question preserved without calculation binding:" + q)
             extra = confirmations.get(q, {}).get("values", {})
             if ref["definition_version"] == "1.2":
@@ -872,6 +878,6 @@ def run_question_v12(document):
             from .dated_cash import attach_dated_cash
 
             attach_dated_cash(result, adapted["normalized_input"], document.get("payment_calendar"))
-        return result
+        return attach_product_review(document, result)
     except (ContractError, KeyError, TypeError, ValueError, AttributeError) as exc:
         return attach_statuses(output("INVALID_INPUT", reason=str(exc), source_snapshot=copy.deepcopy(document)))

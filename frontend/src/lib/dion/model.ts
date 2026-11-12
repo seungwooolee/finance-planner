@@ -43,7 +43,7 @@ export function blankDocument(): Document {
     schema_version: "DION-QUESTION12-ADAPTER-1.0",
     context: { case_id: "local-draft", snapshot_id: "local-1", profile_version: "1", evaluation_on: todayInSeoul(), scope: "", included_owner_ids: [], currency: "KRW", timezone: "Asia/Seoul" },
     scope_ref: "scope_unconfirmed", raw_bundle: { case_id: "local-draft", input_version: 1, answers: [] },
-    confirmations: [], requested_outputs: ["OUT-01", "OUT-02", "OUT-03", "OUT-04", "OUT-05"],
+    confirmations: [], requested_outputs: ["OUT-01", "OUT-02", "OUT-03", "OUT-04", "OUT-05", "OUT-06"],
   };
 }
 export function emptyEnvelope(doc: Document, id: string): Envelope {

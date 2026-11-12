@@ -1,3 +1,15 @@
+# 2026-11-12 — PR #3 통합 최소 검증
+
+관련 pytest97·변경 Ruff·FE 타입/린트·격리 production webpack Build 통과. 실제 Edge3경로 정상/환노출 제외/정보 부족39.7초 통과. 가상 원응답→실제 API/엔진→3번 결과화면, 배분+미배분=OUT-05, UNKNOWN/null, 질문 수정/복귀, 기본3/대안3, 모바일을 확인했다. 전체 회귀·실계정/원격DB는 이번에 실행하지 않았다. [정확한 명령과 범위](integration/2026-11-12-pr3-product-integration.md).
+
+---
+
+# 2026-11-11 — 상품 검토0.2 관련 검사
+
+상품 상세·등급 방향·비중/집중·동시 하락 시나리오·기간/공시 만료·과거 소급 방지·미배분 원 보존과 미리보기/저장·복원 관련 pytest136개, 변경 Python Ruff, TypeScript, ESLint, production Webpack Build 통과. 상품 테스트32개 내부360조합은136개에 별도 합산하지 않는다. 검사 명령·독립 정답·미실행 범위는 [현행 상품 계약](product-allocation-0.2.md)과 개발 로그를 따른다. 전체 Core/E2E/실계정/원격DB·과거 시계열 백테스트·배포를 완료한 결과가 아니다.
+
+---
+
 # Git 통합 검사 — 2026-11-11
 
 이번 검사는 `C:\Users\LG\Projects\DION-git`에서 새로 설치한 환경으로 실행했다. Core의 pytest429통과/7skip, Ruff/pip check/TypeScript/ESLint와 production Build를 확인했다. 조건부 부동산 의존성 보완 후 전체pytest429통과/7skip과 Ruff도 재검사했다. v2 출력7쌍/독립 금액/연결데모12건을 함께 확인했다.

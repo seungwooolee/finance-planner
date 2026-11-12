@@ -112,6 +112,8 @@ export function DionPlanner() {
   async function calculate(input?:Document) {
     if(busy&&!input)return;
     const captured=clone(input??docRef.current), seq=++sequence.current;
+    captured.requested_outputs=[...new Set([...captured.requested_outputs,"OUT-06"])];
+    if (!(input??docRef.current).requested_outputs.includes("OUT-06")) {docRef.current={...docRef.current,requested_outputs:captured.requested_outputs};setDoc(docRef.current);}
     abort.current?.abort();abort.current=new AbortController();setBusy(true);setError("");setMessage("");
     try {
       const response=await request("/api/fe/v1/preview","POST",captured,undefined,abort.current.signal);
@@ -222,6 +224,7 @@ export function DionPlanner() {
   },true);}
   async function savedCalculation(){await accountTask(async read=>{
     if(!caseId||connectedCase.current!==caseId||serverVersion===null)throw new ApiError(409,"RESTORE_OR_CREATE_CASE_FIRST");
+    if(!docRef.current.requested_outputs.includes("OUT-06")){docRef.current={...docRef.current,requested_outputs:[...docRef.current.requested_outputs,"OUT-06"]};setDoc(docRef.current);}
     const captured=clone(docRef.current),seq=++sequence.current;abort.current?.abort();setBusy(false);
     if(captured.raw_bundle.answers.some(r=>saved.current[r.envelope.question_ref.design_id]!==stable(r.envelope)))throw new ApiError(409,"SAVE_CURRENT_ANSWERS_FIRST");
     const {case_id,snapshot_id,profile_version,...context}=captured.context;void case_id;void snapshot_id;void profile_version;

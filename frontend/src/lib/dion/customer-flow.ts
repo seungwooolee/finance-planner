@@ -1,7 +1,7 @@
 import { Document, Field, Json, activeQuestions, clone, completed, field, fieldValue, list, record, revise, textValue } from "./model";
 import { riskIds, riskNeeds } from "./investment-review";
 
-export const customerStep = (id: string) => ({ "LIFE-01": "NEW-01", F12: "F11", F13: "F11", F08: "N01", F15: "F17", "NEW-08": "F17", F16: "F17", "NEW-10": "F17", F18: "F17" }[id] ?? id);
+export const customerStep = (id: string) => ({ "LIFE-01": "NEW-01", F12: "F11", F13: "F11", F08: "N01", F15: "F17", "NEW-08": "F17", F16: "F17", "NEW-10": "F17", F18: "F17", D14: "F17", D18: "F17", D19: "F17", "NEW-12": "F17" }[id] ?? id);
 export const customerSteps = (doc: Document, deep: boolean) => [...new Set(activeQuestions(doc, deep).map(customerStep))];
 export function stepComplete(doc: Document, id: string) {
   if (id === "F17") return riskIds.every(q => !riskNeeds(doc,q).length);
