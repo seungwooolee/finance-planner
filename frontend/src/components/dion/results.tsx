@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { type ReactNode, useEffect, useRef } from "react";
 import { Document, Json, list, object, question, textValue, won } from "@/lib/dion/model";
 import { copy, customerStep, goalName } from "@/lib/dion/customer-flow";
 import { CashChart } from "./cash-chart";
@@ -8,14 +8,14 @@ import { InvestmentSummary } from "./investment-review";
 import displayCatalog from "@/lib/dion/result-display-catalog.json";
 
 const stateLabels: Record<string,string> = { CALCULATED:"계산됨", PARTIAL:"부분 결과", NEEDS_INPUT:"정보 보완 필요", INVALID_INPUT:"입력 확인 필요", NOT_SUPPORTED:"미지원", NOT_IMPLEMENTED:"미구현", NOT_APPLICABLE:"해당 없음", NOT_REQUESTED:"요청하지 않음", REVIEW_ONLY:"검토 목록", INTERNAL_ERROR:"계산 오류", INFEASIBLE:"월 예산 부족", CALCULATED_MONTHLY_SCENARIO:"월 예산 시나리오" };
-export type ViewResult = { result: Record<string,Json>; sourceSignature: string; localVersion: number; storage: string; runId?: string; serverVersion?: number; isCurrent?: boolean; source: Json };
+export type ViewResult = { result: Record<string,Json>; sourceSignature: string; localVersion: number; storage: string; runId?: string; serverVersion?: number; isCurrent?: boolean; source: Json; inputHash?:string; rawSnapshotId?:string };
 function metricValue(out:Record<string,Json>,key:string) {
   const v=out[key];return typeof v==="string"?v:object(v).calc_state==="CALCULATED"?object(v).value:null;
 }
 function Metric({title,value,note}:{title:string;value:unknown;note?:string}) {return <article className="d-metric"><span>{title}</span><strong>{won(value)}{typeof value==="string" && <small> 만원</small>}</strong>{note&&<small>{note}</small>}</article>;}
 function Missing({row,title}:{row:Record<string,Json>;title:string}) {return <div className="d-note"><strong>{title} · {stateLabels[textValue(row.calc_state)]??"확인 필요"}</strong><p>{row.calc_state==="NOT_SUPPORTED"?"이 결과의 계산은 아직 지원하지 않아요.":"관련 답변과 계산에 필요한 가정을 확인하면 이어서 살펴볼 수 있어요."}</p></div>;}
 
-export function Results({view,deep,tab,setTab,stale,onEdit}:{view:ViewResult;deep:boolean;tab:number;setTab:(n:number)=>void;stale:boolean;onEdit:(id:string)=>void}) {
+export function Results({view,deep,tab,setTab,stale,onEdit,explanation}:{view:ViewResult;deep:boolean;tab:number;setTab:(n:number)=>void;stale:boolean;onEdit:(id:string)=>void;explanation?:ReactNode}) {
   const heading=useRef<HTMLHeadingElement>(null);
   useEffect(()=>{
     heading.current?.focus({preventScroll:true});
@@ -38,6 +38,7 @@ export function Results({view,deep,tab,setTab,stale,onEdit}:{view:ViewResult;dee
   return <section className="d-results" aria-label="계산 결과">
     <div className="d-result-heading"><div><span className="d-eyebrow">{deep?"DEEP REVIEW":"FAST DIAGNOSTIC"} · {String(object(result.context).evaluation_on??"기준일 확인 필요")}</span><h1 ref={heading} tabIndex={-1} style={{scrollMarginTop:96}}>{tabs[tab]}</h1><p>같은 입력과 기준시점으로 확인하는 나의 재무상황</p></div><button className="d-secondary" onClick={()=>onEdit("F03")}>입력 내용 수정 ↗</button></div>
     <div className={stale?"d-warning":"d-note"} role="status"><strong>{stale?"이전 입력 기준 · 현재 작성값과 다른 결과예요":"현재 입력 기준 결과"}</strong><span> · {stateLabels[textValue(result.calc_state)]??textValue(result.calc_state)} · {view.storage==="NOT_SAVED"?"서버에 저장하지 않은 미리보기":"서버에 기록된 계산"}</span></div>
+    {explanation}
     {gates.map((g,i)=><div className="d-warning" key={i}><strong>연결 범위 확인 필요</strong><p>{String(g.reason)}</p><p>영향받는 결과만 보류했어요. 다른 결과와 엔진 원문은 유지해요.</p>{g.question_id!=="NEW-09"?<button className="d-text-button" onClick={()=>onEdit(String(g.question_id))}>관련 답변 확인 →</button>:<p>보증금 상세 입력·계산 연결은 준비 중이에요.</p>}</div>)}
     <nav className="d-tabs" aria-label={`${deep?"정밀":"빠른"} 결과 5뷰`}>{tabs.map((name,i)=><button aria-current={tab===i?"page":undefined} onClick={()=>setTab(i)} key={name}><small>{i+1} / 5</small>{name}</button>)}</nav>
     {tab===0 && <>

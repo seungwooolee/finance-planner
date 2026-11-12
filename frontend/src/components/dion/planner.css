@@ -54,3 +54,15 @@
 .d-login-dialog input[aria-invalid=true]{border-color:#b54336}
 .d-login-dialog .d-note{font-size:12px;text-align:left}
 @media(max-width:700px){.d-header-welcome{gap:12px}.d-header-cat{max-width:230px}.d-help-window{width:max-content;min-width:min(280px,calc(100vw - 32px));max-width:calc(100vw - 32px)}}
+
+/* Saved-result explanations preserve the existing results below the panel. */
+.d-explanation { margin: 18px 0; }
+.d-explanation-panel { margin-top: 16px; border: 1px solid #bdd8c9; overflow-wrap: anywhere; }
+.d-explanation-panel h2 { margin: 0; flex: 1; }
+.d-explanation-panel p { line-height: 1.8; }
+.d-explanation-panel [aria-pressed="true"] { background: #173d31; color: #fff; }
+.d-explanation-evidence { border-top: 1px solid #dce5df; margin-top: 20px; padding-top: 16px; }
+.d-explanation-evidence summary { cursor: pointer; font-weight: 700; }
+.d-explanation-evidence li { margin: 10px 0; }
+.d-explanation-source { color: #426051; font-size: .85rem; }
+.d-explanation-panel :focus-visible { outline: 3px solid #358267; outline-offset: 4px; }

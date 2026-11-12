@@ -1,3 +1,17 @@
+## 2026-11-12 공통 상담 R2-a
+
+`backend/tests/be/test_consultation.py`는 실제 SQLite/엔진/상담 API와 mock 인증으로 의도·허용 작업·필요 질문·사실 충돌·자동 덮어쓰기 방지·가상/추정 분리·저장/재개·동시성·권한·만료·삭제를 검사한다. 새32개와 기존 해설49개, 고유81개의 통과를 확인했다(최초 실패와 집중 재검사를 합친 수치).
+
+`frontend/e2e/dion-explanation.spec.ts --grep 'R2 '`는 브라우저2건 중1통과/1실패다. 재개 실패를 한 번 수정·재검사했으나 run 결과를 여는 단계 누락으로 미통과이며 추가 반복하지 않았다. 전체Core/Build/E2E·실인증·원격PG는 미실행이다. [정확한 명령·실패 원인·남은 검증](consultation-r2.md)을 따른다.
+
+## 2026-11-12 원포트 R1-c
+
+`backend/tests/be/test_oneport.py`는 기존 엔진·저장·검증기에 httpx.MockTransport를 연결해 모델 계약·의미·중복·비용·오류를 검사한다. 기존 해설 검사와 합쳐103개 통과했다. Playwright의 `--grep 'OnePort source'`는 모의 응답의 ONEPORT 표시·근거·길이 변경·기존 결과 유지 검사1건이다. `python -m app.explanation.probe`는 네트워크 없는 준비 검사이며 명시 `--live`는 승인된 고정 합성 사례만 실행한다. 실제 모델 관찰과 mock 성공을 구분한다. 이번은 공통 정책에 따라 관련 검사만 실행했으며 [명령·실호출1건·비용·미실행](integration/2026-11-12-oneport-r1c.md)을 따른다.
+
+## 2026-11-12 결과 해설
+
+`backend/tests/be/test_explanation.py`는 실제 저장/엔진/검증기와 mock provider로 수치·의미·run/근거/버전·미확인·오류/지연·타사용자 차단을 검사한다. `frontend/e2e/dion-explanation.spec.ts`는 실제 결과 UI와 임시DB/API/엔진을 사용하며 인증만 모의다. 기존 `tests.fe_http_harness.py`와 `DION_TEST_BE_URL`이 필요하다. 진입점은 기존 Core/Build/E2E다. [현재 명령·실행 결과·미실행 구분](integration/2026-11-12-result-explanation.md)을 따른다.
+
 ## 2026-11-12 계정 저장·복원
 
 `backend/tests/be/test_definition_compatibility.py`는 알려진 표시 버전과4개 정확한 원본경로 별칭만 허용하며 실제 정의 변경 거부·등록 hash/json·원응답 이력 보존을 검사한다. `frontend/e2e/dion-persistence.spec.ts`는 로그인 UI(인증만 MOCK)와 실제 임시 SQLite/API/엔진으로 저장·응답손실 재시도·새로고침·수정·과거 결과와 입력 복원·동시 수정 충돌을 검증한다. `DION_TEST_BE_URL=http://127.0.0.1:8106`의 기존 테스트 하네스가 필요하다. 전체 진입점은 `scripts/verify.ps1 -Mode Core|Build|E2E`이며 실제 배포 계정 확인과 구분한다. [이번 결과](integration/2026-11-12-account-persistence.md).

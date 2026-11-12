@@ -11,6 +11,8 @@ from fastapi import FastAPI, HTTPException, Request
 
 from app.be.api import get_store, router
 from app.be.auth import get_actor
+from app.be.consultation_api import router as consultation_router
+from app.be.explanation_api import router as explanation_router
 from app.be.question_api import router as question_router
 from app.be.store import BackendStore
 
@@ -22,6 +24,8 @@ def main():
     app = FastAPI(title="FICTIONAL TEST HARNESS - NOT PRODUCTION AUTH")
     app.include_router(router)
     app.include_router(question_router)
+    app.include_router(explanation_router)
+    app.include_router(consultation_router)
 
     def mock_actor(request: Request):
         if request.headers.get("authorization") != "Bearer MOCK-FE-ONLY":

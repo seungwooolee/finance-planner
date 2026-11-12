@@ -2,6 +2,7 @@
 import json
 from uuid import uuid4
 
+from ..consultation.storage import SCHEMA as AGENT_SCHEMA
 from ..planning import run_engine
 from ..planning.common import VERSION
 from ..planning.question_v12 import ADAPTER_VERSION as QUESTION_V12_ADAPTER_VERSION
@@ -33,7 +34,7 @@ class BackendStore(RawAnswerStore):
         super().__init__(database_path)
         conn = self._connect()
         try:
-            conn.executescript(EXTRA_SCHEMA)
+            conn.executescript(EXTRA_SCHEMA + AGENT_SCHEMA)
             for table in ("analysis_runs", "analysis_drafts"):
                 for operation in ("UPDATE", "DELETE"):
                     conn.execute(f"CREATE TRIGGER IF NOT EXISTS immutable_{table}_{operation} "
