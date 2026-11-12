@@ -1,3 +1,19 @@
+# 현재 상태 (2026-11-13 기준)
+
+| 항목 | 상태 | 근거·남은 조건 |
+|---|---|---|
+| 기준 브랜치 | `dion/integration-20261111` = 최신 통합본 (`a7354ad`, PR #4로 `codex/result-explanation-r1` 병합) | `main`은 integration보다 뒤처짐. 승격은 E2E 게이트 통과 후 |
+| CI Core (GitHub Actions) | 통과 — backend(pytest·Ruff·pip check), frontend(typecheck·lint) | PR #4 head `a9f2c5c`. 로컬 재실행: pytest 930통과/19skip |
+| R3 지출 화면 E2E | 해결 — 폼 재생성 전 입력 경합을 테스트 대기로 수정, 차이 금액 U+2212 기호 정렬 | `dion-explanation.spec.ts` R3 2경로 반복 4/4 통과 |
+| 전체 E2E | **미통과 — 25건 실패**(통합본, 로컬 Chrome·dev 서버·테스트 하네스) | 결과 화면 개편(금액 표기·`확인 대기`·입력 라벨)에 맞춰 갱신되지 않은 이전 사양으로 보임. 원인 확정·수정은 다음 작업 |
+| 미병합 브랜치 | `dion/fe-review-20261111`, `dion/product-filter-allocation-20261111`(PR #3), `codex/lifepath-cat-companion`(PR #1), `codex/portmew-design-handoff-20261102`(PR #2) | 앞의 둘은 integration에 같은 기능이 다른 커밋으로 반영됨. 포함·정리 여부는 결정 대기 |
+| 운영 | 실계정·원격 DB·운영 원장·유료 모델 호출 미확인 | [P0 잔여 조건](integration/2026-11-13-agent-p0-concurrency-ledger.md) |
+| 작업 규칙 | `main` 직접 push 금지, 기능당 PR 1개, PR당 변경 20파일 이내 권장 | |
+
+아래는 날짜별 이력이다.
+
+---
+
 # 2026-11-13 — GitHub 개발 체크포인트 인계
 
 사용자가 지금까지의 진행 내용을 GitHub에 보존하도록 승인했다. 기존 결과/상품 흐름·P0·R3·P1 코드와 문서/검증 기록을 같은 개발 브랜치로 인계한다. [보존 범위·배포 차단 확인·다른 노트북 재개](integration/2026-11-13-ai-checkpoint-handoff.md)를 따른다. R3 지출 화면 실패·실계정/원격 DB/운영 원장 잔여 조건은 보존하며 운영 완료로 승격하지 않는다. 실제 푸시 여부와 최종 SHA는 최종 실행 응답과 원격 HEAD 대조로 확인한다.
