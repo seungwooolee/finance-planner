@@ -33,4 +33,14 @@ Render Free는15분 무요청 후 휴면에 들어가며 첫 요청의 재시작
 
 `frontend/e2e/dion.spec.ts`의 위 두 구형 경로도 함께 정정했다. Windows Vercel CLI의 비ASCII 호스트명 헤더 오류는 기존 배포 도구의 `vercel-ascii-host.cjs`를 재사용해 해결했다. 인증정보·환경변수 값은 변경하거나 기록하지 않았다.
 
-배포 적용 결과와 정확한 배포 ID/커밋은 적용 후 기록한다.
+## 실제 배포와 최종 확인
+
+수정 커밋은 `9af8193d87fb7222ee64be550831ff85adf026ce`이며, `dion/integration-20261111`을 기존6d8e805에서 일반 fast-forward로 반영했다. Render와 Vercel 모두 이 정확한 Git 커밋을 지정해 배포했다. 환경변수·요금제·DB·사용자 원응답은 변경하지 않았다.
+
+- Render `dep-dbqi3at6e07s73f96vrg`: `live`, 2026-11-12 02:18:17 UTC 완료.
+- Vercel `dpl_GgDAANHUiu4BhdNrybvykgRJceJ2`: `READY`. 실제 별칭 `https://dion-review.vercel.app` 조회에서도 같은 배포 ID/커밋을 확인했다.
+- 실제 주소에서 가상 비저장 preview 검사 통과: HTTP200, 생활비160만원·납입 후 잔여90만원. 실제 브라우저 결과 제목은 화면 상단에서96픽셀에 표시되고 포커스가 이동했다(수정 전 약-1105픽셀).
+- `PLAYWRIGHT_BASE_URL=https://dion-review.vercel.app`, `PLAYWRIGHT_BROWSER_CHANNEL=msedge`, `npm.cmd run test:e2e -- e2e/dion-result-navigation.spec.ts e2e/dion-fe-review.spec.ts --workers=1`: **12통과,1.2분**. 빠른·정밀·가상사례, 마지막 질문 제출, 모바일/가상사례 전환, 원입력 복원, 미확인 값 보존을 실제 엔진으로 검사했다. 새 빠른/정밀 입력의 상환 후 월 차액140만원과 기존 납입 미확인 상태, 가상 소득320만원 수정 후 잔여110만원을 확인했다.
+- 오류4종(404·503·잘못된 응답·120초 초과)은 브라우저에서 해당 요청만 모의 처리했다. 오류 표시·작성값 보존 후 모의를 해제하고 실제 배포 엔진 재시도 성공을 확인했다. 서버 장애를 실제로 발생시키거나 고객 데이터를 저장하지 않았다.
+
+배포 전 로컬491개와 브라우저 고유41개 검사, 배포 후 실제 주소12개 검사를 구분한다. 기존 저장 정의 충돌과 PostgreSQL/모의 인증 저장 검사의 미실행 범위는 위 검증 절의 제한으로 남는다. 임시 검증 서버3105/8105는 기록된 소유 PID·시작 시간을 확인해 종료하며 기존 사용자 서버는 유지한다.
