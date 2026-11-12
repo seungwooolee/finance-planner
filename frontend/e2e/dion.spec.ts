@@ -224,7 +224,7 @@ test('DION direct deep entry and mobile input/result remain within viewport',asy
 test('DION quick result investment button opens its deep question',async({page})=>{
   await sample(page);await calculate(page);
   await page.getByRole('navigation',{name:'빠른 결과 5뷰'}).getByRole('button',{name:/투자구성/}).click();
-  await page.getByRole('button',{name:/^안정성과 수익 선호 (확인|수정) →$/}).click();
+  await page.locator('.d-risk-summary').getByRole('button',{name:/^안정성과 수익 선호 (확인|수정) →$/}).click();
   await expect(page.getByRole('heading',{name:'투자 전에 필요한 정보를 함께 살펴봐요'})).toBeVisible();
   await expect(questionNav(page).getByRole('button',{name:/투자 검토/})).toHaveAttribute('aria-current','step');
   await page.getByRole('button',{name:'빠른진단',exact:true}).click();

@@ -31,7 +31,7 @@ test('basic: real calculation, six risk answers, edit/reuse, product boundary an
   expect(first.result.results['OUT-03'].after_existing_contributions_krw).toBe('1099000');
   await page.getByRole('button',{name:/투자구성/}).click();
   await expect(page.getByText('6개 항목의 답변이 있어요.',{exact:false})).toBeVisible();
-  await expect(page.getByText('종합 위험도·상품 적합성 미구현',{exact:true})).toBeVisible();
+  await expect(page.getByText('투자 검토 답변 · 상품 필터 연결',{exact:true})).toBeVisible();
   await page.getByRole('button',{name:'돈을 사용할 시점 수정 →',exact:true}).click();
   await expect(page.locator('.d-risk-question')).toHaveCount(6);
   await page.locator('.d-risk-question').filter({hasText:'감수할 손실'}).locator('summary').click();
@@ -43,8 +43,17 @@ test('basic: real calculation, six risk answers, edit/reuse, product boundary an
   expect(amounts(updated.result)).toEqual(amounts(first.result));
   expect(updated.result.results['OUT-05'].candidates[0].rows[0].policy_input_sha256).not.toBe(first.result.results['OUT-05'].candidates[0].rows[0].policy_input_sha256);
   await page.getByRole('button',{name:/상품·비중/}).click();
-  await expect(page.getByText('상품 추천·적합성·배분 미구현',{exact:true})).toBeVisible();
-  await expect(page.getByRole('cell',{name:'미산출',exact:true})).toHaveCount(3);
+  await expect(page.getByText('상품 검토·월별 배분 · 검토용 초안',{exact:true})).toBeVisible();
+  await expect(page.getByText('현재 배분할 수 있는 상품이 없어 투자 후보 금액을 미배분으로 남겼어요.',{exact:true})).toBeVisible();
+  expect(updated.posted.requested_outputs).toContain('OUT-06');
+  const review=updated.result.results['OUT-06'];
+  expect(review.catalog.identity_verified_count).toBe(78);
+  expect(review.catalog.eligible_for_review_count).toBe(0);
+  for(const c of review.candidates) for(const row of c.rows) {
+    expect(row.allocations).toEqual([]);
+    expect(row.allocated_total_krw).toBe('0');
+    expect(row.unallocated_krw).toBe(row.scenario_budget_krw);
+  }
   await page.getByText('결과 14개 · 연결 상태와 필요한 정보',{exact:true}).click();
   await expect(page.locator('.d-output-status tbody tr')).toHaveCount(14);
   await page.screenshot({path:info.outputPath('basic-products.png'),fullPage:true});
@@ -101,7 +110,7 @@ test('unknown: no zero substitution, independent results, unknown risk and error
   await expect(page.locator('.d-metric').filter({hasText:'전체 자산'})).toContainText('1,200');
   await page.getByRole('button',{name:/투자구성/}).click();
   await expect(page.getByText('추가 확인 1개',{exact:false})).toBeVisible();
-  await page.getByRole('button',{name:'생활에 미치는 영향 확인 →',exact:true}).click();
+  await page.locator('.d-risk-summary').getByRole('button',{name:'생활에 미치는 영향 확인 →',exact:true}).click();
   await expect(page.locator('.d-risk-question').filter({hasText:'생활에 미치는 영향'})).toContainText('모르거나 비어 있는 답변');
   const risk=page.locator('.d-risk-question').filter({hasText:'생활에 미치는 영향'});
   await risk.getByRole('button',{name:'영향 없음',exact:true}).click();
