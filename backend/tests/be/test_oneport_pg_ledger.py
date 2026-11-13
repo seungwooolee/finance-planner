@@ -145,3 +145,62 @@ def test_central_backend_needs_no_disk_attestation_and_sqlite_rules_stay(pg, sql
     assert replace(config, ledger_id="").readiness(synthetic=True) == "ONEPORT_LEDGER_ID_REQUIRED"
     assert replace(sqlite_config, ledger_persistent=False).readiness(synthetic=True) == "ONEPORT_LEDGER_NOT_CONFIRMED"
     assert replace(sqlite_config, ledger_scope="MULTI_HOST").readiness(synthetic=True) == "ONEPORT_SHARED_LEDGER_REQUIRED"
+
+
+def daily(config):
+    return replace(config, daily_grant=True, budget_scope="daily", expires_at="")
+
+
+def test_daily_grant_identity_is_kst_day_and_off_by_default(pg):
+    _, config = pg
+    from datetime import timezone
+    late = datetime(2026, 11, 13, 15, 30, tzinfo=timezone.utc)  # already 2026-11-14 in KST
+    resolved = daily(config).resolved(late)
+    assert (resolved.budget_scope, resolved.expires_at, resolved.daily_grant) == (
+        "daily-20261114", "2026-11-14T23:59:59+09:00", False)
+    assert config.resolved(late) is config
+
+
+def test_daily_grant_requires_the_central_ledger(pg):
+    _, config = pg
+    from app.explanation.oneport_config import ConfigurationError
+    with pytest.raises(ConfigurationError):
+        replace(daily(config), ledger_backend="sqlite").validate()
+
+
+def test_ensure_grant_is_idempotent_concurrent_and_never_widens(pg):
+    store, config = pg
+    today = daily(config).resolved()
+    barrier = Barrier(8)
+
+    def create(_):
+        barrier.wait()
+        PgOnePortLedger(PostgresStore(store.parameters), config.ledger_id).ensure_grant(today)
+    with ThreadPoolExecutor(8) as pool:
+        list(pool.map(create, range(8)))
+    ledger = PgOnePortLedger(store, config.ledger_id)
+    wider = replace(today, budget_credits=today.budget_credits + 1)
+    ledger.ensure_grant(wider)  # existing row wins
+    with store._transaction() as db:
+        grants = db.execute("SELECT budget_credits FROM oneport_budget_grants WHERE budget_scope=?",
+                            (today.budget_scope,)).fetchall()
+    assert [Decimal(g[0]) for g in grants] == [today.budget_credits]
+    with pytest.raises(LedgerError, match="ONEPORT_LEDGER_GRANT_MISMATCH"):
+        ledger.reserve("op", "alias", "fp", wider)
+
+
+def test_each_kst_day_gets_its_own_capped_budget(pg):
+    from datetime import timezone
+    store, config = pg
+    ledger = PgOnePortLedger(store, config.ledger_id)
+    days = [daily(config).resolved(datetime(2026, 11, d, 3, tzinfo=timezone.utc)) for d in (13, 14)]
+    for day in days:
+        ledger.ensure_grant(day)
+        with pytest.raises(LedgerError, match="ONEPORT_BUDGET_LIMIT"):
+            for i in range(day.max_calls + 1):
+                ledger.reserve(f"{day.budget_scope}-{i}", f"a-{day.budget_scope}-{i}", "fp", day)
+    spent = {}
+    for scope, charge in [(r["budget_scope"], Decimal(r["charge"])) for r in rows(store)]:
+        spent[scope] = spent.get(scope, 0) + charge
+    assert set(spent) == {d.budget_scope for d in days}
+    assert all(total <= config.budget_credits for total in spent.values())

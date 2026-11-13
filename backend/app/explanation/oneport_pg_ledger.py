@@ -18,6 +18,7 @@ class PgOnePortLedger:
     def provision(cls, store, config):
         """Explicit offline NEW-ledger setup after migration 004; never a runtime path."""
         config.validate()
+        config = config.resolved()
         if not config.budget_scope or config.budget_credits <= 0 or not config.expires_at:
             raise LedgerError("ONEPORT_BUDGET_NOT_CONFIGURED")
         identity = uuid4().hex
@@ -61,6 +62,15 @@ class PgOnePortLedger:
                 except PocError:
                     raise LedgerError("ONEPORT_LEDGER_UNAVAILABLE") from None
         return Scope()
+
+    def ensure_grant(self, config):
+        """Create today's grant from fixed config once; an existing row always wins (never widened)."""
+        config.validate()
+        if not config.budget_scope or config.budget_credits <= 0 or not config.expires_at:
+            raise LedgerError("ONEPORT_BUDGET_NOT_CONFIGURED")
+        with self._transaction(write=True) as db:
+            db.execute("INSERT INTO oneport_budget_grants VALUES(?,?,?,?) ON CONFLICT (budget_scope) DO NOTHING",
+                       (config.budget_scope, str(config.budget_credits), config.max_calls, config.expires_at))
 
     def reserve(self, operation, alias, fingerprint, config):
         with self._transaction(write=True) as db:

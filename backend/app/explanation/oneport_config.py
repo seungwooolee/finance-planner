@@ -1,6 +1,6 @@
 """Server-only, opt-in OnePort configuration. No model or spend is inferred."""
 import os
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
@@ -34,6 +34,9 @@ class OnePortConfig:
     reserve_credits: Decimal = Decimal("0")
     max_calls: int = 1
     expires_at: str = ""
+    # Central ledger only: every KST day gets its own grant (scope-YYYYMMDD) created lazily from the
+    # same env limits, expiring 23:59:59 KST. The limits are fixed config, never request-controlled.
+    daily_grant: bool = False
 
     @classmethod
     def from_env(cls):
@@ -64,6 +67,7 @@ class OnePortConfig:
                 budget_scope=env("BUDGET_SCOPE"), budget_credits=Decimal(env("BUDGET_CREDITS", "0")),
                 reserve_credits=Decimal(env("RESERVE_CREDITS", "0")),
                 max_calls=int(env("MAX_CALLS", "1")), expires_at=env("EXPIRES_AT"),
+                daily_grant=boolean("DAILY_GRANT"),
             )
             config.validate()
             return config
@@ -85,11 +89,24 @@ class OnePortConfig:
                 or self.model.lower() == "jev" or len(self.budget_scope) > 128
                 or self.ledger_scope not in {"UNCONFIRMED", "SINGLE_HOST_DURABLE", "MULTI_HOST"}
                 or self.ledger_backend not in {"sqlite", "postgres"}
+                or (self.daily_grant and (self.ledger_backend != "postgres" or len(self.budget_scope) > 100))
                 or (self.ledger_id and (len(self.ledger_id) != 32 or any(c not in "0123456789abcdef" for c in self.ledger_id)))):
             raise ConfigurationError("ONEPORT_CONFIG_INVALID")
 
+    def resolved(self, now=None):
+        """Today's concrete grant identity (KST); a no-op unless daily_grant is on."""
+        if not self.daily_grant:
+            return self
+        day = (now or datetime.now(timezone.utc)).astimezone(timezone(timedelta(hours=9))).date()
+        return replace(self, daily_grant=False, budget_scope=f"{self.budget_scope}-{day:%Y%m%d}",
+                       expires_at=f"{day.isoformat()}T23:59:59+09:00")
+
     def readiness(self, *, synthetic=False, data_allowed=None):
         self.validate()
+        if self.daily_grant:
+            if not self.budget_scope:
+                return "ONEPORT_BUDGET_NOT_CONFIGURED"
+            return self.resolved().readiness(synthetic=synthetic, data_allowed=data_allowed)
         if not self.enabled:
             return "ONEPORT_DISABLED"
         if not self.api_key or not self.model:

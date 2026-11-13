@@ -130,7 +130,7 @@ class OnePortChat:
 
     async def complete(self, body, *, identity, operation, request_key, fingerprint, validate,
                        readiness, retain_draft=True):
-        config = self.config
+        config = self.config.resolved()
         try:
             blocked = readiness()
         except ConfigurationError:
@@ -143,6 +143,8 @@ class OnePortChat:
         alias = _digest([identity, request_key])
         try:
             ledger = open_ledger(config)
+            if self.config.daily_grant:
+                ledger.ensure_grant(config)
             operation, previous = ledger.reserve(operation, alias, fingerprint, config)
         except LedgerError as exc:
             raise ProviderFailure(str(exc)) from None
