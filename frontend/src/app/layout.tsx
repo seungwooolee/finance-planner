@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { BetaNotice } from "@/components/beta-notice";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -13,7 +14,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ko">
-      <body>{children}</body>
+      <body><BetaNotice />{children}</body>
     </html>
   );
 }

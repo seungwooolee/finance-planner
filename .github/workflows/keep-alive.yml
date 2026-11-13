@@ -1,0 +1,26 @@
+name: Beta backend keep-alive
+on:
+  schedule:
+    # UTC 20:00-23:50 + 00:00-03:50 = KST 05:00-12:50 (13:00 exclusive).
+    - cron: '*/10 20-23,0-3 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: beta-backend-keep-alive
+  cancel-in-progress: false
+jobs:
+  ready:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Wake backend readiness
+        env:
+          BACKEND_URL: ${{ secrets.BACKEND_URL }}
+        shell: bash
+        run: |
+          if [[ -z "$BACKEND_URL" ]]; then
+            echo 'BACKEND_URL secret is required.'
+            exit 1
+          fi
+          curl --fail --silent --show-error --retry 3 --retry-delay 10 --retry-max-time 100 --connect-timeout 10 --max-time 70 "${BACKEND_URL%/}/readyz"
