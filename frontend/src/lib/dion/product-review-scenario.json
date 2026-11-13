@@ -16,7 +16,7 @@
       "case_id": "FE-FICTIONAL-product-review",
       "snapshot_id": "FE-FICTIONAL-product-review-raw",
       "profile_version": "1",
-      "evaluation_on": "2026-11-12",
+      "evaluation_on": "2026-11-13",
       "scope": "personal",
       "included_owner_ids": [
         "person_self"
@@ -53,7 +53,7 @@
             },
             "context": {
               "scope_ref": "scope_personal",
-              "as_of": "2026-11-12",
+              "as_of": "2026-11-13",
               "period_start": "2026-10-01",
               "period_end": "2026-10-31",
               "source_ref": "fictional:early:NEW-01",
@@ -117,7 +117,7 @@
             },
             "context": {
               "scope_ref": "scope_personal",
-              "as_of": "2026-11-12",
+              "as_of": "2026-11-13",
               "period_start": "2026-10-01",
               "period_end": "2026-10-31",
               "source_ref": "fictional:early:F03",
@@ -184,7 +184,7 @@
             },
             "context": {
               "scope_ref": "scope_personal",
-              "as_of": "2026-11-12",
+              "as_of": "2026-11-13",
               "period_start": "2026-10-01",
               "period_end": "2026-10-31",
               "source_ref": "fictional:early:F04",
@@ -261,7 +261,7 @@
             },
             "context": {
               "scope_ref": "scope_personal",
-              "as_of": "2026-11-12",
+              "as_of": "2026-11-13",
               "period_start": "2026-10-01",
               "period_end": "2026-10-31",
               "source_ref": "fictional:early:F06",
@@ -297,8 +297,8 @@
                     "amount_status": "KNOWN",
                     "account_ref": "early-bank-1",
                     "withdrawal_constraint": "NONE_CONFIRMED",
-                    "available_date": "2026-11-12",
-                    "valuation_on": "2026-11-12"
+                    "available_date": "2026-11-13",
+                    "valuation_on": "2026-11-13"
                   }
                 ],
                 "unit": "JSON"
@@ -339,7 +339,7 @@
             },
             "context": {
               "scope_ref": "scope_personal",
-              "as_of": "2026-11-12",
+              "as_of": "2026-11-13",
               "period_start": "2026-10-01",
               "period_end": "2026-10-31",
               "source_ref": "fictional:early:NEW-04",
@@ -376,7 +376,7 @@
             },
             "context": {
               "scope_ref": "scope_personal",
-              "as_of": "2026-11-12",
+              "as_of": "2026-11-13",
               "period_start": "2026-10-01",
               "period_end": "2026-10-31",
               "source_ref": "fictional:early:F09+F10+D08",
@@ -439,7 +439,7 @@
                         }
                       }
                     ],
-                    "balance_as_of": "2026-11-12",
+                    "balance_as_of": "2026-11-13",
                     "pay_on": "2026-10-31",
                     "payment_total": {
                       "state": "KNOWN",
@@ -480,7 +480,7 @@
             },
             "context": {
               "scope_ref": "scope_personal",
-              "as_of": "2026-11-12",
+              "as_of": "2026-11-13",
               "period_start": "2026-10-01",
               "period_end": "2026-10-31",
               "source_ref": "fictional:early:NEW-03",
@@ -547,7 +547,7 @@
             },
             "context": {
               "scope_ref": "scope_personal",
-              "as_of": "2026-11-12",
+              "as_of": "2026-11-13",
               "period_start": "2026-10-01",
               "period_end": "2026-10-31",
               "source_ref": "fictional:early:NEW-02",
@@ -589,7 +589,7 @@
             },
             "context": {
               "scope_ref": "scope_personal",
-              "as_of": "2026-11-12",
+              "as_of": "2026-11-13",
               "period_start": "2026-10-01",
               "period_end": "2026-10-31",
               "source_ref": "fictional:early:NEW-05",
@@ -626,7 +626,7 @@
             },
             "context": {
               "scope_ref": "scope_personal",
-              "as_of": "2026-11-12",
+              "as_of": "2026-11-13",
               "period_start": "2026-10-01",
               "period_end": "2026-10-31",
               "source_ref": "fictional:early:NEW-06",
@@ -704,7 +704,7 @@
             },
             "context": {
               "scope_ref": "scope_personal",
-              "as_of": "2026-11-12",
+              "as_of": "2026-11-13",
               "period_start": "2026-10-01",
               "period_end": "2026-10-31",
               "source_ref": "fictional:early:F11",
@@ -753,7 +753,7 @@
             },
             "context": {
               "scope_ref": "scope_personal",
-              "as_of": "2026-11-12",
+              "as_of": "2026-11-13",
               "period_start": "2026-10-01",
               "period_end": "2026-10-31",
               "source_ref": "fictional:early:F12",
@@ -796,7 +796,7 @@
             },
             "context": {
               "scope_ref": "scope_personal",
-              "as_of": "2026-11-12",
+              "as_of": "2026-11-13",
               "period_start": "2026-10-01",
               "period_end": "2026-10-31",
               "source_ref": "fictional:early:F13",
@@ -850,7 +850,7 @@
             },
             "context": {
               "scope_ref": "scope_personal",
-              "as_of": "2026-11-12",
+              "as_of": "2026-11-13",
               "period_start": "2026-10-01",
               "period_end": "2026-10-31",
               "source_ref": "fictional:early:LIFE-01",
@@ -892,7 +892,7 @@
             },
             "context": {
               "scope_ref": "scope_personal",
-              "as_of": "2026-11-12",
+              "as_of": "2026-11-13",
               "period_start": "2026-10-01",
               "period_end": "2026-10-31",
               "source_ref": "fictional:early:N01",
@@ -929,7 +929,7 @@
             },
             "context": {
               "scope_ref": "scope_personal",
-              "as_of": "2026-11-12",
+              "as_of": "2026-11-13",
               "period_start": "2026-10-01",
               "period_end": "2026-10-31",
               "source_ref": "fictional:early:N02",
@@ -966,7 +966,7 @@
             },
             "context": {
               "scope_ref": "scope_personal",
-              "as_of": "2026-11-12",
+              "as_of": "2026-11-13",
               "period_start": "2026-10-01",
               "period_end": "2026-10-31",
               "source_ref": "fictional:early:F15",
@@ -1023,7 +1023,7 @@
             },
             "context": {
               "scope_ref": "scope_personal",
-              "as_of": "2026-11-12",
+              "as_of": "2026-11-13",
               "period_start": "2026-10-01",
               "period_end": "2026-10-31",
               "source_ref": "fictional:early:NEW-08",
@@ -1065,7 +1065,7 @@
             },
             "context": {
               "scope_ref": "scope_personal",
-              "as_of": "2026-11-12",
+              "as_of": "2026-11-13",
               "period_start": "2026-10-01",
               "period_end": "2026-10-31",
               "source_ref": "fictional:early:F16",
@@ -1109,7 +1109,7 @@
             },
             "context": {
               "scope_ref": "scope_personal",
-              "as_of": "2026-11-12",
+              "as_of": "2026-11-13",
               "period_start": "2026-10-01",
               "period_end": "2026-10-31",
               "source_ref": "fictional:early:NEW-10",
@@ -1151,7 +1151,7 @@
             },
             "context": {
               "scope_ref": "scope_personal",
-              "as_of": "2026-11-12",
+              "as_of": "2026-11-13",
               "period_start": "2026-10-01",
               "period_end": "2026-10-31",
               "source_ref": "fictional:early:F18",
@@ -1193,7 +1193,7 @@
             },
             "context": {
               "scope_ref": "scope_personal",
-              "as_of": "2026-11-12",
+              "as_of": "2026-11-13",
               "period_start": "2026-10-01",
               "period_end": "2026-10-31",
               "source_ref": "fictional:early:F17",
@@ -1244,7 +1244,7 @@
             },
             "context": {
               "scope_ref": "scope_personal",
-              "as_of": "2026-11-12",
+              "as_of": "2026-11-13",
               "period_start": "2026-10-01",
               "period_end": "2026-10-31",
               "source_ref": "fictional:early:F17",
@@ -1287,7 +1287,7 @@
             },
             "context": {
               "scope_ref": "scope_personal",
-              "as_of": "2026-11-12",
+              "as_of": "2026-11-13",
               "period_start": "2026-10-01",
               "period_end": "2026-10-31",
               "source_ref": "fictional:early:F17",
@@ -1327,7 +1327,7 @@
             },
             "context": {
               "scope_ref": "scope_personal",
-              "as_of": "2026-11-12",
+              "as_of": "2026-11-13",
               "period_start": "2026-10-01",
               "period_end": "2026-10-31",
               "source_ref": "fictional:early:F17",

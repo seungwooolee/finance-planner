@@ -21,7 +21,7 @@ function stable(v: unknown): string {
 function signature(doc:Document) {
   const { case_id: caseId, snapshot_id: snapshotId, profile_version: profileVersion, ...context }=doc.context;
   void caseId; void snapshotId; void profileVersion;
-  return stable({context,scope_ref:doc.scope_ref,answers:doc.raw_bundle.answers.map(r=>r.envelope).sort((a,b)=>a.question_ref.design_id.localeCompare(b.question_ref.design_id)),confirmations:doc.confirmations});
+  return stable({context,scope_ref:doc.scope_ref,answers:doc.raw_bundle.answers.map(r=>r.envelope).sort((a,b)=>a.question_ref.design_id.localeCompare(b.question_ref.design_id)),confirmations:doc.confirmations,requested_outputs:doc.requested_outputs});
 }
 class ApiError extends Error { constructor(public status:number,public code:string){super(code);} }
 async function request(path:string, method="GET", body?:unknown, token?:string, signal?:AbortSignal) {
@@ -127,6 +127,8 @@ export function DionPlanner() {
   async function calculate(input?:Document) {
     if(busy&&!input)return;
     const captured=clone(input??docRef.current), seq=++sequence.current;
+    captured.requested_outputs=[...new Set([...captured.requested_outputs,"OUT-06"])];
+    if (!(input??docRef.current).requested_outputs.includes("OUT-06")) {docRef.current={...docRef.current,requested_outputs:captured.requested_outputs};setDoc(docRef.current);}
     abort.current?.abort();const controller=new AbortController();abort.current=controller;
     let timedOut=false;
     const timeout=setTimeout(()=>{timedOut=true;controller.abort();},120_000);
@@ -224,6 +226,7 @@ export function DionPlanner() {
   async function saveAndCalculate() {await serverAction(async()=>{const version=await persistAnswers();await persistCalculation(false,version);});}
   async function persistCalculation(engineV2=false, version=serverVersion){
     if(connectedCase.current!==caseId||serverVersion===null)throw new ApiError(409,"RESTORE_OR_CREATE_CASE_FIRST");
+    if(!engineV2&&!docRef.current.requested_outputs.includes("OUT-06")){docRef.current={...docRef.current,requested_outputs:[...docRef.current.requested_outputs,"OUT-06"]};setDoc(docRef.current);}
     const captured=clone(docRef.current);
     if(captured.raw_bundle.answers.some(r=>saved.current[r.envelope.question_ref.design_id]!==stable(r.envelope)))throw new ApiError(409,"SAVE_CURRENT_ANSWERS_FIRST");
     const {case_id:ignoredCase,snapshot_id:ignoredSnapshot,profile_version:ignoredVersion,...context}=captured.context;void ignoredCase;void ignoredSnapshot;void ignoredVersion;
@@ -236,7 +239,7 @@ export function DionPlanner() {
     const receipt=await request(`${base()}/${engineV2?"analyses/question-v12":"question-analyses"}`,"POST",body,token);
     pendingAnalysis.current=null;
     const r=await request(`${base()}/analyses/${receipt.run_id}`,"GET",undefined,token);
-    const next:ViewResult={result:r.result,sourceSignature:signature(captured),localVersion:captured.raw_bundle.input_version,storage:"SAVED",runId:r.run_id,serverVersion:r.input_version,isCurrent:r.is_current,source:r.engine_input,inputHash:r.input_hash,rawSnapshotId:r.raw_snapshot_id};
+    const next:ViewResult={result:r.result,sourceSignature:signature(captured),localVersion:captured.raw_bundle.input_version,storage:"SAVED",runId:r.run_id,serverVersion:r.input_version,isCurrent:r.is_current,adapterVersion:r.adapter_version,runStatus:r.status,currentInputVersion:r.current_input_version,source:r.engine_input,inputHash:r.input_hash,rawSnapshotId:r.raw_snapshot_id};
     setHistory(h=>[next,...h].slice(0,20));
     if(signature(docRef.current)===signature(captured)){setView(next);setShowResults(true);}
     setRuns(await request(`${base()}/analyses`,"GET",undefined,token));setMessage(`답변과 계산 결과를 저장했어요. 입력버전 ${version}.`);
@@ -244,7 +247,7 @@ export function DionPlanner() {
   async function savedCalculation(engineV2=false){await serverAction(()=>persistCalculation(engineV2));}
   async function openRun(runId:string){await serverAction(async()=>{
     const r=await request(`${base()}/analyses/${encodeURIComponent(runId)}`,"GET",undefined,token);
-    const next:ViewResult={result:r.result,sourceSignature:["DION-QUESTION12-ADAPTER-1.0","DION-QUESTION12-ADAPTER-1.1"].includes(r.engine_input?.schema_version)?signature(r.engine_input):"legacy-input",localVersion:0,storage:"SAVED",runId:r.run_id,serverVersion:r.input_version,isCurrent:r.is_current,source:r.engine_input,inputHash:r.input_hash,rawSnapshotId:r.raw_snapshot_id};
+    const next:ViewResult={result:r.result,sourceSignature:["DION-QUESTION12-ADAPTER-1.0","DION-QUESTION12-ADAPTER-1.1"].includes(r.engine_input?.schema_version)?signature(r.engine_input):"legacy-input",localVersion:0,storage:"SAVED",runId:r.run_id,serverVersion:r.input_version,isCurrent:r.is_current,adapterVersion:r.adapter_version,runStatus:r.status,currentInputVersion:r.current_input_version,source:r.engine_input,inputHash:r.input_hash,rawSnapshotId:r.raw_snapshot_id};
     setView(next);setShowResults(true);if(mode==="welcome")setMode("quick");setMessage("과거 결과를 읽기 전용으로 열었어요. 작성 중인 답변은 바꾸지 않았어요.");
   });}
   async function restoreRunInputs(){

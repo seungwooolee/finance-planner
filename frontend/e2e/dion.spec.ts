@@ -18,12 +18,12 @@ const questionNav=(page:Page)=>page.getByRole('navigation',{name:'질문 이동'
 test('DION actual input, engine oracles, raw spelling, five result views and edit',async({page},info)=>{
   await sample(page);
   await questionNav(page).getByRole('button',{name:/한 달 소득/}).click();
-  await expect(page.getByRole('textbox',{name:'한 달 소득',exact:true})).toHaveValue('00300.0000');
+  await expect(page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true})).toHaveValue('00300.0000');
   const first=await calculate(page);
   expect(first.body.result.results['OUT-03'].normalized_living.value).toBe('1600000');
   expect(first.body.result.results['OUT-03'].after_existing_contributions_krw).toBe('900000');
   expect(first.posted.raw_bundle.answers.find((r:{envelope:{question_ref:{design_id:string}}})=>r.envelope.question_ref.design_id==='F03').envelope.fields.monthly_net_income_krw.raw_value).toBe('00300.0000');
-  await expect(page.locator('.d-metric').filter({hasText:'납입까지 반영한 월 잔여'})).toContainText('90');
+  await expect(page.locator('.d-metric').filter({hasText:'저축·투자까지 반영하고 남는 돈'})).toContainText('90');
   await page.evaluate(()=>window.scrollTo(0,0));
   await page.evaluate(()=>window.scrollTo(0,0));
   await page.screenshot({path:info.outputPath('dion-feedback-desktop-overview.png'),fullPage:true});
@@ -36,7 +36,7 @@ test('DION actual input, engine oracles, raw spelling, five result views and edi
   await page.screenshot({path:info.outputPath('dion-feedback-desktop-candidates.png'),fullPage:true});
   for(const name of ['투자구성','상품 정보','결과·이번 달 행동']) await page.getByRole('navigation',{name:'빠른 결과 5뷰'}).getByRole('button',{name:new RegExp(name)}).click();
   await page.getByRole('button',{name:'입력 내용 수정 ↗'}).click();
-  await page.getByRole('textbox',{name:'한 달 소득',exact:true}).fill('320');
+  await page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true}).fill('320');
   await expect(page.getByText('작성값이 바뀌었어요')).toBeVisible();
   const updated=await calculate(page);
   expect(updated.body.result.results['OUT-03'].after_existing_contributions_krw).toBe('1100000');
@@ -69,14 +69,14 @@ test('DION fresh combined situation, today, conditional details and distinct zer
   await page.getByRole('button',{name:'없어요',exact:true}).click();
   await expect(questionNav(page).getByRole('button',{name:/대출·할부 내역/})).toHaveCount(0);
   await questionNav(page).getByRole('button',{name:/한 달 소득/}).click();
-  await page.getByRole('textbox',{name:'한 달 소득',exact:true}).fill('0');
+  await page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true}).fill('0');
   const result=await calculate(page);
   const income=(posted:any)=>posted.raw_bundle.answers.find((r:any)=>r.envelope.question_ref.design_id==='F03').envelope.fields.monthly_net_income_krw;
   expect(income(result.posted)).toEqual({state:'KNOWN',raw_value:'0',unit:'KRW_10000'});
   const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
   expect(result.posted.context.evaluation_on).toBe(today);
   await page.getByRole('button',{name:'입력 내용 수정 ↗'}).click();
-  await page.getByRole('button',{name:'한 달 소득 지우기',exact:true}).click();
+  await page.getByRole('button',{name:'한 달 평균 세후 소득은 얼마인가요? 지우기',exact:true}).click();
   const empty=await calculate(page);expect(income(empty.posted)).toEqual({state:'NOT_ENTERED',raw_value:null,unit:'KRW_10000'});
   await page.getByRole('button',{name:'입력 내용 수정 ↗'}).click();
   await page.getByRole('button',{name:'나중에 입력',exact:true}).click();
@@ -101,8 +101,8 @@ test('DION expense and goal edits change real engine results; unsupported proper
   await page.getByRole('button',{name:'있어요',exact:true}).click();
   await expect(page.getByRole('region',{name:'부동산 내역',exact:true})).toBeVisible();
   await calculate(page);
-  await expect(page.locator('.d-metric').filter({hasText:'전체 자산'})).toContainText('확인 필요');
-  await expect(page.locator('.d-metric').filter({hasText:'납입까지 반영한 월 잔여'})).toContainText('80');
+  await expect(page.locator('.d-metric').filter({hasText:'전체 자산'})).toContainText('확인 대기');
+  await expect(page.locator('.d-metric').filter({hasText:'저축·투자까지 반영하고 남는 돈'})).toContainText('80');
   await page.getByRole('button',{name:/생활 안정·투자 확대/}).click();
   await expect(page.locator('.d-candidate')).toHaveCount(0);
 });
@@ -126,7 +126,8 @@ test('DION combined goals, no internal IDs, explicit none and undo preserve orig
   const file=await download;const stream=await file.createReadStream();const chunks=[];for await(const chunk of stream!) chunks.push(chunk);
   const cleared=JSON.parse(Buffer.concat(chunks).toString()).document;
   for(const id of ['F11','F12','F13'])expect(cleared.raw_bundle.answers.find((r:any)=>r.envelope.question_ref.design_id===id).envelope.fields.goals).toEqual({state:'KNOWN',raw_value:[],unit:'JSON'});
-  await page.getByRole('button',{name:'되돌리기',exact:true}).click();
+  // Goals are archived, not deleted: reselecting the same goal restores its amount, date and ID.
+  await page.getByRole('button',{name:'자녀 교육',exact:true}).click();
   await expect(page.getByRole('textbox',{name:'목표로 생각한 금액',exact:true})).toHaveValue('30');
   const restored=await calculate(page);
   expect(restored.body.result.results['OUT-04'].rows[0].target_krw).toBe('300000');
@@ -142,25 +143,27 @@ test('DION new goal binds amount and date without borrowing example facts',async
   await expect(page.getByRole('textbox',{name:'목표로 생각한 금액',exact:true})).toHaveValue('');
   await expect(page.getByRole('progressbar')).toHaveAttribute('value','0');
   await page.getByRole('textbox',{name:'목표로 생각한 금액',exact:true}).fill('1000.1234');
-  await page.getByLabel('돈이 필요한 날짜',{exact:false}).fill('2027-12-31');
+  await page.getByLabel('언제쯤 필요해요?',{exact:false}).fill('2027-12');
   await page.getByLabel('어떻게 쓸 돈인가요?',{exact:false}).selectOption('ONE_OFF');
   await page.getByRole('checkbox',{name:/그 날짜에 필요할/}).check();
   const r=await calculate(page);
   const rows=(id:string)=>r.posted.raw_bundle.answers.find((v:any)=>v.envelope.question_ref.design_id===id).envelope.fields.goals.raw_value;
   expect(rows('F11')[0].goal_id).toBe(rows('F12')[0].goal_id);expect(rows('F13')[0].goal_id).toBe(rows('F11')[0].goal_id);
   expect(rows('F13')[0].target_amount_krw.raw_value).toBe('1000.1234');
-  expect(rows('F13')[0].payment_start).toBe('2027-12-31');expect(r.posted.confirmations).toEqual([]);
+  expect(rows('F13')[0].payment_start).toBe('2027-12-01');expect(r.posted.confirmations).toEqual([]);
 });
 
 test('DION one-month income and expense period mapping preserves raw money and historical date',async({page},info)=>{
   await sample(page);await questionNav(page).getByRole('button',{name:/한 달 소득/}).click();
   await expect(page.locator('.d-question input[type=date]')).toHaveCount(0);
+  await page.getByText('계산 기준기간 확인 · 필요할 때만',{exact:true}).click();
   await expect(page.getByLabel('소득 기준월',{exact:true})).toHaveValue('2026-10');
   await page.getByLabel('소득 기준월',{exact:true}).fill('2026-09');
   await page.getByRole('button',{name:'평소 받는 돈만 적었어요',exact:true}).click();
   await page.evaluate(()=>window.scrollTo(0,0));
   await page.screenshot({path:info.outputPath('dion-feedback-income.png'),fullPage:true});
   await questionNav(page).getByRole('button',{name:/한 달 지출/}).click();
+  await page.getByText('계산 기준기간 확인 · 필요할 때만',{exact:true}).click();
   await page.getByRole('checkbox',{name:/소득과 같은 2026년 09월/}).check();
   const r=await calculate(page);expect(r.posted.context.evaluation_on).toBe('2026-10-31');
   const fields=(id:string)=>r.posted.raw_bundle.answers.find((v:any)=>v.envelope.question_ref.design_id===id).envelope.fields;
@@ -176,11 +179,11 @@ test('DION one-month income and expense period mapping preserves raw money and h
 test('DION failed recalculation preserves input and old result; late responses cannot replace new results',async({page})=>{
   await sample(page);await calculate(page);
   await page.getByRole('button',{name:'입력 내용 수정 ↗'}).click();
-  await page.getByRole('textbox',{name:'한 달 소득',exact:true}).fill('310');
+  await page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true}).fill('310');
   await page.route('**/api/fe/v1/preview',r=>r.abort());
   await page.getByRole('button',{name:'재계산',exact:true}).click();
   await expect(page.locator('.d-warning[role=alert]')).toContainText('연결 오류');
-  await expect(page.getByRole('textbox',{name:'한 달 소득',exact:true})).toHaveValue('310');
+  await expect(page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true})).toHaveValue('310');
   await page.unroute('**/api/fe/v1/preview');
   let release:()=>void=()=>{};
   const held=new Promise<void>(resolve=>{release=resolve;});
@@ -192,11 +195,11 @@ test('DION failed recalculation preserves input and old result; late responses c
   });
   await page.getByRole('button',{name:'재계산',exact:true}).click();
   await expect(page.getByRole('button',{name:'계산 중…',exact:true})).toBeDisabled();
-  await page.getByRole('textbox',{name:'한 달 소득',exact:true}).fill('350');
+  await page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true}).fill('350');
   const current=await calculate(page);
   expect(current.body.result.results['OUT-03'].after_existing_contributions_krw).toBe('1400000');
   release();
-  await expect(page.locator('.d-metric').filter({hasText:'납입까지 반영한 월 잔여'})).toContainText('140');
+  await expect(page.locator('.d-metric').filter({hasText:'저축·투자까지 반영하고 남는 돈'})).toContainText('140');
 });
 
 test('DION direct deep entry and mobile input/result remain within viewport',async({page},info)=>{
@@ -224,7 +227,7 @@ test('DION direct deep entry and mobile input/result remain within viewport',asy
 test('DION quick result investment button opens its deep question',async({page})=>{
   await sample(page);await calculate(page);
   await page.getByRole('navigation',{name:'빠른 결과 5뷰'}).getByRole('button',{name:/투자구성/}).click();
-  await page.getByRole('button',{name:/^안정성과 수익 선호 (확인|수정) →$/}).click();
+  await page.locator('.d-risk-summary').getByRole('button',{name:/^안정성과 수익 선호 (확인|수정) →$/}).click();
   await expect(page.getByRole('heading',{name:'투자 전에 필요한 정보를 함께 살펴봐요'})).toBeVisible();
   await expect(questionNav(page).getByRole('button',{name:/투자 검토/})).toHaveAttribute('aria-current','step');
   await page.getByRole('button',{name:'빠른진단',exact:true}).click();

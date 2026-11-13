@@ -7,13 +7,15 @@ async function fresh(page:Page, deep:boolean) {
   await page.getByRole('button',{name:/^나 혼자/}).click();
   const nav=page.getByRole('navigation',{name:'질문 이동'});
   await nav.getByRole('button',{name:/한 달 소득/}).click();
-  await page.getByRole('textbox',{name:'한 달 소득',exact:true}).fill('300');
+  await page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true}).fill('300');
+  await page.getByText('계산 기준기간 확인 · 필요할 때만',{exact:true}).click();
   await page.getByLabel('소득 기준월').fill(todayInSeoul().slice(0,7));
   await page.getByRole('button',{name:'평소 받는 돈만 적었어요',exact:true}).click();
   await nav.getByRole('button',{name:/한 달 지출/}).click();
   await page.getByRole('button',{name:/생활비만 알아요/}).click();
-  await page.getByRole('textbox',{name:'한 달 생활비',exact:true}).fill('160');
+  await page.getByRole('textbox',{name:'한 달 평균 생활비는 얼마인가요?',exact:true}).fill('160');
   await page.getByRole('checkbox',{name:/대출 갚는 돈과 저축/}).check();
+  await page.getByText('계산 기준기간 확인 · 필요할 때만',{exact:true}).click();
   await page.getByRole('checkbox',{name:/소득과 같은/}).check();
   await nav.getByRole('button',{name:/갚아야 할 돈/}).click();
   await page.getByRole('button',{name:'없어요',exact:true}).click();
@@ -43,8 +45,8 @@ for(const deep of [false,true]) {
     await page.getByRole('navigation',{name:'질문 이동'}).getByRole('button').last().click();
     await page.getByRole('button',{name:'결과 보기',exact:true}).click();
     await expect(page.getByRole('region',{name:'계산 결과'}).getByRole('heading',{level:1})).toBeInViewport();
-    await expect(page.locator('.d-metric').filter({hasText:'상환 후 월 차액'})).toContainText('140');
-    await expect(page.locator('.d-metric').filter({hasText:'납입까지 반영한 월 잔여'})).toContainText('확인 필요');
+    await expect(page.locator('.d-metric').filter({hasText:'대출 상환 후 남는 돈'})).toContainText('140');
+    await expect(page.locator('.d-metric').filter({hasText:'저축·투자까지 반영하고 남는 돈'})).toContainText('확인 대기');
   });
 }
 
@@ -55,7 +57,7 @@ for(const failure of ['missing-api','unavailable','invalid-response','timeout'] 
     await page.getByRole('button',{name:'계산 미리보기',exact:true}).click();
     await expect(page.getByRole('region',{name:'계산 결과'})).toBeVisible();
     await page.getByRole('button',{name:'입력 내용 수정 ↗'}).click();
-    await page.getByRole('textbox',{name:'한 달 소득',exact:true}).fill('320');
+    await page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true}).fill('320');
     if(failure==='timeout')await page.clock.install();
     let received!:()=>void;
     const requested=new Promise<void>(resolve=>{received=resolve;});
@@ -74,11 +76,11 @@ for(const failure of ['missing-api','unavailable','invalid-response','timeout'] 
     const alert=page.getByRole('alert').filter({hasText:'작성값'});
     await expect(alert).toBeInViewport();
     await expect(alert).toContainText(failure==='missing-api'?'계산 API를 찾지':failure==='unavailable'?'계산 서버에 연결':failure==='timeout'?'2분 안에':'올바른 결과');
-    await expect(page.getByRole('textbox',{name:'한 달 소득',exact:true})).toHaveValue('320');
+    await expect(page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true})).toHaveValue('320');
     await expect(page.getByRole('region',{name:'계산 결과'})).toHaveCount(0);
     await page.unrouteAll({behavior:'ignoreErrors'});
     await page.getByRole('button',{name:'재계산',exact:true}).click();
     await expect(page.getByRole('region',{name:'계산 결과'}).getByRole('heading',{level:1})).toBeInViewport();
-    await expect(page.locator('.d-metric').filter({hasText:'납입까지 반영한 월 잔여'})).toContainText('110');
+    await expect(page.locator('.d-metric').filter({hasText:'저축·투자까지 반영하고 남는 돈'})).toContainText('110');
   });
 }

@@ -654,7 +654,7 @@ def normalize_question_v12(document):
     confirmations = index(document.get("confirmations", []), "question_id")
     for q, c in confirmations.items():
         if q == "F15" and c["definition_version"] == PRODUCT_CONFIRMATION_VERSION and c["source_ref"]:
-            continue
+            continue  # Versioned fund-to-monthly-budget link, consumed only by the product layer.
         if q not in SUPPORTED or c["definition_version"] != CONFIRMATION_VERSION or not c["source_ref"]:
             raise ContractError("confirmation identity/version/source")
     answers, issues, provenance, seen = [], [], [], set()
@@ -708,7 +708,7 @@ def normalize_question_v12(document):
                 )
             if q not in SUPPORTED:
                 if q in PRODUCT_QUESTION_IDS and "OUT-06" in document["requested_outputs"]:
-                    continue
+                    continue  # Separate source-bound product consumer; original answers stay intact.
                 raise Unsupported("question preserved without calculation binding:" + q)
             extra = confirmations.get(q, {}).get("values", {})
             if ref["definition_version"] == "1.2":
