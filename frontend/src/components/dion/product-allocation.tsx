@@ -3,8 +3,10 @@
 import { Json, list, object, textValue } from "@/lib/dion/model";
 import { formatKrw } from "@/lib/dion/money-format";
 import { riskTitles } from "@/lib/dion/investment-review";
+import { productEmptyCause } from "@/lib/dion/product-empty";
 
-export function ProductAllocation({ review, onEdit, selectedPlan }: { review: Record<string, Json>; selectedPlan?: string; onEdit: (id: string) => void }) {
+export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="" }: { review: Record<string, Json>; selectedPlan?: string; evaluationOn?: string; onEdit: (id: string) => void }) {
+  const empty=productEmptyCause(review,evaluationOn);
   const catalog=object(review.catalog),policy=object(review.product_policy),messages=object(review.reason_messages);
   const products=list(review.products),candidates=list(review.candidates).filter(c=>!selectedPlan||c.strategy_id===selectedPlan),detail=object(catalog.detail_review);
   const reason=(code:unknown)=>textValue(messages[String(code)])||"상품의 검토 조건을 확인해주세요.";
@@ -19,6 +21,7 @@ export function ProductAllocation({ review, onEdit, selectedPlan }: { review: Re
       {review.review_version?<><p>공식 명칭·코드 확인 {String(catalog.identity_verified_count??0)}개 · 조사에서 제외 {String(catalog.research_excluded_count??0)}개 · 현재 조건 통과 {String(catalog.eligible_for_review_count??0)}개</p>
         {typeof detail.reviewed_count==="number"&&<p>상세 자료 검토 {detail.reviewed_count}개 · 자료 검토 후보 {String(detail.enabled_for_preview_count??0)}개</p>}
         <p role="status">{catalog.eligible_for_review_count===0?"현재 배분할 수 있는 상품이 없어 투자 후보 금액을 미배분으로 남겼어요.":"조건을 통과한 상품이 있어요. 비중 제한을 적용한 배분액은 아래에서 확인해주세요."}</p>
+        {empty&&<div className="d-warning" data-product-empty={[empty.investment&&"INVESTMENT",empty.date&&"DATE"].filter(Boolean).join(" ")}><strong>대표상품 0개</strong>{empty.investment&&<><p>투자 성향 질문에 답하면 대표상품을 볼 수 있어요.</p><button className="d-secondary" onClick={()=>onEdit("F15")}>정밀진단에서 투자 성향 답하기 →</button></>}{empty.date&&<p>이 결과의 기준일({empty.date.evaluationOn||"확인 필요"})이 상품 정책 시작일({empty.date.policyFrom||"확인 필요"})보다 앞서 대표상품을 표시하지 않아요. 기준일을 {empty.date.policyFrom||"정책 시작일"} 이후로 다시 계산하면 확인할 수 있어요.</p>}</div>}
         {Array.isArray(review.reason_codes)&&review.reason_codes.map(code=><p className="d-note" key={String(code)}>{reason(code)}</p>)}
         {missing.length>0&&<div className="d-warning"><p>투자 검토 답변의 보완이 필요해요.</p>{missing.filter(id=>titles[String(id)]).map(id=><button className="d-text-button" key={String(id)} onClick={()=>onEdit(String(id))}>{titles[String(id)]} 확인 →</button>)}</div>}
       </>:<p>이전 계산에는 상품 검토 결과가 없어요. 현재 입력으로 다시 계산하면 확인할 수 있어요.</p>}
