@@ -3,6 +3,7 @@
 
 import copy
 import json
+from decimal import ROUND_DOWN, Decimal
 from pathlib import Path
 
 import pytest
@@ -523,3 +524,46 @@ def test_portfolio_type_views_never_relax_customer_limits():
     block_product_budget(result)
     assert all(v['allocated_total_krw'] == '0' and v['allocations'] == []
                for v in result['results']['OUT-06']['candidates'][0]['rows'][0]['portfolio_type_views'].values())
+
+
+# Independently derived from 5% bond / 60% equity shocks and the same LOSS_20_30 answer.
+# Original loss fractions: 0, .015, .195, .28, .365; allowed fraction: .20.
+@pytest.mark.parametrize("preference,weights,stress_fraction", [
+    ("PREF_STABILITY", {}, "0"),
+    ("PREF_LEAN_STABILITY", {"153130": 3000}, ".015"),
+    ("PREF_BALANCED", {"153130": 3000, "069500": 1000, "360200": 2000}, ".195"),
+    ("PREF_LEAN_RETURN", {"153130": 2000, "069500": 1500, "360200": 3000}, ".28"),
+    ("PREF_RETURN", {"153130": 1000, "069500": 2000, "360200": 4000}, ".365"),
+])
+def test_step4_five_preferences_from_product_example(preference, weights, stress_fraction):
+    path = Path(__file__).resolve().parents[3] / "frontend/src/lib/dion/product-review-scenario.json"
+    doc = json.loads(path.read_text(encoding="utf-8"))["document"]
+    change(doc, "F17", "risk_preference_choice_raw", field(preference))
+    original = copy.deepcopy(doc)
+    result = run_frontend_questions(doc)
+    review = result["results"]["OUT-06"]
+    _, policy = actual_config()
+    assert {s["code"]: s["target_bps"] for s in policy["target_slots_by_preference"][preference]} == weights
+    stress = Decimal(stress_fraction)
+    scale = min(Decimal(1), Decimal(".20") / stress) if stress else Decimal(1)
+    # Approved policy floors the adjusted basis points, then floors each product to one won.
+    bps = {code: (Decimal(weight) * scale).to_integral_value(rounding=ROUND_DOWN)
+           for code, weight in weights.items()}
+    for candidate in review["candidates"]:
+        engine = next(c for c in result["results"]["OUT-05"]["candidates"]
+                      if c["strategy_id"] == candidate["strategy_id"])
+        for row, budget_row in zip(candidate["rows"], engine["rows"], strict=True):
+            budget = Decimal(budget_row["new_investment_krw"])
+            expected = {code: str((budget * weight / Decimal(10000)).to_integral_value(rounding=ROUND_DOWN))
+                        for code, weight in bps.items()}
+            assert {a["code"]: a["review_allocated_krw"] for a in row["allocations"]} == expected
+            allocated = sum(map(Decimal, expected.values()), Decimal(0))
+            assert row["scenario_budget_krw"] == str(budget)
+            assert row["allocated_total_krw"] == str(allocated)
+            assert row["unallocated_krw"] == str(budget - allocated)
+            assert row["weight_renormalized"] is False
+            if preference == "PREF_STABILITY":
+                assert "STABILITY_POLICY_UNALLOCATED" in row["reason_codes"]
+    assert review["transaction_executed"] is False
+    assert review["recommended_new_investment_krw"] is None
+    assert doc == original

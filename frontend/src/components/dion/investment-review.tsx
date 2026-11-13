@@ -1,12 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { Document, Field, Json, field, fieldValue, list, object, question, record, revise, textValue } from "@/lib/dion/model";
 import { answerLabel, riskFields, riskIds, riskNeeds, riskTitles, unknownOptions } from "@/lib/dion/investment-review";
 import { Choice } from "./customer-questions";
 
 export function InvestmentQuestions({ doc, onChange }: { doc: Document; onChange: (d: Document) => void }) {
-  const [requested,setRequested] = useState(() => !!record(doc,"F15") || !!record(doc,"NEW-08"));
   function choose(id: string, key: string, code: string, multiple = false) {
     onChange(revise(doc, id, env => {
       if (multiple) {
@@ -29,8 +27,7 @@ export function InvestmentQuestions({ doc, onChange }: { doc: Document; onChange
     if (id === "F17") options.sort((a,b) => ["PREF_STABILITY","PREF_LEAN_STABILITY","PREF_BALANCED","PREF_LEAN_RETURN","PREF_RETURN","PREF_UNKNOWN"].indexOf(a.code) - ["PREF_STABILITY","PREF_LEAN_STABILITY","PREF_BALANCED","PREF_LEAN_RETURN","PREF_RETURN","PREF_UNKNOWN"].indexOf(b.code));
     return <div className="d-choices">{options.map(o => <Choice key={o.code} selected={multiple ? Array.isArray(value) && value.includes(o.code) : value === o.code || env?.fields[key]?.state === "UNKNOWN" && ((object(fieldValue(doc,id,"selection_codes"))[key]??env.question_ref.option_labels[`selected:${key}`]) === o.code || unknownOptions.has(o.code))} onClick={() => choose(id,key,o.code,multiple)}>{o.label}</Choice>)}</div>;
   }
-  if (!requested) return <article className="d-card"><h2>투자상품 검토도 준비할까요?</h2><p>현재 재무현황은 이 질문 없이 계산할 수 있어요. 투자 검토에 필요한 자금 사용 시점·손실 영향·경험·선호를 확인해요.</p>{record(doc,"F17")&&<p>이미 적은 선호: {answerLabel(doc,"F17","risk_preference_choice_raw")}</p>}<button className="d-primary" onClick={()=>setRequested(true)}>투자 검토 질문 확인하기</button><p className="d-help">답변은 상품 검토의 조건 필터에 반영돼요. 확인되지 않은 상품은 배분을 보류해요.</p></article>;
-  return <section aria-label="투자 검토 질문"><p className="d-note">투자상품을 검토하기 위한 추가 질문이에요. 확인한 답변은 그대로 사용해요. 답변으로 확인할 수 있는 조건과 상품·정책의 검증 상태를 함께 확인해요.</p>{riskIds.map(id => <details className="d-card d-risk-question" key={id} open={riskNeeds(doc,id).length ? true : undefined}>
+  return <section aria-label="투자 검토 질문"><p className="d-note">투자상품을 검토하기 위한 추가 질문이에요. 확인한 답변은 그대로 사용해요. 답변으로 확인할 수 있는 조건과 상품·정책의 검증 상태를 함께 확인해요.</p>{riskIds.map(id => <details className="d-card d-risk-question" data-question={id} key={id} open={riskNeeds(doc,id).length ? true : undefined}>
     <summary>{riskTitles[id]} · {riskNeeds(doc,id).length ? "확인 필요" : "답변 있음 · 펼쳐서 수정"}</summary>
     <h2>{question(id).source["고객에게 보여줄 질문"]}</h2>
     {id === "F15" ? <FundDates doc={doc} onChange={onChange}/> : <>

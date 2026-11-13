@@ -38,8 +38,8 @@ test('DION actual input, engine oracles, raw spelling, five result views and edi
     await page.getByRole('navigation',{name:'빠른 결과 5뷰'}).getByRole('button',{name:new RegExp(name)}).click();
     if(name==='상품 정보') await expect(page.locator('[data-product-empty]')).toContainText('대표상품 0개');
   }
-  await page.getByRole('button',{name:'4. 제안·선택 · 이번 달 행동 →'}).click();
-  await expect(page.getByRole('navigation',{name:'빠른 결과 5뷰'}).getByRole('button',{name:/결과·이번 달 행동/})).toHaveAttribute('aria-current','page');
+  await page.getByRole('button',{name:'4. 제안·선택 · 검토용 →'}).click();
+  await expect(page.getByRole('navigation',{name:'빠른 결과 5뷰'}).getByRole('button',{name:/투자구성/})).toHaveAttribute('aria-current','page');
   await page.getByRole('button',{name:'입력 내용 수정 ↗'}).click();
   await page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true}).fill('320');
   await expect(page.getByText('작성값이 바뀌었어요')).toBeVisible();
