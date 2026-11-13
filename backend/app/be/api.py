@@ -111,13 +111,6 @@ def snapshot(case_id: str, snapshot_id: str, actor=Depends(get_actor), store=Dep
     return call(store.read_raw_snapshot, actor, case_id, snapshot_id)
 
 
-@router.post("/cases/{case_id}/analyses")
-def analyze(case_id: str, value=Depends(body), actor=Depends(get_actor), store=Depends(get_store)):
-    shape(value, ["expected_version", "request_key", "context", "requested_outputs"])
-    return call(store.analyze, actor, case_id, value["expected_version"], value["request_key"],
-                value["context"], value["requested_outputs"])
-
-
 @router.post("/cases/{case_id}/analyses/question-v12")
 def analyze_question_v12(case_id: str, value=Depends(body), actor=Depends(get_actor), store=Depends(get_store)):
     required = {"expected_version", "request_key", "assessment", "confirmations", "requested_outputs"}

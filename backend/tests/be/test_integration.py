@@ -205,10 +205,10 @@ def test_api_actual_engine_with_mock_identity(store):
         assert response.status_code == 200, response.text
     payload = {"expected_version": 6, "request_key": "api-run", "context": CONTEXT,
                "requested_outputs": ["OUT-01", "OUT-03"]}
-    calculated = client.post(base + "/analyses", json=payload)
-    assert calculated.status_code == 200, calculated.text
-    rid = calculated.json()["run_id"]
-    assert client.post(base + "/analyses", json=payload).json() == calculated.json()
+    # The generic raw-context POST was retired; runs are created by the question paths.
+    assert client.post(base + "/analyses", json=payload).status_code == 405
+    rid = store.analyze("mock-actor-A", "case-1", **{k: payload[k] for k in ("expected_version", "request_key", "context")},
+                        outputs=payload["requested_outputs"])["run_id"]
     result = client.get(base + "/analyses/" + rid).json()["result"]
     assert result["engine_version"] == "DION-ENGINE-1.0"
     assert result["engine_release"] == "DION-ENGINE-1.2"
