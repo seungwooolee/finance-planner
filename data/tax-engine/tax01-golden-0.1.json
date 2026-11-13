@@ -1,0 +1,230 @@
+{
+  "schema_version": "DION-TAX-GOLDEN-0.1",
+  "rule_id": "TAX-01-PENSION-ACCOUNT-CREDIT",
+  "contract": "docs/tax-engine/TAX-01-contract.md",
+  "state": "INTERNAL_ARITHMETIC_CHECKED",
+  "basis": "소득세법 제59조의3 제1항(공제율·소득기준·600만원/900만원 한도·제외금액), 제61조 제3항(산출세액 한도). 근거 원문: data/rag/source/TAX-01.md",
+  "computed_by": "법조문 손계산 + 엔진과 별개인 산술 검산 테스트(tests/planning/test_tax01_golden.py). 외부 대조 미완료",
+  "units": "정수 원. 국세만(지방소득세 제외)",
+  "cases": [
+    {
+      "id": "G01",
+      "name": "근로소득만·총급여 5천만·합산한도 꽉 참",
+      "input": {
+        "tax_year": 2026,
+        "resident": true,
+        "income_type": "EARNED_ONLY",
+        "total_salary_krw": 50000000,
+        "pension_savings_paid_krw": 6000000,
+        "retirement_account_paid_krw": 3000000,
+        "excluded_paid_krw": 0,
+        "computed_tax_krw": 3000000,
+        "other_credits_krw": 0
+      },
+      "expected": {
+        "status": "CALCULATED",
+        "eligible_base_krw": 9000000,
+        "rate_percent": "15",
+        "credit_before_tax_limit_krw": 1350000,
+        "credit_applied_krw": 1350000
+      }
+    },
+    {
+      "id": "G02",
+      "name": "총급여 6천만·연금저축 800만 → 600만 한도·12%",
+      "input": {
+        "tax_year": 2026,
+        "resident": true,
+        "income_type": "EARNED_ONLY",
+        "total_salary_krw": 60000000,
+        "pension_savings_paid_krw": 8000000,
+        "retirement_account_paid_krw": 0,
+        "excluded_paid_krw": 0,
+        "computed_tax_krw": 5000000,
+        "other_credits_krw": 0
+      },
+      "expected": {
+        "status": "CALCULATED",
+        "eligible_base_krw": 6000000,
+        "rate_percent": "12",
+        "credit_before_tax_limit_krw": 720000,
+        "credit_applied_krw": 720000
+      }
+    },
+    {
+      "id": "G03",
+      "name": "총급여 정확히 5천500만(이하 포함)·합계 1천100만 → 900만",
+      "input": {
+        "tax_year": 2026,
+        "resident": true,
+        "income_type": "EARNED_ONLY",
+        "total_salary_krw": 55000000,
+        "pension_savings_paid_krw": 4000000,
+        "retirement_account_paid_krw": 7000000,
+        "excluded_paid_krw": 0,
+        "computed_tax_krw": 4000000,
+        "other_credits_krw": 0
+      },
+      "expected": {
+        "status": "CALCULATED",
+        "eligible_base_krw": 9000000,
+        "rate_percent": "15",
+        "credit_before_tax_limit_krw": 1350000,
+        "credit_applied_krw": 1350000
+      }
+    },
+    {
+      "id": "G04",
+      "name": "근로 외 소득 있음·종합소득금액 4천만 → 15%",
+      "input": {
+        "tax_year": 2026,
+        "resident": true,
+        "income_type": "COMPREHENSIVE",
+        "comprehensive_income_krw": 40000000,
+        "pension_savings_paid_krw": 3000000,
+        "retirement_account_paid_krw": 0,
+        "excluded_paid_krw": 0,
+        "computed_tax_krw": 3000000,
+        "other_credits_krw": 0
+      },
+      "expected": {
+        "status": "CALCULATED",
+        "eligible_base_krw": 3000000,
+        "rate_percent": "15",
+        "credit_before_tax_limit_krw": 450000,
+        "credit_applied_krw": 450000
+      }
+    },
+    {
+      "id": "G05",
+      "name": "근로 외 소득 있음·종합소득금액 4천600만 → 12%",
+      "input": {
+        "tax_year": 2026,
+        "resident": true,
+        "income_type": "COMPREHENSIVE",
+        "comprehensive_income_krw": 46000000,
+        "pension_savings_paid_krw": 6000000,
+        "retirement_account_paid_krw": 3000000,
+        "excluded_paid_krw": 0,
+        "computed_tax_krw": 5000000,
+        "other_credits_krw": 0
+      },
+      "expected": {
+        "status": "CALCULATED",
+        "eligible_base_krw": 9000000,
+        "rate_percent": "12",
+        "credit_before_tax_limit_krw": 1080000,
+        "credit_applied_krw": 1080000
+      }
+    },
+    {
+      "id": "G06",
+      "name": "IRP 입금 중 이연 퇴직소득 2천만 제외",
+      "input": {
+        "tax_year": 2026,
+        "resident": true,
+        "income_type": "EARNED_ONLY",
+        "total_salary_krw": 40000000,
+        "pension_savings_paid_krw": 0,
+        "retirement_account_paid_krw": 23000000,
+        "excluded_paid_krw": 20000000,
+        "excluded_from": "RETIREMENT_ACCOUNT",
+        "computed_tax_krw": 2000000,
+        "other_credits_krw": 0
+      },
+      "expected": {
+        "status": "CALCULATED",
+        "eligible_base_krw": 3000000,
+        "rate_percent": "15",
+        "credit_before_tax_limit_krw": 450000,
+        "credit_applied_krw": 450000
+      }
+    },
+    {
+      "id": "G07",
+      "name": "산출세액 한도: 다른 공제 후 남은 세액 30만",
+      "input": {
+        "tax_year": 2026,
+        "resident": true,
+        "income_type": "EARNED_ONLY",
+        "total_salary_krw": 30000000,
+        "pension_savings_paid_krw": 6000000,
+        "retirement_account_paid_krw": 3000000,
+        "excluded_paid_krw": 0,
+        "computed_tax_krw": 800000,
+        "other_credits_krw": 500000
+      },
+      "expected": {
+        "status": "CALCULATED",
+        "eligible_base_krw": 9000000,
+        "rate_percent": "15",
+        "credit_before_tax_limit_krw": 1350000,
+        "credit_applied_krw": 300000,
+        "note": "제61조 제3항: 감면·공제 합계가 산출세액을 넘는 부분은 연금계좌세액공제를 받지 않은 것으로 봄. 다른 공제의 적용 순서는 계약 미정 항목"
+      }
+    },
+    {
+      "id": "G08",
+      "name": "지원하지 않는 귀속연도",
+      "input": {
+        "tax_year": 2025,
+        "resident": true,
+        "income_type": "EARNED_ONLY",
+        "total_salary_krw": 50000000,
+        "pension_savings_paid_krw": 1000000,
+        "retirement_account_paid_krw": 0,
+        "excluded_paid_krw": 0,
+        "computed_tax_krw": 1000000,
+        "other_credits_krw": 0
+      },
+      "expected": {
+        "status": "UNSUPPORTED_TAX_YEAR"
+      }
+    },
+    {
+      "id": "G09",
+      "name": "소득 정보 없음 → 15%로 가정하지 않음",
+      "input": {
+        "tax_year": 2026,
+        "resident": true,
+        "income_type": null,
+        "pension_savings_paid_krw": 3000000,
+        "retirement_account_paid_krw": 0,
+        "excluded_paid_krw": 0,
+        "computed_tax_krw": null,
+        "other_credits_krw": null
+      },
+      "expected": {
+        "status": "NEEDS_INPUT",
+        "missing": [
+          "income_type",
+          "computed_tax_krw",
+          "other_credits_krw"
+        ]
+      }
+    },
+    {
+      "id": "G10",
+      "name": "비거주자",
+      "input": {
+        "tax_year": 2026,
+        "resident": false,
+        "income_type": "EARNED_ONLY",
+        "total_salary_krw": 50000000,
+        "pension_savings_paid_krw": 3000000,
+        "retirement_account_paid_krw": 0,
+        "excluded_paid_krw": 0,
+        "computed_tax_krw": 1000000,
+        "other_credits_krw": 0
+      },
+      "expected": {
+        "status": "NOT_APPLICABLE"
+      }
+    }
+  ],
+  "decisions": {
+    "rounding": "공제액은 원 미만 절사(floor). 10원 미만 끝수 처리는 납부·환급 단계라 범위 밖",
+    "credit_order": "제61조 제3항 문언대로 다른 감면·공제를 먼저 반영하고 연금계좌세액공제는 남은 산출세액 한도에서 적용",
+    "review": "외부 대조 담당: RAG 조사 팀원 — 국세청 연말정산 모의계산으로 10건 대조 후 APPROVED"
+  }
+}

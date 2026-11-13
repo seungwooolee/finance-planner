@@ -2,7 +2,8 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "git": {
     "deploymentEnabled": {
-      "codex/result-explanation-r1": false
+      "codex/result-explanation-r1": false,
+      "dion/product-policy-0.3": false
     }
   }
 }

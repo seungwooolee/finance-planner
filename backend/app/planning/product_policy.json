@@ -1,12 +1,12 @@
 {
   "schema_version": "DION-PRODUCT-POLICY-0.2",
-  "version": "DION-PRODUCT-POLICY-20261111-0.2",
+  "version": "DION-PRODUCT-POLICY-20261113-0.3.1",
   "state": "REVIEWED_FOR_PREVIEW",
   "scope": "GENERAL_TAXABLE_MONTHLY_REVIEW_ONLY",
-  "reviewed_on": "2026-11-11",
-  "valid_until": "2026-12-11",
-  "review_ttl_days": 30,
-  "source_max_age_days": 365,
+  "reviewed_on": "2026-11-13",
+  "valid_until": "2027-01-12",
+  "review_ttl_days": 60,
+  "source_max_age_days": 455,
   "risk_floor_by_preference": {
     "PREF_STABILITY": 6,
     "PREF_LEAN_STABILITY": 6,
@@ -164,5 +164,12 @@
     "live_tradability_verified": false,
     "isa_irp_pension_account_eligibility_verified": false,
     "final_customer_recommendation": false
+  },
+  "previous_version": "DION-PRODUCT-POLICY-20261111-0.2",
+  "change_basis": {
+    "recheck_ref": "data/product-recheck-20261113.json",
+    "summary": "후보 6개 투자설명서(제2부 13항 보수 및 수수료) 재대조. 360750 총보수·비용 0.0868→0.0668(기타비용 0.08→0.06), 360200 증권거래비용 0.0303 신규 확인, 나머지 위험등급·총보수·총보수비용 일치. 배분 비중·위험 한도·집중 한도는 변경하지 않음.",
+    "unchanged_assumptions": true,
+    "extension_20261113": "사용자 결정: 검토 주기 30→60일(유효 2027-01-12), 자료 사용 한도 365→455일(연 1회 투자설명서 갱신 주기 반영). 공시 값·배분 비중 변경 없음"
   }
 }
