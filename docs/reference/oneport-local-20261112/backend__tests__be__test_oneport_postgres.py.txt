@@ -1,0 +1,264 @@
+"""Actual disposable PostgreSQL, independent connections/processes; no paid I/O."""
+import asyncio
+import hashlib
+import json
+import os
+import sqlite3
+import subprocess
+import sys
+import threading
+from concurrent.futures import ThreadPoolExecutor
+from dataclasses import replace
+from decimal import Decimal
+from pathlib import Path
+from unittest.mock import patch
+from uuid import uuid4
+
+import httpx
+import psycopg
+import pytest
+from psycopg import sql
+
+from app.explanation.oneport import OnePortProvider, ProviderFailure
+from app.explanation.oneport_cutover import import_source, read_source
+from app.explanation.oneport_ledger import LedgerError, OnePortLedger
+from app.explanation.oneport_postgres import PostgresOnePortLedger
+from app.explanation.service import ExplanationService
+from tests.be import test_oneport as fixtures
+from tests.be.test_oneport import Gateway, call
+
+# Explicit fixture reuse; do not import a fixture as an unused function.
+config = fixtures.config
+run = fixtures.run
+
+ROOT = Path(__file__).resolve().parents[2]
+
+
+@pytest.fixture(scope="module")
+def pg_parameters():
+    port = os.getenv("DION_TEST_PG_PORT")
+    if not port:
+        pytest.skip("Disposable local PostgreSQL required; set DION_TEST_PG_PORT explicitly")
+    # Never reuse deployment DB environment or remote hosts for this suite.
+    admin = {"host": "127.0.0.1", "port": int(port), "user": "postgres", "dbname": "postgres", "connect_timeout": 3}
+    name = "oneport_test_" + uuid4().hex
+    with psycopg.connect(**admin, autocommit=True) as db:
+        db.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(name)))
+    yield dict(admin, dbname=name)
+    # Only this newly created, named database; never a computed remote target.
+    with psycopg.connect(**admin, autocommit=True) as db:
+        db.execute(sql.SQL("DROP DATABASE {} WITH (FORCE)").format(sql.Identifier(name)))
+
+
+@pytest.fixture
+def ledger(pg_parameters):
+    with psycopg.connect(**pg_parameters) as db:
+        db.execute("DROP SCHEMA IF EXISTS dion_oneport CASCADE")
+        db.execute((ROOT / "migrations/be/003_oneport_ledger.sql").read_text())
+    return PostgresOnePortLedger(pg_parameters)
+
+
+def digest(value):
+    return hashlib.sha256(value.encode()).hexdigest()
+
+
+def reserve(ledger, config, operation="op", alias="alias", fingerprint="fp"):
+    return ledger.reserve(digest(operation), digest(alias), digest(fingerprint), config)
+
+
+def counts(ledger):
+    with ledger.connection(readonly=True) as db:
+        return db.execute("SELECT count(*) AS n,coalesce(sum(charge),0) AS charge FROM dion_oneport.calls").fetchone()
+
+
+def test_additive_migration_idempotent_private_and_no_diagnostic_schema(ledger):
+    assert ledger.check_ready() == "READY"
+    with ledger.connection() as db:
+        db.execute((ROOT / "migrations/be/003_oneport_ledger.sql").read_text())
+        assert db.execute("SELECT to_regclass('dion_be.cases') AS value").fetchone()["value"] is None
+    assert ledger.check_ready() == "READY"
+
+
+def test_pending_committed_before_dispatch_survives_another_process(ledger, config):
+    assert reserve(ledger, config)[1] is None
+    code = """import json,os
+from dataclasses import replace
+from app.explanation.oneport_postgres import PostgresOnePortLedger
+from app.explanation.oneport_config import OnePortConfig
+from decimal import Decimal
+cfg=replace(OnePortConfig(),budget_scope='test-budget',budget_credits=Decimal(10),reserve_credits=Decimal(2),max_calls=3)
+ledger=PostgresOnePortLedger(json.loads(os.environ['ONEPORT_LOCAL_TEST_PARAMETERS']))
+operation,row=ledger.reserve(os.environ['OP'],os.environ['ALIAS'],os.environ['FP'],cfg)
+print(json.dumps({'operation':operation,'state':row['state'],'charge':row['charge']}))
+"""
+    env = dict(os.environ, ONEPORT_LOCAL_TEST_PARAMETERS=json.dumps(ledger.parameters),
+               OP=digest("new-model-op"), ALIAS=digest("alias"), FP=digest("fp"))
+    restored = json.loads(subprocess.check_output([sys.executable, "-c", code], env=env, cwd=ROOT, text=True))
+    assert restored == {"operation": digest("op"), "state": "PENDING", "charge": "2"}
+    assert counts(ledger) == {"n": 1, "charge": Decimal(2)}
+
+
+@pytest.mark.parametrize("same_alias", [False, True])
+def test_two_connections_same_operation_reserved_once(ledger, config, same_alias):
+    barrier = threading.Barrier(2)
+    def worker(i):
+        other = PostgresOnePortLedger(ledger.parameters)
+        barrier.wait()
+        return reserve(other, config, alias="same" if same_alias else str(i))
+    with ThreadPoolExecutor(2) as pool:
+        values = list(pool.map(worker, range(2)))
+    assert sum(row is None for _, row in values) == 1
+    assert counts(ledger) == {"n": 1, "charge": Decimal(2)}
+
+
+@pytest.mark.parametrize("limit", ["credits", "calls"])
+def test_concurrent_different_operations_respect_scope_budget(ledger, config, limit):
+    config = replace(config, budget_credits=Decimal(2) if limit == "credits" else Decimal(10),
+                     max_calls=1 if limit == "calls" else 3)
+    barrier = threading.Barrier(2)
+    def worker(i):
+        barrier.wait()
+        try:
+            return reserve(PostgresOnePortLedger(ledger.parameters), config, operation=str(i), alias=str(i))[1]
+        except LedgerError as exc:
+            return str(exc)
+    with ThreadPoolExecutor(2) as pool:
+        result = list(pool.map(worker, range(2)))
+    assert result.count(None) == 1 and result.count("ONEPORT_BUDGET_LIMIT") == 1
+    assert counts(ledger) == {"n": 1, "charge": Decimal(2)}
+
+
+def test_alias_conflict_and_scope_cap_change_rollback(ledger, config):
+    reserve(ledger, config)
+    with pytest.raises(LedgerError, match="IDEMPOTENCY_CONFLICT"):
+        reserve(ledger, config, fingerprint="different")
+    with pytest.raises(LedgerError, match="ONEPORT_BUDGET_SCOPE_CONFLICT"):
+        reserve(ledger, replace(config, budget_credits=Decimal(100)), operation="other", alias="other")
+    assert counts(ledger)["n"] == 1
+
+
+@pytest.mark.parametrize("cost,charge", [(None, "2"), ("0.1234567890123456789", "2"), ("4.1234567890123456789", "4.1234567890123456789")])
+def test_uncertain_failed_call_never_released_or_overwritten(ledger, config, cost, charge):
+    operation, _ = reserve(ledger, config)
+    ledger.headers(operation, {"request_id": "synthetic", "execution": "UNKNOWN"})
+    ledger.finish(operation, None, {"cost_credits": cost, "error_code": "ONEPORT_EXECUTION_UNKNOWN"})
+    _, previous = reserve(PostgresOnePortLedger(ledger.parameters), config, operation="changed-model")
+    assert previous["state"] == "FAILED" and Decimal(previous["charge"]) == Decimal(charge)
+    with pytest.raises(LedgerError, match="ONEPORT_RECEIPT_NOT_PENDING"):
+        ledger.finish(operation, None, {"cost_credits": "0"})
+
+
+def central(config):
+    return replace(config, ledger_backend="postgresql", ledger_scope="MULTI_HOST", postgres_cutover_confirmed=True)
+
+
+def test_actual_provider_validator_replay_and_new_instance_uses_central_store(ledger, config, run):
+    gateway = Gateway()
+    config = central(config)
+    def service():
+        return ExplanationService(mode="oneport", provider=OnePortProvider(config,
+            transport=httpx.MockTransport(gateway.handle), ledger=PostgresOnePortLedger(ledger.parameters)))
+    with patch("sqlite3.connect", side_effect=AssertionError("no SQLite fallback")):
+        first = asyncio.run(call(service(), run))
+        again = asyncio.run(call(service(), run, request_key="new-request-key"))
+        changed_model = replace(config, model="different-approved-model")
+        rebound = ExplanationService(mode="oneport", provider=OnePortProvider(changed_model,
+            transport=httpx.MockTransport(gateway.handle), ledger=ledger))
+        original_alias = asyncio.run(call(rebound, run))
+    assert first["source"] == again["source"] == original_alias["source"] == "ONEPORT"
+    assert again["provider_usage"]["replayed"] and original_alias["blocks"] == first["blocks"]
+    assert len(gateway.posts) == 1 and counts(ledger)["n"] == 1
+
+
+def test_two_workers_only_one_paid_dispatch_and_pending_replay(ledger, config, run):
+    gateway = Gateway(delay=0.05)
+    config = central(config)
+    async def scenario():
+        def service():
+            return ExplanationService(mode="oneport", provider=OnePortProvider(config,
+                transport=httpx.MockTransport(gateway.handle), ledger=PostgresOnePortLedger(ledger.parameters)))
+        return await asyncio.gather(call(service(), run), call(service(), run, request_key="another-key"))
+    values = asyncio.run(scenario())
+    assert len(gateway.posts) == 1 and any(r["source"] == "ONEPORT" for r in values)
+    assert all(r["source"] == "ONEPORT" or r["reason_code"] == "ONEPORT_PENDING_OR_UNKNOWN" for r in values)
+
+
+def test_missing_schema_fails_before_http_and_does_not_create_local_storage(ledger, config):
+    with ledger.connection() as db:
+        db.execute("DROP SCHEMA dion_oneport CASCADE")
+    gateway = Gateway()
+    provider = OnePortProvider(central(config), transport=httpx.MockTransport(gateway.handle), ledger=ledger)
+    with patch("sqlite3.connect", side_effect=AssertionError("no fallback")):
+        with pytest.raises(ProviderFailure, match="ONEPORT_LEDGER_UNAVAILABLE"):
+            asyncio.run(provider.generate({}, identity="test", request_key="key", fingerprint=digest("f"), validate=lambda d: d))
+    assert not gateway.calls and ledger.check_ready() == "ONEPORT_SCHEMA_INCOMPLETE"
+
+
+def test_public_grants_are_not_ready(ledger):
+    with ledger.connection() as db:
+        db.execute("GRANT SELECT ON dion_oneport.calls TO PUBLIC")
+    assert ledger.check_ready() == "ONEPORT_PRIVILEGES_UNSAFE"
+
+
+def test_receipt_header_failure_is_storage_error_and_never_reposts(ledger, config, run):
+    gateway = Gateway()
+    provider = OnePortProvider(central(config), transport=httpx.MockTransport(gateway.handle), ledger=ledger)
+    service = ExplanationService(mode="oneport", provider=provider)
+    with patch.object(ledger, "headers", side_effect=LedgerError("ONEPORT_LEDGER_UNAVAILABLE")):
+        first = asyncio.run(call(service, run))
+    again = asyncio.run(call(service, run, request_key="different-key"))
+    assert first["reason_code"] == again["reason_code"] == "ONEPORT_LEDGER_UNAVAILABLE"
+    assert len(gateway.posts) == 1 and counts(ledger)["charge"] == Decimal(2)
+
+
+def test_cutover_preserves_pending_and_validated_receipts_without_reset(ledger, config, run):
+    gateway = Gateway()
+    old_service = ExplanationService(mode="oneport", provider=OnePortProvider(config, transport=httpx.MockTransport(gateway.handle)))
+    first = asyncio.run(call(old_service, run))
+    old = OnePortLedger(config.ledger_path)
+    reserve(old, config, operation="pending", alias="pending")
+    with sqlite3.connect(config.ledger_path) as source:
+        source.row_factory = sqlite3.Row
+        before = read_source(source)
+        result = import_source(source, ledger, config, before[2])
+        assert result["calls"] == 2
+        assert import_source(source, ledger, config, before[2]) == result
+        assert read_source(source) == before
+    new = ExplanationService(mode="oneport", provider=OnePortProvider(central(config),
+        transport=httpx.MockTransport(gateway.handle), ledger=ledger))
+    replay = asyncio.run(call(new, run))
+    assert replay["blocks"] == first["blocks"] and len(gateway.posts) == 1
+    assert reserve(ledger, config, operation="pending", alias="pending")[1]["state"] == "PENDING"
+    assert counts(ledger) == {"n": 2, "charge": Decimal(4)}
+
+
+def test_cutover_source_change_and_conflict_rollback_all_rows(ledger, config):
+    old = OnePortLedger(config.ledger_path)
+    reserve(old, config)
+    reserve(old, config, operation="other", alias="other")
+    with sqlite3.connect(config.ledger_path) as source:
+        source.row_factory = sqlite3.Row
+        sha = read_source(source)[2]
+        with pytest.raises(LedgerError, match="ONEPORT_IMPORT_SOURCE_CHANGED"):
+            import_source(source, ledger, config, "0" * 64)
+        assert counts(ledger)["n"] == 0
+        reserve(ledger, config)
+        ledger.finish(digest("op"), None, {"execution": "UNKNOWN"})
+        with pytest.raises(LedgerError, match="ONEPORT_IMPORT_CONFLICT"):
+            import_source(source, ledger, config, sha)
+        assert counts(ledger)["n"] == 1
+
+
+def test_cutover_cli_plan_no_pg_network_and_source_unchanged(config):
+    old = OnePortLedger(config.ledger_path)
+    reserve(old, config)
+    code = """import sys
+from unittest.mock import patch
+from app.explanation.oneport_cutover import main
+with patch('psycopg.connect',side_effect=AssertionError('no PG in plan')):
+    raise SystemExit(main())
+"""
+    env = {k: v for k, v in os.environ.items() if not k.startswith(("DION_DB_", "DION_ONEPORT_"))}
+    result = json.loads(subprocess.check_output([sys.executable, "-c", code, str(config.ledger_path)], cwd=ROOT, env=env, text=True))
+    assert result["calls"] == 1 and result["states"] == {"PENDING": 1}
+    assert not result["postgres_connected"] and not result["database_changed"]

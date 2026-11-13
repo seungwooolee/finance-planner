@@ -1,0 +1,63 @@
+"""Opt-in/cutover/preflight gates never imply permission for a paid call."""
+import asyncio
+from dataclasses import replace
+from unittest.mock import patch
+
+import pytest
+
+from app.be import readiness
+from app.explanation.oneport import OnePortProvider, ProviderFailure
+from app.explanation.oneport_config import ConfigurationError, OnePortConfig
+from tests.be import test_oneport as fixtures
+from tests.be.test_readiness import Catalog
+
+config = fixtures.config
+
+
+@pytest.mark.parametrize("changes", [
+    {"ledger_scope": "UNCONFIRMED", "postgres_cutover_confirmed": True},
+    {"ledger_scope": "SINGLE_HOST_DURABLE", "postgres_cutover_confirmed": True},
+    {"ledger_scope": "MULTI_HOST", "postgres_cutover_confirmed": False},
+])
+def test_postgres_requires_scope_and_explicit_cutover_before_any_io(config, changes):
+    config = replace(config, ledger_backend="postgresql", **changes)
+    with patch("psycopg.connect", side_effect=AssertionError("no PostgreSQL")), \
+         patch("sqlite3.connect", side_effect=AssertionError("no SQLite")), \
+         patch("httpx.AsyncClient", side_effect=AssertionError("no provider")):
+        with pytest.raises(ProviderFailure, match="ONEPORT_POSTGRES_CUTOVER_UNCONFIRMED"):
+            asyncio.run(OnePortProvider(config).generate({}, identity="synthetic", request_key="test",
+                                                       fingerprint="test", validate=lambda d: d))
+
+
+def test_bad_backend_and_boolean_rejected_not_guessed(config, monkeypatch):
+    with pytest.raises(ConfigurationError):
+        replace(config, ledger_backend="automatic").validate()
+    monkeypatch.setenv("DION_ONEPORT_POSTGRES_CUTOVER_CONFIRMED", "yes")
+    with pytest.raises(ConfigurationError):
+        OnePortConfig.from_env()
+
+
+def test_confirmed_pg_with_missing_db_config_never_falls_back(config, monkeypatch):
+    for name in ("HOST", "USER", "PASSWORD"):
+        monkeypatch.delenv("DION_DB_" + name, raising=False)
+    config = replace(config, ledger_backend="postgresql", ledger_scope="MULTI_HOST", postgres_cutover_confirmed=True)
+    with patch("sqlite3.connect", side_effect=AssertionError("no fallback")), \
+         patch("httpx.AsyncClient", side_effect=AssertionError("no provider")):
+        with pytest.raises(ProviderFailure, match="ONEPORT_LEDGER_UNAVAILABLE"):
+            asyncio.run(OnePortProvider(config).generate({}, identity="synthetic", request_key="test",
+                                                       fingerprint="test", validate=lambda d: d))
+
+
+def test_startup_no_pg_probe_and_explicit_ready_probe_requires_central_schema(config, monkeypatch):
+    config = replace(config, ledger_backend="postgresql", ledger_scope="MULTI_HOST", postgres_cutover_confirmed=True)
+    monkeypatch.setenv("DION_EXPLANATION_PROVIDER", "oneport")
+    with patch.object(readiness.PostgresStore, "from_environment", return_value=Catalog()), \
+         patch.object(readiness, "auth_config"), \
+         patch.object(readiness.OnePortConfig, "from_env", return_value=config), \
+         patch.object(readiness.PostgresOnePortLedger, "from_environment") as factory:
+        assert readiness.preflight()["checks"]["explanation"] == "READY"
+        factory.assert_not_called()
+        factory.return_value.check_ready.return_value = "ONEPORT_SCHEMA_INCOMPLETE"
+        report = readiness.preflight(database=True)
+    assert report["status"] == "not_ready" and report["checks"]["explanation"] == "ONEPORT_SCHEMA_INCOMPLETE"
+    assert not report["auth_network_called"] and not report["provider_network_called"]
