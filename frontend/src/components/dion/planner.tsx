@@ -13,6 +13,9 @@ import { ResultExplanation } from "./result-explanation";
 import { AgentConsultation } from "./agent-consultation";
 import { Scenario, ScenarioPicker, scenarios } from "./scenario-picker";
 import { PlanCheckin } from "./plan-checkin";
+import { ApiError, requestJson } from "@/lib/dion/wake-retry";
+import { reviewToolsEnabled } from "@/lib/dion/beta-config";
+import { ServerWakeNotice } from "@/components/server-wake-notice";
 import "./planner.css";
 
 const earlyScenario = scenarios.find(s => s.id === "early") as Scenario;
@@ -25,14 +28,6 @@ function signature(doc:Document) {
   const { case_id: caseId, snapshot_id: snapshotId, profile_version: profileVersion, ...context }=doc.context;
   void caseId; void snapshotId; void profileVersion;
   return stable({context,scope_ref:doc.scope_ref,answers:doc.raw_bundle.answers.map(r=>r.envelope).sort((a,b)=>a.question_ref.design_id.localeCompare(b.question_ref.design_id)),confirmations:doc.confirmations,requested_outputs:doc.requested_outputs});
-}
-class ApiError extends Error { constructor(public status:number,public code:string,public gateway=false){super(code);} }
-async function request(path:string, method="GET", body?:unknown, token?:string, signal?:AbortSignal) {
-  const response=await fetch(path,{method,body:body===undefined?undefined:JSON.stringify(body),headers:{"Content-Type":"application/json",...(token?{Authorization:`Bearer ${token}`}:{})},cache:"no-store",signal});
-  const value=await response.json().catch(()=>null);
-  // A non-JSON gateway error means the hosting layer answered (e.g. the backend is still waking up), not the API.
-  if(!response.ok)throw new ApiError(response.status,String(value?.detail?.code??`HTTP_${response.status}`),!(response.headers.get("content-type")??"").includes("json"));
-  return value;
 }
 const errorText=(e:unknown)=>e instanceof ApiError?e.status===409?`수정 충돌 (${e.code}). 작성값은 그대로 있어요. 서버 최신본을 확인한 뒤 적용해 주세요.`:e.status===401?"로그인 확인이 필요해요. 상단에서 다시 로그인해주세요.":e.status===503?`저장·인증 서비스에 연결하지 못했어요 (${e.code}). 작성값을 보존했어요.`:`요청을 처리하지 못했어요 (${e.code}). 입력과 계약을 확인해 주세요.`:"연결 오류가 발생했어요. 작성값과 이전 결과를 보존했어요. 다시 시도해 주세요.";
 function calculationErrorText(e:unknown) {
@@ -50,7 +45,18 @@ export function DionPlanner() {
   const [current,setCurrent]=useState("NEW-01"),[showResults,setShowResults]=useState(false),[tab,setTab]=useState(0);
   const [view,setView]=useState<ViewResult|null>(null),[history,setHistory]=useState<ViewResult[]>([]);
   const [busy,setBusy]=useState(false),[message,setMessage]=useState(""),[error,setError]=useState("");
-  const [fictional,setFictional]=useState(false),[catalogOpen,setCatalogOpen]=useState(false),[reviewOpen,setReviewOpen]=useState(false);
+  const [fictional,setFictional]=useState(false),[catalogOpen,setCatalogOpen]=useState(false),[reviewRequested,setReviewOpen]=useState(false);
+  const showReviewTools=reviewToolsEnabled(process.env.NEXT_PUBLIC_SHOW_REVIEW_TOOLS),reviewOpen=showReviewTools&&reviewRequested;
+  const [waking,setWaking]=useState(false),[wakeFailed,setWakeFailed]=useState(false);
+  const retryAction=useRef<(()=>void)|null>(null),waitingRequests=useRef(new Set<symbol>());
+  async function request(path:string,method="GET",body?:unknown,token?:string,signal?:AbortSignal) {
+    const key=Symbol();setWakeFailed(false);
+    return requestJson(path,{method,body,token,signal,onState:state=>{
+      if(state.waiting)waitingRequests.current.add(key);else waitingRequests.current.delete(key);
+      setWaking(waitingRequests.current.size>0);
+      if(state.exhausted&&retryAction.current)setWakeFailed(true);
+    }});
+  }
   const [loginOpen,setLoginOpen]=useState(false),[expiresAt,setExpiresAt]=useState<number|null>(null);
   const [accountOpen,setAccountOpen]=useState(false);
   const accountPanel=useRef<HTMLDetailsElement>(null);
@@ -104,16 +110,18 @@ export function DionPlanner() {
   },[active,mode,showResults]);
   useEffect(()=>{
     if(expiresAt===null)return;
-    const timer=setTimeout(()=>{clearSession();setToken("");setExpiresAt(null);setCases([]);setRuns([]);setNextAfter(null);setServerVersion(null);connectedCase.current=null;setMessage("로그인 시간이 지났어요. 작성한 답변은 그대로 있어요. 저장하려면 다시 로그인해주세요.");},Math.max(0,expiresAt-Date.now()));
+    const timer=setTimeout(()=>{retryAction.current=null;setWakeFailed(false);clearSession();setToken("");setExpiresAt(null);setCases([]);setRuns([]);setNextAfter(null);setServerVersion(null);connectedCase.current=null;setMessage("로그인 시간이 지났어요. 작성한 답변은 그대로 있어요. 저장하려면 다시 로그인해주세요.");},Math.max(0,expiresAt-Date.now()));
     return ()=>clearTimeout(timer);
   },[expiresAt]);
   async function signOut() {
+    retryAction.current=()=>void signOut();
     clearSession();
     const previous=token;setToken("");setExpiresAt(null);setServerVersion(null);connectedCase.current=null;saved.current={};pending.current=null;pendingAnalysis.current=null;setRuns([]);setCases([]);setNextAfter(null);
     setMessage("로그아웃했어요. 이 탭의 작성값은 그대로 있어요.");
     try{await request("/api/be/v1/auth/logout","POST",undefined,previous);}catch{setMessage("이 탭에서 로그아웃했어요. 인증 서버의 세션 종료는 확인하지 못했어요.");}
   }
   function change(next:Document) {
+    retryAction.current=null;setWakeFailed(false);
     setUndoDraft(null);
     docRef.current=next;setDoc(next);sequence.current++;abort.current?.abort();setBusy(false);
     setError("");setMessage("");
@@ -131,6 +139,7 @@ export function DionPlanner() {
   async function calculate(input?:Document) {
     if(busy&&!input)return;
     const captured=clone(input??docRef.current), seq=++sequence.current;
+    retryAction.current=()=>void calculate(captured);
     captured.requested_outputs=[...new Set([...captured.requested_outputs,"OUT-06"])];
     if (!(input??docRef.current).requested_outputs.includes("OUT-06")) {docRef.current={...docRef.current,requested_outputs:captured.requested_outputs};setDoc(docRef.current);}
     abort.current?.abort();const controller=new AbortController();abort.current=controller;
@@ -138,18 +147,8 @@ export function DionPlanner() {
     const timeout=setTimeout(()=>{timedOut=true;controller.abort();},120_000);
     setBusy(true);setError("");setMessage("");setLastError(null);
     try {
-      // The review backend sleeps when idle and takes up to ~1 minute to wake. Preview is a
-      // pure calculation, so retry gateway errors within the existing 2-minute timeout.
-      let response:unknown;
-      for(let attempt=0;;attempt++){
-        try{response=await request("/api/fe/v1/preview","POST",captured,undefined,controller.signal);break;}
-        catch(e){
-          if(!(e instanceof ApiError&&e.gateway&&[502,503,504].includes(e.status))||attempt>=8||controller.signal.aborted)throw e;
-          if(seq===sequence.current)setMessage("계산 서버를 깨우는 중이에요. 처음 접속하면 최대 1분 정도 걸릴 수 있어요.");
-          await new Promise(r=>setTimeout(r,8_000));
-          if(controller.signal.aborted)throw e;
-        }
-      }
+      // Wake-up retries (503/network, same body) live in requestJson; the notice shows while waiting.
+      const response:unknown=await request("/api/fe/v1/preview","POST",captured,undefined,controller.signal);
       if(seq!==sequence.current)return;
       setMessage("");
       const payload=response as {result?:unknown;integration_version?:unknown}|null;
@@ -170,6 +169,7 @@ export function DionPlanner() {
     if(saveLock.current)return;
     if(fictional){setError("가상 사례는 실제 상담에 저장하지 않아요. 원래 입력으로 돌아간 뒤 저장해주세요.");return;}
     if(!token||!targetCase){setError("서버 저장·복원에는 상담 ID와 로그인이 필요해요. 미리보기 계산은 저장 없이 사용할 수 있어요.");return;}
+    retryAction.current=()=>void serverAction(action,targetCase);
     saveLock.current=true;setSaveBusy(true);setError("");setMessage("");
     try{await action();}catch(e){handleServerError(e);}
     finally{saveLock.current=false;setSaveBusy(false);}
@@ -177,6 +177,7 @@ export function DionPlanner() {
   async function fetchCases(more=false) {
     if(saveLock.current)return;
     if(!token){setError("내 상담을 보려면 로그인해주세요.");return;}
+    retryAction.current=()=>void fetchCases(more);
     saveLock.current=true;setSaveBusy(true);setError("");
     try {
       const after=more?nextAfter:null;
@@ -268,6 +269,7 @@ export function DionPlanner() {
     if(saveLock.current)return;
     const id=`test-${s.id}-${crypto.randomUUID().slice(0,8)}`;
     const next=clone(s.document);next.context.case_id=id;next.raw_bundle.case_id=id;
+    retryAction.current=()=>void verifyScenario(s,deep);
     saveLock.current=true;setSaveBusy(true);
     try{
       const r=await request("/api/be/v1/cases","POST",{case_id:id},token);
@@ -303,6 +305,7 @@ export function DionPlanner() {
   }
   const exportReview=()=>download({integration_version:"DION-FE-INTEGRATION-1.0",fictional,document:doc,result:view,previous_results:history,latest_error:lastError,server_input_version:serverVersion},"dion-review.json");
   function handleLogin(value:string, seconds:number){
+    retryAction.current=null;setWakeFailed(false);
     const expiry=rememberSession(value,seconds);
     setToken(value);setExpiresAt(expiry);setServerVersion(null);
     connectedCase.current=null;saved.current={};pending.current=null;pendingAnalysis.current=null;
@@ -311,8 +314,9 @@ export function DionPlanner() {
   }
   const verifyTools=<div className="d-toolbar" aria-label="저장 검증"><strong>사회초년생 검증</strong><button className="d-secondary" disabled={saveBusy} onClick={()=>void verifyScenario(earlyScenario,false)}>빠른진단 저장·계산</button><button className="d-secondary" disabled={saveBusy} onClick={()=>void verifyScenario(earlyScenario,true)}>정밀진단 저장·계산</button></div>;
   return <div className="dion-app">
-    <header className={`d-header ${mode==="welcome"?"d-header-welcome":""}`}><Link href="/dion" className="d-logo" onClick={()=>{setMode("welcome");setShowResults(false);window.scrollTo({top:0});}}>dion<span>.</span></Link>{mode==="welcome"?<HeaderCat/>:<nav aria-label="진단 방식"><button className={mode==="quick"?"active":""} onClick={()=>{setMode("quick");setShowResults(false);}}>빠른진단</button><button className={mode==="deep"?"active":""} onClick={()=>{setMode("deep");setShowResults(false);}}>정밀진단</button></nav>}<div className="d-header-actions"><button className="d-account-button" aria-expanded={accountOpen} onClick={()=>{setAccountOpen(!accountOpen);if(token)void fetchCases();}}>내 상담</button>{token?<button className="d-account-button" disabled={saveBusy} onClick={signOut}>로그아웃</button>:<button className="d-account-button" disabled={saveBusy} onClick={()=>setLoginOpen(true)}>로그인</button>}<button aria-expanded={reviewOpen} onClick={()=>setReviewOpen(!reviewOpen)}>검토 도구</button></div></header>
+    <header className={`d-header ${mode==="welcome"?"d-header-welcome":""}`}><Link href="/dion" className="d-logo" onClick={()=>{setMode("welcome");setShowResults(false);window.scrollTo({top:0});}}>dion<span>.</span></Link>{mode==="welcome"?<HeaderCat/>:<nav aria-label="진단 방식"><button className={mode==="quick"?"active":""} onClick={()=>{setMode("quick");setShowResults(false);}}>빠른진단</button><button className={mode==="deep"?"active":""} onClick={()=>{setMode("deep");setShowResults(false);}}>정밀진단</button></nav>}<div className="d-header-actions"><button className="d-account-button" aria-expanded={accountOpen} onClick={()=>{setAccountOpen(!accountOpen);if(token)void fetchCases();}}>내 상담</button>{token?<button className="d-account-button" disabled={saveBusy} onClick={signOut}>로그아웃</button>:<button className="d-account-button" disabled={saveBusy} onClick={()=>setLoginOpen(true)}>로그인</button>}{showReviewTools&&<button aria-expanded={reviewOpen} onClick={()=>setReviewOpen(!reviewOpen)}>검토 도구</button>}</div></header>
     <main className="d-main">
+      <ServerWakeNotice waiting={waking} exhausted={wakeFailed} onRetry={()=>retryAction.current?.()}/>
       {message&&<div className="d-notice" role="status">{message}</div>}{error&&<div ref={errorRef} tabIndex={-1} style={{scrollMarginTop:96}} className="d-warning" role="alert">{error}{view&&<p>마지막 결과는 이전 계산 기록으로 유지됩니다. 새 계산 성공을 뜻하지 않아요.</p>}</div>}
       {undoDraft&&<div className="d-undo" role="status">작성 화면을 바꿨어요.<button type="button" onClick={()=>{const previous=undoDraft;change(previous.doc);setFictional(previous.fictional);setServerVersion(null);connectedCase.current=null;pending.current=null;pendingAnalysis.current=null;saved.current={};setRuns([]);setShowResults(false);}}>이전 작성값으로 되돌리기</button></div>}
       {reviewOpen&&mode==="welcome"&&<section className="d-review-tools" aria-label="저장 검증 도구">{verifyTools}</section>}
