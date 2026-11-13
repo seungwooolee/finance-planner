@@ -1,30 +1,28 @@
-import { NextResponse, type NextRequest } from "next/server";
-import { BETA_COOKIE, betaCode, betaToken, sameSecret } from "@/lib/beta-gate";
+import { NextRequest, NextResponse } from "next/server";
+import { GATE_COOKIE, gateToken } from "@/lib/gate";
 
-// Pre-award closed beta: keep every response out of search engines, and when an access code is
-// configured, require it before any page or proxied API call is served. A cookie (not HTTP Basic)
-// is used because the app's own API calls carry "Authorization: Bearer <login token>".
-export function proxy(request: NextRequest) {
-  const code = betaCode();
-  const { pathname } = request.nextUrl;
-  const open = pathname === "/beta" || pathname.startsWith("/beta/");
-  if (code && !open) {
-    const cookie = request.cookies.get(BETA_COOKIE)?.value ?? "";
-    if (!sameSecret(cookie, betaToken(code))) {
-      if (pathname.startsWith("/api/")) {
-        return NextResponse.json({ detail: "BETA_ACCESS_REQUIRED" }, { status: 401, headers: { "X-Robots-Tag": "noindex, nofollow" } });
-      }
-      const url = request.nextUrl.clone();
-      url.pathname = "/beta";
-      url.search = "";
-      return NextResponse.redirect(url);
-    }
+// Pre-award access gate: the contest entry must not be publicly reachable. When SITE_PASSWORD is
+// set (Vercel env, never committed) pages redirect to the /gate password form and /api calls get
+// 401 until the visitor enters it. HTTP Basic Auth is also accepted for scripted checks.
+// Unset (local dev, E2E) leaves the site open.
+export async function proxy(request: NextRequest) {
+  const password = process.env.SITE_PASSWORD;
+  if (!password) return NextResponse.next();
+  const { pathname, search } = request.nextUrl;
+  if (pathname === "/gate") return NextResponse.next();
+  if (request.cookies.get(GATE_COOKIE)?.value === await gateToken(password)) return NextResponse.next();
+  const header = request.headers.get("authorization") ?? "";
+  if (header.startsWith("Basic ")) {
+    try {
+      const decoded = atob(header.slice(6));
+      if (decoded.slice(decoded.indexOf(":") + 1) === password) return NextResponse.next();
+    } catch { /* malformed header falls through */ }
   }
-  const response = NextResponse.next();
-  response.headers.set("X-Robots-Tag", "noindex, nofollow");
-  return response;
+  const headers = { "Cache-Control": "no-store", "X-Robots-Tag": "noindex, nofollow" };
+  if (pathname.startsWith("/api/")) return new NextResponse("Authentication required", { status: 401, headers });
+  const target = new URL("/gate", request.url);
+  target.searchParams.set("next", pathname + search);
+  return NextResponse.redirect(target, { headers });
 }
 
-export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|robots.txt|.*\\.(?:png|jpg|jpeg|svg|webp|ico)$).*)"],
-};
+export const config = { matcher: ["/((?!_next/static|_next/image|favicon.ico|robots.txt).*)"] };
