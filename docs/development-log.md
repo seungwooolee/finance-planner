@@ -1,3 +1,14 @@
+# 2026-11-13 — 1단계 격리 PostgreSQL 마이그레이션·경합·원장 회귀
+
+운영 DB·Render·실계정·OnePort에는 접속하지 않았다. 임시 컨테이너의 PostgreSQL 16(UTF8, SSL on, 새 클러스터)만 사용했다.
+
+- `python -m app.be.migrate`로 001~003 전체 적용을 2회 반복: 두 번 모두 성공(재적용 안전). `python -m app.be.readiness --database` → database `READY`(누락 컬럼·이력 가드·거부 테이블 0, public 노출 없음). authentication은 로컬에 인증 설정이 없어 `AUTH_CONFIG_MISSING`(예상).
+- `tests/be/test_postgres.py`, `test_consultation_workers.py`(SQLite/PG 각각 두 독립 앱·연결, PG는 002·003 적용), `test_oneport_ledger_guard.py`, `test_oneport.py`, `test_readiness.py`, `test_migration_plan.py`: **114 passed**.
+- 제약: `pgserver` 패키지가 Python 3.13용 배포본이 없어, 시스템 PostgreSQL 16으로 새 클러스터를 만드는 테스트 전용 대체 모듈을 PYTHONPATH로 주입했다(저장소 미포함). SQL_ASCII 클러스터에서는 psycopg가 bytes를 반환해 readiness가 오판하므로 UTF8 클러스터가 필요하다.
+- 남은 일(접근·승인 필요): 운영 DB 003 적용, `/readyz` 배포 200, 실계정 R2 저장·재개·타인 차단, Render worker/인스턴스 고정과 원장 영속화 방식 결정, OnePort 원장 대사·하드캡 확인·유료 호출 승인, R1 운영 스모크.
+
+---
+
 # 2026-11-13 — GitHub 보존 요청·개발 체크포인트 인계
 
 사용자의 명시 요청으로 `codex/result-explanation-r1`의 지금까지 작업을 커밋·푸시할 준비를 했다. 시작 HEAD733bb47, 원격 fetch 뒤 ahead0/behind0이었다. 변경63파일(기존 수정36·추가27), 합계1,816,999바이트의 경로·알려진 비밀 패턴·충돌 표식·금지 파일0, JSON6개 파싱 통과다. 인계 문서를 추가하고 staged 검사 후 일반 푸시와 원격 SHA 대조를 수행한다. 기존 검증 기록을 보존하며 전체 테스트·실계정·유료 API·DB migration·배포는 새로 실행하지 않는다.
