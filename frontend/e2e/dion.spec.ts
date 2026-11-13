@@ -34,7 +34,18 @@ test('DION actual input, engine oracles, raw spelling, five result views and edi
   await page.evaluate(()=>window.scrollTo(0,0));
   await page.evaluate(()=>window.scrollTo(0,0));
   await page.screenshot({path:info.outputPath('dion-feedback-desktop-candidates.png'),fullPage:true});
-  for(const name of ['투자구성','상품 정보','결과·이번 달 행동']) await page.getByRole('navigation',{name:'빠른 결과 5뷰'}).getByRole('button',{name:new RegExp(name)}).click();
+  for(const name of ['투자구성','상품 정보','결과·이번 달 행동']) {
+    await page.getByRole('navigation',{name:'빠른 결과 5뷰'}).getByRole('button',{name:new RegExp(name)}).click();
+    if(name==='상품 정보') await expect(page.locator('[data-product-empty]')).toContainText('대표상품 0개');
+  }
+  await page.getByRole('button',{name:/4\. 제안·선택 · 이번 달 실행 체크/}).click();
+  await expect(page.getByRole('heading',{name:'이번 달 실행 체크'})).toBeVisible();
+  await expect(page.getByText('베타: 체크 내용은 서버에 저장되지 않아요')).toBeVisible();
+  await expect(page.getByText('다음 달 다시 진단해 보세요',{exact:false})).toBeVisible();
+  const box=page.getByRole('checkbox').first();
+  await box.check();
+  await expect(box).toBeChecked();
+  await page.getByRole('button',{name:'결과로 돌아가기'}).click();
   await page.getByRole('button',{name:'입력 내용 수정 ↗'}).click();
   await page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true}).fill('320');
   await expect(page.getByText('작성값이 바뀌었어요')).toBeVisible();

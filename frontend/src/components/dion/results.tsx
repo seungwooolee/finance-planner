@@ -70,7 +70,7 @@ export function Results({view,deep,tab,setTab,stale,onEdit,explanation,technical
     {tab===1 && <ResultBasis id="OUT-05" result={result} source={sourceDoc} inputVersion={view.serverVersion??view.localVersion} stale={stale} onEdit={onEdit}/>}
     {tab===2 && (sourceDoc?<InvestmentSummary doc={sourceDoc} onEdit={onEdit}/>:<Missing row={{calc_state:"NOT_SUPPORTED"}} title="이전 입력 형식의 투자 응답"/>)}
     {tab===2 && <PortfolioChoice doc={sourceDoc} review={visible("OUT-06")} selectedPlan={selectedPlan} onPlan={setSelectedPlan} chosen={selectedPortfolio} onChoose={id=>{setSelectedPortfolio(id);setTab(3);}}/>}
-    {tab===3 && <><article className="d-card"><h2>{planName(selectedPlan)} · 상품 후보</h2><PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/><p>포트폴리오 유형의 독립 변경은 정책 연결 대기예요. 확인된 투자 답변을 바꾸려면 투자 검토로 돌아가 다시 계산해주세요.</p></article><ProductAllocation review={visible("OUT-06")} selectedPlan={selectedPlan} onEdit={onEdit}/></>}
+    {tab===3 && <><article className="d-card"><h2>{planName(selectedPlan)} · 상품 후보</h2><PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/><p>포트폴리오 유형의 독립 변경은 정책 연결 대기예요. 확인된 투자 답변을 바꾸려면 투자 검토로 돌아가 다시 계산해주세요.</p></article><ProductAllocation review={visible("OUT-06")} selectedPlan={selectedPlan} evaluationOn={textValue(object(result.context).evaluation_on)} onEdit={onEdit}/></>}
     {tab===4 && <article className="d-card"><h2>이번 달 할 일</h2>{candidates.filter(c=>c.strategy_id===selectedPlan).map(c=>{const r=list(c.rows)[0];const tasks=r?[
       {key:"protection_topup_krw",text:"보호자금 보충 검토 · 정책 최소와 확인한 유지목표 기준"},
       {key:"operating_refill_krw",text:"생활 운영자금 보충 검토"},
