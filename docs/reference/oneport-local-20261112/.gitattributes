@@ -1,0 +1,3 @@
+# Preserve historical source bytes and their recorded SHA-256 on every platform.
+*.txt -text
+docs__integration__2026-11-12-oneport-central-ledger.md.txt -diff

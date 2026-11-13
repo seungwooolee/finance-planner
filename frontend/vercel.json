@@ -3,7 +3,8 @@
   "git": {
     "deploymentEnabled": {
       "codex/result-explanation-r1": false,
-      "dion/product-policy-0.3": false
+      "dion/product-policy-0.3": false,
+      "codex/oneport-ledger-integration-20261114": false
     }
   }
 }

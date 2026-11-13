@@ -1,0 +1,105 @@
+"""Explicit SQLite receipt import. Default plan never connects to PostgreSQL."""
+import argparse
+import hashlib
+import json
+import sqlite3
+from collections import Counter
+from decimal import Decimal, InvalidOperation
+from pathlib import Path
+
+from .contract import ExplanationDraft
+from .oneport_config import ConfigurationError, OnePortConfig
+from .oneport_ledger import LedgerError
+from .oneport_postgres import PostgresOnePortLedger
+
+
+def read_source(db):
+    calls = [dict(r) for r in db.execute("SELECT * FROM calls ORDER BY operation")]
+    aliases = [dict(r) for r in db.execute("SELECT * FROM aliases ORDER BY alias")]
+    for row in calls:
+        PostgresOnePortLedger._identity(row["operation"])
+        charge = Decimal(row["charge"])
+        if not charge.is_finite() or charge < 0 or row["state"] not in {"PENDING", "FAILED", "VALIDATED"}:
+            raise LedgerError("ONEPORT_IMPORT_INVALID")
+        if not isinstance(json.loads(row["telemetry"]), dict):
+            raise LedgerError("ONEPORT_IMPORT_INVALID")
+        if row["state"] == "VALIDATED":
+            ExplanationDraft.model_validate_json(row["draft"])
+        elif row["draft"] is not None:
+            raise LedgerError("ONEPORT_IMPORT_INVALID")
+    operations = {r["operation"] for r in calls}
+    for row in aliases:
+        PostgresOnePortLedger._identity(row["alias"], row["operation"], row["fingerprint"])
+        if row["operation"] not in operations:
+            raise LedgerError("ONEPORT_IMPORT_INVALID")
+    digest = hashlib.sha256(json.dumps([calls, aliases], sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+    return calls, aliases, digest
+
+
+def import_source(db, ledger, config, expected_sha256):
+    """Caller holds SQLite BEGIN IMMEDIATE and has stopped ALL old callers."""
+    calls, aliases, digest = read_source(db)
+    if digest != expected_sha256:
+        raise LedgerError("ONEPORT_IMPORT_SOURCE_CHANGED")
+    if any(r["budget_scope"] != config.budget_scope for r in calls):
+        # Never infer another scope's approved cap or silently omit its holds.
+        raise LedgerError("ONEPORT_IMPORT_SCOPE_MISMATCH")
+    with ledger.connection() as target:
+        for row in aliases:
+            ledger._lock(target, "alias", row["alias"])
+        for row in calls:
+            ledger._lock(target, "operation", row["operation"])
+        ledger._budget(target, config)
+        for row in calls:
+            previous = target.execute("SELECT * FROM dion_oneport.calls WHERE operation=%s", (row["operation"],)).fetchone()
+            if previous:
+                same = all(previous[k] == row[k] for k in ("budget_scope", "state", "draft", "telemetry"))
+                if not same or previous["charge"] != Decimal(row["charge"]):
+                    raise LedgerError("ONEPORT_IMPORT_CONFLICT")
+            else:
+                target.execute("INSERT INTO dion_oneport.calls VALUES (%s,%s,%s,%s,%s,%s)",
+                               tuple(row[k] for k in ("operation", "budget_scope", "charge", "state", "draft", "telemetry")))
+        for row in aliases:
+            previous = target.execute("SELECT * FROM dion_oneport.aliases WHERE alias=%s", (row["alias"],)).fetchone()
+            if previous and dict(previous) != row:
+                raise LedgerError("ONEPORT_IMPORT_CONFLICT")
+            if previous is None:
+                target.execute("INSERT INTO dion_oneport.aliases VALUES (%s,%s,%s)",
+                               (row["alias"], row["fingerprint"], row["operation"]))
+    # Do not remove/mark settled/rewrite the source. Unknown holds remain intact.
+    return {"calls": len(calls), "aliases": len(aliases), "source_sha256": digest}
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("source", type=Path)
+    parser.add_argument("--apply", action="store_true")
+    parser.add_argument("--source-sha256")
+    parser.add_argument("--confirm-old-callers-stopped", action="store_true")
+    args = parser.parse_args()
+    if args.apply and (not args.confirm_old_callers_stopped or not args.source_sha256):
+        parser.error("apply requires a reviewed source SHA and confirmation all old callers stopped")
+    try:
+        uri = args.source.resolve().as_uri() + ("?mode=rw" if args.apply else "?mode=ro")
+        with sqlite3.connect(uri, uri=True, isolation_level=None) as db:
+            db.row_factory = sqlite3.Row
+            db.execute("BEGIN IMMEDIATE" if args.apply else "BEGIN")
+            calls, aliases, digest = read_source(db)
+            if args.apply:
+                config = OnePortConfig.from_env()
+                if config.ledger_backend != "postgresql":
+                    raise LedgerError("ONEPORT_IMPORT_TARGET_INVALID")
+                report = import_source(db, PostgresOnePortLedger.from_environment(), config, args.source_sha256)
+            else:
+                report = {"calls": len(calls), "aliases": len(aliases), "states": dict(Counter(r["state"] for r in calls)),
+                          "source_sha256": digest}
+            db.execute("ROLLBACK")
+        print(json.dumps({**report, "database_changed": args.apply, "postgres_connected": args.apply}))
+    except (LedgerError, ConfigurationError, sqlite3.Error, ValueError, InvalidOperation):
+        print(json.dumps({"error": "ONEPORT_CUTOVER_FAILED", "applied": "UNCONFIRMED" if args.apply else False}))
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

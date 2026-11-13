@@ -1,3 +1,11 @@
+# 2026-11-14 — OnePort 중앙 원장 로컬 변경 통합
+
+이전 작업본의 중앙 원장 구현과 최신 integration을 대조해 이미 반영된 004/identity/grant 구현을 유지하고, 누락된 SQLite 영수증 이관 도구를 최신 계약에 맞춰 연결했다. DB를 읽기 전용으로 확인할 때 중앙 원장 테이블·권한도 검사한다. 원본 로컬 변경 15개는 역사 자료로 보존하며 충돌하는 예전 003 migration은 실행하지 않는다.
+
+관련 고유110개 통과: 최초91통과·16skip, 새 준비 검사의 직접 영향15통과(기존13 중복), 테스트 전용 PostgreSQL에서 기존 skip16통과, 잠금 시간 제한 추가 후 관련10통과(신규1 포함). Ruff·pip check·비밀 패턴/공백 검사 통과. 실원장·운영DB·유료 AI·배포는 실행하지 않았다. [충돌·검증·이관 경계](integration/2026-11-14-oneport-consolidation.md).
+
+---
+
 # 2026-11-13 — 1단계 OnePort 원장 PostgreSQL 이관(무료 경로)
 
 사용자 결정: Render free에 디스크가 없으므로 원장을 중앙 PostgreSQL로 옮긴다. 운영 DB·Render·OnePort 호출은 하지 않았고 격리 PG16에서만 검증했다.

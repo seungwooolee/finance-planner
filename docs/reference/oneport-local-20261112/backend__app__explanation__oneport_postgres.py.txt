@@ -1,0 +1,142 @@
+"""Central receipts: no startup DDL, no local fallback, no paid network calls."""
+import json
+import re
+from contextlib import contextmanager
+from decimal import Decimal
+
+import psycopg
+from psycopg.rows import dict_row
+
+from ..be.postgres import PostgresStore
+from ..be.raw_store import PocError
+from .oneport_ledger import LedgerError
+
+
+class PostgresOnePortLedger:
+    def __init__(self, parameters):
+        self.parameters = dict(parameters)
+
+    @classmethod
+    def from_environment(cls):
+        try:
+            return cls(PostgresStore.from_environment().parameters)
+        except (PocError, ValueError, OverflowError):
+            raise LedgerError("ONEPORT_LEDGER_UNAVAILABLE") from None
+
+    @contextmanager
+    def connection(self, *, readonly=False):
+        try:
+            with psycopg.connect(**self.parameters, row_factory=dict_row, prepare_threshold=None) as db:
+                if readonly:
+                    db.execute("SET TRANSACTION READ ONLY")
+                db.execute("SET LOCAL lock_timeout = '2s'")
+                db.execute("SET LOCAL statement_timeout = '5s'")
+                yield db
+        except psycopg.Error:
+            # Never leak host/credentials, SQL text or stored selections.
+            raise LedgerError("ONEPORT_LEDGER_UNAVAILABLE") from None
+
+    @staticmethod
+    def _identity(*values):
+        if any(not isinstance(v, str) or not re.fullmatch(r"[0-9a-f]{64}", v) for v in values):
+            raise LedgerError("ONEPORT_LEDGER_ID_INVALID")
+
+    @staticmethod
+    def _lock(db, kind, value):
+        # Stable across processes/hosts; hash collisions only serialize extra work.
+        db.execute("SELECT pg_advisory_xact_lock(hashtextextended(%s, 0))", ("dion-oneport:" + kind + ":" + value,))
+
+    @staticmethod
+    def _budget(db, config):
+        db.execute("""INSERT INTO dion_oneport.budgets VALUES (%s,%s,%s)
+                      ON CONFLICT (budget_scope) DO NOTHING""",
+                   (config.budget_scope, config.budget_credits, config.max_calls))
+        row = db.execute("SELECT * FROM dion_oneport.budgets WHERE budget_scope=%s FOR UPDATE",
+                         (config.budget_scope,)).fetchone()
+        if row["budget_credits"] != config.budget_credits or row["max_calls"] != config.max_calls:
+            raise LedgerError("ONEPORT_BUDGET_SCOPE_CONFLICT")
+
+    def reserve(self, operation, alias, fingerprint, config):
+        self._identity(operation, alias, fingerprint)
+        config.validate()
+        with self.connection() as db:
+            self._lock(db, "alias", alias)
+            previous = db.execute("SELECT * FROM dion_oneport.aliases WHERE alias=%s", (alias,)).fetchone()
+            if previous and previous["fingerprint"] != fingerprint:
+                raise LedgerError("IDEMPOTENCY_CONFLICT")
+            if previous:
+                operation = previous["operation"]
+            self._lock(db, "operation", operation)
+            row = db.execute("SELECT * FROM dion_oneport.calls WHERE operation=%s", (operation,)).fetchone()
+            if row is None:
+                self._budget(db, config)
+                # Locking the scope serializes all reservations/settlement charges,
+                # including requests with different operation and alias hashes.
+                spent = db.execute("""SELECT count(*) AS count,coalesce(sum(charge),0) AS charge
+                                      FROM dion_oneport.calls WHERE budget_scope=%s""",
+                                   (config.budget_scope,)).fetchone()
+                if spent["count"] >= config.max_calls or spent["charge"] + config.reserve_credits > config.budget_credits:
+                    raise LedgerError("ONEPORT_BUDGET_LIMIT")
+                db.execute("INSERT INTO dion_oneport.calls VALUES (%s,%s,%s,'PENDING',NULL,'{}')",
+                           (operation, config.budget_scope, config.reserve_credits))
+            if previous is None:
+                db.execute("INSERT INTO dion_oneport.aliases VALUES (%s,%s,%s)", (alias, fingerprint, operation))
+            if row is not None:
+                row["charge"] = str(row["charge"])
+            # Context manager commits BEFORE returning to the caller/paid dispatch.
+            return operation, row
+
+    def headers(self, operation, telemetry):
+        self._identity(operation)
+        with self.connection() as db:
+            self._lock(db, "operation", operation)
+            row = db.execute("UPDATE dion_oneport.calls SET telemetry=%s WHERE operation=%s AND state='PENDING' RETURNING operation",
+                             (json.dumps(telemetry), operation)).fetchone()
+            if row is None:
+                raise LedgerError("ONEPORT_RECEIPT_NOT_PENDING")
+
+    def finish(self, operation, draft, telemetry):
+        self._identity(operation)
+        cost = telemetry.get("cost_credits")
+        if cost is not None:
+            cost = Decimal(cost)
+            if not cost.is_finite() or cost < 0:
+                raise LedgerError("ONEPORT_SETTLEMENT_INVALID")
+        with self.connection() as db:
+            self._lock(db, "operation", operation)
+            row = db.execute("SELECT * FROM dion_oneport.calls WHERE operation=%s", (operation,)).fetchone()
+            if row is None or row["state"] != "PENDING":
+                raise LedgerError("ONEPORT_RECEIPT_NOT_PENDING")
+            db.execute("SELECT budget_scope FROM dion_oneport.budgets WHERE budget_scope=%s FOR UPDATE",
+                       (row["budget_scope"],))
+            # Preserve the complete reservation even if reported cost is lower;
+            # unknown execution/settlement never releases a hold or creates a retry.
+            charge = max(row["charge"], cost) if cost is not None else row["charge"]
+            db.execute("UPDATE dion_oneport.calls SET charge=%s,state=%s,draft=%s,telemetry=%s WHERE operation=%s",
+                       (charge, "VALIDATED" if draft is not None else "FAILED",
+                        json.dumps(draft) if draft is not None else None, json.dumps(telemetry), operation))
+
+    def check_ready(self):
+        expected = {
+            "budgets": {"budget_scope", "budget_credits", "max_calls"},
+            "calls": {"operation", "budget_scope", "charge", "state", "draft", "telemetry"},
+            "aliases": {"alias", "fingerprint", "operation"},
+        }
+        with self.connection(readonly=True) as db:
+            columns = db.execute("SELECT table_name,column_name FROM information_schema.columns WHERE table_schema='dion_oneport'").fetchall()
+            found = {(r["table_name"], r["column_name"]) for r in columns}
+            if any((t, c) not in found for t, cols in expected.items() for c in cols):
+                return "ONEPORT_SCHEMA_INCOMPLETE"
+            exposed = db.execute("""SELECT EXISTS (
+                SELECT 1 FROM pg_namespace n CROSS JOIN LATERAL aclexplode(n.nspacl) a
+                WHERE n.nspname='dion_oneport' AND a.grantee=0
+                UNION ALL SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
+                CROSS JOIN LATERAL aclexplode(c.relacl) a WHERE n.nspname='dion_oneport' AND a.grantee=0) AS exposed""").fetchone()["exposed"]
+            usable = db.execute("""SELECT c.relname,
+                (has_table_privilege(c.oid,'SELECT') AND has_table_privilege(c.oid,'INSERT')) AS usable,
+                has_table_privilege(c.oid,'UPDATE') AS mutable FROM pg_class c
+                JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='dion_oneport' AND c.relkind='r'""").fetchall()
+            if (exposed or not set(expected) <= {r["relname"] for r in usable if r["usable"]}
+                    or not any(r["relname"] == "calls" and r["mutable"] for r in usable)):
+                return "ONEPORT_PRIVILEGES_UNSAFE"
+        return "READY"

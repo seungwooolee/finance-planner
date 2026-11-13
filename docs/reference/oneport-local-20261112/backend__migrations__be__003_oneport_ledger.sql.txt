@@ -1,0 +1,27 @@
+-- Explicit LOCAL validation first. Not part of the approved remote 002 apply.
+-- Additive, separate from customer raw answers and immutable analysis history.
+CREATE SCHEMA IF NOT EXISTS dion_oneport;
+REVOKE ALL ON SCHEMA dion_oneport FROM PUBLIC;
+CREATE TABLE IF NOT EXISTS dion_oneport.budgets (
+    budget_scope TEXT PRIMARY KEY CHECK (length(budget_scope) BETWEEN 1 AND 128),
+    budget_credits NUMERIC NOT NULL CHECK (budget_credits > 0 AND budget_credits < 'Infinity'::numeric),
+    max_calls INTEGER NOT NULL CHECK (max_calls BETWEEN 1 AND 100)
+);
+CREATE TABLE IF NOT EXISTS dion_oneport.calls (
+    operation TEXT PRIMARY KEY CHECK (operation ~ '^[0-9a-f]{64}$'),
+    budget_scope TEXT NOT NULL REFERENCES dion_oneport.budgets,
+    charge NUMERIC NOT NULL CHECK (charge >= 0 AND charge < 'Infinity'::numeric),
+    state TEXT NOT NULL CHECK (state IN ('PENDING','VALIDATED','FAILED')),
+    draft TEXT,
+    telemetry TEXT NOT NULL,
+    CHECK ((state = 'VALIDATED') = (draft IS NOT NULL))
+);
+CREATE INDEX IF NOT EXISTS oneport_calls_budget ON dion_oneport.calls(budget_scope);
+CREATE TABLE IF NOT EXISTS dion_oneport.aliases (
+    alias TEXT PRIMARY KEY CHECK (alias ~ '^[0-9a-f]{64}$'),
+    fingerprint TEXT NOT NULL CHECK (fingerprint ~ '^[0-9a-f]{64}$'),
+    operation TEXT NOT NULL REFERENCES dion_oneport.calls
+);
+REVOKE ALL ON ALL TABLES IN SCHEMA dion_oneport FROM PUBLIC;
+-- Reversal is intentionally not automated: dropping receipts can cause duplicate
+-- paid calls. Disable the provider and retain the schema/history when reverting.
