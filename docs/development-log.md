@@ -1,3 +1,14 @@
+# 2026-11-13 — 1단계 OnePort 원장 PostgreSQL 이관(무료 경로)
+
+사용자 결정: Render free에 디스크가 없으므로 원장을 중앙 PostgreSQL로 옮긴다. 운영 DB·Render·OnePort 호출은 하지 않았고 격리 PG16에서만 검증했다.
+
+- 추가: `migrations/be/004_oneport_ledger.sql`(+rollback), `app/explanation/oneport_pg_ledger.py`(`PgOnePortLedger`, 기존 SQLite 원장과 같은 reserve/headers/finish 계약, 예산 scope는 grant 행 잠금, alias는 advisory lock으로 직렬화), `DION_ONEPORT_LEDGER_BACKEND=postgres` 설정. 기본값은 `sqlite`이며 기존 SQLite 규칙은 그대로다. postgres 백엔드는 디스크 확인(SCOPE/PERSISTENT/PATH)을 요구하지 않고 `LEDGER_ID`는 계속 요구한다.
+- 일회성 설정: 004 적용 후 `python -m app.explanation.oneport_pg_ledger`가 현재 `DION_ONEPORT_BUDGET_*`로 새 identity를 만들어 출력한다. 이미 있으면 `ONEPORT_LEDGER_ALREADY_EXISTS`. 분실한 원장 identity는 재생성하지 않는다.
+- 검증(격리 PG16): `tests/be/test_oneport_pg_ledger.py` 12 passed — 8개 독립 연결 동시 예산 예약 1건만 성공, 같은 request key 동시 요청 1 operation, 새 연결에서 PENDING·alias 유지, 승인 grant 확장 차단, 미확인 정산 hold 유지·비용 하향 불가, 다른 worker 서비스에서 완료 결과 재사용(게이트웨이 재호출 없음), identity 누락 차단. 전체 backend pytest 961 passed(PG 포함), Ruff·pip check 통과.
+- 남은 일: 운영 DB에 003·004 적용과 provisioning, OnePort 사용량 대사(SQLite 원장은 free 디스크 부재로 보존되지 않았을 수 있음), 게이트웨이 일일 하드캡 확인 후 유료 호출 승인.
+
+---
+
 # 2026-11-13 — GitHub 보존 요청·개발 체크포인트 인계
 
 사용자의 명시 요청으로 `codex/result-explanation-r1`의 지금까지 작업을 커밋·푸시할 준비를 했다. 시작 HEAD733bb47, 원격 fetch 뒤 ahead0/behind0이었다. 변경63파일(기존 수정36·추가27), 합계1,816,999바이트의 경로·알려진 비밀 패턴·충돌 표식·금지 파일0, JSON6개 파싱 통과다. 인계 문서를 추가하고 staged 검사 후 일반 푸시와 원격 SHA 대조를 수행한다. 기존 검증 기록을 보존하며 전체 테스트·실계정·유료 API·DB migration·배포는 새로 실행하지 않는다.
