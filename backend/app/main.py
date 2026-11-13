@@ -1,18 +1,17 @@
-"""LifePath AI HTTP boundary: validate requests, then run the Decimal engine."""
+"""Base FastAPI app: Decimal-preserving JSON parsing, validation errors and /health.
+
+The legacy Iteration 1 /api/calculate and /api/sample-profile routes were retired;
+DION routes are mounted by app.be_server."""
 
 import json
 from decimal import Decimal
 from math import isfinite
-from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.routing import APIRoute
-
-from .engine import calculate_plan
-from .models import CalculationResponse, Profile
 
 
 class DecimalRequest(Request):
@@ -36,7 +35,6 @@ class DecimalRoute(APIRoute):
 
 app = FastAPI(title="LifePath AI", version="0.1.0")
 app.router.route_class = DecimalRoute
-SAMPLE_PROFILE_PATH = Path(__file__).resolve().parents[2] / "data" / "sample-profile.json"
 
 
 def json_safe_errors(value):
@@ -59,13 +57,3 @@ async def validation_error_handler(_request: Request, error: RequestValidationEr
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
-
-
-@app.get("/api/sample-profile", response_model=Profile)
-def sample_profile() -> Profile:
-    return Profile.model_validate_json(SAMPLE_PROFILE_PATH.read_text(encoding="utf-8"))
-
-
-@app.post("/api/calculate", response_model=CalculationResponse)
-def calculate(profile: Profile) -> CalculationResponse:
-    return CalculationResponse(input=profile, **calculate_plan(profile.engine_inputs()))
