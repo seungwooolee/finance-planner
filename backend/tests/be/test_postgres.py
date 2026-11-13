@@ -156,9 +156,9 @@ def test_pg_api_uses_actual_database_and_engine_with_mock_login(pg_store):
     base = "/api/be/v1/cases/case-1"
     payload = {"expected_version": 6, "request_key": "api-pg", "context": CONTEXT,
                "requested_outputs": ["OUT-01", "OUT-03"]}
-    response = client.post(base + "/analyses", json=payload)
-    assert response.status_code == 200, response.text
-    result = client.get(base + "/analyses/" + response.json()["run_id"]).json()
+    assert client.post(base + "/analyses", json=payload).status_code == 405
+    run_id = pg_store.analyze("mock-actor-A", "case-1", 6, "api-pg", CONTEXT, payload["requested_outputs"])["run_id"]
+    result = client.get(base + "/analyses/" + run_id).json()
     assert result["result"]["results"]["OUT-03"]["after_existing_contributions_krw"] == "500000"
 
 
