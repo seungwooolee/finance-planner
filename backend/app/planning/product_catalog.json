@@ -1,13 +1,13 @@
 {
   "schema_version": "DION-PRODUCT-CATALOG-0.2",
-  "version": "DION-PRODUCT-CATALOG-20261111-0.2",
+  "version": "DION-PRODUCT-CATALOG-20261113-0.3.1",
   "research_reviewed_on": "2026-11-11",
   "research_excluded_count": 22,
   "products": [
     {
       "code": "069500",
       "name": "KODEX 200",
-      "official_source": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+      "official_source": "https://www.samsungfund.com/upload/invest/2ETF01-A.pdf",
       "identity_source_row": "01_주식형:2",
       "recommendation_eligible": true,
       "facts": {
@@ -27,94 +27,84 @@
         "benchmark": "KOSPI 200",
         "evidence": {
           "risk_grade": {
-            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF01-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-03-31",
-            "observed_on": "2026-11-11",
-            "locator": "PDF 14쪽, 종목코드 069500 상품 카드",
-            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
-            "source_id": "Sf515d82b6900"
+            "source_as_of": "2026-09-11",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·8·25쪽",
+            "source_id": "R20261113-069500"
           },
           "annual_base_fee_percent": {
-            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF01-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-03-31",
-            "observed_on": "2026-11-11",
-            "locator": "PDF 14쪽, 종목코드 069500 상품 카드",
-            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
-            "source_id": "Sf515d82b6900"
+            "source_as_of": "2026-09-11",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 제2부 13항 보수 및 수수료 표, PDF 35~36쪽",
+            "source_id": "R20261113-069500"
           },
           "annual_total_expense_percent": {
-            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF01-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-03-31",
-            "observed_on": "2026-11-11",
-            "locator": "PDF 14쪽, 종목코드 069500 상품 카드",
-            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
-            "source_id": "Sf515d82b6900"
+            "source_as_of": "2026-09-11",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 제2부 13항 보수 및 수수료 표, PDF 35~36쪽",
+            "source_id": "R20261113-069500"
           },
           "transaction_cost_percent": {
-            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF01-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-03-31",
-            "observed_on": "2026-11-11",
-            "locator": "PDF 14쪽, 종목코드 069500 상품 카드",
-            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
-            "source_id": "Sf515d82b6900"
+            "source_as_of": "2026-09-11",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 제2부 13항 보수 및 수수료 표, PDF 35~36쪽",
+            "source_id": "R20261113-069500"
           },
           "asset_class": {
-            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF01-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-03-31",
-            "observed_on": "2026-11-11",
-            "locator": "PDF 14쪽, 종목코드 069500 상품 카드",
-            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
-            "source_id": "Sf515d82b6900"
+            "source_as_of": "2026-09-11",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·8·25쪽",
+            "source_id": "R20261113-069500"
           },
           "fx_exposed": {
-            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF01-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-03-31",
-            "observed_on": "2026-11-11",
-            "locator": "PDF 14쪽, 종목코드 069500 상품 카드",
-            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
-            "source_id": "Sf515d82b6900"
+            "source_as_of": "2026-09-11",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·8·25쪽",
+            "source_id": "R20261113-069500"
           },
           "foreign_underlying": {
-            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF01-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-03-31",
-            "observed_on": "2026-11-11",
-            "locator": "PDF 14쪽, 종목코드 069500 상품 카드",
-            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
-            "source_id": "Sf515d82b6900"
+            "source_as_of": "2026-09-11",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·8·25쪽",
+            "source_id": "R20261113-069500"
           },
           "principal_loss_possible": {
-            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF01-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-03-31",
-            "observed_on": "2026-11-11",
-            "locator": "PDF 14쪽, 종목코드 069500 상품 카드",
-            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
-            "source_id": "Sf515d82b6900"
+            "source_as_of": "2026-09-11",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·8·25쪽",
+            "source_id": "R20261113-069500"
           },
           "deposit_protected": {
-            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF01-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-03-31",
-            "observed_on": "2026-11-11",
-            "locator": "PDF 14쪽, 종목코드 069500 상품 카드",
-            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
-            "source_id": "Sf515d82b6900"
+            "source_as_of": "2026-09-11",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·8·25쪽",
+            "source_id": "R20261113-069500"
           },
           "leveraged_inverse": {
-            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF01-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-03-31",
-            "observed_on": "2026-11-11",
-            "locator": "PDF 14쪽, 종목코드 069500 상품 카드",
-            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
-            "source_id": "Sf515d82b6900"
+            "source_as_of": "2026-09-11",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·8·25쪽",
+            "source_id": "R20261113-069500"
           },
           "listing_reference_confirmed": {
             "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
@@ -143,23 +133,22 @@
             "source_id": "S5d95d76043a8"
           },
           "benchmark": {
-            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF01-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-03-31",
-            "observed_on": "2026-11-11",
-            "locator": "PDF 14쪽, 종목코드 069500 상품 카드",
-            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
-            "source_id": "Sf515d82b6900"
+            "source_as_of": "2026-09-11",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·8·25쪽",
+            "source_id": "R20261113-069500"
           }
         }
       },
       "review": {
-        "reviewed_on": "2026-11-11",
-        "valid_until": "2026-12-11",
+        "reviewed_on": "2026-11-13",
+        "valid_until": "2027-01-12",
         "scope": "OFFICIAL_DISCLOSURES_FOR_PREVIEW"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "KR_BROAD_EQUITY",
         "benchmark_group": "KOSPI200",
         "minimum_holding_days": 1825,
@@ -226,7 +215,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "KR_BROAD_EQUITY",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -295,7 +284,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "GROWTH_CONCENTRATED",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -311,7 +300,7 @@
     {
       "code": "360200",
       "name": "ACE 미국S&P500",
-      "official_source": "https://kind.krx.co.kr/external/2026/10/28/000603/20261028001589/68659.htm",
+      "official_source": "https://ftp.kim.co.kr/doc/M00001/M00003/20260209/215690/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS&P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81(%EC%A3%BC%EC%8B%9D)%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
       "identity_source_row": "01_주식형:5",
       "recommendation_eligible": true,
       "facts": {
@@ -330,94 +319,84 @@
         "cash_conversion": "KRX_T_PLUS_2_BUSINESS_DAYS",
         "evidence": {
           "risk_grade": {
-            "url": "https://papi.aceetf.co.kr/api/funds/K55101D78195",
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00003/20260209/215690/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS&P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81(%EC%A3%BC%EC%8B%9D)%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-11-10",
-            "observed_on": "2026-11-11",
-            "locator": "공식 사이트 공개 API: stockCd, riskLevelCode, stdDt",
-            "sha256": "a4f9cae52ae96848b3b9954d18599322c2563d52447ac52ea31002acb067eaa2",
-            "source_id": "Sa33fc4818f22"
+            "source_as_of": "2025-12-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지, PDF 23~24쪽",
+            "source_id": "R20261113-360200"
           },
           "annual_base_fee_percent": {
-            "url": "https://papi.aceetf.co.kr/api/funds/K55101D78195/product",
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00003/20260209/215690/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS&P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81(%EC%A3%BC%EC%8B%9D)%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-11-10",
-            "observed_on": "2026-11-11",
-            "locator": "공식 사이트 공개 API: baseIndexName, total_FEE와 보수 성분",
-            "sha256": "a4f9cae52ae96848b3b9954d18599322c2563d52447ac52ea31002acb067eaa2",
-            "source_id": "Se9620dbc4e50"
+            "source_as_of": "2025-12-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 제2부 13항 보수 및 수수료 표·주1~5, PDF 44~45쪽",
+            "source_id": "R20261113-360200"
           },
           "benchmark": {
-            "url": "https://papi.aceetf.co.kr/api/funds/K55101D78195/product",
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00003/20260209/215690/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS&P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81(%EC%A3%BC%EC%8B%9D)%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-11-10",
-            "observed_on": "2026-11-11",
-            "locator": "공식 사이트 공개 API: baseIndexName, total_FEE와 보수 성분",
-            "sha256": "a4f9cae52ae96848b3b9954d18599322c2563d52447ac52ea31002acb067eaa2",
-            "source_id": "Se9620dbc4e50"
+            "source_as_of": "2025-12-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지, PDF 23~24쪽",
+            "source_id": "R20261113-360200"
           },
           "annual_total_expense_percent": {
-            "url": "https://ftp.kim.co.kr/doc/M00001/M00028/20260209/215758/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS%26P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81%28%EC%A3%BC%EC%8B%9D%29%EA%B0%84%EC%9D%B4%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00003/20260209/215690/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS&P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81(%EC%A3%BC%EC%8B%9D)%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
             "source_as_of": "2025-12-31",
-            "observed_on": "2026-11-11",
-            "locator": "간이투자설명서 1쪽 위험등급/비용표, 2~3쪽 환율위험. 효력발생일 20260213",
-            "sha256": "a79df46f21860f8fb767e0789e1de6db4fbc0daa325bd8ff6a8fbd10ef418276",
-            "source_id": "S753a5f608399"
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 제2부 13항 보수 및 수수료 표·주1~5, PDF 44~45쪽",
+            "source_id": "R20261113-360200"
           },
           "fx_exposed": {
-            "url": "https://ftp.kim.co.kr/doc/M00001/M00028/20260209/215758/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS%26P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81%28%EC%A3%BC%EC%8B%9D%29%EA%B0%84%EC%9D%B4%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00003/20260209/215690/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS&P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81(%EC%A3%BC%EC%8B%9D)%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
             "source_as_of": "2025-12-31",
-            "observed_on": "2026-11-11",
-            "locator": "간이투자설명서 1쪽 위험등급/비용표, 2~3쪽 환율위험. 효력발생일 20260213",
-            "sha256": "a79df46f21860f8fb767e0789e1de6db4fbc0daa325bd8ff6a8fbd10ef418276",
-            "source_id": "S753a5f608399"
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지, PDF 23~24쪽",
+            "source_id": "R20261113-360200"
           },
           "principal_loss_possible": {
-            "url": "https://ftp.kim.co.kr/doc/M00001/M00028/20260209/215758/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS%26P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81%28%EC%A3%BC%EC%8B%9D%29%EA%B0%84%EC%9D%B4%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00003/20260209/215690/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS&P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81(%EC%A3%BC%EC%8B%9D)%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
             "source_as_of": "2025-12-31",
-            "observed_on": "2026-11-11",
-            "locator": "간이투자설명서 1쪽 위험등급/비용표, 2~3쪽 환율위험. 효력발생일 20260213",
-            "sha256": "a79df46f21860f8fb767e0789e1de6db4fbc0daa325bd8ff6a8fbd10ef418276",
-            "source_id": "S753a5f608399"
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지, PDF 23~24쪽",
+            "source_id": "R20261113-360200"
           },
           "deposit_protected": {
-            "url": "https://ftp.kim.co.kr/doc/M00001/M00028/20260209/215758/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS%26P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81%28%EC%A3%BC%EC%8B%9D%29%EA%B0%84%EC%9D%B4%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00003/20260209/215690/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS&P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81(%EC%A3%BC%EC%8B%9D)%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
             "source_as_of": "2025-12-31",
-            "observed_on": "2026-11-11",
-            "locator": "간이투자설명서 1쪽 위험등급/비용표, 2~3쪽 환율위험. 효력발생일 20260213",
-            "sha256": "a79df46f21860f8fb767e0789e1de6db4fbc0daa325bd8ff6a8fbd10ef418276",
-            "source_id": "S753a5f608399"
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지, PDF 23~24쪽",
+            "source_id": "R20261113-360200"
           },
           "asset_class": {
-            "url": "https://ftp.kim.co.kr/doc/M00001/M00028/20260209/215758/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS%26P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81%28%EC%A3%BC%EC%8B%9D%29%EA%B0%84%EC%9D%B4%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00003/20260209/215690/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS&P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81(%EC%A3%BC%EC%8B%9D)%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
             "source_as_of": "2025-12-31",
-            "observed_on": "2026-11-11",
-            "locator": "간이투자설명서 1쪽 위험등급/비용표, 2~3쪽 환율위험. 효력발생일 20260213",
-            "sha256": "a79df46f21860f8fb767e0789e1de6db4fbc0daa325bd8ff6a8fbd10ef418276",
-            "source_id": "S753a5f608399"
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지, PDF 23~24쪽",
+            "source_id": "R20261113-360200"
           },
           "foreign_underlying": {
-            "url": "https://ftp.kim.co.kr/doc/M00001/M00028/20260209/215758/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS%26P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81%28%EC%A3%BC%EC%8B%9D%29%EA%B0%84%EC%9D%B4%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00003/20260209/215690/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS&P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81(%EC%A3%BC%EC%8B%9D)%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
             "source_as_of": "2025-12-31",
-            "observed_on": "2026-11-11",
-            "locator": "간이투자설명서 1쪽 위험등급/비용표, 2~3쪽 환율위험. 효력발생일 20260213",
-            "sha256": "a79df46f21860f8fb767e0789e1de6db4fbc0daa325bd8ff6a8fbd10ef418276",
-            "source_id": "S753a5f608399"
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지, PDF 23~24쪽",
+            "source_id": "R20261113-360200"
           },
           "leveraged_inverse": {
-            "url": "https://ftp.kim.co.kr/doc/M00001/M00028/20260209/215758/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS%26P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81%28%EC%A3%BC%EC%8B%9D%29%EA%B0%84%EC%9D%B4%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00003/20260209/215690/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS&P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81(%EC%A3%BC%EC%8B%9D)%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
             "source_as_of": "2025-12-31",
-            "observed_on": "2026-11-11",
-            "locator": "간이투자설명서 1쪽 위험등급/비용표, 2~3쪽 환율위험. 효력발생일 20260213",
-            "sha256": "a79df46f21860f8fb767e0789e1de6db4fbc0daa325bd8ff6a8fbd10ef418276",
-            "source_id": "S753a5f608399"
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지, PDF 23~24쪽",
+            "source_id": "R20261113-360200"
           },
           "listing_reference_confirmed": {
             "url": "https://ftp.kim.co.kr/doc/M00001/M00028/20260209/215758/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS%26P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81%28%EC%A3%BC%EC%8B%9D%29%EA%B0%84%EC%9D%B4%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
@@ -444,16 +423,25 @@
             "observed_on": "2026-11-11",
             "locator": "ETF 거래 결제: 매매체결일로부터 2영업일. 휴장/매도 체결/개별 증권사 출금은 별도",
             "source_id": "S5d95d76043a8"
+          },
+          "transaction_cost_percent": {
+            "url": "https://ftp.kim.co.kr/doc/M00001/M00003/20260209/215690/1/9001Y_20260213_%ED%95%9C%EA%B5%AD%ED%88%AC%EC%9E%90ACE%EB%AF%B8%EA%B5%ADS&P500%EC%A6%9D%EA%B6%8C%EC%83%81%EC%9E%A5%EC%A7%80%EC%88%98%ED%88%AC%EC%9E%90%EC%8B%A0%ED%83%81(%EC%A3%BC%EC%8B%9D)%ED%88%AC%EC%9E%90%EC%84%A4%EB%AA%85%EC%84%9C.pdf",
+            "kind": "OFFICIAL_DISCLOSURE",
+            "source_as_of": "2025-12-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 제2부 13항 보수 및 수수료 표·주1~5, PDF 44~45쪽",
+            "source_id": "R20261113-360200"
           }
-        }
+        },
+        "transaction_cost_percent": "0.0303"
       },
       "review": {
-        "reviewed_on": "2026-11-11",
-        "valid_until": "2026-12-11",
+        "reviewed_on": "2026-11-13",
+        "valid_until": "2027-01-12",
         "scope": "OFFICIAL_DISCLOSURES_FOR_PREVIEW"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "US_BROAD_EQUITY",
         "benchmark_group": "SP500",
         "minimum_holding_days": 1825,
@@ -467,14 +455,14 @@
     {
       "code": "360750",
       "name": "TIGER 미국S&P500",
-      "official_source": "https://kind.krx.co.kr/disclosure/etfisudetail.do?isuCd=KR7360750004&menuIndex=0&method=searchEftIsuDetail",
+      "official_source": "https://image.kebhana.com/cont/download/disclosure/zaryo_tiger_20261008.zip",
       "identity_source_row": "01_주식형:6",
       "recommendation_eligible": true,
       "facts": {
         "risk_grade": 2,
         "annual_base_fee_percent": "0.0068",
-        "annual_total_expense_percent": "0.0868",
-        "transaction_cost_percent": "0.0396",
+        "annual_total_expense_percent": "0.0668",
+        "transaction_cost_percent": null,
         "asset_class": "EQUITY",
         "fx_exposed": true,
         "foreign_underlying": true,
@@ -487,94 +475,76 @@
         "benchmark": "S&P 500",
         "evidence": {
           "risk_grade": {
-            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "url": "https://image.kebhana.com/cont/download/disclosure/zaryo_tiger_20261008.zip",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-02-13",
-            "observed_on": "2026-11-11",
-            "locator": "운용사 제작 자료 PDF 44쪽 360750 상품개요",
-            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
-            "source_id": "S23a21c0c23d4"
+            "source_as_of": "2026-10-01",
+            "observed_on": "2026-11-13",
+            "locator": "같은 투자설명서 표지·PDF 1·4쪽",
+            "source_id": "R20261113-360750"
           },
           "annual_base_fee_percent": {
-            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "url": "https://image.kebhana.com/cont/download/disclosure/zaryo_tiger_20261008.zip",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-02-13",
-            "observed_on": "2026-11-11",
-            "locator": "운용사 제작 자료 PDF 44쪽 360750 상품개요",
-            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
-            "source_id": "S23a21c0c23d4"
+            "source_as_of": "2026-10-01",
+            "observed_on": "2026-11-13",
+            "locator": "하나은행 2026-10-08 수시공시 ZIP 내 투자설명서_TIGER미국S&P500_20261008.pdf, 제2부 13항 표·주1~2, PDF 32~33쪽",
+            "source_id": "R20261113-360750"
           },
           "annual_total_expense_percent": {
-            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "url": "https://image.kebhana.com/cont/download/disclosure/zaryo_tiger_20261008.zip",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-02-13",
-            "observed_on": "2026-11-11",
-            "locator": "운용사 제작 자료 PDF 44쪽 360750 상품개요",
-            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
-            "source_id": "S23a21c0c23d4"
-          },
-          "transaction_cost_percent": {
-            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
-            "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-02-13",
-            "observed_on": "2026-11-11",
-            "locator": "운용사 제작 자료 PDF 44쪽 360750 상품개요",
-            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
-            "source_id": "S23a21c0c23d4"
+            "source_as_of": "2026-10-01",
+            "observed_on": "2026-11-13",
+            "locator": "하나은행 2026-10-08 수시공시 ZIP 내 투자설명서_TIGER미국S&P500_20261008.pdf, 제2부 13항 표·주1~2, PDF 32~33쪽",
+            "source_id": "R20261113-360750"
           },
           "asset_class": {
-            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "url": "https://image.kebhana.com/cont/download/disclosure/zaryo_tiger_20261008.zip",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-02-13",
-            "observed_on": "2026-11-11",
-            "locator": "운용사 제작 자료 PDF 44쪽 360750 상품개요",
-            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
-            "source_id": "S23a21c0c23d4"
+            "source_as_of": "2026-10-01",
+            "observed_on": "2026-11-13",
+            "locator": "같은 투자설명서 표지·PDF 1·4쪽",
+            "source_id": "R20261113-360750"
           },
           "fx_exposed": {
-            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "url": "https://image.kebhana.com/cont/download/disclosure/zaryo_tiger_20261008.zip",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-02-13",
-            "observed_on": "2026-11-11",
-            "locator": "운용사 제작 자료 PDF 44쪽 360750 상품개요",
-            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
-            "source_id": "S23a21c0c23d4"
+            "source_as_of": "2026-10-01",
+            "observed_on": "2026-11-13",
+            "locator": "같은 투자설명서 표지·PDF 1·4쪽",
+            "source_id": "R20261113-360750"
           },
           "foreign_underlying": {
-            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "url": "https://image.kebhana.com/cont/download/disclosure/zaryo_tiger_20261008.zip",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-02-13",
-            "observed_on": "2026-11-11",
-            "locator": "운용사 제작 자료 PDF 44쪽 360750 상품개요",
-            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
-            "source_id": "S23a21c0c23d4"
+            "source_as_of": "2026-10-01",
+            "observed_on": "2026-11-13",
+            "locator": "같은 투자설명서 표지·PDF 1·4쪽",
+            "source_id": "R20261113-360750"
           },
           "principal_loss_possible": {
-            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "url": "https://image.kebhana.com/cont/download/disclosure/zaryo_tiger_20261008.zip",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-02-13",
-            "observed_on": "2026-11-11",
-            "locator": "운용사 제작 자료 PDF 44쪽 360750 상품개요",
-            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
-            "source_id": "S23a21c0c23d4"
+            "source_as_of": "2026-10-01",
+            "observed_on": "2026-11-13",
+            "locator": "같은 투자설명서 표지·PDF 1·4쪽",
+            "source_id": "R20261113-360750"
           },
           "deposit_protected": {
-            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "url": "https://image.kebhana.com/cont/download/disclosure/zaryo_tiger_20261008.zip",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-02-13",
-            "observed_on": "2026-11-11",
-            "locator": "운용사 제작 자료 PDF 44쪽 360750 상품개요",
-            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
-            "source_id": "S23a21c0c23d4"
+            "source_as_of": "2026-10-01",
+            "observed_on": "2026-11-13",
+            "locator": "같은 투자설명서 표지·PDF 1·4쪽",
+            "source_id": "R20261113-360750"
           },
           "leveraged_inverse": {
-            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "url": "https://image.kebhana.com/cont/download/disclosure/zaryo_tiger_20261008.zip",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-02-13",
-            "observed_on": "2026-11-11",
-            "locator": "운용사 제작 자료 PDF 44쪽 360750 상품개요",
-            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
-            "source_id": "S23a21c0c23d4"
+            "source_as_of": "2026-10-01",
+            "observed_on": "2026-11-13",
+            "locator": "같은 투자설명서 표지·PDF 1·4쪽",
+            "source_id": "R20261113-360750"
           },
           "listing_reference_confirmed": {
             "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
@@ -603,23 +573,22 @@
             "source_id": "S5d95d76043a8"
           },
           "benchmark": {
-            "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+            "url": "https://image.kebhana.com/cont/download/disclosure/zaryo_tiger_20261008.zip",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-02-13",
-            "observed_on": "2026-11-11",
-            "locator": "운용사 제작 자료 PDF 44쪽 360750 상품개요",
-            "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
-            "source_id": "S23a21c0c23d4"
+            "source_as_of": "2026-10-01",
+            "observed_on": "2026-11-13",
+            "locator": "같은 투자설명서 표지·PDF 1·4쪽",
+            "source_id": "R20261113-360750"
           }
         }
       },
       "review": {
-        "reviewed_on": "2026-11-11",
-        "valid_until": "2026-12-11",
+        "reviewed_on": "2026-11-13",
+        "valid_until": "2027-01-12",
         "scope": "OFFICIAL_DISCLOSURES_FOR_PREVIEW"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "US_BROAD_EQUITY",
         "benchmark_group": "SP500",
         "minimum_holding_days": 1825,
@@ -633,7 +602,7 @@
     {
       "code": "379800",
       "name": "KODEX 미국S&P500",
-      "official_source": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+      "official_source": "https://www.samsungfund.com/upload/invest/2ETFE4-A.pdf",
       "identity_source_row": "01_주식형:7",
       "recommendation_eligible": true,
       "facts": {
@@ -653,94 +622,84 @@
         "benchmark": "S&P 500",
         "evidence": {
           "risk_grade": {
-            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETFE4-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-03-31",
-            "observed_on": "2026-11-11",
-            "locator": "PDF 15쪽, 종목코드 379800 상품 카드",
-            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
-            "source_id": "S8680bb0dff4e"
+            "source_as_of": "2026-08-07",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·9쪽",
+            "source_id": "R20261113-379800"
           },
           "annual_base_fee_percent": {
-            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETFE4-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-03-31",
-            "observed_on": "2026-11-11",
-            "locator": "PDF 15쪽, 종목코드 379800 상품 카드",
-            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
-            "source_id": "S8680bb0dff4e"
+            "source_as_of": "2026-08-07",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 제2부 13항 보수 및 수수료 표, PDF 39~40쪽",
+            "source_id": "R20261113-379800"
           },
           "annual_total_expense_percent": {
-            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETFE4-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-03-31",
-            "observed_on": "2026-11-11",
-            "locator": "PDF 15쪽, 종목코드 379800 상품 카드",
-            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
-            "source_id": "S8680bb0dff4e"
+            "source_as_of": "2026-08-07",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 제2부 13항 보수 및 수수료 표, PDF 39~40쪽",
+            "source_id": "R20261113-379800"
           },
           "transaction_cost_percent": {
-            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETFE4-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-03-31",
-            "observed_on": "2026-11-11",
-            "locator": "PDF 15쪽, 종목코드 379800 상품 카드",
-            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
-            "source_id": "S8680bb0dff4e"
+            "source_as_of": "2026-08-07",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 제2부 13항 보수 및 수수료 표, PDF 39~40쪽",
+            "source_id": "R20261113-379800"
           },
           "asset_class": {
-            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETFE4-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-03-31",
-            "observed_on": "2026-11-11",
-            "locator": "PDF 15쪽, 종목코드 379800 상품 카드",
-            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
-            "source_id": "S8680bb0dff4e"
+            "source_as_of": "2026-08-07",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·9쪽",
+            "source_id": "R20261113-379800"
           },
           "fx_exposed": {
-            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETFE4-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-03-31",
-            "observed_on": "2026-11-11",
-            "locator": "PDF 15쪽, 종목코드 379800 상품 카드",
-            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
-            "source_id": "S8680bb0dff4e"
+            "source_as_of": "2026-08-07",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·9쪽",
+            "source_id": "R20261113-379800"
           },
           "foreign_underlying": {
-            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETFE4-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-03-31",
-            "observed_on": "2026-11-11",
-            "locator": "PDF 15쪽, 종목코드 379800 상품 카드",
-            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
-            "source_id": "S8680bb0dff4e"
+            "source_as_of": "2026-08-07",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·9쪽",
+            "source_id": "R20261113-379800"
           },
           "principal_loss_possible": {
-            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETFE4-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-03-31",
-            "observed_on": "2026-11-11",
-            "locator": "PDF 15쪽, 종목코드 379800 상품 카드",
-            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
-            "source_id": "S8680bb0dff4e"
+            "source_as_of": "2026-08-07",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·9쪽",
+            "source_id": "R20261113-379800"
           },
           "deposit_protected": {
-            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETFE4-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-03-31",
-            "observed_on": "2026-11-11",
-            "locator": "PDF 15쪽, 종목코드 379800 상품 카드",
-            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
-            "source_id": "S8680bb0dff4e"
+            "source_as_of": "2026-08-07",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·9쪽",
+            "source_id": "R20261113-379800"
           },
           "leveraged_inverse": {
-            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETFE4-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-03-31",
-            "observed_on": "2026-11-11",
-            "locator": "PDF 15쪽, 종목코드 379800 상품 카드",
-            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
-            "source_id": "S8680bb0dff4e"
+            "source_as_of": "2026-08-07",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·9쪽",
+            "source_id": "R20261113-379800"
           },
           "listing_reference_confirmed": {
             "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
@@ -769,23 +728,22 @@
             "source_id": "S5d95d76043a8"
           },
           "benchmark": {
-            "url": "https://www.samsungfund.com/upload/kodex/newsroom/20260416171916907.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETFE4-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-03-31",
-            "observed_on": "2026-11-11",
-            "locator": "PDF 15쪽, 종목코드 379800 상품 카드",
-            "sha256": "bea37815c77046e46cf5b3568c02dbb1dd1038cdda2c3f5ada1c8c40c45a522f",
-            "source_id": "S8680bb0dff4e"
+            "source_as_of": "2026-08-07",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·9쪽",
+            "source_id": "R20261113-379800"
           }
         }
       },
       "review": {
-        "reviewed_on": "2026-11-11",
-        "valid_until": "2026-12-11",
+        "reviewed_on": "2026-11-13",
+        "valid_until": "2027-01-12",
         "scope": "OFFICIAL_DISCLOSURES_FOR_PREVIEW"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "US_BROAD_EQUITY",
         "benchmark_group": "SP500",
         "minimum_holding_days": 1825,
@@ -842,7 +800,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "GROWTH_CONCENTRATED",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -911,7 +869,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "GROWTH_CONCENTRATED",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -1030,7 +988,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "GROWTH_CONCENTRATED",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -1099,7 +1057,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "GROWTH_CONCENTRATED",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -1155,7 +1113,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "KR_BROAD_EQUITY",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -1202,7 +1160,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "KR_BROAD_EQUITY",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -1230,7 +1188,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "FACTOR_DIVIDEND",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -1268,7 +1226,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "FACTOR_DIVIDEND",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -1333,7 +1291,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "FACTOR_DIVIDEND",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -1392,7 +1350,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "FACTOR_DIVIDEND",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -1448,7 +1406,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "FACTOR_DIVIDEND",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -1476,7 +1434,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "FACTOR_DIVIDEND",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -1504,7 +1462,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "FACTOR_DIVIDEND",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -1532,7 +1490,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SECTOR_THEME",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -1560,7 +1518,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "FACTOR_DIVIDEND",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -1607,7 +1565,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "FACTOR_DIVIDEND",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -1654,7 +1612,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "FACTOR_DIVIDEND",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -1682,7 +1640,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "FACTOR_DIVIDEND",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -1710,7 +1668,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SECTOR_THEME",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -1738,7 +1696,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SECTOR_THEME",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -1785,7 +1743,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "GROWTH_CONCENTRATED",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -1813,7 +1771,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SECTOR_THEME",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -1882,7 +1840,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SECTOR_THEME",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -1910,7 +1868,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SECTOR_THEME",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -1975,7 +1933,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SECTOR_THEME",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -2003,7 +1961,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SECTOR_THEME",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -2059,7 +2017,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "KR_BROAD_EQUITY",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -2106,7 +2064,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SECTOR_THEME",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -2134,7 +2092,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SECTOR_THEME",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -2162,7 +2120,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SECTOR_THEME",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -2200,7 +2158,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SECTOR_THEME",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -2238,7 +2196,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SECTOR_THEME",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -2266,7 +2224,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SECTOR_THEME",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -2294,7 +2252,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SECTOR_THEME",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -2341,7 +2299,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SECTOR_THEME",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -2369,7 +2327,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SECTOR_THEME",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -2438,7 +2396,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SECTOR_THEME",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -2466,7 +2424,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SECTOR_THEME",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -2504,7 +2462,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SECTOR_THEME",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -2520,7 +2478,7 @@
     {
       "code": "153130",
       "name": "KODEX 단기채권",
-      "official_source": "https://www.samsungfund.com/etf/product/ytm.do",
+      "official_source": "https://www.samsungfund.com/upload/invest/2ETF35-A.pdf",
       "identity_source_row": "02_채권형:2",
       "recommendation_eligible": true,
       "facts": {
@@ -2540,84 +2498,84 @@
         "benchmark": "KRW Cash Index(총수익)",
         "evidence": {
           "risk_grade": {
-            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF35-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-10-13",
-            "observed_on": "2026-11-11",
-            "locator": "상품정보: 153130; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
-            "source_id": "Sad92967c2650"
+            "source_as_of": "2026-07-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·8쪽",
+            "source_id": "R20261113-153130"
           },
           "annual_base_fee_percent": {
-            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF35-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-10-13",
-            "observed_on": "2026-11-11",
-            "locator": "상품정보: 153130; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
-            "source_id": "Sad92967c2650"
+            "source_as_of": "2026-07-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 제2부 13항 보수 및 수수료 표, PDF 35~36쪽",
+            "source_id": "R20261113-153130"
           },
           "annual_total_expense_percent": {
-            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF35-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-10-13",
-            "observed_on": "2026-11-11",
-            "locator": "상품정보: 153130; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
-            "source_id": "Sad92967c2650"
+            "source_as_of": "2026-07-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 제2부 13항 보수 및 수수료 표, PDF 35~36쪽",
+            "source_id": "R20261113-153130"
           },
           "transaction_cost_percent": {
-            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF35-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-10-13",
-            "observed_on": "2026-11-11",
-            "locator": "상품정보: 153130; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
-            "source_id": "Sad92967c2650"
+            "source_as_of": "2026-07-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 제2부 13항 보수 및 수수료 표, PDF 35~36쪽",
+            "source_id": "R20261113-153130"
           },
           "asset_class": {
-            "url": "https://m.samsungfund.com/sheet/20250204/2ETF35_20250131.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF35-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2025-01-31",
-            "observed_on": "2026-11-11",
-            "locator": "153130 기초지수와 원화 단기채권 운용전략; 위험·비용·상장참조는 2026.10.13 공지 별도 대조",
-            "source_id": "S46127e938216"
+            "source_as_of": "2026-07-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·8쪽",
+            "source_id": "R20261113-153130"
           },
           "fx_exposed": {
-            "url": "https://m.samsungfund.com/sheet/20250204/2ETF35_20250131.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF35-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2025-01-31",
-            "observed_on": "2026-11-11",
-            "locator": "153130 기초지수와 원화 단기채권 운용전략; 위험·비용·상장참조는 2026.10.13 공지 별도 대조",
-            "source_id": "S46127e938216"
+            "source_as_of": "2026-07-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·8쪽",
+            "source_id": "R20261113-153130"
           },
           "foreign_underlying": {
-            "url": "https://m.samsungfund.com/sheet/20250204/2ETF35_20250131.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF35-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2025-01-31",
-            "observed_on": "2026-11-11",
-            "locator": "153130 기초지수와 원화 단기채권 운용전략; 위험·비용·상장참조는 2026.10.13 공지 별도 대조",
-            "source_id": "S46127e938216"
+            "source_as_of": "2026-07-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·8쪽",
+            "source_id": "R20261113-153130"
           },
           "principal_loss_possible": {
-            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF35-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-10-13",
-            "observed_on": "2026-11-11",
-            "locator": "상품정보: 153130; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
-            "source_id": "Sad92967c2650"
+            "source_as_of": "2026-07-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·8쪽",
+            "source_id": "R20261113-153130"
           },
           "deposit_protected": {
-            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF35-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-10-13",
-            "observed_on": "2026-11-11",
-            "locator": "상품정보: 153130; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
-            "source_id": "Sad92967c2650"
+            "source_as_of": "2026-07-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·8쪽",
+            "source_id": "R20261113-153130"
           },
           "leveraged_inverse": {
-            "url": "https://m.samsungfund.com/sheet/20250204/2ETF35_20250131.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF35-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2025-01-31",
-            "observed_on": "2026-11-11",
-            "locator": "153130 기초지수와 원화 단기채권 운용전략; 위험·비용·상장참조는 2026.10.13 공지 별도 대조",
-            "source_id": "S46127e938216"
+            "source_as_of": "2026-07-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·8쪽",
+            "source_id": "R20261113-153130"
           },
           "listing_reference_confirmed": {
             "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
@@ -2644,22 +2602,22 @@
             "source_id": "S5d95d76043a8"
           },
           "benchmark": {
-            "url": "https://m.samsungfund.com/sheet/20250204/2ETF35_20250131.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF35-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2025-01-31",
-            "observed_on": "2026-11-11",
-            "locator": "153130 기초지수와 원화 단기채권 운용전략; 위험·비용·상장참조는 2026.10.13 공지 별도 대조",
-            "source_id": "S46127e938216"
+            "source_as_of": "2026-07-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·8쪽",
+            "source_id": "R20261113-153130"
           }
         }
       },
       "review": {
-        "reviewed_on": "2026-11-11",
-        "valid_until": "2026-12-11",
+        "reviewed_on": "2026-11-13",
+        "valid_until": "2027-01-12",
         "scope": "OFFICIAL_DISCLOSURES_FOR_PREVIEW"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "KRW_SHORT_BOND",
         "benchmark_group": "KRW_SHORT_GOVT",
         "minimum_holding_days": 180,
@@ -2673,7 +2631,7 @@
     {
       "code": "214980",
       "name": "KODEX 단기채권PLUS",
-      "official_source": "https://www.samsungfund.com/etf/product/ytm.do",
+      "official_source": "https://www.samsungfund.com/upload/invest/2ETF48-A.pdf",
       "identity_source_row": "02_채권형:3",
       "recommendation_eligible": true,
       "facts": {
@@ -2693,84 +2651,84 @@
         "benchmark": "KRW Cash PLUS Index(총수익)",
         "evidence": {
           "risk_grade": {
-            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF48-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-10-13",
-            "observed_on": "2026-11-11",
-            "locator": "상품정보: 214980; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
-            "source_id": "S49d2d41afa62"
+            "source_as_of": "2026-07-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·8쪽",
+            "source_id": "R20261113-214980"
           },
           "annual_base_fee_percent": {
-            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF48-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-10-13",
-            "observed_on": "2026-11-11",
-            "locator": "상품정보: 214980; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
-            "source_id": "S49d2d41afa62"
+            "source_as_of": "2026-07-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 제2부 13항 보수 및 수수료 표, PDF 36~37쪽",
+            "source_id": "R20261113-214980"
           },
           "annual_total_expense_percent": {
-            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF48-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-10-13",
-            "observed_on": "2026-11-11",
-            "locator": "상품정보: 214980; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
-            "source_id": "S49d2d41afa62"
+            "source_as_of": "2026-07-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 제2부 13항 보수 및 수수료 표, PDF 36~37쪽",
+            "source_id": "R20261113-214980"
           },
           "transaction_cost_percent": {
-            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF48-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-10-13",
-            "observed_on": "2026-11-11",
-            "locator": "상품정보: 214980; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
-            "source_id": "S49d2d41afa62"
+            "source_as_of": "2026-07-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 제2부 13항 보수 및 수수료 표, PDF 36~37쪽",
+            "source_id": "R20261113-214980"
           },
           "asset_class": {
-            "url": "https://m.samsungfund.com/sheet/20241021/2ETF48_20240930.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF48-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2024-09-30",
-            "observed_on": "2026-11-11",
-            "locator": "214980 기초지수와 원화 단기채권 운용전략; 위험·비용·상장참조는 2026.10.13 공지 별도 대조",
-            "source_id": "Sd6a0df82a566"
+            "source_as_of": "2026-07-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·8쪽",
+            "source_id": "R20261113-214980"
           },
           "fx_exposed": {
-            "url": "https://m.samsungfund.com/sheet/20241021/2ETF48_20240930.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF48-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2024-09-30",
-            "observed_on": "2026-11-11",
-            "locator": "214980 기초지수와 원화 단기채권 운용전략; 위험·비용·상장참조는 2026.10.13 공지 별도 대조",
-            "source_id": "Sd6a0df82a566"
+            "source_as_of": "2026-07-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·8쪽",
+            "source_id": "R20261113-214980"
           },
           "foreign_underlying": {
-            "url": "https://m.samsungfund.com/sheet/20241021/2ETF48_20240930.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF48-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2024-09-30",
-            "observed_on": "2026-11-11",
-            "locator": "214980 기초지수와 원화 단기채권 운용전략; 위험·비용·상장참조는 2026.10.13 공지 별도 대조",
-            "source_id": "Sd6a0df82a566"
+            "source_as_of": "2026-07-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·8쪽",
+            "source_id": "R20261113-214980"
           },
           "principal_loss_possible": {
-            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF48-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-10-13",
-            "observed_on": "2026-11-11",
-            "locator": "상품정보: 214980; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
-            "source_id": "S49d2d41afa62"
+            "source_as_of": "2026-07-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·8쪽",
+            "source_id": "R20261113-214980"
           },
           "deposit_protected": {
-            "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF48-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2026-10-13",
-            "observed_on": "2026-11-11",
-            "locator": "상품정보: 214980; 보수 성분 합산, 합성총보수 및 직전 회계연도 거래비용",
-            "source_id": "S49d2d41afa62"
+            "source_as_of": "2026-07-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·8쪽",
+            "source_id": "R20261113-214980"
           },
           "leveraged_inverse": {
-            "url": "https://m.samsungfund.com/sheet/20241021/2ETF48_20240930.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF48-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2024-09-30",
-            "observed_on": "2026-11-11",
-            "locator": "214980 기초지수와 원화 단기채권 운용전략; 위험·비용·상장참조는 2026.10.13 공지 별도 대조",
-            "source_id": "Sd6a0df82a566"
+            "source_as_of": "2026-07-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·8쪽",
+            "source_id": "R20261113-214980"
           },
           "listing_reference_confirmed": {
             "url": "https://m.samsungfund.com/etf/lounge/notice-view.do?no=80195",
@@ -2797,22 +2755,22 @@
             "source_id": "S5d95d76043a8"
           },
           "benchmark": {
-            "url": "https://m.samsungfund.com/sheet/20241021/2ETF48_20240930.pdf",
+            "url": "https://www.samsungfund.com/upload/invest/2ETF48-A.pdf",
             "kind": "OFFICIAL_DISCLOSURE",
-            "source_as_of": "2024-09-30",
-            "observed_on": "2026-11-11",
-            "locator": "214980 기초지수와 원화 단기채권 운용전략; 위험·비용·상장참조는 2026.10.13 공지 별도 대조",
-            "source_id": "Sd6a0df82a566"
+            "source_as_of": "2026-07-31",
+            "observed_on": "2026-11-13",
+            "locator": "투자설명서 표지·PDF 1·8쪽",
+            "source_id": "R20261113-214980"
           }
         }
       },
       "review": {
-        "reviewed_on": "2026-11-11",
-        "valid_until": "2026-12-11",
+        "reviewed_on": "2026-11-13",
+        "valid_until": "2027-01-12",
         "scope": "OFFICIAL_DISCLOSURES_FOR_PREVIEW"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "KRW_SHORT_BOND",
         "benchmark_group": "KRW_SHORT_PLUS",
         "minimum_holding_days": 180,
@@ -2848,7 +2806,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "KRW_SHORT_BOND",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -2876,7 +2834,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "KRW_GOVT_INTERMEDIATE",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -2923,7 +2881,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "KRW_GOVT_INTERMEDIATE",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -2951,7 +2909,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "LONG_DURATION",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -2998,7 +2956,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "LONG_DURATION",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3036,7 +2994,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SPECIAL_STRUCTURE",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3101,7 +3059,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "KRW_AGG_BOND",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3139,7 +3097,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "KRW_AGG_BOND",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3167,7 +3125,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "KRW_AGG_BOND",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3195,7 +3153,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "KRW_AGG_BOND",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3233,7 +3191,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "KRW_AGG_BOND",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3271,7 +3229,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "KRW_AGG_BOND",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3299,7 +3257,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "KRW_AGG_BOND",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3327,7 +3285,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "KRW_AGG_BOND",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3355,7 +3313,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "TARGET_MATURITY",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3383,7 +3341,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "LONG_DURATION",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3411,7 +3369,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "LONG_DURATION",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3439,7 +3397,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "LONG_DURATION",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3477,7 +3435,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "LONG_DURATION",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3505,7 +3463,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SPECIAL_STRUCTURE",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3543,7 +3501,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "FOREIGN_CREDIT",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3571,7 +3529,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SPECIAL_STRUCTURE",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3618,7 +3576,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SPECIAL_STRUCTURE",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3665,7 +3623,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SPECIAL_STRUCTURE",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3693,7 +3651,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SPECIAL_STRUCTURE",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3740,7 +3698,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SPECIAL_STRUCTURE",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3809,7 +3767,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "MONEY_MARKET",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3837,7 +3795,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "MONEY_MARKET",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3902,7 +3860,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SPECIAL_STRUCTURE",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3967,7 +3925,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SPECIAL_STRUCTURE",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -3995,7 +3953,7 @@
         "scope": "PARTIAL_OR_SCOPE_EXCLUDED"
       },
       "service_constraints": {
-        "policy_ref": "DION-PRODUCT-POLICY-20261111-0.2",
+        "policy_ref": "DION-PRODUCT-POLICY-20261113-0.3.1",
         "role": "SPECIAL_STRUCTURE",
         "benchmark_group": null,
         "minimum_holding_days": null,
@@ -4018,6 +3976,7 @@
       "EXCLUDED_DEFAULT_POLICY": 57
     },
     "ledger_ref": "data/product-detail-review-20261111.json",
-    "live_tradability": "NOT_VERIFIED"
+    "live_tradability": "NOT_VERIFIED",
+    "recheck_ref": "data/product-recheck-20261113.json"
   }
 }
