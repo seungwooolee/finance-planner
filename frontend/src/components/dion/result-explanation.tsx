@@ -38,6 +38,16 @@ function validResponse(value:Explanation, view:ViewResult, caseId:string, detail
     && Array.isArray(value.next_checks)&&value.next_checks.every(c=>c&&typeof c.check_id==="string"&&typeof c.question_id==="string"&&typeof c.text==="string");
 }
 
+// Status-specific guidance; every case keeps the saved result visible.
+function explanationError(status:number):string {
+  if(status===401)return "로그인 확인이 필요해요. 기존 결과는 계속 볼 수 있어요.";
+  if(status===404)return "이 계산 기록에 접근할 수 없어요. 내 상담에서 기록을 다시 확인해 주세요.";
+  if(status===409)return "답변이 바뀌어 저장된 결과와 기준이 달라요. 다시 계산·저장한 뒤 해설을 열어 주세요.";
+  if(status===422)return "이 결과에는 해설할 계산 항목이 없어요. 월 현황·재무안 계산이 끝난 결과에서 열어 주세요.";
+  if(status===429)return "해설 요청이 몰려 있어요. 잠시 뒤 ‘해설 다시 확인’을 눌러 주세요.";
+  return "해설을 불러오지 못했어요. 해설 서버가 잠시 응답하지 않았어요. 잠시 뒤 다시 시도하면 대부분 해결돼요. 기본 안내와 기존 결과는 그대로 볼 수 있어요.";
+}
+
 export function ResultExplanation({view,token,editVersion,selectedCaseId,stale,onSave,onEdit}:Props) {
   const [open,setOpen]=useState(false),[detail,setDetail]=useState<Detail>("SHORT"),[state,setState]=useState<State|null>(null);
   const cache=useRef(new Map<string,Explanation>());
@@ -64,12 +74,15 @@ export function ResultExplanation({view,token,editVersion,selectedCaseId,stale,o
     const requestKey=`explain-${crypto.randomUUID()}`;
     const timer=setTimeout(()=>controller.abort(),20_000);
     try {
-      const response=await fetch(`/api/be/v1/cases/${encodeURIComponent(caseId)}/analyses/${encodeURIComponent(view.runId!)}/explanation`,{
+      const send=()=>fetch(`/api/be/v1/cases/${encodeURIComponent(caseId)}/analyses/${encodeURIComponent(view.runId!)}/explanation`,{
         method:"POST",cache:"no-store",signal:controller.signal,
         headers:{"Content-Type":"application/json",Authorization:`Bearer ${token}`},
         body:JSON.stringify({contract_version:"DION-EXPLANATION-1.0",request_key:requestKey,expected_input_version:view.serverVersion,
           output_ids:["OUT-03","OUT-05"].filter(id=>id in object(view.result.results)),strategy_id:null,detail_level:level,locale:"ko-KR"})});
-      if(!response.ok)throw new Error(response.status===401?"로그인 확인이 필요해요. 기존 결과는 계속 볼 수 있어요.":response.status===404?"이 계산 기록에 접근할 수 없어요. 내 상담에서 기록을 다시 확인해 주세요.":"해설을 불러오지 못했어요. 기본 안내와 기존 결과를 확인해 주세요.");
+      // A sleeping beta server or a busy explainer usually answers on the second try.
+      let response=await send();
+      if([429,502,503,504].includes(response.status)){await new Promise(r=>setTimeout(r,3_000));if(controller.signal.aborted)throw new Error("aborted");response=await send();}
+      if(!response.ok)throw new Error(explanationError(response.status));
       const value:Explanation=await response.json();
       if(!validResponse(value,view,caseId,level,requestKey))throw new Error("표시 중인 결과와 해설의 기준이 달라 해설을 표시하지 않았어요.");
       if(own===sequence.current&&!controller.signal.aborted){if(cache.current.size>=4)cache.current.delete(cache.current.keys().next().value!);cache.current.set(cacheKey,value);setState({...binding,loading:false,response:value});}
@@ -82,7 +95,7 @@ export function ResultExplanation({view,token,editVersion,selectedCaseId,stale,o
   const response=current?.response;
   const evidence=response?[...new Map(response.facts.flatMap(f=>f.input_evidence_refs).map(e=>[e.answer_revision_id,e])).values()]:[];
   return <div className="d-explanation">
-    <button ref={trigger} className="d-primary" aria-expanded={open} aria-controls={titleId+"-panel"} onClick={()=>{setOpen(true);void explain(detail);}}>이 결과 설명해 줘</button>
+    <button id="dion-explain-trigger" ref={trigger} className="d-primary" aria-expanded={open} aria-controls={titleId+"-panel"} onClick={()=>{setOpen(true);void explain(detail);}}>이 결과 설명해 줘</button>
     {open&&<aside id={titleId+"-panel"} className="d-card d-explanation-panel" aria-labelledby={titleId} aria-busy={current?.loading??false}>
       <div className="d-toolbar"><h2 ref={heading} tabIndex={-1} id={titleId}>결과 해설</h2><button className="d-text-button" onClick={close}>해설 닫기</button></div>
       <div className="d-toolbar" role="group" aria-label="해설 길이"><button className="d-secondary" aria-pressed={detail==="SHORT"} onClick={()=>choose("SHORT")}>짧게</button><button className="d-secondary" aria-pressed={detail==="DETAILED"} onClick={()=>choose("DETAILED")}>자세히</button></div>

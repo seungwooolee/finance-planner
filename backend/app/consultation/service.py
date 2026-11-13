@@ -30,7 +30,7 @@ from .evidence import (
     select_question,
 )
 from .model_proposal import VERSION as MODEL_PROPOSAL_VERSION
-from .model_proposal import review_proposal
+from .model_proposal import groundable, review_proposal
 from .policy import ALLOWED, REGISTRY, VERSION_HASH, classify, guidance
 
 
@@ -255,7 +255,10 @@ class ConsultationService:
         payload, review_code = None, None
         if (operation == "turn" and request.message.strip()
                 and (self.oneport_provider or self.oneport_configuration_error)
-                and classify(request.message)["intent"] != "UNSUPPORTED"):
+                and classify(request.message)["intent"] != "UNSUPPORTED"
+                # Questions ("왜 0원이야?") cannot become an evidence candidate; do not spend a call
+                # that the server-side grounding check would reject as MODEL_PROPOSAL_INVALID.
+                and groundable(request.message)):
             payload, review_code = self._extract_oneport(store, actor, case_id, sid, request, fingerprint)
         with self.lock:
             self._cleanup(store, actor, case_id)

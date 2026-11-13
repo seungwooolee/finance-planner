@@ -8,7 +8,8 @@
       "dion/product-policy-0.3": false,
       "codex/oneport-ledger-integration-20261114": false,
       "feat/final-portfolio-20261114": false,
-      "feat/beta-gate-20261114": false
+      "feat/beta-gate-20261114": false,
+      "dion/proposal-20261114": false
     }
   }
 }
