@@ -246,6 +246,10 @@ def test_monthly_fund_link_is_explicit_and_survives_adapter_provenance():
     assert "F15" in review(d)["missing_question_ids"]
 
 
+# Product policy 0.3.1 review window: 2026-11-13..2027-01-12 (data/product-recheck-20261113.json).
+CURRENT_ON = '2026-11-13'
+
+
 def actual_config():
     folder = ROOT / 'app/planning'
     return tuple(json.loads((folder / name).read_text()) for name in ('product_catalog.json', 'product_policy.json'))
@@ -254,9 +258,9 @@ def actual_config():
 def current_product_document():
     """Synthetic current raw investment answers, independent of old cashflow fixtures."""
     d = document()
-    d['context']['evaluation_on'] = '2026-11-11'
+    d['context']['evaluation_on'] = CURRENT_ON
     for answer in d['raw_bundle']['answers']:
-        answer['envelope']['context']['as_of'] = '2026-11-11'
+        answer['envelope']['context']['as_of'] = CURRENT_ON
     fx = copy.deepcopy(d['raw_bundle']['answers'][-1])
     fx['answer_revision_id'] = 'risk-D18'
     fx['envelope']['question_ref']['design_id'] = 'D18'
@@ -291,7 +295,10 @@ def test_current_verified_subset_has_literal_budget_and_cost_oracles():
     codes = {p['code']: p for p in x['products']}
     assert codes['360200']['disclosure']['annual_base_fee_percent'] == '0.0047'
     assert codes['360200']['disclosure']['annual_total_expense_percent'] == '0.0707'
-    assert codes['360200']['disclosure']['transaction_cost_percent'] is None
+    # 0.3 recheck: prospectus table adds 360200 transaction cost; 360750 TER follows its 2026-10-01 prospectus.
+    assert codes['360200']['disclosure']['transaction_cost_percent'] == '0.0303'
+    assert codes['360750']['disclosure']['annual_total_expense_percent'] == '0.0668'
+    assert codes['360750']['disclosure']['transaction_cost_percent'] is None
     assert codes['232080']['disclosure']['risk_grade'] == 1  # Not the neighbouring product's 2.
     assert codes['402970']['disclosure']['risk_grade'] == 3  # Do not copy another issuer's dividend grade.
     assert codes['441640']['disclosure']['risk_grade'] == 3
@@ -330,7 +337,7 @@ def test_ambiguous_small_loss_band_and_stability_are_deliberately_unallocated():
 
 
 def test_expiry_and_near_use_date_never_shift_money_to_other_products():
-    x = current_review(period='2027-01')
+    x = current_review(period='2027-02')  # first month after the 0.3.1 window (2027-01-12)
     assert x['candidates'][0]['rows'][0]['allocated_total_krw'] == '0'
     assert 'POLICY_DISCLOSURE_STALE' in x['candidates'][0]['rows'][0]['reason_codes']
     d = current_product_document()
@@ -428,3 +435,91 @@ def test_past_month_and_host_budget_gate_clear_all_allocated_money_metrics():
             assert row['allocated_total_krw'] == row['stress_review']['scenario_loss_krw_ceil'] == '0'
             assert row['stress_review']['full_loss_scenario_krw'] == '0'
             assert row['unallocated_krw'] == row['scenario_budget_krw']
+
+
+def dated_product_document(on):
+    d = current_product_document()
+    d['context']['evaluation_on'] = on
+    for answer in d['raw_bundle']['answers']:
+        answer['envelope']['context']['as_of'] = on
+    return d
+
+
+def test_policy_03_window_is_inclusive_and_expiry_blocks_only_new_allocations():
+    _, pol = actual_config()
+    assert (pol['version'], pol['reviewed_on'], pol['valid_until']) == (
+        'DION-PRODUCT-POLICY-20261113-0.3.1', '2026-11-13', '2027-01-12')
+    assert (pol['review_ttl_days'], pol['source_max_age_days']) == (60, 455)
+    last_day = current_review(dated_product_document('2027-01-12'), period='2027-01')
+    assert 'POLICY_DISCLOSURE_STALE' not in last_day['reason_codes']
+    assert last_day['candidates'][0]['rows'][0]['allocated_total_krw'] == '180000'
+    expired = current_review(dated_product_document('2027-01-13'), period='2027-01')
+    assert 'POLICY_DISCLOSURE_STALE' in expired['reason_codes']
+    for candidate in expired['candidates']:
+        for row in candidate['rows']:
+            assert row['allocations'] == [] and row['allocated_total_krw'] == '0'
+            assert row['unallocated_krw'] == row['scenario_budget_krw']
+    assert expired['recommended_new_investment_krw'] is None
+    # Disclosures stay visible with their dates; nothing is silently re-enabled or substituted.
+    shown = {p['code']: p for p in expired['products']}
+    assert shown['360200']['disclosure']['source_as_of']['annual_total_expense_percent'] == '2025-12-31'
+    assert all(p['state'] == 'EXCLUDED_FROM_ALLOCATION' for p in expired['products'])
+    assert all('PRODUCT_DISCLOSURE_STALE' in shown[c]['reason_codes']
+               for c in ('069500', '360200', '360750', '379800', '153130', '214980'))
+
+
+def test_every_product_explains_its_decision_with_dated_facts_and_what_changes_it():
+    x = current_review()
+    by_code = {p['code']: p['explanation'] for p in x['products']}
+    assert by_code['153130']['decision'] == 'INCLUDED'
+    assert by_code['360750']['decision'] == 'ALTERNATIVE'
+    assert by_code['273130']['decision'] == 'HELD'
+    assert by_code['0091C0']['decision'] in {'EXCLUDED_POLICY', 'HELD'}
+    assert by_code['360200']['evidence_doc'] == 'PRD-360200' and by_code['273130']['evidence_doc'] is None
+    assert '0.0707%' in ' '.join(by_code['360200']['facts']) and '2025-12-31' in ' '.join(by_code['360200']['facts'])
+    assert all(e['not_a_recommendation'] for e in by_code.values())
+    assert {e['decision'] for e in by_code.values()} <= {
+        'INCLUDED', 'ALTERNATIVE', 'HELD', 'EXCLUDED_POLICY', 'EXCLUDED_FOR_PROFILE'}
+    # A customer answer that excludes a product names the question that can change it.
+    d = current_product_document()
+    change(d, 'D18', 'fx_preference_raw_v2', field('FX_REJECT'))
+    us = next(p for p in current_review(d)['products'] if p['code'] == '360200')['explanation']
+    assert us['decision'] == 'EXCLUDED_FOR_PROFILE'
+    fx = [r for r in us['reasons'] if r['changes_with'] == 'QUESTION']
+    assert fx and all(r['question_id'] for r in fx)
+    assert x['candidates'][0]['rows'][0]['allocated_total_krw'] == '180000'  # explanations change no money
+
+
+def test_comparison_scores_are_reproducible_display_only_and_flag_missing_criteria():
+    first, again = current_review(), current_review()
+    assert first['comparison_scores'] == again['comparison_scores']
+    short = first['comparison_scores']['KRW_SHORT_BOND']
+    assert short['state'] == 'REVIEWED_FOR_PREVIEW' and short['affects_allocation'] is False
+    assert short['ranking_state'] == 'INCOMPLETE'  # tracking error and liquidity are not in the catalog yet
+    assert [c['weight'] for c in short['criteria']] == [40, 10, 20, 15, 15]
+    assert {r['code'] for r in short['rows']} == {'153130', '214980'}
+    assert all(r['completeness_percent'] == 70 and r['criteria']['tracking_error'] is None for r in short['rows'])
+    # Lower TER (0.1663 < 0.1671) and lower transaction cost win the cost criteria inside the role.
+    plus = next(r for r in short['rows'] if r['code'] == '214980')
+    assert plus['criteria']['total_expense'] == plus['criteria']['transaction_cost'] == '100.0'
+    assert first['candidates'][0]['rows'][0]['allocations'][0]['code'] == '153130'  # ranking moved no money
+
+
+def test_portfolio_type_views_never_relax_customer_limits():
+    x = current_review()
+    assert x['portfolio_types']['customer_type'] == 'BALANCED' and x['portfolio_types']['limits_relaxed'] is False
+    row = x['candidates'][0]['rows'][0]
+    views = row['portfolio_type_views']
+    assert views['BALANCED']['allocated_total_krw'] == row['allocated_total_krw'] == '180000'
+    assert [(a['code'], a['review_allocated_krw']) for a in views['STABLE']['allocations']] == [('153130', '90000')]
+    assert views['RETURN']['allocated_total_krw'] == '139230'  # LOSS_20_30 stress budget still shrinks it
+    d = current_product_document()
+    change(d, 'D18', 'fx_preference_raw_v2', field('FX_REJECT'))
+    blocked_fx = current_review(d)['candidates'][0]['rows'][0]['portfolio_type_views']
+    assert all(a['code'] != '360200' for v in blocked_fx.values() for a in v['allocations'])
+    past = current_review(period='2026-10')['candidates'][0]['rows'][0]['portfolio_type_views']
+    assert all(v['allocated_total_krw'] == '0' for v in past.values())
+    result = {'calc_state': 'CALCULATED', 'results': {'OUT-06': current_review()}}
+    block_product_budget(result)
+    assert all(v['allocated_total_krw'] == '0' and v['allocations'] == []
+               for v in result['results']['OUT-06']['candidates'][0]['rows'][0]['portfolio_type_views'].values())

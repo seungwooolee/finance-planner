@@ -12,7 +12,10 @@ from datetime import date
 from decimal import Decimal
 from pathlib import Path
 
+from . import portfolio_types
 from .common import ContractError, Missing, digest, integer, output
+from .product_explanation import explain
+from .product_scoring import score_role
 from .statuses import axes
 
 VERSION = "DION-PRODUCT-REVIEW-0.2"
@@ -328,8 +331,8 @@ def allocate_budget(budget_krw, slots, eligible_codes):
 
 def _validate_policy(policy):
     """Validate service assumptions independently of official product facts."""
-    for key in ("source_max_age_days", "review_ttl_days"):
-        if type(policy.get(key)) is not int or not 1 <= policy[key] <= 365:
+    for key, upper in (("source_max_age_days", 730), ("review_ttl_days", 365)):
+        if type(policy.get(key)) is not int or not 1 <= policy[key] <= upper:
             raise ContractError("product policy data age")
     if (_day(policy["valid_until"]) - _day(policy["reviewed_on"])).days not in range(policy["review_ttl_days"] + 1):
         raise ContractError("product policy review interval")
@@ -422,6 +425,12 @@ def review_products(document, result, *, catalog=None, policy=None):
                              "valid_until": product.get("review", {}).get("valid_until")},
                          "state": "ELIGIBLE_FOR_REVIEW" if not reasons else "EXCLUDED_FROM_ALLOCATION",
                          "reason_codes": reasons})
+        screened[-1]["explanation"] = explain(screened[-1], product, MESSAGES)
+    by_role = {}
+    for product in products:
+        if product["code"] in eligible:
+            by_role.setdefault(product["service_constraints"]["role"], []).append(product)
+    comparison_scores = {role: score_role(items, on) for role, items in sorted(by_role.items())}
     candidates, blockers = [], []
     plans = result.get("results", {}).get("OUT-05", {})
     if plans.get("calc_state") not in {"CALCULATED", "PARTIAL"}:
@@ -436,6 +445,9 @@ def review_products(document, result, *, catalog=None, policy=None):
     for targets in policy.get("target_slots_by_preference", {}).values():
         guarded_targets(targets, products, policy, "LOSS_30_PLUS")
     slots, stress = guarded_targets(original, products, policy, profile.get("loss_tolerance_band_raw"))
+    type_targets = {type_id: guarded_targets(policy["target_slots_by_preference"].get(pref, []), products, policy,
+                                             profile.get("loss_tolerance_band_raw"))[0]
+                    for type_id, pref in portfolio_types.REPRESENTATIVE_PREFERENCE.items()}
     if not slots or not any(slot["target_bps"] for slot in slots):
         blockers.append("STABILITY_POLICY_UNALLOCATED" if preference == "PREF_STABILITY"
                         else "LOSS_BUDGET_UNRESOLVED" if stress["target_reduced"]
@@ -475,7 +487,16 @@ def review_products(document, result, *, catalog=None, policy=None):
                 raise ContractError("allocated adverse scenario exceeds service budget")
             allocation["stress_review"] = {**stress, "scenario_loss_krw_ceil": str((loss_numerator + 9999) // 10000),
                                             "full_loss_scenario_krw": allocation["allocated_total_krw"]}
-            rows.append({"period": month["period"], **allocation, "reason_codes": sorted(set(month_reasons)),
+            general = [r for r in month_reasons if r not in portfolio_types.PREFERENCE_ONLY_REASONS]
+            views = {}
+            for type_id, type_slots in type_targets.items():
+                view = allocate_budget(month["new_investment_krw"], type_slots, set() if general else month_eligible)
+                views[type_id] = {"allocated_total_krw": view["allocated_total_krw"],
+                                  "unallocated_krw": view["unallocated_krw"],
+                                  "allocations": [{"code": a["code"], "review_allocated_krw": a["review_allocated_krw"]}
+                                                  for a in view["allocations"]]}
+            rows.append({"period": month["period"], **allocation, "portfolio_type_views": views,
+                         "reason_codes": sorted(set(month_reasons)),
                          "adjustment_codes": ["STRESS_TARGET_REDUCED"] if stress["target_reduced"] else [],
                          "calc_state": "REVIEW_REQUIRED" if month_reasons else "CALCULATED"})
         candidates.append({"strategy_id": candidate["strategy_id"], "rows": rows})
@@ -496,6 +517,11 @@ def review_products(document, result, *, catalog=None, policy=None):
                                  "basis": "SERVICE_ASSUMPTIONS_FOR_PREVIEW", "backtested": False,
                                  "regulatory_certification": False},
                  products=screened, candidates=candidates, reason_messages=MESSAGES,
+                 comparison_scores=comparison_scores,
+                 portfolio_types={"version": portfolio_types.VERSION, "state": portfolio_types.STATE,
+                                  "customer_type": portfolio_types.type_of_preference(preference),
+                                  "representative_preference": portfolio_types.REPRESENTATIVE_PREFERENCE,
+                                  "limits_relaxed": False},
                  recommended_new_investment_krw=None, adopted=False, transaction_executed=False,
                  input_source_sha256=digest(document), monthly_budget_source_sha256=digest(plans),
                  portfolio_holdings_overlap="NOT_VERIFIED_OR_REBALANCED", daily_cash_availability="NOT_VERIFIED",
@@ -540,6 +566,8 @@ def block_product_budget(result):
                          calc_state="NEEDS_INPUT")
             if "stress_review" in month:
                 month["stress_review"].update(scenario_loss_krw_ceil="0", full_loss_scenario_krw="0")
+            for view in month.get("portfolio_type_views", {}).values():
+                view.update(allocations=[], allocated_total_krw="0", unallocated_krw=month["scenario_budget_krw"])
             month["reason_codes"] = sorted(set(month["reason_codes"] + ["BUDGET_UNAVAILABLE"]))
     row["status_axes"] = axes("NEEDS_INPUT", "OUT-06", adapter_blocked=True)
     row["status_axes"]["investment_suitability"]["state"] = "REVIEW_BLOCKED"

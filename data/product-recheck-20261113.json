@@ -1,0 +1,47 @@
+{
+  "schema_version": "DION-PRODUCT-RECHECK-0.1",
+  "rechecked_on": "2026-11-13",
+  "policy_before": "DION-PRODUCT-POLICY-20261111-0.2",
+  "policy_after": "DION-PRODUCT-POLICY-20261113-0.3",
+  "catalog_after": "DION-PRODUCT-CATALOG-20261113-0.3",
+  "research_source": "Google Drive 'RAG 문서/03_상품공시' PRD-* 문서 6개와 '99_원문파일' 투자설명서 PDF 6개 (팀원 조사, 문서 검토 상태 '보류')",
+  "independent_spot_check": {
+    "method": "투자설명서 원문 URL을 다시 열어 위험등급·총보수·기타비용·총보수비용·증권거래비용·작성기준일을 대조",
+    "matched": ["069500", "379800", "153130", "214980", "360200"],
+    "not_rechecked": {"360750": "원문이 판매사 공시 ZIP 안에만 있어 이번 대조에서 열지 못함. 팀원 문서의 0.0668% 값을 사용하며 사람 검토 필요"}
+  },
+  "products": [
+    {"code": "069500", "prospectus_as_of": "2026-09-11", "effective_on": "2026-09-16", "url": "https://www.samsungfund.com/upload/invest/2ETF01-A.pdf",
+     "risk_grade": 2, "base_fee": "0.150", "total_expense": "0.1615", "transaction_cost": "0.0283", "result": "MATCHED"},
+    {"code": "360200", "prospectus_as_of": "2025-12-31", "effective_on": "2026-02-13", "url": "https://ftp.kim.co.kr/doc/M00001/M00003/20260209/215690/1/ (ACE 미국S&P500 투자설명서)",
+     "risk_grade": 2, "base_fee": "0.0047", "total_expense": "0.0707", "transaction_cost": "0.0303", "result": "MATCHED_TRANSACTION_COST_ADDED",
+     "note": "자료연령 365일 한도 때문에 2026-12-31 이후 비용 근거가 만료됨. 다음 투자설명서 갱신 필요"},
+    {"code": "360750", "prospectus_as_of": "2026-10-01", "effective_on": "2026-10-08", "url": "https://image.kebhana.com/cont/download/disclosure/zaryo_tiger_20261008.zip",
+     "risk_grade": 2, "base_fee": "0.0068", "total_expense": "0.0668", "transaction_cost": null, "result": "CHANGED",
+     "change": {"field": "annual_total_expense_percent", "before": "0.0868", "after": "0.0668", "cause": "기타비용 0.08→0.06 (총보수 동일). 비용 측정기간 차이 여부 미해결"},
+     "note": "이전 비율 0.0396%는 2026-02-13 가이드북 값이라 현재 값으로 쓰지 않음. 새 투자설명서는 금액만 공시"},
+    {"code": "379800", "prospectus_as_of": "2026-08-07", "effective_on": "2026-08-26", "url": "https://www.samsungfund.com/upload/invest/2ETFE4-A.pdf",
+     "risk_grade": 2, "base_fee": "0.0062", "total_expense": "0.0738", "transaction_cost": "0.0345", "result": "MATCHED",
+     "note": "운용사 API 일부 필드에 TR 문구 잔존(자료 상충). 투자설명서 기준 S&P500 Index(KRW) 가격지수 사용"},
+    {"code": "153130", "prospectus_as_of": "2026-07-31", "effective_on": "2026-08-13", "url": "https://www.samsungfund.com/upload/invest/2ETF35-A.pdf",
+     "risk_grade": 6, "base_fee": "0.150", "total_expense": "0.1671", "transaction_cost": "0.0064", "result": "MATCHED"},
+    {"code": "214980", "prospectus_as_of": "2026-07-31", "effective_on": "2026-08-13", "url": "https://www.samsungfund.com/upload/invest/2ETF48-A.pdf",
+     "risk_grade": 6, "base_fee": "0.150", "total_expense": "0.1663", "transaction_cost": "0.0003", "result": "MATCHED"}
+  ],
+  "unverified_for_all": ["일평균 거래대금", "추적오차", "괴리율", "금융회사별 연금·IRP·ISA 실제 취급", "최신 정정공시 유무"],
+  "hold_15_selection": {
+    "basis": "현재 정책 역할(단기채·국내지수·미국지수) 대체재와, 슬롯이 없는 안정형용 채권 역할(중기국채·종합채권)을 먼저 채운다. 같은 역할의 중복 상품은 뒤로 미룬다. 선정은 조사 대상 지정일 뿐 추천 활성화가 아니다",
+    "first": [
+      {"code": "114260", "name": "KODEX 국고채3년", "role": "KRW_GOVT_INTERMEDIATE", "why": "중기국채 역할 대표 후보. 위험등급 5는 있으나 2022 자료라 최신 투자설명서·총보수비용 필요"},
+      {"code": "273130", "name": "KODEX 종합채권(AA-이상)액티브", "role": "KRW_AGG_BOND", "why": "종합채권 역할 대표 후보. 위험등급·총보수 확인됨. 비용자료가 365일 초과라 최신 비용표만 보완하면 됨"},
+      {"code": "102110", "name": "TIGER 200", "role": "KR_BROAD_EQUITY", "why": "069500 대체재. 값은 대부분 확보, 환노출 표기 상충만 해소하면 됨"},
+      {"code": "469830", "name": "SOL 초단기채권액티브", "role": "KRW_SHORT_BOND", "why": "153130 대체재(다른 운용사). 위험등급·비용 기준일 보완 필요"}
+    ],
+    "second": [
+      {"code": "114820", "name": "TIGER 국채3년", "role": "KRW_GOVT_INTERMEDIATE"},
+      {"code": "152100", "name": "PLUS 200", "role": "KR_BROAD_EQUITY"}
+    ],
+    "keep_hold": ["148020", "278530", "436140", "356540", "451540", "451000", "454780", "472920", "0192Z0"],
+    "keep_hold_reason": "같은 역할 중복(종합채권 액티브 7종), TR 분배 구조 차이(278530), 위험등급 미확인(148020). 1차 대상 결과를 본 뒤 재검토"
+  }
+}

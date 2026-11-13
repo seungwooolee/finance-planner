@@ -185,3 +185,44 @@ def test_reopen_keeps_question_adapter_versions_and_raw_envelopes(account_client
     assert ref["run_id"] == receipt["run_id"] and ref["is_current"] is True
     saved = client.get(BASE + "/questions/analyses/" + ref["run_id"], headers=A).json()
     assert saved["result"]["results"]["OUT-03"]["after_existing_contributions_krw"] == "900000"
+
+
+def test_saved_product_review_stays_readable_after_policy_expiry(tmp_path):
+    """A stored OUT-06 is a snapshot: a later expired policy blocks new money but never rewrites old runs."""
+    from app.be.question_bridge import run_frontend_questions
+    from app.planning.product_allocation import review_products
+    from tests.planning.test_product_allocation import actual_config, current_product_document
+
+    budgets = {"results": {"OUT-05": {"calc_state": "CALCULATED", "candidates": [
+        {"calc_state": "CALCULATED_MONTHLY_SCENARIO", "strategy_id": "STABILITY_FIRST",
+         "rows": [{"period": "2026-11", "new_investment_krw": "300000"}]}]}}}
+    catalog, policy = actual_config()
+    expired = {**policy, "version": "SYNTHETIC-EXPIRED", "reviewed_on": "2026-10-13", "valid_until": "2026-11-12"}
+
+    def engine_with(product_policy):
+        def engine(document):
+            result = run_frontend_questions(document)
+            result["results"]["OUT-06"] = review_products(document, budgets, catalog=catalog, policy=product_policy)
+            return result
+        return engine
+
+    document = current_product_document()
+    store = BackendStore(tmp_path / "expiry.sqlite3")
+    store.create_case("mock-actor-A", "products")
+    for i, row in enumerate(document["raw_bundle"]["answers"]):
+        store.save_answer("mock-actor-A", "products", i, f"product-{i}", row["envelope"])
+    count = len(document["raw_bundle"]["answers"])
+    context = {k: v for k, v in document["context"].items() if k not in {"case_id", "snapshot_id", "profile_version"}}
+    args = ({**context, "scope_ref": document["scope_ref"]}, document["confirmations"], document["requested_outputs"])
+    first = store.analyze_question_v12("mock-actor-A", "products", count, "valid", *args, engine=engine_with(policy))
+    before = deepcopy(store.read_run("mock-actor-A", "products", first["run_id"])["result"]["results"]["OUT-06"])
+    assert before["product_policy"]["version"] == "DION-PRODUCT-POLICY-20261113-0.3.1"
+    assert before["candidates"][0]["rows"][0]["allocated_total_krw"] == "180000"
+
+    later = store.analyze_question_v12("mock-actor-A", "products", count, "expired", *args, engine=engine_with(expired))
+    blocked = store.read_run("mock-actor-A", "products", later["run_id"])["result"]["results"]["OUT-06"]
+    assert "POLICY_DISCLOSURE_STALE" in blocked["reason_codes"]
+    assert blocked["candidates"][0]["rows"][0]["allocated_total_krw"] == "0"
+
+    reopened = store.read_run("mock-actor-A", "products", first["run_id"])
+    assert reopened["result"]["results"]["OUT-06"] == before

@@ -7,10 +7,29 @@
 | R3 지출 화면 E2E | 해결 — 폼 재생성 전 입력 경합을 테스트 대기로 수정, 차이 금액 U+2212 기호 정렬 | `dion-explanation.spec.ts` R3 2경로 반복 4/4 통과 |
 | 전체 E2E | 통과 — 67통과/1skip(새 하네스) + `--scheme-fixture` 하네스 explanation 12통과 = 알려진 실패 0건 | 로컬 Chrome·next dev·`app.be_server`·테스트 하네스. 25건은 r1 결과 화면 개편(질문형 입력 라벨, 기간 접힘, `확인 대기`·만원 표기, 상품 배분 4번째 화면·재무안 선택, 목표 보관/재선택)에 사양이 맞지 않던 것으로, 사용자 승인 후 기대값을 새 화면에 맞춤. 금액 정답값은 변경 없음 |
 | 미병합 브랜치 | PR #3 종료(기능은 integration에 반영). 고양이(PR #1)·디자인(PR #2)은 포함하지 않기로 결정 | `dion/fe-review-20261111`·`dion/product-filter-allocation-20261111` 원격 삭제는 이 세션 권한으로 불가 → GitHub에서 직접 삭제 필요 |
-| 운영 | 실계정·원격 DB·운영 원장·유료 모델 호출 미확인 | [P0 잔여 조건](integration/2026-11-13-agent-p0-concurrency-ledger.md) |
+| 운영 | 격리 PG에서 migration 001~003·경합·원장 회귀 114통과, readiness DB `READY`. 운영 DB 003·004·`/readyz`·실계정·유료 호출은 미확인. OnePort 원장은 중앙 PG 백엔드 구현(PR #9, 격리 PG 12통과), 운영 provisioning 전 | [P0 잔여 조건](integration/2026-11-13-agent-p0-concurrency-ledger.md) |
+| 상품 정책·RAG (PR #11) | 상품 정책 0.3.1(~2027-01-12), RAG 29개 문서 승인 등록(공모전 시연용 내부 검토, ~2026-12-31), OUT-06 사유 설명·비교 점수·3유형 비교(배분 불변), TAX-01 절세 계약·정답 10건(엔진 미착수) | 팀원 외부 대조(검증 가이드·기록표) 대기. [4단계 기록](integration/2026-11-13-stage4.md) |
 | 작업 규칙 | `main` 직접 push 금지, 기능당 PR 1개, PR당 변경 20파일 이내 권장 | |
 
 아래는 날짜별 이력이다.
+
+---
+
+# 2026-11-13 — 로드맵 4단계 (로컬)
+
+RAG 29개 문서를 승인 등록(공모전 시연용 내부 검토, 독립 전문가 검토 아님)했다. 상품 사유 설명 OUT-06 `explanation`, 비교 점수 0.1과 3유형 비교 0.1(PROPOSED·배분 불변), TAX-01 절세 계약과 정답 10건을 추가했다. R2 실제 모델은 코드 연결만 있고 유료 호출·원장 전환은 미실행이다. embedding·pgvector는 보류. backend 전체 946통과/19skip. [상세](integration/2026-11-13-stage4.md)
+
+---
+
+# 2026-11-13 — RAG 시범 TAX-01 (로컬)
+
+Drive RAG 문서를 등록 corpus로 바꾸는 `backend/tools/rag_ingest.py`를 추가하고 TAX-01을 chunk6·claim6으로 등록했다(`data/rag/registry/corpus-pending.json`, PENDING_REVIEW). 기존 R2-b 조회·검증·화면 계약은 그대로다. 검증사례 QA-01·02·04·05·07·15·16을 테스트 11개로 고정했다(통과). 검토자 승인·승인본 브라우저 확인은 남음. [상세](integration/2026-11-13-rag-tax01-pilot.md)
+
+---
+
+# 2026-11-13 — 상품 정책 0.3 (로컬)
+
+후보 6개를 투자설명서로 재대조해 정책 0.3(11-13~12-13)과 카탈로그 0.3을 만들었다. 360750 총보수·비용 0.0868→0.0668, 360200 거래비용 0.0303 추가, 나머지 일치. 만료 시 신규 배분 차단·과거 run 열람 유지를 테스트로 고정했고 보류 15개 중 1차 보완 4개를 골랐다. planning·be 744통과/19skip. 360750은 원문 직접 대조 못함·검토자 미지정. [상세](integration/2026-11-13-product-policy-0.3.md)
 
 ---
 

@@ -67,7 +67,7 @@ test('normal: actual OUT-05 to OUT-06, three defaults and three comparison alter
   await product.locator('summary').click();
   await expect(product.getByRole('link', { name: '공식 상품 자료 ↗' })).toHaveAttribute('href', /^https:\/\//);
   await expect(product).toContainText('기준일');
-  await expect(product).toContainText('2026-11-11');
+  await expect(product).toContainText('2026-11-13');
   await page.screenshot({ path: info.outputPath('normal-screen-3.png'), fullPage: true });
 });
 
