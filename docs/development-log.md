@@ -6,6 +6,14 @@
 - 일회성 설정: 004 적용 후 `python -m app.explanation.oneport_pg_ledger`가 현재 `DION_ONEPORT_BUDGET_*`로 새 identity를 만들어 출력한다. 이미 있으면 `ONEPORT_LEDGER_ALREADY_EXISTS`. 분실한 원장 identity는 재생성하지 않는다.
 - 검증(격리 PG16): `tests/be/test_oneport_pg_ledger.py` 12 passed — 8개 독립 연결 동시 예산 예약 1건만 성공, 같은 request key 동시 요청 1 operation, 새 연결에서 PENDING·alias 유지, 승인 grant 확장 차단, 미확인 정산 hold 유지·비용 하향 불가, 다른 worker 서비스에서 완료 결과 재사용(게이트웨이 재호출 없음), identity 누락 차단. 전체 backend pytest 961 passed(PG 포함), Ruff·pip check 통과.
 - 남은 일: 운영 DB에 003·004 적용과 provisioning, OnePort 사용량 대사(SQLite 원장은 free 디스크 부재로 보존되지 않았을 수 있음), 게이트웨이 일일 하드캡 확인 후 유료 호출 승인.
+# 2026-11-13 — 1단계 격리 PostgreSQL 마이그레이션·경합·원장 회귀
+
+운영 DB·Render·실계정·OnePort에는 접속하지 않았다. 임시 컨테이너의 PostgreSQL 16(UTF8, SSL on, 새 클러스터)만 사용했다.
+
+- `python -m app.be.migrate`로 001~003 전체 적용을 2회 반복: 두 번 모두 성공(재적용 안전). `python -m app.be.readiness --database` → database `READY`(누락 컬럼·이력 가드·거부 테이블 0, public 노출 없음). authentication은 로컬에 인증 설정이 없어 `AUTH_CONFIG_MISSING`(예상).
+- `tests/be/test_postgres.py`, `test_consultation_workers.py`(SQLite/PG 각각 두 독립 앱·연결, PG는 002·003 적용), `test_oneport_ledger_guard.py`, `test_oneport.py`, `test_readiness.py`, `test_migration_plan.py`: **114 passed**.
+- 제약: `pgserver` 패키지가 Python 3.13용 배포본이 없어, 시스템 PostgreSQL 16으로 새 클러스터를 만드는 테스트 전용 대체 모듈을 PYTHONPATH로 주입했다(저장소 미포함). SQL_ASCII 클러스터에서는 psycopg가 bytes를 반환해 readiness가 오판하므로 UTF8 클러스터가 필요하다.
+- 남은 일(접근·승인 필요): 운영 DB 003 적용, `/readyz` 배포 200, 실계정 R2 저장·재개·타인 차단, Render worker/인스턴스 고정과 원장 영속화 방식 결정, OnePort 원장 대사·하드캡 확인·유료 호출 승인, R1 운영 스모크.
 
 ---
 
