@@ -16,6 +16,17 @@ import { TaxReview } from "@/lib/dion/tax-benefits";
 import displayCatalog from "@/lib/dion/result-display-catalog.json";
 
 const stateLabels: Record<string,string> = { CALCULATED:"계산됨", PARTIAL:"부분 결과", NEEDS_INPUT:"정보 보완 필요", INVALID_INPUT:"입력 확인 필요", NOT_SUPPORTED:"미지원", NOT_IMPLEMENTED:"미구현", NOT_APPLICABLE:"해당 없음", NOT_REQUESTED:"요청하지 않음", REVIEW_ONLY:"검토 목록", INTERNAL_ERROR:"계산 오류", INFEASIBLE:"월 예산 부족", CALCULATED_MONTHLY_SCENARIO:"월 예산 시나리오" };
+const TASKS=[
+  {key:"protection_topup_krw",text:"보호자금 보충 검토 · 정책 최소와 확인한 유지목표 기준"},
+  {key:"operating_refill_krw",text:"생활 운영자금 보충 검토"},
+  {key:"goal_deposits_krw",text:"목표 적립금과 실제 적립 예정일 확인"},
+  {key:"new_investment_krw",text:"필수 배정 후 상품 검토·미배분 사유 확인"},
+];
+// The first plan month's review items; amounts are plan figures, never actual records.
+function monthTasks(row:Record<string,Json>|undefined){
+  return row?TASKS.filter(t=>typeof row[t.key]==="string"&&BigInt(row[t.key] as string)>0n).slice(0,3):[];
+}
+export type CheckinTask={key:string;label:string};
 export type ViewResult = { result: Record<string,Json>; sourceSignature: string; localVersion: number; storage: string; runId?: string; serverVersion?: number; isCurrent?: boolean; adapterVersion?: string; runStatus?: string; currentInputVersion?: number; source: Json; inputHash?:string; rawSnapshotId?:string; taxReview?: TaxReview };
 function metricValue(out:Record<string,Json>,key:string) {
   if (["INVALID_INPUT","INTERNAL_ERROR"].includes(String(out.calc_state))) return null;
@@ -24,7 +35,7 @@ function metricValue(out:Record<string,Json>,key:string) {
 function Metric({title,value,note}:{title:string;value:unknown;note?:string}) {return <article className="d-metric"><span>{title}</span><strong>{formatKrw(value)}</strong>{note&&<small>{note}</small>}</article>;}
 function Missing({row,title}:{row:Record<string,Json>;title:string}) {return <div className="d-note"><strong>{title} · {stateLabels[textValue(row.calc_state)]??"확인 필요"}</strong><p>{row.calc_state==="NOT_SUPPORTED"?"이 결과의 계산은 아직 지원하지 않아요. 입력은 보관하고 다른 재무 결과를 유지해요.":row.calc_state==="NOT_IMPLEMENTED"?"이 계산 기능은 아직 구현되지 않았어요. 추가 입력으로 완료되는 단계가 아니에요.":row.calc_state==="NOT_APPLICABLE"?"현재 확인한 답변에는 해당하는 항목이 없어요.":row.calc_state==="INVALID_INPUT"?"금액·기간·소유 관계가 맞지 않아 계산을 보류했어요. 관련 답변을 확인해주세요.":"추가 확인 필요 · 관련 답변과 계산에 필요한 가정을 확인해주세요."}</p></div>;}
 
-export function Results({view,deep,tab,setTab,stale,onEdit,explanation,technical=false}:{technical?:boolean;view:ViewResult;deep:boolean;tab:number;setTab:(n:number)=>void;stale:boolean;onEdit:(id:string)=>void;explanation?:ReactNode}) {
+export function Results({view,deep,tab,setTab,stale,onEdit,explanation,checkin,technical=false}:{technical?:boolean;view:ViewResult;deep:boolean;tab:number;setTab:(n:number)=>void;stale:boolean;onEdit:(id:string)=>void;explanation?:ReactNode;checkin?:(plan:string,tasks:CheckinTask[])=>ReactNode}) {
   const heading=useRef<HTMLHeadingElement>(null);
   const [selectedPlan,setSelectedPlan]=useState("STABILITY_FIRST");
   const [selectedPortfolio,setSelectedPortfolio]=useState<string|null>(null);
@@ -71,13 +82,9 @@ export function Results({view,deep,tab,setTab,stale,onEdit,explanation,technical
     {tab===2 && (sourceDoc?<InvestmentSummary doc={sourceDoc} onEdit={onEdit}/>:<Missing row={{calc_state:"NOT_SUPPORTED"}} title="이전 입력 형식의 투자 응답"/>)}
     {tab===2 && <PortfolioChoice doc={sourceDoc} review={visible("OUT-06")} selectedPlan={selectedPlan} onPlan={setSelectedPlan} chosen={selectedPortfolio} onChoose={id=>{setSelectedPortfolio(id);setTab(3);}}/>}
     {tab===3 && <><article className="d-card"><h2>{planName(selectedPlan)} · 상품 후보</h2><PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/><p>포트폴리오 유형의 독립 변경은 정책 연결 대기예요. 확인된 투자 답변을 바꾸려면 투자 검토로 돌아가 다시 계산해주세요.</p></article><ProductAllocation review={visible("OUT-06")} selectedPlan={selectedPlan} onEdit={onEdit}/></>}
-    {tab===4 && <article className="d-card"><h2>이번 달 할 일</h2>{candidates.filter(c=>c.strategy_id===selectedPlan).map(c=>{const r=list(c.rows)[0];const tasks=r?[
-      {key:"protection_topup_krw",text:"보호자금 보충 검토 · 정책 최소와 확인한 유지목표 기준"},
-      {key:"operating_refill_krw",text:"생활 운영자금 보충 검토"},
-      {key:"goal_deposits_krw",text:"목표 적립금과 실제 적립 예정일 확인"},
-      {key:"new_investment_krw",text:"필수 배정 후 상품 검토·미배분 사유 확인"}
-    ].filter(t=>typeof r[t.key]==="string"&&BigInt(r[t.key] as string)>0n).slice(0,3):[];
-    return <div key={textValue(c.strategy_id)}>{r&&<p>{planName(c.strategy_id)} · {textValue(r.period)} · 정책 1.0의 월별 검토 기준</p>}<ol className="d-actions">{tasks.map(t=><li key={t.key}>{formatKrw(r[t.key])} · {t.text}{t.key==="new_investment_krw"&&<button onClick={()=>setTab(3)}>상품 후보 보기 →</button>}</li>)}{actions.slice(0,3-tasks.length).map(a=><li key={a.id}><button onClick={()=>onEdit(a.id)}>{a.text}</button></li>)}</ol></div>;})}{!candidates.length&&actionList}<p>정책상 부채 우선상환·기존 보유 편중의 개인별 판정은 미구현이며 임의의 상환액·행동 우선순위를 만들지 않아요. 초안 선택은 실제 거래·계획 채택이 아니에요.</p></article>}
+    {tab===4 && <article className="d-card"><h2>이번 달 할 일</h2>{candidates.filter(c=>c.strategy_id===selectedPlan).map(c=>{const r=list(c.rows)[0];const tasks=monthTasks(r);
+    return <div key={textValue(c.strategy_id)}>{r&&<p>{planName(c.strategy_id)} · {textValue(r.period)} · 정책 1.0의 월별 검토 기준</p>}<ol className="d-actions">{tasks.map(t=><li key={t.key}>{formatKrw(r[t.key])} · {t.text}{t.key==="new_investment_krw"&&<button onClick={()=>setTab(3)}>상품 후보 보기 →</button>}</li>)}{actions.slice(0,3-tasks.length).map(a=><li key={a.id}><button onClick={()=>onEdit(a.id)}>{a.text}</button></li>)}</ol></div>;})}{!candidates.length&&actionList}<p>정책상 부채 우선상환·기존 보유 편중의 개인별 판정은 미구현이며 임의의 상환액·행동 우선순위를 만들지 않아요. 초안 선택만으로는 실제 거래·계획 채택이 되지 않아요. 아래에서 직접 선택해야 기록돼요.</p></article>}
+    {tab===4&&checkin&&checkin(selectedPlan,candidates.filter(c=>c.strategy_id===selectedPlan).flatMap(c=>{const r=list(c.rows)[0];return monthTasks(r).map(t=>({key:t.key,label:`${t.text} (계획 ${formatKrw(r[t.key])})`}));}))}
     <TaxBenefits key={`${sourceDoc?.context.case_id}:${view.localVersion}`} doc={sourceDoc} stale={stale} review={view.taxReview} technical={technical}/>
     <details className="d-card d-output-status"><summary>결과 14개 · 연결 상태와 필요한 정보</summary><p>현재 어댑터의 계산 결과와 FE 연결 상태를 구분해요. 결과를 계산할 정보가 부족해도 다른 계산은 유지해요.</p><div className="d-table-wrap"><table><thead><tr><th>결과</th><th>현재 상태</th><th>근거·다음 확인</th></tr></thead><tbody>{displayCatalog.map(entry=>{
       const row=visible(entry.id), connected=["OUT-01","OUT-02","OUT-03","OUT-04","OUT-05","OUT-06"].includes(entry.id);

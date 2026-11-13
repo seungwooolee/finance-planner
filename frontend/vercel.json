@@ -5,7 +5,8 @@
       "beta/wake-notice": false,
       "codex/result-explanation-r1": false,
       "dion/product-policy-0.3": false,
-      "codex/oneport-ledger-integration-20261114": false
+      "codex/oneport-ledger-integration-20261114": false,
+      "feat/beta-gate-20261114": false
     }
   }
 }

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Check, FolderOpen, LayoutDashboard, ShieldCheck } from "lucide-react";
-import { Document, Envelope, Json, Revision, blankDocument, catalog, clone, download, example, field, object, question, revise } from "@/lib/dion/model";
+import { Document, Envelope, Json, Revision, blankDocument, catalog, clone, download, example, field, object, question, revise, textValue } from "@/lib/dion/model";
 import { copy, customerStep, customerSteps, stepComplete } from "@/lib/dion/customer-flow";
 import { clearSession, readSession, rememberSession } from "@/lib/dion/session";
 import { Confirmations, DetailedAnswerEditor, QuestionForm } from "./questions";
@@ -12,6 +12,7 @@ import { Results, ViewResult } from "./results";
 import { ResultExplanation } from "./result-explanation";
 import { AgentConsultation } from "./agent-consultation";
 import { Scenario, ScenarioPicker, scenarios } from "./scenario-picker";
+import { PlanCheckin } from "./plan-checkin";
 import { ApiError, requestJson } from "@/lib/dion/wake-retry";
 import { reviewToolsEnabled } from "@/lib/dion/beta-config";
 import { ServerWakeNotice } from "@/components/server-wake-notice";
@@ -146,10 +147,13 @@ export function DionPlanner() {
     const timeout=setTimeout(()=>{timedOut=true;controller.abort();},120_000);
     setBusy(true);setError("");setMessage("");setLastError(null);
     try {
-      const response=await request("/api/fe/v1/preview","POST",captured,undefined,controller.signal);
+      // Wake-up retries (503/network, same body) live in requestJson; the notice shows while waiting.
+      const response:unknown=await request("/api/fe/v1/preview","POST",captured,undefined,controller.signal);
       if(seq!==sequence.current)return;
-      const result=object(response?.result);
-      if(response?.integration_version!=="DION-FE-INTEGRATION-1.0"||!result.calc_state)throw new Error("INVALID_PREVIEW_RESPONSE");
+      setMessage("");
+      const payload=response as {result?:unknown;integration_version?:unknown}|null;
+      const result=object(payload?.result);
+      if(payload?.integration_version!=="DION-FE-INTEGRATION-1.0"||!result.calc_state)throw new Error("INVALID_PREVIEW_RESPONSE");
       const next:ViewResult={result,sourceSignature:signature(captured),localVersion:captured.raw_bundle.input_version,storage:"NOT_SAVED",source:captured as unknown as Json};
       setView(next);setHistory(h=>[next,...h].slice(0,20));setShowResults(true);setTab(0);
       if(["INVALID_INPUT","INTERNAL_ERROR"].includes(String(result.calc_state)))setError("입력 또는 계산 오류가 있어요. 사용 가능한 부분 결과와 오류를 확인하세요. 이전 계산은 검토 패널에 보존했어요.");
@@ -321,7 +325,7 @@ export function DionPlanner() {
         {fictional&&<div className="d-fictional">가상 사례{scenario?` · ${scenario.title}`:""} · 실제 고객·계좌 자료 아님 · 기준일 {doc.context.evaluation_on}{scenario&&<><button className="d-secondary" onClick={restoreOriginal}>원래 입력으로 돌아가기</button><details><summary>현재 사례의 가정</summary><ul>{scenario.assumptions.map(a=><li key={a}>{a}</li>)}</ul></details></>}</div>}
 
         {busy&&<div ref={loadingRef} tabIndex={-1} style={{scrollMarginTop:96}} className="d-loading" role="status"><span className="d-spinner"/><span>입력한 정보로 계산 중이에요. 처음 연결할 때는 약 1분 걸릴 수 있어요. 작성값은 그대로 유지돼요.</span></div>}
-        {showResults&&view?<Results view={view} deep={mode==="deep"} tab={tab} setTab={setTab} stale={stale} onEdit={edit} explanation={<><ResultExplanation view={view} token={token} editVersion={doc.raw_bundle.input_version} selectedCaseId={caseId} stale={stale} onEdit={edit} onSave={()=>{if(!token)setLoginOpen(true);else setAccountOpen(true);}}/><AgentConsultation view={view} token={token} selectedCaseId={caseId} editVersion={doc.raw_bundle.input_version} stale={stale}/></>}/>:<div className="d-input-layout"><aside className="d-sidebar"><span className="d-eyebrow">{mode==="deep"?"DEEP CHECK":"QUICK CHECK"}</span><h2>나의 재무정보</h2><p>확인한 값부터 한 걸음씩</p><div className="d-sidebar-coach"><Cat kind="coach" size={102}/><p>천천히 적어도 괜찮아요.<br/><strong>함께 살펴볼게요.</strong></p></div><nav aria-label="질문 이동">{ids.map((id,i)=><button key={id} aria-current={active===id?"step":undefined} onClick={()=>setCurrent(id)}><span>{stepComplete(doc,id)?<Check size={15}/>:String(i+1).padStart(2,"0")}</span>{copy[id]?.nav??question(id).source["항목"]}</button>)}</nav></aside>
+        {showResults&&view?<Results view={view} deep={mode==="deep"} tab={tab} setTab={setTab} stale={stale} onEdit={edit} explanation={<><ResultExplanation view={view} token={token} editVersion={doc.raw_bundle.input_version} selectedCaseId={caseId} stale={stale} onEdit={edit} onSave={()=>{if(!token)setLoginOpen(true);else setAccountOpen(true);}}/><AgentConsultation view={view} token={token} selectedCaseId={caseId} editVersion={doc.raw_bundle.input_version} stale={stale}/></>} checkin={(plan,tasks)=>{const savedCase=textValue(object(object(view.source).context).case_id);return token&&view.storage==="SAVED"&&view.runId&&savedCase===caseId?<PlanCheckin key={`${view.runId}-${caseId}`} view={view} token={token} caseId={caseId} plan={plan} tasks={tasks}/>:<section className="d-note" aria-label="계획 선택과 이번 달 기록"><strong>계획 선택과 이번 달 기록</strong><p>로그인 후 저장한 계산 결과에서 계획을 선택하고 이번 달 실제 기록을 남길 수 있어요. 미리보기 결과는 저장되지 않아요.</p></section>;}}/>:<div className="d-input-layout"><aside className="d-sidebar"><span className="d-eyebrow">{mode==="deep"?"DEEP CHECK":"QUICK CHECK"}</span><h2>나의 재무정보</h2><p>확인한 값부터 한 걸음씩</p><div className="d-sidebar-coach"><Cat kind="coach" size={102}/><p>천천히 적어도 괜찮아요.<br/><strong>함께 살펴볼게요.</strong></p></div><nav aria-label="질문 이동">{ids.map((id,i)=><button key={id} aria-current={active===id?"step":undefined} onClick={()=>setCurrent(id)}><span>{stepComplete(doc,id)?<Check size={15}/>:String(i+1).padStart(2,"0")}</span>{copy[id]?.nav??question(id).source["항목"]}</button>)}</nav></aside>
           <section className="d-question"><div className="d-progress-caption"><span>현재 {index+1}번째 화면 · {ids.length}개 중 {count}개 작성</span><span>{progress}%</span></div><progress max={ids.length} value={count} aria-label="질문 응답 진행률"/><div className="d-progress-cat-track" aria-hidden="true"><div key={count} style={{left:`calc(${progress}% - ${progress*.48}px)`}}><Cat size={48}/></div></div>
             <div className="d-question-title"><span className="d-badge">{currentCopy?.nav}</span><h1 ref={questionHeading} tabIndex={-1} style={{scrollMarginTop:96}}>{currentCopy?.title}</h1><p>{currentCopy?.help}</p></div>
             <QuestionForm key={active} id={active} doc={doc} onChange={change}/>

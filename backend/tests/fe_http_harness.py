@@ -15,6 +15,7 @@ from app.be.auth import get_actor
 from app.be.consultation_api import get_consultation_service, get_scheme_evidence_service
 from app.be.consultation_api import router as consultation_router
 from app.be.explanation_api import router as explanation_router
+from app.be.plan_api import router as plan_router
 from app.be.question_api import router as question_router
 from app.be.store import BackendStore
 from app.consultation.model_proposal import mock_proposal
@@ -34,6 +35,7 @@ def main():
     app.include_router(question_router)
     app.include_router(explanation_router)
     app.include_router(consultation_router)
+    app.include_router(plan_router)
 
     def mock_actor(request: Request):
         if request.headers.get("authorization") != "Bearer MOCK-FE-ONLY":
