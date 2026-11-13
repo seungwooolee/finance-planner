@@ -15,3 +15,14 @@
 ## 한계
 - Render 백엔드 주소는 게이트 밖이다. 화면은 없고 API 응답만 있으며, 저장 API는 로그인이 필요하다.
 - 공개 범위 해석은 주최 측 판단이다. 확실히 하려면 주최 측에 문의한다.
+
+## 5·6단계 계획 선택·이번 달 기록 (같은 PR)
+- API: `GET /cases/{id}/plan`, `POST /cases/{id}/plan/adoptions`(run_id + `STABILITY_FIRST`/`INVESTMENT_CAPACITY`), `GET /cases/{id}/checkins`, `GET|PUT /cases/{id}/checkins/{YYYY-MM}`.
+- 채택은 저장된 **현재 입력버전** run의 계획 후보만 가능하고 기록만 남긴다(`transaction_executed:false`). run·원응답은 바꾸지 않으며 현재 채택 포인터는 기존 `case_plan_links`를 쓴다.
+- 이번 달 기록은 정수 원 문자열 또는 null(미입력)만 받는다. 0과 빈칸을 구분하고, 계획 금액을 실제값으로 복사하지 않으며, 저장할 때마다 회차를 새로 남긴다(수정·삭제 불가 트리거). 요약은 입력한 값만 합산하고 소득 초과 배분은 저장을 막지 않고 확인 안내만 한다. 상황 변화를 고르면 "다시 계산" 안내만 하고 기존 채택은 바꾸지 않는다.
+- 화면: 결과 5번째 탭 "결과·이번 달 행동" 아래. 로그인 + 저장한 결과에서만 열리고, 미리보기에서는 안내만 보인다.
+
+### 운영 DB 적용 순서 (병합 전)
+1. `cd backend` 후 `python -m app.be.migrate --plan --only 005_plan_checkins.sql`로 해시 확인
+2. 운영 `.env`가 있는 환경에서 `python -m app.be.migrate --only 005_plan_checkins.sql` 실행(추가 전용, 기존 데이터 변경 없음)
+3. 그다음 PR 병합·배포. 순서가 바뀌면 이 기능만 `STORAGE_FAILURE`로 실패하고 나머지는 영향 없다. 되돌리기: `migrations/be/rollback/005_plan_checkins.sql`.
