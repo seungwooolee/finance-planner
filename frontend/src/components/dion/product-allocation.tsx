@@ -3,13 +3,14 @@
 import { Json, list, object, textValue } from "@/lib/dion/model";
 import { formatKrw } from "@/lib/dion/money-format";
 import { riskTitles } from "@/lib/dion/investment-review";
-import { productEmptyCause } from "@/lib/dion/product-empty";
+import { InvestmentFollowup } from "./investment-followup";
+import { policyDateMessage, productEmptyCause } from "@/lib/dion/product-empty";
 
 export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="" }: { review: Record<string, Json>; selectedPlan?: string; evaluationOn?: string; onEdit: (id: string) => void }) {
   const empty=productEmptyCause(review,evaluationOn);
   const catalog=object(review.catalog),policy=object(review.product_policy),messages=object(review.reason_messages);
   const products=list(review.products),candidates=list(review.candidates).filter(c=>!selectedPlan||c.strategy_id===selectedPlan),detail=object(catalog.detail_review);
-  const reason=(code:unknown)=>textValue(messages[String(code)])||"상품의 검토 조건을 확인해주세요.";
+  const reason=(code:unknown)=>code==="POLICY_DISCLOSURE_STALE"?policyDateMessage(review,evaluationOn):textValue(messages[String(code)])||"상품의 검토 조건을 확인해주세요.";
   const titles:Record<string,string>={...riskTitles,"NEW-01":"진단 범위",D14:"제외할 투자 조건",D18:"환율 변동 수용",D19:"상품 설명 이해","NEW-12":"제외할 산업"};
   const questionsForReason:Record<string,string>={RESTRICTIONS_UNCONFIRMED:"D14",FX_ACCEPTANCE_REQUIRED:"D18",UNDERSTANDING_REQUIRED:"D19",FUND_DATE_UNRESOLVED:"F15",FUND_NOT_AVAILABLE:"F15",EXPERIENCE_REQUIRED:"F16",INDUSTRY_EXCLUSION_UNRESOLVED:"NEW-12"};
   const reasonQuestions=products.flatMap(p=>Array.isArray(p.reason_codes)?p.reason_codes.map(c=>questionsForReason[String(c)]).filter(Boolean):[]);
@@ -21,7 +22,8 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
       {review.review_version?<><p>공식 명칭·코드 확인 {String(catalog.identity_verified_count??0)}개 · 조사에서 제외 {String(catalog.research_excluded_count??0)}개 · 현재 조건 통과 {String(catalog.eligible_for_review_count??0)}개</p>
         {typeof detail.reviewed_count==="number"&&<p>상세 자료 검토 {detail.reviewed_count}개 · 자료 검토 후보 {String(detail.enabled_for_preview_count??0)}개</p>}
         <p role="status">{catalog.eligible_for_review_count===0?"현재 배분할 수 있는 상품이 없어 투자 후보 금액을 미배분으로 남겼어요.":"조건을 통과한 상품이 있어요. 비중 제한을 적용한 배분액은 아래에서 확인해주세요."}</p>
-        {empty&&<div className="d-warning" data-product-empty={[empty.investment&&"INVESTMENT",empty.date&&"DATE"].filter(Boolean).join(" ")}><strong>대표상품 0개</strong>{empty.investment&&<><p>투자 성향 질문에 답하면 대표상품을 볼 수 있어요.</p><button className="d-secondary" onClick={()=>onEdit("F15")}>정밀진단에서 투자 성향 답하기 →</button></>}{empty.date&&<p>이 결과의 기준일({empty.date.evaluationOn||"확인 필요"})이 상품 정책 시작일({empty.date.policyFrom||"확인 필요"})보다 앞서 대표상품을 표시하지 않아요. 기준일을 {empty.date.policyFrom||"정책 시작일"} 이후로 다시 계산하면 확인할 수 있어요.</p>}</div>}
+        <InvestmentFollowup review={review} onEdit={onEdit}/>
+        {empty?.date&&<div className="d-warning" data-product-empty="DATE"><strong>대표상품 0개</strong><p>{policyDateMessage(review,evaluationOn)}</p></div>}
         {Array.isArray(review.reason_codes)&&review.reason_codes.map(code=><p className="d-note" key={String(code)}>{reason(code)}</p>)}
         {missing.length>0&&<div className="d-warning"><p>투자 검토 답변의 보완이 필요해요.</p>{missing.filter(id=>titles[String(id)]).map(id=><button className="d-text-button" key={String(id)} onClick={()=>onEdit(String(id))}>{titles[String(id)]} 확인 →</button>)}</div>}
       </>:<p>이전 계산에는 상품 검토 결과가 없어요. 현재 입력으로 다시 계산하면 확인할 수 있어요.</p>}
@@ -35,7 +37,7 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
         {list(month.allocations).map(allocation=><p key={String(allocation.code)}>{textValue(products.find(p=>p.code===allocation.code)?.name)||String(allocation.code)} · 검토 비중 {typeof allocation.target_bps==="number"?(allocation.target_bps/100).toLocaleString("ko-KR"):"확인 필요"}% · {formatKrw(allocation.review_allocated_krw)}</p>)}
         {Array.isArray(month.adjustment_codes)&&month.adjustment_codes.map(code=><p className="d-note" key={String(code)}>{reason(code)}</p>)}
         {list(month.allocations).length>0&&<p className="d-help">내부 하락 시나리오에서 계산한 손실액 {formatKrw(object(month.stress_review).scenario_loss_krw_ceil)}. 실제 손실은 이보다 클 수 있어요. 위험등급과 이 시나리오는 최대 손실을 보장하지 않아요.</p>}
-        {Array.isArray(month.reason_codes)&&month.reason_codes.map(code=><small key={String(code)}>{reason(code)} </small>)}
+        {Array.isArray(month.reason_codes)&&month.reason_codes.map(code=><small key={String(code)}>{code==="POLICY_DISCLOSURE_STALE"?policyDateMessage(review,evaluationOn,String(month.period)):reason(code)} </small>)}
       </div>)}<p className="d-help">검토용 초안 · 고객 채택·거래 미실행 · 남은 상품으로 비중 자동 재분배 없음</p></article>)}
     {products.length>0&&<details className="d-card"><summary>조사 상품 {products.length}개 · 검토 상태와 공식 출처</summary><p>기록된 공시값과 기준일이에요. 보류·제외 상품의 과거 값은 현재 추천 근거로 사용하지 않아요. 총보수와 기타비용을 포함한 보수·비용을 구분하며, 세금·증권사 수수료·호가 차이를 포함한 실제 총비용은 계산하지 않아요.</p><div className="d-table-wrap"><table><thead><tr><th>상품·코드</th><th>기록 위험등급</th><th>기록 연간 비용</th><th>배분 검토 결과</th><th>근거</th></tr></thead><tbody>{products.map(product=>{
       const disclosure=object(product.disclosure),dates=object(disclosure.source_as_of),urls=object(disclosure.source_urls);

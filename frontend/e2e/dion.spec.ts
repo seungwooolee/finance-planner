@@ -14,6 +14,11 @@ async function calculate(page:Page) {
   return {body:await response.json(),posted:response.request().postDataJSON()};
 }
 const questionNav=(page:Page)=>page.getByRole('navigation',{name:'질문 이동'});
+async function openReviewTools(page:Page) {
+  const button=page.getByRole('button',{name:'검토 도구',exact:true});
+  await expect(button,'These contract checks require NEXT_PUBLIC_SHOW_REVIEW_TOOLS=true at frontend build time (see docs/testing.md).').toBeVisible();
+  await button.click();
+}
 
 test('DION actual input, engine oracles, raw spelling, five result views and edit',async({page},info)=>{
   await sample(page);
@@ -38,8 +43,8 @@ test('DION actual input, engine oracles, raw spelling, five result views and edi
     await page.getByRole('navigation',{name:'빠른 결과 5뷰'}).getByRole('button',{name:new RegExp(name)}).click();
     if(name==='상품 정보') await expect(page.locator('[data-product-empty]')).toContainText('대표상품 0개');
   }
-  await page.getByRole('button',{name:'4. 제안·선택 · 이번 달 행동 →'}).click();
-  await expect(page.getByRole('navigation',{name:'빠른 결과 5뷰'}).getByRole('button',{name:/결과·이번 달 행동/})).toHaveAttribute('aria-current','page');
+  await page.getByRole('button',{name:'4. 제안·선택 · 검토용 →'}).click();
+  await expect(page.getByRole('navigation',{name:'빠른 결과 5뷰'}).getByRole('button',{name:/투자구성/})).toHaveAttribute('aria-current','page');
   await page.getByRole('button',{name:'입력 내용 수정 ↗'}).click();
   await page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true}).fill('320');
   await expect(page.getByText('작성값이 바뀌었어요')).toBeVisible();
@@ -124,9 +129,9 @@ test('DION combined goals, no internal IDs, explicit none and undo preserve orig
   await page.getByRole('button',{name:'지금은 목표 없음',exact:true}).click();
   await expect(page.getByRole('textbox',{name:'목표로 생각한 금액',exact:true})).toHaveCount(0);
   // Inspect the submitted document without unmounting the goal editor, so undo remains available.
-  const download=page.waitForEvent('download');
-  await page.getByRole('button',{name:'검토 도구',exact:true}).click();
+  await openReviewTools(page);
   await page.getByText('검토 패널 · 원응답·엔진 입력·오류·버전',{exact:true}).click();
+  const download=page.waitForEvent('download');
   await page.getByRole('button',{name:'검토 JSON 내보내기',exact:true}).click();
   const file=await download;const stream=await file.createReadStream();const chunks=[];for await(const chunk of stream!) chunks.push(chunk);
   const cleared=JSON.parse(Buffer.concat(chunks).toString()).document;
@@ -185,8 +190,12 @@ test('DION failed recalculation preserves input and old result; late responses c
   await sample(page);await calculate(page);
   await page.getByRole('button',{name:'입력 내용 수정 ↗'}).click();
   await page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true}).fill('310');
+  await page.clock.install();
   await page.route('**/api/fe/v1/preview',r=>r.abort());
   await page.getByRole('button',{name:'재계산',exact:true}).click();
+  // Network errors retry for up to 90 seconds. Advance browser time instead of waiting in real time.
+  await expect(page.getByRole('status').filter({hasText:'서버 준비 중이에요'})).toBeVisible();
+  await page.clock.fastForward(90_001);
   await expect(page.locator('.d-warning[role=alert]')).toContainText('연결 오류');
   await expect(page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true})).toHaveValue('310');
   await page.unroute('**/api/fe/v1/preview');
@@ -229,13 +238,14 @@ test('DION direct deep entry and mobile input/result remain within viewport',asy
 
 // Persistence/retry/conflict coverage uses current account UI in dion-persistence.spec.ts.
 
-test('DION quick result investment button opens its deep question',async({page})=>{
+test('DION quick result investment button retains quick mode and allows question navigation',async({page})=>{
   await sample(page);await calculate(page);
   await page.getByRole('navigation',{name:'빠른 결과 5뷰'}).getByRole('button',{name:/투자구성/}).click();
   await page.locator('.d-risk-summary').getByRole('button',{name:/^안정성과 수익 선호 (확인|수정) →$/}).click();
   await expect(page.getByRole('heading',{name:'투자 전에 필요한 정보를 함께 살펴봐요'})).toBeVisible();
   await expect(questionNav(page).getByRole('button',{name:/투자 검토/})).toHaveAttribute('aria-current','step');
-  await page.getByRole('button',{name:'빠른진단',exact:true}).click();
+  await expect(page.getByRole('navigation',{name:'진단 방식'}).getByRole('button',{name:'빠른진단',exact:true})).toHaveClass('active');
+  await questionNav(page).getByRole('button',{name:/나의 상황/}).click();
   await expect(page.getByRole('heading',{name:'나의 상황부터 알려주세요'})).toBeVisible();
   await page.getByRole('button',{name:'다음',exact:true}).click();
   await expect(page.getByRole('heading',{name:'어떤 일을 위해 돈을 준비하고 싶나요?'})).toBeVisible();
@@ -243,7 +253,7 @@ test('DION quick result investment button opens its deep question',async({page})
 
 test('DION historical irregular periods remain visible and review edits synchronize wire context',async({page})=>{
   await sample(page);await questionNav(page).getByRole('button',{name:/한 달 지출/}).click();
-  await page.getByRole('button',{name:'검토 도구',exact:true}).click();
+  await openReviewTools(page);
   await page.getByText('현재 화면의 상세 응답 편집 · 검토용',{exact:true}).click();
   const editor=page.locator('details.d-nested').filter({has:page.locator('summary',{hasText:/^F04 ·/})});
   await editor.locator('summary').click();
