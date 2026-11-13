@@ -1,3 +1,9 @@
+## 2026-11-14 비공개 베타 게이트·서버 깨우기 재시도
+
+검색 차단과 계산 미리보기의 HTML 게이트웨이 오류 재시도를 추가했다([운영](beta-closed-20261114.md)). 리눅스 샌드박스 production build + 하네스에서 `dion-beta.spec.ts`(신규 1건)와 `dion.spec.ts`·`dion-result-navigation.spec.ts`·`dion-verify`·`dion-persistence`·`dion-account` 핵심 흐름을 실행해 통과했다. 이 PR의 `/beta` 게이트는 #22 `/gate` 게이트와 중복이라 통합 병합 시 제거했다(게이트 검증은 #22 기준). 전체 E2E와 배포본 확인은 미실행.
+
+5·6단계(계획 선택·이번 달 기록)는 `backend/tests/be/test_plan_checkin.py` 10건과 `dion-verify.spec.ts`의 신규 1건으로 확인했다. 저장 계층 변경에 따라 BE 관련 8개 파일(111 통과/8 skip)과 FE E2E 8개 파일(42 통과/1 skip)을 다시 실행했다. 운영 PostgreSQL에 005 마이그레이션은 미적용·미검증이다.
+
 ## 2026-11-12 GitHub Actions Core
 
 `.github/workflows/core.yml`은 `scripts/verify.ps1 -Mode Core`와 같은 범위(pytest·Ruff·pip check, TypeScript·ESLint)를 리눅스에서 실행한다. 트리거는 PR·`dion/**` 푸시·수동 실행이며 개발 브랜치 푸시마다 돌지 않는다. 배포·비밀값·외부 AI 호출·브라우저 E2E·production Build는 포함하지 않는다. 워크플로 자체는 Actions에서 아직 실행되지 않았다. 같은 명령을 Python3.13·Node22 샌드박스에서 실행해 pytest637통과/8skip, Ruff·pip check·TypeScript·ESLint 통과를 확인했다(CI의 Python3.12 환경과는 다름).
@@ -171,3 +177,26 @@ Core: pytest369통과/7skip, Ruff·pip check·TypeScript·ESLint 통과. Build �
 4. 프론트 경유 동일 요청을 확인하고 백엔드 access/error 로그와 대조한다.
 5. 연결 거부는 서버/포트 문제, 404는 경로, 422는 입력 검증, 실행 중 API의 500은 서버 로그를 우선 조사한다. 프록시 연결 실패도 프론트에서 500으로 보일 수 있다.
 6. 브라우저는 same-origin `/api/*`를 사용하므로 직접 교차 출처 요청이 확인되지 않았다면 CORS 변경을 먼저 하지 않는다.
+# 2026-11-14 — 4단계 E2E 실행 조건 보완
+
+`dion.spec.ts`의 원응답 JSON 내보내기·상세 응답 편집 검사는 검토 도구가 필요하다. 로컬 검사용 production 빌드는 **빌드 전에** `NEXT_PUBLIC_SHOW_REVIEW_TOOLS=true`를 설정한다. 실행 시에만 설정해도 기존 브라우저 번들은 바뀌지 않는다. 서비스 기본값은 계속 숨김이며 배포 설정을 변경하지 않는다.
+
+아래 명령은 `C:\Users\LG\Projects\DION-step4-20261114\frontend` 기준이다. 같은 checkout의 FE 서버가 정지된 상태에서 빌드하고, 테스트 전용 BE 하네스(8318)는 이미 실행 중이어야 한다. 사용자 서버를 임의 종료하지 않는다.
+
+```powershell
+$env:BACKEND_URL='http://127.0.0.1:8318'
+$env:NEXT_PUBLIC_SHOW_REVIEW_TOOLS='true'
+npm run build -- --webpack
+npm run start -- -p 3318
+```
+
+별도 PowerShell에서, 이번 실패 6건의 관련 검사만 실행:
+
+```powershell
+$env:PLAYWRIGHT_BASE_URL='http://127.0.0.1:3318'
+$env:DION_TEST_BE_URL='http://127.0.0.1:8318'
+$env:PLAYWRIGHT_BROWSER_CHANNEL='msedge'
+npx playwright test e2e/dion-step4.spec.ts e2e/dion.spec.ts --grep 'quick follow-up|failed recalculation|quick result investment button|combined goals|historical irregular' --workers=1
+```
+
+서버 재시도 검사는 브라우저 시계를 90초 진행해 연결 실패와 원응답 보존을 확인한다. 빠른진단 투자 질문은 quick 모드를 유지하며 질문 이동으로 돌아온다. 상품 금액 검사는 합성 사례의 평가일과 자산 평가일을 일치시켜 월 후보 생성부터 확인한다. 기존 사례 JSON·금융 기대값은 바꾸지 않는다.

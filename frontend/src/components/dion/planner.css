@@ -94,3 +94,4 @@
 @media(prefers-reduced-motion:reduce){.d-progress-cat-track>div{animation:none;transition:none;left:0!important}}
 
 .d-donut-placeholder>span{background:white;border-radius:50%;height:65px;width:65px;display:flex;align-items:center;justify-content:center}
+.d-journey button{font-size:11px;color:var(--d-primary);padding:5px 10px;border-radius:7px;text-decoration:underline}.d-journey button.active{background:#eaeaff;font-weight:700;text-decoration:none}@media(max-width:700px){.d-journey button{font-size:9px;padding:4px}}
