@@ -5,8 +5,9 @@ import { createHash, timingSafeEqual } from "node:crypto";
 export const BETA_COOKIE = "dion_beta";
 export const BETA_MAX_AGE = 60 * 60 * 24 * 30;
 
+// SITE_PASSWORD is the earlier name for the same gate (PR #18); either one turns it on.
 export function betaCode(): string | null {
-  const code = process.env.DION_BETA_ACCESS_CODE?.trim();
+  const code = (process.env.DION_BETA_ACCESS_CODE ?? process.env.SITE_PASSWORD)?.trim();
   return code ? code : null;
 }
 

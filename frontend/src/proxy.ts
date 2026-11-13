@@ -1,8 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { BETA_COOKIE, betaCode, betaToken, sameSecret } from "@/lib/beta-gate";
 
-// Pre-announcement closed beta: keep every response out of search engines, and when an
-// access code is configured, require it before any page or proxied API call is served.
+// Pre-award closed beta: keep every response out of search engines, and when an access code is
+// configured, require it before any page or proxied API call is served. A cookie (not HTTP Basic)
+// is used because the app's own API calls carry "Authorization: Bearer <login token>".
 export function proxy(request: NextRequest) {
   const code = betaCode();
   const { pathname } = request.nextUrl;
