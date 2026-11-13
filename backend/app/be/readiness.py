@@ -30,6 +30,35 @@ REQUIRED = {
     "agent_session_heads": {"session_id", "case_id", "session_version", "status", "owner_id", "expires_at"},
 }
 HISTORY = {"answer_revisions", "raw_snapshots", "analysis_runs", "analysis_drafts"}
+ONEPORT_TABLES = {
+    "oneport_ledger_identity": {"ledger_id"},
+    "oneport_budget_grants": {"budget_scope", "budget_credits", "max_calls", "expires_at"},
+    "oneport_calls": {"operation", "budget_scope", "charge", "state", "draft", "telemetry"},
+    "oneport_aliases": {"alias", "fingerprint", "operation"},
+}
+
+
+def oneport_schema_check(store):
+    """Read only central-ledger catalog and privileges; never read receipts or create tables."""
+    with store._transaction() as conn:
+        conn.execute("SET TRANSACTION READ ONLY")
+        columns = conn.execute("""SELECT table_name,column_name FROM information_schema.columns
+                                WHERE table_schema='dion_be'""").fetchall()
+        permissions = conn.execute("""SELECT c.relname,
+            (has_table_privilege(c.oid,'SELECT') AND has_table_privilege(c.oid,'INSERT')) AS usable,
+            has_table_privilege(c.oid,'UPDATE') AS mutable,
+            EXISTS(SELECT 1 FROM aclexplode(c.relacl) a WHERE a.grantee=0) AS public_access
+            FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
+            WHERE n.nspname='dion_be' AND c.relkind='r'""").fetchall()
+    found = {(row["table_name"], row["column_name"]) for row in columns}
+    if any((table, column) not in found for table, cols in ONEPORT_TABLES.items() for column in cols):
+        return "ONEPORT_SCHEMA_INCOMPLETE"
+    permissions = {row["relname"]: row for row in permissions if row["relname"] in ONEPORT_TABLES}
+    if (set(permissions) != set(ONEPORT_TABLES) or any(not row["usable"] or row["public_access"]
+                                                        for row in permissions.values())
+            or not permissions["oneport_calls"]["mutable"]):
+        return "ONEPORT_PRIVILEGES_UNSAFE"
+    return "READY"
 
 
 def schema_check(store):
@@ -90,11 +119,16 @@ def preflight(*, database=False):
         if provider not in {"mock", "deterministic", "oneport"}:
             checks["explanation"] = "EXPLANATION_PROVIDER_INVALID"
         elif provider == "oneport":
-            checks["explanation"] = OnePortConfig.from_env().readiness() or "READY"
+            config = OnePortConfig.from_env()
+            checks["explanation"] = config.readiness() or "READY"
+            if database and checks["database"] == "READY" and checks["explanation"] == "READY" and config.ledger_backend == "postgres":
+                checks["explanation"] = oneport_schema_check(store)
         else:
             checks["explanation"] = "READY"
     except ConfigurationError:
         checks["explanation"] = "ONEPORT_CONFIG_INVALID"
+    except PocError:
+        checks["explanation"] = "ONEPORT_LEDGER_UNAVAILABLE"
     ready = all(v in {"READY", "CONFIGURED_NOT_PROBED"} for v in checks.values())
     return {"status": "ready" if ready else "not_ready", "checks": checks,
             "database_probed": database, "auth_network_called": False, "provider_network_called": False,

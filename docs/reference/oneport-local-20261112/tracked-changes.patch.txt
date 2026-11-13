@@ -1,0 +1,130 @@
+diff --git a/README.md b/README.md
+index 1edfa55..79f50d7 100644
+--- a/README.md
++++ b/README.md
+@@ -0,0 +1,2 @@
++**2026-11-12 승인 후속:** 상담002를 원격 백업·복원 검증 뒤 적용했고 PostgreSQL 중앙 OnePort 원장을 별도 작업본에서 로컬 구현했다. 원격003·실계정R2·푸시·배포 완료는 아니다. [작업본·계약·93개 검사·이관 절차](docs/integration/2026-11-12-oneport-central-ledger.md)를 따른다.
++
+diff --git a/backend/app/be/readiness.py b/backend/app/be/readiness.py
+index d16cc9c..db8c7d7 100644
+--- a/backend/app/be/readiness.py
++++ b/backend/app/be/readiness.py
+@@ -12,0 +13,2 @@ from ..explanation.oneport_config import ConfigurationError, OnePortConfig
++from ..explanation.oneport_ledger import LedgerError
++from ..explanation.oneport_postgres import PostgresOnePortLedger
+@@ -92 +94,4 @@ def preflight(*, database=False):
+-            checks["explanation"] = OnePortConfig.from_env().readiness() or "READY"
++            config = OnePortConfig.from_env()
++            checks["explanation"] = config.readiness() or "READY"
++            if database and checks["explanation"] == "READY" and config.ledger_backend == "postgresql":
++                checks["explanation"] = PostgresOnePortLedger.from_environment().check_ready()
+@@ -96,0 +102,2 @@ def preflight(*, database=False):
++    except LedgerError:
++        checks["explanation"] = "ONEPORT_LEDGER_UNAVAILABLE"
+diff --git a/backend/app/explanation/oneport.py b/backend/app/explanation/oneport.py
+index 690bcd5..6be6dca 100644
+--- a/backend/app/explanation/oneport.py
++++ b/backend/app/explanation/oneport.py
+@@ -15 +15 @@ from .oneport_config import ConfigurationError
+-from .oneport_ledger import LedgerError, OnePortLedger
++from .oneport_ledger import LedgerError, build_ledger
+@@ -152,2 +152,2 @@ class OnePortProvider:
+-    def __init__(self, config, *, transport=None):
+-        self.config, self.transport = config, transport
++    def __init__(self, config, *, transport=None, ledger=None):
++        self.config, self.transport, self.ledger = config, transport, ledger
+@@ -170,2 +170,2 @@ class OnePortProvider:
+-            ledger = OnePortLedger(config.ledger_path)
+-            operation, previous = ledger.reserve(operation, alias, fingerprint, config)
++            ledger = self.ledger if self.ledger is not None else build_ledger(config)
++            operation, previous = await asyncio.to_thread(ledger.reserve, operation, alias, fingerprint, config)
+@@ -240,0 +241,2 @@ class OnePortProvider:
++        except (OSError, sqlite3.Error, LedgerError):
++            failure = "ONEPORT_LEDGER_UNAVAILABLE"
+@@ -243,2 +244,0 @@ class OnePortProvider:
+-        except (OSError, sqlite3.Error):
+-            failure = "ONEPORT_LEDGER_UNAVAILABLE"
+@@ -249,2 +249,2 @@ class OnePortProvider:
+-            ledger.finish(operation, draft, telemetry)
+-        except (OSError, sqlite3.Error):
++            await asyncio.to_thread(ledger.finish, operation, draft, telemetry)
++        except (OSError, sqlite3.Error, LedgerError):
+@@ -286 +286 @@ class OnePortProvider:
+-                ledger.headers(operation, telemetry)
++                await asyncio.to_thread(ledger.headers, operation, telemetry)
+diff --git a/backend/app/explanation/oneport_config.py b/backend/app/explanation/oneport_config.py
+index 923eef9..4e2ff6c 100644
+--- a/backend/app/explanation/oneport_config.py
++++ b/backend/app/explanation/oneport_config.py
+@@ -26,0 +27,2 @@ class OnePortConfig:
++    ledger_backend: str = "sqlite"
++    postgres_cutover_confirmed: bool = False
+@@ -55,0 +58,2 @@ class OnePortConfig:
++                ledger_backend=env("LEDGER_BACKEND", "sqlite"),
++                postgres_cutover_confirmed=boolean("POSTGRES_CUTOVER_CONFIRMED"),
+@@ -78 +82,2 @@ class OnePortConfig:
+-                or self.ledger_scope not in {"UNCONFIRMED", "SINGLE_HOST_DURABLE", "MULTI_HOST"}):
++                or self.ledger_scope not in {"UNCONFIRMED", "SINGLE_HOST_DURABLE", "MULTI_HOST"}
++                or self.ledger_backend not in {"sqlite", "postgresql"}):
+@@ -87 +92,4 @@ class OnePortConfig:
+-        if self.ledger_scope != "SINGLE_HOST_DURABLE":
++        if self.ledger_backend == "postgresql":
++            if self.ledger_scope != "MULTI_HOST" or not self.postgres_cutover_confirmed:
++                return "ONEPORT_POSTGRES_CUTOVER_UNCONFIRMED"
++        elif self.ledger_scope != "SINGLE_HOST_DURABLE":
+@@ -89 +97 @@ class OnePortConfig:
+-        if not self.ledger_path.is_absolute():
++        elif not self.ledger_path.is_absolute():
+diff --git a/backend/app/explanation/oneport_ledger.py b/backend/app/explanation/oneport_ledger.py
+index d734c98..9992887 100644
+--- a/backend/app/explanation/oneport_ledger.py
++++ b/backend/app/explanation/oneport_ledger.py
+@@ -15,0 +16,7 @@ class LedgerError(ValueError):
++def build_ledger(config):
++    if config.ledger_backend == "postgresql":
++        from .oneport_postgres import PostgresOnePortLedger
++        return PostgresOnePortLedger.from_environment()
++    return OnePortLedger(config.ledger_path)
++
++
+diff --git a/backend/env.be.example b/backend/env.be.example
+index 02c42e1..807d990 100644
+--- a/backend/env.be.example
++++ b/backend/env.be.example
+@@ -30,0 +31,5 @@ DION_ONEPORT_LEDGER_SCOPE=UNCONFIRMED
++# Central ledger opt-in: install 003 explicitly, stop old callers and import ALL
++# existing receipts/PENDING holds (or verify there have never been any calls).
++# These declarations are NOT proof of migration or a paid-call authorization.
++DION_ONEPORT_LEDGER_BACKEND=sqlite
++DION_ONEPORT_POSTGRES_CUTOVER_CONFIRMED=false
+diff --git a/docs/development-log.md b/docs/development-log.md
+index f1a852b..77d0321 100644
+--- a/docs/development-log.md
++++ b/docs/development-log.md
+@@ -0,0 +1,8 @@
++# 2026-11-12 — 원격002 적용·OnePort 중앙 원장
++
++사용자 별도 승인으로 운영002를 사전 백업·로컬 복원 검증 후 적용했다. 기존 원응답/run DML은 없고 사후 카탈로그 READY다. 다른 작업의 merge를 보존하려고2bb2d8d에서 별도 작업본을 생성했다. 중앙 schema/예산 행 잠금·operation/alias 잠금·PENDING commit·정확한 비용·명시 영수증 이관과 opt-in gate를 로컬 구현했다.
++
++pytest86개(63.25초), 신규 gate6개(1.17초), 저장 오류 분류 보완 신규1개(3.84초) 통과. fixture 재사용 Ruff 경고1회 수정 후 변경 검사 통과. [정확한 경로·명령·백업·운영/미실행 구분](integration/2026-11-12-oneport-central-ledger.md)에 기록했다. 원격003·유료AI·실계정R2·전체Core/Build/FE E2E·commit/push·배포는 하지 않았다.
++
++---
++
+diff --git a/docs/integration/2026-11-12-operational-followup.md b/docs/integration/2026-11-12-operational-followup.md
+index 30111ab..d65334f 100644
+--- a/docs/integration/2026-11-12-operational-followup.md
++++ b/docs/integration/2026-11-12-operational-followup.md
+@@ -2,0 +3,2 @@
++**승인 후속(2026-11-12):** 원격002를 복원 검증된 백업 후 적용했고 중앙 원장은 별도 작업본에서 로컬 구현·검증했다. 아래의 미적용/승인 대기는 이전 시점 기록이다. [최신 범위·검증·남은 운영 작업](2026-11-12-oneport-central-ledger.md)을 우선한다.
++
+diff --git a/docs/project-status.md b/docs/project-status.md
+index 9a5e69c..d21782a 100644
+--- a/docs/project-status.md
++++ b/docs/project-status.md
+@@ -0,0 +1,6 @@
++# 2026-11-12 — 승인된 상담002 적용·중앙 원장 로컬 구현
++
++원격 dion_be9개 테이블 백업을 로컬 복원·해시 대조한 뒤002만 적용했다. READ ONLY 검사 READY, PUBLIC 접근false다. 중앙003은 별도 codex/oneport-central-ledger-20261112에서 로컬 구현/검증했으며 운영 미적용이다. 실제PG 독립 연결·별도 앱 프로세스·모의 provider와 기존 검사를 합쳐 고유93개 통과, 변경 Ruff 통과. 실계정R2·원격003·commit/push·배포는 미실행이다. [최신 계약·근거·남은 전환 절차](integration/2026-11-12-oneport-central-ledger.md)를 우선하고 아래는 이전 시점 기록으로 보존한다.
++
++---
++
