@@ -1,3 +1,9 @@
+# 2026-11-14 — 베타 서버 준비 안내 (PR 후보)
+
+최신 integration16b2ecd에서 beta/wake-notice를 만들었다. planner JSON API503/네트워크 재시도(총90초)·준비/재시도 안내·공통 가상 데이터/피드백 배너·검토 도구 opt-in·테스트 시간 keep-alive를 추가했다. 단위14/14·타입·린트·production webpack Build 통과. 결과5화면/빠른진단 결과/6단계·BE/DB는 수정하지 않았다. [정확한 범위·환경변수·기본 브랜치 예약 조건](integration/2026-11-14-beta-wake-notice.md). 운영 배포/실서버 wake/전체 E2E는 미실행이다.
+
+---
+
 # 2026-11-14 — OnePort 중앙 원장 이관 도구 통합 후보
 
 최신 중앙 PostgreSQL 원장 004를 유지하고 예전 로컬 작업의 SQLite 영수증 이관 도구와 중앙 원장 준비 검사를 현행 계약에 맞췄다. 격리 PostgreSQL/SQLite 포함 관련 고유110개 통과. 운영 원장 대사·실제 이관·배포는 미실행이며 예전 로컬 원본은 참고 자료로 보존했다. [검사와 운영 경계](integration/2026-11-14-oneport-consolidation.md).

@@ -3,7 +3,7 @@
 import { Json, list, object, textValue } from "@/lib/dion/model";
 import { formatKrw } from "@/lib/dion/money-format";
 import { riskTitles } from "@/lib/dion/investment-review";
-import { productEmptyCause } from "@/lib/dion/beta-step6";
+import { productEmptyCause } from "@/lib/dion/product-empty";
 
 export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="" }: { review: Record<string, Json>; selectedPlan?: string; evaluationOn?: string; onEdit: (id: string) => void }) {
   const empty=productEmptyCause(review,evaluationOn);
