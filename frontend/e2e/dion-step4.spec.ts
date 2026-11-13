@@ -22,9 +22,12 @@ for (const preference of ['PREF_BALANCED', 'PREF_STABILITY']) {
     test.skip(!harness, 'Requires disposable test harness; no production DB.');
     // New synthetic input for the review date, seeded through the existing save/restore API.
     // This avoids filling unrelated financial-detail forms; investment answers are entered in the UI.
-    await page.clock.setFixedTime(new Date('2026-11-14T03:00:00+09:00'));
+    // Keep the synthetic case's evaluation date aligned with its asset valuation dates.
+    // Moving only evaluation_on forward makes the cash evidence stale and blocks monthly budgets.
+    const reviewTime = new Date(`${scenario.document.context.evaluation_on}T03:00:00+09:00`);
+    await page.clock.setFixedTime(reviewTime);
     const doc = clone(scenario.document) as unknown as Document;
-    const on = todayInSeoul(new Date('2026-11-14T03:00:00+09:00'));
+    const on = todayInSeoul(reviewTime);
     doc.context.evaluation_on = on;
     const unanswered = new Set(['F15', 'NEW-10', 'F18', 'F17', 'D14', 'D18', 'D19']);
     doc.raw_bundle.answers = doc.raw_bundle.answers.filter(r => !unanswered.has(r.envelope.question_ref.design_id));
@@ -55,6 +58,7 @@ for (const preference of ['PREF_BALANCED', 'PREF_STABILITY']) {
       return { result: (await response.json()).result, posted: response.request().postDataJSON() };
     };
     const initial = await calculate();
+    expect(initial.result.results['OUT-05'].candidates?.length, 'Synthetic financial inputs must produce a monthly budget before adding investment answers').toBeGreaterThan(0);
     const tabs = page.getByRole('navigation', { name: '빠른 결과 5뷰' });
     await tabs.getByRole('button').nth(3).click();
     await expect(page.getByRole('button', { name: label, exact: true })).toBeVisible();
@@ -66,7 +70,8 @@ for (const preference of ['PREF_BALANCED', 'PREF_STABILITY']) {
     await expect(page.locator('[data-question="NEW-08"]')).not.toHaveAttribute('open');
     await page.getByRole('button', { name: '+ 검토할 자금 추가', exact: true }).click();
     await page.getByLabel('사용 가능한 날짜', { exact: true }).fill(on);
-    await page.getByLabel('사용 계획', { exact: true }).selectOption('EARLIEST_USE_STATUS_01');
+    // The implicit label contains option text; use the select's accessible role/name.
+    await page.getByRole('combobox', { name: '사용 계획', exact: true }).selectOption('EARLIEST_USE_STATUS_01');
     await page.getByLabel('가장 빨리 꺼내 쓸 날짜', { exact: true }).fill('2036-11-14');
     const fund = page.locator('[data-question="F15"]');
     if ((await fund.getAttribute('open')) === null) await fund.locator('summary').click();
