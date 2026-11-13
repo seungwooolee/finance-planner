@@ -25,11 +25,12 @@ function signature(doc:Document) {
   void caseId; void snapshotId; void profileVersion;
   return stable({context,scope_ref:doc.scope_ref,answers:doc.raw_bundle.answers.map(r=>r.envelope).sort((a,b)=>a.question_ref.design_id.localeCompare(b.question_ref.design_id)),confirmations:doc.confirmations,requested_outputs:doc.requested_outputs});
 }
-class ApiError extends Error { constructor(public status:number,public code:string){super(code);} }
+class ApiError extends Error { constructor(public status:number,public code:string,public gateway=false){super(code);} }
 async function request(path:string, method="GET", body?:unknown, token?:string, signal?:AbortSignal) {
   const response=await fetch(path,{method,body:body===undefined?undefined:JSON.stringify(body),headers:{"Content-Type":"application/json",...(token?{Authorization:`Bearer ${token}`}:{})},cache:"no-store",signal});
   const value=await response.json().catch(()=>null);
-  if(!response.ok)throw new ApiError(response.status,String(value?.detail?.code??`HTTP_${response.status}`));
+  // A non-JSON gateway error means the hosting layer answered (e.g. the backend is still waking up), not the API.
+  if(!response.ok)throw new ApiError(response.status,String(value?.detail?.code??`HTTP_${response.status}`),!(response.headers.get("content-type")??"").includes("json"));
   return value;
 }
 const errorText=(e:unknown)=>e instanceof ApiError?e.status===409?`수정 충돌 (${e.code}). 작성값은 그대로 있어요. 서버 최신본을 확인한 뒤 적용해 주세요.`:e.status===401?"로그인 확인이 필요해요. 상단에서 다시 로그인해주세요.":e.status===503?`저장·인증 서비스에 연결하지 못했어요 (${e.code}). 작성값을 보존했어요.`:`요청을 처리하지 못했어요 (${e.code}). 입력과 계약을 확인해 주세요.`:"연결 오류가 발생했어요. 작성값과 이전 결과를 보존했어요. 다시 시도해 주세요.";
@@ -136,10 +137,23 @@ export function DionPlanner() {
     const timeout=setTimeout(()=>{timedOut=true;controller.abort();},120_000);
     setBusy(true);setError("");setMessage("");setLastError(null);
     try {
-      const response=await request("/api/fe/v1/preview","POST",captured,undefined,controller.signal);
+      // The review backend sleeps when idle and takes up to ~1 minute to wake. Preview is a
+      // pure calculation, so retry gateway errors within the existing 2-minute timeout.
+      let response:unknown;
+      for(let attempt=0;;attempt++){
+        try{response=await request("/api/fe/v1/preview","POST",captured,undefined,controller.signal);break;}
+        catch(e){
+          if(!(e instanceof ApiError&&e.gateway&&[502,503,504].includes(e.status))||attempt>=8||controller.signal.aborted)throw e;
+          if(seq===sequence.current)setMessage("계산 서버를 깨우는 중이에요. 처음 접속하면 최대 1분 정도 걸릴 수 있어요.");
+          await new Promise(r=>setTimeout(r,8_000));
+          if(controller.signal.aborted)throw e;
+        }
+      }
       if(seq!==sequence.current)return;
-      const result=object(response?.result);
-      if(response?.integration_version!=="DION-FE-INTEGRATION-1.0"||!result.calc_state)throw new Error("INVALID_PREVIEW_RESPONSE");
+      setMessage("");
+      const payload=response as {result?:unknown;integration_version?:unknown}|null;
+      const result=object(payload?.result);
+      if(payload?.integration_version!=="DION-FE-INTEGRATION-1.0"||!result.calc_state)throw new Error("INVALID_PREVIEW_RESPONSE");
       const next:ViewResult={result,sourceSignature:signature(captured),localVersion:captured.raw_bundle.input_version,storage:"NOT_SAVED",source:captured as unknown as Json};
       setView(next);setHistory(h=>[next,...h].slice(0,20));setShowResults(true);setTab(0);
       if(["INVALID_INPUT","INTERNAL_ERROR"].includes(String(result.calc_state)))setError("입력 또는 계산 오류가 있어요. 사용 가능한 부분 결과와 오류를 확인하세요. 이전 계산은 검토 패널에 보존했어요.");

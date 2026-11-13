@@ -1,3 +1,7 @@
+## 2026-11-14 비공개 베타 게이트·서버 깨우기 재시도
+
+`DION_BETA_ACCESS_CODE`가 있을 때만 켜지는 접근 코드 게이트와 검색 차단, 계산 미리보기의 HTML 게이트웨이 오류 재시도를 추가했다([운영](beta-closed-20261114.md)). 리눅스 샌드박스 production build + 하네스에서 `dion-beta.spec.ts`(신규 1건)와 `dion.spec.ts`·`dion-result-navigation.spec.ts`·`dion-verify`·`dion-persistence`·`dion-account` 핵심 흐름을 실행해 통과했고, 게이트는 코드 설정 빌드에서 curl로 리다이렉트·401·오답 거부·쿠키 발급·검색 차단 헤더를 확인했다. 전체 E2E와 배포본 확인은 미실행.
+
 ## 2026-11-12 GitHub Actions Core
 
 `.github/workflows/core.yml`은 `scripts/verify.ps1 -Mode Core`와 같은 범위(pytest·Ruff·pip check, TypeScript·ESLint)를 리눅스에서 실행한다. 트리거는 PR·`dion/**` 푸시·수동 실행이며 개발 브랜치 푸시마다 돌지 않는다. 배포·비밀값·외부 AI 호출·브라우저 E2E·production Build는 포함하지 않는다. 워크플로 자체는 Actions에서 아직 실행되지 않았다. 같은 명령을 Python3.13·Node22 샌드박스에서 실행해 pytest637통과/8skip, Ruff·pip check·TypeScript·ESLint 통과를 확인했다(CI의 Python3.12 환경과는 다름).
