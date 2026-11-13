@@ -3,12 +3,12 @@
 공모전 동의서 6항(수상 발표 전 참가작 외부 공개·배포 금지)을 고려해 베타를 초대한 소수에게만 연다.
 
 ## 코드로 적용된 것
-- `frontend/src/proxy.ts`: 모든 응답에 `X-Robots-Tag: noindex, nofollow`. `robots.txt`는 전체 차단.
-- 배포 환경변수 `DION_BETA_ACCESS_CODE`가 있으면 `/beta`에서 코드를 입력해야 화면과 `/api/*`를 쓸 수 있다(쿠키에는 코드의 해시만, 30일). 변수가 없으면 게이트는 꺼지고 검색 차단만 남는다(로컬·E2E 기본).
+- 접근 게이트는 PR #22(`frontend/src/proxy.ts`·`/gate` 비밀번호 폼·`lib/gate.ts`)를 쓴다. 배포 환경변수 `SITE_PASSWORD`가 있으면 화면은 `/gate`로 이동하고 `/api/*`는 401이다(입장 쿠키 또는 HTTP Basic 통과). 변수가 없으면 게이트는 꺼진다(로컬·E2E 기본). 이 PR의 `/beta` 쿠키 게이트는 #22와 중복이라 제거했다.
+- `robots.txt`는 전체 차단.
 - 계산 미리보기는 백엔드가 잠에서 깨는 동안 호스팅이 주는 HTML 502/503/504에만 최대 8회(8초 간격, 기존 2분 제한 안) 재시도하고 "서버를 깨우는 중" 안내를 보인다. API가 직접 준 JSON 오류는 기존처럼 바로 표시한다.
 
 ## 운영자가 할 일
-1. Vercel 프로젝트 → Settings → Environment Variables → Production에 `DION_BETA_ACCESS_CODE`(추측하기 어려운 12자 이상)를 넣고 재배포한다. 코드는 대화·저장소에 붙이지 않는다.
+1. Vercel 프로젝트 → Settings → Environment Variables → Production에 `SITE_PASSWORD`(추측하기 어려운 12자 이상)가 있는지 확인하고 재배포한다. 코드는 대화·저장소에 붙이지 않는다.
 2. 테스터에게는 주소와 코드를 1:1로만 전달하고 공개 게시판·SNS에 올리지 않는다. 가상 데이터만 입력하도록 안내한다.
 3. 테스트 시간 동안 Render가 잠들지 않게 하려면 외부 모니터링으로 10분마다 `/readyz`를 호출한다(선택).
 

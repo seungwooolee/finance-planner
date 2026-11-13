@@ -1,6 +1,6 @@
 ## 2026-11-14 비공개 베타 게이트·서버 깨우기 재시도
 
-`DION_BETA_ACCESS_CODE`가 있을 때만 켜지는 접근 코드 게이트와 검색 차단, 계산 미리보기의 HTML 게이트웨이 오류 재시도를 추가했다([운영](beta-closed-20261114.md)). 리눅스 샌드박스 production build + 하네스에서 `dion-beta.spec.ts`(신규 1건)와 `dion.spec.ts`·`dion-result-navigation.spec.ts`·`dion-verify`·`dion-persistence`·`dion-account` 핵심 흐름을 실행해 통과했고, 게이트는 코드 설정 빌드에서 curl로 리다이렉트·401·오답 거부·쿠키 발급·검색 차단 헤더를 확인했다. 전체 E2E와 배포본 확인은 미실행.
+검색 차단과 계산 미리보기의 HTML 게이트웨이 오류 재시도를 추가했다([운영](beta-closed-20261114.md)). 리눅스 샌드박스 production build + 하네스에서 `dion-beta.spec.ts`(신규 1건)와 `dion.spec.ts`·`dion-result-navigation.spec.ts`·`dion-verify`·`dion-persistence`·`dion-account` 핵심 흐름을 실행해 통과했다. 이 PR의 `/beta` 게이트는 #22 `/gate` 게이트와 중복이라 통합 병합 시 제거했다(게이트 검증은 #22 기준). 전체 E2E와 배포본 확인은 미실행.
 
 5·6단계(계획 선택·이번 달 기록)는 `backend/tests/be/test_plan_checkin.py` 10건과 `dion-verify.spec.ts`의 신규 1건으로 확인했다. 저장 계층 변경에 따라 BE 관련 8개 파일(111 통과/8 skip)과 FE E2E 8개 파일(42 통과/1 skip)을 다시 실행했다. 운영 PostgreSQL에 005 마이그레이션은 미적용·미검증이다.
 
