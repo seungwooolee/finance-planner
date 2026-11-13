@@ -24,6 +24,8 @@ class OnePortConfig:
     max_response_bytes: int = 131072
     ledger_path: Path = Path("artifacts/oneport-receipts.sqlite3")
     ledger_scope: str = "UNCONFIRMED"
+    # "sqlite": local file (single host). "postgres": central dion_be ledger shared by every worker/host.
+    ledger_backend: str = "sqlite"
     # Operator attestation that ledger_path is a persistent disk shared by all workers.
     ledger_persistent: bool = False
     ledger_id: str = ""
@@ -56,6 +58,7 @@ class OnePortConfig:
                 max_response_bytes=int(env("MAX_RESPONSE_BYTES", "131072")),
                 ledger_path=Path(env("LEDGER_PATH", "artifacts/oneport-receipts.sqlite3")),
                 ledger_scope=env("LEDGER_SCOPE", "UNCONFIRMED"),
+                ledger_backend=env("LEDGER_BACKEND", "sqlite").lower(),
                 ledger_persistent=boolean("LEDGER_PERSISTENT"),
                 ledger_id=env("LEDGER_ID"),
                 budget_scope=env("BUDGET_SCOPE"), budget_credits=Decimal(env("BUDGET_CREDITS", "0")),
@@ -81,6 +84,7 @@ class OnePortConfig:
                 or len(self.model) > 160 or any(not c.isprintable() or c.isspace() or not c.isascii() for c in self.model)
                 or self.model.lower() == "jev" or len(self.budget_scope) > 128
                 or self.ledger_scope not in {"UNCONFIRMED", "SINGLE_HOST_DURABLE", "MULTI_HOST"}
+                or self.ledger_backend not in {"sqlite", "postgres"}
                 or (self.ledger_id and (len(self.ledger_id) != 32 or any(c not in "0123456789abcdef" for c in self.ledger_id)))):
             raise ConfigurationError("ONEPORT_CONFIG_INVALID")
 
@@ -90,10 +94,12 @@ class OnePortConfig:
             return "ONEPORT_DISABLED"
         if not self.api_key or not self.model:
             return "ONEPORT_NOT_CONFIGURED"
-        if self.ledger_scope != "SINGLE_HOST_DURABLE":
-            return "ONEPORT_SHARED_LEDGER_REQUIRED" if self.ledger_scope == "MULTI_HOST" else "ONEPORT_DURABILITY_UNCONFIRMED"
-        if not self.ledger_path.is_absolute():
-            return "ONEPORT_ABSOLUTE_LEDGER_PATH_REQUIRED"
+        central = self.ledger_backend == "postgres"
+        if not central:
+            if self.ledger_scope != "SINGLE_HOST_DURABLE":
+                return "ONEPORT_SHARED_LEDGER_REQUIRED" if self.ledger_scope == "MULTI_HOST" else "ONEPORT_DURABILITY_UNCONFIRMED"
+            if not self.ledger_path.is_absolute():
+                return "ONEPORT_ABSOLUTE_LEDGER_PATH_REQUIRED"
         if data_allowed is None:
             data_allowed = self.allow_saved_results
         if not synthetic and not data_allowed:
@@ -102,7 +108,8 @@ class OnePortConfig:
                 or self.reserve_credits > self.budget_credits):
             return "ONEPORT_BUDGET_NOT_CONFIGURED"
         # A lost ledger would reset spend/idempotency records, so fail closed until confirmed.
-        if not self.ledger_persistent:
+        # The central database is itself the durable shared record; no disk attestation applies.
+        if not central and not self.ledger_persistent:
             return "ONEPORT_LEDGER_NOT_CONFIRMED"
         if not self.ledger_id:
             return "ONEPORT_LEDGER_ID_REQUIRED"

@@ -9,9 +9,10 @@ from time import monotonic
 
 import httpx
 
-from .be.raw_store import _digest
+from .be.raw_store import PocError, _digest
 from .explanation.oneport_config import ConfigurationError
 from .explanation.oneport_ledger import LedgerError, OnePortLedger
+from .explanation.oneport_pg_ledger import PgOnePortLedger
 
 logger = logging.getLogger(__name__)
 
@@ -112,6 +113,16 @@ def price_ceiling(model, max_output_tokens):
     return (window * max(inputs) + max_output_tokens * max(outputs)) / Decimal(1000000) + 1
 
 
+def open_ledger(config):
+    if config.ledger_backend == "postgres":
+        from .be.postgres import PostgresStore
+        try:
+            return PgOnePortLedger(PostgresStore.from_environment(), config.ledger_id)
+        except PocError:
+            raise LedgerError("ONEPORT_LEDGER_UNAVAILABLE") from None
+    return OnePortLedger(config.ledger_path, config.ledger_id)
+
+
 class OnePortChat:
 
     def __init__(self, config, *, transport=None):
@@ -131,7 +142,7 @@ class OnePortChat:
             raise ProviderFailure("ONEPORT_INPUT_TOO_LARGE")
         alias = _digest([identity, request_key])
         try:
-            ledger = OnePortLedger(config.ledger_path, config.ledger_id)
+            ledger = open_ledger(config)
             operation, previous = ledger.reserve(operation, alias, fingerprint, config)
         except LedgerError as exc:
             raise ProviderFailure(str(exc)) from None
