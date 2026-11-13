@@ -106,6 +106,8 @@ def import_source(source, ledger, config, expected_sha256):
         raise LedgerError("ONEPORT_IMPORT_SCOPE_MISMATCH")
     # The target identity and grant already exist and must not be enlarged or created.
     with ledger._transaction(write=True) as db:
+        db.execute("SET LOCAL lock_timeout = '2s'")
+        db.execute("SET LOCAL statement_timeout = '10s'")
         db.execute("LOCK TABLE oneport_budget_grants, oneport_calls, oneport_aliases IN SHARE ROW EXCLUSIVE MODE")
         approved = db.execute("SELECT * FROM oneport_budget_grants WHERE budget_scope=? FOR UPDATE",
                               (config.budget_scope,)).fetchone()

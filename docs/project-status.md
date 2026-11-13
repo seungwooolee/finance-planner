@@ -1,6 +1,6 @@
 # 2026-11-14 — OnePort 중앙 원장 이관 도구 통합 후보
 
-최신 중앙 PostgreSQL 원장 004를 유지하고 예전 로컬 작업의 SQLite 영수증 이관 도구와 중앙 원장 준비 검사를 현행 계약에 맞췄다. 격리 PostgreSQL/SQLite 포함 관련 고유109개 통과. 운영 원장 대사·실제 이관·배포는 미실행이며 예전 로컬 원본은 참고 자료로 보존했다. [검사와 운영 경계](integration/2026-11-14-oneport-consolidation.md).
+최신 중앙 PostgreSQL 원장 004를 유지하고 예전 로컬 작업의 SQLite 영수증 이관 도구와 중앙 원장 준비 검사를 현행 계약에 맞췄다. 격리 PostgreSQL/SQLite 포함 관련 고유110개 통과. 운영 원장 대사·실제 이관·배포는 미실행이며 예전 로컬 원본은 참고 자료로 보존했다. [검사와 운영 경계](integration/2026-11-14-oneport-consolidation.md).
 
 ---
 

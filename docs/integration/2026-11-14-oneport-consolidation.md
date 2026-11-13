@@ -14,8 +14,8 @@
 
 - `DION_TEST_PG_PORT=55452` 및 새로 초기화한 127.0.0.1 테스트 전용 PostgreSQL 17.12에서 `test_oneport_cutover.py`, `test_oneport_pg_ledger.py`, `test_oneport_ledger_guard.py`, `test_oneport.py`, `test_readiness.py`, `test_migration_plan.py`: 최초 **91 passed, 16 skipped**. 이관 검사 7개는 실제 임시 PostgreSQL/SQLite를 사용했고 나머지는 기존 mock/로컬 검사다. 16개 skip은 `pgserver` 선택 런타임 부재다.
 - 선택 런타임 대신 방금 생성한 동일 테스트 전용 PostgreSQL을 가리키는 임시 shim을 `logs/`에 두고 기존 `test_oneport_pg_ledger.py`만 실행: **16 passed**. 8개 독립 연결 경합·별칭 재생·예산/정산 보존·일일 grant를 확인했다.
-- 준비 상태 기능 추가 후 새 준비 검사 2개와 `test_readiness.py`: **15 passed**(기존 13개는 최초 검사와 중복). 실제 임시 PostgreSQL의 PUBLIC 권한 노출·테이블 부재와 모의 preflight 연결을 확인했다. 고유 **109개 통과**다.
-- 변경 Python Ruff 통과. 최초 테스트 파일 import 정렬 오류를 1회 수정한 뒤 해당 Ruff 재검사 통과. `pip check`, Vercel 설정 JSON·브랜치 차단 규칙·`git diff --check`, 보존 파일의 알려진 비밀 패턴 검사가 통과했다. 테스트용 PostgreSQL만 종료한다.
+- 준비 상태 기능 추가 후 새 준비 검사 2개와 `test_readiness.py`: **15 passed**(기존 13개는 최초 검사와 중복). 실제 임시 PostgreSQL의 PUBLIC 권한 노출·테이블 부재와 모의 preflight 연결을 확인했다. 이후 이관 잠금 대기 제한을 추가하고 이관 검사10개를 다시 실행해 **10 passed**(기존9개 중복, 잠금 충돌1개 추가). PostgreSQL 잠금 2초·문장 10초 제한과 실패 시 롤백을 확인했다. 고유 **110개 통과**다.
+- 변경 Python Ruff 통과. 최초 테스트 파일 import 정렬 오류를 1회 수정한 뒤 해당 Ruff 재검사 통과. `pip check`, Vercel 설정 JSON·브랜치 차단 규칙·`git diff --check`, 보존 파일의 알려진 비밀 패턴 검사가 통과했다. 테스트용 PostgreSQL만 종료했다. 원본 파일6개의 Git 보존 SHA-256도 원본 바이트와 일치한다.
 - 전체 Core/FE Build/E2E·실계정·실제 모델·운영 원장의 대사/이관·운영 migration·배포는 실행하지 않았다. 기존 PostgreSQL 코드와 테스트를 통합했으나 운영 다중 호스트 장애 복구나 공급자 청구 대사를 새로 검증한 것은 아니다.
 
 ## GitHub와 배포 경계

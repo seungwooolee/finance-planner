@@ -8,6 +8,7 @@ import sys
 from dataclasses import replace
 from decimal import Decimal
 from pathlib import Path
+from time import monotonic
 from types import SimpleNamespace
 from uuid import uuid4
 
@@ -138,6 +139,20 @@ def test_alias_conflict_rolls_back_every_imported_call(source, target):
     with pytest.raises(LedgerError, match="IMPORT_CONFLICT"):
         import_source(db, ledger, config, read_source(db)[1])
     assert counts(ledger)[:2] == (1, 1)
+    db.execute("ROLLBACK")
+
+
+def test_target_lock_timeout_fails_closed_without_importing(source, target):
+    db, _ = source
+    ledger, config = target
+    db.execute("BEGIN IMMEDIATE")
+    with ledger.store._transaction(write=True) as blocker:
+        blocker.execute("LOCK TABLE oneport_calls IN ACCESS EXCLUSIVE MODE")
+        started = monotonic()
+        with pytest.raises(LedgerError, match="ONEPORT_LEDGER_UNAVAILABLE"):
+            import_source(db, ledger, config, read_source(db)[1])
+        assert monotonic() - started < 8
+    assert counts(ledger)[:2] == (0, 0)
     db.execute("ROLLBACK")
 
 
