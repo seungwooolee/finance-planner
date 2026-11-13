@@ -8,6 +8,7 @@ import { PlanComparison, PlanSelector, planName } from "./plan-comparison";
 import { PortfolioChoice } from "./portfolio-choice";
 import { InvestmentFollowup } from "./investment-followup";
 import { ProductAllocation } from "./product-allocation";
+import { FinalPortfolio } from "./final-portfolio";
 import { ResultBasis } from "./result-basis";
 import { resultHints } from "@/lib/dion/result-guidance";
 import { formatKrw } from "@/lib/dion/money-format";
@@ -84,6 +85,7 @@ export function Results({view,deep,tab,setTab,stale,onEdit,explanation,checkin,t
     {tab===2 && (sourceDoc?<InvestmentSummary doc={sourceDoc} onEdit={onEdit}/>:<Missing row={{calc_state:"NOT_SUPPORTED"}} title="이전 입력 형식의 투자 응답"/>)}
     {tab===2 && <PortfolioChoice doc={sourceDoc} review={visible("OUT-06")} selectedPlan={selectedPlan} onPlan={setSelectedPlan} chosen={selectedPortfolio} onChoose={id=>{setSelectedPortfolio(id);setTab(3);}}/>}
     {tab===3 && <><article className="d-card"><h2>{planName(selectedPlan)} · 상품 후보</h2><PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/><p>포트폴리오 유형의 독립 변경은 정책 연결 대기예요. 확인된 투자 답변을 바꾸려면 투자 검토로 돌아가 다시 계산해주세요.</p></article><ProductAllocation review={visible("OUT-06")} selectedPlan={selectedPlan} evaluationOn={textValue(object(result.context).evaluation_on)} onEdit={onEdit}/></>}
+    {tab===4 && <FinalPortfolio plan={selectedPlan} row={list(candidates.find(c=>c.strategy_id===selectedPlan)?.rows)[0]} review={visible("OUT-06")}/>}
     {tab===4 && <article className="d-card"><h2>이번 달 할 일</h2>{candidates.filter(c=>c.strategy_id===selectedPlan).map(c=>{const r=list(c.rows)[0];const tasks=monthTasks(r);
     return <div key={textValue(c.strategy_id)}>{r&&<p>{planName(c.strategy_id)} · {textValue(r.period)} · 정책 1.0의 월별 검토 기준</p>}<ol className="d-actions">{tasks.map(t=><li key={t.key}>{formatKrw(r[t.key])} · {t.text}{t.key==="new_investment_krw"&&<button onClick={()=>setTab(3)}>상품 후보 보기 →</button>}</li>)}{actions.slice(0,3-tasks.length).map(a=><li key={a.id}><button onClick={()=>onEdit(a.id)}>{a.text}</button></li>)}</ol></div>;})}{!candidates.length&&actionList}<p>정책상 부채 우선상환·기존 보유 편중의 개인별 판정은 미구현이며 임의의 상환액·행동 우선순위를 만들지 않아요. 초안 선택만으로는 실제 거래·계획 채택이 되지 않아요. 아래에서 직접 선택해야 기록돼요.</p></article>}
     {tab===4&&checkin&&checkin(selectedPlan,candidates.filter(c=>c.strategy_id===selectedPlan).flatMap(c=>{const r=list(c.rows)[0];return monthTasks(r).map(t=>({key:t.key,label:`${t.text} (계획 ${formatKrw(r[t.key])})`}));}))}
