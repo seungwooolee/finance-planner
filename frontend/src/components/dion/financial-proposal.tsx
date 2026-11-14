@@ -87,7 +87,7 @@ export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabe
           <strong>일부 목표는 월 납입 참고 비교를 보류했어요</strong>
           <ul>{omissions.map((o, i) => { const goal = outGoals.find(g => g.goal_id === o.goal_id); return <li key={`${textValue(o.goal_id)}-${i}`} data-omission-reason={textValue(o.reason)}>
             <b>{goalLabel(o.goal_id)}</b> · {OMISSION_REASONS[textValue(o.reason)] ?? `참고 비교를 보류했어요 (사유 코드 ${textValue(o.reason) || "미확인"}). 원래 목표 결과는 위 목표 표에서 확인해요.`}
-            {goal ? <small> · 원래 목표 결과: 목표 {formatKrw(goal.target_krw)} · 사용일 {textValue(goal.due_on) || "확인 필요"} · 매번 더 모을 금액 {formatKrw(goal.level_contribution_krw)}</small> : <small> · 원래 목표 결과는 2번 화면의 목표 표를 확인해요.</small>}
+            {goal ? <small> · 원래 목표 결과: 목표 {formatKrw(goal.target_krw)} · 사용일 {textValue(goal.due_on) || "확인 필요"} · 회차당 적립액 {formatKrw(goal.level_contribution_krw)}</small> : <small> · 원래 목표 결과는 2번 화면의 목표 표를 확인해요.</small>}
           </li>; })}</ul>
           <p>목표가 삭제되거나 투자 불가로 판정된 것이 아니에요.</p>
         </div>}
