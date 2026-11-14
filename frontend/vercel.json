@@ -2,6 +2,9 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "git": {
     "deploymentEnabled": {
+      "codex/consultation-finalization-fe-20261115": false,
+      "codex/consultation-finalization-be-20261115": false,
+      "codex/consultation-agent-20261115": false,
       "codex/portfolio-choice-apply-20261115": false,
       "codex/assets-reference-web-20261115": false,
       "codex/preview-result-consultation-20261115": false,
