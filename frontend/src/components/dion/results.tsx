@@ -45,7 +45,7 @@ function BalanceBars({assets,debt,net}:{assets:unknown;debt:unknown;net:unknown}
   const max=[a,d,n??0n].reduce((m,x)=>x>m?x:m,1n);
   const w=(x:bigint|null)=>x===null?0:Number(x*10000n/max)/100;
   return <figure className="d-balance-bars"><figcaption>자산과 채무 한눈에 보기</figcaption>
-    {[["전체 자산",a,assets,"var(--d-primary)"],["전체 채무",d,debt,"#bd8540"],["순자산",n,net,"#4d9387"]].map(([label,x,raw,color])=><div key={String(label)}><span>{String(label)}</span><div className="d-balance-track" aria-hidden="true"><i style={{width:`${w(x as bigint|null)}%`,background:String(color)}}/></div><strong>{formatKrw(raw)}</strong></div>)}
+    {[["전체 자산",a,assets,"#3848ce"],["전체 채무",d,debt,"#d97b2b"],["순자산",n,net,"#0a9e86"]].map(([label,x,raw,color])=><div key={String(label)}><span>{String(label)}</span><div className="d-balance-track" aria-hidden="true"><i style={{width:`${w(x as bigint|null)}%`,background:String(color)}}/></div><strong>{formatKrw(raw)}</strong></div>)}
   </figure>;
 }
 export type CheckinTask={key:string;label:string};

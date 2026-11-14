@@ -38,13 +38,13 @@ export function FinancialProjection({candidate,plan,portfolio,stale,runId,inputV
       <figure><figcaption>원금선과 월별 목표 인출 <small>금액 단위: 만원 · 월말 기준</small></figcaption>
         <svg viewBox="0 0 600 260" role="img" aria-labelledby={`${id}-chart`}>
           <title id={`${id}-chart`}>무수익 금융자산 원금선과 목표 인출. 정확한 원 단위 값은 아래 월별 표에서 확인할 수 있습니다.</title>
-          <line x1="60" y1="210" x2="550" y2="210" stroke="var(--d-line-strong)"/>
-          <line x1="60" y1="40" x2="550" y2="40" stroke="var(--d-line)" strokeDasharray="4 4"/>
-          <text x="54" y="35" fontSize="12" fill="var(--d-muted)">{won(max.toString())}</text><text x="36" y="214" fontSize="12" fill="var(--d-muted)">0</text>
-          {withdrawals.map((v,i)=><rect key={i} x={x(i+1)-Math.min(7,180/rows.length)} y={y(v)} width={Math.min(14,360/rows.length)} height={210-y(v)} fill="#bd8540"><title>{textValue(rows[i].period)} 목표 인출 {formatKrw(v)}</title></rect>)}
-          <polyline points={balances.map((v,i)=>`${x(i)},${y(v)}`).join(" ")} fill="none" stroke="var(--d-primary)" strokeWidth="3"/>
-          {[0,balances.length-1].map(i=><circle key={i} cx={x(i)} cy={y(balances[i])} r="4" fill="var(--d-primary)"/>)}
-          <text x="60" y="240" fontSize="12" fill="var(--d-muted)">시작</text><text x="550" y="240" textAnchor="end" fontSize="12" fill="var(--d-muted)">{textValue(rows.at(-1)?.period)}</text>
+          <line x1="60" y1="210" x2="550" y2="210" stroke="#bbc2d5"/>
+          <line x1="60" y1="40" x2="550" y2="40" stroke="#e5e7f0" strokeDasharray="4 4"/>
+          <text x="54" y="35" fontSize="12" fill="#4a4f60">{won(max.toString())}</text><text x="36" y="214" fontSize="12" fill="#4a4f60">0</text>
+          {withdrawals.map((v,i)=><rect key={i} x={x(i+1)-Math.min(7,180/rows.length)} y={y(v)} width={Math.min(14,360/rows.length)} height={210-y(v)} fill="#b56b24"><title>{textValue(rows[i].period)} 목표 인출 {formatKrw(v)}</title></rect>)}
+          <polyline points={balances.map((v,i)=>`${x(i)},${y(v)}`).join(" ")} fill="none" stroke="#3848ce" strokeWidth="3"/>
+          {[0,balances.length-1].map(i=><circle key={i} cx={x(i)} cy={y(balances[i])} r="4" fill="#3848ce"/>)}
+          <text x="60" y="240" fontSize="12" fill="#4a4f60">시작</text><text x="550" y="240" textAnchor="end" fontSize="12" fill="#4a4f60">{textValue(rows.at(-1)?.period)}</text>
         </svg>
         <ul className="d-legend-row"><li>━ 원금선 · 수익 0 가정</li><li>▮ 목표 인출</li><li>수익 포함 전망: 미지원</li></ul>
       </figure>
