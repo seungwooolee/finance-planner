@@ -8,7 +8,7 @@ import re
 from .contract import EvidenceInput
 from .evidence import normalize
 from .model_proposal import ModelProposal, mock_proposal, review_proposal
-from .policy import REGISTRY
+from .policy import REGISTRY, classify
 
 MONEY = re.compile(r"(?<![\d.,-])([0-9]{1,40}(?:\.[0-9]{1,4})?)\s*(만\s*원|원)(?![\d])")
 ALIASES = {
@@ -27,9 +27,12 @@ def should_extract(message):
     # reaches the model. Result questions and unsupported actions are gated by policy.
     if mock_proposal(message) is not None:
         return True
-    if message.rstrip().endswith("?") or re.match(r"\s*(?:왜|어떻게|얼마나|무엇|뭐)", message):
+    intent = classify(message)["intent"]
+    if intent in {"UNSUPPORTED", "EXPLAIN_RESULT", "EXPLAIN_SCHEME"}:
         return False
-    return bool(MONEY.search(message))
+    # Known result questions stay local; an unclassified question or a change
+    # wish need not contain a number or match the synthetic sentence grammar.
+    return bool(message.strip())
 
 
 def review_model_proposal(payload, message, session):
@@ -39,6 +42,8 @@ def review_model_proposal(payload, message, session):
         # Existing explicit statements retain their exact legacy contract.
         return review_proposal(payload, message, session)
     if not proposal.candidates:
+        # Keep the legacy service safe until the BE-owned dialogue adapter is
+        # installed. That adapter consumes reviewed_dialogue for empty drafts.
         return proposal.clarification_code or "MEANING_NOT_RESOLVED", None
     if proposal.intent not in {"CHECK_CONDITIONS", "PROPOSE_CHANGE"}:
         raise ValueError("evidence intent required")
@@ -48,28 +53,42 @@ def review_model_proposal(payload, message, session):
         return "PERIOD_NOT_RESOLVED", None
     # Negation/corrections and mixed scenario/actual clauses need clarification;
     # a supported substring cannot hide the rest of a statement.
-    if re.search(r"아니|않|말고|대신|틀렸|줄이|늘리|가정|만약|바꾸|무시|프롬프트", message) or message.rstrip().endswith("?"):
+    if re.search(r"아니|않|말고|대신|틀렸|줄이|늘리|만약|바꾸|무시|프롬프트", message):
         return "MEANING_NOT_RESOLVED", None
-    if proposal.intent != "CHECK_CONDITIONS":
+    scenario = bool(re.search(r"(?:으로|로)\s*가정", message))
+    if (proposal.intent == "PROPOSE_CHANGE") != scenario:
+        return "MEANING_NOT_RESOLVED", None
+    if message.rstrip().endswith("?") and not scenario:
         return "MEANING_NOT_RESOLVED", None
     anchors = list(FIELDS.finditer(message))
     matched_refs, estimated = set(), False
     for candidate in proposal.candidates:
-        if candidate.source_text != message.strip() or candidate.operation != "OBSERVE":
-            raise ValueError("exact statement and observation required")
+        if candidate.source_text != message.strip() or candidate.operation != ("SET" if scenario else "OBSERVE"):
+            raise ValueError("exact statement and matching operation required")
         spec = REGISTRY.get(candidate.field_ref)
         if not spec or session["output_id"] not in spec["output_ids"]:
             return "OUTSIDE_SUPPORTED_FIELDS", None
         if candidate.field_ref in matched_refs:
             return "MEANING_NOT_RESOLVED", None
         value = candidate.value
-        if value.kind != "MONEY" or spec["kind"] != "MONEY":
+        if value.kind not in {"MONEY", "MISSING"} or spec["kind"] != "MONEY":
             return "MEANING_NOT_RESOLVED", None
         # Longest aliases win, so 필수생활비 cannot ground ordinary 생활비.
         windows = [message[anchor.end():anchors[i + 1].start() if i + 1 < len(anchors) else len(message)]
                    for i, anchor in enumerate(anchors) if ALIAS_REF[anchor.group()] == candidate.field_ref]
         if len(windows) != 1:
             return "MEANING_NOT_RESOLVED", None
+        if value.kind == "MISSING":
+            # Only an explicit missing state can produce null. Never map a
+            # missing value to zero, or take a value hidden elsewhere in text.
+            missing = {"UNKNOWN": r"모르|모름", "NOT_ENTERED": r"미입력|입력하지",
+                       "NOT_APPLICABLE": r"해당\s*없", "DEFERRED": r"나중에|보류",
+                       "DECLINED": r"거절|답변하지"}
+            if (scenario or MONEY.search(message) or value.state not in missing
+                    or not re.search(missing[value.state], windows[0])):
+                return "MEANING_NOT_RESOLVED", None
+            matched_refs.add(candidate.field_ref)
+            continue
         numbers = list(MONEY.finditer(windows[0]))
         if len(numbers) != 1:
             return "MEANING_NOT_RESOLVED", None
@@ -94,6 +113,7 @@ def review_model_proposal(payload, message, session):
         question_id=spec["question_id"], field_id=spec["field_id"], definition_version=spec["definition_version"],
         subject_ref=session["subject_ref"], scope_ref=session["scope_ref"],
         period_start=session["period_start"], period_end=session["period_end"], state=value.state,
-        raw_value=value.raw_value, unit=value.unit, basis="ESTIMATED" if estimated else "USER_REPORTED",
+        raw_value=value.raw_value, unit=value.unit or "KRW",
+        basis="SCENARIO" if scenario else "ESTIMATED" if estimated else "USER_REPORTED",
         measurement_basis=spec["measurement_basis"],
     )
