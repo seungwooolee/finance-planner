@@ -62,7 +62,7 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
           <small id={`portfolio-state-${id}`} className="d-type-foot">{blocked ? '현재 입력·결과와 저장 상태를 확인해주세요.' : view.selectable === true ? '비교 초안 선택 · 계획 채택은 별도예요.' : Array.isArray(view.reason_codes) && view.reason_codes.length ? view.reason_codes.map(code => textValue(object(review.reason_messages)[String(code)]) || '상품 검토 조건을 확인해주세요.').join(' ') : '이전 결과에는 선택 가능 여부가 없어요. 다시 계산해주세요.'}</small>
         </div>;
       })}</div>
-      <p className="d-inline-note">도넛은 실제 배분액의 비율이고 회색은 미배분이에요. 미배분 금액은 현금성 상품으로 자동 대체하지 않아요.</p>
+      <p className="d-inline-note">도넛은 실제 배분액의 비율이고 회색은 현금 대기자금이에요. 현금 대기자금 금액은 현금성 상품으로 자동 대체하지 않아요.</p>
     </article>
   </>;
 }
