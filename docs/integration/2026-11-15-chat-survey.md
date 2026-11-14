@@ -71,6 +71,7 @@
 
 - branch: `codex/chat-survey-20261115`, base: integration `fd173b3`.
 - 작업 브랜치 Vercel 자동 배포 false. Render 자동 배포는 사용자 확인 지침 유지.
-- 커밋 SHA/PR 및 필수 CI 최종 결과는 PR 설명에 기록한다. 병합·배포는 수행하지 않는다.
+- 구현 후보: `ae49d20`, [PR #67](https://github.com/seungwooolee/finance-planner/pull/67).
+  필수 CI 최종 결과는 PR 설명에 기록한다. 병합·배포는 수행하지 않는다.
 - 운영 주소는 별도 병합·배포 전까지 이번 화면으로 바뀌지 않는다. 실제 AI 동작은 로그인,
   외부 전송 동의, 기존 provider/허용/비용 설정이 충족되어야 하며 별도 실제 모델 검증이 남는다.
