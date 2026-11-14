@@ -57,3 +57,4 @@
 
 - FE 기능 후보: `4832e9f`. 최신 integration `b494b1f`를 로컬 작업 브랜치에 반영했다. 문서 두 담당 기록과 Vercel 브랜치 차단을 모두 보존해 충돌 2파일을 해소했다. 원격 병합을 실행한 것이 아니다.
 - 병합 후 frontend/src 및 FE 테스트 소스가 FE 기능 후보와 동일함을 대조한다. 변경 없는 타입/린트/브라우저 검사를 반복하지 않는다.
+- 통합 후보: `946f7f601b36f2ca1d985978b84192e8fd5b6ab9`. [Draft PR #62](https://github.com/seungwooolee/finance-planner/pull/62). 브라우저 미완료를 PR에 명시했고 원격 병합·배포는 실행하지 않았다. 이후 문서 기록 커밋의 HEAD는 PR에서 확인한다.
