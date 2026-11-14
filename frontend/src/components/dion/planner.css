@@ -98,3 +98,96 @@
 .d-proposal{border-top:4px solid var(--d-primary)}.d-proposal>h2{font-size:24px;margin-top:12px}.d-proposal-section{border-top:1px solid var(--d-line);padding-top:18px;margin-top:22px}.d-proposal-section h3{display:flex;align-items:center;gap:10px;margin:0 0 10px}.d-proposal-section h4{margin:22px 0 6px;font-size:14px}.d-proposal-num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:#eaeaff;color:var(--d-primary);font-size:13px}.d-proposal-section .d-final{box-shadow:none;border:1px solid #edeef7}.d-proposal-summary dd{text-align:right}.d-proposal-summary dd .d-text-button{margin-left:8px}.d-proposal-compare td,.d-proposal-compare th{white-space:normal;vertical-align:top;min-width:120px}.d-proposal td small,.d-proposal th small{display:block;color:#626775;font-weight:400}.d-proposal-current{background:#f5f5ff}.d-proposal-risks{padding-left:18px;line-height:1.8}.d-proposal-risks li.d-warning{list-style:none;margin-left:-18px}
 @media print{.d-header,.d-tabs,.d-toolbar,.d-explanation,.d-footer{display:none!important}.d-proposal{border:0}}
 .d-proposal-section .d-final .d-toolbar{display:none}
+/* 2026-11-14 결과 3·4·5탭 Stitch 시안 적용 (DESIGN.md 토큰) */
+.dion-app{--d-primary-container:#5363e8;--d-surface:#faf8ff;--d-surface-low:#f2f3ff;--d-secondary:#5e559a;--d-on-surface:#161b29}
+.dion-app .d-tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity}
+.dion-app .d-tabs::-webkit-scrollbar{display:none}
+.dion-app .d-tabs button{flex:1 0 150px;display:flex;align-items:center;gap:10px;min-height:56px;scroll-snap-align:start;font-weight:600}
+.dion-app .d-tabs button small{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#fff;color:#626775;font-size:11px;font-weight:700;margin:0;flex-shrink:0;letter-spacing:0}
+.dion-app .d-tabs button.done small{background:#c9cdfa;color:var(--d-primary)}
+.dion-app .d-tabs button[aria-current] small{background:#fff;color:var(--d-primary)}
+.dion-app .d-draft-chip{display:inline-block;margin:-18px 0 22px;padding:5px 12px;border-radius:20px;background:#eae5ff;color:#463d81;font-size:11px;font-weight:650}
+.dion-app .d-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+.dion-app .d-card-head h2{margin:4px 0}.dion-app .d-card-head p{margin:2px 0;font-size:13px}
+.dion-app .d-pill{display:inline-block;padding:4px 11px;border-radius:20px;background:#e5e7ff;color:var(--d-primary);font-size:11px;font-weight:700;white-space:nowrap}
+.dion-app .d-pill-muted{background:#eeedf6;color:#555965}.dion-app .d-pill-warn{background:#fff2d8;color:#77510e}
+.dion-app .d-inline-note{font-size:12px;color:#626775;background:var(--d-surface-low);border-radius:10px;padding:10px 14px;margin:14px 0 0}
+.dion-app .d-accent{color:var(--d-primary)}
+.dion-app .d-risk-steps{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.dion-app .d-risk-steps li{position:relative;background:#f5f5fb;border-radius:14px;padding:18px 8px;text-align:center;display:flex;flex-direction:column;gap:3px;color:#8a8fa0}
+.dion-app .d-risk-steps li strong{font-size:14px;color:#626775}
+.dion-app .d-risk-steps li.active{background:var(--d-primary-container);color:#fff;box-shadow:0 8px 20px #3848ce30}
+.dion-app .d-risk-steps li.active small,.dion-app .d-risk-steps li.active strong{color:#fff}.dion-app .d-risk-steps li.active strong{font-size:17px}
+.dion-app .d-step-badge{position:absolute;top:-9px;right:8px;background:var(--d-secondary);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px}
+.dion-app .d-kpis{display:grid;gap:14px;margin:0 0 24px}.dion-app .d-kpis-3{grid-template-columns:repeat(3,minmax(0,1fr))}.dion-app .d-kpis-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.dion-app .d-kpi{background:#fff;border:1px solid #edeef7;border-radius:16px;padding:18px 20px;min-width:0}
+.dion-app .d-kpi>span{display:block;font-size:12px;color:#626775}
+.dion-app .d-kpi strong{display:block;font-size:26px;font-weight:750;letter-spacing:-.04em;margin:6px 0 2px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.dion-app .d-kpi>small{font-size:11px}.dion-app .d-kpi-soft{background:#eeedff;border-color:#e0e0fb}
+.dion-app .d-portfolio-section .d-card-head .d-toolbar{margin-top:0}
+.dion-app .d-portfolio-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:stretch}
+.dion-app .d-portfolio-card{position:relative;display:flex;flex-direction:column;gap:6px;border:1px solid #e8e9f5;border-radius:18px;padding:20px;background:#fff;min-width:0}
+.dion-app .d-portfolio-card h3{margin:0;font-size:19px}.dion-app .d-portfolio-card .d-card-head{margin:0}
+.dion-app .d-portfolio-card.mine{border:2px solid var(--d-primary-container);background:#fbfbff;box-shadow:0 12px 28px #3848ce18}
+.dion-app .d-portfolio-card.selected{outline:3px solid #c9cdfa}
+.dion-app .d-mine-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--d-primary);color:#fff;font-size:11px;font-weight:700;padding:4px 12px;border-radius:12px;white-space:nowrap}
+.dion-app .d-type-sub{margin:0;font-size:13px;color:var(--d-primary);font-weight:650}
+.dion-app .d-type-line{font-size:12px;margin:2px 0}.dion-app .d-type-line b{color:#161b29;margin-right:4px}.dion-app .d-type-risk b{color:#b3412b}
+.dion-app .d-type-foot{margin-top:auto;padding-top:8px;color:#8a8fa0}
+.dion-app .d-portfolio-card>button{margin-top:auto}
+.dion-app .d-pending-box{background:#f5f5fb;border-radius:12px;padding:16px;margin:8px 0}.dion-app .d-pending-box p{font-size:12px;margin:4px 0 0}
+.dion-app .d-donut{position:relative;margin:10px auto;flex-shrink:0}.dion-app .d-donut svg{width:100%;height:100%;transform:rotate(0)}
+.dion-app .d-donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:22%}
+.dion-app .d-donut-center small{font-size:10px}.dion-app .d-donut-center strong{font-size:14px;line-height:1.3;letter-spacing:-.03em;overflow-wrap:anywhere}
+.dion-app .d-legend{list-style:none;padding:0;margin:6px 0;display:grid;gap:6px}
+.dion-app .d-legend li{display:grid;grid-template-columns:10px minmax(0,1fr) auto;gap:8px;align-items:center;font-size:12px;background:#f7f7fc;border-radius:9px;padding:7px 10px}
+.dion-app .d-legend i,.dion-app .d-income-list i,.dion-app .d-product-top>i{display:block;width:10px;height:10px;border-radius:3px}
+.dion-app .d-legend span small{display:block;color:#8a8fa0;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dion-app .d-legend strong{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.dion-app .d-legend strong small{display:block;font-weight:500;font-size:10px}
+.dion-app .d-plan-row{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;background:#fff;border:1px solid #edeef7;border-radius:16px;padding:14px 20px;margin-bottom:18px}
+.dion-app .d-plan-row strong,.dion-app .d-plan-row small{display:block}.dion-app .d-plan-row .d-toolbar{margin:0}
+.dion-app .d-summary-band{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;background:#fff;border:1px solid #edeef7;border-left:5px solid var(--d-primary);border-radius:16px;padding:18px 22px;margin-bottom:20px}
+.dion-app .d-summary-band span,.dion-app .d-summary-band small{display:block;font-size:12px;color:#626775}
+.dion-app .d-summary-band strong{display:block;font-size:24px;font-weight:750;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.dion-app .d-band-note{grid-column:1/-1;font-size:12px;margin:4px 0 0}
+.dion-app .d-alert-card{background:#fff5e9;border:1px solid #f4dfc6;border-left:5px solid #d98a3a;border-radius:14px;padding:16px 20px;color:#7b4b24;margin:0 0 18px}
+.dion-app .d-alert-card p{color:#7b4b24;margin:4px 0}
+.dion-app .d-product-layout{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(260px,1fr);gap:20px;align-items:start}
+.dion-app .d-product-cards{display:grid;gap:12px}
+.dion-app .d-product-card{background:#f7f7fd;border-radius:16px;padding:16px 18px;min-width:0}
+.dion-app .d-product-top{display:grid;grid-template-columns:10px minmax(0,1fr) auto;gap:10px;align-items:center}
+.dion-app .d-product-top strong{display:block;font-size:15px}.dion-app .d-product-top small{display:block}
+.dion-app .d-product-figures{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0 8px}
+.dion-app .d-product-figures>div{background:#fff;border-radius:10px;padding:10px 12px}
+.dion-app .d-product-figures span{display:block;font-size:11px;color:#626775}.dion-app .d-product-figures strong{font-size:19px;font-variant-numeric:tabular-nums}
+.dion-app .d-product-excluded{font-size:12px;background:#fff;border-radius:10px;padding:10px 12px;margin:10px 0 8px}
+.dion-app .d-bar{height:6px;border-radius:4px;background:#e3e7fb;overflow:hidden}.dion-app .d-bar span{display:block;height:100%;border-radius:4px}
+.dion-app .d-product-meta{font-size:11px;margin:8px 0 0}
+.dion-app .d-evidence{margin-top:8px;font-size:12px}.dion-app .d-evidence>summary{color:var(--d-primary);font-size:12px}
+.dion-app .d-evidence p{font-size:12px;margin:4px 0}.dion-app .d-evidence a{color:var(--d-primary);text-decoration:underline}
+.dion-app details[open].d-evidence>summary{margin-bottom:8px}
+.dion-app .d-donut-card{position:sticky;top:100px}.dion-app .d-donut-card h2{font-size:17px}
+.dion-app .d-fold>summary{font-size:15px}.dion-app .d-fold .d-evidence{border-top:1px solid var(--d-line);padding-top:8px}
+.dion-app .d-final-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:24px}
+.dion-app .d-final-chart{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:center}
+.dion-app .d-stack-bar{display:flex;height:22px;border-radius:8px;overflow:hidden;background:#eceef8;margin:6px 0 14px}
+.dion-app .d-stack-bar span{display:block;height:100%}
+.dion-app .d-income-list{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 24px}
+.dion-app .d-income-list li{display:grid;grid-template-columns:10px minmax(0,1fr) auto 52px;gap:10px;align-items:center;font-size:13px;padding:8px 0;border-bottom:1px solid #f0f1f8}
+.dion-app .d-income-list strong{font-variant-numeric:tabular-nums}.dion-app .d-income-list small{text-align:right}
+.dion-app .d-task-list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.dion-app .d-task-list li{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#f7f7fd;border-radius:14px;padding:14px 16px}
+.dion-app .d-task-list label{display:flex;gap:12px;align-items:flex-start;cursor:pointer;min-width:0}
+.dion-app .d-task-list input{accent-color:var(--d-primary);width:19px;height:19px;margin-top:2px;flex-shrink:0}
+.dion-app .d-task-list strong,.dion-app .d-task-list small{display:block}.dion-app .d-task-list li.done strong{text-decoration:line-through;color:#8a8fa0}
+.dion-app .d-coach{background:#eeedff;border:1px solid #e0e0fb;border-radius:18px;padding:18px 20px 4px;margin-bottom:24px}
+.dion-app .d-coach-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;color:var(--d-primary)}
+.dion-app .d-coach-head span{display:grid;place-items:center;width:30px;height:30px;border-radius:10px;background:#fff}
+.dion-app .d-result-cta{display:flex;justify-content:flex-end;gap:12px;flex-wrap:wrap;margin:8px 0 28px}
+.dion-app .d-modal-backdrop{position:fixed;inset:0;background:#161b2966;display:grid;place-items:center;z-index:60;padding:16px}
+.dion-app .d-modal{background:#fff;border-radius:22px;padding:26px;width:440px;max-width:100%;max-height:calc(100dvh - 32px);overflow:auto;box-shadow:0 20px 50px #161b2930}
+.dion-app .d-modal h2{margin:10px 0 4px}
+@media(max-width:1000px){.dion-app .d-product-layout,.dion-app .d-final-grid{grid-template-columns:1fr}.dion-app .d-donut-card{position:static}.dion-app .d-kpis-4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.dion-app .d-portfolio-grid,.dion-app .d-kpis-3,.dion-app .d-summary-band,.dion-app .d-income-list{grid-template-columns:1fr}.dion-app .d-risk-steps{grid-template-columns:repeat(5,minmax(62px,1fr));overflow-x:auto;padding-top:10px}.dion-app .d-risk-steps li{padding:14px 4px}.dion-app .d-risk-steps li strong{font-size:12px}.dion-app .d-risk-steps li.active strong{font-size:13px}.dion-app .d-step-badge{right:2px;font-size:9px}.dion-app .d-tabs button{flex:0 0 132px;font-size:12px}.dion-app .d-portfolio-card.mine{order:-1;margin-top:10px}.dion-app .d-final-chart{grid-template-columns:1fr}.dion-app .d-kpi strong{font-size:22px}.dion-app .d-result-cta>button{flex:1 1 100%}}
+@media print{.dion-app .d-header,.dion-app .d-tabs,.dion-app .d-result-cta,.dion-app .d-footer,.dion-app .d-calc-bar,.dion-app .d-scenario-launch,.dion-app .d-modal-backdrop,.dion-app details:not([open]),.dion-app button{display:none!important}.dion-app{background:#fff}.dion-app .d-card,.dion-app .d-kpi{break-inside:avoid;box-shadow:none}.dion-app .d-main{padding:0}}
+.dion-app .d-product-status{margin:0 0 16px}
