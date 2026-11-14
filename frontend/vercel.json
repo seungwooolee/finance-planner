@@ -4,6 +4,7 @@
     "deploymentEnabled": {
       "codex/release-v0.7.0": false,
       "codex/release-v0.4.0": false,
+      "codex/release-v0.3.0": false,
       "codex/release-v0.2.2": false,
       "feat/step4-investment-20261114": false,
       "beta/wake-notice": false,

@@ -16,7 +16,7 @@ type Explanation = {
   facts:{fact_id:string;value:string;unit:string;locator:{metric:string;strategy_id:string|null;period:string;period_end:string|null};
     input_evidence_refs:{answer_revision_id:string;question_id:string;definition_version:string;period_start:string|null;period_end:string|null}[]}[];
 };
-type Props={view:ViewResult;token:string;editVersion:number;selectedCaseId:string;stale:boolean;onSave:()=>void;onEdit:(qid:string)=>void};
+type Props={view:ViewResult;token:string;editVersion:number;selectedCaseId:string;stale:boolean;onSave:()=>void;onEdit:(qid:string)=>void;onConsult:()=>void};
 type State={view:ViewResult;token:string;editVersion:number;selectedCaseId:string;detail:Detail;loading:boolean;response?:Explanation;error?:string};
 const names:Record<string,string>={"financial_projection/final_balance_krw":"종료월 금융자산 원금선","financial_projection/cumulative_goal_withdrawal_krw":"기간 중 목표 인출","after_existing_contributions_krw":"기존 납입 후 월 잔여","normalized_living/value":"상환·납입 제외 생활비","base_surplus/value":"상환 후 잔여","existing_cash_contributions_krw":"기존 납입","new_investment_krw":"신규 투자 배정 후보","additional_cash_krw":"추가 현금 유지","goal_deposits_krw":"추가 목표 적립","protection_topup_krw":"보호자금 보충","operating_refill_krw":"운영자금 보충"};
 
@@ -48,7 +48,7 @@ function explanationError(status:number):string {
   return "해설을 불러오지 못했어요. 해설 서버가 잠시 응답하지 않았어요. 잠시 뒤 다시 시도하면 대부분 해결돼요. 기본 안내와 기존 결과는 그대로 볼 수 있어요.";
 }
 
-export function ResultExplanation({view,token,editVersion,selectedCaseId,stale,onSave,onEdit}:Props) {
+export function ResultExplanation({view,token,editVersion,selectedCaseId,stale,onSave,onEdit,onConsult}:Props) {
   const [open,setOpen]=useState(false),[detail,setDetail]=useState<Detail>("SHORT"),[state,setState]=useState<State|null>(null);
   const cache=useRef(new Map<string,Explanation>());
   useEffect(()=>{cache.current.clear();},[token]);
@@ -117,7 +117,7 @@ export function ResultExplanation({view,token,editVersion,selectedCaseId,stale,o
           {!response.facts.length&&<p>현재 표시할 수 있는 수치 근거가 없어 보완 안내만 제공합니다.</p>}
         </EvidenceDisclosure>
       </>}
-      <a className="d-text-button" href="#dion-agent-consultation">결과 상담으로 이동</a>
+      <button type="button" className="d-text-button" onClick={onConsult}>결과 상담으로 이동</button>
       {available&&!current?.loading&&<button className="d-secondary" onClick={()=>void explain(detail)}>해설 다시 확인</button>}
     </aside>}
   </div>;

@@ -282,3 +282,19 @@
 .dion-app .d-financial-projection summary{cursor:pointer;font-weight:600;padding:8px 0}
 .dion-app .d-financial-projection caption{text-align:left;font-size:12px;padding:8px 0}
 .dion-app .d-financial-projection dd{overflow-wrap:anywhere}
+
+/* v0.3: one persistent consultation, native modal focus and mobile sheet. */
+.d-ai-window{position:fixed;inset:auto 20px 20px auto;margin:0;padding:0;width:460px;max-width:calc(100vw - 32px);height:min(760px,calc(100dvh - 40px));max-height:calc(100dvh - 40px);border:1px solid #dce1f3;border-radius:24px;background:#fff;color:#202940;box-shadow:0 16px 60px #17244133;overflow:hidden}
+.d-ai-window[open]{display:flex;flex-direction:column}
+.d-ai-window::backdrop{background:#17244133}
+.d-ai-window>header{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #e5e8f2;flex-shrink:0}
+.d-ai-window>header h2{font-size:18px;margin:0}.d-ai-window>header small{font-size:12px;color:#59647c}
+.d-ai-window>header>button{margin-left:auto;display:grid;place-items:center;min-width:44px;min-height:44px;border:0;border-radius:12px;background:#f1f3fa}
+.d-ai-body{overflow-y:auto;overscroll-behavior:contain;min-height:0;padding:16px;scroll-padding:20px;overflow-wrap:anywhere}
+.d-ai-body .d-agent-session{margin:0;padding:0;border:0;box-shadow:none}.d-ai-body .d-grid{grid-template-columns:1fr}
+.d-ai-body .d-toolbar{flex-wrap:wrap}.d-ai-body input,.d-ai-body select{min-width:0;width:100%;font-size:16px}
+.d-ai-body .d-field{min-width:0}.d-ai-body .d-note{font-size:13px}.d-ai-basis{font-size:13px;font-weight:700;color:#4654ae}
+.d-ai-faq{margin-top:24px;padding-top:16px;border-top:1px solid #e5e8f2}.d-ai-faq summary{cursor:pointer;min-height:44px}
+.d-consultation{bottom:max(20px,env(safe-area-inset-bottom));right:20px}
+@media(max-width:700px){.d-ai-window{inset:auto 0 0;width:100%;max-width:100%;height:92dvh;max-height:100dvh;border-radius:22px 22px 0 0}.d-ai-body{padding:16px 16px calc(24px + env(safe-area-inset-bottom))}.d-consultation{right:12px;bottom:max(12px,env(safe-area-inset-bottom))}}
+@media print{.d-consultation{display:none!important}}
