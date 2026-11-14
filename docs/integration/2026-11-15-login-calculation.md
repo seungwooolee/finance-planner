@@ -1,6 +1,7 @@
 # 첫 로그인 복구와 계산 전 서버 연결
 
 - 작업: `codex/login-calculation-20261115`, 기준 `602f1381f84acce104ade2836043c9320cfb2e18`.
+- 구현·검사 후보: `fd8d0a033ec7f373c550038bd7c3b36f3e7f038f`. 후속 문서 커밋은 이 SHA의 동작을 변경하지 않는다.
 - 사용자가 확인한 증상: `https://dion-review.vercel.app/dion`의 로그인 창 안 ‘이메일로 로그인’ 버튼 비활성화, 계산 대기 약 30초.
 - 원인: LoginDialog의 단발 auth/status 요청 실패 후 configured가 null로 남고 복구 수단이 없어 제출 버튼이 계속 잠김. 로그인 POST 역시 기존 wake retry를 사용하지 않았음.
 
