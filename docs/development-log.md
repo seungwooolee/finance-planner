@@ -1,5 +1,7 @@
 # 2026-11-14 — v0.4.0 투자구성 비교 선택 (Draft)
 
+PR #37 통합 후 충돌 해결: `fbdb593`을 작업 브랜치에 병합해 고양이 상담 단일 마운트와 투자구성 선택/저장을 보존했다. TypeScript·planner ESLint 및 관련 Edge 2건 통과. 원격 병합·배포 없음. 상세는 v0.4 인계의 후속 기록을 따른다.
+
 후속 오류 해결: 사용자 명시 요청으로 Next 개발 캐시를 보관 후 재생성했다. 이전 실패 경로 1건만 재검사해 Edge 1 passed(51.5s), 모바일/최종 캡처 확인. 앱 코드 변경 없음. GitHub Core #77 success 확인. PR #38 검토 가능으로 전환하며 운영 DB/배포·자료 한계는 유지한다.
 
 현재 통합 BASE ee0726b에서 별도 선행 구현 승인. 엔진 비교 상태/후보 그룹, 추가 전용 비교 초안 API/저장, 선택·복원·상품/최종 화면 연결. 기존 정책·카탈로그·원응답·채택 불변. 관련 Python 고유 92 passed/39 skipped, Ruff/TypeScript/ESLint 통과. 저장 복원 E2E 1 passed, 예시/모바일 1건은 1회 재검사 후 Next 파일 읽기 오류로 미통과. 전체/운영 검증·배포 미실행. [계약](releases/0.4.0/CONTRACT.md)·[실제 검사와 남은 조건](releases/0.4.0/HANDOFF.md).
@@ -676,3 +678,19 @@ GitHub main 2baa2be의44개 파일을 내보내 blob 지문을 확인했다. 실
 - [검토 결과와 수정 우선순위](integration/2026-11-13-agent-release-review.md)에 두 P0를 기록했다. 두 worker에서 동일 임시 SID가 저장 row를 가리거나 지울 수 있으며, SQLite 원장 손실/경로 변경 뒤 이전 차감 없이 빈 원장이 생성될 수 있다. 가상/추정 확인이 실제 추가 질문을 숨기는 문제, 미확인 명시 입력의 필드별 단위 검증 공백과 R2/RAG readiness 한계도 기록했다. 산식·계약·제품 코드는 수정하지 않았다.
 - 기존 R1/R2·OnePort, 신규 ModelProposal/R3/RAG, readiness/migration plan/모의 계정 저장 관련 pytest **252개 통과(56.98초)**. 기본 임시 경로 fixture 오류로 중단 후 작업 폴더 안 별도 임시 경로를 사용했다. 샌드박스 ASGI fixture 및 최소 로컬 IPC 확인이 멈춰 로컬 IPC가 허용된 실행 환경에서 검사했다. 실제 데이터·실계정·PostgreSQL 다중 연결·중앙 원장·유료 모델은 미검증이다. 이번 브라우저·전체 Core/Build/E2E는 미실행이며 이전 기록을 합산하지 않았다.
 - 운영 schema 적용, 신규/유료 자원, 실제 AI 호출, GitHub push와 Vercel/Render 배포는 미실행. 다음 작은 작업은 두 독립 앱/DB 연결로 저장 상태 경합을 확인하고 저장/임시 우선순위 수정 범위를 합의하는 것이다. 비용 원장 활성화는 기존 기록의 완전한 대사와 별도 승인 이후다.
+
+
+## 2026-11-14 — v0.3.0 고양이 AI 상담 (draft)
+
+- `ee0726b`에서 `codex/release-v0.3.0` 및 전용 worktree를 만들었다. 기존 R1/R2/R3를 단일 persistent dialog/모바일 시트에 연결하고 요청 중 닫기·화면 이동·재개·동일 key 재시도, case/run/input_version/hash 및 채택 조회를 보강했다. 기존 v0.2.2 작업·서버·원응답·금융/BE 계약은 보존했다.
+- 실제 관련 pytest **57 passed / 11 skipped**, 타입·변경 린트 **통과**. 타입의 참조/nullable 오류와 경고는 1회 수정 후 통과했다. Edge 고유 **10 passed / 1 failed**: 로그인 후 상담·응답 유실·오래된 기준·R2/R3·모바일 RAG 통과. 게스트 첫 고양이 Enter 열기는 최초 load timeout 후 1회 대기 조건 수정에도 dialog를 찾지 못했다. 초기 수화 경합은 추정이며 추가 자동 시도 중단, draft PR로 인계한다.
+- Vercel 이번 브랜치 false, Render 관리 GET에서 autoDeploy=no 및 PR preview off 확인. 전체Core/Build/E2E·실계정·운영DB·PG·유료 모델·배포는 미실행. [정확한 범위·검증·실패 증거](integration/2026-11-14-v0.3.0-consultation.md).
+
+- PR #37 생성 중 대상에 병합된 v0.2.2 PR #36 (`8fa586b`)을 보존해 통합했다. 문서/앱 버전/배포 차단/planner 충돌6파일을 정리하고 통합 후 타입·관련 FE 린트 통과를 확인했다. 기존 브라우저 실패를 재실행하지 않는다.
+
+## 2026-11-14 사용자 요청 추가진단 — 첫 열기 완료
+
+- SSR 버튼과 React 이벤트 준비 사이의 공백을 `useSyncExternalStore`의 서버/클라이언트 snapshot으로 구분했다. 준비 전 disabled/aria-busy, 준비 후 키보드·클릭을 받는다.
+- JS 지연을 주입한 첫 열기 검사 1개 통과. 일반 게스트 검사는 최초 10초 대기에서 실패해 개발 초기 컴파일 대기를 30초로 조정했다. 이후 열기 성공 뒤 Shift+Tab이 브라우저 UI로 빠지는 별도 문제를 확인하여 보이는 활성 요소 사이 포커스 순환을 구현했다.
+- 게스트 모바일 첫 열기·FAQ·가로폭·Shift+Tab·Escape·초점 복귀 재검사 1개 통과(16초). 변경 파일 ESLint와 TypeScript 통과. 기존 통과 10개는 반복하지 않았다. 수화 지연 검사와 합쳐 현재 고유 브라우저 12개 통과 기록이다(서로 다른 head에서의 관련 검사 합계).
+- 원래 실패 이력과 trace는 보존했다. 현재 첫 열기 미해결 항목 없음. 실계정/운영 DB/유료 실모델/전체 Build/실기기 키보드 검증은 이번에도 미실행이다. PR #37 검토 준비, 병합은 사용자.

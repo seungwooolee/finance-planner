@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { ArrowLeft, LogIn, MessageCircle, X } from "lucide-react";
 
 export function Cat({ kind = "welcome", size = 120, className = "", eager = false }: { kind?: "welcome" | "coach" | "guide"; size?: number; className?: string; eager?: boolean }) {
@@ -20,19 +20,58 @@ const topics = [
   { title: "결과가 ‘확인 필요’로 나와요", answer: "관련 금액·기간·소유 지분이 빠졌거나 서로 다르면 해당 결과를 보류해요. 0으로 대신 계산하지 않아요. 결과 화면의 ‘확인하기’를 누르면 필요한 질문으로 이동할 수 있어요." },
 ];
 
-export function ConsultationWidget({ compact = false }: { compact?: boolean }) {
-  const [open, setOpen] = useState(false), [selected, setSelected] = useState<number | null>(null);
-  const launcher = useRef<HTMLButtonElement>(null), closeButton = useRef<HTMLButtonElement>(null);
-  useEffect(() => { if (open) closeButton.current?.focus(); }, [open]);
-  function close() { setOpen(false); launcher.current?.focus(); }
+const subscribeToHydration = () => () => {};
+const clientReady = () => true;
+const serverReady = () => false;
+
+export function ConsultationWidget({ compact = false, open, onOpen, onClose, children }: {
+  compact?: boolean; open: boolean; onOpen: () => void; onClose: () => void; children: ReactNode;
+}) {
+  const hydrated = useSyncExternalStore(subscribeToHydration, clientReady, serverReady);
+  const [selected, setSelected] = useState<number | null>(null);
+  const dialog = useRef<HTMLDialogElement>(null), launcher = useRef<HTMLButtonElement>(null);
+  const closeButton = useRef<HTMLButtonElement>(null), returnFocus = useRef<HTMLElement | null>(null);
+  useEffect(() => {
+    const element = dialog.current;
+    const fallbackFocus = launcher.current;
+    if (!element || !open) return;
+    returnFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : launcher.current;
+    element.showModal();
+    closeButton.current?.focus();
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      element.close();
+      document.body.style.overflow = previousOverflow;
+      const target = returnFocus.current;
+      (target?.isConnected ? target : fallbackFocus)?.focus({ preventScroll: true });
+    };
+  }, [open]);
   return <div className="d-consultation">
-    {open && <section role="dialog" aria-label="dion 상담 도움말" aria-modal="false" id="dion-help" className="d-help-window" onKeyDown={e => { if (e.key === "Escape") close(); }}>
-      <header><Cat kind="coach" size={56} /><div><strong>dion 상담 도움말</strong><small>입력하면서 궁금한 점을 확인해요</small></div><button type="button" ref={closeButton} onClick={close} aria-label="상담창 닫기"><X size={20} /></button></header>
-      <div className="d-help-body"><div className="d-chat-bubble">안녕하세요! 어떤 부분이 궁금하세요?<br/>아래 질문을 골라주세요.</div>
-        {selected === null ? <div className="d-help-topics">{topics.map((topic, i) => <button type="button" key={topic.title} onClick={() => setSelected(i)}>{topic.title}<span aria-hidden="true">↗</span></button>)}</div> : <div aria-live="polite"><div className="d-chat-question">{topics[selected].title}</div><div className="d-chat-bubble">{topics[selected].answer}</div><button type="button" className="d-text-button" onClick={() => setSelected(null)}><ArrowLeft size={15} />다른 질문 보기</button></div>}
-      </div><footer>자주 묻는 질문 안내 · AI·상담원 연결은 준비 중이에요.</footer>
-    </section>}
-    <button type="button" className={`d-help-launcher ${compact ? "compact" : ""}`} ref={launcher} aria-expanded={open} aria-controls="dion-help" aria-label={open ? "dion 상담 도움말 닫기" : "dion 상담 도움말 열기"} onClick={() => open ? close() : setOpen(true)}><Cat kind="guide" size={48} /><span>도움이 필요해요</span><MessageCircle size={19} /></button>
+    <dialog ref={dialog} aria-labelledby="dion-help-title" id="dion-help" className="d-ai-window"
+      onKeyDown={event => {
+        if (event.key !== "Tab") return;
+        const items = Array.from(event.currentTarget.querySelectorAll<HTMLElement>(
+          'button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), summary, [tabindex="0"]',
+        )).filter(node => node.getClientRects().length > 0);
+        const first = items[0], last = items[items.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+      }}
+      onCancel={e => { e.preventDefault(); onClose(); }}>
+      <header><Cat kind="coach" size={48}/><div><h2 id="dion-help-title">dion AI 상담</h2><small>현재 결과를 함께 살펴봐요</small></div>
+        <button type="button" ref={closeButton} onClick={onClose} aria-label="상담창 닫기"><X size={20}/></button></header>
+      <div className="d-ai-body">
+        {children}
+        <details className="d-ai-faq"><summary>입력 도움말 · 자주 묻는 질문</summary>
+          {selected === null ? <div className="d-help-topics">{topics.map((topic, i) => <button type="button" key={topic.title} onClick={() => setSelected(i)}>{topic.title}<span aria-hidden="true">↗</span></button>)}</div>
+            : <div aria-live="polite"><p className="d-chat-question">{topics[selected].title}</p><p className="d-chat-bubble">{topics[selected].answer}</p><button type="button" className="d-text-button" onClick={() => setSelected(null)}><ArrowLeft size={15}/>다른 질문 보기</button></div>}
+        </details>
+      </div>
+    </dialog>
+    <button type="button" className={`d-help-launcher ${compact ? "compact" : ""}`} ref={launcher}
+      disabled={!hydrated} aria-busy={!hydrated} aria-expanded={open} aria-controls="dion-help" aria-haspopup="dialog" aria-label="dion AI 상담 열기" onClick={onOpen}>
+      <Cat kind="guide" size={48}/><span>AI 상담</span><MessageCircle size={19}/></button>
   </div>;
 }
 
