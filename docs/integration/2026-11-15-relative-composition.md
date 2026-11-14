@@ -56,3 +56,13 @@ OUT-06.portfolio_types에 `selection_scope=WITHIN_CUSTOMER_PREFERENCE`, `custome
 ## GitHub 전달 결과
 
 2026-11-15 작업 브랜치를 푸시하고 [Draft PR #45](https://github.com/seungwooolee/finance-planner/pull/45)를 생성했다. PR 생성 중 #44가 통합되어 대상이 e8e8990으로 이동했다. 같은 브랜치에 해당 통합본을 반영하며 개발 로그의 두 기록과 Vercel의 두 브랜치 차단 항목을 모두 보존해 충돌을 해소했다. 통합본의 planner.tsx/planner.css는 원문 그대로 보존했다. 해결 변경은 문서·배포 차단 JSON뿐이며 기존 계산/타입/린트 검사를 반복하지 않고 JSON·공백·근거 동일성만 확인했다. 원격 병합·배포 요청은 수행하지 않았다.
+
+## 백엔드 CI 차단 수정 — 2026-11-15
+
+[실패한 Core 실행 99](https://github.com/seungwooolee/finance-planner/actions/runs/43618421049)는 프론트엔드 통과, 백엔드 pytest 3실패/24설정오류/1037통과/81skip이었다. 공통 원인은 승인된 AGENTS.md 지침 변경 후 AI 평가의 policy_overrides 고정 해시를 갱신하지 않은 것이다. 파일 충돌은 없었다. Ruff/pip check는 pytest 실패로 CI에서 실행되지 않았다.
+
+사용자 요청으로 ‘충돌/필수 검사 실패를 로그 확인·최소 수정·검증·같은 PR 갱신·최종 상태 확인까지 해결’하는 상시 지침을 AGENTS에 추가했다. 지침 변경 커밋 `53add73ca6f87a33fc75e41f08fe04d4649f33d8`을 정확한 출처로 고정했다.
+
+`docs/contest/2026-11-14/ai/integration-baseline.json`은 1.2로 갱신하고 이전 1.1 SHA256 `c8613e6402c9ca5678895c760260b8d66cf763f28c1562d2d36a77f95ed4d491`과 이전 지침 해시/출처를 이력으로 남겼다. AGENTS 이외의 기존 문서 본문·채점 자료·기대값·두 BE code_overrides는 동일함을 확인했다. `expectations-lock.json` SHA256 `0613a19e686bd05a93294d0eb6408291860157d56c6c918910ecec9e4f797e8d`와 FROZEN_SHA는 그대로다. 새 기준 SHA256 `07b73f7a0a4f36b7bbe1ded2d236cbe300e53041215facd81c9e0a8a81446824`만 검사 helper에 반영했다. 검사 삭제/skip 추가/기대값 조정은 없다.
+
+실제 관련 검사 1회: `python -m pytest tests/be/test_contest_ai_baseline.py tests/be/test_consultation_contest_eval.py -q --tb=short` → **27 passed, 6 skipped (57.84s)**. 6건은 기존 `DION_CONTEST_AI_HOLDOUT=1` opt-in이 필요한 봉인 holdout이며 이번에 활성화하지 않았다. 수정 helper Ruff·변경 공백 검사 통과. 기존 60건/242건·FE 검사는 로컬에서 반복하지 않는다. 푸시 후 동일 PR의 자동 Core CI로 최종 백엔드/프론트엔드 상태를 확인한다.
