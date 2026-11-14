@@ -4,9 +4,9 @@ import { object, textValue } from '@/lib/dion/model';
 import type { ComparisonResponse } from '@/lib/dion/portfolio-comparison';
 import type { ViewResult } from './results';
 
-export function usePortfolioComparison(view: ViewResult, token: string | null, caseId: string, stale: boolean) {
-  const [plan, setPlan] = useState('STABILITY_FIRST');
-  const [portfolio, setPortfolio] = useState<string | null>(null);
+export function usePortfolioComparison(view: ViewResult, token: string | null, caseId: string, stale: boolean, initial?: {strategy_id: string; portfolio_type: string | null}) {
+  const [plan, setPlan] = useState(initial?.strategy_id ?? 'STABILITY_FIRST');
+  const [portfolio, setPortfolio] = useState<string | null>(initial?.portfolio_type ?? null);
   const [revision, setRevision] = useState(0);
   const [busy, setBusy] = useState(false);
   const [loaded, setLoaded] = useState(false);

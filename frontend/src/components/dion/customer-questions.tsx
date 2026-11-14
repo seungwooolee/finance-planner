@@ -1,12 +1,13 @@
 "use client";
 
-import { Check, Home, Landmark, Sprout, Users, Wallet } from "lucide-react";
+import { Baby, BookOpen, BriefcaseBusiness, Check, CircleHelp, Compass, Heart, Home, Landmark, Sprout, Sun, Users, Wallet, type LucideIcon } from "lucide-react";
 import { Document, Field, Json, catalog, field, fieldValue, list, object, question, record, revise, textValue } from "@/lib/dion/model";
 import { goalName, patchGoal, reactivateGoal, retainGoals, selectLifeStage, selectedMonth, setMonth, updateIncome } from "@/lib/dion/customer-flow";
 import { MoneyField } from "./fields";
 
 type Props = { doc: Document; onChange: (doc: Document) => void };
 const answer = (doc: Document, id: string, key: string, unit = "TEXT") => record(doc, id)?.envelope.fields[key] ?? field(null, unit);
+const lifeIcons: Record<string, LucideIcon> = { LC_EARLY_CAREER: BriefcaseBusiness, LC_NEWLYWED: Heart, LC_CHILDCARE: Baby, LC_SCHOOL_AGE: BookOpen, LC_CHILD_INDEPENDENCE: Home, LC_RETIRED: Sun, LC_OTHER: Compass, LC_UNKNOWN: CircleHelp };
 
 export function Choice({ selected, children, onClick }: { selected: boolean; children: React.ReactNode; onClick: () => void }) {
   return <button type="button" className={`d-choice ${selected ? "selected" : ""}`} aria-pressed={selected} onClick={onClick}>{children}<span className="d-radio" aria-hidden="true">{selected && <Check size={12} />}</span></button>;
@@ -44,9 +45,10 @@ export function SituationQuestion({ doc, onChange }: Props) {
     </section>
     <section className="d-question-section" aria-labelledby="d-life-title"><h2 id="d-life-title">요즘 나의 생활은 어떤 모습인가요?</h2><p id="d-life-help">해당하는 모습을 모두 골라주세요. 선택한 것 중 지금 가장 중요한 생활단계 하나를 정할 수 있어요.</p><div className="d-life-options" role="group" aria-labelledby="d-life-title" aria-describedby="d-life-help">{catalog.lifeStages.map(stage => {
       const selected = stages.includes(stage.code);
+      const Icon = lifeIcons[stage.code] ?? Compass;
       return <div className={`d-life-option ${selected ? "selected" : ""}`} key={stage.code}>
-        <label className="d-life-select"><input type="checkbox" checked={selected} onChange={() => onChange(selectLifeStage(doc, stage.code))}/><span>{stage.label}</span></label>
-        {selected && <label className="d-life-primary"><input type="radio" name="life-stage-primary" aria-label={`${stage.label}를 주요 생활단계로 설정`} checked={primary === stage.code} onChange={() => onChange(selectLifeStage(doc, stage.code, true))}/><span>{primary === stage.code ? "주요 생활단계" : "주요 생활단계로 설정"}</span></label>}
+        <button type="button" className="d-life-select" aria-pressed={selected} onClick={() => onChange(selectLifeStage(doc, stage.code))}><i aria-hidden="true"><Icon size={24}/></i><span>{stage.label}</span></button>
+        {selected && <button type="button" className="d-life-primary" aria-label={`${stage.label}를 주요 생활단계로 설정`} aria-pressed={primary === stage.code} onClick={() => onChange(selectLifeStage(doc, stage.code, true))}>{primary === stage.code ? "주요 생활단계" : "주요 생활단계로 설정"}</button>}
       </div>;
     })}</div>
     </section>
@@ -88,14 +90,15 @@ export function GoalsQuestion({ doc, onChange }: Props) {
       const special = ["GOAL_TYPE_03", "GOAL_V12_INHERITANCE", "RETIREMENT"].includes(String(g.type));
       return <section className="d-goal-card" key={gid} aria-label={`${name(g)} 목표`}><div className="d-goal-card-heading"><div><span>{i === 0 ? "가장 먼저 준비할 목표" : `함께 준비할 목표 ${i + 1}`}</span><h2>{name(g)}</h2></div><button type="button" className="d-text-button" aria-label={`${name(g)} 목표 삭제`} onClick={() => remove(goals.filter(r => r.goal_id !== gid).map(r => String(r.goal_id)))}>목표 삭제</button></div>
         {special ? <p className="d-note">목표로 기록해 둘게요. {g.type === "GOAL_V12_INHERITANCE" ? "상속" : "은퇴"}에 필요한 별도 계산은 아직 준비 중이에요.</p> : <>
-          <MoneyField label="목표로 생각한 금액" value={(amount.target_amount_krw as unknown as Field) ?? field(null, "KRW_10000")} onChange={v => onChange(patchGoal(doc, "F13", gid, { target_amount_krw: v as unknown as Json, amount_status: v.state }))} />
-          <div className="d-fields"><label className="d-field">언제쯤 필요해요?<input type="month" value={textValue(timing.target_date).slice(0,7)} onChange={e => {
+          <div className="d-goal-plan-fields"><div className="d-goal-amount"><MoneyField label="목표로 생각한 금액" value={(amount.target_amount_krw as unknown as Field) ?? field(null, "KRW_10000")} onChange={v => onChange(patchGoal(doc, "F13", gid, { target_amount_krw: v as unknown as Json, amount_status: v.state }))} /></div>
+          <div className="d-goal-timing"><label className="d-field">언제쯤 필요해요?<input type="month" value={textValue(timing.target_date).slice(0,7)} onChange={e => {
             const date=e.target.value ? `${e.target.value}-01` : "";
             let next=patchGoal(doc,"F12",gid,{target_date:date,target_date_status:date?"KNOWN":"NOT_ENTERED",date_precision:"MONTH"});
             if(amount.payment_type==="ONE_OFF") next=patchGoal(next,"F13",gid,{payment_start:date,payment_end:date,...(amount.price_basis==="FUTURE_NOMINAL"?{price_base_date:date}:{})});
             onChange(next);
-          }}/><small>월만 정하면 해당 월 1일까지 준비하는 기준이에요. 기존에 저장한 정확한 날짜는 다시 선택하기 전까지 유지해요.</small></label><label className="d-check"><input type="checkbox" checked={timing.target_date_status==="UNKNOWN"} onChange={e=>onChange(patchGoal(doc,"F12",gid,{target_date:"",target_date_status:e.target.checked?"UNKNOWN":"NOT_ENTERED"}))}/>아직 미정</label><p>시점이 미정이어도 재무현황은 볼 수 있어요. 기한별 필요 적립액은 확인 대기예요. 투자금 사용 시점은 같은 자금인지 별도로 확인해요.</p>
-          <label className="d-field">어떻게 쓸 돈인가요?<select value={textValue(amount.payment_type)} onChange={e => onChange(patchGoal(doc, "F13", gid, { payment_type: e.target.value, frequency: e.target.value === "ONE_OFF" ? "ONCE" : e.target.value === "RECURRING" ? "MONTHLY" : "", payment_start: textValue(timing.target_date), payment_end: e.target.value === "ONE_OFF" ? textValue(timing.target_date) : "" }))}><option value="">선택해주세요</option><option value="ONE_OFF">한 번에 쓸 목돈</option><option value="RECURRING">정해진 기간 동안 매달 쓸 돈</option></select></label></div>
+          }}/><small>월만 정하면 해당 월 1일까지 준비하는 기준이에요. 기존에 저장한 정확한 날짜는 다시 선택하기 전까지 유지해요.</small></label><label className="d-check"><input type="checkbox" checked={timing.target_date_status==="UNKNOWN"} onChange={e=>onChange(patchGoal(doc,"F12",gid,{target_date:"",target_date_status:e.target.checked?"UNKNOWN":"NOT_ENTERED"}))}/>아직 미정</label>
+          <label className="d-field">어떻게 쓸 돈인가요?<select value={textValue(amount.payment_type)} onChange={e => onChange(patchGoal(doc, "F13", gid, { payment_type: e.target.value, frequency: e.target.value === "ONE_OFF" ? "ONCE" : e.target.value === "RECURRING" ? "MONTHLY" : "", payment_start: textValue(timing.target_date), payment_end: e.target.value === "ONE_OFF" ? textValue(timing.target_date) : "" }))}><option value="">선택해주세요</option><option value="ONE_OFF">한 번에 쓸 목돈</option><option value="RECURRING">정해진 기간 동안 매달 쓸 돈</option></select></label></div></div>
+          <p className="d-goal-date-note">시점이 미정이어도 재무현황은 볼 수 있어요. 기한별 필요 적립액은 확인 대기예요. 투자금 사용 시점은 같은 자금인지 별도로 확인해요.</p>
           {amount.payment_type === "RECURRING" && <section className="d-note"><p>예: 내년 3월부터 2년간 매달 교육비 30만원. 위 금액을 월 금액으로 적어주세요.</p><div className="d-fields">{["payment_start","payment_end"].map(key=><label className="d-field" key={key}>{key==="payment_start"?"시작월":"종료월"}<input type="month" value={textValue(amount[key]).slice(0,7)} onChange={e=>onChange(patchGoal(doc,"F13",gid,{[key]:e.target.value?`${e.target.value}-01`:""}))}/></label>)}</div><label className="d-field">기존 생활비에 포함됐나요?<select value={typeof amount.included_in_living==="boolean"?String(amount.included_in_living):""} onChange={e=>onChange(patchGoal(doc,"F13",gid,{included_in_living:e.target.value===""?null:e.target.value==="true"}))}><option value="">미확인</option><option value="true">포함</option><option value="false">미포함</option></select></label><p>화면 입력 보관 중 · 서버에 저장한 뒤에도 계산 반영 대기. 반복 지급은 현행 어댑터에서 지원하지 않아요. 이미 생활비에 포함된 금액을 추가 차감하지 않아요.</p></section>}
           <label className="d-check"><input type="checkbox" checked={amount.price_basis === "FUTURE_NOMINAL"} onChange={e => onChange(patchGoal(doc, "F13", gid, { price_basis: e.target.checked ? "FUTURE_NOMINAL" : "", price_base_date: e.target.checked ? textValue(timing.target_date) : "" }))} />적은 금액은 그 날짜에 필요할 것으로 생각한 금액이에요.</label>
         </>}
