@@ -49,6 +49,6 @@ OUT-06.portfolio_types에 `selection_scope=WITHIN_CUSTOMER_PREFERENCE`, `custome
 
 ## GitHub·배포 및 다음 확인
 
-`frontend/vercel.json`에 이 작업 브랜치의 deploymentEnabled=false를 추가하고 기존 설정을 보존했다. GitHub Actions는 검사만 하며 배포 작업은 없다. Render list_services 연결 도구는 `Unknown tool(render.list_services)`로 실패했고 이번 환경에서 현재 자동 배포/PR preview 설정을 확인할 수 없었다. AGENTS의 ‘자동 배포 차단을 확인할 수 없으면 푸시 보류’에 따라 **로컬 커밋까지만 진행**, PR/푸시·원격 병합·배포 없음.
+`frontend/vercel.json`에 이 작업 브랜치의 deploymentEnabled=false를 추가하고 기존 설정을 보존했다. GitHub Actions는 검사만 하며 배포 작업은 없다. Render list_services 연결 도구는 `Unknown tool(render.list_services)`로 실패해 최초에는 푸시를 보류했다. 이후 2026-11-15 사용자가 Render 배포 설정 완료를 직접 확인하고 모든 DION 작업의 푸시·PR 생성을 기본 절차로 지시했다. 이를 AGENTS에 반영하고 같은 기능 브랜치의 푸시·검토용 PR 생성을 진행한다. 원격 병합·별도 배포 요청·운영 설정 변경은 수행하지 않는다.
 
-남은 작업은 이 작업본의 테스트 서버가 허용된 환경에서 `dion-portfolio-comparison.spec.ts` 관련 3건을 한 번 실행하고, Render 자동 배포 차단을 확인한 뒤 같은 기능 브랜치를 푸시하여 PR로 검토하는 것이다. 기존 242건 엔진 검산은 반복하지 않았다.
+남은 검증은 이 작업본의 테스트 서버가 허용된 환경에서 `dion-portfolio-comparison.spec.ts` 관련 3건을 한 번 실행하는 것이다. 브라우저 검증이 남아 있으므로 PR은 draft로 생성한다. 기존 60건과 242건 엔진 검산은 이번 지침·문서 보완 때문에 반복하지 않는다.
