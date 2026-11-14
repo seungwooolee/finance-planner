@@ -22,10 +22,12 @@ from .checkin_followup_contract import (
     ReviewView,
     ScopedSave,
 )
+from .portfolio_review_api import router as portfolio_review_router
 from .raw_store import PocError
 
 router = APIRouter(prefix="/api/be/v1", tags=["Plan adoption and monthly check-in"],
                    dependencies=[Depends(private_read)])
+router.include_router(portfolio_review_router)
 
 
 class ContractModel(BaseModel):

@@ -18,6 +18,7 @@ from ..explanation.facts import build_context
 from ..oneport_transport import ProviderFailure
 from . import scenario
 from .contract import CONTRACT, NOTICE, POLICY
+from .dialogue import reviewed_dialogue
 from .evidence import (
     QUESTION_HISTORY_VERSION,
     VALIDATION_VERSION,
@@ -405,6 +406,9 @@ class ConsultationService:
 
     def _model_turn(self, state, run, message, turn_id, payload, review_code):
         try:
+            if review_code == "ONEPORT_PROPOSAL_REVIEWED" and isinstance(payload, dict) and payload.get("candidates") == []:
+                state.update(**reviewed_dialogue(payload, message), progress="ACTIVE")
+                return
             reviewer = review_model_proposal if review_code == "ONEPORT_PROPOSAL_REVIEWED" else review_proposal
             reason, answer = reviewer(payload, message, state)
         except ValueError:
