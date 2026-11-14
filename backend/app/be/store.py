@@ -15,6 +15,7 @@ from .plan_checkin import SCHEMA as PLAN_SCHEMA
 from .plan_checkin import PlanCheckinMixin
 from .portfolio_comparison import SCHEMA as PORTFOLIO_SCHEMA
 from .portfolio_comparison import PortfolioComparisonMixin
+from .portfolio_review_contract import SCHEMA as PORTFOLIO_REVIEW_SCHEMA
 from .question_bridge import run_frontend_questions
 from .raw_store import PocError, RawAnswerStore, _digest, _id, _json, _now
 
@@ -40,8 +41,8 @@ class BackendStore(PortfolioComparisonMixin, PlanCheckinMixin, RawAnswerStore):
         super().__init__(database_path)
         conn = self._connect()
         try:
-            conn.executescript(EXTRA_SCHEMA + AGENT_SCHEMA + PLAN_SCHEMA + PORTFOLIO_SCHEMA)
-            for table in ("analysis_runs", "analysis_drafts", *PLAN_HISTORY_TABLES, "portfolio_comparisons"):
+            conn.executescript(EXTRA_SCHEMA + AGENT_SCHEMA + PLAN_SCHEMA + PORTFOLIO_SCHEMA + PORTFOLIO_REVIEW_SCHEMA)
+            for table in ("analysis_runs", "analysis_drafts", *PLAN_HISTORY_TABLES, "portfolio_comparisons", "portfolio_review_revisions"):
                 for operation in ("UPDATE", "DELETE"):
                     conn.execute(f"CREATE TRIGGER IF NOT EXISTS immutable_{table}_{operation} "
                                  f"BEFORE {operation} ON {table} "
