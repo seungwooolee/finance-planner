@@ -638,3 +638,13 @@
  .d-product-comparison tbody{margin-bottom:22px}.d-product-comparison tbody th{display:block;width:100%;padding:14px 0}.d-product-comparison tbody tr:first-child td{display:flex;justify-content:space-between;gap:12px;padding:10px 0;text-align:right;flex-wrap:wrap}.d-product-comparison td[data-label]::before{content:attr(data-label);font-weight:600;color:#736680;text-align:left}.d-product-comparison tbody td small{width:100%;margin:0}
  .d-product-comparison .d-comparison-reasons td{display:block;width:100%;padding:12px 0 20px}.d-comparison-reason-grid{grid-template-columns:1fr;gap:18px;padding:16px}
 }
+
+/* Read-only composition detail, including historical calculation views. */
+.dion-app .d-composition-fold{border-top:1px solid var(--d-line);padding:10px 0;overflow-wrap:anywhere}
+.dion-app .d-composition-fold>summary{cursor:pointer;min-height:44px;align-content:center;color:var(--d-primary);font-weight:700}
+.dion-app .d-composition-fold>summary:focus-visible{outline:2px solid var(--d-primary);outline-offset:3px}
+.dion-app .d-composition-detail section{border-bottom:1px solid var(--d-line);padding:8px 0}
+.dion-app .d-composition-detail dl>div{display:flex;justify-content:space-between;gap:12px;margin:8px 0}
+.dion-app .d-composition-detail dd{margin:0;text-align:right;font-weight:700}
+.dion-app .d-composition-product{padding:10px 0;border-top:1px solid var(--d-line)}
+.dion-app .d-composition-fold>button{width:100%;margin-top:12px;white-space:normal}
