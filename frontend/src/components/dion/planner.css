@@ -291,3 +291,15 @@
 .d-consultation{bottom:max(20px,env(safe-area-inset-bottom));right:20px}
 @media(max-width:700px){.d-ai-window{inset:auto 0 0;width:100%;max-width:100%;height:92dvh;max-height:100dvh;border-radius:22px 22px 0 0}.d-ai-body{padding:16px 16px calc(24px + env(safe-area-inset-bottom))}.d-consultation{right:12px;bottom:max(12px,env(safe-area-inset-bottom))}}
 @media print{.d-consultation{display:none!important}}
+
+/* v0.5: explicit evidence lookup, supporting sources stay secondary. */
+.dion-app .d-portfolio-evidence{margin:16px 0;padding-top:12px;border-top:1px solid #e5e8f2;overflow-wrap:anywhere}
+.dion-app .d-portfolio-evidence form{display:flex;flex-wrap:wrap;gap:12px;align-items:end;margin:12px 0}
+.dion-app .d-portfolio-evidence label{display:grid;gap:6px;font-size:13px;min-width:0}
+.dion-app .d-portfolio-evidence input,.dion-app .d-portfolio-evidence select{width:100%;min-height:44px;padding:8px;border:1px solid #b9c2dc;border-radius:8px;font:inherit;font-size:16px;background:#fff}
+.dion-app .d-portfolio-evidence .d-scheme-claim{font-size:14px;line-height:1.75}
+.dion-app .d-explanation-evidence{font-size:12px;color:#4b566d;overflow-wrap:anywhere}
+.dion-app .d-explanation-evidence li span{display:block;margin-top:4px}
+.dion-app .d-portfolio-evidence summary{min-height:36px;cursor:pointer}
+.dion-app .d-tax-dialog{max-height:90dvh;overflow-y:auto;overflow-wrap:anywhere}
+@media(max-width:700px){.dion-app .d-portfolio-evidence form{display:grid;grid-template-columns:1fr}}

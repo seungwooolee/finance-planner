@@ -62,4 +62,9 @@ def explain(row, catalog_product, messages):
         "reasons": reasons, "facts": facts,
         "evidence_doc": f"PRD-{row['code']}" if row["code"] in EVIDENCE_DOCS else None,
         "not_a_recommendation": True,
+        "source_refs": [{"field": field, "document_id": evidence.get("source_id"),
+                         "official_url": evidence.get("url"), "section_ref": evidence.get("locator"),
+                         "disclosed_on": evidence.get("source_as_of"), "collected_on": evidence.get("observed_on")}
+                        for field, evidence in (catalog_product.get("facts") or {}).get("evidence", {}).items()
+                        if field in {"risk_grade", "annual_total_expense_percent", "fx_exposed", "cash_conversion"}],
     }

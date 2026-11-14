@@ -11,7 +11,7 @@ type Citation = {
   citation_id: string; title: string; issuer: string; official_url: string; section_ref: string; source_version: string;
   tax_year: number; review_status: "APPROVED"; reviewed_on: string; review_through: string;
 };
-type Answer = {status: "ANSWERED" | "FALLBACK" | "CLARIFY"; guidance: string; blocks: Block[]; citations: Citation[]};
+export type Answer = {status: "ANSWERED" | "FALLBACK" | "CLARIFY"; guidance: string; blocks: Block[]; citations: Citation[]};
 type Props = {url: string; token: string; runId: string; version: number};
 
 function record(value: unknown): value is Record<string, unknown> {
@@ -27,7 +27,7 @@ function validCatalog(value: unknown, runId: string): value is Catalog {
       && item.tax_years.every(year => Number.isInteger(year) && year >= 1900 && year <= 2200));
 }
 
-function validAnswer(value: unknown, runId: string, item: string, year: number): value is Answer {
+export function validAnswer(value: unknown, runId: string, item: string, year: number | null): value is Answer {
   const quote = (entry: unknown): entry is Quote => record(entry) && typeof entry.citation_id === "string" && typeof entry.text === "string";
   if (!record(value) || value.contract_version !== "DION-SCHEME-EVIDENCE-1.0" || value.base_run_id !== runId
       || value.item_id !== item || value.tax_year !== year || value.application_status !== "NOT_APPLIED"
@@ -44,7 +44,7 @@ function validAnswer(value: unknown, runId: string, item: string, year: number):
     && Array.isArray(block.exceptions) && block.exceptions.every(linked));
 }
 
-function sourceHref(value: string) {
+export function sourceHref(value: string) {
   try {
     const url = new URL(value);
     if (url.protocol === "https:" && !url.username && !url.password) return url.href;
