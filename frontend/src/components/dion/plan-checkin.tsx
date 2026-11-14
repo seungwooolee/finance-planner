@@ -25,6 +25,7 @@ const CHANGES: Record<string, string> = {
 type Task = { key: string; label: string; state: string; reason: string };
 type Summary = { entered_count: number; amount_count: number; partial: boolean; spending_entered_krw: string;
   transfers_entered_krw: string; spending_entered_count?: number | null; transfers_entered_count?: number | null; allocation_check: string; tasks_done: number; tasks_total: number; review_suggested: boolean };
+type PastMonth = { record_month: string; status?: string | null; revision: number; summary?: Summary | null; adoption?: Adoption };
 type Adoption = { adoption_id: string; run_id: string; strategy_id: string; input_version: number; adopted_at: string } | null;
 // DION-PLAN-CHECKIN-1.1 binding fields (BE CONTRACT.md). Legacy responses lack contract_version.
 type Binding = { contract: string | null; revision: number; adoptionId: string | null; record: Adoption; current: Adoption;
@@ -74,7 +75,7 @@ function wonToManwon(value: string | null): string {
 const thisMonth = () => new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 7);
 const key = () => `ui-${crypto.randomUUID()}`;
 
-export function PlanCheckin({ view, token, caseId, plan, tasks }: { view: ViewResult; token: string; caseId: string; plan: string; tasks: CheckinTask[] }) {
+export function PlanCheckin({ view, token, caseId, plan, tasks, onEdit }: { view: ViewResult; token: string; caseId: string; plan: string; tasks: CheckinTask[]; onEdit?: (id: string) => void }) {
   const base = `/api/be/v1/cases/${encodeURIComponent(caseId)}`;
   const month = thisMonth();
   const [adoption, setAdoption] = useState<Adoption>(null);
@@ -88,6 +89,8 @@ export function PlanCheckin({ view, token, caseId, plan, tasks }: { view: ViewRe
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [past, setPast] = useState<PastMonth[] | null>(null);
+  const [pastError, setPastError] = useState("");
 
   const call = useCallback(async (path: string, method = "GET", body?: unknown) => {
     const r = await fetch(base + path, { method, cache: "no-store", body: body === undefined ? undefined : JSON.stringify(body),
@@ -135,6 +138,13 @@ export function PlanCheckin({ view, token, caseId, plan, tasks }: { view: ViewRe
     } finally { setBusy(false); }
   }
 
+  async function loadPast() {
+    if (past) return;
+    setPastError("");
+    try { setPast(((await call("/checkins")).items as PastMonth[]).filter(i => i.record_month !== month)); }
+    catch (e) { setPastError(`지난 기록을 불러오지 못했어요 (${(e as Error).message}). 다시 펼치면 재시도해요.`); }
+  }
+
   async function save(next: "DRAFT" | "CLOSED") {
     setError("");
     let converted: Record<string, string | null>;
@@ -145,7 +155,7 @@ export function PlanCheckin({ view, token, caseId, plan, tasks }: { view: ViewRe
     try {
       const r = await call(`/checkins/${month}`, "PUT", { expected_revision: revision, request_key: key(), status: next,
         record: { amounts: converted, tasks: taskRows.map(t => ({ key: t.key, label: t.label, state: t.state, ...(t.reason.trim() ? { reason: t.reason.trim() } : {}) })), changes } });
-      setRevision(r.revision); setBinding(toBinding(r)); setSummary(r.summary); setStatus(r.status); setSavedTasks(taskRows); setEdits({});
+      setRevision(r.revision); setBinding(toBinding(r)); setSummary(r.summary); setStatus(r.status); setSavedTasks(taskRows); setEdits({}); setPast(null);
       // Contract: a PUT (or its replay) is the first receipt; read the month again for the latest binding.
       try { const latest: CheckinResponse = await call(`/checkins/${month}`); setRevision(latest.revision); setBinding(toBinding(latest)); if (latest.summary) setSummary(latest.summary); if (latest.status) setStatus(latest.status); } catch { /* keep the PUT receipt */ }
     } catch (e) {
@@ -201,8 +211,16 @@ export function PlanCheckin({ view, token, caseId, plan, tasks }: { view: ViewRe
       <p>입력한 생활비·상환 {summary.spending_entered_count === 0 ? "입력 없음" : formatKrw(summary.spending_entered_krw)} · 적립·투자 등 자산 이동 {summary.transfers_entered_count === 0 ? "입력 없음" : formatKrw(summary.transfers_entered_krw)}</p>
       {CHECK[summary.allocation_check] && <p>{CHECK[summary.allocation_check]}</p>}
       {summary.tasks_total > 0 && <p>할 일 {summary.tasks_done}/{summary.tasks_total} 완료</p>}
-      {summary.review_suggested && <p>상황이 바뀌었다면 답변을 고쳐 새 결과를 계산해 보세요. 기존에 선택한 계획은 자동으로 바뀌지 않아요.</p>}
+      {summary.review_suggested && <p>상황이 바뀌었다면 답변을 고쳐 새 결과를 계산해 보세요. 기존에 선택한 계획은 자동으로 바뀌지 않아요.
+        {onEdit && <> <button className="d-secondary" onClick={() => onEdit("F03")}>답변 고치러 가기</button></>}</p>}
     </div>}
+    <details onToggle={e => { if ((e.target as HTMLDetailsElement).open) void loadPast(); }}>
+      <summary>지난 달 기록 보기</summary>
+      {pastError && <p className="d-warning" role="alert">{pastError}</p>}
+      {past && (past.length === 0 ? <p className="d-note">이번 달 이전에 저장한 기록이 없어요.</p>
+        : <ul aria-label="지난 달 기록">{past.map(m => <li key={m.record_month}>{m.record_month} · {m.status === "CLOSED" ? "점검 완료" : "중간 기록"}
+          {m.summary && <> · 입력 {m.summary.entered_count}/{m.summary.amount_count}</>} · {m.adoption ? `${planName(m.adoption.strategy_id)} 기준 기록` : "계획 없이 남긴 기록"}</li>)}</ul>)}
+    </details>
   </section>;
 }
 

@@ -11,14 +11,13 @@ import { Cat, ConsultationWidget, HeaderCat, LoginDialog } from "./companions";
 import { Results, ViewResult } from "./results";
 import { ResultExplanation } from "./result-explanation";
 import { AgentConsultation } from "./agent-consultation";
-import { Scenario, ScenarioPicker, defaultScenario, scenarios } from "./scenario-picker";
+import { Scenario, ScenarioPicker, defaultScenario, loadScenarios } from "./scenario-picker";
 import { PlanCheckin } from "./plan-checkin";
 import { ApiError, requestJson } from "@/lib/dion/wake-retry";
 import { reviewToolsEnabled } from "@/lib/dion/beta-config";
 import { ServerWakeNotice } from "@/components/server-wake-notice";
 import "./planner.css";
 
-const earlyScenario = scenarios.find(s => s.id === "early") as Scenario;
 
 function stable(v: unknown): string {
   const sort=(x:unknown):unknown=>Array.isArray(x)?x.map(sort):x && typeof x==="object"?Object.fromEntries(Object.entries(x).sort(([a],[b])=>a.localeCompare(b)).map(([k,v])=>[k,sort(v)])):x;
@@ -292,6 +291,12 @@ export function DionPlanner() {
     }catch(e){handleServerError(e);}
     finally{saveLock.current=false;setSaveBusy(false);}
   }
+  async function verifyEarly(deep:boolean) {
+    let early:Scenario|undefined;
+    try{early=(await loadScenarios()).find(s=>s.id==="early");}catch{early=undefined;}
+    if(!early){setError("검증용 가상 사례를 불러오지 못했어요. 네트워크를 확인한 뒤 다시 눌러 주세요.");return;}
+    await verifyScenario(early,deep);
+  }
   async function savedCalculation(engineV2=false){await serverAction(()=>persistCalculation(engineV2));}
   async function openRun(runId:string){await serverAction(async()=>{
     const r=await request(`${base()}/analyses/${encodeURIComponent(runId)}`,"GET",undefined,token);
@@ -320,7 +325,7 @@ export function DionPlanner() {
     setRuns([]);setCases([]);setNextAfter(null);
     setMessage("로그인했어요. 작성한 답변은 그대로 있어요. 내 상담에서 상담을 조회하거나 저장할 수 있어요.");
   }
-  const verifyTools=<div className="d-toolbar" aria-label="저장 검증"><strong>사회초년생 검증</strong><button className="d-secondary" disabled={saveBusy} onClick={()=>void verifyScenario(earlyScenario,false)}>빠른진단 저장·계산</button><button className="d-secondary" disabled={saveBusy} onClick={()=>void verifyScenario(earlyScenario,true)}>정밀진단 저장·계산</button></div>;
+  const verifyTools=<div className="d-toolbar" aria-label="저장 검증"><strong>사회초년생 검증</strong><button className="d-secondary" disabled={saveBusy} onClick={()=>void verifyEarly(false)}>빠른진단 저장·계산</button><button className="d-secondary" disabled={saveBusy} onClick={()=>void verifyEarly(true)}>정밀진단 저장·계산</button></div>;
   return <div className="dion-app">
     <header className={`d-header ${mode==="welcome"?"d-header-welcome":""}`}><Link href="/dion" className="d-logo" onClick={()=>{setMode("welcome");setShowResults(false);window.scrollTo({top:0});}}>dion<span>.</span></Link>{mode==="welcome"?<HeaderCat/>:<nav aria-label="진단 방식"><button className={mode==="quick"?"active":""} onClick={()=>{setMode("quick");setShowResults(false);}}>빠른진단</button><button className={mode==="deep"?"active":""} onClick={()=>{setMode("deep");setShowResults(false);}}>정밀진단</button></nav>}<div className="d-header-actions"><button className="d-account-button" aria-expanded={accountOpen} onClick={()=>{setAccountOpen(!accountOpen);if(token)void fetchCases();}}>내 상담</button>{token?<button className="d-account-button" disabled={saveBusy} onClick={signOut}>로그아웃</button>:<button className="d-account-button" disabled={saveBusy} onClick={()=>setLoginOpen(true)}>로그인</button>}{showReviewTools&&<button aria-expanded={reviewOpen} onClick={()=>setReviewOpen(!reviewOpen)}>검토 도구</button>}</div></header>
     <main className="d-main">
@@ -333,7 +338,7 @@ export function DionPlanner() {
         {fictional&&<div className="d-fictional">가상 사례{scenario?` · ${scenario.title}`:""} · 실제 고객·계좌 자료 아님 · 기준일 {doc.context.evaluation_on}{scenario&&<><button className="d-secondary" onClick={restoreOriginal}>원래 입력으로 돌아가기</button><details><summary>현재 사례의 가정</summary><ul>{scenario.assumptions.map(a=><li key={a}>{a}</li>)}</ul></details></>}</div>}
 
         {busy&&<div ref={loadingRef} tabIndex={-1} style={{scrollMarginTop:96}} className="d-loading" role="status"><span className="d-spinner"/><span>입력한 정보로 계산 중이에요. 처음 연결할 때는 약 1분 걸릴 수 있어요. 작성값은 그대로 유지돼요.</span></div>}
-        {showResults&&view?<Results technical={showReviewTools} view={view} deep={mode==="deep"} tab={tab} setTab={setTab} stale={stale} onEdit={edit} onRecalculate={busy?undefined:()=>void calculate()} explanation={<><ResultExplanation view={view} token={token} editVersion={doc.raw_bundle.input_version} selectedCaseId={caseId} stale={stale} onEdit={edit} onSave={()=>{if(!token)setLoginOpen(true);else if(fictional&&scenario)void verifyScenario(scenario,mode==="deep");else setAccountOpen(true);}}/><AgentConsultation view={view} token={token} selectedCaseId={caseId} editVersion={doc.raw_bundle.input_version} stale={stale}/></>} checkin={(plan,tasks)=>{const savedCase=textValue(object(object(view.source).context).case_id);return token&&view.storage==="SAVED"&&view.runId&&savedCase===caseId?<PlanCheckin key={`${view.runId}-${caseId}`} view={view} token={token} caseId={caseId} plan={plan} tasks={tasks}/>:<section className="d-note" aria-label="계획 선택과 이번 달 기록"><strong>계획 선택과 이번 달 기록</strong><p>로그인 후 저장한 계산 결과에서 계획을 선택하고 이번 달 실제 기록을 남길 수 있어요. 미리보기 결과는 저장되지 않아요.</p></section>;}}/>:<div className="d-input-layout"><aside className="d-sidebar"><span className="d-eyebrow">{mode==="deep"?"DEEP CHECK":"QUICK CHECK"}</span><h2>나의 재무정보</h2><p>확인한 값부터 한 걸음씩</p><div className="d-sidebar-coach"><Cat kind="coach" size={102}/><p>천천히 적어도 괜찮아요.<br/><strong>함께 살펴볼게요.</strong></p></div><nav aria-label="질문 이동">{ids.map((id,i)=><button key={id} aria-current={active===id?"step":undefined} onClick={()=>setCurrent(id)}><span>{stepComplete(doc,id)?<Check size={15}/>:String(i+1).padStart(2,"0")}</span>{copy[id]?.nav??question(id).source["항목"]}</button>)}</nav></aside>
+        {showResults&&view?<Results technical={showReviewTools} view={view} deep={mode==="deep"} tab={tab} setTab={setTab} stale={stale} onEdit={edit} onRecalculate={busy?undefined:()=>void calculate()} explanation={<><ResultExplanation view={view} token={token} editVersion={doc.raw_bundle.input_version} selectedCaseId={caseId} stale={stale} onEdit={edit} onSave={()=>{if(!token)setLoginOpen(true);else if(fictional&&scenario)void verifyScenario(scenario,mode==="deep");else setAccountOpen(true);}}/><AgentConsultation view={view} token={token} selectedCaseId={caseId} editVersion={doc.raw_bundle.input_version} stale={stale}/></>} checkin={(plan,tasks)=>{const savedCase=textValue(object(object(view.source).context).case_id);return token&&view.storage==="SAVED"&&view.runId&&savedCase===caseId?<PlanCheckin key={`${view.runId}-${caseId}`} view={view} token={token} caseId={caseId} plan={plan} tasks={tasks} onEdit={edit}/>:<section className="d-note" aria-label="계획 선택과 이번 달 기록"><strong>계획 선택과 이번 달 기록</strong><p>로그인 후 저장한 계산 결과에서 계획을 선택하고 이번 달 실제 기록을 남길 수 있어요. 미리보기 결과는 저장되지 않아요.</p></section>;}}/>:<div className="d-input-layout"><aside className="d-sidebar"><span className="d-eyebrow">{mode==="deep"?"DEEP CHECK":"QUICK CHECK"}</span><h2>나의 재무정보</h2><p>확인한 값부터 한 걸음씩</p><div className="d-sidebar-coach"><Cat kind="coach" size={102}/><p>천천히 적어도 괜찮아요.<br/><strong>함께 살펴볼게요.</strong></p></div><nav aria-label="질문 이동">{ids.map((id,i)=><button key={id} aria-current={active===id?"step":undefined} onClick={()=>setCurrent(id)}><span>{stepComplete(doc,id)?<Check size={15}/>:String(i+1).padStart(2,"0")}</span>{copy[id]?.nav??question(id).source["항목"]}</button>)}</nav></aside>
           <section className="d-question"><div className="d-progress-caption"><span>현재 {index+1}번째 화면 · {ids.length}개 중 {count}개 작성</span><span>{progress}%</span></div><progress max={ids.length} value={count} aria-label="질문 응답 진행률"/><div className="d-progress-cat-track" aria-hidden="true"><div key={count} style={{left:`calc(${progress}% - ${progress*.48}px)`}}><Cat size={48}/></div></div>
             <div className="d-question-title"><span className="d-badge">{currentCopy?.nav}</span><h1 ref={questionHeading} tabIndex={-1} style={{scrollMarginTop:96}}>{currentCopy?.title}</h1><p>{currentCopy?.help}</p></div>
             <QuestionForm key={active} id={active} doc={doc} onChange={change}/>
