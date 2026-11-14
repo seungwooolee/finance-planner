@@ -40,4 +40,6 @@
 - 기존 Render 자동배포 설정에 대한 사용자 확인 및 이 브랜치의 `frontend/vercel.json` deploymentEnabled=false 유지.
 - 유료 모델 호출 필요 없는 선택/표시 변경이다. 실제 모델 호출·운영 DB·migration·병합·배포 없음.
 - 배포본에는 아직 반영되지 않았다. 새 배포 전에 기존 비교 저장 migration007/최종 흐름008 운영 준비 상태는 별도 확인한다.
-- 후보 SHA·PR은 기능 커밋 후 아래에 기록한다.
+- 기능 후보 SHA: `08b11fa3139404e9998a2245bbd6d53a5a5d3af0`.
+- PR: https://github.com/seungwooolee/finance-planner/pull/65 . 필수 CI 최신 결과는 PR Checks/본문과 최종 보고에서 확인한다.
+- 작업 소유 검증용 FE3381/BE8381 프로세스만 확인 후 종료했다. 사용자 서버는 유지했다.
