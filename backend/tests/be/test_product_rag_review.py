@@ -71,7 +71,8 @@ def test_expansion_research_does_not_authorize_recommendation_or_fill_missing_fa
     assert by_code["0091C0"]["base_fee"] is by_code["0091C0"]["total_expense"] is None
     for code in ("469830", "436140", "446720", "458730", "114820"):
         assert by_code[code]["risk_grade"] == "미확인"
-    corpus = RegisteredCorpus(BUNDLED_CORPUS)()
+    # The original audit remains a fixed historical snapshot; the expansion uses a separate corpus.
+    corpus = RegisteredCorpus(ROOT.parent / "data/rag/registry/corpus.json")()
     assert not {f"PRD-{code}" for code in by_code}.intersection(corpus.item_ids)
     assert not {f"CON-{i}" for i in range(16, 22)}.intersection(corpus.item_ids)
 

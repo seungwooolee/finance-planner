@@ -27,6 +27,7 @@ Year = Annotated[int, Field(ge=1900, le=2200)]
 Version = Annotated[str, Field(pattern=r"^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$")]
 Label = Annotated[str, Field(min_length=1, max_length=240)]
 ReviewStatus = Literal["UNRESEARCHED", "PENDING_REVIEW", "APPROVED", "WITHDRAWN", "CONFLICTING"]
+SourceKind = Literal["OFFICIAL_DOCUMENT", "REVIEWED_SERVICE_POLICY", "REVIEWED_SUMMARY", "SYNTHETIC_TEST"]
 
 
 class Record(ExactModel):
@@ -42,7 +43,7 @@ class SchemeEvidenceRequest(Mutation):
 class SourceDocument(Record):
     source_id: Id
     source_version: Version
-    source_kind: Literal["OFFICIAL_DOCUMENT", "REVIEWED_SERVICE_POLICY", "SYNTHETIC_TEST"]
+    source_kind: SourceKind
     access_scope: Literal["PUBLIC"]
     official_url: str = Field(max_length=2048)
     title: Label
@@ -161,6 +162,7 @@ class RetrievalRequest(Record):
 
 
 class RetrievedEvidence(Record):
+    source_kind: SourceKind = "OFFICIAL_DOCUMENT"
     citation_id: Id
     chunk_id: Id
     chunk_sha256: Hash

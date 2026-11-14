@@ -93,6 +93,7 @@ def retrieve(corpus, request, *, corpus_hash=None):
             return context("INSUFFICIENT", "REGISTERED_SCOPE_TOO_BROAD")
         for span, row, source, text in zip(spans, rows, documents, texts, strict=True):
             evidence[span.citation_id] = RetrievedEvidence(
+                source_kind=source.source_kind,
                 citation_id=span.citation_id, chunk_id=row.chunk_id, chunk_sha256=row.chunk_sha256,
                 source_id=source.source_id, source_version=source.source_version, content_sha256=source.content_sha256,
                 section_ref=row.section_ref, source_start=row.start + span.start, source_end=row.start + span.end,
