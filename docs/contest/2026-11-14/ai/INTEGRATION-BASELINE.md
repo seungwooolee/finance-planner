@@ -1,5 +1,9 @@
 # 통합 평가 기준 분리 — 2026-11-14
 
+## PR #34 지침 변경 접수 — 기준 1.1
+
+사용자가 커밋·푸시·PR 생성/갱신을 상시 위임해 AGENTS.md에 추가한 절이 과거 문서 해시와 충돌했다. 원 expectations-lock.json과 기대값·채점표는 변경하지 않고 integration-baseline 1.1에 AGENTS.md의 원 SHA·현재 SHA·승인 변경 커밋 f06b0b8을 별도 policy_overrides로 고정했다. 변경 전 AGENTS.md 바이트가 원 잠금과 일치함을 대조했다. BE 코드 예외는 기존 2파일 그대로이고 정책 예외는 AGENTS.md만 허용한다. 나머지 40파일은 원래 잠금을 따른다. 추가 문서 변조와 채점 데이터로 예외를 확장하는 시도도 거부한다. 이전 baseline SHA를 기록하며 현재 baseline 자체도 helper의 SHA로 고정한다. 아래 검사 수치는 이전 라운드 기록이다.
+
 **평가 잠금 충돌 해소·기본 pytest 수집 경로 복원. 전체 CI/24개 재평가 통과를 뜻하지 않는다.**
 
 기존 expectations-lock.json의 SHA256 `0613a19e686bd05a93294d0eb6408291860157d56c6c918910ecec9e4f797e8d`, dev/holdout·채점표·입력·옛 라운드 기록은 그대로다. 기존 충돌 기록과 .py.txt 보존본도 수정하지 않았다.
