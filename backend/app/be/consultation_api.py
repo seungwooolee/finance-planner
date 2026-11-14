@@ -8,9 +8,12 @@ from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 from starlette.concurrency import run_in_threadpool
 
+from ..consultation.assistant import AssistantProvider
 from ..consultation.contract import (
     Confirmation,
     ConfirmScenario,
+    ConversationConsent,
+    ConversationMessage,
     CreateScenarioProposal,
     CreateSession,
     DeleteSession,
@@ -33,16 +36,22 @@ router = APIRouter(prefix="/api/be/v1/cases/{case_id}/agent-sessions", tags=["Co
 
 @lru_cache
 def get_consultation_service():
+    assistant = None
+    if environ.get("DION_CONVERSATION_PROVIDER", environ.get("DION_EXPLANATION_PROVIDER")) == "oneport":
+        try:
+            assistant = AssistantProvider(OnePortConfig.from_env())
+        except ConfigurationError:
+            pass  # Explicitly unavailable; legacy structured consultation remains accessible.
     if environ.get("DION_R2_ONEPORT_PROPOSAL") == "1":
         try:
             provider = OnePortProposalProvider(
                 OnePortConfig.from_env(), allow_messages=environ.get("DION_R2_ONEPORT_ALLOW_MESSAGES") == "1",
             )
         except ConfigurationError:
-            return ConsultationService(oneport_configuration_error=True)
-        return ConsultationService(oneport_provider=provider)
+            return ConsultationService(oneport_configuration_error=True, assistant_provider=assistant)
+        return ConsultationService(oneport_provider=provider, assistant_provider=assistant)
     provider = mock_proposal if environ.get("DION_R2_MOCK_PROPOSAL") == "1" else None
-    return ConsultationService(proposal_provider=provider)
+    return ConsultationService(proposal_provider=provider, assistant_provider=assistant)
 
 
 @lru_cache
@@ -161,8 +170,15 @@ def operation(name, model):
 
 
 router.add_api_route("/{sid}/turns", operation("turn", Turn), methods=["POST"])
+router.add_api_route("/{sid}/conversation-consent", operation("conversation_consent", ConversationConsent), methods=["POST"])
 router.add_api_route("/{sid}/confirmations", operation("confirm", Confirmation), methods=["POST"])
 router.add_api_route("/{sid}/persistence", operation("persist", Persistence), methods=["POST"])
 router.add_api_route("/{sid}/scenario-proposals", operation("scenario_propose", CreateScenarioProposal), methods=["POST"])
 router.add_api_route("/{sid}/scenario-confirmations", operation("scenario_confirm", ConfirmScenario), methods=["POST"])
 router.add_api_route("/{sid}", operation("delete", DeleteSession), methods=["DELETE"])
+
+
+@router.post("/{sid}/messages")
+def conversation_message(case_id: str, sid: str, value=Depends(body), actor=Depends(get_actor), store=Depends(get_store),
+                         service=Depends(get_consultation_service)):
+    return respond(call(service.conversation_message, store, actor, case_id, sid, parse(ConversationMessage, value)))

@@ -1,6 +1,6 @@
 {
-  "version": "DION-CONTEST-AI-INTEGRATION-BASELINE-1.4",
-  "previous_baseline_sha256": "027196fb8662586999e8199b60b514306c4a2e273d2ca277f4f385454cd5eaf8",
+  "version": "DION-CONTEST-AI-INTEGRATION-BASELINE-1.5",
+  "previous_baseline_sha256": "511e904f7a0a43d090c8f50491638470188784f5be87d4fc8709d977ee9c7262",
   "base_sha": "eed221d1c1d305d79713ebb0dbf0c41d9c624e8a",
   "frozen_lock_sha256": "0613a19e686bd05a93294d0eb6408291860157d56c6c918910ecec9e4f797e8d",
   "expected_values_changed": false,
@@ -21,14 +21,15 @@
   "policy_overrides": {
     "AGENTS.md": {
       "frozen_sha256": "e6d9069a8dd4c7dd5b3b8666d477bf15ed658a57432e7aed65d95e174649cde9",
-      "candidate_sha256": "369166b272c77165df18eca7e27dba5b6f04558e52a0ef83c9b9b0294310eaff",
-      "source_commit": "53add73ca6f87a33fc75e41f08fe04d4649f33d8",
-      "reason": "User approved default branch push/PR delivery and resolving PR merge/CI blockers on 2026-11-15. Only governance instructions changed; frozen grading inputs, expected behavior, code overrides and original identities remain unchanged.",
-      "previous_candidate_sha256": "2640c02066d3759c319f30aa743ee783b82141321e782649ff5a16e81741b2df",
-      "previous_source_commit": "f06b0b8eb40325d7f65ae205dac693bbc270bf14",
+      "candidate_sha256": "ebb1c9c073012dce22f0b0dcb8e5e005b20e9fbb9231726da3e101997e7242d3",
+      "source_commit": "32a67d0bf55224ef3d5c14e6e8b81daf1c2fafa0",
+      "reason": "User explicitly removed exclusive BE API/storage and FE shared-file ownership restrictions on 2026-11-15 for continuing the shared conversation assistant. Only governance instructions changed. Frozen grading inputs, expected behavior, original identities, code overrides and corpus overrides remain unchanged. Previous baseline is preserved in evidence/integration-baseline-1.4.json.",
+      "previous_candidate_sha256": "369166b272c77165df18eca7e27dba5b6f04558e52a0ef83c9b9b0294310eaff",
+      "previous_source_commit": "53add73ca6f87a33fc75e41f08fe04d4649f33d8",
       "source_changes": [
         "acce5d396dea64be695cf0e7ab182b955e3cb840",
-        "53add73ca6f87a33fc75e41f08fe04d4649f33d8"
+        "53add73ca6f87a33fc75e41f08fe04d4649f33d8",
+        "32a67d0bf55224ef3d5c14e6e8b81daf1c2fafa0"
       ]
     }
   },

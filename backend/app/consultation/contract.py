@@ -7,6 +7,7 @@ from ..explanation.contract import ExactModel
 
 CONTRACT = "DION-AGENT-SESSION-1.0"
 NOTICE = "DION-AGENT-MEMORY-1.0"
+CONVERSATION_NOTICE = "DION-CONVERSATION-CONSENT-1.0"
 POLICY = "DION-AGENT-STATE-1.0"
 Intent = Literal["EXPLAIN_RESULT", "EXPLAIN_SCHEME", "CHECK_CONDITIONS", "PROPOSE_CHANGE", "CLARIFY", "UNSUPPORTED"]
 ValueState = Literal["KNOWN", "UNKNOWN", "NOT_ENTERED", "NOT_ASKED", "NOT_APPLICABLE", "DEFERRED", "DECLINED"]
@@ -87,6 +88,18 @@ class Persistence(Mutation):
     contract_version: Literal["DION-AGENT-PERSISTENCE-1.0"]
     action: Literal["SAVE", "STOP_SAVING"]
     notice_version: Literal["DION-AGENT-MEMORY-1.0"]
+    conversation_notice_version: Literal["DION-CONVERSATION-CONSENT-1.0"] | None = None
+
+
+class ConversationConsent(Mutation):
+    contract_version: Literal["DION-CONVERSATION-CONSENT-1.0"]
+    enabled: bool
+    notice_version: Literal["DION-CONVERSATION-CONSENT-1.0"]
+
+
+class ConversationMessage(Mutation):
+    contract_version: Literal["DION-CONVERSATION-MESSAGE-1.0"]
+    message: str = Field(min_length=1, max_length=2000)
 
 
 class DeleteSession(Mutation):

@@ -5,6 +5,7 @@ import { object, textValue, won } from "@/lib/dion/model";
 import type { ViewResult } from "./results";
 import { SchemeEvidencePanel } from "./scheme-evidence";
 import { NaturalInputAssistant } from "./natural-input-assistant";
+import { ConversationPanel, type Conversation } from "./conversation-panel";
 
 type Field={question_id:string;field_id:string;definition_version:string;label:string;kind:string;measurement_basis:string};
 type Evidence={evidence_id:string;question_id:string;field_id:string;definition_version:string;subject_ref:string;scope_ref:string;
@@ -21,12 +22,14 @@ export type AgentSession={base_input_version:number;base_input_hash:string;contr
   output_id:string;scenario_proposal?:ScenarioProposal|null;scenario_result?:ScenarioResult;
   scenario_fields?:{field_ref:string;label:string}[];
   conflicts:{kind:string;existing_evidence_id:string|null;proposed_evidence_id:string}[];
-  notice:{text:string};limitations:string[];allowed_actions:string[]};
+  notice:{text:string};limitations:string[];allowed_actions:string[];conversation?:Conversation};
 type Listed={session_id:string;expires_at:string;base_run_id:string;output_id:string};
 type Session = AgentSession;
 type Props={view:ViewResult;token:string;selectedCaseId:string;editVersion:number;stale:boolean;onExplain:()=>void;
+  resumeSessionId?:string;onOpenResult?:(runId:string,sessionId:string)=>Promise<void>;
   finalization?:{sessionId?:string;blocked:boolean;onSession:(session:AgentSession)=>Promise<void>}};
 const notice="DION-AGENT-MEMORY-1.0";
+const conversationNotice="DION-CONVERSATION-CONSENT-1.0";
 const intents=[['EXPLAIN_RESULT','결과 설명'],['CHECK_CONDITIONS','필요한 입력 확인'],['EXPLAIN_SCHEME','절세 제도'],['PROPOSE_CHANGE','가상 조건 기록']];
 const conflictLabels: Record<string,string>={
   VALUE_CONFLICT:'같은 항목의 값이 달라요.',
@@ -75,11 +78,10 @@ function AnswerForm({session,busy,onAnswer}:{session:Session;busy:boolean;onAnsw
   </form>;
 }
 
-export function AgentConsultation({view,token,selectedCaseId,editVersion,stale,onExplain,finalization}:Props){
+export function AgentConsultation({view,token,selectedCaseId,editVersion,stale,onExplain,finalization,resumeSessionId,onOpenResult}:Props){
   const [binding,setBinding]=useState<{view:ViewResult;token:string;editVersion:number;session?:Session;items?:Listed[];error?:string;busy?:boolean;retry?:{path:string;method:string;body?:Record<string,unknown>;list:boolean}}|null>(null);
-  const [draft,setDraft]=useState<{text:string;token:string;view:ViewResult}|null>(null),[output,setOutput]=useState('OUT-03');
+  const [draft,setDraft]=useState<{text:string;token:string;view:ViewResult;sessionId:string}|null>(null),[output,setOutput]=useState('OUT-03');
   const [memoryConsent,setMemoryConsent]=useState(false);
-  const message=draft?.token===token&&draft.view===view?draft.text:'';
   const abort=useRef<AbortController|null>(null),sequence=useRef(0),busy=useRef(false);
   const caseId=textValue(object(object(view.source).context).case_id);
   const owner=object(object(view.source).context).included_owner_ids;
@@ -87,6 +89,7 @@ export function AgentConsultation({view,token,selectedCaseId,editVersion,stale,o
   const available=!!(token&&view.storage==='SAVED'&&view.runId&&caseId===selectedCaseId&&subject);
   const current=binding&&binding.view===view&&binding.token===token?binding:null;
   const session=current?.session;
+  const message=draft?.token===token&&draft.view===view&&draft.sessionId===session?.session_id?draft.text:'';
   const confirmationHeading=useRef<HTMLHeadingElement>(null);
   useEffect(()=>{if(session?.pending_proposal)confirmationHeading.current?.focus({preventScroll:true});},[session?.pending_proposal]);
   useEffect(()=>()=>{abort.current?.abort();sequence.current++;busy.current=false;},[view,token,selectedCaseId]);
@@ -117,7 +120,7 @@ export function AgentConsultation({view,token,selectedCaseId,editVersion,stale,o
           SCENARIO_PROPOSAL_INVALID_OR_EXPIRED:'변경안이 만료됐거나 상담 내용이 바뀌었어요. 비교 조건을 다시 확인해 주세요.',
           SCENARIO_ENGINE_FAILED:'월 잔여액 비교를 완료하지 못했어요. 기존 진단은 그대로예요.',
         };
-        throw new Error((typeof code==='string'&&scenarioMessage[code])||(response.status===409?'상담 상태가 바뀌었어요. 저장 상담 목록에서 다시 열거나 확인 대기 내용을 먼저 처리해 주세요.':response.status===404?'상담이 만료됐거나 접근할 수 없어요. 새 상담을 시작해 주세요.':'상담 연결을 확인해 주세요. 기존 진단은 그대로예요.'));
+        throw new Error((typeof code==='string'&&scenarioMessage[code])||(response.status===409?'상담 상태가 바뀌었어요. 저장 상담 목록에서 다시 열거나 확인 대기 내용을 먼저 처리해 주세요.':response.status===404?'상담이 만료됐거나 접근할 수 없어요. 새 상담을 시작해 주세요.':'AI 상담 연결을 확인해 주세요. 작성 내용과 기존 진단은 그대로이며, 상담 완료로 처리하지 않아요.'));
       }
       const value=await response.json();
       if(own!==sequence.current)return;
@@ -129,7 +132,7 @@ export function AgentConsultation({view,token,selectedCaseId,editVersion,stale,o
         ||!value.notice||typeof value.notice.text!=='string'||!Array.isArray(value.allowed_actions)||!Array.isArray(value.conflicts)
         ||!Array.isArray(value.evidence)||!value.evidence.every((e:Evidence)=>e&&typeof e.evidence_id==='string'&&e.source&&typeof e.source.kind==='string')
         ||!Array.isArray(value.field_options)||!value.field_options.length||!value.field_options.every((f:Field)=>f&&typeof f.field_id==='string'&&typeof f.question_id==='string'))throw new Error('표시 중인 계산과 상담의 기준이 달라요. 해당 저장 결과를 다시 열어 주세요.');
-      setBinding({...selected,session:value});setDraft(null);await finalization?.onSession(value);return value;
+      setBinding({...selected,session:value});if(method==='POST'&&path.endsWith('/messages'))setDraft(null);await finalization?.onSession(value);return value;
     }catch(error){if(own===sequence.current)setBinding({...selected,session:errorSession,items:current?.items,retry:retryable?{path,method,body,list}:undefined,error:controller.signal.aborted?'상담 응답이 늦어졌어요. 저장된 결과는 계속 볼 수 있어요. 다시 제출하기 전에 상담 상태를 확인해 주세요.':error instanceof Error?error.message:'상담 요청을 확인할 수 없어요.'});}
     finally{clearTimeout(timer);if(own===sequence.current)busy.current=false;}
   }
@@ -144,24 +147,33 @@ export function AgentConsultation({view,token,selectedCaseId,editVersion,stale,o
     &&e.confirmation_status==='USER_CONFIRMED'&&e.state==='KNOWN'
     &&session.scenario_fields?.some(f=>f.field_ref===`${e.question_id}/${e.field_id}`))??[];
   const blocked=!!current?.busy||!!current?.retry||!!finalization?.blocked;
+  const linkedSession=finalization?.sessionId??resumeSessionId;
   return <section id="dion-agent-consultation" tabIndex={-1} className="d-card d-agent-session" aria-label="결과 상담" aria-busy={current?.busy??false}>
-    <h3>결과 상담</h3><p>필요한 답변, 등록 제도 근거, 가상 조건의 비교 결과를 확인할 수 있어요.</p>
+    <h3>결과 상담</h3><p>AI 비서 DION과 대화하고, 확인한 답변·출처·가상 조건을 이 결과에서 이어 볼 수 있어요.</p>
     {!available?<p className="d-note">로그인 후 저장된 계산 결과에서 상담을 시작할 수 있어요.</p>:<>
-      {!session&&finalization?.sessionId&&<button type="button" className="d-primary" disabled={blocked} onClick={()=>void request('/'+encodeURIComponent(finalization.sessionId!),'GET')}>연결한 상담 이어 열기</button>}
-      {!session&&!finalization?.sessionId&&<><label className="d-field">상담할 결과<select value={output} onChange={e=>setOutput(e.target.value)}><option value="OUT-03">월 현황</option><option value="OUT-05">안정·확대 후보</option></select></label>
+      {linkedSession&&session?.session_id!==linkedSession&&<button type="button" className="d-primary" disabled={blocked} onClick={()=>void request('/'+encodeURIComponent(linkedSession),'GET')}>연결한 상담 이어 열기</button>}
+      {!session&&!linkedSession&&<><label className="d-field">상담할 결과<select value={output} onChange={e=>setOutput(e.target.value)}><option value="OUT-03">월 현황</option><option value="OUT-05">안정·확대 후보</option></select></label>
         <p className="d-note">임시 상담은 최대 30분이며 서버 재시작 시 사라져요. 직접 ‘이어서 저장’을 선택하면 7일 동안 다시 열 수 있고 언제든 삭제할 수 있어요. 만료된 기억은 해당 진단의 상담에 다시 접근할 때 정리해요.</p>
         {finalization&&<label className="d-check"><input type="checkbox" checked={memoryConsent} onChange={e=>setMemoryConsent(e.target.checked)}/>상담을 7일간 저장하고 현재 검토안에 연결하는 데 동의해요.</label>}
         <button className="d-secondary" disabled={blocked||stale||!!finalization&&!memoryConsent} onClick={()=>void request('','POST',{contract_version:'DION-AGENT-SESSION-1.0',request_key:crypto.randomUUID(),base_run_id:view.runId,output_id:output,subject_ref:subject,persistence_mode:finalization?'SAVED':'EPHEMERAL',notice_version:finalization?notice:null})}>{finalization?'DION 저장 상담 시작':'임시 상담 시작'}</button></>}
       <button className="d-text-button" disabled={blocked} onClick={()=>void request('','GET',undefined,true)}>저장 상담 목록</button>
       {current?.items&&<ul>{current.items.filter(s=>s.base_run_id===view.runId).map(s=><li key={s.session_id}><button className="d-text-button" onClick={()=>void request('/'+s.session_id,'GET')} disabled={blocked}>저장 상담 재개 · {s.output_id}</button> · 보관 종료 {s.expires_at.slice(0,10)}</li>)}{!current.items.some(s=>s.base_run_id===view.runId)&&<li>이 계산에 저장된 상담이 없어요.</li>}</ul>}
+      {current?.items&&onOpenResult&&<ul aria-label="다른 결과의 상담 내역">{current.items.filter(s=>s.base_run_id!==view.runId).map(s=><li key={s.session_id}>
+        <button type="button" className="d-text-button" disabled={blocked} onClick={()=>void onOpenResult(s.base_run_id,s.session_id)}>이 상담의 결과와 대화 열기 · {s.output_id}</button>
+        <small> · 보관 종료 {s.expires_at.slice(0,10)}</small></li>)}</ul>}
       {session&&<><p role="status">{session.guidance}</p>{session.allowed_actions.includes('OPEN_RESULT_EXPLANATION')&&<button className="d-primary" onClick={onExplain}>결과 해설 바로 열기</button>}<p>{session.persistence_mode==='SAVED'?'이어서 저장 중':'임시 상담'} · 상담 버전 {session.session_version} · {session.progress}</p>
+        {session.conversation&&<ConversationPanel key={`${session.session_id}-${token}`} conversation={session.conversation}
+          message={message} disabled={blocked||!!inactive||!!pending||session.progress==='PAUSED'}
+          onChange={text=>setDraft({text,token,view,sessionId:session.session_id})}
+          onSend={()=>mutate('/messages','DION-CONVERSATION-MESSAGE-1.0',{message})}
+          onConsent={enabled=>mutate('/conversation-consent',conversationNotice,{enabled,notice_version:conversationNotice})}/>}
         {inactive&&<p className="d-warning">진단 기준이 달라졌어요. 현재 답변으로 새 계산을 저장한 뒤 새 상담을 시작해 주세요.</p>}
         {!inactive&&session.intent==='CHECK_CONDITIONS'&&<NaturalInputAssistant key={`${session.session_id}-${token}-${session.base_input_hash}`}
           session={session} url={`${base}/${encodeURIComponent(session.session_id)}/input-previews`} token={token}
           blocked={blocked||!!pending||session.progress==='PAUSED'} onPropose={answer=>request(`/${session.session_id}/turns`,'POST',{
             contract_version:'DION-AGENT-TURN-1.0',request_key:crypto.randomUUID(),expected_session_version:session.session_version,answer})}/>}
         {!inactive&&session.progress!=='PAUSED'&&!pending&&<><div className="d-toolbar">{intents.map(([intent,label])=><button className="d-secondary" disabled={blocked} key={intent} onClick={()=>turn({selected_intent:intent})}>{label}</button>)}</div>
-          {session.intent!=='EXPLAIN_SCHEME'&&<form onSubmit={e=>{e.preventDefault();turn({message});}}><label className="d-field">상담 요청<input maxLength={2000} required value={message} onChange={e=>setDraft({text:e.target.value,token,view})}/></label><button className="d-secondary" disabled={blocked}>요청 보내기</button></form>}
+          {!session.conversation?.enabled&&session.intent!=='EXPLAIN_SCHEME'&&<form onSubmit={e=>{e.preventDefault();turn({message});}}><label className="d-field">상담 요청<input maxLength={2000} required value={message} onChange={e=>setDraft({text:e.target.value,token,view,sessionId:session.session_id})}/></label><button className="d-secondary" disabled={blocked}>요청 보내기</button></form>}
           {(session.allowed_actions.includes('PROPOSE_EVIDENCE')||session.allowed_actions.includes('RECORD_SCENARIO'))&&<AnswerForm key={`${session.session_id}-${session.session_version}`} session={session} busy={blocked} onAnswer={answer=>turn({answer})}/>}
           {session.intent==='EXPLAIN_SCHEME'&&<SchemeEvidencePanel key={`${session.session_id}-${session.session_version}`}
             url={`${base}/${encodeURIComponent(session.session_id)}/scheme-evidence`} token={token} runId={session.base_run_id} version={session.session_version}/>}
@@ -190,7 +202,7 @@ export function AgentConsultation({view,token,selectedCaseId,editVersion,stale,o
         </div>}
         <details><summary>상담 기억과 출처 보기</summary>{session.evidence.map(e=><div className="d-note" key={e.evidence_id}>{!e.active&&<small>현재 사실에 미반영 / 과거 기록</small>}<EvidenceView value={e}/></div>)}</details>
         <p className="d-note">{session.notice.text}</p><div className="d-toolbar">
-          <button className="d-secondary" disabled={blocked||inactive} onClick={()=>mutate('/persistence','DION-AGENT-PERSISTENCE-1.0',{action:session.persistence_mode==='SAVED'?'STOP_SAVING':'SAVE',notice_version:notice})}>{session.persistence_mode==='SAVED'?'저장 취소 · 임시로 전환':'상담 이어서 저장 (7일)'}</button>
+          <button className="d-secondary" disabled={blocked||inactive} onClick={()=>mutate('/persistence','DION-AGENT-PERSISTENCE-1.0',{action:session.persistence_mode==='SAVED'?'STOP_SAVING':'SAVE',notice_version:notice,conversation_notice_version:conversationNotice})}>{session.persistence_mode==='SAVED'?'저장 취소 · 임시로 전환':session.conversation?.messages.length?'대화 원문 포함 상담 이어서 저장 (7일)':'상담 이어서 저장 (7일)'}</button>
           <button className="d-text-button" disabled={blocked||!!pending||inactive} onClick={()=>turn({control:session.progress==='PAUSED'?'RESUME':'PAUSE'})}>{session.progress==='PAUSED'?'상담 계속':'상담 잠시 멈춤'}</button>
           <button className="d-text-button" disabled={blocked} onClick={()=>mutate('','DION-AGENT-DELETE-1.0',{},'DELETE')}>상담 기억 삭제</button>
         </div>
