@@ -71,6 +71,10 @@ def test_save_restore_replay_and_existing_history_unchanged(ctx):
     assert client.get(url).headers['cache-control'] == 'no-store'
     assert client.get(base + '/plan').json() == before
     assert client.get(base + '/analyses/' + run['run_id']).json() == run
+    selection = saved.json()['selection']
+    assert selection['selection_scope'] == 'WITHIN_CUSTOMER_PREFERENCE'
+    assert (selection['preference_level'], selection['customer_preference'], selection['target_preference']) == (
+        'P3', 'PREF_BALANCED', 'PREF_LEAN_RETURN')
     assert client.put(url, json={**payload, 'portfolio_type': 'STABLE'}).status_code == 409
     assert client.put(url, json={**payload, 'request_key': 'new', 'portfolio_type': 'STABLE'}).status_code == 409
     changed = client.put(url, json={**payload, 'expected_revision': 1, 'request_key': 'new', 'portfolio_type': 'STABLE'})

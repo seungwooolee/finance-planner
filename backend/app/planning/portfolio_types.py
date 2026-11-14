@@ -1,19 +1,35 @@
-"""Independent comparison views for the three investment-composition types (안정형·중립형·위험추구형).
+"""Three relative composition choices within the customer's unchanged P1-P5 profile.
 
-Each type reuses one existing reviewed slot table of the product policy. The customer's own limits
+Each type reuses a neighbouring reviewed slot table of the product policy. The customer's own limits
 (risk floor, loss band, essentials, restrictions, fund dates, product freshness) are NOT relaxed:
 a type view only changes which reviewed slot table is laid over the products the customer is
 already eligible for. Views are comparisons; the customer's own preference stays the allocation.
 """
-VERSION = "DION-PORTFOLIO-TYPES-0.1"
+VERSION = "DION-PORTFOLIO-TYPES-0.2"
 STATE = "REVIEWED_FOR_PREVIEW"  # 2026-11-13: user delegated the decision; kept as proposed (docs/integration/2026-11-13-stage4-decisions.md).
 REPRESENTATIVE_PREFERENCE = {
     "STABLE": "PREF_LEAN_STABILITY",
     "BALANCED": "PREF_BALANCED",
     "RETURN": "PREF_LEAN_RETURN",
 }
+# Ordered existing F17 codes, not a new score or an inferred customer answer.
+PREFERENCES = (
+    "PREF_STABILITY", "PREF_LEAN_STABILITY", "PREF_BALANCED", "PREF_LEAN_RETURN", "PREF_RETURN",
+)
+SELECTION_SCOPE = "WITHIN_CUSTOMER_PREFERENCE"
 # Reasons that come from the customer's own preference slot table, not from their limits.
 PREFERENCE_ONLY_REASONS = {"STABILITY_POLICY_UNALLOCATED", "ALLOCATION_TARGETS_UNCONFIRMED", "NO_ELIGIBLE_PRODUCTS"}
+
+
+def relative_preferences(preference):
+    """Lower/base/higher existing targets, with P1's no-allocation policy preserved."""
+    if preference not in PREFERENCES:
+        return {}
+    index = PREFERENCES.index(preference)
+    if index == 0:
+        return dict.fromkeys(("STABLE", "BALANCED", "RETURN"), preference)
+    return {"STABLE": PREFERENCES[index - 1], "BALANCED": preference,
+            "RETURN": PREFERENCES[min(index + 1, len(PREFERENCES) - 1)]}
 
 
 def type_of_preference(preference):

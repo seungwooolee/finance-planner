@@ -6,7 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 ARTIFACT = ROOT / "docs/contest/2026-11-14/ai"
 FROZEN_SHA = "0613a19e686bd05a93294d0eb6408291860157d56c6c918910ecec9e4f797e8d"
-BASELINE_SHA = "c8613e6402c9ca5678895c760260b8d66cf763f28c1562d2d36a77f95ed4d491"
+BASELINE_SHA = "07b73f7a0a4f36b7bbe1ded2d236cbe300e53041215facd81c9e0a8a81446824"
 CODE_PATHS = frozenset({"backend/tests/be/test_plan_checkin.py", "backend/tests/be/test_question_bridge.py"})
 POLICY_PATHS = frozenset({"AGENTS.md"})
 

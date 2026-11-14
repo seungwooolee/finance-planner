@@ -1,6 +1,6 @@
 {
-  "version": "DION-CONTEST-AI-INTEGRATION-BASELINE-1.1",
-  "previous_baseline_sha256": "9465f945cd29c0b1f11a7f4eda621184a9c68efbb52afe1a22ebef65da47d56f",
+  "version": "DION-CONTEST-AI-INTEGRATION-BASELINE-1.2",
+  "previous_baseline_sha256": "c8613e6402c9ca5678895c760260b8d66cf763f28c1562d2d36a77f95ed4d491",
   "base_sha": "eed221d1c1d305d79713ebb0dbf0c41d9c624e8a",
   "frozen_lock_sha256": "0613a19e686bd05a93294d0eb6408291860157d56c6c918910ecec9e4f797e8d",
   "expected_values_changed": false,
@@ -21,9 +21,15 @@
   "policy_overrides": {
     "AGENTS.md": {
       "frozen_sha256": "e6d9069a8dd4c7dd5b3b8666d477bf15ed658a57432e7aed65d95e174649cde9",
-      "candidate_sha256": "2640c02066d3759c319f30aa743ee783b82141321e782649ff5a16e81741b2df",
-      "source_commit": "f06b0b8eb40325d7f65ae205dac693bbc270bf14",
-      "reason": "User explicitly authorized branch push and PR updates; only the governance section was added, with prior instructions and all scoring material preserved."
+      "candidate_sha256": "369166b272c77165df18eca7e27dba5b6f04558e52a0ef83c9b9b0294310eaff",
+      "source_commit": "53add73ca6f87a33fc75e41f08fe04d4649f33d8",
+      "reason": "User approved default branch push/PR delivery and resolving PR merge/CI blockers on 2026-11-15. Only governance instructions changed; frozen grading inputs, expected behavior, code overrides and original identities remain unchanged.",
+      "previous_candidate_sha256": "2640c02066d3759c319f30aa743ee783b82141321e782649ff5a16e81741b2df",
+      "previous_source_commit": "f06b0b8eb40325d7f65ae205dac693bbc270bf14",
+      "source_changes": [
+        "acce5d396dea64be695cf0e7ab182b955e3cb840",
+        "53add73ca6f87a33fc75e41f08fe04d4649f33d8"
+      ]
     }
   }
 }

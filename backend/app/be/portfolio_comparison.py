@@ -78,6 +78,11 @@ class PortfolioComparisonMixin:
                                                     "policy_version", "types_version", "catalog_version")}
             selection.update(run_id=run_id, case_id=case_id, state="COMPARISON_DRAFT",
                              period=rows[0]["period"], recorded_at=_now())
+            if types.get("selection_scope") == portfolio_types.SELECTION_SCOPE:
+                selection.update(selection_scope=types["selection_scope"],
+                                 customer_preference=types["customer_preference"],
+                                 preference_level=types["preference_level"],
+                                 target_preference=view["target_preference"])
             projection = next((c.get("financial_projection") for c in outputs.get("OUT-05", {}).get("candidates", [])
                                if c.get("strategy_id") == value["strategy_id"]), None)
             if projection is not None:
