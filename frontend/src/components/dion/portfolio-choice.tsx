@@ -72,11 +72,11 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
         </div>;
       })}</div>
       <div className="d-portfolio-apply" aria-label="선택한 투자구성 반영">
-        <p role="status">{pending ? `${TYPES[pending][0]} 구성을 선택했어요.${pending === chosen ? ' 현재 포트폴리오에 반영되어 있어요.' : ' 반영 버튼을 누르면 상품과 최종 포트폴리오가 이 구성으로 바뀌어요.'}` : '안정형·중립형·위험추구형 중 하나를 선택해주세요.'}</p>
+        <p role="status">{pending ? `${TYPES[pending][0]} 구성을 선택했어요.${pending === chosen ? ' 현재 상담용 검토안에 반영되어 있어요.' : ' 반영 버튼을 누르면 상담용 상품·비중 검토안에 적용해요.'}` : '안정형·중립형·위험추구형 중 하나를 선택해주세요.'}</p>
         <button type="button" className="d-primary" disabled={blocked || !pending || object(views[pending ?? '']).selectable !== true} onClick={() => pending && onChoose(pending)}>선택한 구성으로 포트폴리오 반영</button>
       </div>
       <p className="d-inline-note">도넛은 실제 배분액의 비율이고 회색은 현금 대기자금이에요. 현금 대기자금 금액은 현금성 상품으로 자동 대체하지 않아요.</p>
-      {relative && <p className="d-inline-note">안정·중립·위험추구는 내 P1~P5 기준 안의 상대적인 선택이에요. 상한이나 배분 보류 조건이 적용되면 두 구성의 금액이 같을 수 있어요. 선택한 구성은 상품 검토와 최종 결과에 이어져요.</p>}
+      {relative && <p className="d-inline-note">안정·중립·위험추구는 내 P1~P5 기준 안의 상대적인 선택이에요. 상한이나 배분 보류 조건이 적용되면 두 구성의 금액이 같을 수 있어요. 선택한 구성은 상담용 검토안이에요. 상담 후 최종 생성과 계획 채택을 각각 요청해요.</p>}
     </article>
   </>;
 }

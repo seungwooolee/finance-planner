@@ -61,7 +61,7 @@ export function IncomeBar({ row }: { row?: Record<string, Json> }) {
   </article>;
 }
 
-export function FinalPortfolio({ plan, row, review, assetReference, portfolio=null }: { plan: string; row?: Record<string, Json>; review: Record<string, Json>; assetReference?: ReactNode; portfolio?: string | null }) {
+export function FinalPortfolio({ plan, row, review, assetReference, portfolio=null, generated=false }: { plan: string; row?: Record<string, Json>; review: Record<string, Json>; assetReference?: ReactNode; portfolio?: string | null; generated?: boolean }) {
   const period = textValue(row?.period);
   const month = list(object(list(review.candidates).find(c => c.strategy_id === plan)).rows)[0];
   const allocations = list(month?.allocations);
@@ -69,8 +69,8 @@ export function FinalPortfolio({ plan, row, review, assetReference, portfolio=nu
   const budget = month?.scenario_budget_krw;
   if (!row) return null;
   const slices = allocationSlices(allocations, products, month?.unallocated_krw, "현금 대기자금");
-  return <article className="d-card d-final" aria-label="최종 포트폴리오 정리">
-    <div className="d-card-head"><div><span className="d-pill">{portfolio ? '내가 반영한 투자구성' : '기본 계산 결과 · 투자구성 선택 전'}</span><h2>최종 포트폴리오 · {planName(plan)}{portfolio ? ` · ${portfolioNames[portfolio]}` : ''}</h2></div><small>{period ? `${period} 기준` : ""}</small></div>
+  return <article className="d-card d-final" aria-label={generated ? "최종 포트폴리오 정리" : "상담용 포트폴리오 검토안"}>
+    <div className="d-card-head"><div><span className="d-pill">{generated ? '서버 생성 완료 · 계획 채택은 별도' : portfolio ? '상담에 가져갈 투자구성 검토안' : '기본 계산 결과 · 투자구성 선택 전'}</span><h2>{generated ? '최종 포트폴리오' : '포트폴리오 검토안'} · {planName(plan)}{portfolio ? ` · ${portfolioNames[portfolio]}` : ''}</h2></div><small>{period ? `${period} 기준` : ""}</small></div>
     <div className="d-final-grid">
       <div>
         <h3>투자 후보금의 상품별 배분</h3>

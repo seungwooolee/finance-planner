@@ -29,6 +29,9 @@ import { FinancialProjection } from "./financial-projection";
 import { ResultActionConsultation, type ActionFlow } from "./result-action-consultation";
 import { GoalTable, PersonalSummary } from "./personal-summary";
 import { PortfolioEvidence } from "./portfolio-evidence";
+import { usePortfolioReview } from "./use-portfolio-review";
+import { PortfolioReviewFlow, ReviewConfirmation, sameReviewBasis } from "./portfolio-review-flow";
+import type { ReviewBasis, PortfolioReview } from "@/lib/dion/portfolio-review";
 
 const stateLabels: Record<string,string> = { CALCULATED:"계산됨", PARTIAL:"부분 결과", NEEDS_INPUT:"정보 보완 필요", INVALID_INPUT:"입력 확인 필요", NOT_SUPPORTED:"미지원", NOT_IMPLEMENTED:"준비 중", NOT_APPLICABLE:"해당 없음", NOT_REQUESTED:"요청하지 않음", REVIEW_ONLY:"검토 목록", INTERNAL_ERROR:"계산 오류", INFEASIBLE:"월 예산 부족", CALCULATED_MONTHLY_SCENARIO:"월 예산 시나리오" };
 const TASKS=[
@@ -62,14 +65,31 @@ function metricValue(out:Record<string,Json>,key:string) {
 function Metric({title,value,note,icon:Icon}:{title:string;value:unknown;note?:string;icon?:LucideIcon}) {return <article className="d-metric">{Icon&&<i className="d-metric-icon" aria-hidden="true"><Icon size={18}/></i>}<span>{title}</span><strong>{formatKrw(value)}</strong>{note&&<small>{note}</small>}</article>;}
 function Missing({row,title}:{row:Record<string,Json>;title:string}) {return <div className="d-note"><strong>{title} · {stateLabels[textValue(row.calc_state)]??"확인 필요"}</strong><p>{row.calc_state==="NOT_SUPPORTED"?"이 결과의 계산은 아직 지원하지 않아요. 입력은 보관하고 다른 재무 결과를 유지해요.":row.calc_state==="NOT_IMPLEMENTED"?"이 계산은 준비 중이에요. 추가 입력으로 완료되는 단계가 아니에요.":row.calc_state==="NOT_APPLICABLE"?"현재 확인한 답변에는 해당하는 항목이 없어요.":row.calc_state==="INVALID_INPUT"?"금액·기간·소유 관계가 맞지 않아 계산을 보류했어요. 관련 답변을 확인해주세요.":"추가 확인 필요 · 관련 답변과 계산에 필요한 가정을 확인해주세요."}</p></div>;}
 
-export function Results({view,deep,tab,setTab,stale,onEdit,onRecalculate,explanation,checkin,technical=false,token=null,caseId="",evidenceAccess,actionFlow}:{actionFlow?: ActionFlow;evidenceAccess?: EvidenceAccess;technical?:boolean;onRecalculate?:()=>void;view:ViewResult;deep:boolean;tab:number;setTab:(n:number)=>void;stale:boolean;onEdit:(id:string)=>void;explanation?:ReactNode;checkin?:(plan:string,tasks:CheckinTask[],portfolioSelection:AppliedPortfolioRef|null,portfolioBlocked:boolean)=>ReactNode;token?:string|null;caseId?:string}) {
+export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalculate,explanation,checkin,technical=false,token=null,caseId="",evidenceAccess,actionFlow,onOpenRun,onReadRun,onReviewResume}:{onReadRun?:(id:string)=>Promise<void>;onOpenRun?:(id:string)=>Promise<void>;onReviewResume?:(review:PortfolioReview)=>void;actionFlow?: ActionFlow;evidenceAccess?: EvidenceAccess;technical?:boolean;onRecalculate?:()=>void;view:ViewResult;deep:boolean;tab:number;setTab:(n:number)=>void;stale:boolean;onEdit:(id:string)=>void;explanation?:ReactNode;checkin?:(plan:string,tasks:CheckinTask[],portfolioSelection:AppliedPortfolioRef|null,portfolioBlocked:boolean)=>ReactNode;token?:string|null;caseId?:string}) {
   const heading=useRef<HTMLHeadingElement>(null);
   const comparison=usePortfolioComparison(view,token,caseId,stale,actionFlow?.selection);
   const selectedPlan=comparison.plan, selectedPortfolio=comparison.portfolio, setSelectedPlan=comparison.selectPlan;
-  const [confirmOpen,setConfirmOpen]=useState(false);
+  const [visited,setVisited]=useState<number[]>([tab]);
+  const [consultFocus,setConsultFocus]=useState(false);
+  const setTab=(n:number)=>{setVisited(values=>values.includes(n)?values:[...values,n]);changeTab(n);};
+  const saved=!!token&&view.storage==="SAVED"&&!!view.runId&&caseId===textValue(object(object(view.source).context).case_id)&&!actionFlow?.fictional;
+  const reviewFlow=usePortfolioReview(caseId,token,view.runId,saved);
+  const productReview=object(object(view.result.results)["OUT-06"]);
+  const basis:ReviewBasis|null=saved&&comparison.revision>0&&selectedPortfolio&&view.serverVersion!==undefined&&view.inputHash?{
+    run_id:view.runId!,input_version:view.serverVersion,input_hash:view.inputHash,strategy_id:selectedPlan,portfolio_type:selectedPortfolio,
+    comparison_revision:comparison.revision,policy_version:textValue(object(productReview.product_policy).version),
+    types_version:textValue(object(productReview.portfolio_types).version),catalog_version:textValue(object(productReview.catalog).version),
+  }:null;
+  const generated=!!reviewFlow.review?.final&&reviewFlow.review.is_current&&sameReviewBasis(reviewFlow.review.final.basis,basis)&&!stale;
+  const openConsultation=()=>{setTab(4);setConsultFocus(true);};
+  useEffect(()=>{if(!consultFocus||tab!==4)return;const frame=requestAnimationFrame(()=>{
+    document.querySelector<HTMLElement>("#dion-portfolio-review h2")?.focus();
+    document.getElementById("dion-portfolio-review")?.scrollIntoView({block:"start"});setConsultFocus(false);
+  });return()=>cancelAnimationFrame(frame);},[consultFocus,tab]);
   const [assetReferenceSelection,setAssetReferenceSelection]=useState(INITIAL_ASSET_REFERENCE);
   const checkinRef=useRef<HTMLDivElement>(null);
   const tasksRef=useRef<HTMLDivElement>(null);
+  const focusAdoption=()=>{checkinRef.current?.scrollIntoView({block:"start"});checkinRef.current?.querySelector<HTMLElement>("button.d-primary:not(:disabled)")?.focus({preventScroll:true});};
   useEffect(()=>{
     heading.current?.focus({preventScroll:true});
     heading.current?.scrollIntoView({block:"start"});
@@ -103,7 +123,8 @@ export function Results({view,deep,tab,setTab,stale,onEdit,onRecalculate,explana
     <div className="d-result-heading"><div><span className="d-eyebrow">{deep?"정밀 진단 결과":"빠른 진단 결과"}</span><h1 ref={heading} tabIndex={-1} style={{scrollMarginTop:"var(--d-results-scroll-offset, 96px)"}}>{(()=>{const Icon=TAB_ICONS[tab];return Icon?<i className="d-title-icon" aria-hidden="true"><Icon size={26}/></i>:null;})()}{tabs[tab]}</h1><p>{["현재 재무 상태를 먼저 확인해요","두 재무안 중 하나를 골라 남는 돈의 배정을 비교해요","투자 선호와 신규 납입금의 구성을 확인해요","신규 납입금을 담을 상품과 현금 대기자금을 확인해요","이번 달 납입안과 할 일을 정리해요"][tab]}</p></div><button className="d-secondary" onClick={()=>onEdit("F03")}>입력 내용 수정 ↗</button></div>
     <CalcBasisStrip view={view} result={result} label={stale?"이전 입력 기준 · 현재 작성값과 다른 결과예요":view.runStatus==="FAILED"?"현재 입력의 계산 실패 기록":"현재 입력 기준 결과"} stateLabel={stateLabels[textValue(result.calc_state)]??textValue(result.calc_state)} next={next} detail={technical?[view.adapterVersion,view.runId&&`실행 ${view.runId}`].filter(Boolean).join(" · "):undefined}/>
     {gates.map((g,i)=><div className="d-warning" key={i}><strong>연결 범위 확인 필요</strong><p>{String(g.reason)}</p><p>영향받는 결과만 보류했어요. 다른 결과와 엔진 원문은 유지해요.</p>{g.question_id!=="NEW-09"?<button className="d-text-button" onClick={()=>onEdit(String(g.question_id))}>관련 답변 확인 →</button>:<p>보증금 상세 입력·계산 연결은 준비 중이에요.</p>}</div>)}
-    <nav className="d-tabs" aria-label={`${deep?"정밀":"빠른"} 결과 5뷰`}>{tabs.map((name,i)=><button aria-current={tab===i?"page":undefined} className={i<tab?"done":undefined} onClick={()=>setTab(i)} key={name}><small aria-hidden="true">{i+1}</small>{name}</button>)}</nav>
+    <nav className="d-tabs" aria-label={`${deep?"정밀":"빠른"} 결과 5뷰`}>{tabs.map((name,i)=><button aria-current={tab===i?"page":undefined} className={reviewFlow.review?.confirmed_steps.includes(i+1)&&sameReviewBasis(reviewFlow.review.basis,basis)?"done":undefined} onClick={()=>setTab(i)} key={name}><small aria-hidden="true">{i+1}</small>{name}</button>)}</nav>
+    <ReviewConfirmation flow={reviewFlow} basis={basis} tab={tab} visited={visited} blocked={stale||comparison.blocked} onTab={setTab} onPrepared={r=>onReviewResume?.(r)}/>
     {tab>=2&&<p className="d-draft-chip">검토용 초안 · 실제 가입·매수·이체 없음</p>}
     {tab>=2&&<div aria-label="투자구성 비교 상태"><p role="status">{selectedPortfolio?`${portfolioNames[selectedPortfolio]} 비교 초안 · `:""}{comparison.busy?"비교 초안을 저장하고 있어요…":comparison.status||"구성을 선택해 비교할 수 있어요. 계획 채택과 월 기록은 별도로 유지돼요."}</p>{comparison.error&&<div role="alert"><p>{comparison.error}</p><button type="button" className="d-secondary" onClick={comparison.retry}>비교 초안 다시 불러오기</button></div>}</div>}
     {tab===0 && <>
@@ -130,24 +151,19 @@ export function Results({view,deep,tab,setTab,stale,onEdit,onRecalculate,explana
     {tab===2 && <PeerReference value={result.peer_reference} stale={stale} preference/>}
     
     {tab===3 && <><div className="d-plan-row"><div><strong>{planName(selectedPlan)} · 상품 정보</strong><button className="d-text-button" onClick={()=>setTab(2)}>투자구성 비교로 돌아가기</button></div><PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/></div><ProductAllocation evidenceAccess={evidenceAccess} stale={stale} review={selectedReview} selectedPlan={selectedPlan} evaluationOn={textValue(object(result.context).evaluation_on)} onEdit={onEdit}/></>}
+    {tab===3&&<div className="d-result-cta"><button type="button" className="d-primary" onClick={openConsultation}>DION과 상담하기</button><p>1~4 확인 후 상담과 변경 검토를 거쳐 최종 생성을 요청해요.</p></div>}
+    <div hidden={tab!==4}><PortfolioReviewFlow flow={reviewFlow} basis={basis} view={view} token={token} caseId={caseId} stale={stale} doc={sourceDoc} onTab={setTab} onOpenRun={onOpenRun??(async()=>{})} onReadRun={onReadRun??onOpenRun??(async()=>{})} onPrepared={r=>onReviewResume?.(r)} onAdopt={focusAdoption}/></div>
     {tab===4 && <><ChoiceStatus plan={selectedPlan} hasCheckin={!!checkin&&view.storage==="SAVED"&&!!view.runId} onJump={()=>tasksRef.current?.scrollIntoView({behavior:"smooth",block:"start"})}/><ResultTiles row={selectedRow} month={selectedMonth} totalAssets={metricValue(assets,"total_assets")}/>
       <FinancialProposal result={{...result,results:{...outputs,"OUT-06":selectedReview}}} doc={sourceDoc} plan={selectedPlan} portfolio={selectedPortfolio} deep={deep} goalLabel={displayGoal} onEdit={onEdit} onTab={setTab}
-        allocation={<><FinalPortfolio plan={selectedPlan} row={selectedRow} review={selectedReview} portfolio={selectedPortfolio} assetReference={assetReference(true)}/><IncomeBar row={selectedRow}/></>}/>
+        allocation={<><FinalPortfolio generated={generated} plan={selectedPlan} row={selectedRow} review={selectedReview} portfolio={selectedPortfolio} assetReference={assetReference(true)}/><IncomeBar row={selectedRow}/></>}/>
       <div ref={tasksRef} className="d-scroll-anchor"/><MonthTasks key={`${selectedPlan}:${view.localVersion}`} row={selectedRow} actions={actions} candidates={candidates.length>0} actionList={actionList} onProducts={()=>setTab(3)} onEdit={onEdit}/>
       <FinancialProjection candidate={candidates.find(c=>c.strategy_id===selectedPlan)} plan={selectedPlan} portfolio={selectedPortfolio} stale={stale} runId={view.runId} inputVersion={view.serverVersion??view.localVersion} onEdit={()=>onEdit("ASSUMPTIONS")}/>
     </>}
     <ResultActionConsultation flow={actionFlow} view={view} token={token??""} caseId={caseId} stale={stale} blocked={comparison.blocked}
       basis={{strategy_id:selectedPlan,portfolio_type:selectedPortfolio,revision:comparison.revision}} onEdit={onEdit} onResult={setTab}/>
     {explanation&&<div className={tab===4?"d-coach":"d-explain-wrap"}>{tab===4&&<div className="d-coach-head" aria-hidden="true"><span><Cat size={18}/></span><strong>냥코치 조언</strong></div>}{selectedPortfolio&&<p className="d-note">아래 전체 해설은 원래 계산 결과 기준이에요. 현재 선택 구성은 위 ‘다음 행동 상담’에서 질문할 수 있어요.</p>}{explanation}</div>}
-    {tab===4&&checkin&&<div ref={checkinRef}>{checkin(selectedPlan,monthTasks(selectedRow).map(t=>({key:t.key,label:`${t.text} (계획 ${textValue(selectedRow?.period)} · ${formatKrw(selectedRow?.[t.key])})`})),selectedPortfolio ? {portfolio_type:selectedPortfolio,comparison_revision:comparison.revision} : null,comparison.blocked)}</div>}
-    {tab===4&&<div className="d-result-cta"><button className="d-secondary" onClick={()=>window.print()}>이 버전 PDF 리포트 받기</button><button className="d-primary" onClick={()=>setConfirmOpen(true)}>이 계획으로 진행할게요 →</button></div>}
-    {confirmOpen&&<div className="d-modal-backdrop" role="presentation" onClick={()=>setConfirmOpen(false)}><div className="d-modal" role="dialog" aria-modal="true" aria-label="계획 진행 확인" onClick={e=>e.stopPropagation()}>
-      <span className="d-pill">진행 전 확인</span><h2>{planName(selectedPlan)}으로 진행할까요?</h2>
-      <dl className="d-ledger"><div><dt>신규 투자 후보금</dt><dd>{formatKrw(selectedRow?.new_investment_krw)}</dd></div><div><dt>반영한 투자구성</dt><dd>{selectedPortfolio ? portfolioNames[selectedPortfolio] : "미선택 · 기본 결과"}</dd></div><div><dt>상품 배분액</dt><dd>{formatKrw(selectedMonth?.allocated_total_krw)}</dd></div><div><dt>목표 적립</dt><dd>{formatKrw(selectedRow?.goal_deposits_krw)}</dd></div></dl>
-      <p className="d-inline-note">선택은 이 결과로 진행한다는 기록이에요. 실제 가입·매수·이체는 하지 않아요.</p>
-      <p>{checkin?"아래 ‘계획 선택과 이번 달 기록’에서 선택을 저장해요.":"선택을 저장하려면 로그인하고 결과를 저장해주세요."}</p>
-      <div className="d-toolbar"><button className="d-secondary" onClick={()=>setConfirmOpen(false)}>다시 볼게요</button>{checkin&&<button className="d-primary" onClick={()=>{setConfirmOpen(false);checkinRef.current?.scrollIntoView({behavior:"smooth",block:"start"});}}>선택 저장하러 가기</button>}</div>
-    </div></div>}
+    {tab===4&&checkin&&<div ref={checkinRef}>{checkin(selectedPlan,monthTasks(selectedRow).map(t=>({key:t.key,label:`${t.text} (계획 ${textValue(selectedRow?.period)} · ${formatKrw(selectedRow?.[t.key])})`})),selectedPortfolio ? {portfolio_type:selectedPortfolio,comparison_revision:comparison.revision} : null,comparison.blocked||!generated)}</div>}
+    {tab===4&&<div className="d-result-cta"><button className="d-secondary" onClick={()=>window.print()}>이 버전 PDF 리포트 받기</button><button className="d-primary" disabled={!generated} onClick={focusAdoption}>최종안의 계획 채택 검토 →</button></div>}
     {tab===4&&<TaxBenefits evidenceAccess={evidenceAccess} key={`${sourceDoc?.context.case_id}:${view.localVersion}`} doc={sourceDoc} stale={stale} review={view.taxReview}/>}
     {technical&&<details className="d-card d-output-status"><summary>결과 14개 · 연결 상태와 필요한 정보</summary><p>현재 어댑터의 계산 결과와 FE 연결 상태를 구분해요. 결과를 계산할 정보가 부족해도 다른 계산은 유지해요.</p><div className="d-table-wrap"><table><thead><tr><th>결과</th><th>현재 상태</th><th>근거·다음 확인</th></tr></thead><tbody>{displayCatalog.map(entry=>{
       const row=visible(entry.id), connected=["OUT-01","OUT-02","OUT-03","OUT-04","OUT-05","OUT-06"].includes(entry.id);
@@ -155,7 +171,7 @@ export function Results({view,deep,tab,setTab,stale,onEdit,onRecalculate,explana
       return <tr key={entry.id}><th>{entry.title}{technical&&<small>{entry.id}</small>}</th><td>{connected?(entry.id==="OUT-01"?"현황 화면 연결 · 개별 결과 참조":stateLabels[textValue(row.calc_state)]??"응답 없음"):entry.id==="OUT-06"?"답변 확인 가능 · 판정 미구현":entry.id==="OUT-10"?"제도 안내 연결 · 자격·세액 계산 미연결":"FE 미연결"}{technical&&<small>API: {textValue(object(outputs[entry.id]).calc_state)||"이번 응답에 없음"}</small>}</td><td>{connected?<><p>{related.length?"아래 답변의 값·기간·포함 관계를 확인해주세요.":row.calc_state==="CALCULATED"?"현재 원응답과 엔진의 확인된 가정 기준":row.calc_state==="NOT_APPLICABLE"?"해당 없음으로 확인된 결과예요.":"원응답과 미래 가정 확인이 필요해요."}</p>{[...new Set((related.length?related.map(i=>String(i.question_id)):entry.questions).map(customerStep))].filter(id=>copy[id]).map(id=><button className="d-text-button" key={id} onClick={()=>onEdit(id)}>{copy[id].nav} 확인 →</button>)}</>:entry.id==="OUT-06"?<button className="d-text-button" onClick={()=>onEdit("F17")}>투자 검토 답변 확인 →</button>:entry.id==="OUT-10"?<p>최종 화면에서 절세 안내를 추가 질문 없이 볼 수 있어요. 개인별 판정·금액은 아직 없으며 다른 재무 결과를 막지 않아요.</p>:<p>별도 상세 입력·API 연결 필요. 법정 산식·실제 채택·거래 완료를 뜻하지 않아요.</p>}</td></tr>;
     })}</tbody></table></div></details>}
     {technical&&<details className="d-card d-basis"><summary>계산 기준 자세히 보기</summary><p>기준일 {String(object(result.context).evaluation_on??"미확인")} · 원응답 {view.serverVersion!==undefined?`서버 입력버전 ${view.serverVersion}`:`로컬 편집버전 ${view.localVersion}`} · 엔진 구현 {textValue(result.engine_release)||textValue(result.engine_version)||"응답 없음"}</p><p>엔진 입력 계약 {textValue(result.engine_version)} · 질문 바인딩 {textValue(result.question_binding_version)} · 정책 {textValue(result.policy_version)} · 법정산식 활성 {Array.isArray(result.active_legal_rules)?result.active_legal_rules.length:String(result.active_legal_rules??0)}개</p><p>생활단계·거주형태처럼 계산 소비자가 없는 원응답도 보존해요. 전체 상태가 ‘부분 결과’여도 계산된 개별 결과는 확인할 수 있어요.</p><p>결과 기준과 범위를 확인한 뒤 부족한 정보만 보완하세요. 응답 JSON의 엔진 상태는 원문 그대로 보존합니다.</p>{view.runId&&<code>run_id: {view.runId}</code>}</details>}
-    {tab<tabs.length-1&&<nav className="d-result-next" aria-label="다음 결과 단계"><div><span>다음 단계</span><strong>{tabs[tab+1]}</strong></div><button type="button" className="d-primary" onClick={()=>setTab(tab+1)}>다음 · {tabs[tab+1]}<ArrowRight size={18} aria-hidden="true"/></button></nav>}
+    {tab<3&&<nav className="d-result-next" aria-label="다음 결과 단계"><div><span>다음 단계</span><strong>{tabs[tab+1]}</strong></div><button type="button" className="d-primary" onClick={()=>tab===3?openConsultation():setTab(tab+1)}>{tab===3?"DION과 상담하기":`다음 · ${tabs[tab+1]}`}<ArrowRight size={18} aria-hidden="true"/></button></nav>}
   </section>;
 }
 

@@ -1,5 +1,9 @@
 # HANDOFF · DION 결과 화면 (codex/contest-results-20261114)
 
+## 2026-11-15 상담 기반 최종 생성 FE 후속
+
+현행 상담용 검토안·명시 단계 확인·저장 상담 연결·확인한 변경의 새 계산·최종 생성·별도 채택을 FE에서 연결한다. BE PR #61 계약을 소비하며 엔진/API/원응답 계약은 수정하지 않는다. 실제 검사·운영 조건·후보는 [FE 인계](docs/integration/2026-11-15-portfolio-review-FE-HANDOFF.md)를 따른다. 아래 과거 후보와 검사 기록은 당시 이력으로 보존한다.
+
 ## 후보
 - 브랜치: `codex/contest-results-20261114`
   - 원격에 없던 이름이라 `dion/integration-20261111@eed221d`(PR #31 제안서 포함)에서 새로 만들었어요.
