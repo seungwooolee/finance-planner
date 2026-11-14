@@ -365,6 +365,7 @@
 .dion-app .d-results .d-waterfall-track i.deduct{background:#9ba8c4}
 .dion-app .d-results .d-kpi,.dion-app .d-results .d-plan-row{border-color:var(--d-line);box-shadow:none}
 .dion-app .d-results .d-kpi-soft{background:var(--d-selected)}
+.dion-app .d-results .d-card.d-financial-projection .d-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
 .dion-app .d-results .d-portfolio-card{border-color:var(--d-line);gap:8px}
 .dion-app .d-results .d-portfolio-card.mine{background:var(--d-surface);box-shadow:none;border-color:var(--d-line-strong)}
 .dion-app .d-results .d-portfolio-card.selected{outline:2px solid var(--d-primary);outline-offset:3px}
