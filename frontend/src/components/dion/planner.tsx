@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Check, FolderOpen, LayoutDashboard, ShieldCheck } from "lucide-react";
-import { Document, Envelope, Json, Revision, blankDocument, catalog, clone, download, example, field, object, question, revise, textValue } from "@/lib/dion/model";
+import { ArrowLeft, ArrowRight, Check, LayoutDashboard, ShieldCheck } from "lucide-react";
+import { Document, Envelope, Json, Revision, blankDocument, catalog, clone, download, object, question, textValue } from "@/lib/dion/model";
 import { copy, customerStep, customerSteps, stepComplete } from "@/lib/dion/customer-flow";
 import { responseProgress } from "@/lib/dion/question-progress";
 import { clearSession, readSession, rememberSession } from "@/lib/dion/session";
@@ -130,15 +130,6 @@ export function DionPlanner() {
     setError("");setMessage("");
   }
   function edit(id:string) {if(id==="ASSUMPTIONS"){setAssumptionsOpen(true);setMode("deep");setCurrent("NEW-02");setShowResults(false);return;}const step=question(id)?customerStep(id):"NEW-01";setCurrent(step);setShowResults(false);if(step!=="F17"&&!customerSteps(doc,false).includes(step)&&customerSteps(doc,true).includes(step))setMode("deep");else if(mode==="welcome")setMode("quick");}
-  function loadExample() {
-    if(scenario){setMessage("원래 입력으로 돌아간 뒤 기존 검산 사례를 열어주세요.");return;}
-    const previous={doc:clone(doc),fictional};
-    let next=clone(example);
-    next=revise(next,"LIFE-01",e=>{e.fields.life_stage_primary=field("LC_OTHER");e.fields.life_stage_overlaps=field([],"JSON");e.context.basis="SCENARIO";});
-    next=revise(next,"N01",e=>{e.fields.owns_real_estate=field(false,"BOOLEAN");e.context.basis="SCENARIO";});
-    next=revise(next,"N02",e=>{e.fields.housing_type=field("HOUSING_TYPE_04");e.context.basis="SCENARIO";});
-    change(next);setUndoDraft(previous);setFictional(true);setMode("quick");setCurrent("NEW-01");setShowResults(false);setMessage("가상 사례를 불러왔어요. 기준일 2026-10-31 · 미래 가정 2026년 11월. 실제 고객·계좌 자료가 아니에요.");
-  }
   async function calculate(input?:Document) {
     if(busy&&!input)return;
     const captured=clone(input??docRef.current), seq=++sequence.current;
@@ -337,7 +328,7 @@ export function DionPlanner() {
       {message&&<div className="d-notice" role="status">{message}</div>}{error&&<div ref={errorRef} tabIndex={-1} style={{scrollMarginTop:"var(--d-question-scroll-offset, 96px)"}} className="d-warning" role="alert">{error}{view&&<p>마지막 결과는 이전 계산 기록으로 유지됩니다. 새 계산 성공을 뜻하지 않아요.</p>}</div>}
       {undoDraft&&<div className="d-undo" role="status">작성 화면을 바꿨어요.<button type="button" onClick={()=>{const previous=undoDraft;change(previous.doc);setFictional(previous.fictional);setServerVersion(null);connectedCase.current=null;pending.current=null;pendingAnalysis.current=null;saved.current={};setRuns([]);setShowResults(false);}}>이전 작성값으로 되돌리기</button></div>}
       {reviewOpen&&mode==="welcome"&&<section className="d-review-tools" aria-label="저장 검증 도구">{verifyTools}</section>}
-      {mode==="welcome"?<section className="d-welcome"><div className="d-welcome-hero"><div><span className="d-eyebrow">MY FINANCIAL NEXT STEP</span><h1>내 돈의 현재를 알고,<br/><em>다음 계획을 준비해요.</em></h1><p>dion은 AI 재무설계 웹서비스예요.<br/>입력한 정보로 재무현황과 계획을 살펴보고, AI 상담으로 다음 준비를 함께 확인해요.</p></div><div className="d-welcome-cat"><div className="d-cat-bubble">우리, 하나씩 알아볼까요?</div><Cat kind="guide" size={300} eager/><span className="d-cat-label">나의 재무 길잡이, dion</span></div></div><div className="d-columns"><button className="d-start" onClick={()=>setMode("quick")}><LayoutDashboard/><strong>빠르게 현재 확인</strong><span>8개 화면 + 필요한 상세 질문</span><b>빠른진단 시작 →</b></button><button className="d-start light" onClick={()=>setMode("deep")}><ShieldCheck/><strong>목표와 가정까지 점검</strong><span>확인한 답변을 재사용하는 정밀 경로</span><b>정밀진단 바로 시작 →</b></button></div><div className="d-sample"><button className="d-secondary" disabled={busy||saveBusy} onClick={()=>loadScenario(defaultScenario)}>예시로 결과 보기 · 대표상품 포함</button><span>기준일 {defaultScenario.document.context.evaluation_on}</span></div><div className="d-sample"><button className="d-text-button" onClick={loadExample}><FolderOpen size={18}/>가상 검산 사례 불러오기</button><span>소득 300 · 전체출금 210 · 상환 30 · 기존납입 20만원</span></div><p className="d-note">계산 미리보기는 저장하지 않아요. 서버 저장은 실제 로그인 확인이 필요해요. 상품 추천·법정 세액 계산·계획 채택·금융거래는 미지원이에요.</p></section>:<>
+      {mode==="welcome"?<section className="d-welcome"><div className="d-welcome-hero"><div><span className="d-eyebrow">MY FINANCIAL NEXT STEP</span><h1>내 재무를 한눈에,<br/><em>앞으로의 계획을 함께.</em></h1><p className="d-welcome-intro"><strong>나를 이해하는 AI 재무설계, dion</strong><span>내 재무상황을 정리하고<br/>앞으로의 계획을 살펴보세요. dion과 대화하며 함께 미래를 설계해요.</span></p></div><div className="d-welcome-cat"><div className="d-cat-bubble">좋은 삶은 작은 선택에서 시작된대.<br/>dion과 함께 원하는 내일을 그려볼까?</div><Cat kind="guide" size={300} eager/><span className="d-cat-label">돈 이야기, dion과 함께</span></div></div><div className="d-columns"><button className="d-start" onClick={()=>setMode("quick")}><LayoutDashboard/><strong>빠르게 현재 확인</strong><span>8개 화면 + 필요한 상세 질문</span><b>빠른진단 시작 →</b></button><button className="d-start light" onClick={()=>setMode("deep")}><ShieldCheck/><strong>목표와 가정까지 점검</strong><span>확인한 답변을 재사용하는 정밀 경로</span><b>정밀진단 바로 시작 →</b></button></div><div className="d-sample"><button className="d-secondary" disabled={busy||saveBusy} onClick={()=>loadScenario(defaultScenario)}>예시로 결과 보기 · 대표상품 포함</button><span>기준일 {defaultScenario.document.context.evaluation_on}</span></div></section>:<>
         <div className="d-journey" aria-label="재무 상담 6단계">{["관계·범위","정보·목표","분석","제안·선택","실행","실적·사후점검"].map((s,i)=>{const active=i===(showResults?(tab===4?3:2):1);return i>2&&view?<button type="button" key={s} className={active?"active":""} aria-current={active?"step":undefined} onClick={()=>{setShowResults(true);setTab(i===3?2:4);}}>{i+1}. {s}{i===3?" · 검토용 →":""}</button>:<span key={s} className={active?"active":""}>{i+1}. {s}{i===3?" · 검토용":i>3?" · 결과 후":""}</span>;})}</div>
         {fictional&&<div className="d-fictional">가상 사례{scenario?` · ${scenario.title}`:""} · 실제 고객·계좌 자료 아님 · 기준일 {doc.context.evaluation_on}{scenario&&<><button className="d-secondary" onClick={restoreOriginal}>원래 입력으로 돌아가기</button><details><summary>현재 사례의 가정</summary><ul>{scenario.assumptions.map(a=><li key={a}>{a}</li>)}</ul></details></>}</div>}
 

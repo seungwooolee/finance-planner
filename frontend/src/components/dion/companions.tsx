@@ -144,7 +144,7 @@ export function LoginDialog({ onClose, onLogin }: { onClose: () => void; onLogin
   }
   return <dialog className="d-login-dialog" ref={dialog} aria-labelledby="dion-login-title" onCancel={onClose}>
     <button type="button" className="d-dialog-close" aria-label={signup ? "회원가입 창 닫기" : "로그인 창 닫기"} onClick={onClose}><X /></button>
-    <Cat size={105} /><span className="d-eyebrow">WELCOME TO DION</span><h2 id="dion-login-title" tabIndex={-1} ref={heading}>{signup ? "회원가입" : "만나서 반가워요"}</h2><p>{signup ? "이메일 계정으로 시작할 준비를 해요." : "이메일 계정으로 로그인해주세요."}</p>
+    <Cat size={105} /><span className="d-eyebrow">WELCOME TO DION</span><h2 id="dion-login-title" tabIndex={-1} ref={heading}>{signup ? "회원가입" : "만나서 반가워요"}</h2>{signup&&<p>이메일 계정으로 시작할 준비를 해요.</p>}
     {signup ? <>
       <p className="d-note">이메일로 가입을 신청해요. 이메일 확인이 필요한 경우 확인 후 로그인해주세요.</p>
       <form noValidate onSubmit={submitSignup}>
@@ -158,6 +158,6 @@ export function LoginDialog({ onClose, onLogin }: { onClose: () => void; onLogin
     </> : <><form onSubmit={submit}><label className="d-field">이메일<input type="email" required autoComplete="username" maxLength={254} value={email} onChange={e => setEmail(e.target.value)} /></label><label className="d-field">비밀번호<input type="password" required autoComplete="current-password" maxLength={1024} value={password} onChange={e => setPassword(e.target.value)} /></label>
       {configured === false && <p className="d-warning" role="status">로그인 서비스 설정이 아직 연결되지 않았어요. 진단은 로그인 없이 시작할 수 있어요.</p>}{notice && <p className="d-note" role="status">{notice}</p>}{(error || statusError) && <p className="d-warning" role="alert">{error || statusError}</p>}
       <button type="submit" className="d-primary" disabled={busy || configured !== true}><LogIn size={18} />{busy ? "로그인 중…" : "이메일로 로그인"}</button>
-    </form><small>이 탭을 닫거나 로그인 시간이 지나면 다시 로그인해야 해요.</small><button type="button" className="d-text-button" disabled={busy} onClick={()=>switchMode(true)}>회원가입</button><button type="button" className="d-text-button" onClick={onClose}>로그인 없이 둘러보기</button></>}
+    </form><button type="button" className="d-text-button" disabled={busy} onClick={()=>switchMode(true)}>회원가입</button><button type="button" className="d-text-button" onClick={onClose}>로그인 없이 둘러보기</button></>}
   </dialog>;
 }

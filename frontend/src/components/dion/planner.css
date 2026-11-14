@@ -474,6 +474,10 @@
 @media(max-width:700px){.dion-app .d-portfolio-evidence form{display:grid;grid-template-columns:1fr}}
 
 /* Impeccable polish: retain the purple identity; refine alignment and wrapping only. */
+.dion-app .d-welcome-hero .d-eyebrow{font-size:14px;font-weight:800;letter-spacing:.12em}
+.dion-app .d-welcome-intro strong{display:block;font-size:18px;font-weight:750;margin-bottom:8px;color:#161b29}
+.dion-app .d-welcome-intro span{display:block}
+.dion-app .d-welcome-cat .d-cat-bubble{max-width:100%;line-height:1.8;overflow-wrap:anywhere}
 .dion-app .d-welcome-hero p{max-width:58ch}
 .dion-app .d-sample{flex-wrap:wrap;row-gap:10px}
 .dion-app .d-sample>span{min-width:0;overflow-wrap:anywhere}
@@ -484,6 +488,8 @@
 .dion-app .d-login-dialog form>.d-primary,.dion-app .d-help-topics button{min-height:44px}
 .dion-app :is(button,a,summary):focus-visible{outline:3px solid var(--d-primary);outline-offset:4px}
 @media(max-width:700px){
+  .dion-app .d-welcome-cat .d-cat-label{display:block}
+  .dion-app .d-welcome-intro strong{font-size:16px}
   .dion-app .d-welcome .d-start{padding:24px;min-height:220px}
   .dion-app .d-welcome .d-columns{gap:16px}
   .dion-app .d-sample{align-items:flex-start;gap:10px}
