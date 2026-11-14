@@ -2,6 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "git": {
     "deploymentEnabled": {
+      "codex/welcome-copy": false,
       "codex/natural-input-confirmation-20261115": false,
       "codex/product-rag-review-20261115": false,
       "codex/result-personal-diff-20261115": false,
