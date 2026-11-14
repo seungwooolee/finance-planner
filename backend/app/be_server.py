@@ -13,6 +13,7 @@ from .be.plan_api import router as plan_router
 from .be.question_api import router as question_router
 from .be.readiness import router as readiness_router
 from .be.readiness import startup_check
+from .be.survey_api import router as survey_router
 from .main import app
 
 load_dotenv(Path(__file__).resolve().parents[1] / ".env")
@@ -36,3 +37,4 @@ app.include_router(auth_router)
 app.include_router(explanation_router)
 app.include_router(consultation_router)
 app.include_router(plan_router)
+app.include_router(survey_router)
