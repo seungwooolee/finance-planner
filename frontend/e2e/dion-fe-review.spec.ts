@@ -78,8 +78,7 @@ test('overlap: mobile, shared answers in quick/deep, isolated switching and retu
   const deepCount=await nav.getByRole('button').count();
   await expect(page.getByRole('textbox',{name:'가족의 한 달 소득',exact:true})).toHaveValue('480');
   await nav.getByRole('button',{name:/나의 상황/}).click();
-  await expect(page.getByRole('button',{name:'신혼기',exact:true})).toHaveAttribute('aria-pressed','true');
-  await page.getByText('두 가지 이상에 해당해요',{exact:true}).click();
+  await expect(page.getByRole('checkbox',{name:'신혼기',exact:true})).toBeChecked();
   await expect(page.getByRole('checkbox',{name:'자녀 출산·양육기',exact:true})).toBeChecked();
   await page.getByRole('button',{name:'빠른진단',exact:true}).click();
   const reused=await recalculate(page);

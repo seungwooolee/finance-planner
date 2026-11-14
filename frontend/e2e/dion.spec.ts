@@ -66,8 +66,7 @@ test('DION fresh combined situation, today, conditional details and distinct zer
   await page.getByRole('checkbox',{name:/가족의 동의/}).check();
   await page.getByRole('button',{name:/^나 혼자/}).click();
   await expect(page.getByRole('checkbox',{name:'내 정보를 기준으로 살펴볼게요.'})).toHaveCount(0);
-  await page.getByRole('button',{name:'기타',exact:true}).click();
-  await page.getByText('두 가지 이상에 해당해요',{exact:true}).click();
+  await page.getByRole('checkbox',{name:'기타',exact:true}).check();
   await page.getByRole('checkbox',{name:'자녀 학령기',exact:true}).check();
   await page.evaluate(()=>window.scrollTo(0,0));
   await page.screenshot({path:info.outputPath('dion-feedback-situation.png'),fullPage:true});

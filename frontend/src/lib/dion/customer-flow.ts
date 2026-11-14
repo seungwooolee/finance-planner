@@ -1,13 +1,21 @@
-import { Document, Field, Json, activeQuestions, clone, completed, field, fieldValue, list, record, revise, textValue } from "./model";
-import { riskIds, riskNeeds } from "./investment-review";
+import { Document, Field, Json, clone, field, fieldValue, list, record, revise, textValue } from "./model";
+import { progressQuestions, responseComplete } from "./question-progress";
 
 export const customerStep = (id: string) => ({ "LIFE-01": "NEW-01", F12: "F11", F13: "F11", F08: "N01", F15: "F17", "NEW-08": "F17", F16: "F17", "NEW-10": "F17", F18: "F17", D14: "F17", D18: "F17", D19: "F17", "NEW-12": "F17" }[id] ?? id);
-export const customerSteps = (doc: Document, deep: boolean) => [...new Set(activeQuestions(doc, deep).map(customerStep))];
+export const customerSteps = (doc: Document, deep: boolean) => [...new Set(progressQuestions(doc, deep).map(customerStep))];
 export function stepComplete(doc: Document, id: string) {
-  if (id === "F17") return riskIds.every(q => !riskNeeds(doc,q).length);
-  if (id === "NEW-01") return completed(doc, id) && completed(doc, "LIFE-01");
-  if (id === "F11" && list(fieldValue(doc, id, "goals")).length) return ["F11", "F12", "F13"].every(q => completed(doc, q));
-  return completed(doc, id);
+  const questions = progressQuestions(doc, true).filter(q => customerStep(q) === id);
+  return questions.length > 0 && questions.every(q => responseComplete(doc, q));
+}
+export function selectLifeStage(doc: Document, code: string, primary = false) {
+  return revise(doc, "LIFE-01", env => {
+    const current = textValue(fieldValue(doc, "LIFE-01", "life_stage_primary"));
+    const overlaps = fieldValue(doc, "LIFE-01", "life_stage_overlaps");
+    const selected = [...new Set([current, ...(Array.isArray(overlaps) ? overlaps.filter((v): v is string => typeof v === "string") : [])].filter(Boolean))];
+    const next = primary ? [code, ...selected.filter(v => v !== code)] : selected.includes(code) ? selected.filter(v => v !== code) : [...selected, code];
+    env.fields.life_stage_primary = field(next[0] ?? null);
+    env.fields.life_stage_overlaps = field(next.slice(1), "JSON");
+  });
 }
 export const copy: Record<string, { nav: string; title: string; help: string }> = {
   "NEW-01": { nav: "나의 상황", title: "나의 상황부터 알려주세요", help: "함께 살펴볼 사람과 현재 생활을 알려주세요." },
