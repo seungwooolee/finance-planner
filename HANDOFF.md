@@ -1,3 +1,10 @@
+# 결과 화면 정리 인계 — 2026-11-15
+
+`codex/result-review-polish-20261115`: [변경·계약·실제 검사·미실행](docs/integration/2026-11-15-result-review-polish-HANDOFF.md).
+6단계 디자인, 결과 배너/확인 목록 정리, 상품 검토 이유·공시 위험 설명을 반영했다.
+기존 상담·최종 생성·별도 채택 계약과 예시 격리를 유지한다. 타입/변경 린트 및 컴포넌트 브라우저 2경로 통과.
+전체 Build/E2E와 실제 API·DB·AI 재검증은 미실행이며, 병합·배포·운영 DB 변경은 수행하지 않는다.
+
 # 최신 AI 대화 비서 인계 — 2026-11-15
 
 `codex/consultation-result-history-20261115`: [계약·설계](docs/integration/2026-11-15-conversation-assistant-DESIGN.md),
