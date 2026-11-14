@@ -1,23 +1,70 @@
 "use client";
 import { Document, Json, fieldValue, list, object, textValue } from '@/lib/dion/model';
 import { formatKrw } from '@/lib/dion/money-format';
+import { allocationSlices, isWon } from '@/lib/dion/result-visual';
 import { PlanSelector } from './plan-comparison';
+import { Donut, DonutLegend } from './donut';
 
-export function PortfolioChoice({ doc, review, selectedPlan, onPlan, chosen, onChoose }: { doc: Document | null; review: Record<string, Json>; selectedPlan: string; onPlan: (id: string) => void; chosen: string | null; onChoose: (id: string) => void }) {
+const PREFS: [string, string, string][] = [
+  ['PREF_STABILITY', 'P1', '안정형'], ['PREF_LEAN_STABILITY', 'P2', '안정추구형'], ['PREF_BALANCED', 'P3', '중립형'],
+  ['PREF_LEAN_RETURN', 'P4', '적극투자형'], ['PREF_RETURN', 'P5', '공격투자형'],
+];
+const TYPES: Record<string, [string, string, string, string]> = {
+  STABLE: ['안정형', '안정 보완형', '채권 비중을 높여 변동을 줄이는 방향', '채권도 가격 하락과 원금손실이 가능해요.'],
+  BALANCED: ['중립형', '균형 운용형', '주식과 채권을 함께 나누어 담는 방향', '주식·채권이 함께 하락할 수 있어요.'],
+  RETURN: ['위험추구형', '성장 비중형', '주식 비중을 높여 수익을 추구하는 방향', '큰 가격 변동과 환율 위험을 감수해야 해요.'],
+};
+
+export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPlan, chosen, onChoose, onEdit }: { doc: Document | null; review: Record<string, Json>; flow: Record<string, Json>; planRow?: Record<string, Json>; selectedPlan: string; onPlan: (id: string) => void; chosen: string | null; onChoose: (id: string) => void; onEdit: (id: string) => void }) {
   const preference = doc && fieldValue(doc, 'F17', 'risk_preference_choice_raw');
-  const current = preference === 'PREF_BALANCED' ? 'BALANCED' : ['PREF_LEAN_RETURN', 'PREF_RETURN'].includes(String(preference)) ? 'RETURN' : ['PREF_STABILITY', 'PREF_LEAN_STABILITY'].includes(String(preference)) ? 'STABLE' : null;
+  const derived = preference === 'PREF_BALANCED' ? 'BALANCED' : ['PREF_LEAN_RETURN', 'PREF_RETURN'].includes(String(preference)) ? 'RETURN' : ['PREF_STABILITY', 'PREF_LEAN_STABILITY'].includes(String(preference)) ? 'STABLE' : null;
+  const customerType = textValue(object(review.portfolio_types).customer_type) || derived;
   const rows = list(list(review.candidates).find(c => c.strategy_id === selectedPlan)?.rows);
-  const month=rows[0], budget=Number(month?.scenario_budget_krw);
-  let cursor=0;
-  const slices=Object.values(object(month?.asset_groups_krw)).map((value,i)=>{const from=cursor;cursor+=budget>0?Number(value)/budget*100:0;return `${['#6059df','#8c83e3','#48a68d'][i%3]} ${from}% ${cursor}%`;});
-  const gradient=slices.length?`conic-gradient(${slices.join(',')},#deddec ${cursor}% 100%)`:undefined;
+  const month = rows[0];
+  const products = list(review.products);
   const available = rows.some(r => list(r.allocations).length > 0);
-  return <article className="d-card" aria-label="포트폴리오 검토 유형"><h2>이번 달 신규 자금의 투자구성</h2><PlanSelector selected={selectedPlan} onSelect={onPlan}/><p>전체 금융자산 비중과 구분한 이번 달 신규 자금 기준이에요. 현재 정책은 확인한 투자선호 한 가지의 배분만 계산해요.</p><div className="d-portfolio-grid">{[
-    ['STABLE', '안정형', '변동을 줄이는 방향', '채권도 가격 하락과 원금손실이 가능해요.'],
-    ['BALANCED', '중립형', '주식·채권의 분산 검토', '주식·채권이 함께 하락할 수 있어요.'],
-    ['RETURN', '위험추구형', '수익 추구와 손실 부담 검토', '큰 가격 변동과 환율 위험을 감수해야 해요.'],
-  ].map(([id, title, purpose, risk]) => { const enabled = current === id && available; return <div key={id} className={`d-portfolio-card ${chosen === id && available ? 'selected' : ''}`}><div className="d-donut-placeholder" style={enabled?{background:gradient,border:0}:undefined} aria-hidden="true"><span>{enabled ? '검토 가능' : '선택 보류'}</span></div><h3>{title}</h3><p>{purpose}</p><p>{risk}</p><button className="d-secondary" disabled={!enabled} aria-pressed={chosen === id && enabled} onClick={() => onChoose(id)}>{chosen === id && enabled ? '선택됨' : '이 유형의 상품 후보 보기'}</button><p>{enabled ? '현재 확인한 답변·정책의 계산 결과예요.' : current !== id ? (textValue(object(object(month?.portfolio_type_views)[id]).allocated_total_krw)?`비교용: 같은 위험 한도에서 이 유형이면 ${formatKrw(object(object(month?.portfolio_type_views)[id]).allocated_total_krw)} 검토, ${formatKrw(object(object(month?.portfolio_type_views)[id]).unallocated_krw)} 미배분이에요. 선택은 투자선호 답변을 바꿔야 해요.`:'이 유형의 비교 계산이 아직 없어요.') : '현재 안의 투자예산·상품 조건이 부족해 배분을 보류했어요.'}</p></div>; })}</div>
-    {rows.map(r => <section key={textValue(r.period)}><h3>{textValue(r.period)} · 자산군별 검토 금액</h3><dl className="d-ledger">{Object.entries(object(r.asset_groups_krw)).map(([key, value]) => <div key={key}><dt>{({ EQUITY: '주식', BOND: '채권', CASH: '현금성' } as Record<string, string>)[key] ?? key}</dt><dd>{formatKrw(value)} · {Number(r.scenario_budget_krw)>0?(Number(value)/Number(r.scenario_budget_krw)*100).toLocaleString("ko-KR",{maximumFractionDigits:2}):"계산 안 함"}%</dd></div>)}<div><dt>미배분 · 현금성 상품으로 확정하지 않음</dt><dd>{formatKrw(r.unallocated_krw)}</dd></div></dl><p>상품별 비중과 공시·제외 사유는 다음 상품 후보 화면에서 확인해요.</p></section>)}
-    <p className="d-help">현행 계약에는 유형 3개를 독립 비교하는 엔진 응답, 기존 보유의 지수·환노출 통합, 매수 후 전체 구성 계산이 없어요. 도넛은 실제 엔진 배분액의 비율이며 회색은 미배분이에요. 표시 비율은 소수 둘째 자리로 반올림하고 금액은 그대로 유지해요. 파킹통장·CMA·MMF는 인출·손실·보호 조건 검증 전 자동 대체하지 않아요.</p>
-  </article>;
+  const views = object(month?.portfolio_type_views);
+  const order = customerType && TYPES[customerType] ? [...Object.keys(TYPES).filter(id => id !== customerType).slice(0, 1), customerType, ...Object.keys(TYPES).filter(id => id !== customerType).slice(1)] : Object.keys(TYPES);
+  const surplus = object(flow.base_surplus).calc_state === 'CALCULATED' ? object(flow.base_surplus).value : null;
+  return <>
+    <article className="d-card" aria-label="투자 선호 응답">
+      <div className="d-card-head"><h2>투자 선호 응답</h2><small>자기 응답 기준 분류</small></div>
+      <ol className="d-risk-steps">{PREFS.map(([code, step, label]) => <li key={code} className={preference === code ? 'active' : ''} aria-current={preference === code ? 'true' : undefined}>
+        {preference === code && <span className="d-step-badge">선택 응답</span>}<small>{step}</small><strong>{label}</strong>
+      </li>)}</ol>
+      {PREFS.some(([code]) => code === preference) ? <p className="d-inline-note">자기보고 선호이며 위험한도나 확정 점수가 아니에요. 나이로 비중을 정하지 않아요.</p>
+        : <p className="d-inline-note">아직 투자 선호를 답하지 않았어요. <button className="d-text-button" onClick={() => onEdit('F17')}>안정성과 수익 선호 답하기 →</button></p>}
+    </article>
+    <div className="d-kpis d-kpis-3">
+      <article className="d-kpi"><span>이번 달 신규 투자 후보금</span><strong>{formatKrw(planRow?.new_investment_krw)}</strong><small>목표·보호자금 배정 후</small></article>
+      <article className="d-kpi"><span>생활비·상환 후 남는 돈</span><strong>{formatKrw(surplus)}</strong><small>월 기준 · 투자 권장액 아님</small></article>
+      <article className="d-kpi d-kpi-soft"><span>기존 저축·투자 납입</span><strong>{formatKrw(flow.existing_cash_contributions_krw)}</strong><small>바꾸지 않고 별도로 유지해요</small></article>
+    </div>
+    <article className="d-card d-portfolio-section" aria-label="포트폴리오 검토 유형">
+      <div className="d-card-head"><div><h2>세 가지 투자구성 비교</h2><p>이번 달 신규 투자 후보금을 유형별로 나눈 모습이에요. 전체 보유자산 비중과는 달라요.</p></div><PlanSelector selected={selectedPlan} onSelect={onPlan} /></div>
+      <div className="d-portfolio-grid">{order.map((id, i) => {
+        const [title, subtitle, purpose, risk] = TYPES[id];
+        const view = object(views[id]);
+        const ready = isWon(view.allocated_total_krw) && list(view.allocations).length > 0;
+        const mine = customerType === id;
+        const enabled = mine && available;
+        const slices = ready ? allocationSlices(list(view.allocations), products, view.unallocated_krw) : [];
+        const total = month?.scenario_budget_krw;
+        return <div key={id} className={`d-portfolio-card ${mine ? 'mine' : ''} ${chosen === id && available ? 'selected' : ''}`}>
+          {mine && <span className="d-mine-badge">내 성향 기준</span>}
+          <div className="d-card-head"><span className="d-pill">안 {String(i + 1).padStart(2, '0')}</span></div>
+          <h3>{title}</h3><p className="d-type-sub">{subtitle}</p>
+          {ready ? <>
+            <Donut slices={slices} total={total} center={<><small>배분</small><strong>{formatKrw(view.allocated_total_krw)}</strong></>} />
+            <DonutLegend slices={slices} total={total} />
+          </> : <div className="d-pending-box"><strong>확인 필요</strong><p>이 유형의 구성 계산이 아직 없어요. 투자 답변과 상품 조건을 확인해주세요.</p></div>}
+          <p className="d-type-line"><b>특징</b> {purpose}</p>
+          <p className="d-type-line d-type-risk"><b>위험</b> {risk}</p>
+          {mine ? <button className={enabled ? 'd-primary' : 'd-secondary'} disabled={!enabled} aria-pressed={chosen === id && enabled} onClick={() => onChoose(id)}>{chosen === id && enabled ? '선택됨 · 상품 보기' : '이 구성의 상품 보기 →'}</button>
+            : <small className="d-type-foot">비교용 · 선택하려면 투자 선호 답변을 바꿔야 해요</small>}
+        </div>;
+      })}</div>
+      <p className="d-inline-note">도넛은 실제 배분액의 비율이고 회색은 미배분이에요. 미배분 금액은 현금성 상품으로 자동 대체하지 않아요.</p>
+    </article>
+  </>;
 }
