@@ -1,6 +1,7 @@
 import { Json, list, object } from './model';
 
 export const portfolioNames: Record<string, string> = { STABLE: '안정형', BALANCED: '중립형', RETURN: '위험 추구형' };
+export type AppliedPortfolioRef = { portfolio_type: string; comparison_revision: number };
 
 /** Select a server-calculated comparison, without recalculating any money or changing the captured result. */
 export function comparisonReview(review: Record<string, Json>, plan: string, type: string | null): Record<string, Json> {

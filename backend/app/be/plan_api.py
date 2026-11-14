@@ -65,12 +65,33 @@ def save_portfolio_comparison(case_id: str, run_id: str, value=Depends(body),
         raise
 
 
+class PortfolioSelectionRequest(ContractModel):
+    portfolio_type: Literal["STABLE", "BALANCED", "RETURN"]
+    comparison_revision: int = Field(ge=1)
+
+
+class AdoptPlanRequest(ContractModel):
+    request_key: str = Field(min_length=1, max_length=120)
+    run_id: str
+    strategy_id: Literal["STABILITY_FIRST", "INVESTMENT_CAPACITY"]
+    portfolio_selection: PortfolioSelectionRequest | None = None
+
+
+class AdoptedPortfolio(PortfolioSelectionRequest):
+    selection_sha256: str
+    input_hash: str
+    policy_version: str
+    types_version: str
+    catalog_version: str
+
+
 class AdoptionRef(ContractModel):
     adoption_id: str
     run_id: str
     strategy_id: Literal["STABILITY_FIRST", "INVESTMENT_CAPACITY"]
     input_version: int
     adopted_at: str
+    portfolio: AdoptedPortfolio | None = None
 
 
 class CheckinSummary(ContractModel):
@@ -162,12 +183,16 @@ def read_plan(case_id: str, actor=Depends(get_actor), store=Depends(get_store)):
 
 
 @router.post("/cases/{case_id}/plan/adoptions")
-def adopt_plan(case_id: str, value=Depends(body), actor=Depends(get_actor), store=Depends(get_store)):
-    shape(value, {"request_key", "run_id", "strategy_id"})
+def adopt_plan(case_id: str, value: AdoptPlanRequest, checked=Depends(body),
+               actor=Depends(get_actor), store=Depends(get_store)):
+    # Keep the existing duplicate-key/body-size checks and expose the typed OpenAPI body.
+    request = value.model_dump()
     try:
-        return store.adopt_plan(actor, case_id, value["request_key"], value["run_id"], value["strategy_id"])
+        return store.adopt_plan(actor, case_id, request["request_key"], request["run_id"], request["strategy_id"],
+                                request["portfolio_selection"])
     except PocError as exc:
-        if exc.code == "RUN_NOT_CURRENT":  # answers changed after this run; recalculate first
+        if exc.code in {"RUN_NOT_CURRENT", "PORTFOLIO_SELECTION_CHANGED", "COMPARISON_POLICY_CHANGED",
+                        "COMPARISON_UNAVAILABLE"}:
             raise HTTPException(409, detail={"code": exc.code}) from None
         return call(_raise, exc)
 

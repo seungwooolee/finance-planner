@@ -25,8 +25,13 @@ CREATE TABLE IF NOT EXISTS monthly_checkins(
     record_month TEXT NOT NULL, revision INTEGER NOT NULL, adoption_id TEXT,
     status TEXT NOT NULL, record_json TEXT NOT NULL, recorded_at TEXT NOT NULL,
     UNIQUE(case_id, record_month, revision));
+CREATE TABLE IF NOT EXISTS plan_adoption_portfolios(
+    adoption_id TEXT PRIMARY KEY REFERENCES plan_adoptions,
+    case_id TEXT NOT NULL REFERENCES cases, run_id TEXT NOT NULL REFERENCES analysis_runs,
+    comparison_revision INTEGER NOT NULL, portfolio_json TEXT NOT NULL,
+    FOREIGN KEY(case_id, run_id, comparison_revision) REFERENCES portfolio_comparisons(case_id, run_id, revision));
 """
-HISTORY_TABLES = ("plan_adoptions", "monthly_checkins")
+HISTORY_TABLES = ("plan_adoptions", "monthly_checkins", "plan_adoption_portfolios")
 
 STRATEGIES = {"STABILITY_FIRST", "INVESTMENT_CAPACITY"}
 AMOUNT_KEYS = ("income", "living", "loan", "goal", "invest_existing", "invest_new", "emergency", "extra_cash")
@@ -122,8 +127,13 @@ class PlanCheckinMixin:
                            (adoption_id, case_id)).fetchone()
         if row is None:
             raise PocError("CHECKIN_ADOPTION_UNAVAILABLE")
-        return {"adoption_id": row["adoption_id"], "run_id": row["run_id"], "strategy_id": row["strategy_id"],
-                "input_version": row["input_version"], "adopted_at": row["adopted_at"]}
+        reference = {"adoption_id": row["adoption_id"], "run_id": row["run_id"], "strategy_id": row["strategy_id"],
+                     "input_version": row["input_version"], "adopted_at": row["adopted_at"]}
+        portfolio = conn.execute("SELECT portfolio_json FROM plan_adoption_portfolios WHERE adoption_id=? AND case_id=?",
+                                 (adoption_id, case_id)).fetchone()
+        if portfolio is not None:
+            reference["portfolio"] = json.loads(portfolio["portfolio_json"])
+        return reference
 
     def _adoption(self, conn, case_id):
         link = conn.execute("SELECT adopted_plan_ref FROM case_plan_links WHERE case_id=?", (case_id,)).fetchone()
@@ -140,19 +150,23 @@ class PlanCheckinMixin:
                                 (case_id,)).fetchall()
             return {"case_id": case_id, "current_input_version": case["input_version"], "adoption": adoption,
                     "adoption_is_current": bool(adoption and adoption["input_version"] == case["input_version"]),
-                    "history": [dict(r) for r in rows], "transaction_executed": False}
+                    "history": [self._adoption_ref(conn, case_id, r["adoption_id"]) for r in rows],
+                    "transaction_executed": False}
 
-    def adopt_plan(self, actor, case_id, request_key, run_id, strategy_id):
+    def adopt_plan(self, actor, case_id, request_key, run_id, strategy_id, portfolio_selection=None):
         if not isinstance(strategy_id, str) or strategy_id not in STRATEGIES:
             raise PocError("INVALID_STRATEGY")
         _id(run_id)
-        fingerprint = _digest({"operation": "adopt_plan", "run_id": run_id, "strategy_id": strategy_id})
+        intent = {"operation": "adopt_plan", "run_id": run_id, "strategy_id": strategy_id}
+        if portfolio_selection is not None:
+            intent["portfolio_selection"] = portfolio_selection
+        fingerprint = _digest(intent)
         with self._transaction(write=True) as conn:
             case = self._authorize(conn, actor, case_id)
             replay = self._replay(conn, case_id, request_key, fingerprint)
             if replay is not None:
                 return replay
-            run = conn.execute("SELECT input_version,status,result_json FROM analysis_runs WHERE run_id=? AND case_id=?",
+            run = conn.execute("SELECT * FROM analysis_runs WHERE run_id=? AND case_id=?",
                                (run_id, case_id)).fetchone()
             if run is None:
                 raise PocError("RUN_NOT_FOUND")
@@ -165,15 +179,22 @@ class PlanCheckinMixin:
                               and c.get("strategy_id") == strategy_id), None)
             if candidate is None or not str(candidate.get("calc_state", "")).startswith(("CALCULATED", "PARTIAL")):
                 raise PocError("PLAN_NOT_AVAILABLE")
+            portfolio = (self._portfolio_for_adoption(conn, case_id, run, strategy_id, portfolio_selection)
+                         if portfolio_selection is not None else None)
             adoption_id = "adp_" + uuid4().hex
             conn.execute("INSERT INTO plan_adoptions VALUES(?,?,?,?,?,?)",
                          (adoption_id, case_id, run_id, strategy_id, run["input_version"], _now()))
+            if portfolio is not None:
+                conn.execute("INSERT INTO plan_adoption_portfolios VALUES(?,?,?,?,?)",
+                             (adoption_id, case_id, run_id, portfolio["comparison_revision"], _json(portfolio)))
             if conn.execute("SELECT 1 FROM case_plan_links WHERE case_id=?", (case_id,)).fetchone():
                 conn.execute("UPDATE case_plan_links SET adopted_plan_ref=? WHERE case_id=?", (adoption_id, case_id))
             else:
                 conn.execute("INSERT INTO case_plan_links VALUES(?,?)", (case_id, adoption_id))
             response = {"adoption_id": adoption_id, "run_id": run_id, "strategy_id": strategy_id,
                         "input_version": run["input_version"], "transaction_executed": False}
+            if portfolio is not None:
+                response["portfolio"] = portfolio
             self._receipt(conn, case_id, request_key, fingerprint, response)
             return response
 

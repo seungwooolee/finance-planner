@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { formatKrw } from "@/lib/dion/money-format";
 import { planName } from "./plan-comparison";
+import { portfolioNames, type AppliedPortfolioRef } from "@/lib/dion/portfolio-comparison";
 import { MonthlyCoach } from "./monthly-coach";
 import type { CheckinTask, ViewResult } from "./results";
 import { type Scope, scopeLabels } from "@/lib/dion/checkin-followup";
@@ -29,7 +30,7 @@ type Task = { key: string; label: string; state: string; reason: string };
 type Summary = { entered_count: number; amount_count: number; partial: boolean; spending_entered_krw: string;
   transfers_entered_krw: string; spending_entered_count?: number | null; transfers_entered_count?: number | null; allocation_check: string; tasks_done: number; tasks_total: number; review_suggested: boolean };
 type PastMonth = { record_month: string; status?: string | null; revision: number; summary?: Summary | null; adoption?: Adoption };
-type Adoption = { adoption_id: string; run_id: string; strategy_id: string; input_version: number; adopted_at: string } | null;
+type Adoption = { adoption_id: string; run_id: string; strategy_id: string; input_version: number; adopted_at: string; portfolio?: AppliedPortfolioRef | null } | null;
 // DION-PLAN-CHECKIN-1.1 binding fields (BE CONTRACT.md). Legacy responses lack contract_version.
 type Binding = { contract: string | null; revision: number; adoptionId: string | null; record: Adoption; current: Adoption;
   state: string | null; kind: string | null; comparison: { state: string; reason: string } | null; review: { action: string; base_run_id: string | null } | null };
@@ -81,7 +82,7 @@ const thisMonth = () => new Date(Date.now() + 9 * 3600_000).toISOString().slice(
 const key = () => `ui-${crypto.randomUUID()}`;
 
 type Props = { view: ViewResult; token: string; caseId: string; plan: string; tasks: CheckinTask[]; onEdit?: (id: string) => void;
-  recordMonth?: string; onMonthChange?: (month: string) => void;
+  portfolioSelection?: AppliedPortfolioRef | null; portfolioBlocked?: boolean; recordMonth?: string; onMonthChange?: (month: string) => void;
   onDraftCreated?: (runId: string, version: number) => void; onOpenDraft?: (runId: string) => Promise<void> };
 export function PlanCheckin(props: Props) {
   const [month, setMonth] = useState(() => props.recordMonth ?? thisMonth());
@@ -90,7 +91,7 @@ export function PlanCheckin(props: Props) {
     <PlanCheckinMonth key={`${props.token}:${props.caseId}:${month}`} {...props} month={month} /></div>;
 }
 
-function PlanCheckinMonth({ view, token, caseId, plan, tasks, onEdit, onDraftCreated, onOpenDraft, month }: Props & { month: string }) {
+function PlanCheckinMonth({ view, token, caseId, plan, tasks, onEdit, onDraftCreated, onOpenDraft, month, portfolioSelection = null, portfolioBlocked = false }: Props & { month: string }) {
   const base = `/api/be/v1/cases/${encodeURIComponent(caseId)}`;
   const [adoption, setAdoption] = useState<Adoption>(null);
   const [revision, setRevision] = useState(0);
@@ -161,15 +162,16 @@ function PlanCheckinMonth({ view, token, caseId, plan, tasks, onEdit, onDraftCre
   const setTask = (i: number, change: Partial<Task>) => { setDirty(true); setEdits(e => ({ ...e, [taskRows[i].key]: { ...taskRows[i], ...change } })); };
 
   async function adopt() {
-    if (!view.runId) return;
+    if (!view.runId || portfolioBlocked) return;
     setBusy(true); setError("");
     try {
-      const r = await call("/plan/adoptions", "POST", { request_key: key(), run_id: view.runId, strategy_id: plan });
-      setAdoption({ adoption_id: r.adoption_id, run_id: r.run_id, strategy_id: r.strategy_id, input_version: r.input_version, adopted_at: new Date().toISOString() });
+      const r = await call("/plan/adoptions", "POST", { request_key: key(), run_id: view.runId, strategy_id: plan, ...(portfolioSelection ? {portfolio_selection: portfolioSelection} : {}) });
+      setAdoption({ adoption_id: r.adoption_id, run_id: r.run_id, strategy_id: r.strategy_id, input_version: r.input_version, portfolio: r.portfolio, adopted_at: new Date().toISOString() });
       const latest = await call("/plan"); setPlanHistory(latest.history);
     } catch (e) {
       const code = (e as Error).message;
-      setError(code === "RUN_NOT_CURRENT" ? "답변이 바뀌어 이 결과는 최신이 아니에요. 다시 계산·저장한 뒤 선택해 주세요."
+      setError(["PORTFOLIO_SELECTION_CHANGED", "COMPARISON_POLICY_CHANGED", "COMPARISON_UNAVAILABLE"].includes(code) ? "반영한 투자구성이 달라졌거나 선택 조건을 확인할 수 없어요. 구성과 결과를 다시 불러온 뒤 채택해주세요. 기존 채택은 유지했어요."
+        : code === "RUN_NOT_CURRENT" ? "답변이 바뀌어 이 결과는 최신이 아니에요. 다시 계산·저장한 뒤 선택해 주세요."
         : code === "PLAN_NOT_AVAILABLE" ? "이 결과에는 채택할 수 있는 월별 계획이 없어요. 보완할 정보를 확인한 뒤 다시 계산해 주세요." : `계획을 선택하지 못했어요 (${code}).`);
     } finally { setBusy(false); }
   }
@@ -207,16 +209,16 @@ function PlanCheckinMonth({ view, token, caseId, plan, tasks, onEdit, onDraftCre
     } finally { setBusy(false); }
   }
 
-  const adoptedHere = adoption && adoption.run_id === view.runId && adoption.strategy_id === plan;
+  const adoptedHere = adoption && adoption.run_id === view.runId && adoption.strategy_id === plan && (!portfolioSelection || (adoption.portfolio?.portfolio_type === portfolioSelection.portfolio_type && adoption.portfolio.comparison_revision === portfolioSelection.comparison_revision));
   return <section ref={region} tabIndex={-1} className="d-card" aria-label="계획 선택과 이번 달 기록">
     <span className="d-eyebrow">STEP 5 · 6</span>
     <h2 id={`${focusPrefix}-plan`} tabIndex={-1}>계획 선택과 이번 달 기록</h2>
     {!loaded && <p role="status">{error ? "저장된 기준을 확인할 수 없어 입력·저장을 멈췄어요." : "저장된 채택과 월 기록을 확인 중이에요."}
       {error && <button type="button" className="d-secondary" onClick={() => { setError(""); setLoadAttempt(n => n + 1); }}>저장 기준 다시 불러오기</button>}</p>}
     <p>선택은 이 계산 결과 중 어떤 계획으로 진행할지 기록하는 거예요. 실제 송금·매매·자동이체는 실행되지 않아요.</p>
-    {adoption ? <p className="d-notice">현재 선택한 계획: <strong>{planName(adoption.strategy_id)}</strong> · 입력버전 {adoption.input_version}{adoption.run_id !== view.runId && " · 다른 계산 결과에서 선택함"}</p>
+    {adoption ? <p className="d-notice">현재 선택한 계획: <strong>{planName(adoption.strategy_id)}{adoption.portfolio ? ` · ${portfolioNames[adoption.portfolio.portfolio_type]} 구성` : ''}</strong> · 입력버전 {adoption.input_version}{adoption.run_id !== view.runId && " · 다른 계산 결과에서 선택함"}</p>
       : <p className="d-note">아직 선택한 계획이 없어요. 계획 없이도 이번 달 기록은 할 수 있어요.</p>}
-    {!adoptedHere && <button className="d-primary" disabled={!loaded || busy || view.isCurrent === false || sourceChanged} onClick={() => void adopt()}>{planName(plan)}으로 진행할게요</button>}
+    {!adoptedHere && <button className="d-primary" disabled={!loaded || busy || portfolioBlocked || view.isCurrent === false || sourceChanged} onClick={() => void adopt()}>{planName(plan)}으로 진행할게요</button>}
     {sourceChanged && <p className="d-warning">새 입력·계산 초안을 저장했어요. 아래에서 새 초안과 답변을 열어 최신 버전을 확인해 주세요. 기존 채택은 유지돼요.</p>}
     {view.isCurrent === false && <p className="d-warning">이 결과 이후 답변이 바뀌었어요. 최신 입력으로 다시 계산·저장한 결과에서 선택할 수 있어요.</p>}
 
@@ -294,7 +296,7 @@ function BindingNote({ binding, month }: { binding: Binding; month: string }) {
     {state === "UNRECORDED" && <p>{month}은 아직 기록이 없어요. 위 선택 화면에서 이 월의 연결을 명시하고 저장해 주세요.</p>}
     {state === "CONFLICT" && <p><strong>이 달 기록의 채택 연결이 서로 달라 비교와 추가 저장을 멈췄어요.</strong> 이력 검토가 필요해요.</p>}
     {kind === "GENERAL_RECORD" && <p>채택 없이 저장한 일반 기록이에요. 나중에 채택해도 이 달은 계획 실적으로 바뀌지 않아요.</p>}
-    {kind === "ADOPTED_PLAN" && record && <p>이 달 기록 기준: <strong>{planName(record.strategy_id)}</strong> · 입력버전 {record.input_version} 채택에 고정돼 있어요.</p>}
+    {kind === "ADOPTED_PLAN" && record && <p>이 달 기록 기준: <strong>{planName(record.strategy_id)}{record.portfolio ? ` · ${portfolioNames[record.portfolio.portfolio_type]} 구성` : ''}</strong> · 입력버전 {record.input_version} 채택에 고정돼 있어요.</p>}
     {kind === "ADOPTED_PLAN" && record && current && current.adoption_id !== record.adoption_id && <p>지금 채택한 계획은 {planName(current.strategy_id)} · 입력버전 {current.input_version}이에요. 이 달 기록의 기준은 바뀌지 않아요.</p>}
     {comparison && comparison.state !== "POLICY_REQUIRED" && <p data-comparison={comparison.state}>{COMPARISON[comparison.state] ?? `계획 대비 비교를 하지 않아요 (${comparison.state}).`}</p>}
     {review?.action === "CREATE_NEW_DRAFT" && <p>상황이 바뀌었다면 답변을 고쳐 새 초안을 계산해 보세요. 기존 채택은 직접 다시 고르기 전까지 그대로예요.</p>}

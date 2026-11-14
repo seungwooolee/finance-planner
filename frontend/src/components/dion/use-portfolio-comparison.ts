@@ -4,9 +4,9 @@ import { object, textValue } from '@/lib/dion/model';
 import type { ComparisonResponse } from '@/lib/dion/portfolio-comparison';
 import type { ViewResult } from './results';
 
-export function usePortfolioComparison(view: ViewResult, token: string | null, caseId: string, stale: boolean) {
-  const [plan, setPlan] = useState('STABILITY_FIRST');
-  const [portfolio, setPortfolio] = useState<string | null>(null);
+export function usePortfolioComparison(view: ViewResult, token: string | null, caseId: string, stale: boolean, initial?: {strategy_id: string; portfolio_type: string | null}) {
+  const [plan, setPlan] = useState(initial?.strategy_id ?? 'STABILITY_FIRST');
+  const [portfolio, setPortfolio] = useState<string | null>(initial?.portfolio_type ?? null);
   const [revision, setRevision] = useState(0);
   const [busy, setBusy] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -34,7 +34,7 @@ export function usePortfolioComparison(view: ViewResult, token: string | null, c
         setRevision(value.revision);
         if (value.selection && value.selection.run_id === view.runId && value.selection.case_id === caseId) {
           setPlan(value.selection.strategy_id); setPortfolio(value.selection.portfolio_type);
-          setStatus(value.is_current ? '저장한 비교 초안을 불러왔어요.' : '이전 입력의 비교 초안이에요. 다시 계산해주세요.');
+          setStatus(value.is_current ? '포트폴리오에 반영한 구성을 불러왔어요.' : '이전 입력의 구성이에요. 다시 계산해주세요.');
         }
         setLoaded(true);
       }).catch(() => { if (!controller.signal.aborted) setError('비교 초안을 불러오지 못했어요. 다시 불러온 뒤 선택해주세요.'); });
@@ -43,7 +43,11 @@ export function usePortfolioComparison(view: ViewResult, token: string | null, c
 
   const choose = async (type: string) => {
     if (stale || busy || inFlight.current || (saved && !loaded)) return false;
-    if (!saved) { setPortfolio(type); setStatus('이 화면의 비교 초안이에요. 로그인 후 계산 결과를 저장하면 구성도 저장할 수 있어요.'); return true; }
+    const candidate = Array.isArray(review.candidates) ? review.candidates.find(c => object(c).strategy_id === plan) : undefined;
+    const rows = object(candidate).rows;
+    const month = Array.isArray(rows) ? object(rows[0]) : {};
+    if (object(object(month.portfolio_type_views)[type]).selectable !== true) return false;
+    if (!saved) { setPortfolio(type); setStatus('이 화면의 포트폴리오에 반영했어요. 다시 열 때도 유지하려면 로그인하고 계산 결과를 저장해주세요.'); return true; }
     inFlight.current = true; setBusy(true); setError('');
     try {
       const r = await fetch(endpoint, { method: 'PUT', cache: 'no-store', headers, signal: AbortSignal.timeout(20000), body: JSON.stringify({
@@ -55,10 +59,11 @@ export function usePortfolioComparison(view: ViewResult, token: string | null, c
       if (!r.ok) throw new Error('SAVE');
       const value = await r.json() as ComparisonResponse;
       if (!alive.current) return false;
-      setRevision(value.revision); setPortfolio(type); setStatus('비교 초안을 저장했어요. 계획 채택과 이번 달 기록은 그대로예요.');
+      if (value.selection?.strategy_id !== plan || value.selection?.portfolio_type !== type || value.is_current !== true) throw new Error('BINDING');
+      setRevision(value.revision); setPortfolio(type); setStatus('포트폴리오에 반영하고 구성을 저장했어요. 계획을 채택하면 이 구성도 함께 보존해요.');
       return true;
     } catch {
-      if (alive.current) setError('비교 초안을 저장하지 못했어요. 현재 입력·결과를 다시 불러온 뒤 선택해주세요.');
+      if (alive.current) setError('투자구성을 반영하지 못했어요. 이전 반영 구성은 유지했어요. 현재 입력·결과를 다시 불러온 뒤 선택해주세요.');
       return false;
     } finally { inFlight.current = false; if (alive.current) setBusy(false); }
   };

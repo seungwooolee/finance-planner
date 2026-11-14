@@ -26,10 +26,11 @@ REQUIRED = {
     "analysis_runs": {"run_id", "case_id", "input_version", "raw_snapshot_id", "adapter_version", "engine_input_json", "normalized_json", "state_trace_json", "input_hash", "result_json", "status", "error_code", "recorded_at"},
     "analysis_drafts": {"draft_id", "case_id", "run_id", "input_version", "status"},
     "case_plan_links": {"case_id", "adopted_plan_ref"},
+    "plan_adoption_portfolios": {"adoption_id", "case_id", "run_id", "comparison_revision", "portfolio_json"},
     "agent_sessions": {"session_id", "case_id", "session_version", "expires_at", "state_json"},
     "agent_session_heads": {"session_id", "case_id", "session_version", "status", "owner_id", "expires_at"},
 }
-HISTORY = {"answer_revisions", "raw_snapshots", "analysis_runs", "analysis_drafts"}
+HISTORY = {"answer_revisions", "raw_snapshots", "analysis_runs", "analysis_drafts", "plan_adoption_portfolios"}
 ONEPORT_TABLES = {
     "oneport_ledger_identity": {"ledger_id"},
     "oneport_budget_grants": {"budget_scope", "budget_credits", "max_calls", "expires_at"},
