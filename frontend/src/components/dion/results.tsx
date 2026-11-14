@@ -27,6 +27,7 @@ import { FinancialProjection } from "./financial-projection";
 import { ResultActionConsultation } from "./result-action-consultation";
 import { GoalTable, PersonalSummary } from "./personal-summary";
 import { PortfolioEvidence } from "./portfolio-evidence";
+import { type AdoptionView, thisMonth } from "./plan-checkin";
 
 const stateLabels: Record<string,string> = { CALCULATED:"계산됨", PARTIAL:"부분 결과", NEEDS_INPUT:"정보 보완 필요", INVALID_INPUT:"입력 확인 필요", NOT_SUPPORTED:"미지원", NOT_IMPLEMENTED:"준비 중", NOT_APPLICABLE:"해당 없음", NOT_REQUESTED:"요청하지 않음", REVIEW_ONLY:"검토 목록", INTERNAL_ERROR:"계산 오류", INFEASIBLE:"월 예산 부족", CALCULATED_MONTHLY_SCENARIO:"월 예산 시나리오" };
 const TASKS=[
@@ -60,11 +61,12 @@ function metricValue(out:Record<string,Json>,key:string) {
 function Metric({title,value,note,icon:Icon}:{title:string;value:unknown;note?:string;icon?:LucideIcon}) {return <article className="d-metric">{Icon&&<i className="d-metric-icon" aria-hidden="true"><Icon size={18}/></i>}<span>{title}</span><strong>{formatKrw(value)}</strong>{note&&<small>{note}</small>}</article>;}
 function Missing({row,title}:{row:Record<string,Json>;title:string}) {return <div className="d-note"><strong>{title} · {stateLabels[textValue(row.calc_state)]??"확인 필요"}</strong><p>{row.calc_state==="NOT_SUPPORTED"?"이 결과의 계산은 아직 지원하지 않아요. 입력은 보관하고 다른 재무 결과를 유지해요.":row.calc_state==="NOT_IMPLEMENTED"?"이 계산은 준비 중이에요. 추가 입력으로 완료되는 단계가 아니에요.":row.calc_state==="NOT_APPLICABLE"?"현재 확인한 답변에는 해당하는 항목이 없어요.":row.calc_state==="INVALID_INPUT"?"금액·기간·소유 관계가 맞지 않아 계산을 보류했어요. 관련 답변을 확인해주세요.":"추가 확인 필요 · 관련 답변과 계산에 필요한 가정을 확인해주세요."}</p></div>;}
 
-export function Results({view,deep,tab,setTab,stale,onEdit,onRecalculate,explanation,checkin,technical=false,token=null,caseId="",evidenceAccess}:{evidenceAccess?: EvidenceAccess;technical?:boolean;onRecalculate?:()=>void;view:ViewResult;deep:boolean;tab:number;setTab:(n:number)=>void;stale:boolean;onEdit:(id:string)=>void;explanation?:ReactNode;checkin?:(plan:string,tasks:CheckinTask[])=>ReactNode;token?:string|null;caseId?:string}) {
+export function Results({view,deep,tab,setTab,stale,onEdit,onRecalculate,explanation,checkin,technical=false,token=null,caseId="",evidenceAccess}:{evidenceAccess?: EvidenceAccess;technical?:boolean;onRecalculate?:()=>void;view:ViewResult;deep:boolean;tab:number;setTab:(n:number)=>void;stale:boolean;onEdit:(id:string)=>void;explanation?:ReactNode;checkin?:(plan:string,tasks:CheckinTask[],onAdoption:(v:AdoptionView)=>void)=>ReactNode;token?:string|null;caseId?:string}) {
   const heading=useRef<HTMLHeadingElement>(null);
   const comparison=usePortfolioComparison(view,token,caseId,stale);
   const selectedPlan=comparison.plan, selectedPortfolio=comparison.portfolio, setSelectedPlan=comparison.selectPlan;
   const [confirmOpen,setConfirmOpen]=useState(false);
+  const [adoptionView,setAdoptionView]=useState<AdoptionView|null>(null);
   const checkinRef=useRef<HTMLDivElement>(null);
   const tasksRef=useRef<HTMLDivElement>(null);
   useEffect(()=>{
@@ -96,9 +98,9 @@ export function Results({view,deep,tab,setTab,stale,onEdit,onRecalculate,explana
   const summaryNext=next.tone!=="ok"?{text:next.text,label:next.action?.label,run:next.action?.run}:candidates.length?{text:"두 재무안이 남는 돈을 어떻게 다르게 나누는지 비교해 보세요.",label:"재무안 비교 보기",run:()=>setTab(1)}:actions[0]?{text:"재무안을 만들려면 아래 정보를 먼저 확인해야 해요.",label:actions[0].text,run:()=>onEdit(actions[0].id)}:{text:next.text};
   const openExplanation=explanation?()=>{const b=document.getElementById("dion-explain-trigger");b?.scrollIntoView({block:"center"});b?.click();}:undefined;
   const liquidityProduct=list(selectedReview.products).find(p=>p.allocation_role==="DEFAULT_SLOT");
-  const tabs=deep?["자산·목표","재무안 비교","투자선호·구성","상품·비중","요약·다음 확인"]:["재무현황","재무안 선택","투자구성","상품 정보","결과·이번 달 행동"];
+  const tabs=deep?["자산·목표","재무안 비교","투자선호·구성","상품·비중","요약·다음 확인"]:["재무현황","재무안 선택","투자구성","상품 정보","결과·다음 행동"];
   return <section className="d-results" aria-label="계산 결과">
-    <div className="d-result-heading"><div><span className="d-eyebrow">{deep?"정밀 진단 결과":"빠른 진단 결과"}</span><h1 ref={heading} tabIndex={-1} style={{scrollMarginTop:"var(--d-results-scroll-offset, 96px)"}}>{(()=>{const Icon=TAB_ICONS[tab];return Icon?<i className="d-title-icon" aria-hidden="true"><Icon size={26}/></i>:null;})()}{tabs[tab]}</h1><p>{["현재 재무 상태를 먼저 확인해요","두 재무안 중 하나를 골라 남는 돈의 배정을 비교해요","투자 선호와 신규 납입금의 구성을 확인해요","신규 납입금을 담을 상품과 현금 대기자금을 확인해요","이번 달 납입안과 할 일을 정리해요"][tab]}</p></div><button className="d-secondary" onClick={()=>onEdit("F03")}>입력 내용 수정 ↗</button></div>
+    <div className="d-result-heading"><div><span className="d-eyebrow">{deep?"정밀 진단 결과":"빠른 진단 결과"}</span><h1 ref={heading} tabIndex={-1} style={{scrollMarginTop:"var(--d-results-scroll-offset, 96px)"}}>{(()=>{const Icon=TAB_ICONS[tab];return Icon?<i className="d-title-icon" aria-hidden="true"><Icon size={26}/></i>:null;})()}{tabs[tab]}</h1><p>{["현재 재무 상태를 먼저 확인해요","두 재무안 중 하나를 골라 남는 돈의 배정을 비교해요","투자 선호와 신규 납입금의 구성을 확인해요","신규 납입금을 담을 상품과 현금 대기자금을 확인해요","첫 계획 월의 납입안과 할 일, 선택·채택 상태를 정리해요"][tab]}</p></div><button className="d-secondary" onClick={()=>onEdit("F03")}>입력 내용 수정 ↗</button></div>
     <CalcBasisStrip view={view} result={result} label={stale?"이전 입력 기준 · 현재 작성값과 다른 결과예요":view.runStatus==="FAILED"?"현재 입력의 계산 실패 기록":"현재 입력 기준 결과"} stateLabel={stateLabels[textValue(result.calc_state)]??textValue(result.calc_state)} next={next} detail={technical?[view.adapterVersion,view.runId&&`실행 ${view.runId}`].filter(Boolean).join(" · "):undefined}/>
     {gates.map((g,i)=><div className="d-warning" key={i}><strong>연결 범위 확인 필요</strong><p>{String(g.reason)}</p><p>영향받는 결과만 보류했어요. 다른 결과와 엔진 원문은 유지해요.</p>{g.question_id!=="NEW-09"?<button className="d-text-button" onClick={()=>onEdit(String(g.question_id))}>관련 답변 확인 →</button>:<p>보증금 상세 입력·계산 연결은 준비 중이에요.</p>}</div>)}
     <nav className="d-tabs" aria-label={`${deep?"정밀":"빠른"} 결과 5뷰`}>{tabs.map((name,i)=><button aria-current={tab===i?"page":undefined} className={i<tab?"done":undefined} onClick={()=>setTab(i)} key={name}><small aria-hidden="true">{i+1}</small>{name}</button>)}</nav>
@@ -128,7 +130,7 @@ export function Results({view,deep,tab,setTab,stale,onEdit,onRecalculate,explana
     {tab===2 && <PeerReference value={result.peer_reference} stale={stale} preference/>}
     
     {tab===3 && <><div className="d-plan-row"><div><strong>{planName(selectedPlan)} · 상품 정보</strong><button className="d-text-button" onClick={()=>setTab(2)}>투자구성 비교로 돌아가기</button></div><PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/></div><ProductAllocation evidenceAccess={evidenceAccess} stale={stale} review={selectedReview} selectedPlan={selectedPlan} evaluationOn={textValue(object(result.context).evaluation_on)} onEdit={onEdit}/></>}
-    {tab===4 && <><ChoiceStatus plan={selectedPlan} hasCheckin={!!checkin&&view.storage==="SAVED"&&!!view.runId} onJump={()=>tasksRef.current?.scrollIntoView({behavior:"smooth",block:"start"})}/><ResultTiles row={selectedRow} month={selectedMonth} totalAssets={metricValue(assets,"total_assets")}/>
+    {tab===4 && <><ChoiceStatus plan={selectedPlan} portfolio={selectedPortfolio} draft={comparison.draft} draftSavable={comparison.saved} adoption={checkin&&view.storage==="SAVED"&&view.runId?adoptionView:null} canAdopt={!!checkin&&view.storage==="SAVED"&&!!view.runId} runId={view.runId} evaluationOn={textValue(object(result.context).evaluation_on)} planMonth={textValue(selectedRow?.period)} recordMonth={thisMonth()} onAdopt={()=>checkinRef.current?.scrollIntoView({behavior:"smooth",block:"start"})} onTasks={()=>tasksRef.current?.scrollIntoView({behavior:"smooth",block:"start"})}/><ResultTiles row={selectedRow} month={selectedMonth} totalAssets={metricValue(assets,"total_assets")}/>
       <FinancialProposal result={{...result,results:{...outputs,"OUT-06":selectedReview}}} doc={sourceDoc} plan={selectedPlan} portfolio={selectedPortfolio} deep={deep} goalLabel={displayGoal} onEdit={onEdit} onTab={setTab}
         allocation={<><FinalPortfolio plan={selectedPlan} row={selectedRow} review={selectedReview}/><IncomeBar row={selectedRow}/></>}/>
       <div ref={tasksRef} className="d-scroll-anchor"/><MonthTasks key={`${selectedPlan}:${view.localVersion}`} row={selectedRow} actions={actions} candidates={candidates.length>0} actionList={actionList} onProducts={()=>setTab(3)} onEdit={onEdit}/>
@@ -137,14 +139,14 @@ export function Results({view,deep,tab,setTab,stale,onEdit,onRecalculate,explana
     <ResultActionConsultation view={view} token={token??""} caseId={caseId} stale={stale} blocked={comparison.blocked}
       basis={{strategy_id:selectedPlan,portfolio_type:selectedPortfolio,revision:comparison.revision}} onEdit={onEdit} onResult={setTab}/>
     {explanation&&<div className={tab===4?"d-coach":"d-explain-wrap"}>{tab===4&&<div className="d-coach-head" aria-hidden="true"><span><Cat size={18}/></span><strong>냥코치 조언</strong></div>}{selectedPortfolio&&<p className="d-note">아래 전체 해설은 원래 계산 결과 기준이에요. 현재 선택 구성은 위 ‘다음 행동 상담’에서 질문할 수 있어요.</p>}{explanation}</div>}
-    {tab===4&&checkin&&<div ref={checkinRef}>{checkin(selectedPlan,monthTasks(selectedRow).map(t=>({key:t.key,label:`${t.text} (계획 ${textValue(selectedRow?.period)} · ${formatKrw(selectedRow?.[t.key])})`})))}</div>}
-    {tab===4&&<div className="d-result-cta"><button className="d-secondary" onClick={()=>window.print()}>이 버전 PDF 리포트 받기</button><button className="d-primary" onClick={()=>setConfirmOpen(true)}>이 계획으로 진행할게요 →</button></div>}
+    {tab===4&&checkin&&<div ref={checkinRef}>{checkin(selectedPlan,monthTasks(selectedRow).map(t=>({key:t.key,label:`${t.text} (계획 ${textValue(selectedRow?.period)} · ${formatKrw(selectedRow?.[t.key])})`})),setAdoptionView)}</div>}
+    {tab===4&&<div className="d-result-cta"><button className="d-secondary" onClick={()=>window.print()}>이 버전 PDF 리포트 받기</button><button className="d-primary" onClick={()=>setConfirmOpen(true)}>{planName(selectedPlan)} 채택 전 확인</button></div>}
     {confirmOpen&&<div className="d-modal-backdrop" role="presentation" onClick={()=>setConfirmOpen(false)}><div className="d-modal" role="dialog" aria-modal="true" aria-label="계획 진행 확인" onClick={e=>e.stopPropagation()}>
-      <span className="d-pill">진행 전 확인</span><h2>{planName(selectedPlan)}으로 진행할까요?</h2>
-      <dl className="d-ledger"><div><dt>신규 투자 후보금</dt><dd>{formatKrw(selectedRow?.new_investment_krw)}</dd></div><div><dt>상품 배분액</dt><dd>{formatKrw(selectedMonth?.allocated_total_krw)}</dd></div><div><dt>목표 적립</dt><dd>{formatKrw(selectedRow?.goal_deposits_krw)}</dd></div></dl>
-      <p className="d-inline-note">선택은 이 결과로 진행한다는 기록이에요. 실제 가입·매수·이체는 하지 않아요.</p>
-      <p>{checkin?"아래 ‘계획 선택과 이번 달 기록’에서 선택을 저장해요.":"선택을 저장하려면 로그인하고 결과를 저장해주세요."}</p>
-      <div className="d-toolbar"><button className="d-secondary" onClick={()=>setConfirmOpen(false)}>다시 볼게요</button>{checkin&&<button className="d-primary" onClick={()=>{setConfirmOpen(false);checkinRef.current?.scrollIntoView({behavior:"smooth",block:"start"});}}>선택 저장하러 가기</button>}</div>
+      <span className="d-pill">채택 전 확인</span><h2>{planName(selectedPlan)} 계획을 채택할까요?</h2>
+      <p className="d-inline-note">첫 계획 월 {textValue(selectedRow?.period)||"확인 필요"} 기준 금액이에요.</p><dl className="d-ledger"><div><dt>신규 투자 후보금</dt><dd>{formatKrw(selectedRow?.new_investment_krw)}</dd></div><div><dt>상품 배분액</dt><dd>{formatKrw(selectedMonth?.allocated_total_krw)}</dd></div><div><dt>목표 적립</dt><dd>{formatKrw(selectedRow?.goal_deposits_krw)}</dd></div></dl>
+      <p className="d-inline-note">채택은 이 계산 결과의 재무계획을 서버에 기록하는 거예요. 투자구성은 채택에 포함되지 않고, 실제 가입·매수·이체는 하지 않아요.</p>
+      <p>{checkin?"아래 ‘계획 채택과 이번 달 기록’에서 채택 버튼을 눌러야 저장돼요.":"채택하려면 로그인하고 결과를 저장해주세요."}</p>
+      <div className="d-toolbar"><button className="d-secondary" onClick={()=>setConfirmOpen(false)}>다시 볼게요</button>{checkin&&<button className="d-primary" onClick={()=>{setConfirmOpen(false);checkinRef.current?.scrollIntoView({behavior:"smooth",block:"start"});}}>채택 버튼으로 이동</button>}</div>
     </div></div>}
     {tab===4&&<TaxBenefits evidenceAccess={evidenceAccess} key={`${sourceDoc?.context.case_id}:${view.localVersion}`} doc={sourceDoc} stale={stale} review={view.taxReview}/>}
     {technical&&<details className="d-card d-output-status"><summary>결과 14개 · 연결 상태와 필요한 정보</summary><p>현재 어댑터의 계산 결과와 FE 연결 상태를 구분해요. 결과를 계산할 정보가 부족해도 다른 계산은 유지해요.</p><div className="d-table-wrap"><table><thead><tr><th>결과</th><th>현재 상태</th><th>근거·다음 확인</th></tr></thead><tbody>{displayCatalog.map(entry=>{
@@ -160,9 +162,9 @@ function MonthTasks({row,actions,candidates,actionList,onProducts,onEdit}:{row?:
   const [done,setDone]=useState<string[]>([]);
   const tasks=monthTasks(row);
   const toggle=(k:string)=>setDone(d=>d.includes(k)?d.filter(x=>x!==k):[...d,k]);
-  return <article className="d-card" aria-label="이번 달 할 일"><div className="d-card-head"><h2>이번 달 할 일</h2>{row&&<small>{textValue(row.period)} 기준</small>}</div>
+  return <article className="d-card" aria-label="계획 월 할 일"><div className="d-card-head"><h2>계획 월 할 일</h2><small>{row?`첫 계획 월 ${textValue(row.period)} 기준`:"계획 월 확인 필요"}</small></div>
     {candidates?<ul className="d-task-list">{tasks.map(t=><li key={t.key} className={done.includes(t.key)?"done":""}><label><input type="checkbox" checked={done.includes(t.key)} onChange={()=>toggle(t.key)}/><span><strong>{t.text}</strong><small>계획 금액 {formatKrw(row?.[t.key])}</small></span></label>{t.key==="new_investment_krw"&&<button className="d-text-button" onClick={onProducts}>상품 보기 →</button>}</li>)}
       {actions.slice(0,3-tasks.length).map(a=><li key={a.id}><label><input type="checkbox" checked={done.includes(a.id)} onChange={()=>toggle(a.id)}/><span><strong>{a.text}</strong></span></label><button className="d-text-button" onClick={()=>onEdit(a.id)}>확인 →</button></li>)}</ul>:actionList}
-    <p className="d-inline-note">체크 표시는 이 화면에서만 보여요. 실제 기록은 아래 이번 달 기록에서 저장해요.</p>
+    <p className="d-inline-note">체크 표시는 이 화면에서만 보여요. 실제 기록은 아래 ‘이번 달 기록’(기록 월 {thisMonth()})에서 저장하고, 계획 월과 다르면 금액을 직접 비교하지 않아요.</p>
   </article>;
 }

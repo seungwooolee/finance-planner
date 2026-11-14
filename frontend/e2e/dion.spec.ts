@@ -39,7 +39,7 @@ test('DION actual input, engine oracles, raw spelling, five result views and edi
   await page.evaluate(()=>window.scrollTo(0,0));
   await page.evaluate(()=>window.scrollTo(0,0));
   await page.screenshot({path:info.outputPath('dion-feedback-desktop-candidates.png'),fullPage:true});
-  for(const name of ['투자구성','상품 정보','결과·이번 달 행동']) {
+  for(const name of ['투자구성','상품 정보','결과·다음 행동']) {
     await page.getByRole('navigation',{name:'빠른 결과 5뷰'}).getByRole('button',{name:new RegExp(name)}).click();
     if(name==='상품 정보') await expect(page.locator('[data-product-empty]')).toContainText('대표상품 0개');
   }

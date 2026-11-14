@@ -35,8 +35,8 @@ function DiffSummary({ a, b, samePeriod }: { a?: Record<string, Json>; b?: Recor
   const rows = DIFF_KEYS.map(([k, label]) => ({ k, label, d: diffOf(a, b, k, samePeriod) }));
   const same = rows.filter(r => r.d.state === 'SAME'), diff = rows.filter(r => r.d.state === 'DIFF'), hold = rows.filter(r => r.d.state === 'HOLD');
   return <>
-    <p><strong>같은 점</strong> {same.length ? same.map(r => `${r.label} ${formatKrw(r.d.value)}`).join(' · ') : '이번 달 배정 항목 중 금액이 같은 항목은 없어요.'}</p>
-    <p><strong>다른 점</strong> {diff.length ? `투자 여력 확대는 생활 안정 우선보다 ${diff.map(r => `${r.label} ${signed(r.d.value!)}`).join(' · ')}이에요.` : '이번 달 배정 금액은 두 안이 모두 같아요.'}</p>
+    <p><strong>같은 점</strong> {same.length ? same.map(r => `${r.label} ${formatKrw(r.d.value)}`).join(' · ') : '첫 계획 월 배정 항목 중 금액이 같은 항목은 없어요.'}</p>
+    <p><strong>다른 점</strong> {diff.length ? `투자 여력 확대는 생활 안정 우선보다 ${diff.map(r => `${r.label} ${signed(r.d.value!)}`).join(' · ')}이에요.` : '첫 계획 월 배정 금액은 두 안이 모두 같아요.'}</p>
     {!!hold.length && <p className="d-inline-note">{hold.map(r => r.label).join(' · ')}은 금액이 확인되지 않아 비교를 보류했어요.</p>}
     <p className="d-inline-note">금액이 큰 쪽이 더 좋은 안이라는 뜻은 아니에요. 비상금 여유와 목표 일정에 맞는 쪽을 골라주세요.</p>
   </>;
@@ -74,7 +74,7 @@ export function PlanComparison({ candidates, selected, onSelect, goals, basis, l
         </span>
       </button>;
     })}</div>
-    <p className="d-inline-note d-flow-note">화면 비교용 선택이에요. 계획 채택은 5번 화면의 ‘계획 선택과 이번 달 기록’에서 따로 저장해요.</p>
+    <p className="d-inline-note d-flow-note">화면 비교용 선택이에요. 계획 채택은 5번 화면의 ‘계획 채택과 이번 달 기록’에서 따로 저장해요.</p>
     <p className="d-inline-note d-plan-kinds">여기서는 남는 돈을 나누는 <strong>재무계획 2안</strong>을 비교해요. 투자 후보금을 어떤 비중으로 담을지는 3번 화면의 <strong>투자구성 3유형</strong>({Object.values(portfolioNames).join('·')})에서 따로 골라요.</p>
     {first.length > 0 && <article className="d-card d-plan-diff" aria-label="첫 달 납입안 비교">
       <div className="d-card-head"><h2><Scale size={20} aria-hidden="true"/> 남는 돈을 이렇게 나눠요</h2><small>{period ? `${period} 한 달` : '첫 달'} · 같은 계산 결과{basis ? `(입력 ${basis.inputVersion}번째 버전)` : ''}</small></div>
@@ -84,7 +84,7 @@ export function PlanComparison({ candidates, selected, onSelect, goals, basis, l
         <caption>막대와 같은 금액 · 차이 열은 투자 여력 확대 − 생활 안정 우선</caption>
         <thead><tr><th scope="col">항목</th>{ordered.map(c => <th scope="col" key={textValue(c.strategy_id)} className={c.strategy_id === selected ? 'd-col-selected' : undefined}>{planName(c.strategy_id)}{c.strategy_id === selected && <small>화면에서 보는 중</small>}</th>)}{pair && <th scope="col">차이<small>확대 − 안정</small></th>}</tr></thead>
         <tbody>
-          <tr className="d-row-group"><th colSpan={ordered.length + (pair ? 2 : 1)} scope="colgroup">이번 달 납입·배정 · 한 달 흐름</th></tr>
+          <tr className="d-row-group"><th colSpan={ordered.length + (pair ? 2 : 1)} scope="colgroup">첫 계획 월 납입·배정 · 한 달 흐름</th></tr>
           {FLOW_ROWS.map(([key, label]) => <tr key={key} className={differs(key) ? 'd-row-diff' : undefined}><th scope="row"><i className="d-swatch" style={{ background: SEG_COLORS[key] }} aria-hidden="true"/>{label}{differs(key) && <span className="d-diff-tag">차이</span>}</th>{first.map((r, i) => <td key={i}>{formatKrw(r?.[key])}</td>)}{pair && diffCell(key)}</tr>)}
           <tr className="d-row-group"><th colSpan={ordered.length + (pair ? 2 : 1)} scope="colgroup">월말 보유 현금 · 잔액이며 납입액이 아니에요</th></tr>
           <tr><th scope="row">월말 현금 합계</th>{first.map((r, i) => <td key={i}>{formatKrw(r?.closing_cash_krw)}</td>)}{pair && diffCell('closing_cash_krw')}</tr>
@@ -99,15 +99,15 @@ export function PlanComparison({ candidates, selected, onSelect, goals, basis, l
     <h3 className="d-subhead">안별 상세 · 월 납입안과 월말 잔액</h3>
     <div className="d-columns">{ordered.map(c => <article className={`d-card d-candidate ${selected === c.strategy_id ? 'd-selected-plan' : ''}`} key={textValue(c.strategy_id)}><h3>{planName(c.strategy_id)} {selected === c.strategy_id && '· 화면 선택'}</h3>
       {list(c.rows).map(r => { const e = object(r.closing_earmarks_krw); return <section key={textValue(r.period)}><h4>{textValue(r.period)}</h4>
-        <p className="d-money-kind">이번 달 납입·배정</p>
-        <dl className="d-ledger">{[['새로 투자할 수 있는 금액 (검토 후보)', r.new_investment_krw], ['이번 달 추가로 남긴 현금', r.additional_cash_krw], ['보호자금 보충', r.protection_topup_krw], ['운영자금 보충', r.operating_refill_krw], ['추가 목표 적립', r.goal_deposits_krw]].map(([label, v]) => <div key={String(label)}><dt>{String(label)}</dt><dd>{formatKrw(v)}</dd></div>)}</dl>
+        <p className="d-money-kind">이 달 납입·배정</p>
+        <dl className="d-ledger">{[['새로 투자할 수 있는 금액 (검토 후보)', r.new_investment_krw], ['추가로 남긴 현금', r.additional_cash_krw], ['보호자금 보충', r.protection_topup_krw], ['운영자금 보충', r.operating_refill_krw], ['추가 목표 적립', r.goal_deposits_krw]].map(([label, v]) => <div key={String(label)}><dt>{String(label)}</dt><dd>{formatKrw(v)}</dd></div>)}</dl>
         <p className="d-money-kind d-money-balance">월말 보유 잔액 · 납입 아님</p>
         <div className="d-metrics"><div className="d-metric"><span>월말 현금 합계</span><strong>{formatKrw(r.closing_cash_krw)}</strong></div><div className="d-metric"><span>목적 미배정 현금</span><strong>{formatKrw(e.free)}</strong></div></div>
         <details><summary>월말 현금의 목적별 배정과 대사</summary><dl className="d-ledger">{[['보호', e.protection], ['운영', e.operating], ['목표', null], ['기타', e.other], ['미배정', e.free]].map(([label, v]) => label === '목표' ? list(r.goals).map(g => <div key={textValue(g.goal_id)}><dt>목표 준비금</dt><dd>{formatKrw(g.closing_cash_krw)}</dd></div>) : <div key={String(label)}><dt>{String(label)}</dt><dd>{formatKrw(v)}</dd></div>)}</dl><p>{r.cash_difference_krw === '0' ? '엔진 대사 완료 · 목적별 합계와 월말 현금이 일치해요.' : '잔액 대사 확인 필요'}</p></details>
-        <details><summary>이미 확보한 금액 · 이번 달 배정 · 남은 부족액</summary><div className="d-table-wrap"><table><thead><tr><th>용도</th><th>기확보</th><th>이번 달 배정</th><th>남은 부족액</th></tr></thead><tbody>{['protection', 'operating'].map(key => { const x = object(r[key]); return <tr key={key}><th>{key === 'protection' ? '보호' : '운영'}</th><td>{formatKrw(x.funded_at_open_krw)}</td><td>{formatKrw(key === 'protection' ? r.protection_topup_krw : r.operating_refill_krw)}</td><td>{formatKrw(x.closing_gap_krw)}</td></tr>; })}</tbody></table></div><p>보호·운영 최소 금액과 확인된 목표 준비를 먼저 반영한 결과예요. 두 안은 그 뒤 남는 월 예산을 투자 후보와 현금에 다르게 나눠요.</p></details>
+        <details><summary>이미 확보한 금액 · 이 달 배정 · 남은 부족액</summary><div className="d-table-wrap"><table><thead><tr><th>용도</th><th>기확보</th><th>이 달 배정</th><th>남은 부족액</th></tr></thead><tbody>{['protection', 'operating'].map(key => { const x = object(r[key]); return <tr key={key}><th>{key === 'protection' ? '보호' : '운영'}</th><td>{formatKrw(x.funded_at_open_krw)}</td><td>{formatKrw(key === 'protection' ? r.protection_topup_krw : r.operating_refill_krw)}</td><td>{formatKrw(x.closing_gap_krw)}</td></tr>; })}</tbody></table></div><p>보호·운영 최소 금액과 확인된 목표 준비를 먼저 반영한 결과예요. 두 안은 그 뒤 남는 월 예산을 투자 후보와 현금에 다르게 나눠요.</p></details>
       </section>; })}
       {c.failure && <div className="d-warning">{textValue(object(c.failure).period).replace('-', '년 ')}월 · {typeof (object(c.failure).minimum_shortfall_krw ?? object(c.failure).shortfall_krw)==="string"?`최소 ${formatKrw(object(c.failure).minimum_shortfall_krw ?? object(c.failure).shortfall_krw)} 부족`:"부족액 확인 대기"}<p>{object(c.failure).on && <>지급일 {textValue(object(c.failure).on)} · </>}필수 지출·상환·목표 또는 보호자금 충족 조건을 확인해주세요. 부족액이 아직 계산되지 않았으면 확인 대기로 표시해요.</p></div>}
     </article>)}</div>
-    <p className="d-help">장기 수익·세금·비용을 임의로 추정하지 않아요. 월 납입안은 수익 0% 기준이에요.</p>
+    <p className="d-help">장기 수익·세금·비용을 임의로 추정하지 않아요. 월 납입안은 수익을 반영하지 않은 기준이에요.</p>
   </section>;
 }
