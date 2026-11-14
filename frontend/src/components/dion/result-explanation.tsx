@@ -38,6 +38,16 @@ function validResponse(value:Explanation, view:ViewResult, caseId:string, detail
     && Array.isArray(value.next_checks)&&value.next_checks.every(c=>c&&typeof c.check_id==="string"&&typeof c.question_id==="string"&&typeof c.text==="string");
 }
 
+// Status-specific guidance; every case keeps the saved result visible.
+function explanationError(status:number):string {
+  if(status===401)return "로그인 확인이 필요해요. 기존 결과는 계속 볼 수 있어요.";
+  if(status===404)return "이 계산 기록에 접근할 수 없어요. 내 상담에서 기록을 다시 확인해 주세요.";
+  if(status===409)return "답변이 바뀌어 저장된 결과와 기준이 달라요. 다시 계산·저장한 뒤 해설을 열어 주세요.";
+  if(status===422)return "이 결과에는 해설할 계산 항목이 없어요. 월 현황·재무안 계산이 끝난 결과에서 열어 주세요.";
+  if(status===429)return "해설 요청이 몰려 있어요. 잠시 뒤 ‘해설 다시 확인’을 눌러 주세요.";
+  return "해설을 불러오지 못했어요. 해설 서버가 잠시 응답하지 않았어요. 잠시 뒤 다시 시도하면 대부분 해결돼요. 기본 안내와 기존 결과는 그대로 볼 수 있어요.";
+}
+
 export function ResultExplanation({view,token,editVersion,selectedCaseId,stale,onSave,onEdit}:Props) {
   const [open,setOpen]=useState(false),[detail,setDetail]=useState<Detail>("SHORT"),[state,setState]=useState<State|null>(null);
   const cache=useRef(new Map<string,Explanation>());
@@ -64,12 +74,15 @@ export function ResultExplanation({view,token,editVersion,selectedCaseId,stale,o
     const requestKey=`explain-${crypto.randomUUID()}`;
     const timer=setTimeout(()=>controller.abort(),20_000);
     try {
-      const response=await fetch(`/api/be/v1/cases/${encodeURIComponent(caseId)}/analyses/${encodeURIComponent(view.runId!)}/explanation`,{
+      const send=()=>fetch(`/api/be/v1/cases/${encodeURIComponent(caseId)}/analyses/${encodeURIComponent(view.runId!)}/explanation`,{
         method:"POST",cache:"no-store",signal:controller.signal,
         headers:{"Content-Type":"application/json",Authorization:`Bearer ${token}`},
         body:JSON.stringify({contract_version:"DION-EXPLANATION-1.0",request_key:requestKey,expected_input_version:view.serverVersion,
           output_ids:["OUT-03","OUT-05"].filter(id=>id in object(view.result.results)),strategy_id:null,detail_level:level,locale:"ko-KR"})});
-      if(!response.ok)throw new Error(response.status===401?"로그인 확인이 필요해요. 기존 결과는 계속 볼 수 있어요.":response.status===404?"이 계산 기록에 접근할 수 없어요. 내 상담에서 기록을 다시 확인해 주세요.":"해설을 불러오지 못했어요. 기본 안내와 기존 결과를 확인해 주세요.");
+      // A sleeping beta server or a busy explainer usually answers on the second try.
+      let response=await send();
+      if([429,502,503,504].includes(response.status)){await new Promise(r=>setTimeout(r,3_000));if(controller.signal.aborted)throw new Error("aborted");response=await send();}
+      if(!response.ok)throw new Error(explanationError(response.status));
       const value:Explanation=await response.json();
       if(!validResponse(value,view,caseId,level,requestKey))throw new Error("표시 중인 결과와 해설의 기준이 달라 해설을 표시하지 않았어요.");
       if(own===sequence.current&&!controller.signal.aborted){if(cache.current.size>=4)cache.current.delete(cache.current.keys().next().value!);cache.current.set(cacheKey,value);setState({...binding,loading:false,response:value});}
@@ -82,7 +95,7 @@ export function ResultExplanation({view,token,editVersion,selectedCaseId,stale,o
   const response=current?.response;
   const evidence=response?[...new Map(response.facts.flatMap(f=>f.input_evidence_refs).map(e=>[e.answer_revision_id,e])).values()]:[];
   return <div className="d-explanation">
-    <button ref={trigger} className="d-primary" aria-expanded={open} aria-controls={titleId+"-panel"} onClick={()=>{setOpen(true);void explain(detail);}}>이 결과 설명해 줘</button>
+    <button id="dion-explain-trigger" ref={trigger} className="d-primary" aria-expanded={open} aria-controls={titleId+"-panel"} onClick={()=>{setOpen(true);void explain(detail);}}>이 결과 설명해 줘</button>
     {open&&<aside id={titleId+"-panel"} className="d-card d-explanation-panel" aria-labelledby={titleId} aria-busy={current?.loading??false}>
       <div className="d-toolbar"><h2 ref={heading} tabIndex={-1} id={titleId}>결과 해설</h2><button className="d-text-button" onClick={close}>해설 닫기</button></div>
       <div className="d-toolbar" role="group" aria-label="해설 길이"><button className="d-secondary" aria-pressed={detail==="SHORT"} onClick={()=>choose("SHORT")}>짧게</button><button className="d-secondary" aria-pressed={detail==="DETAILED"} onClick={()=>choose("DETAILED")}>자세히</button></div>
@@ -91,7 +104,7 @@ export function ResultExplanation({view,token,editVersion,selectedCaseId,stale,o
       {!available&&<button className="d-secondary" onClick={onSave}>{token?"계산 기록 저장·내 상담 열기":"로그인하고 계산 기록 저장"}</button>}
       {current?.loading&&<p role="status">저장된 결과와 근거를 확인하고 있어요. 아래 기본 안내와 기존 결과를 먼저 볼 수 있어요.</p>}
       {current?.error&&<p role="alert" className="d-warning">{current.error}</p>}
-      {!response&&<div className="d-explanation-basic"><h3>기본 안내</h3><p>기존 AI 계약은 월 현황과 두 재무안만 해설해요. 상품별 선정 이유·이번 달 행동의 AI 전용 근거 계약은 연결 대기이며 화면의 엔진 근거를 먼저 확인해주세요.</p><p>월 현황의 잔여 금액은 상환·기존 납입을 반영한 값이며 목표·보호자금 배정 전 금액입니다. 투자 권장액으로 해석하지 않아요.</p><p>안정·확대 후보는 확인한 미래 가정에 따른 검토 자료예요. 입력이 부족하거나 보류된 결과는 미확인 금액을 채우지 않고 관련 답변을 먼저 확인해요.</p></div>}
+      {!response&&<div className="d-explanation-basic"><h3>결과를 읽는 방법</h3><p className="d-help">아래는 모든 결과에 공통인 안내예요. 내 결과에 맞춘 해설은 저장된 결과에서 ‘이 결과 설명해 줘’를 누르면 이 아래에 나와요.</p><ul><li><strong>월 현황의 ‘남는 돈’</strong>은 대출 상환·기존 저축을 빼고 남은 금액이에요. 목표·비상금으로 나누기 전이라 이 금액을 다 투자하라는 뜻은 아니에요.</li><li><strong>안정 우선·투자 확대 두 안</strong>은 입력한 미래 계획을 바탕으로 만든 비교 자료예요. 모르는 값은 0원으로 채우지 않고 ‘확인 필요’로 남겨요.</li><li><strong>상품·이번 달 행동</strong>의 이유는 각 화면의 ‘선정 이유’에서 확인할 수 있어요. AI 해설은 아직 월 현황과 두 재무안만 설명해요.</li></ul></div>}
       {response&&<>
         <p role="status" className="d-explanation-source">{response.status==="FALLBACK"?"해설 생성·검증을 완료하지 못해 저장 결과의 기본 설명을 표시했어요.":response.source==="MOCK"?"모의 해설 · 유료 AI 호출 없음":response.source==="ONEPORT"?"AI 해설 · 저장 결과의 근거를 확인했어요":"기본 설명"} · 저장 결과와 설명의 일치만 확인하며 금융정책 검증 완료를 뜻하지 않아요.</p>
         <p>계산 기준일 {response.evaluation_on??"확인 필요"} · 저장 입력버전 {response.input_version}</p>

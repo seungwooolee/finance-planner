@@ -44,10 +44,23 @@ def get_consultation_service():
     return ConsultationService(proposal_provider=provider)
 
 
+# The reviewed corpus ships with the repository; without an explicit path the deployed
+# server used to fall back to an empty registry, so R2-b never cited any material.
+BUNDLED_CORPUS = Path(__file__).resolve().parents[3] / "data" / "rag" / "registry" / "corpus.json"
+
+
+def rag_registry_path():
+    path = environ.get("DION_RAG_REGISTRY_PATH")
+    if path == "none":
+        return None
+    if path:
+        return Path(path)
+    return BUNDLED_CORPUS if BUNDLED_CORPUS.is_file() else None
+
+
 @lru_cache
 def get_scheme_evidence_service():
-    path = environ.get("DION_RAG_REGISTRY_PATH")
-    registry = RegisteredCorpus(Path(path) if path else None)
+    registry = RegisteredCorpus(rag_registry_path())
     if environ.get("DION_RAG_ONEPORT") == "1":
         try:
             return SchemeEvidenceService(registry, provider=OnePortEvidenceSelector(OnePortConfig.from_env()))

@@ -158,6 +158,10 @@ def _ground(message):
     }
 
 
+def groundable(message):
+    return _ground(message) is not None
+
+
 def mock_proposal(message):
     return _ground(message)
 

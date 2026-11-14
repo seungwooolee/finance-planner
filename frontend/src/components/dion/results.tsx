@@ -9,6 +9,7 @@ import { PortfolioChoice } from "./portfolio-choice";
 import { InvestmentFollowup } from "./investment-followup";
 import { ProductAllocation } from "./product-allocation";
 import { FinalPortfolio, IncomeBar, ResultTiles } from "./final-portfolio";
+import { FinancialProposal } from "./financial-proposal";
 import { ResultBasis } from "./result-basis";
 import { resultHints } from "@/lib/dion/result-guidance";
 import { formatKrw } from "@/lib/dion/money-format";
@@ -92,8 +93,8 @@ export function Results({view,deep,tab,setTab,stale,onEdit,explanation,checkin,t
     
     {tab===3 && <><div className="d-plan-row"><div><strong>{planName(selectedPlan)} · 상품 정보</strong><small>투자구성을 바꾸려면 투자 선호 답변을 수정하고 다시 계산해주세요.</small></div><PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/></div><ProductAllocation review={visible("OUT-06")} selectedPlan={selectedPlan} evaluationOn={textValue(object(result.context).evaluation_on)} onEdit={onEdit}/></>}
     {tab===4 && <><ResultTiles row={selectedRow} month={selectedMonth}/>
-      <FinalPortfolio plan={selectedPlan} row={selectedRow} review={visible("OUT-06")}/>
-      <IncomeBar row={selectedRow}/>
+      <FinancialProposal result={result} doc={sourceDoc} plan={selectedPlan} portfolio={selectedPortfolio} deep={deep} goalLabel={displayGoal} onEdit={onEdit} onTab={setTab}
+        allocation={<><FinalPortfolio plan={selectedPlan} row={selectedRow} review={visible("OUT-06")}/><IncomeBar row={selectedRow}/></>}/>
       <MonthTasks key={`${selectedPlan}:${view.localVersion}`} row={selectedRow} actions={actions} candidates={candidates.length>0} actionList={actionList} onProducts={()=>setTab(3)} onEdit={onEdit}/>
     </>}
     {tab===4&&checkin&&<div ref={checkinRef}>{checkin(selectedPlan,monthTasks(selectedRow).map(t=>({key:t.key,label:`${t.text} (계획 ${formatKrw(selectedRow?.[t.key])})`})))}</div>}

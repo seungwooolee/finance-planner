@@ -104,3 +104,15 @@ def test_no_message_transfer_without_separate_opt_in_or_when_stale(setup, config
     assert mutate(client, session, message=MESSAGE, expected_session_version=10).status_code == 409
     result = mutate(client, session, message="월 저축을10만원 늘리면?").json()
     assert result["intent"] == "UNSUPPORTED" and not gateway.calls
+
+
+def test_questions_skip_paid_extraction_and_get_rule_guidance(setup, config):
+    # A plain question cannot pass server grounding, so it must not spend a call or return 422.
+    client, _, run, service, _, _ = setup
+    gateway = ProposalGateway()
+    service.oneport_provider = provider(replace(config, allow_saved_results=True), gateway)
+    session = create(client, run).json()
+    response = mutate(client, session, message="왜 투자 금액이 0원이야?")
+    assert response.status_code == 200, response.text
+    assert response.json()["classification"]["intent"] == "EXPLAIN_RESULT"
+    assert gateway.posts == []
