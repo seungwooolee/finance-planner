@@ -652,3 +652,12 @@
 .d-chat-composer{display:flex;align-items:flex-end;gap:10px;border-top:1px solid #e7e0ef;padding:12px 14px max(14px,env(safe-area-inset-bottom));background:#fff}
 .d-chat-composer textarea{resize:none;flex:1;min-width:0;max-height:150px;padding:12px;border:1px solid #ddd5e8;border-radius:15px;background:#faf8fc;font:inherit;font-size:16px;line-height:1.5}
 .d-chat-composer button{flex-shrink:0;display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:14px;background:#65508d;color:#fff}.d-chat-composer button:disabled{background:#c9c1d5}
+/* Read-only composition detail, including historical calculation views. */
+.dion-app .d-composition-fold{border-top:1px solid var(--d-line);padding:10px 0;overflow-wrap:anywhere}
+.dion-app .d-composition-fold>summary{cursor:pointer;min-height:44px;align-content:center;color:var(--d-primary);font-weight:700}
+.dion-app .d-composition-fold>summary:focus-visible{outline:2px solid var(--d-primary);outline-offset:3px}
+.dion-app .d-composition-detail section{border-bottom:1px solid var(--d-line);padding:8px 0}
+.dion-app .d-composition-detail dl>div{display:flex;justify-content:space-between;gap:12px;margin:8px 0}
+.dion-app .d-composition-detail dd{margin:0;text-align:right;font-weight:700}
+.dion-app .d-composition-product{padding:10px 0;border-top:1px solid var(--d-line)}
+.dion-app .d-composition-fold>button{width:100%;margin-top:12px;white-space:normal}

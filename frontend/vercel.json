@@ -3,6 +3,8 @@
   "git": {
     "deploymentEnabled": {
       "codex/chat-only-assistant-20261115": false,
+      "codex/portfolio-detail-selection-20261115": false,
+      "codex/login-calculation-20261115": false,
       "codex/result-review-polish-20261115": false,
       "codex/chat-survey-20261115": false,
       "codex/question-clarity-20261115": false,

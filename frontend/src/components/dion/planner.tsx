@@ -105,6 +105,13 @@ export function DionPlanner() {
   const progress=responseProgress(doc,mode==="deep",current==="F17"),stale=!!view&&(view.sourceSignature!==signature(doc)||view.isCurrent===false);
   useEffect(()=>{if(accountOpen)accountPanel.current?.scrollIntoView({block:"start"});},[accountOpen]);
   useEffect(()=>{
+    // Start the cold backend while the user reads/answers; no credentials, input or calculation.
+    // Do not await this request from login or calculation, or let its failure block either.
+    const controller=new AbortController();
+    void requestJson("/api/be/v1/auth/status",{signal:controller.signal}).catch(()=>{});
+    return ()=>controller.abort();
+  },[]);
+  useEffect(()=>{
     const session=readSession();
     if(!session)return;
     // Hydrate only the login session; saved answers always come from the owner-authorized API.

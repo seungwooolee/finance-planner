@@ -12,7 +12,7 @@ test('v0.7 real engine forecast matches chart/table and keeps old basis after ed
   const forecast=body.result.results['OUT-05'].candidates.find((c:any)=>c.strategy_id==='STABILITY_FIRST').financial_projection;
   expect(forecast.calc_state).toBe('CALCULATED');
   await page.locator('.d-tabs button').nth(2).click();
-  await page.locator('[data-portfolio-type="RETURN"] button').click();
+  await page.locator('[data-portfolio-type="RETURN"] > button').click();
   await page.locator('.d-tabs button').nth(4).click();
   const section=page.getByRole('region',{name:'월별 금융자산 전망',exact:true});
   await expect(section).toHaveAttribute('data-projection-hash',forecast.sha256);

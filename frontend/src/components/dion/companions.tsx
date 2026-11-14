@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { LogIn, MessageCircle, X } from "lucide-react";
+import { ApiError, requestJson, type WakeState } from "@/lib/dion/wake-retry";
+import { ServerWakeNotice } from "@/components/server-wake-notice";
 
 export function Cat({ kind = "welcome", size = 120, className = "", eager = false }: { kind?: "welcome" | "coach" | "guide"; size?: number; className?: string; eager?: boolean }) {
   return <Image className={`d-cat ${className}`} src={`/dion/cat-${kind}.png`} alt="dion 고양이" width={size} height={size} sizes={`${size}px`} loading={eager ? "eager" : undefined} />;
@@ -72,13 +74,29 @@ export function LoginDialog({ onClose, onLogin }: { onClose: () => void; onLogin
   const emailInput = useRef<HTMLInputElement>(null), heading = useRef<HTMLHeadingElement>(null);
   const [busy, setBusy] = useState(false), [error, setError] = useState(""), [configured, setConfigured] = useState<boolean | null>(null);
   const [statusError, setStatusError] = useState("");
+  const [statusAttempt, setStatusAttempt] = useState(0);
+  const [wake, setWake] = useState<WakeState>({ waiting: false, exhausted: false });
+  const loginRequest = useRef<AbortController | null>(null);
   useEffect(() => {
     const element = dialog.current;
     active.current = true; element?.showModal();
     const controller = new AbortController();
-    fetch("/api/be/v1/auth/status", { cache: "no-store", signal: controller.signal }).then(async r => { if (!r.ok) throw new Error(); return r.json(); }).then(v => setConfigured(v.configured === true)).catch(() => { if (active.current && !controller.signal.aborted) setStatusError("로그인 서비스 상태를 확인하지 못했어요. 잠시 후 다시 시도해주세요."); });
-    return () => { active.current = false; controller.abort(); element?.close(); };
-  }, []);
+    const pendingNotice = setTimeout(() => { if (!controller.signal.aborted) setWake({ waiting: true, exhausted: false }); }, 1000);
+    void requestJson("/api/be/v1/auth/status", { signal: controller.signal, onState: state => {
+      if (!controller.signal.aborted) setWake(state);
+    } }).then(value => {
+      if (controller.signal.aborted) return;
+      if (typeof value?.configured !== "boolean") throw new Error("INVALID_AUTH_STATUS");
+      setConfigured(value.configured); setStatusError("");
+    }).catch(() => {
+      if (!controller.signal.aborted) setStatusError("로그인 서비스 상태를 확인하지 못했어요. 다시 시도해주세요.");
+    }).finally(() => clearTimeout(pendingNotice));
+    return () => { active.current = false; controller.abort(); loginRequest.current?.abort(); clearTimeout(pendingNotice); element?.close(); };
+  }, [statusAttempt]);
+  function retryStatus() {
+    setStatusError(""); setWake({ waiting: false, exhausted: false }); setConfigured(null);
+    setStatusAttempt(value => value + 1);
+  }
   function switchMode(next: boolean) {
     setSignup(next); setPassword(""); setConfirmation(""); setError(""); setNotice(""); setInputErrors({});
     heading.current?.focus();
@@ -118,21 +136,28 @@ export function LoginDialog({ onClose, onLogin }: { onClose: () => void; onLogin
     finally { if (active.current) { setPassword(""); setConfirmation(""); setBusy(false); } }
   }
   async function submit(event: React.FormEvent) {
-    event.preventDefault(); if (busy || configured === false) return;
+    event.preventDefault(); if (busy || configured !== true || loginRequest.current) return;
+    const controller = new AbortController(); loginRequest.current = controller;
     setBusy(true); setError("");
     try {
-      const response = await fetch("/api/be/v1/auth/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email, password }), cache: "no-store" });
-      const value = await response.json();
-      if (!active.current) return;
-      if (!response.ok) { setError(response.status === 401 ? "이메일 또는 비밀번호를 확인해주세요. 이메일 인증이 필요한 계정은 인증을 먼저 완료해주세요." : response.status === 429 ? "시도가 많았어요. 잠시 후 다시 로그인해주세요." : "로그인 서비스에 연결하지 못했어요. 입력한 재무정보는 그대로 있어요."); return; }
+      const value = await requestJson("/api/be/v1/auth/login", { method: "POST", body: { email: email.trim(), password }, signal: controller.signal,
+        onState: state => { if (!controller.signal.aborted) setWake(state); } });
+      if (controller.signal.aborted) return;
       if (typeof value.access_token !== "string" || !value.access_token || !Number.isInteger(value.expires_in) || value.expires_in <= 0) throw new Error();
       onLogin(value.access_token, value.expires_in); onClose();
-    } catch { if (active.current) setError("로그인 연결을 확인해주세요. 입력한 재무정보는 그대로 있어요."); }
-    finally { if (active.current) { setPassword(""); setBusy(false); } }
+    } catch (failure) {
+      if (!controller.signal.aborted) setError(failure instanceof ApiError && failure.status === 401
+        ? "이메일 또는 비밀번호를 확인해주세요. 이메일 인증이 필요한 계정은 인증을 먼저 완료해주세요."
+        : failure instanceof ApiError && failure.status === 429 ? "시도가 많았어요. 잠시 후 다시 로그인해주세요."
+        : "로그인 연결을 확인해주세요. 비밀번호를 다시 입력한 뒤 로그인해주세요. 작성한 재무정보는 그대로 있어요.");
+    } finally { loginRequest.current = null; if (active.current) { setPassword(""); setBusy(false); } }
   }
   return <dialog className="d-login-dialog" ref={dialog} aria-labelledby="dion-login-title" onCancel={onClose}>
     <button type="button" className="d-dialog-close" aria-label={signup ? "회원가입 창 닫기" : "로그인 창 닫기"} onClick={onClose}><X /></button>
     <Cat size={105} /><span className="d-eyebrow">WELCOME TO DION</span><h2 id="dion-login-title" tabIndex={-1} ref={heading}>{signup ? "회원가입" : "만나서 반가워요"}</h2>{signup&&<p>이메일 계정으로 시작할 준비를 해요.</p>}
+    <ServerWakeNotice waiting={wake.waiting} exhausted={false} onRetry={retryStatus}/>
+    {statusError && <div role="alert"><p>{statusError}</p><button type="button" className="d-secondary" onClick={retryStatus}>로그인 연결 다시 시도</button></div>}
+    {configured === null && !statusError && !wake.waiting && <p role="status">로그인 서비스를 연결하고 있어요…</p>}
     {signup ? <>
       <p className="d-note">이메일로 가입을 신청해요. 이메일 확인이 필요한 경우 확인 후 로그인해주세요.</p>
       <form noValidate onSubmit={submitSignup}>
@@ -144,7 +169,7 @@ export function LoginDialog({ onClose, onLogin }: { onClose: () => void; onLogin
         <button type="submit" className="d-primary" disabled={busy || configured !== true} aria-describedby="d-signup-policy">{busy ? "가입 확인 중…" : "회원가입"}</button>
       </form><button type="button" className="d-text-button" onClick={()=>switchMode(false)}>로그인으로 돌아가기</button>
     </> : <><form onSubmit={submit}><label className="d-field">이메일<input type="email" required autoComplete="username" maxLength={254} value={email} onChange={e => setEmail(e.target.value)} /></label><label className="d-field">비밀번호<input type="password" required autoComplete="current-password" maxLength={1024} value={password} onChange={e => setPassword(e.target.value)} /></label>
-      {configured === false && <p className="d-warning" role="status">로그인 서비스 설정이 아직 연결되지 않았어요. 진단은 로그인 없이 시작할 수 있어요.</p>}{notice && <p className="d-note" role="status">{notice}</p>}{(error || statusError) && <p className="d-warning" role="alert">{error || statusError}</p>}
+      {configured === false && <p className="d-warning" role="status">로그인 서비스 설정이 아직 연결되지 않았어요. 진단은 로그인 없이 시작할 수 있어요.</p>}{notice && <p className="d-note" role="status">{notice}</p>}{error && <p className="d-warning" role="alert">{error}</p>}
       <button type="submit" className="d-primary" disabled={busy || configured !== true}><LogIn size={18} />{busy ? "로그인 중…" : "이메일로 로그인"}</button>
     </form><button type="button" className="d-text-button" disabled={busy} onClick={()=>switchMode(true)}>회원가입</button><button type="button" className="d-text-button" onClick={onClose}>로그인 없이 둘러보기</button></>}
   </dialog>;
