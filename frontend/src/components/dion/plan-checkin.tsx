@@ -24,8 +24,40 @@ const CHANGES: Record<string, string> = {
 };
 type Task = { key: string; label: string; state: string; reason: string };
 type Summary = { entered_count: number; amount_count: number; partial: boolean; spending_entered_krw: string;
-  transfers_entered_krw: string; allocation_check: string; tasks_done: number; tasks_total: number; review_suggested: boolean };
+  transfers_entered_krw: string; spending_entered_count?: number | null; transfers_entered_count?: number | null; allocation_check: string; tasks_done: number; tasks_total: number; review_suggested: boolean };
 type Adoption = { adoption_id: string; run_id: string; strategy_id: string; input_version: number; adopted_at: string } | null;
+// DION-PLAN-CHECKIN-1.1 binding fields (BE CONTRACT.md). Legacy responses lack contract_version.
+type Binding = { contract: string | null; revision: number; adoptionId: string | null; record: Adoption; current: Adoption;
+  state: string | null; kind: string | null; comparison: { state: string; reason: string } | null; review: { action: string; base_run_id: string | null } | null };
+type CheckinResponse = { contract_version?: string | null; revision: number; adoption_id?: string | null; adoption?: Adoption; current_adoption?: Adoption;
+  binding_state?: string | null; record_kind?: string | null; comparison?: { state: string; reason: string } | null; review?: { action: string; base_run_id: string | null } | null;
+  record?: { amounts: Record<string, string | null>; tasks: Task[]; changes: string[] } | null; summary?: Summary | null; status?: string | null };
+const COMPARISON: Record<string, string> = {
+  NO_ADOPTED_PLAN: "채택 없이 저장한 일반 기록이라 계획 대비 비교를 하지 않아요.",
+  MONTH_NOT_IN_PLAN: "채택한 계획에 이 달 계획이 없어 비교하지 않아요. 다른 달이나 첫 달 금액으로 대신하지 않아요.",
+  POLICY_REQUIRED: "계획과 실제 금액의 비교 기준이 아직 확정되지 않아 차이를 표시하지 않아요.",
+  BINDING_CONFLICT: "기록의 채택 연결이 서로 달라 비교를 멈췄어요.",
+};
+const CHECK: Record<string, string> = {
+  INCOME_NOT_ENTERED: "소득을 입력하지 않아 소득 대비 배분은 확인하지 않았어요.",
+  OVER_INCOME_CHECK_SOURCE: "입력한 소득보다 배분이 많아요. 기존 잔액 사용·추가 수입·입력 오류인지 확인해 주세요.",
+  INCOMPLETE_RECORD: "일부 금액만 입력돼 소득 대비 판단을 확정하지 않아요.",
+  WITHIN_INCOME: "입력한 금액이 입력한 소득 범위 안이에요.",
+};
+const ERRORS: Record<string, string> = {
+  VERSION_CONFLICT: "다른 곳에서 먼저 저장했어요. 최신 기록 번호를 불러왔으니 입력을 확인하고 다시 저장해 주세요. 입력값은 그대로 있어요.",
+  IDEMPOTENCY_CONFLICT: "같은 요청 번호로 다른 내용이 저장돼 있어요. 새로고침 후 다시 저장해 주세요. 입력값은 그대로 있어요.",
+  CHECKIN_BINDING_CONFLICT: "이 달 기록의 채택 연결이 서로 달라 저장을 멈췄어요. 이력 검토가 필요해요.",
+  CHECKIN_ADOPTION_UNAVAILABLE: "이 달 기록에 연결된 채택 정보를 확인할 수 없어 저장을 멈췄어요.",
+  FUTURE_MONTH: "아직 오지 않은 달은 기록할 수 없어요.",
+};
+function toBinding(c: CheckinResponse): Binding {
+  const v1 = !!c.contract_version;
+  return { contract: c.contract_version ?? null, revision: c.revision, adoptionId: c.revision > 0 ? (c.adoption_id ?? null) : null,
+    // In 1.1, `adoption` on a saved month is the record's binding; legacy `adoption` was the current pointer.
+    record: v1 && c.revision > 0 ? (c.adoption ?? null) : null, current: v1 ? (c.current_adoption ?? null) : null,
+    state: c.binding_state ?? null, kind: c.record_kind ?? null, comparison: c.comparison ?? null, review: c.review ?? null };
+}
 
 export function manwonToWon(raw: string): string | null {
   const v = raw.replace(/,/g, "").trim();
@@ -47,8 +79,7 @@ export function PlanCheckin({ view, token, caseId, plan, tasks }: { view: ViewRe
   const month = thisMonth();
   const [adoption, setAdoption] = useState<Adoption>(null);
   const [revision, setRevision] = useState(0);
-  // adoption_id stored on this month's record at save time; may differ from the current adoption.
-  const [recordAdoption, setRecordAdoption] = useState<string | null | undefined>(undefined);
+  const [binding, setBinding] = useState<Binding | null>(null);
   const [amounts, setAmounts] = useState<Record<string, string>>({});
   const [savedTasks, setSavedTasks] = useState<Task[] | null>(null);
   const [edits, setEdits] = useState<Record<string, Task>>({});
@@ -74,7 +105,7 @@ export function PlanCheckin({ view, token, caseId, plan, tasks }: { view: ViewRe
         if (!live) return;
         setAdoption(p.adoption);
         setRevision(c.revision);
-        setRecordAdoption(c.record ? (c.adoption_id ?? null) : undefined);
+        setBinding(toBinding(c));
         if (c.record) {
           setAmounts(Object.fromEntries(Object.entries(c.record.amounts as Record<string, string | null>).map(([k, v]) => [k, wonToManwon(v)])));
           setSavedTasks((c.record.tasks as Task[]).map(t => ({ ...t, reason: t.reason ?? "" })));
@@ -99,7 +130,8 @@ export function PlanCheckin({ view, token, caseId, plan, tasks }: { view: ViewRe
       setAdoption({ adoption_id: r.adoption_id, run_id: r.run_id, strategy_id: r.strategy_id, input_version: r.input_version, adopted_at: new Date().toISOString() });
     } catch (e) {
       const code = (e as Error).message;
-      setError(code === "RUN_NOT_CURRENT" ? "답변이 바뀌어 이 결과는 최신이 아니에요. 다시 계산·저장한 뒤 선택해 주세요." : `계획을 선택하지 못했어요 (${code}).`);
+      setError(code === "RUN_NOT_CURRENT" ? "답변이 바뀌어 이 결과는 최신이 아니에요. 다시 계산·저장한 뒤 선택해 주세요."
+        : code === "PLAN_NOT_AVAILABLE" ? "이 결과에는 채택할 수 있는 월별 계획이 없어요. 보완할 정보를 확인한 뒤 다시 계산해 주세요." : `계획을 선택하지 못했어요 (${code}).`);
     } finally { setBusy(false); }
   }
 
@@ -113,10 +145,13 @@ export function PlanCheckin({ view, token, caseId, plan, tasks }: { view: ViewRe
     try {
       const r = await call(`/checkins/${month}`, "PUT", { expected_revision: revision, request_key: key(), status: next,
         record: { amounts: converted, tasks: taskRows.map(t => ({ key: t.key, label: t.label, state: t.state, ...(t.reason.trim() ? { reason: t.reason.trim() } : {}) })), changes } });
-      setRevision(r.revision); setRecordAdoption(r.adoption_id ?? null); setSummary(r.summary); setStatus(r.status); setSavedTasks(taskRows); setEdits({});
+      setRevision(r.revision); setBinding(toBinding(r)); setSummary(r.summary); setStatus(r.status); setSavedTasks(taskRows); setEdits({});
+      // Contract: a PUT (or its replay) is the first receipt; read the month again for the latest binding.
+      try { const latest: CheckinResponse = await call(`/checkins/${month}`); setRevision(latest.revision); setBinding(toBinding(latest)); if (latest.summary) setSummary(latest.summary); if (latest.status) setStatus(latest.status); } catch { /* keep the PUT receipt */ }
     } catch (e) {
       const code = (e as Error).message;
-      setError(code === "VERSION_CONFLICT" ? "다른 곳에서 먼저 저장했어요. 새로고침 후 다시 확인해 주세요. 입력값은 그대로 있어요." : `저장하지 못했어요 (${code}). 입력값은 그대로 있어요.`);
+      setError(ERRORS[code] ?? `저장하지 못했어요 (${code}). 입력값은 그대로 있어요.`);
+      if (code === "VERSION_CONFLICT") { try { const latest: CheckinResponse = await call(`/checkins/${month}`); setRevision(latest.revision); setBinding(toBinding(latest)); } catch { /* keep inputs */ } }
     } finally { setBusy(false); }
   }
 
@@ -131,10 +166,7 @@ export function PlanCheckin({ view, token, caseId, plan, tasks }: { view: ViewRe
     {view.isCurrent === false && <p className="d-warning">이 결과 이후 답변이 바뀌었어요. 최신 입력으로 다시 계산·저장한 결과에서 선택할 수 있어요.</p>}
 
     <h3>{month} 실제 기록</h3>
-    {recordAdoption !== undefined && <p className={recordAdoption && recordAdoption === adoption?.adoption_id ? "d-note" : "d-warning"} data-record-adoption={recordAdoption ?? "NONE"}>
-      {recordAdoption === null ? "이 달 기록은 채택 없이 저장됐어요. 계획 금액과 바로 비교하지 않아요."
-        : recordAdoption === adoption?.adoption_id ? "이 달 기록은 현재 채택한 계획에 연결돼 있어요."
-        : "이 달 기록은 저장 당시의 다른 채택에 연결돼 있어요. 현재 채택의 계획 금액과 바로 비교하지 않아요."}</p>}
+    {binding && <BindingNote binding={binding} month={month}/>}
     <p className="d-help">할 일 옆 계획 금액은 화면에서 보는 안의 첫 계획 월 기준이에요. 기록 월({month})과 계획 월이 다르면 금액을 직접 비교하지 않아요.</p>
     <p>만원 단위로 입력해요. 빈칸은 &lsquo;아직 입력 안 함&rsquo;, 0은 &lsquo;이번 달 없음&rsquo;이에요. 계획 금액을 실제 금액으로 자동 복사하지 않아요.</p>
     <div className="d-fields">
@@ -159,17 +191,36 @@ export function PlanCheckin({ view, token, caseId, plan, tasks }: { view: ViewRe
       onClick={() => setChanges(c => k === "NONE" ? (c.includes("NONE") ? [] : ["NONE"]) : c.includes(k) ? c.filter(x => x !== k) : [...c.filter(x => x !== "NONE"), k])}>{v}</button>)}</div>
 
     <div className="d-toolbar">
-      <button className="d-secondary" disabled={busy} onClick={() => void save("DRAFT")}>임시 저장</button>
-      <button className="d-primary" disabled={busy} onClick={() => void save("CLOSED")}>점검 완료</button>
+      <button className="d-secondary" disabled={busy || binding?.state === "CONFLICT"} onClick={() => void save("DRAFT")}>임시 저장</button>
+      <button className="d-primary" disabled={busy || binding?.state === "CONFLICT"} onClick={() => void save("CLOSED")}>점검 완료</button>
     </div>
     {error && <p className="d-warning" role="alert">{error}</p>}
     {summary && <div className="d-note" role="status">
       <strong>{month} · {status === "CLOSED" ? "점검 완료" : "중간 기록"} · 저장 {revision}회차</strong>
       <p>입력한 항목 {summary.entered_count}/{summary.amount_count}{summary.partial && " · 부분 기록이라 한 달 전체 성과로 판단하지 않아요"}</p>
-      <p>입력한 생활비·상환 {formatKrw(summary.spending_entered_krw)} · 적립·투자 등 자산 이동 {formatKrw(summary.transfers_entered_krw)}</p>
-      {summary.allocation_check === "OVER_INCOME_CHECK_SOURCE" && <p>입력한 소득보다 배분이 많아요. 기존 잔액 사용·추가 수입·입력 오류인지 확인해 주세요.</p>}
+      <p>입력한 생활비·상환 {summary.spending_entered_count === 0 ? "입력 없음" : formatKrw(summary.spending_entered_krw)} · 적립·투자 등 자산 이동 {summary.transfers_entered_count === 0 ? "입력 없음" : formatKrw(summary.transfers_entered_krw)}</p>
+      {CHECK[summary.allocation_check] && <p>{CHECK[summary.allocation_check]}</p>}
       {summary.tasks_total > 0 && <p>할 일 {summary.tasks_done}/{summary.tasks_total} 완료</p>}
       {summary.review_suggested && <p>상황이 바뀌었다면 답변을 고쳐 새 결과를 계산해 보세요. 기존에 선택한 계획은 자동으로 바뀌지 않아요.</p>}
     </div>}
   </section>;
+}
+
+/** Which adoption this month's record is bound to (record binding), kept apart from the current pointer. */
+function BindingNote({ binding, month }: { binding: Binding; month: string }) {
+  if (!binding.contract) {
+    // Legacy response: only the record's adoption_id is known.
+    if (binding.revision === 0) return null;
+    return <p className="d-note" data-binding="LEGACY">{binding.adoptionId ? "이 달 기록은 저장 당시의 채택에 연결돼 있어요. 계획 금액과의 차이는 표시하지 않아요." : "이 달 기록은 채택 없이 저장됐어요. 계획 실적이 아니에요."}</p>;
+  }
+  const { state, kind, record, current, comparison, review } = binding;
+  return <div className={state === "CONFLICT" ? "d-warning" : "d-note"} data-binding={state ?? ""} data-record-kind={kind ?? ""} role={state === "CONFLICT" ? "alert" : undefined}>
+    {state === "UNRECORDED" && <p>{month}은 아직 기록이 없어요. 처음 저장할 때의 현재 채택이 이 달 기준으로 고정돼요.</p>}
+    {state === "CONFLICT" && <p><strong>이 달 기록의 채택 연결이 서로 달라 비교와 추가 저장을 멈췄어요.</strong> 이력 검토가 필요해요.</p>}
+    {kind === "GENERAL_RECORD" && <p>채택 없이 저장한 일반 기록이에요. 나중에 채택해도 이 달은 계획 실적으로 바뀌지 않아요.</p>}
+    {kind === "ADOPTED_PLAN" && record && <p>이 달 기록 기준: <strong>{planName(record.strategy_id)}</strong> · 입력버전 {record.input_version} 채택에 고정돼 있어요.</p>}
+    {kind === "ADOPTED_PLAN" && record && current && current.adoption_id !== record.adoption_id && <p>지금 채택한 계획은 {planName(current.strategy_id)} · 입력버전 {current.input_version}이에요. 이 달 기록의 기준은 바뀌지 않아요.</p>}
+    {comparison && <p data-comparison={comparison.state}>{COMPARISON[comparison.state] ?? `계획 대비 비교를 하지 않아요 (${comparison.state}).`}</p>}
+    {review?.action === "CREATE_NEW_DRAFT" && <p>상황이 바뀌었다면 답변을 고쳐 새 초안을 계산해 보세요. 기존 채택은 직접 다시 고르기 전까지 그대로예요.</p>}
+  </div>;
 }

@@ -37,3 +37,30 @@ test('step 4 proposal shows choices, compared alternatives, assumptions and risk
   await panel.getByRole('button',{name:'결과 해설 바로 열기'}).click();
   await expect(page.getByRole('complementary',{name:'결과 해설'})).toBeVisible();
 });
+
+// Engine CONSUMER-HANDOFF (goal_omissions, additive in DION-PROPOSAL-REFERENCE-0.1). The engine change is not in this
+// branch's backend, so the preview response is augmented in the test only; OUT-04 stays as the engine returned it.
+test('proposal shows goal_omissions reasons and keeps the original goal result', async ({page}) => {
+  test.skip(!harness,'Real engine harness required.');
+  let goalId='';
+  await page.route('**/api/fe/v1/preview',async route=>{
+    const response=await route.fetch();const json=await response.json();
+    const ref=json.result.proposal_reference;goalId=json.result.results['OUT-04'].rows[0].goal_id;
+    ref.goals=ref.goals.filter((g:{goal_id:string})=>g.goal_id!==goalId);
+    ref.goal_omissions=[{goal_id:goalId,reason:'MONTHLY_REFERENCE_CALENDAR_UNSUPPORTED'},{goal_id:'goal-unknown',reason:'FUTURE_ENGINE_CODE'}];
+    await route.fulfill({response,json});
+  });
+  await page.goto('/dion');
+  await page.getByRole('button',{name:'가상 사례 불러오기',exact:true}).click();
+  await page.getByRole('button',{name:'상품 배분 검토 불러오기',exact:true}).click();
+  await page.getByRole('region',{name:'계산 결과'}).waitFor();
+  await page.getByRole('button',{name:/결과·이번 달 행동/}).click();
+  const box=page.getByRole('article',{name:'재무설계 제안서'}).locator('[data-goal-omissions]');
+  await expect(box).toHaveAttribute('data-goal-omissions','2');
+  const known=box.locator('[data-omission-reason="MONTHLY_REFERENCE_CALENDAR_UNSUPPORTED"]');
+  await expect(known).toContainText('월 납입 참고 비교를 보류');
+  await expect(known).toContainText('원래 목표 결과: 목표 30만원');
+  await expect(box.locator('[data-omission-reason="FUTURE_ENGINE_CODE"]')).toContainText('사유 코드 FUTURE_ENGINE_CODE');
+  await expect(box).toContainText('목표가 삭제되거나 투자 불가로 판정된 것이 아니에요');
+  await expect(page.getByRole('list',{name:'참고 비교의 한계'})).toContainText('첫 계획 월의 금액이 매달 같다고 가정');
+});
