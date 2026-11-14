@@ -5,6 +5,7 @@ import { object, textValue, won } from "@/lib/dion/model";
 import type { ViewResult } from "./results";
 import { SchemeEvidencePanel } from "./scheme-evidence";
 import { NaturalInputAssistant } from "./natural-input-assistant";
+import type { SurveyLine } from "./chat-survey";
 import { ConversationPanel, type Conversation } from "./conversation-panel";
 
 type Field={question_id:string;field_id:string;definition_version:string;label:string;kind:string;measurement_basis:string};
@@ -26,7 +27,7 @@ export type AgentSession={base_input_version:number;base_input_hash:string;contr
 type Listed={session_id:string;expires_at:string;base_run_id:string;output_id:string};
 type Session = AgentSession;
 type Props={view:ViewResult;token:string;selectedCaseId:string;editVersion:number;stale:boolean;onExplain:()=>void;
-  resumeSessionId?:string;onOpenResult?:(runId:string,sessionId:string)=>Promise<void>;
+  surveyHistory?:SurveyLine[];resumeSessionId?:string;onOpenResult?:(runId:string,sessionId:string)=>Promise<void>;
   finalization?:{sessionId?:string;blocked:boolean;onSession:(session:AgentSession)=>Promise<void>}};
 const notice="DION-AGENT-MEMORY-1.0";
 const conversationNotice="DION-CONVERSATION-CONSENT-1.0";
@@ -78,7 +79,7 @@ function AnswerForm({session,busy,onAnswer}:{session:Session;busy:boolean;onAnsw
   </form>;
 }
 
-export function AgentConsultation({view,token,selectedCaseId,editVersion,stale,onExplain,finalization,resumeSessionId,onOpenResult}:Props){
+export function AgentConsultation({view,token,selectedCaseId,editVersion,stale,onExplain,finalization,resumeSessionId,onOpenResult,surveyHistory}:Props){
   const [binding,setBinding]=useState<{view:ViewResult;token:string;editVersion:number;session?:Session;items?:Listed[];error?:string;busy?:boolean;retry?:{path:string;method:string;body?:Record<string,unknown>;list:boolean}}|null>(null);
   const [draft,setDraft]=useState<{text:string;token:string;view:ViewResult;sessionId:string}|null>(null),[output,setOutput]=useState('OUT-03');
   const [memoryConsent,setMemoryConsent]=useState(false);
@@ -162,6 +163,11 @@ export function AgentConsultation({view,token,selectedCaseId,editVersion,stale,o
         <button type="button" className="d-text-button" disabled={blocked} onClick={()=>void onOpenResult(s.base_run_id,s.session_id)}>이 상담의 결과와 대화 열기 · {s.output_id}</button>
         <small> · 보관 종료 {s.expires_at.slice(0,10)}</small></li>)}</ul>}
       {session&&<><p role="status">{session.guidance}</p>{session.allowed_actions.includes('OPEN_RESULT_EXPLANATION')&&<button className="d-primary" onClick={onExplain}>결과 해설 바로 열기</button>}<p>{session.persistence_mode==='SAVED'?'이어서 저장 중':'임시 상담'} · 상담 버전 {session.session_version} · {session.progress}</p>
+        {session.conversation?.enabled && !session.conversation.survey_history && !!surveyHistory?.length && <section className="d-note">
+          <p>이 탭의 설문 대화를 이 결과 상담에 보관하고 최종 상담에서 참고할 수 있어요. 고객이 전달한 참고 기록이며, 확인한 설문 원응답과 구분해요. 같은 대화 보관·외부 전송 동의와 보관기간을 적용해요.</p>
+          <button type="button" className="d-secondary" disabled={blocked||!!inactive} onClick={()=>mutate('/survey-history','DION-SURVEY-HANDOFF-1.0',{
+            notice_version:conversationNotice,input_hash:view.inputHash,history:surveyHistory.slice(-40)})}>설문 대화도 이 상담에 연결</button>
+        </section>}
         {session.conversation&&<ConversationPanel key={`${session.session_id}-${token}`} conversation={session.conversation}
           message={message} disabled={blocked||!!inactive||!!pending||session.progress==='PAUSED'}
           onChange={text=>setDraft({text,token,view,sessionId:session.session_id})}

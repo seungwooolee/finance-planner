@@ -1,3 +1,10 @@
+# 최신 대화형 설문 인계 — 2026-11-15
+
+`codex/chat-survey-20261115`는 결과 없이 시작하는 채팅 설문·확인 답변·기존 엔진 계산·결과 상담 인계를 구현한다.
+[계약·실제 검사·미검증·출시 조건](docs/integration/2026-11-15-chat-survey.md)을 따른다.
+고유 관련 pytest 43건, 로컬 Edge E2E 2건 통과. 새 실제 유료 호출·병합·배포는 하지 않았다.
+후보 SHA/PR 및 필수 CI 결과는 해당 PR 설명에 기록한다. 아래 이전 기록은 당시 이력이다.
+
 # 최신 AI 대화 비서 인계 — 2026-11-15
 
 `codex/consultation-result-history-20261115`: [계약·설계](docs/integration/2026-11-15-conversation-assistant-DESIGN.md),

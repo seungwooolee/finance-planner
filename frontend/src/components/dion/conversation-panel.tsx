@@ -3,6 +3,7 @@
 import { useId, useState } from "react";
 
 export type Conversation = {
+  survey_history?: {source: "CLIENT_REPORTED_UNVERIFIED"; items: {role: "user" | "assistant"; content: string}[]};
   enabled: boolean;
   provider_available: boolean;
   notice_text: string;
@@ -23,6 +24,10 @@ export function ConversationPanel({ conversation, message, disabled, onChange, o
     <h4>AI 비서 DION</h4>
     <p className="d-note">이 결과를 기준으로 질문을 이어갈 수 있어요. 대화만으로 입력·최종 포트폴리오·채택 계획이 바뀌지 않아요.</p>
     <p className="d-note">최종 포트폴리오 상담에서도 이어가려면 이 상담을 저장한 뒤 같은 결과의 저장 상담 목록에서 열어 주세요.</p>
+    {conversation.survey_history && <details><summary>연결된 설문 대화 · 고객 제공 참고 기록</summary>
+      <p>확인한 사실은 저장된 설문 답변을 기준으로 해요. 이 기록만으로 결과나 채택은 바뀌지 않아요.</p>
+      {conversation.survey_history.items.map((r,i)=><p key={i}><strong>{r.role==='user'?'나':'설문 비서'}</strong> · {r.content}</p>)}
+    </details>}
     <div role="log" aria-label="DION 대화 내역" aria-live="polite" aria-relevant="additions" tabIndex={0}
       style={{ maxHeight: "24rem", overflowY: "auto", overflowWrap: "anywhere" }}>
       {conversation.messages.length === 0 && <p>아직 대화 원문이 없어요. 이전에 확인한 정보는 아래 상담 기억에서 볼 수 있어요.</p>}

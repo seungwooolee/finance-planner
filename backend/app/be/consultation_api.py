@@ -18,6 +18,7 @@ from ..consultation.contract import (
     CreateSession,
     DeleteSession,
     Persistence,
+    SurveyHandoff,
     Turn,
 )
 from ..consultation.input_preview import InputPreviewProvider, InputPreviewRequest, InputPreviewService
@@ -171,6 +172,7 @@ def operation(name, model):
 
 router.add_api_route("/{sid}/turns", operation("turn", Turn), methods=["POST"])
 router.add_api_route("/{sid}/conversation-consent", operation("conversation_consent", ConversationConsent), methods=["POST"])
+router.add_api_route("/{sid}/survey-history", operation("survey_history", SurveyHandoff), methods=["POST"])
 router.add_api_route("/{sid}/confirmations", operation("confirm", Confirmation), methods=["POST"])
 router.add_api_route("/{sid}/persistence", operation("persist", Persistence), methods=["POST"])
 router.add_api_route("/{sid}/scenario-proposals", operation("scenario_propose", CreateScenarioProposal), methods=["POST"])
