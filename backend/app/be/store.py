@@ -1,5 +1,6 @@
 """Atomic orchestration on top of the reused raw-answer store."""
 import json
+from contextlib import nullcontext
 from uuid import uuid4
 
 from ..consultation.storage import SCHEMA as AGENT_SCHEMA
@@ -84,12 +85,12 @@ class BackendStore(PortfolioComparisonMixin, PlanCheckinMixin, RawAnswerStore):
                     "has_more_analyses": len(runs) > 20}
 
     def analyze(self, actor, case_id, expected_version, request_key, context,
-                outputs=None, engine=run_engine, *, question_options=None):
+                outputs=None, engine=run_engine, *, question_options=None, _connection=None):
         outputs = ["OUT-01", "OUT-03"] if outputs is None else outputs
         fingerprint = _digest({"operation": "analyze", "expected_version": expected_version,
                                "context": context, "outputs": outputs,
                                **({"question_options": question_options} if question_options is not None else {})})
-        with self._transaction(write=True) as conn:
+        with (self._transaction(write=True) if _connection is None else nullcontext(_connection)) as conn:
             case = self._authorize(conn, actor, case_id)
             replay = self._replay(conn, case_id, request_key, fingerprint)
             if replay is not None:
@@ -168,14 +169,14 @@ class BackendStore(PortfolioComparisonMixin, PlanCheckinMixin, RawAnswerStore):
             return response
 
     def analyze_questions(self, actor, case_id, expected_version, request_key, context,
-                          outputs, scope_ref, confirmations):
+                          outputs, scope_ref, confirmations, *, _connection=None):
         """Explicit question 1.2/1.2.1 path; legacy analyses and raw storage stay intact."""
         return self.analyze(actor, case_id, expected_version, request_key, context, outputs,
                             engine=run_frontend_questions,
-                            question_options={"scope_ref": scope_ref, "confirmations": confirmations})
+                            question_options={"scope_ref": scope_ref, "confirmations": confirmations}, _connection=_connection)
 
     def analyze_question_v12(self, actor, case_id, expected_version, request_key, assessment,
-                             confirmations, outputs, payment_calendar=None, engine=run_frontend_questions):
+                             confirmations, outputs, payment_calendar=None, engine=run_frontend_questions, *, _connection=None):
         """Freeze saved 1.2/1.2.1 answers and persist their explicit v2 adapter result."""
         if not isinstance(assessment, dict) or not isinstance(confirmations, list) or not isinstance(outputs, list):
             raise PocError("INVALID_ENVELOPE")
@@ -188,7 +189,7 @@ class BackendStore(PortfolioComparisonMixin, PlanCheckinMixin, RawAnswerStore):
         fingerprint = _digest({"operation": "analyze_question_v12", "expected_version": expected_version,
                                "assessment": assessment, "confirmations": confirmations,
                                "outputs": outputs, "payment_calendar": payment_calendar})
-        with self._transaction(write=True) as conn:
+        with (self._transaction(write=True) if _connection is None else nullcontext(_connection)) as conn:
             case = self._authorize(conn, actor, case_id)
             replay = self._replay(conn, case_id, request_key, fingerprint)
             if replay is not None:

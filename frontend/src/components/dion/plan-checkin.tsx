@@ -5,6 +5,8 @@ import { formatKrw } from "@/lib/dion/money-format";
 import { planName } from "./plan-comparison";
 import { MonthlyCoach } from "./monthly-coach";
 import type { CheckinTask, ViewResult } from "./results";
+import { type Scope, scopeLabels } from "@/lib/dion/checkin-followup";
+import { CheckinFollowup } from "./checkin-followup";
 
 // Steps 5-6: the customer explicitly picks one saved draft, then records this month's actuals.
 // Nothing here moves money; blank means "not entered" and is never sent as 0.
@@ -33,7 +35,7 @@ type Binding = { contract: string | null; revision: number; adoptionId: string |
   state: string | null; kind: string | null; comparison: { state: string; reason: string } | null; review: { action: string; base_run_id: string | null } | null };
 type CheckinResponse = { contract_version?: string | null; revision: number; adoption_id?: string | null; adoption?: Adoption; current_adoption?: Adoption;
   binding_state?: string | null; record_kind?: string | null; comparison?: { state: string; reason: string } | null; review?: { action: string; base_run_id: string | null } | null;
-  record?: { amounts: Record<string, string | null>; tasks: Task[]; changes: string[] } | null; summary?: Summary | null; status?: string | null };
+  record?: { amounts: Record<string, string | null>; tasks: Task[]; changes: string[]; review_scope?: Scope | null } | null; summary?: Summary | null; status?: string | null };
 const COMPARISON: Record<string, string> = {
   NO_ADOPTED_PLAN: "채택 없이 저장한 일반 기록이라 계획 대비 비교를 하지 않아요.",
   MONTH_NOT_IN_PLAN: "채택한 계획에 이 달 계획이 없어 비교하지 않아요. 다른 달이나 첫 달 금액으로 대신하지 않아요.",
@@ -52,6 +54,8 @@ const ERRORS: Record<string, string> = {
   CHECKIN_BINDING_CONFLICT: "이 달 기록의 채택 연결이 서로 달라 저장을 멈췄어요. 이력 검토가 필요해요.",
   CHECKIN_ADOPTION_UNAVAILABLE: "이 달 기록에 연결된 채택 정보를 확인할 수 없어 저장을 멈췄어요.",
   FUTURE_MONTH: "아직 오지 않은 달은 기록할 수 없어요.",
+  CHECKIN_MONTH_STILL_OPEN: "아직 이 달이 끝나지 않았어요. 중간 기록으로 저장해 주세요.",
+  CHECKIN_BINDING_LOCKED: "이 달의 최초 채택 연결은 바꿀 수 없어요. 최신 기록을 불러와 주세요.",
 };
 function toBinding(c: CheckinResponse): Binding {
   const v1 = !!c.contract_version;
@@ -76,9 +80,18 @@ function wonToManwon(value: string | null): string {
 const thisMonth = () => new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 7);
 const key = () => `ui-${crypto.randomUUID()}`;
 
-export function PlanCheckin({ view, token, caseId, plan, tasks, onEdit }: { view: ViewResult; token: string; caseId: string; plan: string; tasks: CheckinTask[]; onEdit?: (id: string) => void }) {
+type Props = { view: ViewResult; token: string; caseId: string; plan: string; tasks: CheckinTask[]; onEdit?: (id: string) => void;
+  recordMonth?: string; onMonthChange?: (month: string) => void;
+  onDraftCreated?: (runId: string, version: number) => void; onOpenDraft?: (runId: string) => Promise<void> };
+export function PlanCheckin(props: Props) {
+  const [month, setMonth] = useState(() => props.recordMonth ?? thisMonth());
+  return <div><label className="d-field"><span>기록할 월</span><input type="month" aria-label="기록할 월" value={month} max={thisMonth()}
+    onChange={e => { if (/^\d{4}-(0[1-9]|1[0-2])$/.test(e.target.value)) { setMonth(e.target.value); props.onMonthChange?.(e.target.value); } }} /></label>
+    <PlanCheckinMonth key={`${props.token}:${props.caseId}:${month}`} {...props} month={month} /></div>;
+}
+
+function PlanCheckinMonth({ view, token, caseId, plan, tasks, onEdit, onDraftCreated, onOpenDraft, month }: Props & { month: string }) {
   const base = `/api/be/v1/cases/${encodeURIComponent(caseId)}`;
-  const month = thisMonth();
   const [adoption, setAdoption] = useState<Adoption>(null);
   const [revision, setRevision] = useState(0);
   const [binding, setBinding] = useState<Binding | null>(null);
@@ -89,6 +102,8 @@ export function PlanCheckin({ view, token, caseId, plan, tasks, onEdit }: { view
   const [summary, setSummary] = useState<Summary | null>(null);
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [loadAttempt, setLoadAttempt] = useState(0);
   const [error, setError] = useState("");
   const [past, setPast] = useState<PastMonth[] | null>(null);
   const [pastError, setPastError] = useState("");
@@ -101,6 +116,11 @@ export function PlanCheckin({ view, token, caseId, plan, tasks, onEdit }: { view
     const node = document.getElementById(`${focusPrefix}-${target}`) ?? region.current;
     node?.focus(); node?.scrollIntoView({ block: "center", behavior: "smooth" });
   }
+  const [planHistory, setPlanHistory] = useState<NonNullable<Adoption>[]>([]);
+  const [bindingChoice, setBindingChoice] = useState("");
+  const [scope, setScope] = useState<Scope>({ same_scope_confirmed: false, complete_fields: [] });
+  const [sourceChanged, setSourceChanged] = useState(false);
+  const pendingSave = useRef<{ signature: string; body: object } | null>(null);
 
   const call = useCallback(async (path: string, method = "GET", body?: unknown) => {
     const r = await fetch(base + path, { method, cache: "no-store", body: body === undefined ? undefined : JSON.stringify(body),
@@ -114,20 +134,25 @@ export function PlanCheckin({ view, token, caseId, plan, tasks, onEdit }: { view
     let live = true;
     (async () => {
       try {
-        const [p, c] = await Promise.all([call("/plan"), call(`/checkins/${month}`)]);
+        const [p, c, r] = await Promise.all([call("/plan"), call(`/checkins/${month}`), call(`/checkins/${month}/review`)]);
         if (!live) return;
+        if (r.revision !== c.revision) throw new Error("VERSION_CONFLICT");
         setAdoption(p.adoption);
+        setPlanHistory(p.history);
+        setBindingChoice(c.revision > 0 ? (c.adoption_id ?? "") : "");
         setRevision(c.revision);
         setBinding(toBinding(c));
+        setScope(r.scope ?? { same_scope_confirmed: false, complete_fields: [] });
         if (c.record) {
           setAmounts(Object.fromEntries(Object.entries(c.record.amounts as Record<string, string | null>).map(([k, v]) => [k, wonToManwon(v)])));
           setSavedTasks((c.record.tasks as Task[]).map(t => ({ ...t, reason: t.reason ?? "" })));
           setChanges(c.record.changes); setSummary(c.summary); setStatus(c.status);
         }
+        setLoaded(true);
       } catch (e) { if (live) setError(`저장된 계획·기록을 불러오지 못했어요 (${(e as Error).message}).`); }
     })();
     return () => { live = false; };
-  }, [call, month]);
+  }, [call, month, loadAttempt]);
 
   // Offer this plan's review items as tasks unless a saved record already has its own list.
   // A saved record keeps its own task list; otherwise offer the selected plan's review items.
@@ -141,6 +166,7 @@ export function PlanCheckin({ view, token, caseId, plan, tasks, onEdit }: { view
     try {
       const r = await call("/plan/adoptions", "POST", { request_key: key(), run_id: view.runId, strategy_id: plan });
       setAdoption({ adoption_id: r.adoption_id, run_id: r.run_id, strategy_id: r.strategy_id, input_version: r.input_version, adopted_at: new Date().toISOString() });
+      const latest = await call("/plan"); setPlanHistory(latest.history);
     } catch (e) {
       const code = (e as Error).message;
       setError(code === "RUN_NOT_CURRENT" ? "답변이 바뀌어 이 결과는 최신이 아니에요. 다시 계산·저장한 뒤 선택해 주세요."
@@ -161,10 +187,15 @@ export function PlanCheckin({ view, token, caseId, plan, tasks, onEdit }: { view
     try { converted = Object.fromEntries(AMOUNTS.map(a => [a.key, manwonToWon(amounts[a.key] ?? "")])); }
     catch { setError("금액은 만원 단위 숫자로 입력해 주세요 (소수점 넷째 자리까지)."); return; }
     if (taskRows.some(t => t.state === "HELD" && !t.reason.trim())) { setError("보류한 할 일에는 이유를 적어 주세요."); return; }
+    const body = { expected_revision: revision, status: next,
+      adoption_id: revision > 0 ? binding?.adoptionId ?? null : bindingChoice || null, scope,
+      record: { amounts: converted, tasks: taskRows.map(t => ({ key: t.key, label: t.label, state: t.state, ...(t.reason.trim() ? { reason: t.reason.trim() } : {}) })), changes } };
+    const signature = JSON.stringify(body);
+    if (pendingSave.current?.signature !== signature) pendingSave.current = { signature, body: { ...body, request_key: key() } };
     setBusy(true);
     try {
-      const r = await call(`/checkins/${month}`, "PUT", { expected_revision: revision, request_key: key(), status: next,
-        record: { amounts: converted, tasks: taskRows.map(t => ({ key: t.key, label: t.label, state: t.state, ...(t.reason.trim() ? { reason: t.reason.trim() } : {}) })), changes } });
+      const r = await call(`/checkins/${month}/review-record`, "PUT", pendingSave.current.body);
+      pendingSave.current = null;
       setRevision(r.revision); setBinding(toBinding(r)); setSummary(r.summary); setStatus(r.status); setSavedTasks(taskRows); setEdits({}); setPast(null);
       setDirty(false);
       // Contract: a PUT (or its replay) is the first receipt; read the month again for the latest binding.
@@ -180,41 +211,55 @@ export function PlanCheckin({ view, token, caseId, plan, tasks, onEdit }: { view
   return <section ref={region} tabIndex={-1} className="d-card" aria-label="계획 선택과 이번 달 기록">
     <span className="d-eyebrow">STEP 5 · 6</span>
     <h2 id={`${focusPrefix}-plan`} tabIndex={-1}>계획 선택과 이번 달 기록</h2>
+    {!loaded && <p role="status">{error ? "저장된 기준을 확인할 수 없어 입력·저장을 멈췄어요." : "저장된 채택과 월 기록을 확인 중이에요."}
+      {error && <button type="button" className="d-secondary" onClick={() => { setError(""); setLoadAttempt(n => n + 1); }}>저장 기준 다시 불러오기</button>}</p>}
     <p>선택은 이 계산 결과 중 어떤 계획으로 진행할지 기록하는 거예요. 실제 송금·매매·자동이체는 실행되지 않아요.</p>
     {adoption ? <p className="d-notice">현재 선택한 계획: <strong>{planName(adoption.strategy_id)}</strong> · 입력버전 {adoption.input_version}{adoption.run_id !== view.runId && " · 다른 계산 결과에서 선택함"}</p>
       : <p className="d-note">아직 선택한 계획이 없어요. 계획 없이도 이번 달 기록은 할 수 있어요.</p>}
-    {!adoptedHere && <button className="d-primary" disabled={busy || view.isCurrent === false} onClick={() => void adopt()}>{planName(plan)}으로 진행할게요</button>}
+    {!adoptedHere && <button className="d-primary" disabled={!loaded || busy || view.isCurrent === false || sourceChanged} onClick={() => void adopt()}>{planName(plan)}으로 진행할게요</button>}
+    {sourceChanged && <p className="d-warning">새 입력·계산 초안을 저장했어요. 아래에서 새 초안과 답변을 열어 최신 버전을 확인해 주세요. 기존 채택은 유지돼요.</p>}
     {view.isCurrent === false && <p className="d-warning">이 결과 이후 답변이 바뀌었어요. 최신 입력으로 다시 계산·저장한 결과에서 선택할 수 있어요.</p>}
 
     <h3 id={`${focusPrefix}-record`} tabIndex={-1}>{month} 실제 기록</h3>
     <div id={`${focusPrefix}-basis`} tabIndex={-1}>{binding && <BindingNote binding={binding} month={month}/>}</div>
+    {revision === 0 && <label className="d-field"><span>이 월 기록에 연결할 계획</span><select disabled={!loaded || busy} aria-label="이 월 기록에 연결할 계획" value={bindingChoice} onChange={e => { setDirty(true); setBindingChoice(e.target.value); }}>
+      <option value="">채택 없이 일반 기록으로 저장</option>{planHistory.map(a => <option key={a.adoption_id} value={a.adoption_id}>{planName(a.strategy_id)} · 입력버전 {a.input_version} · {a.adopted_at.slice(0, 10)}</option>)}
+    </select><small>처음 저장한 연결은 나중에 현재 채택이 바뀌어도 유지돼요. 기록월의 계획이 없으면 다른 월로 대신하지 않아요.</small></label>}
     <p className="d-help">할 일 옆 계획 금액은 화면에서 보는 안의 첫 계획 월 기준이에요. 기록 월({month})과 계획 월이 다르면 금액을 직접 비교하지 않아요.</p>
     <p>만원 단위로 입력해요. 빈칸은 &lsquo;아직 입력 안 함&rsquo;, 0은 &lsquo;이번 달 없음&rsquo;이에요. 계획 금액을 실제 금액으로 자동 복사하지 않아요.</p>
     <div className="d-fields">
       {AMOUNTS.map(a => <label key={a.key} className="d-field"><span>{a.label}{a.hint && <small> · {a.hint}</small>}</span>
-        <input id={`${focusPrefix}-${a.key}`} inputMode="decimal" aria-label={`${a.label} (만원)`} value={amounts[a.key] ?? ""} placeholder="미입력"
-          onChange={e => { setDirty(true); setAmounts(v => ({ ...v, [a.key]: e.target.value })); }} /></label>)}
+        <input disabled={!loaded || busy} id={`${focusPrefix}-${a.key}`} inputMode="decimal" aria-label={`${a.label} (만원)`} value={amounts[a.key] ?? ""} placeholder="미입력"
+          onChange={e => { setDirty(true); setAmounts(v => ({ ...v, [a.key]: e.target.value })); setScope(s => ({ ...s, complete_fields: s.complete_fields.filter(k => k !== a.key) })); }} /></label>)}
     </div>
+    <fieldset disabled={!loaded || busy}><legend>계획 대비 비교에 사용할 기록 범위</legend>
+      <label><input type="checkbox" checked={scope.same_scope_confirmed} onChange={e => { setDirty(true); setScope({ same_scope_confirmed: e.target.checked, complete_fields: [] }); }} />채택 계획과 같은 대상·범위의 기록이에요. 아래에서 기록월 전체와 금액 의미를 확인할게요.</label>
+      {Object.entries(scopeLabels).map(([k, label]) => <label key={k} className="d-field"><span><input type="checkbox" disabled={!scope.same_scope_confirmed} checked={scope.complete_fields.includes(k)}
+        onChange={e => { setDirty(true); setScope(s => ({ ...s, complete_fields: e.target.checked ? [...s.complete_fields, k] : s.complete_fields.filter(v => v !== k) })); }} />{label} · 기록월 전체 금액 확인</span></label>)}
+      <p>월이 끝나기 전에는 중간 기록으로 저장해요. 미입력·잔액·평가손익·일시금을 월 납입으로 채우지 않아요. 다른 항목은 이유를 표시하고 비교하지 않아요.</p>
+    </fieldset>
 
     {taskRows.length > 0 && <><h3 id={`${focusPrefix}-tasks`} tabIndex={-1}>이번 달 할 일</h3>
       {taskRows.map((t, i) => <div key={t.key} className="d-row">
         <label className="d-field"><span>{t.label}</span>
-          <select aria-label={`${t.label} 상태`} value={t.state} onChange={e => setTask(i, { state: e.target.value })}>
+          <select disabled={!loaded || busy} aria-label={`${t.label} 상태`} value={t.state} onChange={e => setTask(i, { state: e.target.value })}>
             {Object.entries(STATES).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
           </select></label>
         {t.state === "HELD" && <label className="d-field"><span>보류 이유</span>
-          <input aria-label={`${t.label} 보류 이유`} value={t.reason} onChange={e => setTask(i, { reason: e.target.value })} /></label>}
+          <input disabled={!loaded || busy} aria-label={`${t.label} 보류 이유`} value={t.reason} onChange={e => setTask(i, { reason: e.target.value })} /></label>}
       </div>)}
       <small>할 일 완료는 실제 납입·상환 확인과 달라요. 체크해도 금액이 자동으로 채워지지 않아요.</small></>}
 
     <h3>이번 달 달라진 점</h3>
-    <div className="d-chips" onClick={() => setDirty(true)}>{Object.entries(CHANGES).map(([k, v]) => <button key={k} type="button" aria-pressed={changes.includes(k)}
+    <div className="d-chips" onClick={() => setDirty(true)}>{Object.entries(CHANGES).map(([k, v]) => <button key={k} type="button" disabled={!loaded || busy} aria-pressed={changes.includes(k)}
       onClick={() => setChanges(c => k === "NONE" ? (c.includes("NONE") ? [] : ["NONE"]) : c.includes(k) ? c.filter(x => x !== k) : [...c.filter(x => x !== "NONE"), k])}>{v}</button>)}</div>
 
     <div className="d-toolbar">
-      <button className="d-secondary" disabled={busy || binding?.state === "CONFLICT"} onClick={() => void save("DRAFT")}>임시 저장</button>
-      <button className="d-primary" disabled={busy || binding?.state === "CONFLICT"} onClick={() => void save("CLOSED")}>점검 완료</button>
+      <button className="d-secondary" disabled={!loaded || busy || binding?.state === "CONFLICT"} onClick={() => void save("DRAFT")}>임시 저장</button>
+      <button className="d-primary" disabled={!loaded || busy || binding?.state === "CONFLICT"} onClick={() => void save("CLOSED")}>점검 완료</button>
     </div>
+    <CheckinFollowup key={`${month}:${revision}`} token={token} caseId={caseId} month={month} revision={revision} dirty={dirty} toWon={manwonToWon}
+      onCreated={(runId, version) => { setSourceChanged(true); onDraftCreated?.(runId, version); }} onOpen={onOpenDraft} />
     {error && <p className="d-warning" role="alert">{error}</p>}
     {summary && <div className="d-note" role="status">
       <strong>{month} · {status === "CLOSED" ? "점검 완료" : "중간 기록"} · 저장 {revision}회차</strong>
@@ -246,12 +291,12 @@ function BindingNote({ binding, month }: { binding: Binding; month: string }) {
   }
   const { state, kind, record, current, comparison, review } = binding;
   return <div className={state === "CONFLICT" ? "d-warning" : "d-note"} data-binding={state ?? ""} data-record-kind={kind ?? ""} role={state === "CONFLICT" ? "alert" : undefined}>
-    {state === "UNRECORDED" && <p>{month}은 아직 기록이 없어요. 처음 저장할 때의 현재 채택이 이 달 기준으로 고정돼요.</p>}
+    {state === "UNRECORDED" && <p>{month}은 아직 기록이 없어요. 위 선택 화면에서 이 월의 연결을 명시하고 저장해 주세요.</p>}
     {state === "CONFLICT" && <p><strong>이 달 기록의 채택 연결이 서로 달라 비교와 추가 저장을 멈췄어요.</strong> 이력 검토가 필요해요.</p>}
     {kind === "GENERAL_RECORD" && <p>채택 없이 저장한 일반 기록이에요. 나중에 채택해도 이 달은 계획 실적으로 바뀌지 않아요.</p>}
     {kind === "ADOPTED_PLAN" && record && <p>이 달 기록 기준: <strong>{planName(record.strategy_id)}</strong> · 입력버전 {record.input_version} 채택에 고정돼 있어요.</p>}
     {kind === "ADOPTED_PLAN" && record && current && current.adoption_id !== record.adoption_id && <p>지금 채택한 계획은 {planName(current.strategy_id)} · 입력버전 {current.input_version}이에요. 이 달 기록의 기준은 바뀌지 않아요.</p>}
-    {comparison && <p data-comparison={comparison.state}>{COMPARISON[comparison.state] ?? `계획 대비 비교를 하지 않아요 (${comparison.state}).`}</p>}
+    {comparison && comparison.state !== "POLICY_REQUIRED" && <p data-comparison={comparison.state}>{COMPARISON[comparison.state] ?? `계획 대비 비교를 하지 않아요 (${comparison.state}).`}</p>}
     {review?.action === "CREATE_NEW_DRAFT" && <p>상황이 바뀌었다면 답변을 고쳐 새 초안을 계산해 보세요. 기존 채택은 직접 다시 고르기 전까지 그대로예요.</p>}
   </div>;
 }

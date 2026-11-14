@@ -8,7 +8,7 @@ from __future__ import annotations
 import hashlib
 import json
 import sqlite3
-from contextlib import contextmanager
+from contextlib import contextmanager, nullcontext
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -271,10 +271,10 @@ class RawAnswerStore:
         if row is None:
             conn.execute("INSERT INTO question_definitions VALUES(?,?,?,?,?)", (*key, digest, _json(definition)))
 
-    def save_answer(self, actor_id, case_id, expected_version, request_key, envelope):
+    def save_answer(self, actor_id, case_id, expected_version, request_key, envelope, *, _connection=None):
         envelope = validate_envelope(envelope)
         fingerprint = _digest({"operation": "save", "expected_version": expected_version, "envelope": envelope})
-        with self._transaction(write=True) as conn:
+        with (self._transaction(write=True) if _connection is None else nullcontext(_connection)) as conn:
             case = self._authorize(conn, actor_id, case_id)
             replay = self._replay(conn, case_id, request_key, fingerprint)
             if replay is not None:
