@@ -80,7 +80,8 @@ async def input_preview(case_id: str, sid: str, value=Depends(body), actor=Depen
 
 # The reviewed corpus ships with the repository; without an explicit path the deployed
 # server used to fall back to an empty registry, so R2-b never cited any material.
-BUNDLED_CORPUS = Path(__file__).resolve().parents[3] / "data" / "rag" / "registry" / "corpus.json"
+BUNDLED_CORPUS = (Path(__file__).resolve().parents[3] / "data" / "rag" / "registry"
+                  / "corpus-products-20261115.json")
 
 
 def rag_registry_path():
@@ -89,7 +90,8 @@ def rag_registry_path():
         return None
     if path:
         return Path(path)
-    return BUNDLED_CORPUS if BUNDLED_CORPUS.is_file() else None
+    # A missing deployment asset must fail closed, not look intentionally empty.
+    return BUNDLED_CORPUS
 
 
 @lru_cache

@@ -1,5 +1,5 @@
 """Read-only public evidence scoped to a captured result, never portfolio selection."""
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Literal
 
 from pydantic import Field
@@ -23,7 +23,7 @@ class PortfolioEvidenceRequest(ExactModel):
     expected_input_version: int = Field(ge=0)
     kind: Literal["PRODUCT", "TAX"]
     target_id: str = Field(min_length=1, max_length=80)
-    topic: Literal["risk", "fee", "currency", "liquidity", "tax"]
+    topic: Literal["risk", "fee", "currency", "liquidity", "product", "tax"]
     tax_year: Year | None = None
 
 
@@ -38,17 +38,21 @@ def evidence_query(run, request, now):
     if request.kind == "PRODUCT":
         products = run["result"].get("results", {}).get("OUT-06", {}).get("products", [])
         product = next((p for p in products if p["code"] == request.target_id
-                        and p.get("allocation_role") in {"DEFAULT_SLOT", "COMPARISON_ALTERNATIVE"}), None)
-        if product is None or request.topic not in PRODUCT_TOPICS or request.tax_year is not None:
+                        and (request.topic == "product" or p.get("allocation_role")
+                             in {"DEFAULT_SLOT", "COMPARISON_ALTERNATIVE"})), None)
+        if (product is None or request.topic not in {*PRODUCT_TOPICS, "product"}
+                or request.tax_year is not None):
             raise ValueError("PORTFOLIO_EVIDENCE_TARGET_INVALID")
-        item, year = PRODUCT_TOPICS[request.topic], int(evaluation[:4])
+        item = f"PRD-{product['code']}" if request.topic == "product" else PRODUCT_TOPICS[request.topic]
+        year = int(evaluation[:4])
     else:
         if request.target_id not in TAX_ITEMS or request.topic != "tax":
             raise ValueError("PORTFOLIO_EVIDENCE_TARGET_INVALID")
         item, year = TAX_ITEMS[request.target_id], request.tax_year
     return RetrievalRequest(
         session_scope=_digest(["PORTFOLIO", run["run_id"], run["input_hash"]]), base_run_id=run["run_id"],
-        item_id=item, tax_year=year, effective_on=evaluation, review_on=now.date().isoformat(),
+        item_id=item, tax_year=year, effective_on=evaluation,
+        review_on=now.astimezone(timezone(timedelta(hours=9))).date().isoformat(),
     )
 
 

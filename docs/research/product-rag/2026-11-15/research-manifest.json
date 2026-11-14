@@ -1,0 +1,1085 @@
+{
+  "version": "DION-PRODUCT-RESEARCH-20261115-0.1",
+  "scope": "Drive 지식문서의 AI 내부 검토·상품 후보 조사. 앱 카탈로그·금융정책·배포 변경 없음.",
+  "products": [
+    {
+      "code": "229200",
+      "name": "KODEX 코스닥150",
+      "content_review_status": "검토완료",
+      "review_scope": "확보한 투자설명서의 구조·위험등급·비용 표 범위",
+      "reviewed_on": "2026-11-15",
+      "source_as_of": "2026-07-24",
+      "effective_on": "2026-08-05",
+      "risk_grade": "1",
+      "base_fee": "0.25",
+      "total_expense": "0.2825",
+      "transaction_cost": "0.0401",
+      "source_urls": [
+        "https://www.samsungfund.com/upload/invest/2ETF54-A.pdf",
+        "https://www.samsungfund.com/sheet/20261104/2ETF54_20261031.pdf",
+        "https://www.samsungfund.com/etf/product/view.do?id=2ETF54"
+      ],
+      "old_comparison": {
+        "risk_grade": {
+          "old": 1,
+          "reviewed": "1"
+        },
+        "annual_base_fee_percent": {
+          "old": "0.250",
+          "reviewed": "0.25"
+        },
+        "annual_total_expense_percent": {
+          "old": "0.2825",
+          "reviewed": "0.2825"
+        },
+        "transaction_cost_percent": {
+          "old": "0.0401",
+          "reviewed": "0.0401"
+        }
+      },
+      "issue": null,
+      "recommendation_eligible": false,
+      "recommendation_activation_status": "미연결",
+      "source_files": [
+        {
+          "url": "https://www.samsungfund.com/upload/invest/2ETF54-A.pdf",
+          "sha256": "d170e1f92877a66c3353f01152b205a23191f49227a6ab24d4f1f71ae546d00e",
+          "pages": 67
+        },
+        {
+          "url": "https://www.samsungfund.com/sheet/20261104/2ETF54_20261031.pdf",
+          "sha256": "67cee2131a8129805b4a201bc417590162e0d09fb91740a3fe5a0f3568cec262",
+          "pages": 1
+        }
+      ]
+    },
+    {
+      "code": "379810",
+      "name": "KODEX 미국나스닥100",
+      "content_review_status": "검토완료",
+      "review_scope": "확보한 투자설명서의 구조·위험등급·비용 표 범위",
+      "reviewed_on": "2026-11-15",
+      "source_as_of": "2026-08-07",
+      "effective_on": "2026-08-26",
+      "risk_grade": "2",
+      "base_fee": "0.0062",
+      "total_expense": "0.1003",
+      "transaction_cost": "0.0558",
+      "source_urls": [
+        "https://www.samsungfund.com/upload/invest/2ETFE3-A.pdf",
+        "https://www.samsungfund.com/sheet/20261104/2ETFE3_20261031.pdf",
+        "https://www.samsungfund.com/etf/product/view.do?id=2ETFE3"
+      ],
+      "old_comparison": {
+        "risk_grade": {
+          "old": 2,
+          "reviewed": "2"
+        },
+        "annual_base_fee_percent": {
+          "old": "0.0062",
+          "reviewed": "0.0062"
+        },
+        "annual_total_expense_percent": {
+          "old": "0.1003",
+          "reviewed": "0.1003"
+        },
+        "transaction_cost_percent": {
+          "old": "0.0558",
+          "reviewed": "0.0558"
+        }
+      },
+      "issue": null,
+      "recommendation_eligible": false,
+      "recommendation_activation_status": "미연결",
+      "source_files": [
+        {
+          "url": "https://www.samsungfund.com/upload/invest/2ETFE3-A.pdf",
+          "sha256": "c678e85d4693df7b2529d057e31b040e7f6dbb97046d847c073f1d005856d283",
+          "pages": 71
+        },
+        {
+          "url": "https://www.samsungfund.com/sheet/20261104/2ETFE3_20261031.pdf",
+          "sha256": "e4f4767be0cfff435c97ed43ecc89b0bdfba740f94aeada4f2af4a3ac6653c3c",
+          "pages": 1
+        }
+      ]
+    },
+    {
+      "code": "489250",
+      "name": "KODEX 미국배당다우존스",
+      "content_review_status": "검토완료",
+      "review_scope": "확보한 투자설명서의 구조·위험등급·비용 표 범위",
+      "reviewed_on": "2026-11-15",
+      "source_as_of": "2026-08-07",
+      "effective_on": "2026-08-26",
+      "risk_grade": "2",
+      "base_fee": "0.0099",
+      "total_expense": "0.0887",
+      "transaction_cost": "0.0863",
+      "source_urls": [
+        "https://m.samsungfund.com/upload/invest/2ETFN9-A.pdf",
+        "https://www.samsungfund.com/etf/product/view.do?id=2ETFN9"
+      ],
+      "old_comparison": {
+        "risk_grade": {
+          "old": 2,
+          "reviewed": "2"
+        },
+        "annual_base_fee_percent": {
+          "old": "0.0099",
+          "reviewed": "0.0099"
+        },
+        "annual_total_expense_percent": {
+          "old": "0.0887",
+          "reviewed": "0.0887"
+        },
+        "transaction_cost_percent": {
+          "old": "0.0863",
+          "reviewed": "0.0863"
+        }
+      },
+      "issue": null,
+      "recommendation_eligible": false,
+      "recommendation_activation_status": "미연결",
+      "source_files": [
+        {
+          "url": "https://m.samsungfund.com/upload/invest/2ETFN9-A.pdf",
+          "sha256": "82896191e28df69cb3e3ebdc24e0345c5b6aec2b08939bad5b86b7548d9191cb",
+          "pages": 75
+        }
+      ]
+    },
+    {
+      "code": "325020",
+      "name": "KODEX 배당가치",
+      "content_review_status": "검토완료",
+      "review_scope": "확보한 투자설명서의 구조·위험등급·비용 표 범위",
+      "reviewed_on": "2026-11-15",
+      "source_as_of": "2026-07-24",
+      "effective_on": "2026-08-05",
+      "risk_grade": "2",
+      "base_fee": "0.30",
+      "total_expense": "0.358",
+      "transaction_cost": "0.0736",
+      "source_urls": [
+        "https://m.samsungfund.com/upload/invest/2ETFB9-A.pdf",
+        "https://www.samsungfund.com/etf/product/view.do?id=2ETFB9"
+      ],
+      "old_comparison": {
+        "risk_grade": {
+          "old": null,
+          "reviewed": "2"
+        },
+        "annual_base_fee_percent": {
+          "old": null,
+          "reviewed": "0.30"
+        },
+        "annual_total_expense_percent": {
+          "old": null,
+          "reviewed": "0.358"
+        },
+        "transaction_cost_percent": {
+          "old": null,
+          "reviewed": "0.0736"
+        }
+      },
+      "issue": null,
+      "recommendation_eligible": false,
+      "recommendation_activation_status": "미연결",
+      "source_files": [
+        {
+          "url": "https://m.samsungfund.com/upload/invest/2ETFB9-A.pdf",
+          "sha256": "1a6b22b368e4a35e9afda8134af4709fd7479d9ae5351de818bb8ab2f31b4463",
+          "pages": 69
+        }
+      ]
+    },
+    {
+      "code": "223190",
+      "name": "KODEX 200가치저변동",
+      "content_review_status": "검토완료",
+      "review_scope": "확보한 투자설명서의 구조·위험등급·비용 표 범위",
+      "reviewed_on": "2026-11-15",
+      "source_as_of": "2026-07-24",
+      "effective_on": "2026-08-05",
+      "risk_grade": "2",
+      "base_fee": "0.30",
+      "total_expense": "0.3542",
+      "transaction_cost": "0.0523",
+      "source_urls": [
+        "https://m.samsungfund.com/upload/invest/2ETF51-A.pdf",
+        "https://www.samsungfund.com/etf/product/view.do?id=2ETF51"
+      ],
+      "old_comparison": {
+        "risk_grade": {
+          "old": null,
+          "reviewed": "2"
+        },
+        "annual_base_fee_percent": {
+          "old": null,
+          "reviewed": "0.30"
+        },
+        "annual_total_expense_percent": {
+          "old": null,
+          "reviewed": "0.3542"
+        },
+        "transaction_cost_percent": {
+          "old": null,
+          "reviewed": "0.0523"
+        }
+      },
+      "issue": null,
+      "recommendation_eligible": false,
+      "recommendation_activation_status": "미연결",
+      "source_files": [
+        {
+          "url": "https://m.samsungfund.com/upload/invest/2ETF51-A.pdf",
+          "sha256": "538eee3a76e6982a2ddfca5083e19e4571915b79b5442bb16c814482ad26fd1e",
+          "pages": 67
+        }
+      ]
+    },
+    {
+      "code": "279540",
+      "name": "KODEX 최소변동성",
+      "content_review_status": "검토완료",
+      "review_scope": "확보한 투자설명서의 구조·위험등급·비용 표 범위",
+      "reviewed_on": "2026-11-15",
+      "source_as_of": "2026-09-18",
+      "effective_on": "2026-10-01",
+      "risk_grade": "2",
+      "base_fee": "0.30",
+      "total_expense": "0.3477",
+      "transaction_cost": "0.0535",
+      "source_urls": [
+        "https://m.samsungfund.com/upload/invest/2ETF97-A.pdf",
+        "https://www.samsungfund.com/etf/product/view.do?id=2ETF97"
+      ],
+      "old_comparison": {
+        "risk_grade": {
+          "old": 3,
+          "reviewed": "2"
+        },
+        "annual_base_fee_percent": {
+          "old": "0.300",
+          "reviewed": "0.30"
+        },
+        "annual_total_expense_percent": {
+          "old": null,
+          "reviewed": "0.3477"
+        },
+        "transaction_cost_percent": {
+          "old": null,
+          "reviewed": "0.0535"
+        }
+      },
+      "issue": null,
+      "recommendation_eligible": false,
+      "recommendation_activation_status": "미연결",
+      "source_files": [
+        {
+          "url": "https://m.samsungfund.com/upload/invest/2ETF97-A.pdf",
+          "sha256": "8fbbda9ff4e4d87879fb61bd8ba2829aa23a11eaa4087c5254a62badbd952e57",
+          "pages": 69
+        }
+      ]
+    },
+    {
+      "code": "091160",
+      "name": "KODEX 반도체",
+      "content_review_status": "검토완료",
+      "review_scope": "확보한 투자설명서의 구조·위험등급·비용 표 범위",
+      "reviewed_on": "2026-11-15",
+      "source_as_of": "2026-08-31",
+      "effective_on": "2026-09-16",
+      "risk_grade": "1",
+      "base_fee": "0.45",
+      "total_expense": "0.4625",
+      "transaction_cost": "0.0479",
+      "source_urls": [
+        "https://www.samsungfund.com/upload/invest/2ETF07-A.pdf",
+        "https://www.samsungfund.com/etf/product/view.do?id=2ETF07"
+      ],
+      "old_comparison": {
+        "risk_grade": {
+          "old": 1,
+          "reviewed": "1"
+        },
+        "annual_base_fee_percent": {
+          "old": "0.450",
+          "reviewed": "0.45"
+        },
+        "annual_total_expense_percent": {
+          "old": "0.4625",
+          "reviewed": "0.4625"
+        },
+        "transaction_cost_percent": {
+          "old": "0.0479",
+          "reviewed": "0.0479"
+        }
+      },
+      "issue": null,
+      "recommendation_eligible": false,
+      "recommendation_activation_status": "미연결",
+      "source_files": [
+        {
+          "url": "https://www.samsungfund.com/upload/invest/2ETF07-A.pdf",
+          "sha256": "6cbc45b661bf2fe376ecd832c5deaa755bcdaaa4aa604408d98097b8a9231f9d",
+          "pages": 68
+        }
+      ]
+    },
+    {
+      "code": "305720",
+      "name": "KODEX 2차전지산업",
+      "content_review_status": "검토완료",
+      "review_scope": "확보한 투자설명서의 구조·위험등급·비용 표 범위",
+      "reviewed_on": "2026-11-15",
+      "source_as_of": "2026-07-03",
+      "effective_on": "2026-07-16",
+      "risk_grade": "1",
+      "base_fee": "0.45",
+      "total_expense": "0.5515",
+      "transaction_cost": "0.0682",
+      "source_urls": [
+        "https://m.samsungfund.com/upload/invest/2ETFB1-A.pdf",
+        "https://www.samsungfund.com/etf/product/view.do?id=2ETFB1"
+      ],
+      "old_comparison": {
+        "risk_grade": {
+          "old": 1,
+          "reviewed": "1"
+        },
+        "annual_base_fee_percent": {
+          "old": "0.450",
+          "reviewed": "0.45"
+        },
+        "annual_total_expense_percent": {
+          "old": null,
+          "reviewed": "0.5515"
+        },
+        "transaction_cost_percent": {
+          "old": null,
+          "reviewed": "0.0682"
+        }
+      },
+      "issue": null,
+      "recommendation_eligible": false,
+      "recommendation_activation_status": "미연결",
+      "source_files": [
+        {
+          "url": "https://m.samsungfund.com/upload/invest/2ETFB1-A.pdf",
+          "sha256": "cc63fd9d9a12d8b74b213679b6aff430d070eee3726af88c47dfc5a2571bd40a",
+          "pages": 69
+        }
+      ]
+    },
+    {
+      "code": "114260",
+      "name": "KODEX 국고채3년",
+      "content_review_status": "검토완료",
+      "review_scope": "확보한 투자설명서의 구조·위험등급·비용 표 범위",
+      "reviewed_on": "2026-11-15",
+      "source_as_of": "2026-09-18",
+      "effective_on": "2026-10-01",
+      "risk_grade": "5",
+      "base_fee": "0.15",
+      "total_expense": "0.1683",
+      "transaction_cost": "0.0063",
+      "source_urls": [
+        "https://m.samsungfund.com/upload/invest/2ETF19-A.pdf",
+        "https://www.samsungfund.com/etf/product/view.do?id=2ETF19"
+      ],
+      "old_comparison": {
+        "risk_grade": {
+          "old": 5,
+          "reviewed": "5"
+        },
+        "annual_base_fee_percent": {
+          "old": "0.150",
+          "reviewed": "0.15"
+        },
+        "annual_total_expense_percent": {
+          "old": null,
+          "reviewed": "0.1683"
+        },
+        "transaction_cost_percent": {
+          "old": null,
+          "reviewed": "0.0063"
+        }
+      },
+      "issue": null,
+      "recommendation_eligible": false,
+      "recommendation_activation_status": "미연결",
+      "source_files": [
+        {
+          "url": "https://m.samsungfund.com/upload/invest/2ETF19-A.pdf",
+          "sha256": "1b116ecb5aa222523df050406f2b27eadb6ef42b798d08d51ef6c2b97f531d6a",
+          "pages": 65
+        }
+      ]
+    },
+    {
+      "code": "471230",
+      "name": "KODEX 국고채10년액티브",
+      "content_review_status": "검토완료",
+      "review_scope": "확보한 투자설명서의 구조·위험등급·비용 표 범위",
+      "reviewed_on": "2026-11-15",
+      "source_as_of": "2026-07-31",
+      "effective_on": "2026-08-13",
+      "risk_grade": "5",
+      "base_fee": "0.015",
+      "total_expense": "0.0286",
+      "transaction_cost": "0.0083",
+      "source_urls": [
+        "https://m.samsungfund.com/upload/invest/2ETFL6-A.pdf",
+        "https://www.samsungfund.com/etf/product/view.do?id=2ETFL6"
+      ],
+      "old_comparison": {
+        "risk_grade": {
+          "old": null,
+          "reviewed": "5"
+        },
+        "annual_base_fee_percent": {
+          "old": null,
+          "reviewed": "0.015"
+        },
+        "annual_total_expense_percent": {
+          "old": null,
+          "reviewed": "0.0286"
+        },
+        "transaction_cost_percent": {
+          "old": null,
+          "reviewed": "0.0083"
+        }
+      },
+      "issue": null,
+      "recommendation_eligible": false,
+      "recommendation_activation_status": "미연결",
+      "source_files": [
+        {
+          "url": "https://m.samsungfund.com/upload/invest/2ETFL6-A.pdf",
+          "sha256": "9a741323930d43bec0007bf08db4cdf1e147b9d1ba33126900dc2d81e6d81738",
+          "pages": 71
+        }
+      ]
+    },
+    {
+      "code": "439870",
+      "name": "KODEX 국고채30년액티브",
+      "content_review_status": "검토완료",
+      "review_scope": "확보한 투자설명서의 구조·위험등급·비용 표 범위",
+      "reviewed_on": "2026-11-15",
+      "source_as_of": "2026-07-31",
+      "effective_on": "2026-08-13",
+      "risk_grade": "3",
+      "base_fee": "0.05",
+      "total_expense": "0.0646",
+      "transaction_cost": "0.0109",
+      "source_urls": [
+        "https://m.samsungfund.com/upload/invest/2ETFH3-A.pdf",
+        "https://www.samsungfund.com/etf/product/view.do?id=2ETFH3"
+      ],
+      "old_comparison": {
+        "risk_grade": {
+          "old": 5,
+          "reviewed": "3"
+        },
+        "annual_base_fee_percent": {
+          "old": "0.050",
+          "reviewed": "0.05"
+        },
+        "annual_total_expense_percent": {
+          "old": null,
+          "reviewed": "0.0646"
+        },
+        "transaction_cost_percent": {
+          "old": null,
+          "reviewed": "0.0109"
+        }
+      },
+      "issue": null,
+      "recommendation_eligible": false,
+      "recommendation_activation_status": "미연결",
+      "source_files": [
+        {
+          "url": "https://m.samsungfund.com/upload/invest/2ETFH3-A.pdf",
+          "sha256": "f2aa249325f1874c0003b5170d462bdd64bef2d5bc01293ec83d9c707b1a1438",
+          "pages": 70
+        }
+      ]
+    },
+    {
+      "code": "273130",
+      "name": "KODEX 종합채권(AA-이상)액티브",
+      "content_review_status": "검토완료",
+      "review_scope": "확보한 투자설명서의 구조·위험등급·비용 표 범위",
+      "reviewed_on": "2026-11-15",
+      "source_as_of": "2026-07-31",
+      "effective_on": "2026-08-13",
+      "risk_grade": "5",
+      "base_fee": "0.045",
+      "total_expense": "0.0593",
+      "transaction_cost": "0.0267",
+      "source_urls": [
+        "https://www.samsungfund.com/upload/invest/2ETF88-A.pdf",
+        "https://www.samsungfund.com/etf/product/view.do?id=2ETF88"
+      ],
+      "old_comparison": {
+        "risk_grade": {
+          "old": 5,
+          "reviewed": "5"
+        },
+        "annual_base_fee_percent": {
+          "old": "0.045",
+          "reviewed": "0.045"
+        },
+        "annual_total_expense_percent": {
+          "old": "0.0595",
+          "reviewed": "0.0593"
+        },
+        "transaction_cost_percent": {
+          "old": "0.0127",
+          "reviewed": "0.0267"
+        }
+      },
+      "issue": null,
+      "recommendation_eligible": false,
+      "recommendation_activation_status": "미연결",
+      "source_files": [
+        {
+          "url": "https://www.samsungfund.com/upload/invest/2ETF88-A.pdf",
+          "sha256": "dc13961755f462f6fb4669a299092d5feacf6de0146732f399d87a5ee1894e74",
+          "pages": 66
+        }
+      ]
+    },
+    {
+      "code": "0091C0",
+      "name": "KODEX 미국10년국채액티브(H)",
+      "content_review_status": "보류",
+      "review_scope": "직접 확인한 공식 상품 페이지·날짜가 표시된 자료의 기본 설명 범위",
+      "reviewed_on": "2026-11-15",
+      "source_as_of": "2025-09-30 가이드 / 2026-11-11 공식 공지",
+      "effective_on": "미확인",
+      "risk_grade": "5 (공식 공지 표시)",
+      "base_fee": null,
+      "total_expense": null,
+      "transaction_cost": null,
+      "source_urls": [
+        "https://www.samsungfund.com/upload/kodex/newsroom/20251016084306186.pdf",
+        "https://www.samsungfund.com/etf/lounge/notice-view.do?no=80913"
+      ],
+      "old_comparison": {
+        "risk_grade": {
+          "old": null,
+          "reviewed": "5 (공식 공지 표시)"
+        },
+        "annual_base_fee_percent": {
+          "old": null,
+          "reviewed": null
+        },
+        "annual_total_expense_percent": {
+          "old": null,
+          "reviewed": null
+        },
+        "transaction_cost_percent": {
+          "old": null,
+          "reviewed": null
+        }
+      },
+      "issue": "2026-11-11 공지 총보수 0.225%와 구성 0.119+0.001+0.020+0.010=0.150% 불일치. 최신 설명서 미확보로 현재 비용 확정·비용순위 사용 보류.",
+      "recommendation_eligible": false,
+      "recommendation_activation_status": "미연결",
+      "source_files": []
+    },
+    {
+      "code": "488770",
+      "name": "KODEX 머니마켓액티브",
+      "content_review_status": "검토완료",
+      "review_scope": "확보한 투자설명서의 구조·위험등급·비용 표 범위",
+      "reviewed_on": "2026-11-15",
+      "source_as_of": "2026-07-31",
+      "effective_on": "2026-08-13",
+      "risk_grade": "5",
+      "base_fee": "0.05",
+      "total_expense": "0.063",
+      "transaction_cost": "0.0013",
+      "source_urls": [
+        "https://www.samsungfund.com/upload/invest/2ETFO1-A.pdf",
+        "https://www.samsungfund.com/sheet/20261104/2ETFO1_20261031.pdf",
+        "https://www.samsungfund.com/etf/product/view.do?id=2ETFO1"
+      ],
+      "old_comparison": {
+        "risk_grade": {
+          "old": 5,
+          "reviewed": "5"
+        },
+        "annual_base_fee_percent": {
+          "old": "0.050",
+          "reviewed": "0.05"
+        },
+        "annual_total_expense_percent": {
+          "old": "0.063",
+          "reviewed": "0.063"
+        },
+        "transaction_cost_percent": {
+          "old": "0.0013",
+          "reviewed": "0.0013"
+        }
+      },
+      "issue": null,
+      "recommendation_eligible": false,
+      "recommendation_activation_status": "미연결",
+      "source_files": [
+        {
+          "url": "https://www.samsungfund.com/upload/invest/2ETFO1-A.pdf",
+          "sha256": "387b3591a76fa70b96af8f1f9149768ed69bbdd892706d32776d0c206e421921",
+          "pages": 75
+        },
+        {
+          "url": "https://www.samsungfund.com/sheet/20261104/2ETFO1_20261031.pdf",
+          "sha256": "99904a9fe60fad33d27a821a3269e41bb56c4c3b958b76f53a00b36a18118848",
+          "pages": 1
+        }
+      ]
+    },
+    {
+      "code": "423160",
+      "name": "KODEX KOFR금리액티브(합성)",
+      "content_review_status": "검토완료",
+      "review_scope": "확보한 투자설명서의 구조·위험등급·비용 표 범위",
+      "reviewed_on": "2026-11-15",
+      "source_as_of": "2026-07-31",
+      "effective_on": "2026-08-13",
+      "risk_grade": "6",
+      "base_fee": "0.05",
+      "total_expense": "0.0594",
+      "transaction_cost": "0.0009",
+      "source_urls": [
+        "https://www.samsungfund.com/upload/invest/2ETFG6-A.pdf",
+        "https://www.samsungfund.com/sheet/20261104/2ETFG6_20261031.pdf",
+        "https://www.samsungfund.com/etf/product/view.do?id=2ETFG6"
+      ],
+      "old_comparison": {
+        "risk_grade": {
+          "old": 2,
+          "reviewed": "6"
+        },
+        "annual_base_fee_percent": {
+          "old": "0.050",
+          "reviewed": "0.05"
+        },
+        "annual_total_expense_percent": {
+          "old": null,
+          "reviewed": "0.0594"
+        },
+        "transaction_cost_percent": {
+          "old": null,
+          "reviewed": "0.0009"
+        }
+      },
+      "issue": null,
+      "recommendation_eligible": false,
+      "recommendation_activation_status": "미연결",
+      "source_files": [
+        {
+          "url": "https://www.samsungfund.com/upload/invest/2ETFG6-A.pdf",
+          "sha256": "cfa7c378ed9e2e302d7bb909a38dff591ad8607439efe377a9e860e0d5b11565",
+          "pages": 78
+        },
+        {
+          "url": "https://www.samsungfund.com/sheet/20261104/2ETFG6_20261031.pdf",
+          "sha256": "6cf571e0f351a8b173491e8a26e42f3de00e4e5f08726f6dfd42e957c72a9a79",
+          "pages": 1
+        }
+      ]
+    },
+    {
+      "code": "459580",
+      "name": "KODEX CD금리액티브(합성)",
+      "content_review_status": "검토완료",
+      "review_scope": "확보한 투자설명서의 구조·위험등급·비용 표 범위",
+      "reviewed_on": "2026-11-15",
+      "source_as_of": "2026-07-31",
+      "effective_on": "2026-08-13",
+      "risk_grade": "4",
+      "base_fee": "0.02",
+      "total_expense": "0.0308",
+      "transaction_cost": "0.0069",
+      "source_urls": [
+        "https://m.samsungfund.com/upload/invest/2ETFJ8-A.pdf",
+        "https://www.samsungfund.com/etf/product/view.do?id=2ETFJ8"
+      ],
+      "old_comparison": {
+        "risk_grade": {
+          "old": 4,
+          "reviewed": "4"
+        },
+        "annual_base_fee_percent": {
+          "old": "0.020",
+          "reviewed": "0.02"
+        },
+        "annual_total_expense_percent": {
+          "old": null,
+          "reviewed": "0.0308"
+        },
+        "transaction_cost_percent": {
+          "old": null,
+          "reviewed": "0.0069"
+        }
+      },
+      "issue": null,
+      "recommendation_eligible": false,
+      "recommendation_activation_status": "미연결",
+      "source_files": [
+        {
+          "url": "https://m.samsungfund.com/upload/invest/2ETFJ8-A.pdf",
+          "sha256": "e6262e22221bbb39eb4f43fd2e5c38a7cbd26b9e2ea1c9862943b50a297f1440",
+          "pages": 81
+        }
+      ]
+    },
+    {
+      "code": "481050",
+      "name": "KODEX CD1년금리플러스액티브(합성)",
+      "content_review_status": "검토완료",
+      "review_scope": "확보한 투자설명서의 구조·위험등급·비용 표 범위",
+      "reviewed_on": "2026-11-15",
+      "source_as_of": "2026-07-09",
+      "effective_on": "2026-07-22",
+      "risk_grade": "4",
+      "base_fee": "0.05",
+      "total_expense": "0.0642",
+      "transaction_cost": "0.0032",
+      "source_urls": [
+        "https://m.samsungfund.com/upload/invest/2ETFM7-A.pdf",
+        "https://www.samsungfund.com/etf/product/view.do?id=2ETFM7"
+      ],
+      "old_comparison": {
+        "risk_grade": {
+          "old": 4,
+          "reviewed": "4"
+        },
+        "annual_base_fee_percent": {
+          "old": "0.050",
+          "reviewed": "0.05"
+        },
+        "annual_total_expense_percent": {
+          "old": null,
+          "reviewed": "0.0642"
+        },
+        "transaction_cost_percent": {
+          "old": null,
+          "reviewed": "0.0032"
+        }
+      },
+      "issue": null,
+      "recommendation_eligible": false,
+      "recommendation_activation_status": "미연결",
+      "source_files": [
+        {
+          "url": "https://m.samsungfund.com/upload/invest/2ETFM7-A.pdf",
+          "sha256": "0bde4b51baccbb48b9b53f03af6a0cc619bb3f45da1760882c8fa6b105ed8e00",
+          "pages": 86
+        }
+      ]
+    },
+    {
+      "code": "469830",
+      "name": "SOL 초단기채권액티브",
+      "content_review_status": "검토완료",
+      "review_scope": "직접 확인한 공식 상품 페이지·날짜가 표시된 자료의 기본 설명 범위",
+      "reviewed_on": "2026-11-15",
+      "source_as_of": "페이지 기준일 미표시 / 2026-11-15 조회",
+      "effective_on": "미확인",
+      "risk_grade": "미확인",
+      "base_fee": "0.05",
+      "total_expense": null,
+      "transaction_cost": null,
+      "source_urls": [
+        "https://www.soletf.com/ko/fund/etf/211038?tabIndex=1"
+      ],
+      "old_comparison": {
+        "risk_grade": {
+          "old": null,
+          "reviewed": "미확인"
+        },
+        "annual_base_fee_percent": {
+          "old": "0.050",
+          "reviewed": "0.05"
+        },
+        "annual_total_expense_percent": {
+          "old": null,
+          "reviewed": null
+        },
+        "transaction_cost_percent": {
+          "old": null,
+          "reviewed": null
+        }
+      },
+      "issue": null,
+      "recommendation_eligible": false,
+      "recommendation_activation_status": "미연결",
+      "source_files": []
+    },
+    {
+      "code": "436140",
+      "name": "SOL 종합채권(AA-이상)액티브",
+      "content_review_status": "검토완료",
+      "review_scope": "직접 확인한 공식 상품 페이지·날짜가 표시된 자료의 기본 설명 범위",
+      "reviewed_on": "2026-11-15",
+      "source_as_of": "페이지 기준일 미표시 / 2026-11-15 조회",
+      "effective_on": "미확인",
+      "risk_grade": "미확인",
+      "base_fee": "0.04",
+      "total_expense": null,
+      "transaction_cost": null,
+      "source_urls": [
+        "https://www.soletf.com/ko/fund/etf/210932?tabIndex=1"
+      ],
+      "old_comparison": {
+        "risk_grade": {
+          "old": null,
+          "reviewed": "미확인"
+        },
+        "annual_base_fee_percent": {
+          "old": "0.040",
+          "reviewed": "0.04"
+        },
+        "annual_total_expense_percent": {
+          "old": null,
+          "reviewed": null
+        },
+        "transaction_cost_percent": {
+          "old": null,
+          "reviewed": null
+        }
+      },
+      "issue": null,
+      "recommendation_eligible": false,
+      "recommendation_activation_status": "미연결",
+      "source_files": []
+    },
+    {
+      "code": "446720",
+      "name": "SOL 미국배당다우존스",
+      "content_review_status": "검토완료",
+      "review_scope": "직접 확인한 공식 상품 페이지·날짜가 표시된 자료의 기본 설명 범위",
+      "reviewed_on": "2026-11-15",
+      "source_as_of": "페이지 기준일 미표시 / 2026-11-15 조회",
+      "effective_on": "미확인",
+      "risk_grade": "미확인",
+      "base_fee": "0.01",
+      "total_expense": null,
+      "transaction_cost": null,
+      "source_urls": [
+        "https://www.soletf.com/ko/fund/etf/210942?tabIndex=1"
+      ],
+      "old_comparison": {
+        "risk_grade": {
+          "old": null,
+          "reviewed": "미확인"
+        },
+        "annual_base_fee_percent": {
+          "old": "0.010",
+          "reviewed": "0.01"
+        },
+        "annual_total_expense_percent": {
+          "old": null,
+          "reviewed": null
+        },
+        "transaction_cost_percent": {
+          "old": null,
+          "reviewed": null
+        }
+      },
+      "issue": null,
+      "recommendation_eligible": false,
+      "recommendation_activation_status": "미연결",
+      "source_files": []
+    },
+    {
+      "code": "102110",
+      "name": "TIGER 200",
+      "content_review_status": "검토완료",
+      "review_scope": "직접 확인한 공식 상품 페이지·날짜가 표시된 자료의 기본 설명 범위",
+      "reviewed_on": "2026-11-15",
+      "source_as_of": "2026-02-13",
+      "effective_on": "미확인",
+      "risk_grade": "2",
+      "base_fee": "0.05",
+      "total_expense": "0.07",
+      "transaction_cost": "0.0183",
+      "source_urls": [
+        "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf"
+      ],
+      "old_comparison": {
+        "risk_grade": {
+          "old": 2,
+          "reviewed": "2"
+        },
+        "annual_base_fee_percent": {
+          "old": "0.050",
+          "reviewed": "0.05"
+        },
+        "annual_total_expense_percent": {
+          "old": "0.070",
+          "reviewed": "0.07"
+        },
+        "transaction_cost_percent": {
+          "old": "0.0183",
+          "reviewed": "0.0183"
+        }
+      },
+      "issue": null,
+      "recommendation_eligible": false,
+      "recommendation_activation_status": "미연결",
+      "source_files": [
+        {
+          "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+          "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
+          "pages": 50
+        }
+      ]
+    },
+    {
+      "code": "133690",
+      "name": "TIGER 미국나스닥100",
+      "content_review_status": "검토완료",
+      "review_scope": "직접 확인한 공식 상품 페이지·날짜가 표시된 자료의 기본 설명 범위",
+      "reviewed_on": "2026-11-15",
+      "source_as_of": "2026-02-13",
+      "effective_on": "미확인",
+      "risk_grade": "2",
+      "base_fee": "0.0068",
+      "total_expense": "0.1268",
+      "transaction_cost": "0.0404",
+      "source_urls": [
+        "https://www.tigeretf.com/upload/etf/20250404024808002792.pdf",
+        "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf"
+      ],
+      "old_comparison": {
+        "risk_grade": {
+          "old": 2,
+          "reviewed": "2"
+        },
+        "annual_base_fee_percent": {
+          "old": "0.0068",
+          "reviewed": "0.0068"
+        },
+        "annual_total_expense_percent": {
+          "old": "0.1268",
+          "reviewed": "0.1268"
+        },
+        "transaction_cost_percent": {
+          "old": null,
+          "reviewed": "0.0404"
+        }
+      },
+      "issue": null,
+      "recommendation_eligible": false,
+      "recommendation_activation_status": "미연결",
+      "source_files": [
+        {
+          "url": "https://www.tigeretf.com/upload/etf/20250404024808002792.pdf",
+          "sha256": "16313615a54c56cb33d3e0a8b526aeadc347f7533bbaf1e010375c2a4fdc583a",
+          "pages": 1
+        },
+        {
+          "url": "https://securities.miraeasset.com/public/hks4412/040/ETFGUIDE.pdf",
+          "sha256": "9c8fdc9e2d2ee1e9754d2b01ceac7e4458371923f61215d16e9f3c3627c3871a",
+          "pages": 50
+        }
+      ]
+    },
+    {
+      "code": "458730",
+      "name": "TIGER 미국배당다우존스",
+      "content_review_status": "검토완료",
+      "review_scope": "직접 확인한 공식 상품 페이지·날짜가 표시된 자료의 기본 설명 범위",
+      "reviewed_on": "2026-11-15",
+      "source_as_of": "2025-05-30",
+      "effective_on": "미확인",
+      "risk_grade": "미확인",
+      "base_fee": null,
+      "total_expense": null,
+      "transaction_cost": null,
+      "source_urls": [
+        "https://www.tigeretf.com/upload/etf/20250611092637005053.pdf"
+      ],
+      "old_comparison": {
+        "risk_grade": {
+          "old": null,
+          "reviewed": "미확인"
+        },
+        "annual_base_fee_percent": {
+          "old": null,
+          "reviewed": null
+        },
+        "annual_total_expense_percent": {
+          "old": null,
+          "reviewed": null
+        },
+        "transaction_cost_percent": {
+          "old": null,
+          "reviewed": null
+        }
+      },
+      "issue": null,
+      "recommendation_eligible": false,
+      "recommendation_activation_status": "미연결",
+      "source_files": [
+        {
+          "url": "https://www.tigeretf.com/upload/etf/20250611092637005053.pdf",
+          "sha256": "94b55480646c4edd0cb1a58cdbeb137f9550826b01104cc0d6dbd5e0b7f87e72",
+          "pages": 1
+        }
+      ]
+    },
+    {
+      "code": "114820",
+      "name": "TIGER 국채3년",
+      "content_review_status": "검토완료",
+      "review_scope": "직접 확인한 공식 상품 페이지·날짜가 표시된 자료의 기본 설명 범위",
+      "reviewed_on": "2026-11-15",
+      "source_as_of": "2025-06-30",
+      "effective_on": "미확인",
+      "risk_grade": "미확인",
+      "base_fee": null,
+      "total_expense": null,
+      "transaction_cost": null,
+      "source_urls": [
+        "https://www.tigeretf.com/upload/etf/20250708095820005220.pdf"
+      ],
+      "old_comparison": {
+        "risk_grade": {
+          "old": null,
+          "reviewed": "미확인"
+        },
+        "annual_base_fee_percent": {
+          "old": null,
+          "reviewed": null
+        },
+        "annual_total_expense_percent": {
+          "old": null,
+          "reviewed": null
+        },
+        "transaction_cost_percent": {
+          "old": null,
+          "reviewed": null
+        }
+      },
+      "issue": null,
+      "recommendation_eligible": false,
+      "recommendation_activation_status": "미연결",
+      "source_files": [
+        {
+          "url": "https://www.tigeretf.com/upload/etf/20250708095820005220.pdf",
+          "sha256": "30acda57add7663c61634c89586cd043a08ec129b8443faaf9b153983becc069",
+          "pages": 1
+        }
+      ]
+    }
+  ]
+}

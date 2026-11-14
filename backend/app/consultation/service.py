@@ -30,7 +30,8 @@ from .evidence import (
     select_question,
 )
 from .model_proposal import VERSION as MODEL_PROPOSAL_VERSION
-from .model_proposal import groundable, review_proposal
+from .model_proposal import review_proposal
+from .natural_proposal import review_model_proposal, should_extract
 from .policy import ALLOWED, REGISTRY, VERSION_HASH, classify, guidance
 
 
@@ -256,9 +257,7 @@ class ConsultationService:
         if (operation == "turn" and request.message.strip()
                 and (self.oneport_provider or self.oneport_configuration_error)
                 and classify(request.message)["intent"] != "UNSUPPORTED"
-                # Questions ("왜 0원이야?") cannot become an evidence candidate; do not spend a call
-                # that the server-side grounding check would reject as MODEL_PROPOSAL_INVALID.
-                and groundable(request.message)):
+                and should_extract(request.message)):
             payload, review_code = self._extract_oneport(store, actor, case_id, sid, request, fingerprint)
         with self.lock:
             self._cleanup(store, actor, case_id)
@@ -406,7 +405,8 @@ class ConsultationService:
 
     def _model_turn(self, state, run, message, turn_id, payload, review_code):
         try:
-            reason, answer = review_proposal(payload, message, state)
+            reviewer = review_model_proposal if review_code == "ONEPORT_PROPOSAL_REVIEWED" else review_proposal
+            reason, answer = reviewer(payload, message, state)
         except ValueError:
             fail("MODEL_PROPOSAL_INVALID", 422)
         if reason:
@@ -417,6 +417,7 @@ class ConsultationService:
                 "MEANING_NOT_RESOLVED": "한 가지 항목의 값과 단위를 확인해 주세요.",
                 "OUTSIDE_SUPPORTED_FIELDS": "이 결과의 상담에서 지원하지 않는 항목이에요.",
                 "RELATIVE_CHANGE_DEFERRED": "증감 요청을 기록할 수 없어요. 가정할 총액을 직접 확인해 주세요.",
+                "MULTIPLE_INTENTS": "여러 항목의 금액을 읽었어요. 한 번에 한 항목씩 확인할게요. 확인할 항목 하나와 금액을 다시 보내 주세요.",
             }[reason]
             state.update(intent=intent, progress="ACTIVE", guidance=prompt,
                          classification={"intent": intent, "reason_code": reason, "candidates": []})

@@ -1,8 +1,9 @@
 """Registered public evidence, scoped retrieval and ID-only answer contracts."""
+import re
 from datetime import date
 from hashlib import sha256
 from typing import Annotated, Literal
-from urllib.parse import urlsplit
+from urllib.parse import unquote, urlsplit
 
 from pydantic import AfterValidator, ConfigDict, Field, model_validator
 
@@ -27,6 +28,24 @@ Year = Annotated[int, Field(ge=1900, le=2200)]
 Version = Annotated[str, Field(pattern=r"^[A-Za-z0-9][A-Za-z0-9._-]{0,79}$")]
 Label = Annotated[str, Field(min_length=1, max_length=240)]
 ReviewStatus = Literal["UNRESEARCHED", "PENDING_REVIEW", "APPROVED", "WITHDRAWN", "CONFLICTING"]
+SourceKind = Literal["OFFICIAL_DOCUMENT", "REVIEWED_SERVICE_POLICY", "REVIEWED_SUMMARY", "SYNTHETIC_TEST"]
+
+
+def valid_source_url(value):
+    """Accept a URL, never a Markdown link or a partially extracted link."""
+    try:
+        url = urlsplit(value)
+        port = url.port
+    except ValueError:
+        return False
+    decoded = unquote(value)
+    return bool(url.scheme == "https" and url.hostname and not url.username and not url.password
+                and (port is None or 0 < port <= 65535)
+                and not any(c in value for c in '\\[]<>"`*')
+                and not any(c.isspace() or ord(c) < 32 or ord(c) == 127 for c in value)
+                and not re.search(r"%(?![0-9A-Fa-f]{2})", value)
+                and not any(ord(c) < 32 or ord(c) == 127 for c in decoded)
+                and "](" not in decoded and "<" not in decoded and ">" not in decoded)
 
 
 class Record(ExactModel):
@@ -42,7 +61,7 @@ class SchemeEvidenceRequest(Mutation):
 class SourceDocument(Record):
     source_id: Id
     source_version: Version
-    source_kind: Literal["OFFICIAL_DOCUMENT", "REVIEWED_SERVICE_POLICY", "SYNTHETIC_TEST"]
+    source_kind: SourceKind
     access_scope: Literal["PUBLIC"]
     official_url: str = Field(max_length=2048)
     title: Label
@@ -61,11 +80,7 @@ class SourceDocument(Record):
 
     @model_validator(mode="after")
     def integrity(self):
-        url = urlsplit(self.official_url)
-        if (not self.source_id.startswith("SRC-") or url.scheme != "https" or not url.hostname
-                or url.username or url.password or "\\" in self.official_url
-                or any(c in self.official_url for c in "*<>[]")
-                or any(c.isspace() or ord(c) < 32 for c in self.official_url)
+        if (not self.source_id.startswith("SRC-") or not valid_source_url(self.official_url)
                 or self.content_sha256 != text_hash(self.original_text)
                 or (self.effective_to is not None and self.effective_to < self.effective_from)
                 or len(set(self.applicable_tax_years)) != len(self.applicable_tax_years)):
@@ -162,6 +177,7 @@ class RetrievalRequest(Record):
 
 
 class RetrievedEvidence(Record):
+    source_kind: SourceKind = "OFFICIAL_DOCUMENT"
     citation_id: Id
     chunk_id: Id
     chunk_sha256: Hash
