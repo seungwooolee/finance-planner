@@ -10,11 +10,11 @@ const topics = {risk: ["위험등급", "CON-01"], fee: ["비용 비교", "CON-03
 const taxItems: Record<string, string> = {"pension-contribution": "TAX-01", "isa-account": "TAX-02", "isa-maturity": "TAX-03", "monthly-rent": "TAX-04", "sme-employment": "TAX-05", "marriage-credit": "TAX-06", "marriage-birth-gift": "TAX-07", "pension-withdrawal": "TAX-08"};
 type Result = {answer: Answer; retrievedAt: string; year: number | null};
 
-export function PortfolioEvidence({access, kind, targetId, stale = false, referenceOnly = false}: {
-  access?: EvidenceAccess; kind: "PRODUCT" | "TAX"; targetId: string; stale?: boolean; referenceOnly?: boolean;
+export function PortfolioEvidence({access, kind, targetId, stale = false, referenceOnly = false, initialTopic = "fee"}: {
+  access?: EvidenceAccess; kind: "PRODUCT" | "TAX"; targetId: string; stale?: boolean; referenceOnly?: boolean; initialTopic?: keyof typeof topics;
 }) {
   const id = useId();
-  const [topic, setTopic] = useState<keyof typeof topics>(referenceOnly ? "product" : "fee");
+  const [topic, setTopic] = useState<keyof typeof topics>(referenceOnly ? "product" : initialTopic);
   const [year, setYear] = useState("");
   const [result, setResult] = useState<Result | null>(null);
   const [error, setError] = useState("");

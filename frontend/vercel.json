@@ -3,6 +3,7 @@
   "git": {
     "deploymentEnabled": {
       "codex/product-rag-review-20261115": false,
+      "codex/result-action-consultation-20261115": false,
       "codex/preference-composition-20261115": false,
       "codex/palette-polish": false,
       "codex/peer-reference-research-20261114": false,
