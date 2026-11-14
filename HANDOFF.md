@@ -1,11 +1,20 @@
 # 최신 채팅 전용 AI 비서 — 2026-11-15
 
+PR #72 후속 충돌 해소: integration `e29cbbf`의 참고 통계 그래프 변경과 양측 인계·개발 기록·Vercel 배포 차단을 모두 보존했다. JSON 구조/배포 차단 및 diff 공백 검사 완료, 최신 Core 결과는 PR에 기록한다. 병합·배포는 실행하지 않는다.
+
 구현 후보: `e3b8054e51c31437281b8f67f0071e865c161923`, branch `codex/chat-only-assistant-20261115`. PR 링크와 최종 CI는 PR 설명에 기록한다.
 
 
 상담창의 탭·설문 카드·FAQ를 제거하고 하나의 대화와 입력창으로 연결했다. 실제 OnePort6회(브라우저2회 포함) 검증 성공.
 [계약·검증·제한·후보](docs/integration/2026-11-15-chat-only-assistant.md).
 금액/비중은 기존 엔진, 후보 반영/계산/저장/최종 검토는 명시 행동을 유지한다. 아래 기록은 이전 이력이다.
+
+# 참고 통계 그래프 연결 인계 — 2026-11-15
+
+`codex/reference-chart-connect-20261115`: [원인·수정·검사·배포 담당 조치](docs/integration/2026-11-15-reference-chart-connect-HANDOFF.md).
+배포 BE 새 계산 응답의 통계 누락과 생활단계 그래프 부족을 구분했다. FE 표시 개선·관련 컴포넌트 검사 완료.
+실제 배포 사이트 반영은 BE 통합본 반영 및 별도 FE 병합/배포가 필요하다. 병합·배포·운영 DB 변경은 하지 않았다.
+
 # 로그인 복구·초기 계산 연결 인계 — 2026-11-15
 
 `codex/login-calculation-20261115`: [계약·검사·운영 미검증](docs/integration/2026-11-15-login-calculation.md).
