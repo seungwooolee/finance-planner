@@ -1,0 +1,12 @@
+{
+  "version": "DION-RISK-RECHECK-20261115-1.0",
+  "reviewed_on": "2026-11-15",
+  "scope": "상품 설명의 공시 위험등급 보완. 추천 활성화·배정정책 변경 없음.",
+  "products": {
+    "469830": {"risk_grade": 5, "official_url": "https://www.shinhanfund.com/file/download/fundDocument/211038/description", "source_as_of": "2026-04-15", "effective_on": "2026-04-22", "locator": "투자설명서 PDF 1쪽 상품명·등급·작성일·효력일", "sha256": "5458b677b149fa093bd794e8c6a9f0e67d34d90b6c621e6272fa88e69a1753e0"},
+    "436140": {"risk_grade": 5, "official_url": "https://www.shinhanfund.com/file/download/fundDocument/210932/description", "source_as_of": "2026-01-08", "effective_on": "2026-01-13", "locator": "투자설명서 PDF 1쪽 상품명·등급·작성일·효력일", "sha256": "6ba80059ba4313f7d95530e2b71c109d6acac3bbafe87a353c78bd5ad5da4606"},
+    "446720": {"risk_grade": 3, "official_url": "https://www.shinhanfund.com/file/download/fundDocument/210942/description", "source_as_of": "2026-01-08", "effective_on": "2026-01-13", "locator": "투자설명서 PDF 1쪽 상품명·등급·작성일·효력일", "sha256": "c1e631a617f8562ee28e60499b1df49d18b16f6ea717f07bf93eee2f4d8d1b2a"},
+    "458730": {"risk_grade": null, "official_url": "https://www.tigeretf.com/upload/etf/20250611092637005053.pdf", "source_as_of": "2025-05-30", "status": "UNCONFIRMED", "reason": "공식 링크/공식 미러 접근 403. 검색의 다른 상품 등급이나 2025년 비용으로 현재 값을 추정하지 않음."},
+    "114820": {"risk_grade": null, "official_url": "https://www.tigeretf.com/upload/etf/20250708095820005220.pdf", "source_as_of": "2025-06-30", "status": "UNCONFIRMED", "reason": "공식 링크/공식 미러 접근 403. 현재 설명서 등급 미확인 유지."}
+  }
+}
