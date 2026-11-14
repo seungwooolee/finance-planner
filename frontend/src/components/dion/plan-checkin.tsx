@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { formatKrw } from "@/lib/dion/money-format";
 import { planName } from "./plan-comparison";
+import { MonthlyCoach } from "./monthly-coach";
 import type { CheckinTask, ViewResult } from "./results";
 
 // Steps 5-6: the customer explicitly picks one saved draft, then records this month's actuals.
@@ -91,6 +92,15 @@ export function PlanCheckin({ view, token, caseId, plan, tasks, onEdit }: { view
   const [error, setError] = useState("");
   const [past, setPast] = useState<PastMonth[] | null>(null);
   const [pastError, setPastError] = useState("");
+  const [dirty, setDirty] = useState(false);
+  const region = useRef<HTMLElement>(null);
+  const focusPrefix = useId();
+
+  function navigate(target: string) {
+    if (target === "F03" && onEdit) { onEdit("F03"); return; }
+    const node = document.getElementById(`${focusPrefix}-${target}`) ?? region.current;
+    node?.focus(); node?.scrollIntoView({ block: "center", behavior: "smooth" });
+  }
 
   const call = useCallback(async (path: string, method = "GET", body?: unknown) => {
     const r = await fetch(base + path, { method, cache: "no-store", body: body === undefined ? undefined : JSON.stringify(body),
@@ -123,7 +133,7 @@ export function PlanCheckin({ view, token, caseId, plan, tasks, onEdit }: { view
   // A saved record keeps its own task list; otherwise offer the selected plan's review items.
   const taskRows: Task[] = (savedTasks ?? tasks.map(t => ({ key: t.key, label: t.label, state: "PLANNED", reason: "" })))
     .map(t => edits[t.key] ?? t);
-  const setTask = (i: number, change: Partial<Task>) => setEdits(e => ({ ...e, [taskRows[i].key]: { ...taskRows[i], ...change } }));
+  const setTask = (i: number, change: Partial<Task>) => { setDirty(true); setEdits(e => ({ ...e, [taskRows[i].key]: { ...taskRows[i], ...change } })); };
 
   async function adopt() {
     if (!view.runId) return;
@@ -156,6 +166,7 @@ export function PlanCheckin({ view, token, caseId, plan, tasks, onEdit }: { view
       const r = await call(`/checkins/${month}`, "PUT", { expected_revision: revision, request_key: key(), status: next,
         record: { amounts: converted, tasks: taskRows.map(t => ({ key: t.key, label: t.label, state: t.state, ...(t.reason.trim() ? { reason: t.reason.trim() } : {}) })), changes } });
       setRevision(r.revision); setBinding(toBinding(r)); setSummary(r.summary); setStatus(r.status); setSavedTasks(taskRows); setEdits({}); setPast(null);
+      setDirty(false);
       // Contract: a PUT (or its replay) is the first receipt; read the month again for the latest binding.
       try { const latest: CheckinResponse = await call(`/checkins/${month}`); setRevision(latest.revision); setBinding(toBinding(latest)); if (latest.summary) setSummary(latest.summary); if (latest.status) setStatus(latest.status); } catch { /* keep the PUT receipt */ }
     } catch (e) {
@@ -166,26 +177,26 @@ export function PlanCheckin({ view, token, caseId, plan, tasks, onEdit }: { view
   }
 
   const adoptedHere = adoption && adoption.run_id === view.runId && adoption.strategy_id === plan;
-  return <section className="d-card" aria-label="계획 선택과 이번 달 기록">
+  return <section ref={region} tabIndex={-1} className="d-card" aria-label="계획 선택과 이번 달 기록">
     <span className="d-eyebrow">STEP 5 · 6</span>
-    <h2>계획 선택과 이번 달 기록</h2>
+    <h2 id={`${focusPrefix}-plan`} tabIndex={-1}>계획 선택과 이번 달 기록</h2>
     <p>선택은 이 계산 결과 중 어떤 계획으로 진행할지 기록하는 거예요. 실제 송금·매매·자동이체는 실행되지 않아요.</p>
     {adoption ? <p className="d-notice">현재 선택한 계획: <strong>{planName(adoption.strategy_id)}</strong> · 입력버전 {adoption.input_version}{adoption.run_id !== view.runId && " · 다른 계산 결과에서 선택함"}</p>
       : <p className="d-note">아직 선택한 계획이 없어요. 계획 없이도 이번 달 기록은 할 수 있어요.</p>}
     {!adoptedHere && <button className="d-primary" disabled={busy || view.isCurrent === false} onClick={() => void adopt()}>{planName(plan)}으로 진행할게요</button>}
     {view.isCurrent === false && <p className="d-warning">이 결과 이후 답변이 바뀌었어요. 최신 입력으로 다시 계산·저장한 결과에서 선택할 수 있어요.</p>}
 
-    <h3>{month} 실제 기록</h3>
-    {binding && <BindingNote binding={binding} month={month}/>}
+    <h3 id={`${focusPrefix}-record`} tabIndex={-1}>{month} 실제 기록</h3>
+    <div id={`${focusPrefix}-basis`} tabIndex={-1}>{binding && <BindingNote binding={binding} month={month}/>}</div>
     <p className="d-help">할 일 옆 계획 금액은 화면에서 보는 안의 첫 계획 월 기준이에요. 기록 월({month})과 계획 월이 다르면 금액을 직접 비교하지 않아요.</p>
     <p>만원 단위로 입력해요. 빈칸은 &lsquo;아직 입력 안 함&rsquo;, 0은 &lsquo;이번 달 없음&rsquo;이에요. 계획 금액을 실제 금액으로 자동 복사하지 않아요.</p>
     <div className="d-fields">
       {AMOUNTS.map(a => <label key={a.key} className="d-field"><span>{a.label}{a.hint && <small> · {a.hint}</small>}</span>
-        <input inputMode="decimal" aria-label={`${a.label} (만원)`} value={amounts[a.key] ?? ""} placeholder="미입력"
-          onChange={e => setAmounts(v => ({ ...v, [a.key]: e.target.value }))} /></label>)}
+        <input id={`${focusPrefix}-${a.key}`} inputMode="decimal" aria-label={`${a.label} (만원)`} value={amounts[a.key] ?? ""} placeholder="미입력"
+          onChange={e => { setDirty(true); setAmounts(v => ({ ...v, [a.key]: e.target.value })); }} /></label>)}
     </div>
 
-    {taskRows.length > 0 && <><h3>이번 달 할 일</h3>
+    {taskRows.length > 0 && <><h3 id={`${focusPrefix}-tasks`} tabIndex={-1}>이번 달 할 일</h3>
       {taskRows.map((t, i) => <div key={t.key} className="d-row">
         <label className="d-field"><span>{t.label}</span>
           <select aria-label={`${t.label} 상태`} value={t.state} onChange={e => setTask(i, { state: e.target.value })}>
@@ -197,7 +208,7 @@ export function PlanCheckin({ view, token, caseId, plan, tasks, onEdit }: { view
       <small>할 일 완료는 실제 납입·상환 확인과 달라요. 체크해도 금액이 자동으로 채워지지 않아요.</small></>}
 
     <h3>이번 달 달라진 점</h3>
-    <div className="d-chips">{Object.entries(CHANGES).map(([k, v]) => <button key={k} type="button" aria-pressed={changes.includes(k)}
+    <div className="d-chips" onClick={() => setDirty(true)}>{Object.entries(CHANGES).map(([k, v]) => <button key={k} type="button" aria-pressed={changes.includes(k)}
       onClick={() => setChanges(c => k === "NONE" ? (c.includes("NONE") ? [] : ["NONE"]) : c.includes(k) ? c.filter(x => x !== k) : [...c.filter(x => x !== "NONE"), k])}>{v}</button>)}</div>
 
     <div className="d-toolbar">
@@ -214,6 +225,8 @@ export function PlanCheckin({ view, token, caseId, plan, tasks, onEdit }: { view
       {summary.review_suggested && <p>상황이 바뀌었다면 답변을 고쳐 새 결과를 계산해 보세요. 기존에 선택한 계획은 자동으로 바뀌지 않아요.
         {onEdit && <> <button className="d-secondary" onClick={() => onEdit("F03")}>답변 고치러 가기</button></>}</p>}
     </div>}
+    {!busy && binding && <MonthlyCoach key={`${token}-${caseId}-${month}-${revision}-${adoption?.adoption_id ?? "none"}-${dirty}`}
+      base={base} token={token} month={month} dirty={dirty} onNavigate={navigate} />}
     <details onToggle={e => { if ((e.target as HTMLDetailsElement).open) void loadPast(); }}>
       <summary>지난 달 기록 보기</summary>
       {pastError && <p className="d-warning" role="alert">{pastError}</p>}

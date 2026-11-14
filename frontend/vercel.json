@@ -3,6 +3,7 @@
   "git": {
     "deploymentEnabled": {
       "codex/financial-overview-polish": false,
+      "codex/monthly-plan-coach-20261115": false,
       "codex/welcome-copy": false,
       "codex/natural-input-confirmation-20261115": false,
       "codex/product-rag-review-20261115": false,

@@ -1,9 +1,14 @@
 """Steps 5-6 HTTP contract: explicit plan adoption and monthly check-in records."""
+from functools import lru_cache
+from os import environ
 from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, ConfigDict, Field
+from starlette.concurrency import run_in_threadpool
 
+from ..consultation.monthly_coach import CoachProvider, CoachRequest, CoachService, context_for
+from ..explanation.oneport_config import ConfigurationError, OnePortConfig
 from .api import body, call, get_store, private_read, shape
 from .auth import get_actor
 from .raw_store import PocError
@@ -172,3 +177,39 @@ def save_checkin(case_id: str, month: str, value=Depends(body), actor=Depends(ge
     shape(value, {"expected_revision", "request_key", "status", "record"})
     return plan_call(store.save_checkin, actor, case_id, month, value["expected_revision"], value["request_key"],
                  value["status"], value["record"])
+
+
+@lru_cache
+def get_monthly_coach_service():
+    mode = environ.get("DION_MONTHLY_COACH_PROVIDER", environ.get("DION_EXPLANATION_PROVIDER", "deterministic"))
+    if mode == "oneport":
+        try:
+            return CoachService(CoachProvider(OnePortConfig.from_env()))
+        except ConfigurationError:
+            return CoachService(configuration_error=True)
+    return CoachService(configuration_error=mode != "deterministic")
+
+
+@router.get("/cases/{case_id}/checkins/{month}/coach")
+def read_monthly_coach(case_id: str, month: str, actor=Depends(get_actor), store=Depends(get_store)):
+    return plan_call(context_for, store, actor, case_id, month)
+
+
+@router.post("/cases/{case_id}/checkins/{month}/coach")
+async def monthly_coach(case_id: str, month: str, value=Depends(body), actor=Depends(get_actor),
+                        store=Depends(get_store), service=Depends(get_monthly_coach_service)):
+    try:
+        request = CoachRequest.model_validate(value)
+    except ValueError:
+        raise HTTPException(422, detail={"code": "INVALID_MONTHLY_COACH_REQUEST"}) from None
+
+    def current():
+        context = plan_call(context_for, store, actor, case_id, month)
+        if context["context_sha256"] != request.expected_context_sha256:
+            raise HTTPException(409, detail={"code": "MONTHLY_COACH_CONTEXT_CHANGED"})
+        return context
+
+    context = await run_in_threadpool(current)
+    result = await service.answer(actor, context, request)
+    await run_in_threadpool(current)
+    return result
