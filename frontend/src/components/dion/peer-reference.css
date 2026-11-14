@@ -1,0 +1,6 @@
+.d-peer-chart{margin:18px 0 12px;padding:14px;background:#f8f5fc;border:1px solid #e9e1f1;border-radius:12px;min-width:0}
+.d-peer-series{display:grid;grid-template-columns:1fr;gap:5px;margin-bottom:12px;min-width:0}
+.d-peer-series>span{font-size:11px;color:#6a6076}.d-peer-series>svg{display:block;width:100%;height:20px;background:#eee8f4;border-radius:4px;overflow:visible}
+.d-peer-series svg line{stroke:#a89bb8;stroke-width:2}.d-peer-series svg rect.reference{fill:#b8a1d2}.d-peer-series svg rect.own{fill:#7953a7}
+.dion-app .d-peer-series>strong{font-size:14px;letter-spacing:0;line-height:1.6;margin:0;overflow-wrap:anywhere}
+.d-peer-chart figcaption{font-size:10px;color:#73697e;overflow-wrap:anywhere;line-height:1.7}
