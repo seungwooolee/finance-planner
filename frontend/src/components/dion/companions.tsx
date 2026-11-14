@@ -4,8 +4,8 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, LogIn, MessageCircle, X } from "lucide-react";
 
-export function Cat({ kind = "welcome", size = 120, className = "" }: { kind?: "welcome" | "coach" | "guide"; size?: number; className?: string }) {
-  return <Image className={`d-cat ${className}`} src={`/dion/cat-${kind}.png`} alt="dion 고양이" width={size} height={size} sizes={`${size}px`} />;
+export function Cat({ kind = "welcome", size = 120, className = "", eager = false }: { kind?: "welcome" | "coach" | "guide"; size?: number; className?: string; eager?: boolean }) {
+  return <Image className={`d-cat ${className}`} src={`/dion/cat-${kind}.png`} alt="dion 고양이" width={size} height={size} sizes={`${size}px`} loading={eager ? "eager" : undefined} />;
 }
 
 export function HeaderCat() {

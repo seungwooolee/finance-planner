@@ -2,7 +2,7 @@
 
 import { Check, Home, Landmark, Sprout, Users, Wallet } from "lucide-react";
 import { Document, Field, Json, catalog, field, fieldValue, list, object, question, record, revise, textValue } from "@/lib/dion/model";
-import { goalName, patchGoal, reactivateGoal, retainGoals, selectedMonth, setMonth, updateIncome } from "@/lib/dion/customer-flow";
+import { goalName, patchGoal, reactivateGoal, retainGoals, selectLifeStage, selectedMonth, setMonth, updateIncome } from "@/lib/dion/customer-flow";
 import { MoneyField } from "./fields";
 
 type Props = { doc: Document; onChange: (doc: Document) => void };
@@ -15,6 +15,9 @@ export function Choice({ selected, children, onClick }: { selected: boolean; chi
 export function SituationQuestion({ doc, onChange }: Props) {
   const members = [{ id: "person_spouse", label: "배우자" }, { id: "person_child", label: "자녀" }, { id: "person_parent", label: "부모님" }, { id: "person_other", label: "그 외 가족" }];
   const included = doc.context.included_owner_ids;
+  const primary = fieldValue(doc, "LIFE-01", "life_stage_primary");
+  const overlapValue = fieldValue(doc, "LIFE-01", "life_stage_overlaps");
+  const stages = [primary, ...(Array.isArray(overlapValue) ? overlapValue : [])];
   const extras = included.filter(id => id !== "person_self" && !members.some(m => m.id === id)).map((id, i) => ({ id, label: `기존에 포함한 가족 ${i + 1}` }));
   function scope(code: string, owners: string[]) {
     const next = revise(doc, "NEW-01", e => {
@@ -39,11 +42,13 @@ export function SituationQuestion({ doc, onChange }: Props) {
       r.fields.owner_confirmation_ref = field(e.target.checked ? `user:scope:${new Date().toISOString()}` : null);
     }))} />선택한 가족의 동의를 받았고, 그 가족의 정보를 함께 입력할게요.</label>}
     </section>
-    <section className="d-question-section"><h2>요즘 나의 생활은 어떤 모습인가요?</h2><p>가장 가까운 것을 골라주세요.</p><div className="d-life-options">{catalog.lifeStages.map(stage => <button type="button" key={stage.code} aria-pressed={fieldValue(doc, "LIFE-01", "life_stage_primary") === stage.code} onClick={() => onChange(revise(doc, "LIFE-01", e => { e.fields.life_stage_primary = field(stage.code); }))}>{stage.label}</button>)}</div>
-      <details className="d-optional"><summary>두 가지 이상에 해당해요</summary><div className="d-life-options">{catalog.lifeStages.filter(s => s.code !== fieldValue(doc, "LIFE-01", "life_stage_primary")).map(stage => <label className="d-check" key={stage.code}><input type="checkbox" checked={(fieldValue(doc, "LIFE-01", "life_stage_overlaps") as Json[] ?? []).includes(stage.code)} onChange={e => {
-        const old = fieldValue(doc, "LIFE-01", "life_stage_overlaps") as Json[] ?? [];
-        onChange(revise(doc, "LIFE-01", r => { r.fields.life_stage_overlaps = field(e.target.checked ? [...old, stage.code] : old.filter(v => v !== stage.code), "JSON"); }));
-      }} />{stage.label}</label>)}</div></details>
+    <section className="d-question-section" aria-labelledby="d-life-title"><h2 id="d-life-title">요즘 나의 생활은 어떤 모습인가요?</h2><p id="d-life-help">해당하는 모습을 모두 골라주세요. 선택한 것 중 지금 가장 중요한 생활단계 하나를 정할 수 있어요.</p><div className="d-life-options" role="group" aria-labelledby="d-life-title" aria-describedby="d-life-help">{catalog.lifeStages.map(stage => {
+      const selected = stages.includes(stage.code);
+      return <div className={`d-life-option ${selected ? "selected" : ""}`} key={stage.code}>
+        <label className="d-life-select"><input type="checkbox" checked={selected} onChange={() => onChange(selectLifeStage(doc, stage.code))}/><span>{stage.label}</span></label>
+        {selected && <label className="d-life-primary"><input type="radio" name="life-stage-primary" aria-label={`${stage.label}를 주요 생활단계로 설정`} checked={primary === stage.code} onChange={() => onChange(selectLifeStage(doc, stage.code, true))}/><span>{primary === stage.code ? "주요 생활단계" : "주요 생활단계로 설정"}</span></label>}
+      </div>;
+    })}</div>
     </section>
   </div>;
 }
