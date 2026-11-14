@@ -22,6 +22,7 @@ import { TaxReview } from "@/lib/dion/tax-benefits";
 import displayCatalog from "@/lib/dion/result-display-catalog.json";
 import { comparisonReview, portfolioNames } from "@/lib/dion/portfolio-comparison";
 import { usePortfolioComparison } from "./use-portfolio-comparison";
+import { PeerReference } from "./peer-reference";
 import { FinancialProjection } from "./financial-projection";
 
 const stateLabels: Record<string,string> = { CALCULATED:"계산됨", PARTIAL:"부분 결과", NEEDS_INPUT:"정보 보완 필요", INVALID_INPUT:"입력 확인 필요", NOT_SUPPORTED:"미지원", NOT_IMPLEMENTED:"준비 중", NOT_APPLICABLE:"해당 없음", NOT_REQUESTED:"요청하지 않음", REVIEW_ONLY:"검토 목록", INTERNAL_ERROR:"계산 오류", INFEASIBLE:"월 예산 부족", CALCULATED_MONTHLY_SCENARIO:"월 예산 시나리오" };
@@ -97,6 +98,7 @@ export function Results({view,deep,tab,setTab,stale,onEdit,onRecalculate,explana
       <h2>현재 재무 상태</h2><div className="d-metrics"><Metric icon={Wallet} title="월 생활비 (대출 상환 제외)" value={metricValue(flow,"normalized_living")} /><Metric icon={HandCoins} title="대출 상환 후 남는 돈" value={metricValue(flow,"base_surplus")} /><Metric icon={PiggyBank} title="매월 저축·투자 금액" value={metricValue(flow,"existing_cash_contributions_krw")} /><Metric icon={Coins} title="저축·투자까지 반영하고 남는 돈" value={metricValue(flow,"after_existing_contributions_krw")} note="목표·보호자금 배정 전 / 투자 권장액 아님" /></div>
       <div className="d-columns"><article className="d-card"><h2><Landmark size={20} aria-hidden="true"/> 보유현황을 먼저 살펴봐요</h2><div className="d-metrics"><Metric title="전체 자산" value={metricValue(assets,"total_assets")} /><Metric title="전체 채무" value={metricValue(assets,"total_debt")} /><Metric title="순자산" value={metricValue(assets,"net_worth")} /></div><BalanceBars assets={metricValue(assets,"total_assets")} debt={metricValue(assets,"total_debt")} net={metricValue(assets,"net_worth")}/>{estimatedProperty&&<p className="d-note">부동산의 대략적인 시세가 포함된 자산 추정치예요.</p>}<button className="d-text-button" onClick={()=>onEdit("F06")}>자산 내역 확인·수정 →</button></article><AssetComposition assets={assets} asOf={textValue(object(result.context).evaluation_on)} onEdit={()=>onEdit("F06")}/></div>
       <FinancialOverview flow={flow}/>
+      <PeerReference key={view.sourceSignature} value={result.peer_reference} stale={stale}/>
     </>}
     {tab===0 && ["OUT-03","OUT-02"].map(id=><ResultBasis key={id} id={id} result={result} source={sourceDoc} inputVersion={view.serverVersion??view.localVersion} stale={stale} onEdit={onEdit}/>)}
     {tab===1 && <>
@@ -106,6 +108,7 @@ export function Results({view,deep,tab,setTab,stale,onEdit,onRecalculate,explana
     {tab===2 && <InvestmentFollowup review={visible("OUT-06")} onEdit={onEdit}/>}
     {tab===2 && <PortfolioChoice doc={sourceDoc} review={visible("OUT-06")} flow={flow} planRow={selectedRow} selectedPlan={selectedPlan} onPlan={setSelectedPlan} chosen={selectedPortfolio} onChoose={id=>{void comparison.choose(id).then(ok=>{if(ok)setTab(3);});}} blocked={comparison.blocked} onEdit={onEdit}/>}
     {tab===2 && (sourceDoc?<InvestmentSummary doc={sourceDoc} onEdit={onEdit}/>:<Missing row={{calc_state:"NOT_SUPPORTED"}} title="이전 입력 형식의 투자 응답"/>)}
+    {tab===2 && <PeerReference value={result.peer_reference} stale={stale} preference/>}
     
     {tab===3 && <><div className="d-plan-row"><div><strong>{planName(selectedPlan)} · 상품 정보</strong><button className="d-text-button" onClick={()=>setTab(2)}>투자구성 비교로 돌아가기</button></div><PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/></div><ProductAllocation evidenceAccess={evidenceAccess} stale={stale} review={selectedReview} selectedPlan={selectedPlan} evaluationOn={textValue(object(result.context).evaluation_on)} onEdit={onEdit}/></>}
     {tab===4 && <><ChoiceStatus plan={selectedPlan} hasCheckin={!!checkin&&view.storage==="SAVED"&&!!view.runId} onJump={()=>tasksRef.current?.scrollIntoView({behavior:"smooth",block:"start"})}/><ResultTiles row={selectedRow} month={selectedMonth} totalAssets={metricValue(assets,"total_assets")}/>
