@@ -32,3 +32,4 @@
 
 - PR #54 통합 커밋 2333fba를 작업 브랜치에 병합했다. planner/results의 최신 계정·화면 동작과 투자구성 전달을 함께 보존하고, 개발 로그 및 Vercel 브랜치 차단 항목을 병합했다.
 - 병합 후 TypeScript와 planner/results ESLint, 변경 공백 검사를 통과했다. 엔진 정책은 통합본과 동일하고 새 BE 구현은 기능 커밋 2cee663과 동일하다. 기존 배포 차단 설정을 모두 보존하고 이 작업 브랜치도 차단했다. 변경 없는 BE/통과 E2E를 반복하지 않았다.
+- b115ddb의 GitHub Core #126은 pytest 1,257 passed / 96 skipped, Ruff·pip check·TypeScript·전체 ESLint 통과했다. 이후 PR #55가 통합되어 8491b4d를 추가 병합했다. 새 질문 진행률/금액 입력과 배포 차단을 보존하고 planner에는 투자구성 참조/차단 props 두 변경만 추가됨을 대조했다. 추가 병합 후 TypeScript·planner ESLint·공백 검사 통과. BE/results는 b115ddb와 동일하다. 초점 E2E 잔여 문제와 운영 007 조건은 유지한다.

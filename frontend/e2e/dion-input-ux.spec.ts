@@ -1,9 +1,11 @@
 import { expect, test } from '@playwright/test';
-import { blankDocument, clone, example, field, fieldValue, record, revise, type Document } from '../src/lib/dion/model';
+import { blankDocument, clone, field, fieldValue, record, revise, type Document } from '../src/lib/dion/model';
 import { selectLifeStage, stepComplete } from '../src/lib/dion/customer-flow';
 import { responseComplete, responseProgress } from '../src/lib/dion/question-progress';
 import { fieldKrw, formatKrw } from '../src/lib/dion/money-format';
 import { riskNeeds } from '../src/lib/dion/investment-review';
+import { joinMoneyInput, splitMoneyInput } from '../src/lib/dion/money-input';
+import productExample from '../src/lib/dion/product-review-scenario.json';
 
 function finishedQuick() {
   let doc = blankDocument();
@@ -70,6 +72,9 @@ test('exact money spelling, units and large values survive display formatting', 
     expect(fieldKrw(restored)).toBe(fieldKrw(value));
     expect(restored.raw_value).toBe(raw);
     expect(formatKrw(fieldKrw(value))).not.toBe('확인 대기');
+    const parts = splitMoneyInput(value);
+    expect(fieldKrw(field(joinMoneyInput(parts, value.unit), value.unit))).toBe(fieldKrw(value));
+    expect(value.raw_value).toBe(raw);
   }
   expect(fieldKrw(field('10.1', 'KRW_10000'))).toBe('101000');
   expect(formatKrw('101000')).toBe('10만 1천 원');
@@ -78,6 +83,13 @@ test('exact money spelling, units and large values survive display formatting', 
   expect(fieldKrw(field(null, 'KRW_10000', 'UNKNOWN'))).toBeNull();
   expect(fieldKrw(field('', 'KRW_10000'))).toBeNull();
   expect(formatKrw('1000000000000')).toBe('1조원');
+  expect(joinMoneyInput({ man: '', cheon: '', won: '' }, 'KRW_10000')).toBeNull();
+  expect(joinMoneyInput({ man: '0', cheon: '', won: '' }, 'KRW_10000')).toBe('0');
+  expect(joinMoneyInput({ man: '10', cheon: '1', won: '' }, 'KRW_10000')).toBe('10.1');
+  expect(joinMoneyInput({ man: '', cheon: '1', won: '234' }, 'KRW')).toBe('1234');
+  expect(joinMoneyInput(splitMoneyInput(field(null, 'KRW', 'UNKNOWN')), 'KRW')).toBeNull();
+  expect(joinMoneyInput({ man: '9007199254740993', cheon: '9', won: '999' }, 'KRW')).toBe('90071992547409939999');
+  expect(joinMoneyInput({ man: '1.1', cheon: '', won: '' }, 'KRW')).toBeNull();
 });
 
 for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
@@ -85,7 +97,7 @@ for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 
     test.setTimeout(120_000);
     await page.setViewportSize(viewport);
     await page.goto('/dion');
-    await expect(page.locator('.d-welcome-hero')).toContainText('AI 재무설계 웹서비스');
+    await expect(page.locator('.d-welcome-hero')).toContainText('나를 이해하는 AI 재무설계, dion');
     await expect(page.locator('.d-welcome-cat img')).toHaveAttribute('src', /cat-guide/);
     await page.screenshot({ path: info.outputPath('welcome.png'), fullPage: true });
     await page.getByRole('button', { name: /빠르게 현재 확인/ }).click();
@@ -96,16 +108,19 @@ for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 
     await expect(progress).toHaveAttribute('value', initial!);
     await page.getByRole('button', { name: '이전', exact: true }).click();
     await page.getByRole('button', { name: /나 혼자/ }).click();
-    await page.getByRole('checkbox', { name: '신혼기', exact: true }).check();
-    await page.getByRole('checkbox', { name: '자녀 출산·양육기', exact: true }).check();
-    await page.getByRole('radio', { name: '자녀 출산·양육기를 주요 생활단계로 설정' }).check();
-    await expect(page.getByRole('checkbox', { name: '신혼기', exact: true })).toBeChecked();
+    await page.getByRole('button', { name: '신혼기', exact: true }).click();
+    await page.getByRole('button', { name: '자녀 출산·양육기', exact: true }).click();
+    await page.getByRole('button', { name: '자녀 출산·양육기를 주요 생활단계로 설정' }).click();
+    await expect(page.getByRole('button', { name: '신혼기', exact: true })).toHaveAttribute('aria-pressed', 'true');
     await expect(progress).not.toHaveAttribute('value', '0');
     await page.screenshot({ path: info.outputPath('questions.png'), fullPage: true });
     await page.getByRole('navigation', { name: '질문 이동' }).getByRole('button', { name: /한 달 소득/ }).click();
     const money = page.getByRole('textbox', { name: '한 달 평균 세후 소득은 얼마인가요?', exact: true });
-    await money.fill('10.1');
+    const thousand = page.getByRole('textbox', { name: '한 달 평균 세후 소득은 얼마인가요? 천원', exact: true });
+    await money.fill('10');
+    await thousand.fill('1');
     await expect(page.locator('.d-won-value')).toContainText('10만 1천 원');
+    await thousand.fill('');
     await money.fill('0');
     await expect(page.locator('.d-won-value')).toContainText('0원');
     await money.fill('');
@@ -114,6 +129,21 @@ for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 
     await page.getByRole('button', { name: /평소 받는 돈만 적었어요/ }).click();
     const nav = page.getByRole('navigation', { name: '질문 이동' });
     await nav.getByRole('button', { name: /목표 정하기/ }).click();
+    const goalOption = page.locator('.d-goal-options button').first();
+    const goalName = await goalOption.innerText();
+    await goalOption.click();
+    const goalCard = page.locator('.d-goal-card');
+    await goalCard.getByRole('textbox', { name: '목표로 생각한 금액', exact: true }).fill('1,000');
+    await goalCard.getByRole('textbox', { name: '목표로 생각한 금액 천원', exact: true }).fill('5');
+    await goalCard.getByLabel('언제쯤 필요해요?').fill('2027-12');
+    await expect(goalCard.locator('.d-won-value')).toContainText('1,000만 5천 원');
+    await page.screenshot({ path: info.outputPath('goals.png'), fullPage: true });
+    await page.getByRole('button', { name: '지금은 목표 없음', exact: true }).click();
+    await goalOption.click();
+    await expect(page.getByRole('region', { name: `${goalName} 목표` })).toBeVisible();
+    await expect(goalCard.getByRole('textbox', { name: '목표로 생각한 금액', exact: true })).toHaveValue('1000');
+    await expect(goalCard.getByRole('textbox', { name: '목표로 생각한 금액 천원', exact: true })).toHaveValue('5');
+    await expect(goalCard.getByLabel('언제쯤 필요해요?')).toHaveValue('2027-12');
     await page.getByRole('button', { name: '지금은 목표 없음', exact: true }).click();
     await nav.getByRole('button', { name: /한 달 지출/ }).click();
     await page.getByRole('button', { name: /생활비만 알아요/ }).click();
@@ -139,12 +169,26 @@ for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 
     expect(geometry.overflow).toBe(false);
     // The existing global reduced-motion stylesheet uses 0.01ms, equivalent here to no motion.
     expect(Number.parseFloat(geometry.transition)).toBeLessThanOrEqual(0.001);
-    // Existing loader rehydrates the same raw fixture; progress must derive from it again.
+    // Load a current case through the existing engine path, then edit its amount with split units.
     await page.locator('.d-logo').click();
-    await page.getByRole('button', { name: '가상 검산 사례 불러오기', exact: true }).click();
-    const loaded = revise(revise(revise(clone(example), 'LIFE-01', env => { env.fields.life_stage_primary = field('LC_OTHER'); env.fields.life_stage_overlaps = field([], 'JSON'); }), 'N01', env => { env.fields.owns_real_estate = field(false, 'BOOLEAN'); }), 'N02', env => { env.fields.housing_type = field('HOUSING_TYPE_04'); });
+    await page.getByRole('button', { name: '예시로 결과 보기 · 대표상품 포함', exact: true }).click();
+    await expect(page.getByRole('region', { name: '계산 결과' })).toBeVisible();
+    await page.getByRole('button', { name: '입력 내용 수정 ↗', exact: true }).click();
+    const loaded = productExample.document as unknown as Document;
     await expect(progress).toHaveAttribute('value', String(responseProgress(loaded, false).percent));
     await page.getByRole('navigation', { name: '질문 이동' }).getByRole('button', { name: /한 달 소득/ }).click();
-    await expect(money).toHaveValue('00300.0000');
+    await expect(money).toHaveValue('300');
+    await money.fill('300');
+    await thousand.fill('1');
+    const pending = page.waitForResponse(response => response.url().endsWith('/api/fe/v1/preview') && response.request().method() === 'POST');
+    await page.getByRole('button', { name: '재계산', exact: true }).click();
+    const response = await pending;
+    expect(response.ok()).toBe(true);
+    const submitted = response.request().postDataJSON() as Document;
+    const income = record(submitted, 'F03')!.envelope.fields.monthly_net_income_krw;
+    expect(income).toMatchObject({ state: 'KNOWN', unit: 'KRW_10000', raw_value: '300.1' });
+    const result = (await response.json()).result;
+    const flow = result.results['OUT-03'].after_existing_contributions_krw;
+    await expect(page.locator('.d-metric').filter({ hasText: '저축·투자까지 반영하고 남는 돈' })).toContainText(formatKrw(typeof flow === 'string' ? flow : flow.value));
   });
 }
