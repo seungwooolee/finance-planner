@@ -46,7 +46,6 @@ test('cancel preserves question, direct login saves once despite lost answer res
   await preview(page);
   await page.locator('.d-tabs button').nth(2).click();
   await page.locator('[data-portfolio-type="RETURN"] button').click();
-  await page.getByRole('button', {name: '선택한 구성으로 포트폴리오 반영', exact: true}).click();
   const card = panel(page);
   const question = '왜 현금 대기자금이 있나요?';
   await card.getByLabel('현재 결과에 대한 질문').fill(question);

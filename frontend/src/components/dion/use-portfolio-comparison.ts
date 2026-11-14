@@ -47,6 +47,8 @@ export function usePortfolioComparison(view: ViewResult, token: string | null, c
     const rows = object(candidate).rows;
     const month = Array.isArray(rows) ? object(rows[0]) : {};
     if (object(object(month.portfolio_type_views)[type]).selectable !== true) return false;
+    // Reopening the applied choice must not create another comparison revision or stale a consultation.
+    if (portfolio === type && (!saved || revision > 0)) return true;
     if (!saved) { setPortfolio(type); setStatus('이 화면의 상담용 검토안에 반영했어요. 다시 열 때도 유지하려면 로그인하고 계산 결과를 저장해주세요.'); return true; }
     inFlight.current = true; setBusy(true); setError('');
     try {
@@ -68,5 +70,5 @@ export function usePortfolioComparison(view: ViewResult, token: string | null, c
     } finally { inFlight.current = false; if (alive.current) setBusy(false); }
   };
   return { plan, portfolio, revision, choose, busy, error, status, retry: () => { setError(''); setLoaded(false); setReload(n=>n+1); }, blocked: stale || busy || (saved && !loaded),
-    selectPlan: (id: string) => { if (!inFlight.current && (!saved || loaded)) { setPlan(id); setPortfolio(null); setStatus('재무안을 비교 중이에요. 투자구성을 선택하면 비교 초안을 저장해요.'); } } };
+    selectPlan: (id: string) => { if (id !== plan && !inFlight.current && (!saved || loaded)) { setPlan(id); setPortfolio(null); setStatus('재무안을 비교 중이에요. 투자구성을 선택하면 비교 초안을 저장해요.'); } } };
 }
