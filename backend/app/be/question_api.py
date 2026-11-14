@@ -6,6 +6,7 @@ from fastapi.responses import JSONResponse
 from .api import body, call, get_store, shape
 from .auth import get_actor
 from .question_bridge import run_frontend_questions
+from .raw_store import _digest
 
 router = APIRouter(tags=["Question frontend integration 1.0"])
 
@@ -16,7 +17,8 @@ def preview(value=Depends(body)):
     # This endpoint does not bypass any authenticated BE operation.
     result = run_frontend_questions(value)
     return JSONResponse({"integration_version": "DION-FE-INTEGRATION-1.0",
-                         "storage": "NOT_SAVED", "result": result},
+                         "storage": "NOT_SAVED", "result": result,
+                         "result_sha256": _digest(result), "input_hash": _digest(value)},
                         headers={"Cache-Control": "no-store"})
 
 
