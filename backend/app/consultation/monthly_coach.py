@@ -60,6 +60,7 @@ def context_for(store, actor, case_id, month):
     changed_adoption = bool(checkin["revision"] and adoption != plan["adoption"])
     stale = bool(adoption and adoption["input_version"] != plan["current_input_version"])
     comparison = checkin.get("comparison", {"state": "UNRECORDED", "amount_differences_krw": None})
+    scoped_review = record.get("review_policy_version") == "DION-CHECKIN-COMPARISON-1.0"
     actions = []
 
     def add(id_, label, reason, target):
@@ -93,7 +94,8 @@ def context_for(store, actor, case_id, month):
                "actual_amounts": [{"key": k, "label": AMOUNTS[k], "value": amounts.get(k), "ref": f"/record/amounts/{k}"} for k in AMOUNT_KEYS],
                "tasks": record.get("tasks", []), "changes": [{"key": c, "label": CHANGE_LABELS[c]} for c in record.get("changes", [])],
                "actions": actions, "amount_differences_krw": None, "adoption_changed": False,
-               "limitation": LIMITATION, "source": "DETERMINISTIC"}
+               "limitation": ("이 코치는 저장 기록·할 일의 다음 확인을 안내해요. 동일 월 항목의 비교 가능 여부·정확한 차액은 별도 사후점검에서 확인해 주세요. 채택·납입·거래는 자동 변경하지 않아요."
+                              if scoped_review else LIMITATION), "source": "DETERMINISTIC"}
     context["context_sha256"] = _digest(context)
     return context
 

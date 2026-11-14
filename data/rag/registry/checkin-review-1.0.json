@@ -1,0 +1,186 @@
+{
+  "schema_version": "DION-RAG-CORPUS-1.0",
+  "corpus_version": "dion-checkin-review-1.0",
+  "item_ids": [
+    "REVIEW-CASHFLOW",
+    "REVIEW-GOALS"
+  ],
+  "item_labels": {
+    "REVIEW-CASHFLOW": "현금흐름 점검",
+    "REVIEW-GOALS": "목표 재검토"
+  },
+  "sources": [
+    {
+      "source_id": "SRC-REVIEW-CASHFLOW",
+      "source_version": "2026-11-15",
+      "source_kind": "REVIEWED_SUMMARY",
+      "access_scope": "PUBLIC",
+      "official_url": "https://www.consumerfinance.gov/consumer-tools/educator-tools/your-money-your-goals/toolkit/",
+      "title": "CFPB 일반 금융교육 도구의 DION 점검 요약: 현금흐름 점검",
+      "issuer": "DION 내부 검토 요약 / CFPB 일반 금융교육 자료",
+      "jurisdiction": "KR",
+      "original_text": "월 계획과 실제 지출을 기록하고 월말에 대조해 다음 예산을 검토하는 일반 점검 안내입니다.\n\n같은 기간의 확인된 기록에 대한 일반 점검 근거입니다. 고객 사실이나 미입력 금액을 대신하지 않습니다.\n\nDION 내부 검토 요약이며 공식 원문 그대로의 인용·독립 전문가 검증·한국 법령 적용·개별 투자 추천이 아닙니다.",
+      "content_sha256": "7c268823edd2dc9b9eb4f5306ae0333b6dc35a22ff15587772971800bf4f9cd2",
+      "collected_on": "2026-11-15",
+      "effective_from": "2026-11-15",
+      "effective_to": null,
+      "applicable_tax_years": [
+        2026
+      ],
+      "review_status": "APPROVED",
+      "reviewed_on": "2026-11-15",
+      "review_through": "2026-12-31",
+      "review_ref": "2026-11-15 사용자 정책 검증 위임 / DION 내부 검토 / 독립 전문가 검토 아님"
+    },
+    {
+      "source_id": "SRC-REVIEW-GOALS",
+      "source_version": "2026-11-15",
+      "source_kind": "REVIEWED_SUMMARY",
+      "access_scope": "PUBLIC",
+      "official_url": "https://www.consumerfinance.gov/consumer-tools/educator-tools/your-money-your-goals/toolkit/",
+      "title": "CFPB 일반 금융교육 도구의 DION 점검 요약: 목표 재검토",
+      "issuer": "DION 내부 검토 요약 / CFPB 일반 금융교육 자료",
+      "jurisdiction": "KR",
+      "original_text": "목표를 행동 계획으로 나누고 상황 변화가 있으면 목표와 준비 계획을 다시 검토하는 일반 교육 안내입니다.\n\n같은 기간의 확인된 기록에 대한 일반 점검 근거입니다. 고객 사실이나 미입력 금액을 대신하지 않습니다.\n\nDION 내부 검토 요약이며 공식 원문 그대로의 인용·독립 전문가 검증·한국 법령 적용·개별 투자 추천이 아닙니다.",
+      "content_sha256": "567bdfb12054daeb6d1e7fa5a981e5533e403c6e6a55abaf56297e8eeb2eaf1c",
+      "collected_on": "2026-11-15",
+      "effective_from": "2026-11-15",
+      "effective_to": null,
+      "applicable_tax_years": [
+        2026
+      ],
+      "review_status": "APPROVED",
+      "reviewed_on": "2026-11-15",
+      "review_through": "2026-12-31",
+      "review_ref": "2026-11-15 사용자 정책 검증 위임 / DION 내부 검토 / 독립 전문가 검토 아님"
+    }
+  ],
+  "chunks": [
+    {
+      "chunk_id": "CHUNK-REVIEW-CASHFLOW-0",
+      "source_id": "SRC-REVIEW-CASHFLOW",
+      "source_version": "2026-11-15",
+      "section_ref": "현금흐름 점검 / 0",
+      "start": 0,
+      "end": 50,
+      "text": "월 계획과 실제 지출을 기록하고 월말에 대조해 다음 예산을 검토하는 일반 점검 안내입니다.",
+      "chunk_sha256": "ce0b843cf20f0857213144fcd9fa6ac2b9637465c37201fbb01280acc476532c"
+    },
+    {
+      "chunk_id": "CHUNK-REVIEW-CASHFLOW-1",
+      "source_id": "SRC-REVIEW-CASHFLOW",
+      "source_version": "2026-11-15",
+      "section_ref": "현금흐름 점검 / 1",
+      "start": 52,
+      "end": 109,
+      "text": "같은 기간의 확인된 기록에 대한 일반 점검 근거입니다. 고객 사실이나 미입력 금액을 대신하지 않습니다.",
+      "chunk_sha256": "e71fb5b5febd84073c960e4cf63903923d161f0414078c44172417851c40da27"
+    },
+    {
+      "chunk_id": "CHUNK-REVIEW-CASHFLOW-2",
+      "source_id": "SRC-REVIEW-CASHFLOW",
+      "source_version": "2026-11-15",
+      "section_ref": "현금흐름 점검 / 2",
+      "start": 111,
+      "end": 175,
+      "text": "DION 내부 검토 요약이며 공식 원문 그대로의 인용·독립 전문가 검증·한국 법령 적용·개별 투자 추천이 아닙니다.",
+      "chunk_sha256": "07392df6d3861ffed05ac17691af139668793db2196f16261e7b2ff8383e33b6"
+    },
+    {
+      "chunk_id": "CHUNK-REVIEW-GOALS-0",
+      "source_id": "SRC-REVIEW-GOALS",
+      "source_version": "2026-11-15",
+      "section_ref": "목표 재검토 / 0",
+      "start": 0,
+      "end": 58,
+      "text": "목표를 행동 계획으로 나누고 상황 변화가 있으면 목표와 준비 계획을 다시 검토하는 일반 교육 안내입니다.",
+      "chunk_sha256": "6b067f44f41824c892eceb2af877aa9d1334b6bcd06ef14a53d692e52b2a34c1"
+    },
+    {
+      "chunk_id": "CHUNK-REVIEW-GOALS-1",
+      "source_id": "SRC-REVIEW-GOALS",
+      "source_version": "2026-11-15",
+      "section_ref": "목표 재검토 / 1",
+      "start": 60,
+      "end": 117,
+      "text": "같은 기간의 확인된 기록에 대한 일반 점검 근거입니다. 고객 사실이나 미입력 금액을 대신하지 않습니다.",
+      "chunk_sha256": "e71fb5b5febd84073c960e4cf63903923d161f0414078c44172417851c40da27"
+    },
+    {
+      "chunk_id": "CHUNK-REVIEW-GOALS-2",
+      "source_id": "SRC-REVIEW-GOALS",
+      "source_version": "2026-11-15",
+      "section_ref": "목표 재검토 / 2",
+      "start": 119,
+      "end": 183,
+      "text": "DION 내부 검토 요약이며 공식 원문 그대로의 인용·독립 전문가 검증·한국 법령 적용·개별 투자 추천이 아닙니다.",
+      "chunk_sha256": "07392df6d3861ffed05ac17691af139668793db2196f16261e7b2ff8383e33b6"
+    }
+  ],
+  "citations": [
+    {
+      "citation_id": "CITE-REVIEW-CASHFLOW-0",
+      "chunk_id": "CHUNK-REVIEW-CASHFLOW-0",
+      "start": 0,
+      "end": 50
+    },
+    {
+      "citation_id": "CITE-REVIEW-CASHFLOW-1",
+      "chunk_id": "CHUNK-REVIEW-CASHFLOW-1",
+      "start": 0,
+      "end": 57
+    },
+    {
+      "citation_id": "CITE-REVIEW-CASHFLOW-2",
+      "chunk_id": "CHUNK-REVIEW-CASHFLOW-2",
+      "start": 0,
+      "end": 64
+    },
+    {
+      "citation_id": "CITE-REVIEW-GOALS-0",
+      "chunk_id": "CHUNK-REVIEW-GOALS-0",
+      "start": 0,
+      "end": 58
+    },
+    {
+      "citation_id": "CITE-REVIEW-GOALS-1",
+      "chunk_id": "CHUNK-REVIEW-GOALS-1",
+      "start": 0,
+      "end": 57
+    },
+    {
+      "citation_id": "CITE-REVIEW-GOALS-2",
+      "chunk_id": "CHUNK-REVIEW-GOALS-2",
+      "start": 0,
+      "end": 64
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "CLAIM-REVIEW-CASHFLOW",
+      "item_id": "REVIEW-CASHFLOW",
+      "condition_id": "COND-REVIEW-CASHFLOW",
+      "tax_year": 2026,
+      "statement_id": "CITE-REVIEW-CASHFLOW-0",
+      "condition_ids": [
+        "CITE-REVIEW-CASHFLOW-1"
+      ],
+      "exception_ids": [
+        "CITE-REVIEW-CASHFLOW-2"
+      ]
+    },
+    {
+      "claim_id": "CLAIM-REVIEW-GOALS",
+      "item_id": "REVIEW-GOALS",
+      "condition_id": "COND-REVIEW-GOALS",
+      "tax_year": 2026,
+      "statement_id": "CITE-REVIEW-GOALS-0",
+      "condition_ids": [
+        "CITE-REVIEW-GOALS-1"
+      ],
+      "exception_ids": [
+        "CITE-REVIEW-GOALS-2"
+      ]
+    }
+  ]
+}

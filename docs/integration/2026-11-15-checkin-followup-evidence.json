@@ -1,0 +1,206 @@
+{
+  "environment": "LOCAL_DISPOSABLE_SQLITE_REAL_ENGINE_MOCK_AUTH",
+  "tested_source_sha": "b636a1a4922bc3ec660ff09dbd780d8470b3d6fc",
+  "clock": "2026-11-15T09:00:00+09:00 test-only existing harness --test-clock",
+  "scenario": "Separate September baseline / October plan, not contest B",
+  "case_id": "explanation-1794686194199-0ce38e4f475e68",
+  "source_input_version": 14,
+  "source_run_id": "run_0615a656fcec4e39baef79dc2fbc03d8",
+  "source_raw_snapshot_id": "raw_74e607ba5e774d4dab72d294c88c9449",
+  "source_input_hash": "f6260e8eb45b3a80ee5a0675f6909305e1c8fa4649c0d538bdb2c510714abcc7",
+  "record_adoption": {
+    "adoption_id": "adp_0acae447db29416fba2b5ed26a107f13",
+    "run_id": "run_0615a656fcec4e39baef79dc2fbc03d8",
+    "strategy_id": "STABILITY_FIRST",
+    "input_version": 14,
+    "adopted_at": "2026-11-14T19:56:52.167861+00:00"
+  },
+  "current_adoption": {
+    "adoption_id": "adp_0acae447db29416fba2b5ed26a107f13",
+    "run_id": "run_0615a656fcec4e39baef79dc2fbc03d8",
+    "strategy_id": "STABILITY_FIRST",
+    "input_version": 14,
+    "adopted_at": "2026-11-14T19:56:52.167861+00:00"
+  },
+  "checkin_id": "chk_23d53f3f403a45188927f8dc740889aa",
+  "record_month": "2026-10",
+  "revision": 1,
+  "legacy_http_record_fields": [
+    "amounts",
+    "changes",
+    "memo",
+    "tasks"
+  ],
+  "review": {
+    "contract_version": "DION-CHECKIN-FOLLOWUP-1.0",
+    "policy_version": "DION-CHECKIN-COMPARISON-1.0",
+    "record_month": "2026-10",
+    "checkin_id": "chk_23d53f3f403a45188927f8dc740889aa",
+    "revision": 1,
+    "status": "CLOSED",
+    "partial": true,
+    "binding": {
+      "adoption_id": "adp_0acae447db29416fba2b5ed26a107f13",
+      "run_id": "run_0615a656fcec4e39baef79dc2fbc03d8",
+      "input_version": 14,
+      "strategy_id": "STABILITY_FIRST"
+    },
+    "current_adoption_id": "adp_0acae447db29416fba2b5ed26a107f13",
+    "items": [
+      {
+        "key": "income",
+        "state": "NOT_EQUIVALENT",
+        "planned_krw": null,
+        "actual_krw": null,
+        "difference_krw": null,
+        "reason": "계획의 예산 자원과 실제 들어온 소득은 같은 의미로 확인되지 않았어요.",
+        "required_input": "계획의 예산 자원과 실제 들어온 소득은 같은 의미로 확인되지 않았어요."
+      },
+      {
+        "key": "living",
+        "state": "COMPARABLE",
+        "planned_krw": "1600000",
+        "actual_krw": "1500000",
+        "difference_krw": "-100000",
+        "reason": "동일 월·범위·의미의 실제−계획 차액이에요. 성공/실패 판정은 아니에요.",
+        "required_input": null
+      },
+      {
+        "key": "loan",
+        "state": "COMPARABLE",
+        "planned_krw": "300000",
+        "actual_krw": "300000",
+        "difference_krw": "0",
+        "reason": "동일 월·범위·의미의 실제−계획 차액이에요. 성공/실패 판정은 아니에요.",
+        "required_input": null
+      },
+      {
+        "key": "goal",
+        "state": "NOT_EQUIVALENT",
+        "planned_krw": null,
+        "actual_krw": null,
+        "difference_krw": null,
+        "reason": "목적별 자금 배정과 금융계좌로의 실제 이체는 달라요. 목표별 배정·이체 내역이 필요해요.",
+        "required_input": "목적별 자금 배정과 금융계좌로의 실제 이체는 달라요. 목표별 배정·이체 내역이 필요해요."
+      },
+      {
+        "key": "invest_existing",
+        "state": "COMPARABLE",
+        "planned_krw": "200000",
+        "actual_krw": "200000",
+        "difference_krw": "0",
+        "reason": "동일 월·범위·의미의 실제−계획 차액이에요. 성공/실패 판정은 아니에요.",
+        "required_input": null
+      },
+      {
+        "key": "invest_new",
+        "state": "COMPARABLE",
+        "planned_krw": "300000",
+        "actual_krw": "0",
+        "difference_krw": "-300000",
+        "reason": "동일 월·범위·의미의 실제−계획 차액이에요. 성공/실패 판정은 아니에요.",
+        "required_input": null
+      },
+      {
+        "key": "emergency",
+        "state": "NOT_EQUIVALENT",
+        "planned_krw": null,
+        "actual_krw": null,
+        "difference_krw": null,
+        "reason": "보호자금 전체 보충과 비상금 적립은 달라요. 목적별 실제 보충 내역이 필요해요.",
+        "required_input": "보호자금 전체 보충과 비상금 적립은 달라요. 목적별 실제 보충 내역이 필요해요."
+      },
+      {
+        "key": "extra_cash",
+        "state": "COMPARABLE",
+        "planned_krw": "300000",
+        "actual_krw": "350000",
+        "difference_krw": "50000",
+        "reason": "동일 월·범위·의미의 실제−계획 차액이에요. 성공/실패 판정은 아니에요.",
+        "required_input": null
+      }
+    ],
+    "scope": {
+      "same_scope_confirmed": true,
+      "complete_fields": [
+        "living",
+        "loan",
+        "invest_existing",
+        "invest_new",
+        "extra_cash"
+      ]
+    }
+  },
+  "draft": {
+    "contract_version": "DION-CHECKIN-FOLLOWUP-1.0",
+    "kind": "CHECKIN_REVIEW_DRAFT",
+    "case_id": "explanation-1794686194199-0ce38e4f475e68",
+    "record_month": "2026-10",
+    "checkin_id": "chk_23d53f3f403a45188927f8dc740889aa",
+    "revision": 1,
+    "source_run_id": "run_0615a656fcec4e39baef79dc2fbc03d8",
+    "input_version": 16,
+    "run_id": "run_4b0c8c2368b744deb04c3ce5c1a6b60f",
+    "raw_snapshot_id": "raw_4a4d7f3f8935437693aa5189ae5d2582",
+    "status": "SUCCEEDED",
+    "adoption_changed": false,
+    "adoption_id": "adp_0acae447db29416fba2b5ed26a107f13",
+    "difference": {
+      "record_month": "2026-10",
+      "strategy_id": "STABILITY_FIRST",
+      "state": "SAME_MONTH",
+      "metrics": [
+        {
+          "key": "living_krw",
+          "before_krw": "1600000",
+          "after_krw": "1600000",
+          "difference_krw": "0"
+        },
+        {
+          "key": "debt_payment_krw",
+          "before_krw": "300000",
+          "after_krw": "300000",
+          "difference_krw": "0"
+        },
+        {
+          "key": "new_investment_krw",
+          "before_krw": "300000",
+          "after_krw": "750000",
+          "difference_krw": "450000"
+        },
+        {
+          "key": "additional_cash_krw",
+          "before_krw": "300000",
+          "after_krw": "750000",
+          "difference_krw": "450000"
+        },
+        {
+          "key": "closing_cash_krw",
+          "before_krw": "12300000",
+          "after_krw": "12750000",
+          "difference_krw": "450000"
+        }
+      ],
+      "goals": [
+        {
+          "goal_id": "goal-1",
+          "before": {
+            "due_on": "2026-10-30",
+            "target_krw": "300000",
+            "gap_krw": "300000",
+            "calc_state": "CALCULATED"
+          },
+          "after": {
+            "due_on": "2026-10-30",
+            "target_krw": "400000",
+            "gap_krw": "400000",
+            "calc_state": "CALCULATED"
+          }
+        }
+      ]
+    }
+  },
+  "draft_input_hash": "3c108f8d0ec3f8b692cfafff06f049faaa17ee4ad4dc4bf1da598612917e1cbb",
+  "candidate_after_rebase_sha": "2f20eb3e239e1d65bcb1a44323babf3bcd40bd37",
+  "candidate_base_sha": "2333fbafa3850cca90c0bd28e976ea60ee476b9d"
+}

@@ -11,6 +11,17 @@ from ..consultation.monthly_coach import CoachProvider, CoachRequest, CoachServi
 from ..explanation.oneport_config import ConfigurationError, OnePortConfig
 from .api import body, call, get_store, private_read, shape
 from .auth import get_actor
+from .checkin_followup_contract import (
+    CreateDraft,
+    DraftList,
+    DraftOptions,
+    DraftView,
+    ExplainRequest,
+    ExplanationView,
+    ReviewScope,
+    ReviewView,
+    ScopedSave,
+)
 from .raw_store import PocError
 
 router = APIRouter(prefix="/api/be/v1", tags=["Plan adoption and monthly check-in"],
@@ -126,6 +137,9 @@ class CheckinRecord(ContractModel):
     tasks: list[CheckinTask]
     changes: list[Literal["INCOME", "UNEXPECTED_EXPENSE", "DEBT", "GOAL", "INVESTMENT_VIEW", "NONE"]]
     memo: str | None
+    # Internal stored metadata is exposed by the opt-in /review contract only.
+    review_scope: ReviewScope | None = Field(default=None, exclude=True)
+    review_policy_version: Literal["DION-CHECKIN-COMPARISON-1.0"] | None = Field(default=None, exclude=True)
 
 
 class CheckinView(ContractModel):
@@ -238,3 +252,69 @@ async def monthly_coach(case_id: str, month: str, value=Depends(body), actor=Dep
     result = await service.answer(actor, context, request)
     await run_in_threadpool(current)
     return result
+
+def followup_call(function, *args):
+    try:
+        return function(*args)
+    except PocError as exc:
+        if exc.code in {"CHECKIN_BINDING_LOCKED", "FOLLOWUP_SOURCE_NOT_CURRENT", "FOLLOWUP_FIELD_NOT_AVAILABLE",
+                        "FOLLOWUP_ADAPTER_UNSUPPORTED", "FOLLOWUP_PLAN_UNAVAILABLE", "FOLLOWUP_NO_CHANGE",
+                        "FOLLOWUP_CALCULATION_UNAVAILABLE", "FOLLOWUP_ADOPTION_CHANGED", "FOLLOWUP_ASSUMPTION_UNSUPPORTED"}:
+            raise HTTPException(409, detail={"code": exc.code}) from None
+        return plan_call(_raise, exc)
+
+
+def followup_request(model, value):
+    try:
+        return model.model_validate(value).model_dump()
+    except ValueError:
+        raise HTTPException(422, detail={"code": "INVALID_FOLLOWUP_REQUEST"}) from None
+
+
+@router.put("/cases/{case_id}/checkins/{month}/review-record", response_model=CheckinView, response_model_exclude_unset=True)
+def save_review_record(case_id: str, month: str, value=Depends(body), actor=Depends(get_actor), store=Depends(get_store)):
+    from .checkin_followup import save_review_record as save
+
+    return followup_call(save, store, actor, case_id, month, followup_request(ScopedSave, value))
+
+
+@router.get("/cases/{case_id}/checkins/{month}/review", response_model=ReviewView)
+def read_review(case_id: str, month: str, actor=Depends(get_actor), store=Depends(get_store)):
+    from .checkin_followup import read_review as read
+
+    return followup_call(read, store, actor, case_id, month)
+
+
+@router.get("/cases/{case_id}/checkins/{month}/draft-options", response_model=DraftOptions)
+def draft_options(case_id: str, month: str, actor=Depends(get_actor), store=Depends(get_store)):
+    from .checkin_followup import draft_options as read
+
+    return followup_call(read, store, actor, case_id, month)
+
+
+@router.post("/cases/{case_id}/checkins/{month}/drafts", response_model=DraftView)
+def create_review_draft(case_id: str, month: str, value=Depends(body), actor=Depends(get_actor), store=Depends(get_store)):
+    from .checkin_followup import create_draft
+
+    return followup_call(create_draft, store, actor, case_id, month, followup_request(CreateDraft, value))
+
+
+@router.get("/cases/{case_id}/checkins/{month}/drafts", response_model=DraftList)
+def list_review_drafts(case_id: str, month: str, actor=Depends(get_actor), store=Depends(get_store)):
+    from .checkin_followup import list_drafts
+
+    return followup_call(list_drafts, store, actor, case_id, month)
+
+
+def get_checkin_explainer():
+    from .checkin_review_explanation import ReviewExplainer
+
+    return ReviewExplainer()
+
+
+@router.post("/cases/{case_id}/checkins/{month}/review-explanation", response_model=ExplanationView)
+def explain_review(case_id: str, month: str, value=Depends(body), actor=Depends(get_actor), store=Depends(get_store),
+                   explainer=Depends(get_checkin_explainer)):
+    from .checkin_review_explanation import explain
+
+    return followup_call(explain, store, actor, case_id, month, followup_request(ExplainRequest, value), explainer)
