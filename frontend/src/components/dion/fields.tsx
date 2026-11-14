@@ -1,6 +1,8 @@
 "use client";
 
 import { fieldKrw, formatKrw } from "@/lib/dion/money-format";
+import { useId, useState } from "react";
+import { joinMoneyInput, splitMoneyInput, type MoneyParts } from "@/lib/dion/money-input";
 import { Field, Json, State, field, object, states } from "@/lib/dion/model";
 
 export const labels: Record<string, string> = {
@@ -68,13 +70,35 @@ const choices: Record<string, [Json, string][]> = {
 };
 
 export function MoneyField({ label, value, onChange }: { label: string; value: Field; onChange: (v: Field) => void }) {
+  const id = useId();
   const raw = typeof value.raw_value === "string" ? value.raw_value : "";
-  const valid = (value.unit === "KRW" ? /^\d+$/ : /^\d+(?:\.\d{1,4})?$/).test(raw);
-  let readable = "";
-  const won = valid && raw.length < 50 ? fieldKrw(value) : null;
-  if (won !== null) readable = formatKrw(won);
+  const source = JSON.stringify(value);
+  const [draft, setDraft] = useState<{ source: string; parts: MoneyParts }>(() => ({ source, parts: splitMoneyInput(value) }));
+  const [error, setError] = useState("");
+  const [exact, setExact] = useState(false);
+  const parts = draft.source === source ? draft.parts : splitMoneyInput(value);
+  const won = raw.length < 50 ? fieldKrw(value) : null, readable = won === null ? "" : formatKrw(won);
   const deferred = !["KNOWN", "NOT_ENTERED", "NOT_ASKED"].includes(value.state);
-  return <div className="d-field d-money-field"><label><span>{label}</span><div className={`d-amount ${raw && !valid ? "invalid" : ""}`}><input aria-label={label} aria-invalid={raw ? !valid : undefined} inputMode="decimal" autoComplete="off" value={raw} onChange={e => { const next=e.target.value.replaceAll(",", ""); if ((value.unit === "KRW" ? /^\d*$/ : /^\d*(?:\.\d{0,4})?$/).test(next) && next.length <= 40) onChange(field(next, value.unit)); }} /><span>{value.unit === "KRW" ? "원" : "만원"}</span>{raw && <button type="button" aria-label={`${label} 지우기`} className="d-clear-money" onClick={() => onChange(field(null, value.unit))}>×</button>}</div></label><div className="d-money-caption"><small className={readable ? "d-won-value" : ""} aria-live="polite"><span className="d-won-symbol" aria-hidden="true">₩</span>{raw && !valid ? "쉼표 없이 숫자로 적어주세요. 소수는 넷째 자리까지 입력할 수 있어요." : readable || (deferred ? "금액을 확인한 뒤 이어서 적어주세요." : "만원으로 입력하면, 원 단위로 바로 보여드려요.")}</small><button type="button" className="d-text-button" onClick={() => onChange(field(null, value.unit, deferred ? "NOT_ENTERED" : "DEFERRED"))}>{deferred ? "지금 입력하기" : "나중에 입력"}</button></div></div>;
+  function commit(next: Field, nextParts = splitMoneyInput(next)) {
+    setError(""); setDraft({ source: JSON.stringify(next), parts: nextParts }); onChange(next);
+  }
+  function edit(key: keyof MoneyParts, text: string) {
+    const entered = text.replaceAll(",", "");
+    if (!/^\d*$/.test(entered) || entered.length > 40) { setError("소수점 없이 정수로 적어주세요. 천원은 옆 칸에 입력해요."); return; }
+    if (key !== "man" && BigInt(entered || "0") > (key === "cheon" ? 9n : 999n)) { setError(key === "cheon" ? "천원 칸에는 0~9를 적어주세요. 10천원은 1만원이에요." : "원 칸에는 0~999를 적어주세요."); return; }
+    const nextParts = { ...parts, [key]: entered }, next = joinMoneyInput(nextParts, value.unit);
+    if (next && next.length > 40) { setError("금액이 입력 가능한 길이를 넘었어요. 단위를 확인해주세요."); return; }
+    commit(field(next, value.unit), nextParts);
+  }
+  const inputs: [keyof MoneyParts, string][] = [["man", "만원"], ["cheon", "천원"], ...(exact || parts.won !== "" ? [["won", "원"] as [keyof MoneyParts, string]] : [])];
+  return <div className="d-field d-money-field" role="group" aria-labelledby={`${id}-label`}>
+    <div className="d-money-heading"><span id={`${id}-label`}>{label}</span>{raw && <button type="button" aria-label={`${label} 지우기`} className="d-text-button" onClick={() => { setExact(false); commit(field(null, value.unit)); }}>지우기</button>}</div>
+    <div className="d-money-inputs">{inputs.map(([key, unit]) => <label className={`d-amount d-money-${key}`} key={key}><input aria-label={key === "man" ? label : `${label} ${unit}`} aria-describedby={`${id}-${key}-unit${error ? ` ${id}-error` : ""}`} aria-invalid={!!error} inputMode="numeric" autoComplete="off" value={parts[key]} onChange={e => edit(key, e.target.value)}/><span id={`${id}-${key}-unit`}>{unit}</span></label>)}</div>
+    {error && <small id={`${id}-error`} className="d-field-error" role="alert">{error}</small>}
+    {raw && won === null && value.state === "KNOWN" && <small className="d-field-error">기존 금액을 확인해주세요. 원응답은 보관돼 있어요.</small>}
+    <div className="d-money-caption"><small className={readable ? "d-won-value" : ""} aria-live="polite"><span className="d-won-symbol" aria-hidden="true">₩</span>{readable || (deferred ? "금액을 확인한 뒤 이어서 적어주세요." : "만원과 천원을 나눠 입력해주세요.")}</small></div>
+    <div className="d-money-actions">{!exact && parts.won === "" && <button type="button" className="d-text-button" onClick={() => setExact(true)}>원 단위도 입력</button>}<button type="button" className="d-text-button" onClick={() => commit(field(null, value.unit, deferred ? "NOT_ENTERED" : "DEFERRED"))}>{deferred ? "지금 입력하기" : "나중에 입력"}</button></div>
+  </div>;
 }
 
 function blank(template: Json, key = ""): Json {

@@ -2,6 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "git": {
     "deploymentEnabled": {
+      "codex/question-input-polish": false,
       "codex/financial-overview-polish": false,
       "codex/monthly-plan-coach-20261115": false,
       "codex/welcome-copy": false,
