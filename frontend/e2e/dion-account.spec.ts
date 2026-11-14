@@ -37,7 +37,7 @@ test('signed-in case list reopens raw answers and prior result references', asyn
   await dialog.getByLabel('비밀번호', { exact: true }).fill('test-password');
   await dialog.getByRole('button', { name: '이메일로 로그인' }).click();
   await page.getByRole('button', { name: '검토 도구', exact: true }).click();
-  await page.getByText('내 상담 · 저장과 다시 열기', { exact: true }).click();
+  await page.getByRole('button', { name: '내 상담', exact: true }).click();
   await page.getByRole('button', { name: '내 상담 조회' }).click();
   await page.getByRole('button', { name: /demo-001 · 입력버전 13 · 다시 열기/ }).click();
   await expect(page.getByRole('textbox', { name: '상담 ID' })).toHaveValue('demo-001');
