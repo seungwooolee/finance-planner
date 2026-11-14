@@ -3,6 +3,7 @@ import { Json, list, object, textValue } from '@/lib/dion/model';
 import { type ReactNode } from 'react';
 import { Check, Scale, ShieldCheck, TrendingUp, TriangleAlert } from 'lucide-react';
 import { formatKrw } from '@/lib/dion/money-format';
+import { portfolioNames } from '@/lib/dion/portfolio-comparison';
 
 export const planName = (id: unknown) => id === 'STABILITY_FIRST' ? '생활 안정 우선' : '투자 여력 확대';
 export function PlanSelector({ selected, onSelect }: { selected: string; onSelect: (id: string) => void }) {
@@ -18,17 +19,31 @@ const FLOW_ROWS: [string, string][] = [
 // Validated categorical order (dataviz validator, light surface): blue, orange, purple, teal; the cash rest stays neutral.
 const SEG_COLORS: Record<string, string> = { new_investment_krw: '#3848ce', goal_deposits_krw: '#d97b2b', protection_topup_krw: '#8a5cc2', operating_refill_krw: '#0a9e86', additional_cash_krw: '#c4c8d8' };
 const isWon = (v: unknown): v is string => typeof v === 'string' && /^\d+$/.test(v);
-// Compares engine strings only (equality / ordering); no new amounts are displayed.
-function reasonText(a?: Record<string, Json>, b?: Record<string, Json>) {
-  if (!a || !b || !isWon(a.new_investment_krw) || !isWon(b.new_investment_krw)) return '두 안의 첫 달 배정을 모두 확인하면 차이를 정리해 드려요.';
-  const ai = BigInt(a.new_investment_krw), bi = BigInt(b.new_investment_krw);
-  if (ai === bi) return '이번 달은 두 안의 신규 투자 후보금이 같아요. 남기는 현금과 목표 적립을 기준으로 골라주세요.';
-  const [more, less] = bi > ai ? ['투자 여력 확대', '생활 안정 우선'] : ['생활 안정 우선', '투자 여력 확대'];
-  return `${more}은 신규 투자 후보금이 더 크고, ${less}은 현금을 더 남겨요. 비상금이 충분한지가 선택의 기준이에요.`;
+// Same-run, same-month engine strings: exact BigInt difference (투자 여력 확대 − 생활 안정 우선). No other amount is derived.
+type Diff = { state: 'SAME' | 'DIFF' | 'HOLD'; value?: string };
+function diffOf(a: Record<string, Json> | undefined, b: Record<string, Json> | undefined, key: string, samePeriod: boolean): Diff {
+  const x = a?.[key], y = b?.[key];
+  if (!samePeriod || !isWon(x) || !isWon(y)) return { state: 'HOLD' };
+  const d = BigInt(y) - BigInt(x);
+  return d === 0n ? { state: 'SAME', value: x } : { state: 'DIFF', value: d.toString() };
+}
+const signed = (v: string) => `${v.startsWith('-') ? '' : '+'}${formatKrw(v)}`;
+const DIFF_KEYS: [string, string][] = [['new_investment_krw', '신규 투자 후보금'], ['additional_cash_krw', '추가로 남긴 현금'], ['goal_deposits_krw', '목표 적립'], ['protection_topup_krw', '보호자금 보충'], ['operating_refill_krw', '생활 운영자금 보충']];
+function DiffSummary({ a, b, samePeriod }: { a?: Record<string, Json>; b?: Record<string, Json>; samePeriod: boolean }) {
+  if (!a || !b) return <p>두 안의 첫 달 배정을 모두 확인하면 같은 점과 다른 점을 정리해 드려요.</p>;
+  if (!samePeriod) return <p>두 안의 계획 월이 달라 금액 차이를 비교하지 않았어요.</p>;
+  const rows = DIFF_KEYS.map(([k, label]) => ({ k, label, d: diffOf(a, b, k, samePeriod) }));
+  const same = rows.filter(r => r.d.state === 'SAME'), diff = rows.filter(r => r.d.state === 'DIFF'), hold = rows.filter(r => r.d.state === 'HOLD');
+  return <>
+    <p><strong>같은 점</strong> {same.length ? same.map(r => `${r.label} ${formatKrw(r.d.value)}`).join(' · ') : '이번 달 배정 항목 중 금액이 같은 항목은 없어요.'}</p>
+    <p><strong>다른 점</strong> {diff.length ? `투자 여력 확대는 생활 안정 우선보다 ${diff.map(r => `${r.label} ${signed(r.d.value!)}`).join(' · ')}이에요.` : '이번 달 배정 금액은 두 안이 모두 같아요.'}</p>
+    {!!hold.length && <p className="d-inline-note">{hold.map(r => r.label).join(' · ')}은 금액이 확인되지 않아 비교를 보류했어요.</p>}
+    <p className="d-inline-note">금액이 큰 쪽이 더 좋은 안이라는 뜻은 아니에요. 비상금 여유와 목표 일정에 맞는 쪽을 골라주세요.</p>
+  </>;
 }
 const PLAN_COPY: Record<string, { icon: typeof ShieldCheck; line: string; fit: string; care: string }> = {
-  STABILITY_FIRST: { icon: ShieldCheck, line: '남는 돈의 일부를 현금으로 남겨 갑작스러운 지출에 대비해요.', fit: '비상금·생활자금 여유를 먼저 두고 싶을 때, 소득이나 지출이 자주 바뀔 때', care: '신규 투자 후보금은 상대적으로 작을 수 있어요.' },
-  INVESTMENT_CAPACITY: { icon: TrendingUp, line: '남는 돈을 투자 후보로 더 돌려 자산을 키우는 쪽에 무게를 둬요.', fit: '비상금이 이미 충분하고 남는 돈을 투자 후보로 더 쓰고 싶을 때', care: '남겨두는 현금이 줄어 갑작스러운 지출 대응 여유가 작아져요.' },
+  STABILITY_FIRST: { icon: ShieldCheck, line: '남는 돈의 일부를 현금으로 남겨 갑작스러운 지출에 대비해요.', fit: '비상금·생활자금 여유를 먼저 두고 싶을 때, 소득이나 지출이 자주 바뀔 때', care: '신규 투자 후보금과 남기는 현금이 각각 얼마인지 위 표의 차이 열에서 확인해 주세요.' },
+  INVESTMENT_CAPACITY: { icon: TrendingUp, line: '남는 돈을 투자 후보로 더 돌려 자산을 키우는 쪽에 무게를 둬요.', fit: '비상금이 이미 충분하고 남는 돈을 투자 후보로 더 쓰고 싶을 때', care: '투자 후보금이 늘어난 만큼 다른 항목이 어떻게 달라지는지 위 표의 차이 열에서 확인해 주세요.' },
 };
 
 /** 100% stacked bar of one month's allocation. Widths use integer bps of the parts' own sum (geometry only). */
@@ -39,12 +54,15 @@ function AllocationBar({ row }: { row?: Record<string, Json> }) {
   return <div className="d-stack-bar" aria-hidden="true">{parts.map(([k, label]) => <span key={k} title={`${label} ${formatKrw(row[k])}`} style={{ width: `${Number(BigInt(row[k] as string) * 10000n / sum) / 100}%`, background: SEG_COLORS[k] }}/>)}</div>;
 }
 
-export function PlanComparison({ candidates, selected, onSelect, goals }: { candidates: Record<string, Json>[]; selected: string; onSelect: (id: string) => void; goals?: ReactNode }) {
+export function PlanComparison({ candidates, selected, onSelect, goals, basis, liquidity }: { candidates: Record<string, Json>[]; selected: string; onSelect: (id: string) => void; goals?: ReactNode; basis?: { runId?: string; inputVersion: number }; liquidity?: ReactNode }) {
   const ordered = ['STABILITY_FIRST', 'INVESTMENT_CAPACITY'].map(id => candidates.find(c => c.strategy_id === id)).filter((c): c is Record<string, Json> => !!c);
   const first = ordered.map(c => list(c.rows)[0]);
   const period = textValue(first.find(Boolean)?.period);
-  const differs = (key: string) => first.length === 2 && textValue(first[0]?.[key]) !== textValue(first[1]?.[key]);
-  return <section aria-label="두 재무안 비교" className="d-plan-compare">
+  const samePeriod = first.length === 2 && !!period && textValue(first[0]?.period) === textValue(first[1]?.period);
+  const differs = (key: string) => diffOf(first[0], first[1], key, samePeriod).state === 'DIFF';
+  const diffCell = (key: string) => { const d = diffOf(first[0], first[1], key, samePeriod); return <td className={`d-diff-cell d-diff-${d.state.toLowerCase()}`}>{d.state === 'SAME' ? '같음' : d.state === 'DIFF' ? signed(d.value!) : '비교 보류'}</td>; };
+  const pair = ordered.length === 2;
+  return <section aria-label="두 재무안 비교" className="d-plan-compare" data-run-id={basis?.runId} data-input-version={basis?.inputVersion}>
     <div className="d-plan-choices" role="group" aria-label="비교할 재무안">{ordered.map((c, i) => {
       const id = textValue(c.strategy_id), copy = PLAN_COPY[id], Icon = copy?.icon ?? Scale, on = id === selected, r = first[i];
       return <button key={id} type="button" className={`d-plan-choice ${on ? 'on' : ''}`} aria-pressed={on} aria-label={planName(id)} aria-describedby={`plan-choice-${id}`} onClick={() => onSelect(id)}>
@@ -57,22 +75,24 @@ export function PlanComparison({ candidates, selected, onSelect, goals }: { cand
       </button>;
     })}</div>
     <p className="d-inline-note d-flow-note">화면 비교용 선택이에요. 계획 채택은 5번 화면의 ‘계획 선택과 이번 달 기록’에서 따로 저장해요.</p>
+    <p className="d-inline-note d-plan-kinds">여기서는 남는 돈을 나누는 <strong>재무계획 2안</strong>을 비교해요. 투자 후보금을 어떤 비중으로 담을지는 3번 화면의 <strong>투자구성 3유형</strong>({Object.values(portfolioNames).join('·')})에서 따로 골라요.</p>
     {first.length > 0 && <article className="d-card d-plan-diff" aria-label="첫 달 납입안 비교">
-      <div className="d-card-head"><h2><Scale size={20} aria-hidden="true"/> 남는 돈을 이렇게 나눠요</h2><small>{period ? `${period} 한 달` : '첫 달'} · 원 단위</small></div>
+      <div className="d-card-head"><h2><Scale size={20} aria-hidden="true"/> 남는 돈을 이렇게 나눠요</h2><small>{period ? `${period} 한 달` : '첫 달'} · 같은 계산 결과{basis ? `(입력 ${basis.inputVersion}번째 버전)` : ''}</small></div>
       <div className="d-plan-bars">{ordered.map((c, i) => <div key={textValue(c.strategy_id)} className={c.strategy_id === selected ? 'on' : undefined}><span>{planName(c.strategy_id)}</span><AllocationBar row={first[i]}/></div>)}</div>
       <ul className="d-legend-row">{FLOW_ROWS.map(([k, label]) => <li key={k}><i style={{ background: SEG_COLORS[k] }} aria-hidden="true"/>{label}</li>)}</ul>
       <div className="d-table-wrap"><table>
-        <caption>막대와 같은 금액 · 차이가 있는 항목은 굵게 표시</caption>
-        <thead><tr><th scope="col">항목</th>{ordered.map(c => <th scope="col" key={textValue(c.strategy_id)} className={c.strategy_id === selected ? 'd-col-selected' : undefined}>{planName(c.strategy_id)}{c.strategy_id === selected && <small>화면에서 보는 중</small>}</th>)}</tr></thead>
+        <caption>막대와 같은 금액 · 차이 열은 투자 여력 확대 − 생활 안정 우선</caption>
+        <thead><tr><th scope="col">항목</th>{ordered.map(c => <th scope="col" key={textValue(c.strategy_id)} className={c.strategy_id === selected ? 'd-col-selected' : undefined}>{planName(c.strategy_id)}{c.strategy_id === selected && <small>화면에서 보는 중</small>}</th>)}{pair && <th scope="col">차이<small>확대 − 안정</small></th>}</tr></thead>
         <tbody>
-          <tr className="d-row-group"><th colSpan={ordered.length + 1} scope="colgroup">이번 달 납입·배정 · 한 달 흐름</th></tr>
-          {FLOW_ROWS.map(([key, label]) => <tr key={key} className={differs(key) ? 'd-row-diff' : undefined}><th scope="row"><i className="d-swatch" style={{ background: SEG_COLORS[key] }} aria-hidden="true"/>{label}{differs(key) && <span className="d-diff-tag">차이</span>}</th>{first.map((r, i) => <td key={i}>{formatKrw(r?.[key])}</td>)}</tr>)}
-          <tr className="d-row-group"><th colSpan={ordered.length + 1} scope="colgroup">월말 보유 현금 · 잔액이며 납입액이 아니에요</th></tr>
-          <tr><th scope="row">월말 현금 합계</th>{first.map((r, i) => <td key={i}>{formatKrw(r?.closing_cash_krw)}</td>)}</tr>
-          <tr><th scope="row">그중 목적 미배정</th>{first.map((r, i) => <td key={i}>{formatKrw(object(r?.closing_earmarks_krw).free)}</td>)}</tr>
+          <tr className="d-row-group"><th colSpan={ordered.length + (pair ? 2 : 1)} scope="colgroup">이번 달 납입·배정 · 한 달 흐름</th></tr>
+          {FLOW_ROWS.map(([key, label]) => <tr key={key} className={differs(key) ? 'd-row-diff' : undefined}><th scope="row"><i className="d-swatch" style={{ background: SEG_COLORS[key] }} aria-hidden="true"/>{label}{differs(key) && <span className="d-diff-tag">차이</span>}</th>{first.map((r, i) => <td key={i}>{formatKrw(r?.[key])}</td>)}{pair && diffCell(key)}</tr>)}
+          <tr className="d-row-group"><th colSpan={ordered.length + (pair ? 2 : 1)} scope="colgroup">월말 보유 현금 · 잔액이며 납입액이 아니에요</th></tr>
+          <tr><th scope="row">월말 현금 합계</th>{first.map((r, i) => <td key={i}>{formatKrw(r?.closing_cash_krw)}</td>)}{pair && diffCell('closing_cash_krw')}</tr>
+          <tr><th scope="row">그중 목적 미배정</th>{first.map((r, i) => <td key={i}>{formatKrw(object(r?.closing_earmarks_krw).free)}</td>)}{pair && <td className="d-diff-cell">—</td>}</tr>
         </tbody>
       </table></div>
-      <div className="d-plan-reason"><strong>두 안의 차이</strong><p>{reasonText(first[0], first[1])}</p></div>
+      <div className="d-plan-reason" aria-label="두 안의 같은 점과 다른 점"><DiffSummary a={first[0]} b={first[1]} samePeriod={samePeriod}/></div>
+      {liquidity}
       <div className="d-plan-fits">{ordered.map(c => { const copy = PLAN_COPY[textValue(c.strategy_id)]; return <div key={textValue(c.strategy_id)}><strong>{planName(c.strategy_id)}이 맞는 경우</strong><p>{copy?.fit}</p><p className="d-plan-care"><TriangleAlert size={14} aria-hidden="true"/> {copy?.care}</p></div>; })}</div>
     </article>}
     {goals}
