@@ -96,8 +96,8 @@ function Recalculation({review}: {review: PortfolioReview}) {
   </details>;
 }
 
-export function PortfolioReviewFlow({visited,flow, basis, view, token, caseId, stale, doc, onTab, onOpenRun, onReadRun, onPrepared, onAdopt}: {
-  visited: number[]; flow: ReviewFlow; basis: ReviewBasis | null; view: ViewResult; token: string | null; caseId: string; stale: boolean;
+export function PortfolioReviewFlow({visited,selectionBlocked=false,flow, basis, view, token, caseId, stale, doc, onTab, onOpenRun, onReadRun, onPrepared, onAdopt}: {
+  visited: number[]; selectionBlocked?: boolean; flow: ReviewFlow; basis: ReviewBasis | null; view: ViewResult; token: string | null; caseId: string; stale: boolean;
   doc: Document | null; onTab: (n: number) => void; onOpenRun: (id: string) => Promise<void>; onReadRun: (id: string) => Promise<void>;
   onPrepared: (r: PortfolioReview) => void; onAdopt: () => void;
 }) {
@@ -120,7 +120,7 @@ export function PortfolioReviewFlow({visited,flow, basis, view, token, caseId, s
   }
   const missingVisits = reviewStepNames.map((name,i)=>({name,i})).filter(({i})=>!visited.includes(i));
   async function confirmForConsultation() {
-    if (!basis || stale || flow.busy || !flow.loaded || missingVisits.length) return;
+    if (!basis || stale || selectionBlocked || flow.busy || !flow.loaded || missingVisits.length) return;
     const current = review?.basis === null && review.current_run_id === basis.run_id
       ? await flow.mutate("selection", {basis}) : matched && review?.is_current && !review.final ? review : await flow.create(basis);
     if (!current) return;
@@ -135,7 +135,7 @@ export function PortfolioReviewFlow({visited,flow, basis, view, token, caseId, s
     <p>참조 결과: 입력 {view.serverVersion ?? "저장 전"}번째 버전 · {stale ? "이전 입력 기준" : "현재 화면의 계산"}. 대화와 제안만으로 답변·계획이 바뀌지 않아요.</p>
     {!stepsDone&&<div className="d-consultation-entry">
       {missingVisits.length>0&&<div className="d-toolbar">{missingVisits.map(({name,i})=><button type="button" className="d-text-button" key={name} onClick={()=>onTab(i)}>{name} 살펴보기 →</button>)}</div>}
-      <button type="button" className="d-primary" disabled={!basis||stale||flow.busy||!flow.loaded||missingVisits.length>0} onClick={()=>void confirmForConsultation()}>검토 내용 확인하고 상담 준비</button>
+      <button type="button" className="d-primary" disabled={!basis||stale||selectionBlocked||flow.busy||!flow.loaded||missingVisits.length>0} onClick={()=>void confirmForConsultation()}>검토 내용 확인하고 상담 준비</button>
       {!basis&&<p className="d-inline-note">저장한 결과와 선택한 투자구성이 있어야 상담을 이어갈 수 있어요.</p>}
     </div>}
     {review && <>
