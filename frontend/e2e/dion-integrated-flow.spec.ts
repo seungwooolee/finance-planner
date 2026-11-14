@@ -87,6 +87,6 @@ test('selected plan updates actual products; missing FX or understanding stays u
     rows = page.locator('[data-allocation-month]');
     await expect(rows).toHaveCount(1);
     expect(BigInt((await rows.first().getAttribute('data-unallocated'))!)).toBeGreaterThan(0n);
-    await expect(page.getByRole('region', { name: '상품 적합성·배분 검토' })).toContainText('미배분');
+    await expect(page.getByRole('region', { name: '상품 적합성·배분 검토' })).toContainText('현금 대기자금');
   }
 });

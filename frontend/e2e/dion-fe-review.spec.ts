@@ -45,7 +45,7 @@ test('basic: real calculation, six risk answers, edit/reuse, product boundary an
   expect(updated.result.results['OUT-05'].candidates[0].rows[0].policy_input_sha256).not.toBe(first.result.results['OUT-05'].candidates[0].rows[0].policy_input_sha256);
   await page.getByRole('button',{name:/상품 정보|상품·비중/}).click();
   await expect(page.getByText('검토용 초안 · 실제 가입·매수·이체 없음',{exact:true})).toBeVisible();
-  await expect(page.getByText('현재 배분할 수 있는 상품이 없어 투자 후보 금액을 미배분으로 남겼어요.',{exact:true})).toBeVisible();
+  await expect(page.getByText('현재 배분할 수 있는 상품이 없어 투자 후보 금액을 현금 대기자금으로 남겼어요.',{exact:true})).toBeVisible();
   expect(updated.posted.requested_outputs).toContain('OUT-06');
   const review=updated.result.results['OUT-06'];
   expect(review.catalog.identity_verified_count).toBe(78);

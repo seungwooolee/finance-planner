@@ -5,18 +5,18 @@ import { formatKrw } from "@/lib/dion/money-format";
 import { riskTitles } from "@/lib/dion/investment-review";
 import { InvestmentFollowup } from "./investment-followup";
 import { policyDateMessage, productEmptyCause } from "@/lib/dion/product-empty";
-import { allocationSlices, assetGroup, bpsLabel, shareBps } from "@/lib/dion/result-visual";
+import { allocationSlices, assetGroup, bpsLabel, cashWaitingText, shareBps } from "@/lib/dion/result-visual";
 import { Donut, DonutLegend } from "./donut";
 
 export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="" }: { review: Record<string, Json>; selectedPlan?: string; evaluationOn?: string; onEdit: (id: string) => void }) {
   const empty=productEmptyCause(review,evaluationOn);
   const catalog=object(review.catalog),policy=object(review.product_policy),messages=object(review.reason_messages);
   const products=list(review.products),candidates=list(review.candidates).filter(c=>!selectedPlan||c.strategy_id===selectedPlan),detail=object(catalog.detail_review);
-  const reason=(code:unknown)=>code==="POLICY_DISCLOSURE_STALE"?policyDateMessage(review,evaluationOn):textValue(messages[String(code)])||"상품의 검토 조건을 확인해주세요.";
+  const reason=(code:unknown)=>code==="POLICY_DISCLOSURE_STALE"?policyDateMessage(review,evaluationOn):cashWaitingText(textValue(messages[String(code)]))||"상품의 검토 조건을 확인해주세요.";
   const titles:Record<string,string>={...riskTitles,"NEW-01":"진단 범위",D14:"제외할 투자 조건",D18:"환율 변동 수용",D19:"상품 설명 이해","NEW-12":"제외할 산업"};
   const questionsForReason:Record<string,string>={RESTRICTIONS_UNCONFIRMED:"D14",FX_ACCEPTANCE_REQUIRED:"D18",UNDERSTANDING_REQUIRED:"D19",FUND_DATE_UNRESOLVED:"F15",FUND_NOT_AVAILABLE:"F15",EXPERIENCE_REQUIRED:"F16",INDUSTRY_EXCLUSION_UNRESOLVED:"NEW-12"};
   const reasonQuestions=products.flatMap(p=>Array.isArray(p.reason_codes)?p.reason_codes.map(c=>questionsForReason[String(c)]).filter(Boolean):[]);
-  const explanationOf=(p:Record<string,Json>)=>{const e=object(p.explanation);if(!textValue(e.summary))return null;const reasons=Array.isArray(e.reasons)?e.reasons.map(object):[];return <div data-explanation={String(e.decision)}><p>{textValue(e.summary)}</p>{reasons.map(r=><p className="d-note" key={String(r.code)}>{textValue(r.message)}{r.changes_with==="QUESTION"&&textValue(r.question_id)?` · ${titles[textValue(r.question_id)]??"관련"} 답변을 바꾸면 결과가 달라질 수 있어요.`:r.changes_with==="NEW_DISCLOSURE_OR_POLICY"?" · 새 공시나 정책 갱신 후 다시 검토해요.":""}</p>)}{Array.isArray(e.facts)&&e.facts.length>0&&<ul>{e.facts.map(f=><li key={String(f)}>{textValue(f)}</li>)}</ul>}</div>;};
+  const explanationOf=(p:Record<string,Json>)=>{const e=object(p.explanation);if(!textValue(e.summary))return null;const reasons=Array.isArray(e.reasons)?e.reasons.map(object):[];return <div data-explanation={String(e.decision)}><p>{cashWaitingText(textValue(e.summary))}</p>{reasons.map(r=><p className="d-note" key={String(r.code)}>{cashWaitingText(textValue(r.message))}{r.changes_with==="QUESTION"&&textValue(r.question_id)?` · ${titles[textValue(r.question_id)]??"관련"} 답변을 바꾸면 결과가 달라질 수 있어요.`:r.changes_with==="NEW_DISCLOSURE_OR_POLICY"?" · 새 공시나 정책 갱신 후 다시 검토해요.":""}</p>)}{Array.isArray(e.facts)&&e.facts.length>0&&<ul>{e.facts.map(f=><li key={String(f)}>{textValue(f)}</li>)}</ul>}</div>;};
   const groupOrder=["BOND","KR_EQUITY","GLOBAL_EQUITY","OTHER"];
   const defaults=products.filter(p=>p.allocation_role==="DEFAULT_SLOT").sort((a,b)=>groupOrder.indexOf(assetGroup(a).id)-groupOrder.indexOf(assetGroup(b).id)),alternatives=products.filter(p=>p.allocation_role==="COMPARISON_ALTERNATIVE");
   const missing=[...new Set([...reasonQuestions,...(Array.isArray(review.missing_question_ids)?review.missing_question_ids:[]),...(Array.isArray(review.invalid_question_ids)?review.invalid_question_ids:[])])];
@@ -24,7 +24,7 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
   return <section aria-label="상품 적합성·배분 검토" className="d-product-screen">
     {!review.review_version&&<p className="d-note">이전 계산에는 상품 검토 결과가 없어요. 현재 입력으로 다시 계산하면 확인할 수 있어요.</p>}
     {review.review_version&&<>
-      <p className="d-inline-note d-product-status" role="status">{catalog.eligible_for_review_count===0?"현재 배분할 수 있는 상품이 없어 투자 후보 금액을 미배분으로 남겼어요.":"조건을 통과한 상품을 비중 기준에 맞춰 배분했어요. 상품별 금액은 아래에서 확인해주세요."}</p>
+      <p className="d-inline-note d-product-status" role="status">{catalog.eligible_for_review_count===0?"현재 배분할 수 있는 상품이 없어 투자 후보 금액을 현금 대기자금으로 남겼어요.":"조건을 통과한 상품을 비중 기준에 맞춰 배분했어요. 상품별 금액은 아래에서 확인해주세요."}</p>
       <InvestmentFollowup review={review} onEdit={onEdit}/>
       {empty?.date&&<div className="d-alert-card" data-product-empty="DATE"><strong>대표상품 0개 · 기준일 확인</strong><p>{policyDateMessage(review,evaluationOn)}</p></div>}
       {Array.isArray(review.reason_codes)&&review.reason_codes.filter(c=>c!=="POLICY_DISCLOSURE_STALE"||!empty?.date).map(code=><p className="d-note" key={String(code)}>{reason(code)}</p>)}
@@ -39,7 +39,7 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
         {months.map((m,i)=><div className="d-summary-band" key={i} data-allocation-month={String(m.period)} data-budget={textValue(m.scenario_budget_krw)} data-allocated={textValue(m.allocated_total_krw)} data-unallocated={textValue(m.unallocated_krw)}>
           <div><span>{String(m.period)} 신규 투자 후보금</span><strong>{formatKrw(m.scenario_budget_krw)}</strong></div>
           <div><span>상품 배분액</span><strong className="d-accent">{formatKrw(m.allocated_total_krw)}</strong></div>
-          <div><span>미배분 잔액</span><strong>{formatKrw(m.unallocated_krw)}</strong><small>현금 잔고에 자동으로 더하지 않아요</small></div>
+          <div><span>현금 대기자금</span><strong>{formatKrw(m.unallocated_krw)}</strong><small>현금 잔고에 자동으로 더하지 않아요</small></div>
           {Array.isArray(m.reason_codes)&&m.reason_codes.length>0&&<p className="d-band-note">{m.reason_codes.map(code=>code==="POLICY_DISCLOSURE_STALE"?policyDateMessage(review,evaluationOn,String(m.period)):reason(code)).join(" ")}</p>}
         </div>)}
         {defaults.length>0&&<div className="d-product-layout">
@@ -50,7 +50,7 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
               return <div className="d-product-card" key={String(p.code)}>
                 <div className="d-product-top"><i style={{background:group.color}} aria-hidden="true"/><div><strong>{textValue(p.name)}</strong><small>{String(p.code)}</small></div><span className="d-pill">{group.role}</span></div>
                 {a?<div className="d-product-figures"><div><span>검토 비중</span><strong>{bps!==null?`${(bps/100).toLocaleString("ko-KR")}%`:"확인 필요"}</strong></div><div><span>이번 달 금액</span><strong>{formatKrw(a.review_allocated_krw)}</strong></div></div>
-                  :<p className="d-product-excluded">이번 달 배분 제외 · {Array.isArray(p.reason_codes)&&p.reason_codes.length?reason(p.reason_codes[0]):"검토 조건을 확인해주세요."} 이 몫은 미배분으로 남겨요.</p>}
+                  :<p className="d-product-excluded">이번 달 배분 제외 · {Array.isArray(p.reason_codes)&&p.reason_codes.length?reason(p.reason_codes[0]):"검토 조건을 확인해주세요."} 이 몫은 현금 대기자금으로 남겨요.</p>}
                 <div className="d-bar" aria-hidden="true"><span style={{width:`${a?shareBps(a.review_allocated_krw,month?.scenario_budget_krw)/100:0}%`,background:group.color}}/></div>
                 <p className="d-product-meta">위험등급 {typeof d.risk_grade==="number"?`${d.risk_grade}등급`:"미확인"} · 총보수 {textValue(d.annual_base_fee_percent)?`${textValue(d.annual_base_fee_percent)}%`:"미확인"} · {group.label}{d.fx_exposed===true?" · 환노출":""}</p>
                 {evidence(p)}
@@ -62,7 +62,7 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
           <aside className="d-card d-donut-card" aria-label="이번 달 상품 구성"><h2>이번 달 상품 구성</h2>
             {month&&<Donut slices={slices} total={month.scenario_budget_krw} size={168} center={<><small>배분</small><strong>{bpsLabel(shareBps(month.allocated_total_krw,month.scenario_budget_krw))}</strong></>}/>}
             {month&&<DonutLegend slices={slices} total={month.scenario_budget_krw}/>}
-            <p className="d-inline-note">회색은 미배분이에요. 남은 상품으로 비중을 자동 재분배하지 않아요.</p>
+            <p className="d-inline-note">회색은 현금 대기자금이에요. 남은 상품으로 비중을 자동 재분배하지 않아요.</p>
           </aside>
         </div>}
       </div>;

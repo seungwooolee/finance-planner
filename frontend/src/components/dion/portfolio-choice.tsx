@@ -64,7 +64,7 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
             : <small className="d-type-foot">비교용 · 선택하려면 투자 선호 답변을 바꿔야 해요</small>}
         </div>;
       })}</div>
-      <p className="d-inline-note">도넛은 실제 배분액의 비율이고 회색은 미배분이에요. 미배분 금액은 현금성 상품으로 자동 대체하지 않아요.</p>
+      <p className="d-inline-note">도넛은 실제 배분액의 비율이고 회색은 현금 대기자금이에요. 현금 대기자금 금액은 현금성 상품으로 자동 대체하지 않아요.</p>
     </article>
   </>;
 }
