@@ -25,13 +25,24 @@ from app.consultation.model_proposal import mock_proposal
 from app.consultation.rag import SchemeEvidenceService
 from app.consultation.rag_registry import EMPTY
 from app.consultation.service import ConsultationService
-from tests.rag_fixture import corpus
+from tests.rag_fixture import corpus, manifest
+
+
+def portfolio_corpus():
+    data = manifest()
+    items = ["SCHEME-TEST", "CON-01", "CON-03", "CON-05", "CON-07", *[f"TAX-{n:02}" for n in range(1, 9)]]
+    data["item_ids"] = items
+    data["item_labels"] = {item: "합성 시험 자료" for item in items}
+    claim = data["claims"][0]
+    data["claims"] = [{**claim, "claim_id": f"CLAIM-{item}", "item_id": item} for item in items]
+    return corpus(data)
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=8002)
     parser.add_argument("--scheme-fixture", action="store_true", help="Enable test-only synthetic scheme evidence")
+    parser.add_argument("--portfolio-fixture", action="store_true", help="Enable test-only product/tax evidence mappings")
     parser.add_argument("--test-clock", help="TEST ONLY: timezone-aware ISO time for the month guard; store timestamps remain actual")
     args = parser.parse_args()
     fixed = datetime.fromisoformat(args.test_clock) if args.test_clock else None
@@ -60,7 +71,7 @@ def main():
         app.dependency_overrides[get_actor] = mock_actor
         app.dependency_overrides[get_store] = lambda: store
         app.dependency_overrides[get_scheme_evidence_service] = lambda: SchemeEvidenceService(
-            corpus if args.scheme_fixture else lambda: EMPTY,
+            portfolio_corpus if args.portfolio_fixture else corpus if args.scheme_fixture else lambda: EMPTY,
         )
         if args.scheme_fixture:
             consultation = ConsultationService(clock=lambda: datetime(2026, 11, 12, 5, tzinfo=timezone.utc),

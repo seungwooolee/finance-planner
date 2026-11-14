@@ -64,8 +64,9 @@ test('normal: actual OUT-05 to OUT-06, three defaults and three comparison alter
   ]);
   expect(rows.every((r: any) => r.allocations.length === 3)).toBe(true);
   const product = screen.locator('[data-product-code="360200"]');
-  await product.locator('summary').click();
-  await expect(product.getByRole('link', { name: '공식 상품 자료 ↗' })).toHaveAttribute('href', /^https:\/\//);
+  await product.locator(':scope > summary').click();
+  await product.getByText('상품 공시 출처', {exact: true}).click();
+  await expect(product.locator('.d-explanation-evidence').last().getByRole('link').first()).toHaveAttribute('href', /^https:\/\//);
   await expect(product).toContainText('기준일');
   await expect(product).toContainText('2026-11-13');
   await page.screenshot({ path: info.outputPath('normal-screen-3.png'), fullPage: true });
@@ -83,7 +84,7 @@ test('FX restriction: foreign slot excluded, no redistribution, same monthly bud
   expect(review.products.find((p: any) => p.code === '360200').reason_codes).toContain('FX_ACCEPTANCE_REQUIRED');
   expect(review.candidates.map((c: any) => [c.rows[0].allocated_total_krw, c.rows[0].unallocated_krw])).toEqual([['159800', '239700'], ['255680', '383520']]);
   expect(review.candidates.every((c: any) => !c.rows[0].allocations.some((a: any) => a.code === '360200'))).toBe(true);
-  await screen.locator('[data-product-code="360200"] summary').click();
+  await screen.locator('[data-product-code="360200"] > summary').click();
   await expect(screen.locator('[data-product-code="360200"]')).toContainText('환노출');
   await page.screenshot({ path: info.outputPath('fx-exclusion-screen-3.png'), fullPage: true });
 });

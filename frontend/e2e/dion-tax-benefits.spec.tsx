@@ -25,6 +25,12 @@ test('related facts: actual engine result, rent guide, no added questions or AI 
   page.on('request', request => { if (request.method() === 'POST') writes.push(new URL(request.url()).pathname); });
   page.on('pageerror', error => errors.push(error.message));
   const initial = await load(page, '사회초년생');
+  const tax = page.getByRole('region', { name: '확인해볼 절세 혜택' });
+  await expect(tax).toHaveCount(0);
+  for (const index of [1, 2, 3]) {
+    await page.locator('.d-tabs button').nth(index).click();
+    await expect(tax).toHaveCount(0);
+  }
   await page.getByRole('button', { name: '입력 내용 수정 ↗' }).click();
   const navigation = page.getByRole('navigation', { name: '질문 이동' });
   const count = await navigation.getByRole('button').count();
@@ -40,22 +46,19 @@ test('related facts: actual engine result, rent guide, no added questions or AI 
   expect(result.results['OUT-03']).toEqual(initial.result.results['OUT-03']);
   expect(doc.raw_bundle.answers.filter(r => r.envelope.question_ref.design_id.startsWith('TAX-'))).toEqual(
     initial.doc.raw_bundle.answers.filter(r => r.envelope.question_ref.design_id.startsWith('TAX-')));
+  await page.locator('.d-tabs button').nth(4).click();
   const section = page.getByRole('region', { name: '확인해볼 절세 혜택' });
   const rent = section.locator('.d-tax-priority [data-tax-benefit="monthly-rent"]');
   await expect(rent).toContainText('조건 확인 필요');
   await expect(rent).toContainText('거주 형태를 월세로 입력했어요');
   await expect(section.getByText('입력 정보 기준 요건 충족', { exact: true })).toHaveCount(0);
   const beforeGuide = writes.length;
-  await rent.getByRole('button', { name: '제도 알아보기', exact: true }).click();
-  const guide = page.getByRole('dialog', { name: '월세 공제 · 제도 안내' });
-  await expect(guide.getByRole('heading', { name: '확인 방법' })).toBeVisible();
-  await expect(guide.getByRole('heading', { name: '신청·문의 경로' })).toBeVisible();
+  await rent.getByRole('button', { name: '근거로 자세히 보기', exact: true }).click();
+  const guide = page.getByRole('dialog', { name: '월세 공제 · 근거 설명' });
+  await expect(guide.getByRole('heading', { name: '다음 확인' })).toBeVisible();
   await expect(guide.locator('input')).toHaveCount(0);
   await guide.getByRole('button', { name: '결과로 돌아가기' }).click();
-  await expect(rent.getByRole('button', { name: '제도 알아보기' })).toBeFocused();
-  await rent.getByRole('button', { name: 'AI에게 상담하기', exact: true }).click();
-  await expect(guide.getByRole('status')).toContainText('상담 요청은 전송하지 않았어요');
-  await guide.getByRole('button', { name: '절세 제도 안내 닫기' }).click();
+  await expect(rent.getByRole('button', { name: '근거로 자세히 보기' })).toBeFocused();
   expect(writes.length).toBe(beforeGuide);
   const payload = taxConsultationContext(taxCards(doc).find(c => c.benefit.id === 'monthly-rent')!, doc, false);
   expect(payload.consultation_id).toBeNull();
@@ -63,9 +66,19 @@ test('related facts: actual engine result, rent guide, no added questions or AI 
   expect(payload.sent).toBe(false);
   expect(payload.confirmed_facts[0].value).toEqual(record(doc, 'N02')!.envelope.fields.housing_type);
   await section.locator('.d-tax-all > summary').click();
-  await expect(section.locator('.d-tax-all [data-tax-benefit]')).toHaveCount(8);
+  await expect(section.locator('[data-tax-benefit]')).toHaveCount(8);
+  await expect(section.locator('.d-tax-all [data-tax-benefit]')).toHaveCount(5);
+  await expect(section.getByRole('heading', { name: '아직 확인되지 않은 정보' })).toHaveCount(0);
   await page.screenshot({ path: info.outputPath('tax-related-desktop.png'), fullPage: true });
   expect(errors).toEqual([]);
+  // Reopen the same captured result in the direct precision path, without new calculation.
+  await page.getByRole('button', { name: '정밀진단', exact: true }).click();
+  await page.getByRole('button', { name: '이전 결과 보기', exact: true }).click();
+  const deepTabs = page.getByRole('navigation', { name: '정밀 결과 5뷰' });
+  await deepTabs.getByRole('button').nth(4).click();
+  await expect(section).toHaveCount(1);
+  await deepTabs.getByRole('button').nth(0).click();
+  await expect(section).toHaveCount(0);
 });
 
 test('insufficient facts: actual partial results survive and mobile guide needs no new answers', async ({ page }, info) => {
@@ -75,19 +88,17 @@ test('insufficient facts: actual partial results survive and mobile guide needs 
   expect(record(doc, 'F03')!.envelope.fields.monthly_net_income_krw).toEqual({ state: 'UNKNOWN', raw_value: null, unit: 'KRW_10000' });
   expect(result.results['OUT-03'].base_surplus.value).toBeNull();
   expect(result.results['OUT-02'].calc_state).toBe('CALCULATED');
+  await page.locator('.d-tabs button').nth(4).click();
   const section = page.getByRole('region', { name: '확인해볼 절세 혜택' });
-  await expect(section).toContainText('개인별 요건 판정은 아직 연결되지 않았어요');
+  await expect(section).toContainText('개인별 절세액을 확정한 결과는 아니에요');
   await section.locator('.d-tax-all > summary').click();
   const all = section.locator('.d-tax-all');
-  await expect(all.locator('[data-tax-benefit]')).toHaveCount(8);
+  await expect(all.locator('[data-tax-benefit]')).toHaveCount(5);
   const gift = all.locator('[data-tax-benefit="marriage-birth-gift"]');
   await expect(gift).toContainText('일반 안내');
-  await gift.locator('summary').click();
-  await expect(gift).toContainText('개인별 적용 연도 미확인');
-  await expect(gift.getByRole('link')).toHaveCount(2);
-  await gift.getByRole('button', { name: '제도 알아보기' }).click();
-  const guide = page.getByRole('dialog', { name: '혼인·출산 증여공제 · 제도 안내' });
-  await expect(guide).toContainText('상속과 생전 증여는 서로 다른 사실');
+  await gift.getByRole('button', { name: '근거로 자세히 보기' }).click();
+  const guide = page.getByRole('dialog', { name: '혼인·출산 증여공제 · 근거 설명' });
+  await expect(guide).toContainText('현재 답변만으로 관련성이나 적용 여부를 확인하지 않았어요');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   const bounds = await guide.boundingBox();
   expect(bounds!.x).toBeGreaterThanOrEqual(0);
@@ -119,12 +130,12 @@ test('not eligible: proposed BE presentation fixture only, four states and versi
   await page.setContent(renderToStaticMarkup(<div className="dion-app"><p>FE 컴포넌트 표시 검사용 · 실제 BE 판정 아님</p><TaxBenefits doc={doc} review={review}/></div>));
   await page.addStyleTag({ content: readFileSync('src/components/dion/planner.css', 'utf8') });
   await page.locator('.d-tax-all > summary').click();
-  const all = page.locator('.d-tax-all');
+  const all = page.getByRole('region', {name: '확인해볼 절세 혜택'});
   const excluded = all.locator('[data-tax-benefit="monthly-rent"]');
   await expect(excluded).toContainText('입력 정보 기준 대상 아님');
   await expect(excluded).not.toContainText('추천 후보');
   await expect(all.locator('[data-tax-benefit="isa-account"]')).toContainText('입력 정보 기준 요건 충족');
-  await expect(all.locator('[data-tax-benefit="pension-contribution"]')).toContainText('추천 후보 · 적용 여부와 별개');
+  await expect(all.locator('[data-tax-benefit="pension-contribution"]')).toContainText('검토 후보 · 적용 여부와 별개');
   await expect(all.locator('[data-tax-benefit="marriage-birth-gift"]')).toContainText('일반 안내');
   expect(taxCards(doc, { ...review, input_version: review.input_version + 1 }).every(c => !c.assessment)).toBe(true);
   expect(taxCards(doc, { ...review, case_id: 'another-case' }).every(c => !c.assessment)).toBe(true);
