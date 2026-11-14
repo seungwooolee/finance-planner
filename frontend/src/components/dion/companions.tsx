@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { ArrowLeft, LogIn, MessageCircle, X } from "lucide-react";
 
 export function Cat({ kind = "welcome", size = 120, className = "", eager = false }: { kind?: "welcome" | "coach" | "guide"; size?: number; className?: string; eager?: boolean }) {
@@ -20,9 +20,14 @@ const topics = [
   { title: "결과가 ‘확인 필요’로 나와요", answer: "관련 금액·기간·소유 지분이 빠졌거나 서로 다르면 해당 결과를 보류해요. 0으로 대신 계산하지 않아요. 결과 화면의 ‘확인하기’를 누르면 필요한 질문으로 이동할 수 있어요." },
 ];
 
+const subscribeToHydration = () => () => {};
+const clientReady = () => true;
+const serverReady = () => false;
+
 export function ConsultationWidget({ compact = false, open, onOpen, onClose, children }: {
   compact?: boolean; open: boolean; onOpen: () => void; onClose: () => void; children: ReactNode;
 }) {
+  const hydrated = useSyncExternalStore(subscribeToHydration, clientReady, serverReady);
   const [selected, setSelected] = useState<number | null>(null);
   const dialog = useRef<HTMLDialogElement>(null), launcher = useRef<HTMLButtonElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null), returnFocus = useRef<HTMLElement | null>(null);
@@ -44,6 +49,15 @@ export function ConsultationWidget({ compact = false, open, onOpen, onClose, chi
   }, [open]);
   return <div className="d-consultation">
     <dialog ref={dialog} aria-labelledby="dion-help-title" id="dion-help" className="d-ai-window"
+      onKeyDown={event => {
+        if (event.key !== "Tab") return;
+        const items = Array.from(event.currentTarget.querySelectorAll<HTMLElement>(
+          'button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), textarea:not(:disabled), summary, [tabindex="0"]',
+        )).filter(node => node.getClientRects().length > 0);
+        const first = items[0], last = items[items.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+        else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+      }}
       onCancel={e => { e.preventDefault(); onClose(); }}>
       <header><Cat kind="coach" size={48}/><div><h2 id="dion-help-title">dion AI 상담</h2><small>현재 결과를 함께 살펴봐요</small></div>
         <button type="button" ref={closeButton} onClick={onClose} aria-label="상담창 닫기"><X size={20}/></button></header>
@@ -56,7 +70,7 @@ export function ConsultationWidget({ compact = false, open, onOpen, onClose, chi
       </div>
     </dialog>
     <button type="button" className={`d-help-launcher ${compact ? "compact" : ""}`} ref={launcher}
-      aria-expanded={open} aria-controls="dion-help" aria-haspopup="dialog" aria-label="dion AI 상담 열기" onClick={onOpen}>
+      disabled={!hydrated} aria-busy={!hydrated} aria-expanded={open} aria-controls="dion-help" aria-haspopup="dialog" aria-label="dion AI 상담 열기" onClick={onOpen}>
       <Cat kind="guide" size={48}/><span>AI 상담</span><MessageCircle size={19}/></button>
   </div>;
 }

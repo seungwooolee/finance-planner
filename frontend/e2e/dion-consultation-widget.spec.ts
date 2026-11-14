@@ -5,9 +5,11 @@ const launcherName = 'dion AI 상담 열기';
 const headers = { Authorization: 'Bearer MOCK-FE-ONLY' };
 
 test('cat sheet offers guest help, traps focus and returns focus on mobile', async ({ page }, testInfo) => {
+  test.setTimeout(75_000);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/dion', { waitUntil: 'domcontentloaded' });
   const launcher = page.getByRole('button', { name: launcherName, exact: true });
+  await expect(launcher).toBeEnabled({ timeout: 30_000 });
   await launcher.press('Enter');
   const dialog = page.getByRole('dialog', { name: 'dion AI 상담', exact: true });
   await expect(dialog).toContainText('로그인 후 계산 결과를 저장');
@@ -21,6 +23,23 @@ test('cat sheet offers guest help, traps focus and returns focus on mobile', asy
   await page.screenshot({ path: testInfo.outputPath('mobile-guest.png') });
   await page.keyboard.press('Escape');
   await expect(dialog).not.toBeVisible();
+  await expect(launcher).toBeFocused();
+});
+
+test('cat launcher waits for hydration before accepting the first keyboard interaction', async ({ page }) => {
+  test.setTimeout(75_000);
+  let release!: () => void;
+  const scripts = new Promise<void>(resolve => { release = resolve; });
+  await page.route('**/_next/**/*.js*', async route => { await scripts; await route.continue(); });
+  await page.goto('/dion', { waitUntil: 'commit' });
+  const launcher = page.getByRole('button', { name: launcherName, exact: true });
+  await expect(launcher).toBeDisabled();
+  await expect(launcher).toHaveAttribute('aria-busy', 'true');
+  release();
+  await expect(launcher).toBeEnabled({ timeout: 30_000 });
+  await launcher.press('Enter');
+  await expect(page.getByRole('dialog', { name: 'dion AI 상담', exact: true })).toBeVisible();
+  await page.keyboard.press('Escape');
   await expect(launcher).toBeFocused();
 });
 
