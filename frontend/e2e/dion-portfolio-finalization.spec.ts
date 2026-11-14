@@ -5,7 +5,7 @@ const headers = {Authorization: "Bearer MOCK-FE-ONLY"};
 const panel = (page: Page) => page.getByRole("region", {name: "DION 상담과 최종 포트폴리오", exact: true});
 async function select(page: Page) {
   await page.locator(".d-tabs button").nth(2).click();
-  await page.locator('[data-portfolio-type="BALANCED"] button').click();
+  await page.locator('[data-portfolio-type="BALANCED"] > button').click();
   await expect(page.locator(".d-tabs button").nth(3)).toHaveAttribute("aria-current", "page");
 }
 async function confirmSteps(page: Page) {
