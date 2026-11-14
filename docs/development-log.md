@@ -1,3 +1,13 @@
+# v0.2.2 — 2026-11-14
+
+- 기존 정장·차트 고양이 자산을 첫 화면에 적용하고 AI 재무설계 서비스 소개를 정리했다.
+- 활성 질문별 응답을 기준으로 진행률과 막대 위 고양이 위치를 연결했다. 모름 응답과 계산 가능 여부는 별개이며, 조건부 상세·수정·불러오기를 반영한다.
+- 생활단계를 한 영역에서 복수 선택하고 주요 단계를 지정한다. 기존 primary/overlaps 원응답 계약을 유지한다.
+- 10.1만원 입력은 원문·단위를 유지하면서 10만 1천 원으로 표시한다. BigInt 기반 변환을 재사용한다.
+- TypeScript·변경 파일 ESLint 통과. 오프라인 5건·실제 Edge 데스크톱/모바일 2건 통과. 동작 줄이기 전환 시간의 테스트 비교를 수정하고 실패한 UI 2건만 한 번 재실행했다.
+- BE·엔진·API 계약 변경 없음. 전체 Core/production build·실계정/운영 DB·배포는 이번 UI 범위에서 미실행이다.
+
+---
 # 2026-11-14 — PR #34 병합 충돌 해소
 
 후속 CI Core #65에서 FE 타입/린트는 통과했으나 BE는 AGENTS.md의 상시 위임 추가가 과거 AI 잠금과 달라 3 failed·24 setup errors(990 passed·81 skipped)로 실패했다. 원 기대값 잠금은 보존하고 통합 baseline 1.1에 승인된 AGENTS.md만 별도 정확한 SHA로 접수했다. 코드 예외 2파일은 그대로 유지하며 정책 변조·채점 데이터로 예외 확장·원본 SHA 변조를 거부한다. 변경 관련 guard 9건과 R1-02 1건, 합계 10 PASS/첫 재검증; 변경 Python 2파일 Ruff PASS. 로컬 전체 검사·빌드는 실행하지 않는다. 수정 푸시 후 기존 PR CI 결과는 PR #34 Checks에서 확인한다.
@@ -663,3 +673,5 @@ GitHub main 2baa2be의44개 파일을 내보내 blob 지문을 확인했다. 실
 - `ee0726b`에서 `codex/release-v0.3.0` 및 전용 worktree를 만들었다. 기존 R1/R2/R3를 단일 persistent dialog/모바일 시트에 연결하고 요청 중 닫기·화면 이동·재개·동일 key 재시도, case/run/input_version/hash 및 채택 조회를 보강했다. 기존 v0.2.2 작업·서버·원응답·금융/BE 계약은 보존했다.
 - 실제 관련 pytest **57 passed / 11 skipped**, 타입·변경 린트 **통과**. 타입의 참조/nullable 오류와 경고는 1회 수정 후 통과했다. Edge 고유 **10 passed / 1 failed**: 로그인 후 상담·응답 유실·오래된 기준·R2/R3·모바일 RAG 통과. 게스트 첫 고양이 Enter 열기는 최초 load timeout 후 1회 대기 조건 수정에도 dialog를 찾지 못했다. 초기 수화 경합은 추정이며 추가 자동 시도 중단, draft PR로 인계한다.
 - Vercel 이번 브랜치 false, Render 관리 GET에서 autoDeploy=no 및 PR preview off 확인. 전체Core/Build/E2E·실계정·운영DB·PG·유료 모델·배포는 미실행. [정확한 범위·검증·실패 증거](integration/2026-11-14-v0.3.0-consultation.md).
+
+- PR #37 생성 중 대상에 병합된 v0.2.2 PR #36 (`8fa586b`)을 보존해 통합했다. 문서/앱 버전/배포 차단/planner 충돌6파일을 정리하고 통합 후 타입·관련 FE 린트 통과를 확인했다. 기존 브라우저 실패를 재실행하지 않는다.

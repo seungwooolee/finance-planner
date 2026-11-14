@@ -1,0 +1,11 @@
+{
+  "version": "0.2.2",
+  "base_sha": "ee0726bbeb35a99214a0cb50b634514966f1bca7",
+  "branch": "codex/release-v0.2.2",
+  "workspace": "C:/Users/LG/Projects/DION-contest-lead-20261114",
+  "scope": "Welcome, active response progress, multi-stage input and exact monetary presentation",
+  "previous_version": "0.2.1 local commit 7065f291 preserved on its original branch, not merged into this base",
+  "ownership": "Single Codex implementer; no delegation",
+  "contract_changes": [],
+  "deployment": "Branch disabled in frontend/vercel.json; no deployment requested"
+}
