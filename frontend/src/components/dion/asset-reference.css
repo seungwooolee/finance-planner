@@ -1,0 +1,66 @@
+.dion-app .d-asset-ref{min-width:0;margin:24px 0;color:var(--ink,#202a43)}
+.dion-app .d-asset-ref-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.dion-app .d-asset-ref-heading h2{display:flex;align-items:center;gap:9px;margin:0}
+.dion-app .d-asset-ref-controls{display:flex;align-items:end;gap:20px;flex-wrap:wrap;margin:20px 0 14px}
+.dion-app .d-asset-ref-controls label{display:grid;gap:6px;font-size:13px;font-weight:500;min-width:160px}
+.dion-app .d-asset-ref-controls select{max-width:100%;min-height:40px;border:1px solid #dce2ef;background:#fff;color:inherit;border-radius:8px;padding:8px 12px;font:inherit}
+.dion-app .d-asset-ref-context,.dion-app .d-asset-ref-scope{font-size:13px;color:#526078;line-height:1.7}
+.dion-app .d-asset-ref-scope{max-width:85ch}
+.dion-app .d-asset-ref-chart{margin:22px 0 12px;min-width:0}
+.dion-app .d-asset-ref-chart figcaption{color:#526078;font-size:12px;margin-bottom:18px}
+.dion-app .d-asset-ref-metrics{display:grid;gap:22px}
+.dion-app .d-asset-ref-metric{display:grid;grid-template-columns:80px minmax(0,1fr);gap:20px;align-items:center}
+.dion-app .d-asset-ref-metric h3{margin:0;font-size:15px}
+.dion-app .d-asset-ref-pair{display:grid;gap:12px;min-width:0}
+.dion-app .d-asset-ref-series{display:grid;grid-template-columns:90px minmax(100px,1fr) 150px;align-items:center;gap:16px;min-width:0}
+.dion-app .d-asset-ref-series>span{font-size:12px;color:#526078}
+.dion-app .d-asset-ref-series>strong{text-align:right;font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.dion-app .d-asset-ref-track{min-width:0;height:18px;background:#f3f5f9;border-radius:3px}
+.dion-app .d-asset-ref-track svg{display:block;width:100%;height:18px;overflow:visible}
+.dion-app .d-asset-ref-zero{stroke:#737e94;stroke-width:1;vector-effect:non-scaling-stroke}
+.dion-app .d-asset-ref-own{fill:#3848ce}
+.dion-app .d-asset-ref-reference{fill:#929aad}
+.dion-app .d-asset-ref-axis{display:grid;grid-template-columns:190px minmax(100px,1fr) 150px;gap:16px;margin-top:16px;font-size:11px;color:#526078}
+.dion-app .d-asset-ref-axis>div{display:flex;justify-content:space-between;gap:10px;border-top:1px solid #dce2ef;padding-top:5px}
+.dion-app .d-asset-ref-axis>span:last-child{text-align:right}
+.dion-app .d-asset-ref-small-axis{display:none}
+.dion-app .d-asset-ref-negative{color:#526078;font-size:12px;margin:12px 0 0}
+.dion-app .d-asset-ref-limit{padding:12px 14px;background:#f6f4ee;border-radius:8px;font-size:13px;line-height:1.7;margin:18px 0 8px}
+.dion-app .d-asset-ref-actions{display:flex;justify-content:flex-end}
+.dion-app .d-asset-ref-source{border-top:1px solid #e3e7f1;margin-top:16px;padding-top:14px;font-size:13px;line-height:1.7}
+.dion-app .d-asset-ref-source summary{cursor:pointer;min-height:30px}
+.dion-app .d-asset-ref-source>div{padding-top:12px;overflow-wrap:anywhere}
+.dion-app .d-asset-ref-source h4{margin:8px 0}
+.dion-app .d-asset-ref-source a{color:#3848ce;text-decoration:underline}
+.dion-app .d-asset-ref-compact{border-top:1px solid #e3e7f1;margin-top:24px;padding-top:24px;margin-bottom:0}
+.dion-app .d-asset-ref-compact .d-asset-ref-heading h2{font-size:18px}
+@media(min-width:1100px){
+  .dion-app .d-asset-ref-compact .d-asset-ref-metrics{grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+  .dion-app .d-asset-ref-compact .d-asset-ref-metric{display:block;min-width:0}
+  .dion-app .d-asset-ref-compact .d-asset-ref-metric h3{margin-bottom:14px}
+  .dion-app .d-asset-ref-compact .d-asset-ref-series{grid-template-columns:minmax(0,1fr) auto;gap:5px 8px}
+  .dion-app .d-asset-ref-compact .d-asset-ref-track{grid-column:1/-1;grid-row:2}
+  .dion-app .d-asset-ref-compact .d-asset-ref-series>strong{grid-column:2;grid-row:1;font-size:12px}
+  .dion-app .d-asset-ref-compact .d-asset-ref-small-axis{display:flex;justify-content:space-between;gap:8px;border-top:1px solid #dce2ef;padding-top:5px;margin-top:10px;color:#526078;font-size:11px}
+  .dion-app .d-asset-ref-compact .d-asset-ref-axis{display:none}
+}
+@media(max-width:900px){
+  .dion-app .d-asset-ref-metric{grid-template-columns:65px minmax(0,1fr);gap:12px}
+  .dion-app .d-asset-ref-series{grid-template-columns:75px minmax(70px,1fr) 125px;gap:12px}
+  .dion-app .d-asset-ref-axis{grid-template-columns:152px minmax(70px,1fr) 125px;gap:12px}
+}
+@media(max-width:640px){
+  .dion-app .d-asset-ref-controls{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+  .dion-app .d-asset-ref-controls label{min-width:0}
+  .dion-app .d-asset-ref-controls select{font-size:16px;min-height:44px}
+  .dion-app .d-asset-ref-metric{display:block}
+  .dion-app .d-asset-ref-metric h3{margin-bottom:12px}
+  .dion-app .d-asset-ref-series{grid-template-columns:minmax(0,1fr) auto;gap:5px 10px}
+  .dion-app .d-asset-ref-track{grid-column:1/-1;grid-row:2}
+  .dion-app .d-asset-ref-series>strong{grid-column:2;grid-row:1;font-size:13px}
+  .dion-app .d-asset-ref-axis{grid-template-columns:1fr auto;gap:5px}
+  .dion-app .d-asset-ref-axis>div{grid-column:1/-1;grid-row:2;min-width:0}
+  .dion-app .d-asset-ref-axis>span:last-child{grid-column:2;grid-row:1}
+  .dion-app .d-asset-ref-heading h2{font-size:18px}
+  .dion-app .d-asset-ref-source summary{min-height:44px}
+}

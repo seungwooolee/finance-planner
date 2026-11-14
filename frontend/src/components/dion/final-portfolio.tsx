@@ -1,5 +1,6 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { Json, list, object, textValue } from "@/lib/dion/model";
 import { formatKrw } from "@/lib/dion/money-format";
 import { allocationSlices, bpsLabel, isWon, shareBps } from "@/lib/dion/result-visual";
@@ -60,7 +61,7 @@ export function IncomeBar({ row }: { row?: Record<string, Json> }) {
   </article>;
 }
 
-export function FinalPortfolio({ plan, row, review, portfolio=null }: { plan: string; row?: Record<string, Json>; review: Record<string, Json>; portfolio?: string | null }) {
+export function FinalPortfolio({ plan, row, review, assetReference, portfolio=null }: { plan: string; row?: Record<string, Json>; review: Record<string, Json>; assetReference?: ReactNode; portfolio?: string | null }) {
   const period = textValue(row?.period);
   const month = list(object(list(review.candidates).find(c => c.strategy_id === plan)).rows)[0];
   const allocations = list(month?.allocations);
@@ -85,5 +86,6 @@ export function FinalPortfolio({ plan, row, review, portfolio=null }: { plan: st
           {allocations.length > 0 && <><div><dt>상품에 배분한 금액</dt><dd>{formatKrw(month?.allocated_total_krw)}</dd></div><div><dt>현금 대기자금 · 현금 잔고에 더하지 않음</dt><dd>{formatKrw(month?.unallocated_krw)}</dd></div></>}</dl>
       </div>
     </div>
+    {assetReference}
   </article>;
 }
