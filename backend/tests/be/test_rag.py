@@ -242,3 +242,13 @@ def test_api_scopes_lookup_and_preserves_run_and_consultation(setup, config):
     assert before == _digest([store.history("A", "case-A"), store.read_run("A", "case-A", run["run_id"])])
     assert mutate(client, session, selected_intent="EXPLAIN_SCHEME").status_code == 200
     assert lookup(tax_year=2026).status_code == 409 and len(gateway.posts) == 1
+
+
+def test_deployed_server_uses_bundled_corpus_without_env(monkeypatch):
+    # Without DION_RAG_REGISTRY_PATH the server must not silently run with zero material.
+    from app.be.consultation_api import BUNDLED_CORPUS, rag_registry_path
+    monkeypatch.delenv("DION_RAG_REGISTRY_PATH", raising=False)
+    assert rag_registry_path() == BUNDLED_CORPUS
+    assert RegisteredCorpus(rag_registry_path())().sources
+    monkeypatch.setenv("DION_RAG_REGISTRY_PATH", "none")
+    assert rag_registry_path() is None

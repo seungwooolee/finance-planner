@@ -104,7 +104,7 @@ export function ResultExplanation({view,token,editVersion,selectedCaseId,stale,o
       {!available&&<button className="d-secondary" onClick={onSave}>{token?"계산 기록 저장·내 상담 열기":"로그인하고 계산 기록 저장"}</button>}
       {current?.loading&&<p role="status">저장된 결과와 근거를 확인하고 있어요. 아래 기본 안내와 기존 결과를 먼저 볼 수 있어요.</p>}
       {current?.error&&<p role="alert" className="d-warning">{current.error}</p>}
-      {!response&&<div className="d-explanation-basic"><h3>기본 안내</h3><p>기존 AI 계약은 월 현황과 두 재무안만 해설해요. 상품별 선정 이유·이번 달 행동의 AI 전용 근거 계약은 연결 대기이며 화면의 엔진 근거를 먼저 확인해주세요.</p><p>월 현황의 잔여 금액은 상환·기존 납입을 반영한 값이며 목표·보호자금 배정 전 금액입니다. 투자 권장액으로 해석하지 않아요.</p><p>안정·확대 후보는 확인한 미래 가정에 따른 검토 자료예요. 입력이 부족하거나 보류된 결과는 미확인 금액을 채우지 않고 관련 답변을 먼저 확인해요.</p></div>}
+      {!response&&<div className="d-explanation-basic"><h3>결과를 읽는 방법</h3><p className="d-help">아래는 모든 결과에 공통인 안내예요. 내 결과에 맞춘 해설은 저장된 결과에서 ‘이 결과 설명해 줘’를 누르면 이 아래에 나와요.</p><ul><li><strong>월 현황의 ‘남는 돈’</strong>은 대출 상환·기존 저축을 빼고 남은 금액이에요. 목표·비상금으로 나누기 전이라 이 금액을 다 투자하라는 뜻은 아니에요.</li><li><strong>안정 우선·투자 확대 두 안</strong>은 입력한 미래 계획을 바탕으로 만든 비교 자료예요. 모르는 값은 0원으로 채우지 않고 ‘확인 필요’로 남겨요.</li><li><strong>상품·이번 달 행동</strong>의 이유는 각 화면의 ‘선정 이유’에서 확인할 수 있어요. AI 해설은 아직 월 현황과 두 재무안만 설명해요.</li></ul></div>}
       {response&&<>
         <p role="status" className="d-explanation-source">{response.status==="FALLBACK"?"해설 생성·검증을 완료하지 못해 저장 결과의 기본 설명을 표시했어요.":response.source==="MOCK"?"모의 해설 · 유료 AI 호출 없음":response.source==="ONEPORT"?"AI 해설 · 저장 결과의 근거를 확인했어요":"기본 설명"} · 저장 결과와 설명의 일치만 확인하며 금융정책 검증 완료를 뜻하지 않아요.</p>
         <p>계산 기준일 {response.evaluation_on??"확인 필요"} · 저장 입력버전 {response.input_version}</p>
