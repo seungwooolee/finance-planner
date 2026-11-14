@@ -61,3 +61,5 @@
 
 `codex/chat-only-assistant-20261115` → integration. 해당 브랜치 Vercel 자동 배포 false, Render 기존 사용자 확인 유지.
 후보 SHA/PR/최신 CI는 최종 인계와 PR 설명에 남긴다. 병합/배포는 에이전트가 실행하지 않는다.
+
+구현 후보: `e3b8054e51c31437281b8f67f0071e865c161923`, branch `codex/chat-only-assistant-20261115`. PR 링크와 최종 CI는 PR 설명에 기록한다.
