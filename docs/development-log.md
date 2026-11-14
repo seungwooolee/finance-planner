@@ -1,3 +1,9 @@
+# 2026-11-14 — v0.4.0 투자구성 비교 선택 (Draft)
+
+현재 통합 BASE ee0726b에서 별도 선행 구현 승인. 엔진 비교 상태/후보 그룹, 추가 전용 비교 초안 API/저장, 선택·복원·상품/최종 화면 연결. 기존 정책·카탈로그·원응답·채택 불변. 관련 Python 고유 92 passed/39 skipped, Ruff/TypeScript/ESLint 통과. 저장 복원 E2E 1 passed, 예시/모바일 1건은 1회 재검사 후 Next 파일 읽기 오류로 미통과. 전체/운영 검증·배포 미실행. [계약](releases/0.4.0/CONTRACT.md)·[실제 검사와 남은 조건](releases/0.4.0/HANDOFF.md).
+
+---
+
 # 2026-11-14 — PR #34 병합 충돌 해소
 
 후속 CI Core #65에서 FE 타입/린트는 통과했으나 BE는 AGENTS.md의 상시 위임 추가가 과거 AI 잠금과 달라 3 failed·24 setup errors(990 passed·81 skipped)로 실패했다. 원 기대값 잠금은 보존하고 통합 baseline 1.1에 승인된 AGENTS.md만 별도 정확한 SHA로 접수했다. 코드 예외 2파일은 그대로 유지하며 정책 변조·채점 데이터로 예외 확장·원본 SHA 변조를 거부한다. 변경 관련 guard 9건과 R1-02 1건, 합계 10 PASS/첫 재검증; 변경 Python 2파일 Ruff PASS. 로컬 전체 검사·빌드는 실행하지 않는다. 수정 푸시 후 기존 PR CI 결과는 PR #34 Checks에서 확인한다.

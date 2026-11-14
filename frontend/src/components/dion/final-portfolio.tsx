@@ -39,7 +39,7 @@ export function ResultTiles({ row, month, totalAssets }: { row?: Record<string, 
 /** Keeps "which plan am I looking at" apart from "which plan did I adopt". */
 export function ChoiceStatus({ plan, hasCheckin, onJump }: { plan: string; hasCheckin: boolean; onJump: () => void }) {
   return <div className="d-choice-status" aria-label="화면 선택과 계획 채택 구분">
-    <div><span>화면에서 보는 안</span><strong>{planName(plan)}</strong><small>비교용 선택 · 저장되지 않아요</small></div>
+    <div><span>화면에서 보는 안</span><strong>{planName(plan)}</strong><small>투자구성 비교 초안과 계획 채택은 별개예요</small></div>
     <div><span>계획 채택</span><strong>{hasCheckin ? "아래 기록에서 확인" : "아직 채택 전"}</strong><small>{hasCheckin ? "채택한 안과 입력 버전이 함께 저장돼요" : "로그인하고 결과를 저장하면 채택할 수 있어요"}</small></div>
     <button className="d-secondary" onClick={onJump}>이번 달 할 일로 이동</button>
   </div>;

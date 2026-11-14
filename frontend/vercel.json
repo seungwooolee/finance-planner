@@ -2,6 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "git": {
     "deploymentEnabled": {
+      "codex/release-v0.4.0": false,
       "feat/step4-investment-20261114": false,
       "beta/wake-notice": false,
       "codex/result-explanation-r1": false,
