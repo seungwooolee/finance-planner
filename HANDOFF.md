@@ -1,3 +1,9 @@
+# 최신 채팅 전용 AI 비서 — 2026-11-15
+
+상담창의 탭·설문 카드·FAQ를 제거하고 하나의 대화와 입력창으로 연결했다. 실제 OnePort6회(브라우저2회 포함) 검증 성공.
+[계약·검증·제한·후보](docs/integration/2026-11-15-chat-only-assistant.md).
+금액/비중은 기존 엔진, 후보 반영/계산/저장/최종 검토는 명시 행동을 유지한다. 아래 기록은 이전 이력이다.
+
 # 결과 화면 정리 인계 — 2026-11-15
 
 `codex/result-review-polish-20261115`: [변경·계약·실제 검사·미실행](docs/integration/2026-11-15-result-review-polish-HANDOFF.md).

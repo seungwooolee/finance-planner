@@ -638,3 +638,17 @@
  .d-product-comparison tbody{margin-bottom:22px}.d-product-comparison tbody th{display:block;width:100%;padding:14px 0}.d-product-comparison tbody tr:first-child td{display:flex;justify-content:space-between;gap:12px;padding:10px 0;text-align:right;flex-wrap:wrap}.d-product-comparison td[data-label]::before{content:attr(data-label);font-weight:600;color:#736680;text-align:left}.d-product-comparison tbody td small{width:100%;margin:0}
  .d-product-comparison .d-comparison-reasons td{display:block;width:100%;padding:12px 0 20px}.d-comparison-reason-grid{grid-template-columns:1fr;gap:18px;padding:16px}
 }
+
+/* One conversation, a scrollable transcript and a fixed composer. */
+.d-ai-window .d-ai-body{display:flex;flex:1;min-height:0;overflow:hidden;padding:0}
+.d-chat-only{display:flex;flex:1;flex-direction:column;min-width:0;min-height:0}
+.d-chat-stream{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:22px 16px;scroll-padding:18px}
+.d-chat-message{max-width:94%;margin:0 0 16px;border-radius:18px;padding:12px 15px;font-size:14px;line-height:1.75;overflow-wrap:anywhere}
+.d-chat-message p{margin:0;white-space:pre-wrap}.d-chat-message.assistant{background:#f3f1f8;color:#39344b;border-bottom-left-radius:5px}
+.d-chat-message.user{margin-left:auto;background:#65508d;color:#fff;border-bottom-right-radius:5px}
+.d-ai-window .d-chat-message.user p{color:#fff}
+.d-chat-message button{min-height:44px;margin:9px 8px 0 0;padding:8px 12px;border:1px solid #c8b9dd;border-radius:12px;background:#fff;color:#584178;font-size:13px}
+.d-chat-message button:disabled{opacity:.5}.d-chat-message button:focus-visible,.d-chat-composer button:focus-visible{outline:3px solid #6b4ca5;outline-offset:3px}
+.d-chat-composer{display:flex;align-items:flex-end;gap:10px;border-top:1px solid #e7e0ef;padding:12px 14px max(14px,env(safe-area-inset-bottom));background:#fff}
+.d-chat-composer textarea{resize:none;flex:1;min-width:0;max-height:150px;padding:12px;border:1px solid #ddd5e8;border-radius:15px;background:#faf8fc;font:inherit;font-size:16px;line-height:1.5}
+.d-chat-composer button{flex-shrink:0;display:grid;place-items:center;width:44px;height:44px;border:0;border-radius:14px;background:#65508d;color:#fff}.d-chat-composer button:disabled{background:#c9c1d5}

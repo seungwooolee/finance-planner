@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
-import { ArrowLeft, LogIn, MessageCircle, X } from "lucide-react";
+import { LogIn, MessageCircle, X } from "lucide-react";
 
 export function Cat({ kind = "welcome", size = 120, className = "", eager = false }: { kind?: "welcome" | "coach" | "guide"; size?: number; className?: string; eager?: boolean }) {
   return <Image className={`d-cat ${className}`} src={`/dion/cat-${kind}.png`} alt="dion 고양이" width={size} height={size} sizes={`${size}px`} loading={eager ? "eager" : undefined} />;
@@ -12,14 +12,6 @@ export function HeaderCat() {
   return <div className="d-header-cat" aria-hidden="true"><div className="d-cat-travel"><div className="d-cat-turn"><div className="d-cat-play"><Cat size={48}/></div></div></div></div>;
 }
 
-const topics = [
-  { title: "금액은 어떻게 적나요?", answer: "입력칸의 단위는 만원이에요. 300을 적으면 바로 아래에 3,000,000원으로 보여드려요. 실제로 없는 금액은 0, 아직 모르는 금액은 비워 두거나 ‘나중에 입력’을 눌러주세요." },
-  { title: "상여금도 소득에 넣나요?", answer: "해당 달에 실제로 받은 세후 총소득에 포함해 적어주세요. ‘이번에만 받은 돈도 있어요’를 고르면 그중 일회성 금액을 따로 적을 수 있어요. 다시 더하지 않으며, 다음 달에도 받을 돈으로 자동 계산하지 않아요." },
-  { title: "집과 대출은 어디에 적나요?", answer: "‘보유 부동산’에서 시세와 소유 지분을, ‘갚아야 할 돈’에서 대출을 적어주세요. 시세에서 대출을 미리 빼지 마세요. 부동산은 전체 자산에 포함하지만 바로 쓸 수 있는 현금으로 보지 않아요." },
-  { title: "입력과 결과는 저장되나요?", answer: "계산 미리보기만으로 서버에 저장되지는 않아요. 로그인 후 검토 도구의 초안 저장·복원에서 저장 상태를 확인할 수 있어요. 미저장 답변은 새로고침하면 사라지므로 필요하면 검토 JSON을 내보내주세요." },
-  { title: "결과가 ‘확인 필요’로 나와요", answer: "관련 금액·기간·소유 지분이 빠졌거나 서로 다르면 해당 결과를 보류해요. 0으로 대신 계산하지 않아요. 결과 화면의 ‘확인하기’를 누르면 필요한 질문으로 이동할 수 있어요." },
-];
-
 const subscribeToHydration = () => () => {};
 const clientReady = () => true;
 const serverReady = () => false;
@@ -28,7 +20,6 @@ export function ConsultationWidget({ compact = false, open, onOpen, onClose, chi
   compact?: boolean; open: boolean; onOpen: () => void; onClose: () => void; children: ReactNode;
 }) {
   const hydrated = useSyncExternalStore(subscribeToHydration, clientReady, serverReady);
-  const [selected, setSelected] = useState<number | null>(null);
   const dialog = useRef<HTMLDialogElement>(null), launcher = useRef<HTMLButtonElement>(null);
   const closeButton = useRef<HTMLButtonElement>(null), returnFocus = useRef<HTMLElement | null>(null);
   useEffect(() => {
@@ -63,10 +54,7 @@ export function ConsultationWidget({ compact = false, open, onOpen, onClose, chi
         <button type="button" ref={closeButton} onClick={onClose} aria-label="상담창 닫기"><X size={20}/></button></header>
       <div className="d-ai-body">
         {children}
-        <details className="d-ai-faq"><summary>입력 도움말 · 자주 묻는 질문</summary>
-          {selected === null ? <div className="d-help-topics">{topics.map((topic, i) => <button type="button" key={topic.title} onClick={() => setSelected(i)}>{topic.title}<span aria-hidden="true">↗</span></button>)}</div>
-            : <div aria-live="polite"><p className="d-chat-question">{topics[selected].title}</p><p className="d-chat-bubble">{topics[selected].answer}</p><button type="button" className="d-text-button" onClick={() => setSelected(null)}><ArrowLeft size={15}/>다른 질문 보기</button></div>}
-        </details>
+
       </div>
     </dialog>
     <button type="button" className={`d-help-launcher ${compact ? "compact" : ""}`} ref={launcher}
