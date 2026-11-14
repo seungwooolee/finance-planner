@@ -73,5 +73,12 @@ tests/be/test_rag.py -q` → **162 passed, 96.11초**, 최초 실행 통과.
 변경 파일 Ruff는 import 순서 1건을 1회 수정 후 통과했다. 공백 검사 통과.
 기존 고정 평가 파일·정답은 수정하지 않았다. 후보 SHA/PR은 아래에 기록한다.
 
+- AI 구현 후보: `b2e7e37950dd5fa9608398d3287b0cf795fab531`.
+- FE 담당이 작성한 배포 차단 설정 수신: `805e3eed869e4c194041588e2ac819f0232d2a5d`.
+  `frontend/vercel.json`의 AI/BE/FE 세 작업 브랜치만 false로 추가, 기존 설정 보존.
+- PR: [#60](https://github.com/seungwooolee/finance-planner/pull/60), 대상 `dion/integration-20261111`.
+  작업 브랜치 푸시/PR 생성 완료. 원격 병합·자동 병합·배포 없음.
+- BE·FE 채팅에 위 후보 SHA, 로컬 인계 경로, 동의·확인·실제 모델 미검증 경계를 전달했다.
+
 실제 모델, 운영 DB/migration, 유료 호출, FE 통합/E2E, 병합·배포는 이 AI 작업에서 미실행이다.
 BE 서비스 연결 및 FE 화면 연결이 필요하다. AI helper 단독 구현을 전체 흐름의 통합 완료로 표시하지 않는다.
