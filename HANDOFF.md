@@ -1,3 +1,12 @@
+# 최신 AI 대화 비서 인계 — 2026-11-15
+
+`codex/consultation-result-history-20261115`: [계약·설계](docs/integration/2026-11-15-conversation-assistant-DESIGN.md),
+[실제 검사·미실행·후속 조건](docs/integration/2026-11-15-conversation-assistant-HANDOFF.md).
+동의된 원문 대화·결과 근거·저장/재개를 기존 세션과 최종 상담에 연결했다.
+API/저장 및 FE 공통 파일 담당 독점 규칙은 사용자 결정으로 해제했다.
+고유 관련 pytest90개와 실제 모델3회 통과. 전체 브라우저 검사는 실패/미완료로 구분한다.
+PR62의 후속 후보이며 원격 병합·배포·운영 DB 변경은 수행하지 않았다.
+
 # 최신 BE 인계 — 2026-11-15 상담 기반 최종 포트폴리오
 
 현재 작업은 `codex/consultation-finalization-be-20261115`이다.

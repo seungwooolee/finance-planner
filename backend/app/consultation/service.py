@@ -2,7 +2,7 @@
 
 Minimal lifecycle metadata coordinates workers without persisting temporary answers.
 
-No raw-answer mutations, financial execution, or transcript log.
+No raw-answer mutations or financial execution. Conversation is separately opt-in.
 """
 import json
 from copy import deepcopy
@@ -17,7 +17,8 @@ from ..explanation.contract import ExplanationRequest
 from ..explanation.facts import build_context
 from ..oneport_transport import ProviderFailure
 from . import scenario
-from .contract import CONTRACT, NOTICE, POLICY
+from .contract import CONTRACT, CONVERSATION_NOTICE, NOTICE, POLICY
+from .conversation import ConversationMixin, conversation_view
 from .dialogue import reviewed_dialogue
 from .evidence import (
     QUESTION_HISTORY_VERSION,
@@ -40,12 +41,14 @@ def fail(code, status=409):
     raise HTTPException(status, detail={"code": code})
 
 
-class ConsultationService:
-    def __init__(self, *, clock=None, proposal_provider=None, oneport_provider=None, oneport_configuration_error=False):
+class ConsultationService(ConversationMixin):
+    def __init__(self, *, clock=None, proposal_provider=None, oneport_provider=None, oneport_configuration_error=False,
+                 assistant_provider=None):
         self.clock = clock or (lambda: datetime.now(timezone.utc))
         self.proposal_provider = proposal_provider
         self.oneport_provider = oneport_provider
         self.oneport_configuration_error = oneport_configuration_error
+        self.assistant_provider = assistant_provider
         self.temporary = {}
         self.worker_id = uuid4().hex
         self.lock = RLock()
@@ -162,6 +165,8 @@ class ConsultationService:
         view["limitations"] = [mode, "복합 계좌·목표·가정은 기존 입력 화면에서 확인",
                                "상담 확인은 증빙 인증·진단 반영·절세 판정·재계산·채택이 아님"]
         view["current_case_input_version"] = run["current_input_version"]
+        view["conversation"] = conversation_view(state)
+        view["conversation"]["provider_available"] = self.assistant_provider is not None
         return view
 
     def create(self, store, actor, case_id, request):
@@ -253,7 +258,10 @@ class ConsultationService:
             }
 
     def mutate(self, store, actor, case_id, sid, request, operation):
-        fingerprint = _digest([operation, request.model_dump()])
+        value = request.model_dump()
+        if operation == "persist" and value.get("conversation_notice_version") is None:
+            value.pop("conversation_notice_version", None)  # Preserve pre-conversation receipt fingerprints.
+        fingerprint = _digest([operation, value])
         payload, review_code = None, None
         if (operation == "turn" and request.message.strip()
                 and (self.oneport_provider or self.oneport_configuration_error)
@@ -284,7 +292,7 @@ class ConsultationService:
                 else:
                     if len(state["receipts"]) >= 128:
                         fail("AGENT_SESSION_LIMIT", 429)
-                    if operation in {"turn", "confirm", "scenario_propose", "scenario_confirm"} and self._view(state, run)["progress"] == "RECONFIRM_REQUIRED":
+                    if operation in {"turn", "confirm", "scenario_propose", "scenario_confirm", "conversation_consent"} and self._view(state, run)["progress"] == "RECONFIRM_REQUIRED":
                         fail("SESSION_RECONFIRM_REQUIRED")
                     if operation == "turn":
                         self._turn(state, run, request, payload, review_code)
@@ -292,7 +300,16 @@ class ConsultationService:
                         self._confirm(state, request)
                     elif operation in {"scenario_propose", "scenario_confirm"}:
                         self._scenario(state, run, request, operation)
+                    elif operation == "conversation_consent":
+                        if state["pending_proposal"]:
+                            fail("CONFIRMATION_PENDING")
+                        conversation = state.setdefault("conversation", {"messages": []})
+                        conversation.update(enabled=request.enabled, notice_version=request.notice_version,
+                                            consented_at=self.clock().isoformat())
                     elif operation == "persist":
+                        if (request.action == "SAVE" and state.get("conversation", {}).get("messages")
+                                and request.conversation_notice_version != CONVERSATION_NOTICE):
+                            fail("CONVERSATION_STORAGE_CONSENT_REQUIRED", 422)
                         if request.action == "STOP_SAVING":
                             conn.execute("DELETE FROM agent_sessions WHERE case_id=? AND session_id=? AND session_version=?",
                                          (case_id, sid, state["session_version"]))
