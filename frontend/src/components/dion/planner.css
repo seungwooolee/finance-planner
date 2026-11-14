@@ -276,6 +276,13 @@
 @media (prefers-reduced-motion:reduce){.dion-app .d-plan-choice{transition:none}}
 .dion-app .d-results h2>svg,.dion-app .d-plan-care svg,.dion-app .d-coach-head svg{display:inline-block}
 .dion-app .d-explain-wrap{margin-top:24px}
+.dion-app .d-financial-projection{margin-top:24px;min-width:0}
+.dion-app .d-financial-projection figure{margin:20px 0}
+.dion-app .d-financial-projection figure>svg{width:100%;height:auto;display:block}
+.dion-app .d-financial-projection details{margin-top:16px}
+.dion-app .d-financial-projection summary{cursor:pointer;font-weight:600;padding:8px 0}
+.dion-app .d-financial-projection caption{text-align:left;font-size:12px;padding:8px 0}
+.dion-app .d-financial-projection dd{overflow-wrap:anywhere}
 
 /* Results: quiet surfaces, one clear numeric priority, readable evidence. */
 .dion-app[data-view="results"]{background:#f5f7fa;--d-results-scroll-offset:96px}

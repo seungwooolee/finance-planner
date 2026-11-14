@@ -22,6 +22,7 @@ import { TaxReview } from "@/lib/dion/tax-benefits";
 import displayCatalog from "@/lib/dion/result-display-catalog.json";
 import { comparisonReview, portfolioNames } from "@/lib/dion/portfolio-comparison";
 import { usePortfolioComparison } from "./use-portfolio-comparison";
+import { FinancialProjection } from "./financial-projection";
 
 const stateLabels: Record<string,string> = { CALCULATED:"계산됨", PARTIAL:"부분 결과", NEEDS_INPUT:"정보 보완 필요", INVALID_INPUT:"입력 확인 필요", NOT_SUPPORTED:"미지원", NOT_IMPLEMENTED:"준비 중", NOT_APPLICABLE:"해당 없음", NOT_REQUESTED:"요청하지 않음", REVIEW_ONLY:"검토 목록", INTERNAL_ERROR:"계산 오류", INFEASIBLE:"월 예산 부족", CALCULATED_MONTHLY_SCENARIO:"월 예산 시나리오" };
 const TASKS=[
@@ -111,6 +112,7 @@ export function Results({view,deep,tab,setTab,stale,onEdit,onRecalculate,explana
       <FinancialProposal result={{...result,results:{...outputs,"OUT-06":selectedReview}}} doc={sourceDoc} plan={selectedPlan} portfolio={selectedPortfolio} deep={deep} goalLabel={displayGoal} onEdit={onEdit} onTab={setTab}
         allocation={<><FinalPortfolio plan={selectedPlan} row={selectedRow} review={selectedReview}/><IncomeBar row={selectedRow}/></>}/>
       <div ref={tasksRef} className="d-scroll-anchor"/><MonthTasks key={`${selectedPlan}:${view.localVersion}`} row={selectedRow} actions={actions} candidates={candidates.length>0} actionList={actionList} onProducts={()=>setTab(3)} onEdit={onEdit}/>
+      <FinancialProjection candidate={candidates.find(c=>c.strategy_id===selectedPlan)} plan={selectedPlan} portfolio={selectedPortfolio} stale={stale} runId={view.runId} inputVersion={view.serverVersion??view.localVersion} onEdit={()=>onEdit("ASSUMPTIONS")}/>
     </>}
     {explanation&&<div className={tab===4?"d-coach":"d-explain-wrap"}>{tab===4&&<div className="d-coach-head" aria-hidden="true"><span><Cat size={18}/></span><strong>냥코치 조언</strong></div>}{selectedPortfolio&&<p className="d-note">아래 상담은 원래 입력·계산 결과 기준이에요. 선택 구성의 상품 비교 설명은 준비 중이에요.</p>}{explanation}</div>}
     {tab===4&&checkin&&<div ref={checkinRef}>{checkin(selectedPlan,monthTasks(selectedRow).map(t=>({key:t.key,label:`${t.text} (계획 ${textValue(selectedRow?.period)} · ${formatKrw(selectedRow?.[t.key])})`})))}</div>}
