@@ -71,6 +71,14 @@
 .d-agent-session { min-width: 0; overflow-wrap: anywhere; scroll-margin-block-start: 1rem; }
 .d-agent-session :focus-visible, .d-agent-session:focus-visible { outline: 3px solid #3848ce; outline-offset: 3px; }
 .d-agent-session :is(input, select) { min-width: 0; max-width: 100%; }
+.d-natural-input :is(textarea, select, input:not([type="checkbox"])) { display: block; width: 100%; min-width: 0; min-height: 44px; padding: 10px 12px; border: 1px solid var(--d-line); border-radius: 10px; background: #fff; color: inherit; font: inherit; }
+.d-natural-input textarea { resize: vertical; }
+.d-natural-input .d-field { margin-block: 12px 5px; }
+.d-natural-input .d-check { display: flex; align-items: flex-start; gap: 8px; margin-block: 14px; }
+.d-natural-input input[type="checkbox"] { flex-shrink: 0; width: 18px; height: 18px; margin-top: 3px; }
+.d-natural-input :is(h4, h5) { font-weight: 700; margin-block: 16px 8px; }
+.d-natural-input button { min-height: 44px; white-space: normal; }
+.d-natural-input blockquote { margin: 8px 0; padding-inline-start: 12px; border-inline-start: 3px solid var(--d-purple); }
 .d-scheme-selects { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 12px; margin-block: 12px; }
 .d-scheme-evidence h4, .d-scheme-evidence h5, .d-agent-session [aria-label="답변 충돌 확인"] h5 { font-weight: 700; }
 .d-scheme-scope { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 12px; margin-block: 12px; }
