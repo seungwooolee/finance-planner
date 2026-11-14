@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { object, textValue } from "@/lib/dion/model";
+import { type Document, object, textValue } from "@/lib/dion/model";
 import { AgentConsultation } from "./agent-consultation";
 import type { ViewResult } from "./results";
-import { ResultActionConsultation } from "./result-action-consultation";
+import { ChatSurvey, type SurveyLine } from "./chat-survey";
+import { ResultActionConsultation, type ActionFlow } from "./result-action-consultation";
 
 type Props = {
+  doc: Document; onCommit: (doc: Document) => void; onCalculate: () => void; busy: boolean; actionFlow: ActionFlow;
   view: ViewResult | null; token: string; selectedCaseId: string; editVersion: number;
   stale: boolean; open: boolean; onLogin: () => void; onSave: () => void; onExplain: () => void;
   onEdit: (id: string) => void; onResult: (tab: number) => void;
@@ -44,19 +46,47 @@ function AdoptionContext({ caseId, token, view, open }: { caseId: string; token:
 }
 
 export function ConsultationContent(props: Props) {
-  const { view, token, selectedCaseId, editVersion, stale, open, onLogin, onSave, onExplain } = props;
-  if (!token) return <section className="d-note"><h3>저장한 결과로 상담해요</h3><p>로그인 후 계산 결과를 저장하면 결과 설명과 추가 입력 확인, 가상 조건 비교를 이용할 수 있어요. 입력 도움말은 로그인 없이 볼 수 있어요.</p><button type="button" className="d-primary" onClick={onLogin}>로그인하고 상담 준비</button></section>;
-  const caseId = textValue(object(object(view?.source).context).case_id);
-  if (!view || view.storage !== "SAVED" || !view.runId || caseId !== selectedCaseId || !view.inputHash || view.serverVersion === undefined) {
-    return <section className="d-note"><h3>상담할 결과를 먼저 열어 주세요</h3><p>현재 답변을 저장하고 계산하거나 내 상담에서 저장된 결과를 열면 이어서 상담할 수 있어요.</p><button type="button" className="d-primary" onClick={onSave}>내 상담 · 저장과 다시 열기</button></section>;
+  const {view, token, doc} = props;
+  const [epoch, setEpoch] = useState(0);
+  const [history, setHistory] = useState<SurveyLine[]>([]);
+  const [identity, setIdentity] = useState({token, documentCase: doc.context.case_id});
+  const [stage, setStage] = useState<{view: ViewResult | null; survey: boolean}>({view, survey: !view});
+  // Guest -> login preserves the explicitly entered draft. Logout/account or restored-document changes isolate history.
+  if ((identity.token && identity.token !== token) || identity.documentCase !== doc.context.case_id) {
+    setIdentity({token, documentCase: doc.context.case_id});setHistory([]);setEpoch(epoch + 1);
+  } else if (identity.token !== token) setIdentity({...identity, token});
+  if (stage.view !== view) setStage({view, survey: !view});
+  const survey = !view || stage.survey;
+  return <>
+    <div className="d-toolbar" aria-label="DION 대화 단계">
+      <button type="button" className="d-secondary" aria-pressed={survey} onClick={() => setStage({view, survey: true})}>설문 함께하기</button>
+      <button type="button" className="d-secondary" disabled={!view} aria-pressed={!survey} onClick={() => setStage({view, survey: false})}>결과와 대화</button>
+    </div>
+    <div hidden={!survey}><ChatSurvey key={`${identity.documentCase}-${epoch}`} doc={doc} token={token} history={history} onHistory={setHistory}
+      onCommit={props.onCommit} onCalculate={props.onCalculate} onLogin={props.onLogin} busy={props.busy}
+      hasResult={!!view} stale={props.stale} onResult={() => {setStage({view, survey: false});props.onResult(0);}}/></div>
+    {!survey && view && <>
+      {history.length > 0 && <details><summary>설문에서 나눈 대화</summary>{history.map((r,i) => <p key={i}><strong>{r.role === "user" ? "나" : "DION"}</strong> · {r.content}</p>)}</details>}
+      <ResultConversation {...props} view={view} history={history}/>
+    </>}
+  </>;
+}
+
+function ResultConversation(props: Props & {view: ViewResult; history: SurveyLine[]}) {
+  const { view, token, selectedCaseId, editVersion, stale, open, onExplain } = props;
+  const caseId = textValue(object(object(view.source).context).case_id);
+  if (!token || view.storage !== "SAVED" || !view.runId || caseId !== selectedCaseId || !view.inputHash || view.serverVersion === undefined) {
+    return <section><p className="d-note">현재 미리보기 결과를 함께 살펴봐요. 확인한 설문 답변이 계산에 반영됐어요. 대화를 저장하고 최종 포트폴리오 검토로 이어가려면 결과를 저장해 주세요.</p>
+      <ResultActionConsultation view={view} token={token} caseId={selectedCaseId} stale={stale} flow={props.actionFlow} onEdit={props.onEdit} onResult={props.onResult}/>
+    </section>;
   }
   const contextKey = JSON.stringify([token, caseId, view.runId, view.serverVersion, view.inputHash, view.rawSnapshotId]);
   return <div key={contextKey}>
     <p className="d-ai-basis">저장된 입력 버전 {view.serverVersion} 기준 · {stale ? "수정 전 결과" : "현재 결과"}</p>
-    {stale && <p className="d-warning" role="status">입력이 달라졌어요. 이전 상담은 이 결과의 기록으로만 확인해 주세요. 새 계산을 저장하면 새 기준으로 상담할 수 있어요.</p>}
+    {stale && <p className="d-warning" role="status">입력이 달라졌어요. ‘설문 함께하기’에서 확인한 답변으로 다시 계산해 주세요. 이전 결과와 채택 이력은 유지돼요.</p>}
     <AdoptionContext key={`${contextKey}-${open}`} caseId={caseId} token={token} view={view} open={open}/>
-    <ResultActionConsultation view={view} token={token} caseId={caseId} stale={stale} onEdit={props.onEdit} onResult={props.onResult}/>
     <AgentConsultation view={view} token={token} selectedCaseId={selectedCaseId} editVersion={editVersion} stale={stale} onExplain={onExplain}
-      resumeSessionId={props.resumeSessionId} onOpenResult={props.onOpenResult}/>
+      surveyHistory={props.history} resumeSessionId={props.resumeSessionId} onOpenResult={props.onOpenResult}/>
+    <button type="button" className="d-secondary" onClick={() => props.onResult(4)}>상담 내용으로 최종 포트폴리오 검토</button>
   </div>;
 }

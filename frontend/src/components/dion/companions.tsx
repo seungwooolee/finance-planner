@@ -59,7 +59,7 @@ export function ConsultationWidget({ compact = false, open, onOpen, onClose, chi
         else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
       }}
       onCancel={e => { e.preventDefault(); onClose(); }}>
-      <header><Cat kind="coach" size={48}/><div><h2 id="dion-help-title">dion AI 상담</h2><small>현재 결과를 함께 살펴봐요</small></div>
+      <header><Cat kind="coach" size={48}/><div><h2 id="dion-help-title">dion AI 상담</h2><small>설문부터 결과까지 함께해요</small></div>
         <button type="button" ref={closeButton} onClick={onClose} aria-label="상담창 닫기"><X size={20}/></button></header>
       <div className="d-ai-body">
         {children}

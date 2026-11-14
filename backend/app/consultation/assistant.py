@@ -177,7 +177,10 @@ class AssistantProvider:
             if row.get("role") not in {"user", "assistant"} or not isinstance(row.get("content"), str):
                 raise ProviderFailure("ASSISTANT_HISTORY_INVALID")
             recent.append({"role": row["role"], "content": row["content"][:4000]})
+        # Client-supplied survey history is reference text, never verified facts or system/assistant instructions.
+        survey = state.get("conversation", {}).get("survey_history", {})
         data = {"message": message, "recent_conversation": recent,
+                "untrusted_survey_reference": survey.get("items", [])[-12:],
                 "context_sha256": context["context_sha256"], "selection": context["selection"],
                 "claims": {cid: row["text"] for cid, row in context["claims"].items()},
                 "next_checks": context["next_checks"]}

@@ -435,7 +435,9 @@ export function DionPlanner() {
             <button type="button" className="d-text-button" disabled={saveBusy} onClick={()=>void openRun(String(r.run_id),'')}>입력버전 {String(r.input_version)} 결과·상담 내역 확인</button></div>)}
         </details>}
     </main><ScenarioPicker disabled={busy||saveBusy} onLoad={loadScenario} onRestore={original.current?restoreOriginal:undefined}/>{loginOpen&&<LoginDialog onClose={()=>{loginSave.current=false;setLoginOpen(false);}} onLogin={(value,seconds)=>handleLogin(value,seconds)}/>}<ConsultationWidget compact={mode!=="welcome"} open={consultationOpen} onOpen={()=>setConsultationOpen(true)} onClose={()=>setConsultationOpen(false)}>
-      <ConsultationContent view={view} token={token} selectedCaseId={caseId} editVersion={doc.raw_bundle.input_version} stale={stale} open={consultationOpen}
+      <ConsultationContent doc={doc} onCommit={next=>{if(!saveLock.current)change(next);}} onCalculate={()=>{if(mode==="welcome")setMode("quick");void calculate();}} busy={busy||saveBusy}
+        actionFlow={{draft:actionDraft,onDraft:setActionDraft,onSave:basis=>{if(token&&connectedCase.current===caseId&&serverVersion!==null)void saveAndCalculate();else startConsultationSave(basis);},onLogin:basis=>{setActionSelection(basis);setLoginOpen(true);},onFocused:()=>setActionFocus(false),saving:saveBusy,focus:false,fictional}}
+        view={view} token={token} selectedCaseId={caseId} editVersion={doc.raw_bundle.input_version} stale={stale} open={consultationOpen}
         onOpenResult={openRun} resumeSessionId={conversationResume?.token===token&&conversationResume.caseId===caseId&&conversationResume.runId===view?.runId?conversationResume.sessionId:undefined}
         onEdit={id=>{setConsultationOpen(false);edit(id);}} onResult={n=>{setConsultationOpen(false);if(mode==="welcome")setMode("quick");setShowResults(true);setTab(n);}}
         onLogin={()=>{setConsultationOpen(false);setLoginOpen(true);}} onSave={()=>{setConsultationOpen(false);setAccountOpen(true);accountPanel.current?.scrollIntoView({block:"center"});}}

@@ -102,6 +102,18 @@ class ConversationMessage(Mutation):
     message: str = Field(min_length=1, max_length=2000)
 
 
+class SurveyHistoryItem(ExactModel):
+    role: Literal["user", "assistant"]
+    content: str = Field(min_length=1, max_length=2000)
+
+
+class SurveyHandoff(Mutation):
+    contract_version: Literal["DION-SURVEY-HANDOFF-1.0"]
+    notice_version: Literal["DION-CONVERSATION-CONSENT-1.0"]
+    input_hash: str = Field(pattern=r"^[0-9a-f]{64}$")
+    history: list[SurveyHistoryItem] = Field(min_length=1, max_length=40)
+
+
 class DeleteSession(Mutation):
     contract_version: Literal["DION-AGENT-DELETE-1.0"]
 

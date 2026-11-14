@@ -292,7 +292,7 @@ class ConsultationService(ConversationMixin):
                 else:
                     if len(state["receipts"]) >= 128:
                         fail("AGENT_SESSION_LIMIT", 429)
-                    if operation in {"turn", "confirm", "scenario_propose", "scenario_confirm", "conversation_consent"} and self._view(state, run)["progress"] == "RECONFIRM_REQUIRED":
+                    if operation in {"turn", "confirm", "scenario_propose", "scenario_confirm", "conversation_consent", "survey_history"} and self._view(state, run)["progress"] == "RECONFIRM_REQUIRED":
                         fail("SESSION_RECONFIRM_REQUIRED")
                     if operation == "turn":
                         self._turn(state, run, request, payload, review_code)
@@ -306,8 +306,21 @@ class ConsultationService(ConversationMixin):
                         conversation = state.setdefault("conversation", {"messages": []})
                         conversation.update(enabled=request.enabled, notice_version=request.notice_version,
                                             consented_at=self.clock().isoformat())
+                    elif operation == "survey_history":
+                        conversation = state.get("conversation", {})
+                        if not conversation.get("enabled") or conversation.get("notice_version") != CONVERSATION_NOTICE:
+                            fail("CONVERSATION_SAVE_CONSENT_REQUIRED")
+                        if state["pending_proposal"] or state["progress"] == "PAUSED":
+                            fail("CONFIRMATION_PENDING")
+                        if request.input_hash != run["input_hash"] or conversation.get("survey_history"):
+                            fail("SURVEY_HISTORY_BASIS_OR_DUPLICATE")
+                        conversation["survey_history"] = {
+                            "source": "CLIENT_REPORTED_UNVERIFIED", "input_hash": run["input_hash"],
+                            "recorded_at": self.clock().isoformat(),
+                            "items": [row.model_dump() for row in request.history],
+                        }
                     elif operation == "persist":
-                        if (request.action == "SAVE" and state.get("conversation", {}).get("messages")
+                        if (request.action == "SAVE" and (state.get("conversation", {}).get("messages") or state.get("conversation", {}).get("survey_history"))
                                 and request.conversation_notice_version != CONVERSATION_NOTICE):
                             fail("CONVERSATION_STORAGE_CONSENT_REQUIRED", 422)
                         if request.action == "STOP_SAVING":
