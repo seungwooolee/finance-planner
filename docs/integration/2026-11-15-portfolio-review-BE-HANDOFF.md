@@ -65,4 +65,5 @@ base: `2e164097b50e4a452faec3e18b9a256314c984f2`.
 최신 integration rebase에서 이미 병합된 AI/FE 배포차단 두 선행 커밋만 자동 제외됐다.
 코드 충돌/내용 변경 없이 기존 BE43건 증거를 유지하며 전체 재검사는 하지 않았다.
 소유 diff: BE 코드/SQL/테스트/계약/인계 13파일, +1203/-3(기능 커밋 기준).
-PR 링크 및 필수 CI 결과는 생성 후 추가한다.
+PR: https://github.com/seungwooolee/finance-planner/pull/61 (integration 대상, 직접 병합하지 않음).
+필수 CI의 최신 결과는 PR Checks와 최종 보고를 확인한다. 이 문서 기록 시점에는 대기 중이다.
