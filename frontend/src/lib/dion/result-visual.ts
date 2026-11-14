@@ -18,12 +18,12 @@ export const bpsLabel = (bps: number) => `${(bps / 100).toLocaleString("ko-KR", 
 
 export type AssetGroup = { id: "BOND" | "KR_EQUITY" | "GLOBAL_EQUITY" | "OTHER"; label: string; role: string; color: string };
 const GROUPS: Record<AssetGroup["id"], AssetGroup> = {
-  BOND: { id: "BOND", label: "채권", role: "변동성 완충", color: "#5e559a" },
-  KR_EQUITY: { id: "KR_EQUITY", label: "국내주식", role: "국내 성장", color: "#3848ce" },
-  GLOBAL_EQUITY: { id: "GLOBAL_EQUITY", label: "해외주식", role: "해외 성장", color: "#8b95ef" },
-  OTHER: { id: "OTHER", label: "기타", role: "역할 확인", color: "#a7abc4" },
+  BOND: { id: "BOND", label: "채권", role: "변동성 완충", color: "#607d98" },
+  KR_EQUITY: { id: "KR_EQUITY", label: "국내주식", role: "국내 성장", color: "#3158a6" },
+  GLOBAL_EQUITY: { id: "GLOBAL_EQUITY", label: "해외주식", role: "해외 성장", color: "#4d9387" },
+  OTHER: { id: "OTHER", label: "기타", role: "역할 확인", color: "#8c98a6" },
 };
-export const UNALLOCATED_COLOR = "#d9dbe8";
+export const UNALLOCATED_COLOR = "#dfe4ea";
 
 /** Role from the server disclosure only: asset_class and fx_exposed. */
 export function assetGroup(product: Obj | undefined): AssetGroup {
@@ -48,10 +48,10 @@ export function allocationSlices(allocations: Obj[], products: Obj[], unallocate
 }
 
 const ASSET_GROUPS = [
-  ['CASH', '현금성 자산', '#3848ce'], ['EQUITY', '주식', '#d97b2b'],
-  ['BOND', '채권', '#8a5cc2'], ['OTHER', '기타 금융자산', '#0a9e86'],
-  ['UNCLASSIFIED', '금융자산 · 상세 분류 미확인', '#a0a6bd'],
-  ['NONFINANCIAL', '부동산·보증금 등 비금융자산', '#635b87'],
+  ['CASH', '현금성 자산', '#3158a6'], ['EQUITY', '주식', '#bd8540'],
+  ['BOND', '채권', '#607d98'], ['OTHER', '기타 금융자산', '#4d9387'],
+  ['UNCLASSIFIED', '금융자산 · 상세 분류 미확인', '#b4bdc8'],
+  ['NONFINANCIAL', '부동산·보증금 등 비금융자산', '#596477'],
 ] as const;
 
 // Validate server presentation totals for display only; never infer missing categories or
