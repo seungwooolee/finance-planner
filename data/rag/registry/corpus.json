@@ -1,6 +1,6 @@
 {
   "schema_version": "DION-RAG-CORPUS-1.0",
-  "corpus_version": "dion-rag-20261113-demo-r2",
+  "corpus_version": "dion-rag-20261115-demo-r3",
   "item_ids": [
     "CON-01",
     "CON-02",
@@ -308,10 +308,10 @@
     },
     {
       "source_id": "SRC-CON-12",
-      "source_version": "2026-11-13",
+      "source_version": "2026-11-15-url1",
       "source_kind": "OFFICIAL_DOCUMENT",
       "access_scope": "PUBLIC",
-      "official_url": "https://kind.krx.co.kr/external/2026/04/09/000051/20260409000066/68648.htm*](https://kind.krx.co.kr/external/2026/04/09/000051/20260409000066/68648.htm",
+      "official_url": "https://kind.krx.co.kr/external/2026/04/09/000051/20260409000066/68648.htm",
       "title": "CON-12 추적오차·괴리율 (공식 원문 발췌·대조 문서)",
       "issuer": "우선순위: 금융위원회·금융감독원 > 금융투자협회·한국거래소 > 운용사(보조)",
       "jurisdiction": "KR",
@@ -330,10 +330,10 @@
     },
     {
       "source_id": "SRC-CON-13",
-      "source_version": "2026-11-13",
+      "source_version": "2026-11-15-url1",
       "source_kind": "OFFICIAL_DOCUMENT",
       "access_scope": "PUBLIC",
-      "official_url": "https://kind.krx.co.kr/external/2026/06/16/000415/20260616000922/68616.htm*](https://kind.krx.co.kr/external/2026/06/16/000415/20260616000922/68616.htm",
+      "official_url": "https://kind.krx.co.kr/external/2026/06/16/000415/20260616000922/68616.htm",
       "title": "CON-13 ETF 상장폐지 요건 (공식 원문 발췌·대조 문서)",
       "issuer": "우선순위: 금융위원회·금융감독원 > 금융투자협회·한국거래소 > 운용사(보조)",
       "jurisdiction": "KR",
@@ -352,10 +352,10 @@
     },
     {
       "source_id": "SRC-CON-14",
-      "source_version": "2026-11-13",
+      "source_version": "2026-11-15-url1",
       "source_kind": "OFFICIAL_DOCUMENT",
       "access_scope": "PUBLIC",
-      "official_url": "https://kind.krx.co.kr/external/2026/06/12/000502/20260612001028/68152.htm*](https://kind.krx.co.kr/external/2026/06/12/000502/20260612001028/68152.htm",
+      "official_url": "https://kind.krx.co.kr/external/2026/06/12/000502/20260612001028/68152.htm",
       "title": "CON-14 ETF 분배금 (공식 원문 발췌·대조 문서)",
       "issuer": "우선순위: 금융위원회·금융감독원 > 금융투자협회·한국거래소 > 운용사(보조)",
       "jurisdiction": "KR",
@@ -374,10 +374,10 @@
     },
     {
       "source_id": "SRC-CON-15",
-      "source_version": "2026-11-13",
+      "source_version": "2026-11-15-url1",
       "source_kind": "OFFICIAL_DOCUMENT",
       "access_scope": "PUBLIC",
-      "official_url": "https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1033258305*](https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1033258305",
+      "official_url": "https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1033258305",
       "title": "CON-15 계좌별 ETF 매수 가능 여부 (공식 원문 발췌·대조 문서)",
       "issuer": "우선순위: 금융위원회·금융감독원 > 금융투자협회·한국거래소 > 운용사(보조)",
       "jurisdiction": "KR",
@@ -817,7 +817,7 @@
     {
       "chunk_id": "CHUNK-CON-12-2",
       "source_id": "SRC-CON-12",
-      "source_version": "2026-11-13",
+      "source_version": "2026-11-15-url1",
       "section_ref": "2. 공식 정의 원문",
       "start": 112,
       "end": 351,
@@ -827,7 +827,7 @@
     {
       "chunk_id": "CHUNK-CON-13-2",
       "source_id": "SRC-CON-13",
-      "source_version": "2026-11-13",
+      "source_version": "2026-11-15-url1",
       "section_ref": "2. 공식 정의 원문",
       "start": 93,
       "end": 248,
@@ -837,7 +837,7 @@
     {
       "chunk_id": "CHUNK-CON-14-2",
       "source_id": "SRC-CON-14",
-      "source_version": "2026-11-13",
+      "source_version": "2026-11-15-url1",
       "section_ref": "2. 공식 정의 원문",
       "start": 88,
       "end": 241,
@@ -847,7 +847,7 @@
     {
       "chunk_id": "CHUNK-CON-15-2",
       "source_id": "SRC-CON-15",
-      "source_version": "2026-11-13",
+      "source_version": "2026-11-15-url1",
       "section_ref": "2. 공식 정의 원문",
       "start": 110,
       "end": 276,

@@ -71,7 +71,9 @@ def render(draft, context, source):
         "effective_on": request.effective_on, "review_on": request.review_on,
         "context_status": context.status, "context_sha256": draft.context_sha256, "corpus_version": context.corpus_version,
         "retrieval_sha256": context.retrieval_sha256, "retrieval_policy_version": request.policy_version,
-        "guidance": "등록된 일반 제도 근거예요. 개인 적용 여부와 세액은 별도 확인이 필요해요.",
+        "guidance": ("내부 시연 검토를 거친 일반 설명 근거예요. 독립 전문가 검증이나 개인 적합성·세액 판정은 아니에요."
+                     if any("내부 검토" in row.review_ref for row in citations.values()) else
+                     "등록된 일반 제도 근거예요. 개인 적용 여부와 세액은 별도 확인이 필요해요."),
         "blocks": blocks, "citations": [row.model_dump(mode="json", exclude={"text"}) for row in citations.values()],
         "application_status": "NOT_APPLIED",
     }

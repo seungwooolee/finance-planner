@@ -17,7 +17,7 @@ import re
 import sys
 from pathlib import Path
 
-from app.consultation.rag_contract import Corpus, text_hash
+from app.consultation.rag_contract import Corpus, text_hash, valid_source_url
 
 ORIGINAL_ROW = "원문 (그대로)"
 READY_STATES = {"원문확인", "검토완료"}
@@ -80,10 +80,17 @@ def original_of(section):
 
 
 def first_url(value):
-    found = re.search(r"(https://[^)\s|]+)", value)
+    # A Markdown label may itself contain a URL and emphasis. Extract its actual
+    # href before considering bare links; never merge label and destination.
+    found = re.search(r"\[[^\]\r\n]*\]\((https://[^\s<>]+)\)", value)
+    if not found:
+        found = re.search(r"(https://[^\s|<>]+)", value)
     if not found:
         raise ValueError("원문 URL row has no https link")
-    return found.group(1)
+    url = found.group(1)
+    if not valid_source_url(url):
+        raise ValueError("원문 URL must be one valid HTTPS URL")
+    return url
 
 
 def build(markdown, *, tax_year, effective_from, effective_to=None, approval=None, recheck_until=None):
@@ -112,7 +119,7 @@ def build(markdown, *, tax_year, effective_from, effective_to=None, approval=Non
         cursor += len(text) + 2
     original = header + "\n\n".join(parts)
 
-    source_id, version = f"SRC-{doc_id}", collected
+    source_id, version = f"SRC-{doc_id}", meta.get("등록 메타데이터 버전", collected)
     recheck = (re.search(r"\d{4}-\d{2}-\d{2}", meta.get("재검토 기한", "")) or [None])[0]
     extended = bool(recheck and recheck_until and recheck_until > recheck)
     if extended:  # Documented user decision overrides the researcher's own management deadline.

@@ -55,7 +55,8 @@ def rag_registry_path():
         return None
     if path:
         return Path(path)
-    return BUNDLED_CORPUS if BUNDLED_CORPUS.is_file() else None
+    # A missing deployment asset must fail closed, not look intentionally empty.
+    return BUNDLED_CORPUS
 
 
 @lru_cache

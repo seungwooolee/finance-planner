@@ -1,7 +1,7 @@
 """Bounded exact lookup against a server-managed, reviewed public corpus."""
 from ..be.raw_store import _digest
 from ..oneport_transport import strict_json
-from .rag_contract import Corpus, RagContext, RetrievalRequest, RetrievedEvidence
+from .rag_contract import Corpus, RagContext, RetrievalRequest, RetrievedEvidence, valid_source_url
 
 MAX_CORPUS_BYTES = 4 * 1024 * 1024
 MAX_CLAIMS = 12
@@ -67,6 +67,8 @@ def retrieve(corpus, request, *, corpus_hash=None):
         spans = [citations[cid] for cid in claim.citation_ids]
         rows = [chunks[span.chunk_id] for span in spans]
         documents = [sources[row.source_id, row.source_version] for row in rows]
+        if any(not valid_source_url(source.official_url) for source in documents):
+            return context("INSUFFICIENT", "REGISTERED_SOURCE_URL_INVALID")
         if not all(source.access_scope == request.access_scope and source.jurisdiction == request.jurisdiction
                    and request.tax_year in source.applicable_tax_years
                    and source.effective_from <= request.effective_on <= (source.effective_to or "9999-12-31")
