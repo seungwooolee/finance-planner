@@ -7,6 +7,7 @@ import { InvestmentFollowup } from "./investment-followup";
 import { policyDateMessage, productEmptyCause } from "@/lib/dion/product-empty";
 import { allocationSlices, assetGroup, bpsLabel, shareBps } from "@/lib/dion/result-visual";
 import { Donut, DonutLegend } from "./donut";
+import { ProductCandidates } from "./product-candidates";
 
 export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="" }: { review: Record<string, Json>; selectedPlan?: string; evaluationOn?: string; onEdit: (id: string) => void }) {
   const empty=productEmptyCause(review,evaluationOn);
@@ -36,6 +37,7 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
       const allocations=list(month?.allocations);
       const slices=allocationSlices(allocations,products,month?.unallocated_krw);
       return <div key={String(candidate.strategy_id)}>
+        <ProductCandidates review={review} month={month}/>
         {months.map((m,i)=><div className="d-summary-band" key={i} data-allocation-month={String(m.period)} data-budget={textValue(m.scenario_budget_krw)} data-allocated={textValue(m.allocated_total_krw)} data-unallocated={textValue(m.unallocated_krw)}>
           <div><span>{String(m.period)} 신규 투자 후보금</span><strong>{formatKrw(m.scenario_budget_krw)}</strong></div>
           <div><span>상품 배분액</span><strong className="d-accent">{formatKrw(m.allocated_total_krw)}</strong></div>

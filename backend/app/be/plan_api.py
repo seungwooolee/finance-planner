@@ -16,6 +16,39 @@ class ContractModel(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
 
 
+class PortfolioComparisonRequest(ContractModel):
+    expected_revision: int = Field(ge=0)
+    request_key: str = Field(min_length=1, max_length=120)
+    strategy_id: Literal["STABILITY_FIRST", "INVESTMENT_CAPACITY"]
+    portfolio_type: Literal["STABLE", "BALANCED", "RETURN"]
+    input_version: int = Field(ge=0)
+    input_hash: str = Field(pattern=r"^[0-9a-f]{64}$")
+    policy_version: str
+    types_version: str
+    catalog_version: str
+
+
+@router.get("/cases/{case_id}/analyses/{run_id}/portfolio-comparison")
+def read_portfolio_comparison(case_id: str, run_id: str, actor=Depends(get_actor), store=Depends(get_store)):
+    return call(store.read_portfolio_comparison, actor, case_id, run_id)
+
+
+@router.put("/cases/{case_id}/analyses/{run_id}/portfolio-comparison")
+def save_portfolio_comparison(case_id: str, run_id: str, value=Depends(body),
+                              actor=Depends(get_actor), store=Depends(get_store)):
+    try:
+        request = PortfolioComparisonRequest.model_validate(value).model_dump()
+    except ValueError:
+        raise HTTPException(422, detail={"code": "INVALID_COMPARISON_REQUEST"}) from None
+    try:
+        return call(store.save_portfolio_comparison, actor, case_id, run_id, request)
+    except HTTPException as exc:
+        if exc.detail.get("code") in {"RUN_NOT_CURRENT", "COMPARISON_BINDING_MISMATCH",
+                                      "COMPARISON_POLICY_CHANGED", "COMPARISON_UNAVAILABLE"}:
+            raise HTTPException(409, detail=exc.detail) from None
+        raise
+
+
 class AdoptionRef(ContractModel):
     adoption_id: str
     run_id: str
