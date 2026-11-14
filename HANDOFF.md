@@ -1,3 +1,11 @@
+# 최신 BE 인계 — 2026-11-15 상담 기반 최종 포트폴리오
+
+현재 작업은 `codex/consultation-finalization-be-20261115`이다.
+[BE 계약/요청 예시](docs/integration/2026-11-15-portfolio-review-BE-CONTRACT.md)와
+[후보·검증·운영 미적용·남은 FE 연결](docs/integration/2026-11-15-portfolio-review-BE-HANDOFF.md)을 따른다.
+고유 관련 검사43건 통과. 기존 증거와 아래 역사 인계는 그대로 보존한다.
+최종 생성은 별도 명시 채택과 구분하며 migration008 운영 적용·병합·배포는 실행하지 않았다.
+
 # HANDOFF · DION 결과 화면 (codex/contest-results-20261114)
 
 ## 후보
