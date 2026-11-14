@@ -284,6 +284,147 @@
 .dion-app .d-financial-projection caption{text-align:left;font-size:12px;padding:8px 0}
 .dion-app .d-financial-projection dd{overflow-wrap:anywhere}
 
+/* Results: quiet surfaces, one clear numeric priority, readable evidence. */
+.dion-app[data-view="results"]{background:#f5f7fa;--d-results-scroll-offset:96px}
+.dion-app[data-view="results"]::after{content:"";position:fixed;inset:auto 0 0;height:80px;background:#fff;border-top:1px solid #e0e5ee;pointer-events:none;z-index:33}
+.dion-app .d-results{
+  --d-line:#e0e5ee;
+  --d-soft:#f3f5f9;
+  --d-result-ink:#202d50;
+  --d-result-muted:#536071;
+  color:#1d2939;
+}
+.dion-app .d-results .d-card{border-color:var(--d-line);border-radius:20px;box-shadow:none;padding:28px}
+.dion-app .d-results .d-result-heading{align-items:flex-end;margin:16px 0 28px;gap:24px}
+.dion-app .d-results .d-result-heading h1{font-size:32px;letter-spacing:-.045em;margin:8px 0}
+.dion-app .d-results .d-result-heading p{margin:0;color:var(--d-result-muted);font-size:14px}
+.dion-app .d-results .d-title-icon{background:#e9edf8;border-radius:12px}
+.dion-app .d-results .d-result-heading>.d-secondary{background:#fff;border:1px solid #d2d9e5;flex-shrink:0}
+.dion-app .d-results .d-tabs{background:transparent;border-bottom:1px solid #d6dce7;border-radius:0;padding:0;gap:16px;margin:24px 0 30px;scroll-padding-inline:4px}
+.dion-app .d-results .d-tabs button{flex:1 0 146px;min-height:58px;border-radius:0;border-bottom:3px solid transparent;padding:14px 6px;gap:9px;color:var(--d-result-muted)}
+.dion-app .d-results .d-tabs button:hover{background:#edf0f6}
+.dion-app .d-results .d-tabs button[aria-current]{background:transparent;color:var(--d-primary);border-bottom-color:var(--d-primary);font-weight:750}
+.dion-app .d-results .d-tabs button small{background:#e8ecf2;color:#526078}
+.dion-app .d-results .d-tabs button[aria-current] small{background:var(--d-primary);color:#fff}
+.dion-app .d-results .d-tabs button:focus-visible{outline:2px solid var(--d-primary);outline-offset:-3px}
+.dion-app .d-results .d-basis-strip{border-radius:12px;padding:16px 20px;gap:12px}
+.dion-app .d-results .d-basis-facts{gap:10px 20px;border-block:1px solid var(--d-line);padding:10px 0}
+.dion-app .d-results .d-basis-facts>div{background:transparent;padding:0;gap:3px 8px;flex-wrap:wrap;min-width:0}
+.dion-app .d-results .d-basis-facts dt{color:var(--d-result-muted)}
+.dion-app .d-results .d-basis-facts dd{overflow-wrap:anywhere}
+.dion-app .d-results .d-basis-next p{font-size:13px;line-height:1.8}
+.dion-app .d-results>.d-metrics{gap:14px;margin:18px 0 28px}
+.dion-app .d-results>.d-metrics>.d-metric{border-color:var(--d-line);border-radius:16px;padding:22px;display:flex;flex-direction:column}
+.dion-app .d-results>.d-metrics>.d-metric>span{min-height:40px;font-size:12px;line-height:1.7}
+.dion-app .d-results>.d-metrics>.d-metric strong{font-size:clamp(25px,2.1vw,31px);letter-spacing:-.045em;margin:8px 0;line-height:1.4}
+.dion-app .d-results>.d-metrics>.d-metric:last-child{background:var(--d-result-ink);border-color:var(--d-result-ink);color:#fff}
+.dion-app .d-results>.d-metrics>.d-metric:last-child :is(strong,span,small){color:#fff}
+.dion-app .d-results>.d-metrics>.d-metric:last-child>small{font-size:11px;line-height:1.8;color:#d9e2f7}
+.dion-app .d-results>.d-metrics>.d-metric:last-child .d-metric-icon{background:#ffffff1a;color:#e6ecff}
+.dion-app .d-results>.d-columns{align-items:stretch;gap:20px}
+.dion-app .d-results>.d-columns>.d-card:first-child{display:flex;flex-direction:column}
+.dion-app .d-results>.d-columns>.d-card:first-child>.d-text-button{margin-top:auto;align-self:flex-start;min-height:44px}
+.dion-app .d-results .d-card .d-metrics{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;border-bottom:1px solid var(--d-line);padding-bottom:20px;margin-bottom:20px}
+.dion-app .d-results .d-card .d-metric{background:transparent;padding:0;border:0}
+.dion-app .d-results .d-card .d-metric strong{font-size:clamp(19px,1.8vw,25px);letter-spacing:-.045em;margin:8px 0 0;color:#1d2939}
+.dion-app .d-results .d-card .d-metric:last-child strong{color:var(--d-primary)}
+.dion-app .d-results .d-balance-bars{gap:14px;margin-bottom:20px}
+.dion-app .d-results .d-balance-track{height:8px;background:#eef1f6}
+.dion-app .d-results .d-balance-bars figcaption{margin-bottom:4px;color:var(--d-result-muted)}
+.dion-app .d-results .d-asset-mix{gap:20px}
+.dion-app .d-results .d-legend{gap:0;margin:0}
+.dion-app .d-results .d-legend li{padding:10px 0;background:transparent;border-radius:0;border-bottom:1px solid #edf0f5;gap:8px;line-height:1.6}
+.dion-app .d-results .d-legend li:last-child{border-bottom:0}
+.dion-app .d-results .d-legend span small{white-space:normal;overflow:visible;text-overflow:clip;color:var(--d-result-muted);font-size:11px}
+.dion-app .d-results .d-legend strong{white-space:normal;overflow-wrap:anywhere}
+.dion-app .d-results .d-legend strong small{font-size:11px;color:var(--d-result-muted)}
+.dion-app .d-results .d-asset-composition .d-inline-note{background:transparent;border-top:1px solid var(--d-line);padding:14px 0 0;line-height:1.8;color:var(--d-result-muted)}
+.dion-app .d-results .d-fold>summary{min-height:44px;align-content:center;font-size:13px;color:var(--d-primary)}
+.dion-app .d-results .d-asset-empty{background:var(--d-soft);border-left:3px solid #a5afc1;border-radius:8px;padding:20px}
+.dion-app .d-results .d-cashflow-card>p{max-width:78ch;font-size:13px;line-height:1.9}
+.dion-app .d-results .d-cashflow-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:36px;margin-top:24px}
+.dion-app .d-results .d-cashflow-layout .d-ledger{margin:0}
+.dion-app .d-results .d-cashflow-layout .d-ledger>div{padding:16px 0;align-items:baseline;gap:20px}
+.dion-app .d-results .d-cashflow-layout .d-ledger dt{line-height:1.8;color:var(--d-result-muted)}
+.dion-app .d-results .d-cashflow-layout .d-ledger dd{font-size:16px;text-align:right;overflow-wrap:anywhere}
+.dion-app .d-results .d-cashflow-layout .d-ledger>div:last-child{border-bottom:0}
+.dion-app .d-results .d-cashflow-layout .d-ledger>div:last-child dd{color:var(--d-primary);font-size:21px}
+.dion-app .d-results .d-cashflow-layout .d-waterfall{margin:0;padding:0 0 0 28px;border-left:1px solid var(--d-line)}
+.dion-app .d-results .d-cashflow-layout figcaption{font-size:12px;color:var(--d-result-muted);line-height:1.8;margin-bottom:18px}
+.dion-app .d-results .d-waterfall>div{grid-template-columns:minmax(0,1fr) auto;gap:6px 16px;font-size:12px;margin:16px 0}
+.dion-app .d-results .d-waterfall>div>span{grid-column:1;grid-row:1}
+.dion-app .d-results .d-waterfall>div>strong{grid-column:2;grid-row:1;text-align:right;font-size:12px}
+.dion-app .d-results .d-waterfall-track{grid-column:1/-1;grid-row:2;height:7px;background:#eef1f6;border-radius:3px}
+.dion-app .d-results .d-waterfall-track i{background:var(--d-primary);border-radius:3px}
+.dion-app .d-results .d-waterfall-track i.deduct{background:#9ba8c4}
+.dion-app .d-results .d-kpi,.dion-app .d-results .d-plan-row{border-color:var(--d-line);box-shadow:none}
+.dion-app .d-results .d-kpi-soft{background:#edf1fa}
+.dion-app .d-results .d-portfolio-card{border-color:var(--d-line);gap:8px}
+.dion-app .d-results .d-portfolio-card.mine{background:#f9faff;box-shadow:none;border-color:#7e8bdb}
+.dion-app .d-results .d-portfolio-card.selected{outline:2px solid var(--d-primary);outline-offset:3px}
+.dion-app .d-results .d-type-foot{color:var(--d-result-muted);font-size:12px;line-height:1.8}
+.dion-app .d-results .d-tax-heading{padding-top:32px;margin-top:36px}
+.dion-app .d-results .d-tax-heading h2{font-size:25px;margin:8px 0;letter-spacing:-.04em}
+.dion-app .d-results .d-tax-heading>p{max-width:65ch;line-height:1.9}
+.dion-app .d-results .d-tax-grid{align-items:stretch;gap:18px}
+.dion-app .d-results .d-tax-card{display:flex;flex-direction:column;padding:24px;margin:0}
+.dion-app .d-results .d-tax-card>.d-badge{align-self:flex-start}
+.dion-app .d-results .d-tax-card>.d-secondary{margin-top:auto;align-self:flex-start;min-height:44px}
+.dion-app .d-results .d-tax-card>.d-tax-source{margin-bottom:20px}
+.dion-app .d-results .d-tax-card h3{font-size:19px;line-height:1.55;letter-spacing:-.035em;margin:18px 0 6px}
+.dion-app .d-results .d-tax-card>p{font-size:13px;line-height:1.9;margin:16px 0 0}
+.dion-app .d-results .d-tax-card>.d-tax-source{font-size:12px;line-height:1.8;margin-top:18px}
+.dion-app .d-results .d-tax-conditions{font-size:12px;line-height:1.9;border-top:0;margin:10px 0}
+.dion-app .d-results .d-tax-conditions>summary{min-height:44px;align-content:center}
+.dion-app .d-results .d-tax-buttons{border-top:1px solid var(--d-line);padding-top:16px;margin-top:auto;gap:6px 14px}
+.dion-app .d-results .d-tax-buttons>button{min-height:44px;font-size:12px}
+.dion-app .d-results .d-tax-all{border:0;background:transparent;box-shadow:none;padding:0;margin-top:18px}
+.dion-app .d-results .d-tax-all>summary{background:#fff;border:1px solid var(--d-line);border-radius:12px;padding:16px 20px;font-size:14px}
+.dion-app .d-results .d-tax-benefits>.d-help{font-size:12px;text-align:left;line-height:1.9;margin-top:20px;color:var(--d-result-muted)}
+@media(max-width:1100px){
+  .dion-app .d-results>.d-columns{grid-template-columns:minmax(0,1fr)}
+  .dion-app .d-results .d-asset-mix{grid-template-columns:152px minmax(0,1fr)}
+}
+@media(max-width:760px){
+  .dion-app[data-view="results"]{--d-results-scroll-offset:140px}
+  .dion-app[data-view="results"]::after{height:calc(76px + env(safe-area-inset-bottom))}
+  .dion-app[data-view="results"] .d-header{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;padding:10px 14px}
+  .dion-app[data-view="results"] .d-header>.d-logo{grid-column:1/-1;font-size:26px;justify-self:start}
+  .dion-app[data-view="results"] .d-header>nav{grid-column:1;min-width:0;gap:2px;padding:4px}
+  .dion-app[data-view="results"] .d-header>nav button{white-space:nowrap;padding:7px 6px;font-size:11px;min-height:44px}
+  .dion-app[data-view="results"] .d-header-actions{grid-column:2;justify-self:end;gap:6px;min-width:0;font-size:11px}
+  .dion-app[data-view="results"] .d-header-actions button{white-space:nowrap;flex-shrink:0;min-height:44px}
+  .dion-app[data-view="results"] .d-header-actions .d-account-button{padding:7px 6px;font-size:11px}
+  .dion-app .d-results .d-card{padding:22px 18px;border-radius:16px}
+  .dion-app .d-results .d-result-heading{align-items:flex-start;flex-direction:column;gap:14px;margin-bottom:22px}
+  .dion-app .d-results .d-result-heading h1{font-size:27px}
+  .dion-app .d-results .d-result-heading p{font-size:13px}
+  .dion-app .d-results .d-tabs{gap:8px;margin:22px 0 26px}
+  .dion-app .d-results .d-tabs button{flex:0 0 auto;min-width:110px;font-size:12px;padding:12px 8px}
+  .dion-app .d-results>.d-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .dion-app .d-results>.d-metrics>.d-metric{padding:16px 14px}
+  .dion-app .d-results>.d-metrics>.d-metric strong{font-size:24px}
+  .dion-app .d-results .d-card .d-metrics{gap:10px}
+  .dion-app .d-results .d-card .d-metric strong{font-size:18px}
+  .dion-app .d-results .d-basis-strip{padding:16px}
+  .dion-app .d-results .d-basis-facts{gap:12px 20px}
+  .dion-app .d-results .d-basis-facts>div{flex-direction:column;align-items:flex-start}
+  .dion-app .d-results .d-basis-facts dt{font-size:11px}
+  .dion-app .d-results .d-basis-facts dd{font-size:12px}
+  .dion-app .d-results .d-cashflow-layout{grid-template-columns:minmax(0,1fr);gap:24px;margin-top:18px}
+  .dion-app .d-results .d-cashflow-layout .d-waterfall{border-left:0;border-top:1px solid var(--d-line);padding:22px 0 0}
+  .dion-app .d-results .d-asset-mix{grid-template-columns:minmax(0,1fr);gap:10px}
+  .dion-app .d-results .d-asset-composition .d-donut{margin:16px auto}
+  .dion-app .d-results .d-tax-card{padding:22px}
+  .dion-app .d-results .d-tax-heading h2{font-size:23px}
+}
+@media print{
+  .dion-app[data-view="results"]{background:#fff}
+  .dion-app[data-view="results"]::after{display:none}
+  .dion-app .d-results>.d-metrics>.d-metric:last-child{background:#fff;color:#1d2939;border-color:#202d50}
+  .dion-app .d-results>.d-metrics>.d-metric:last-child :is(strong,span,small){color:#1d2939}
+}
+
 /* v0.3: one persistent consultation, native modal focus and mobile sheet. */
 .d-ai-window{position:fixed;inset:auto 20px 20px auto;margin:0;padding:0;width:460px;max-width:calc(100vw - 32px);height:min(760px,calc(100dvh - 40px));max-height:calc(100dvh - 40px);border:1px solid #dce1f3;border-radius:24px;background:#fff;color:#202940;box-shadow:0 16px 60px #17244133;overflow:hidden}
 .d-ai-window[open]{display:flex;flex-direction:column}

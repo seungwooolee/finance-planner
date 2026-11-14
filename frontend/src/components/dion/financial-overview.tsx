@@ -21,10 +21,10 @@ export function FinancialOverview({ flow }: { flow: Record<string, Json> }) {
   const rows = list(object(flow.presentation).rows);
   const income = rows[0]?.amount_krw;
   return <>
-    <article className="d-card" aria-label="월 현금흐름 차감표"><h2>한 달 돈의 흐름</h2>
+    <article className="d-card d-cashflow-card" aria-label="월 현금흐름 차감표"><h2>한 달 돈의 흐름</h2>
       <p>생활비에서 상환·저축 이체를 구분하고, 실제 상환액과 급여 공제 전이 아닌 현금 납입액을 각각 한 번 반영했어요.</p>
-      {rows.length ? <><dl className="d-ledger">{rows.map(r => <div key={textValue(r.key)}><dt>{r.direction === 'DEDUCT' ? '− ' : ''}{textValue(r.label)}</dt><dd>{formatKrw(r.amount_krw)}</dd></div>)}</dl>
-      <figure className="d-waterfall"><figcaption>소득에서 차감되는 금액 · 정확한 금액은 위 표 참조</figcaption>{rows.map(r => <div key={textValue(r.key)}><span>{textValue(r.label)}</span><div className="d-waterfall-track"><i style={{ width: typeof income === 'string' && BigInt(income) > 0n && typeof r.amount_krw === 'string' ? `${Math.min(100, Math.abs(Number(r.amount_krw) / Number(income)) * 100)}%` : '0%' }} className={r.direction === 'DEDUCT' ? 'deduct' : 'balance'}/></div><strong>{formatKrw(r.amount_krw)}</strong></div>)}</figure></> : <p>이번 저장 결과에는 차감표가 없어요. 현재 입력으로 다시 계산하면 볼 수 있어요.</p>}
+      {rows.length ? <div className="d-cashflow-layout"><dl className="d-ledger">{rows.map(r => <div key={textValue(r.key)}><dt>{r.direction === 'DEDUCT' ? '− ' : ''}{textValue(r.label)}</dt><dd>{formatKrw(r.amount_krw)}</dd></div>)}</dl>
+      <figure className="d-waterfall"><figcaption>소득에서 차감되는 금액 · 정확한 금액은 위 표 참조</figcaption>{rows.map(r => <div key={textValue(r.key)}><span>{textValue(r.label)}</span><div className="d-waterfall-track"><i style={{ width: typeof income === 'string' && BigInt(income) > 0n && typeof r.amount_krw === 'string' ? `${Math.min(100, Math.abs(Number(r.amount_krw) / Number(income)) * 100)}%` : '0%' }} className={r.direction === 'DEDUCT' ? 'deduct' : 'balance'}/></div><strong>{formatKrw(r.amount_krw)}</strong></div>)}</figure></div> : <p>이번 저장 결과에는 차감표가 없어요. 현재 입력으로 다시 계산하면 볼 수 있어요.</p>}
     </article>
   </>;
 }

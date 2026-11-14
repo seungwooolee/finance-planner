@@ -33,12 +33,12 @@ test('asset display keeps server categories and never partitions totals or inclu
 
 test('zero and partial asset cards are truthful on mobile', async ({ page }, info) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.setContent(renderToStaticMarkup(<div className="dion-app"><AssetComposition assets={snapshot('0')} asOf="2026-11-13" onEdit={() => {}}/></div>));
+  await page.setContent(renderToStaticMarkup(<div className="dion-app" data-view="results"><section className="d-results"><AssetComposition assets={snapshot('0')} asOf="2026-11-13" onEdit={() => {}}/></section></div>));
   await page.addStyleTag({ content: readFileSync('src/components/dion/planner.css', 'utf8') });
   await expect(page.getByRole('article', { name: '자산 분류' })).toContainText('0원');
   await expect(page.locator('.d-donut')).toHaveCount(0);
   await page.screenshot({ path: info.outputPath('asset-zero-mobile.png') });
-  await page.setContent(renderToStaticMarkup(<div className="dion-app"><AssetComposition assets={{ total_assets: { calc_state: 'NEEDS_INPUT', value: null } }} asOf="2026-11-13" onEdit={() => {}}/></div>));
+  await page.setContent(renderToStaticMarkup(<div className="dion-app" data-view="results"><section className="d-results"><AssetComposition assets={{ total_assets: { calc_state: 'NEEDS_INPUT', value: null } }} asOf="2026-11-13" onEdit={() => {}}/></section></div>));
   await page.addStyleTag({ content: readFileSync('src/components/dion/planner.css', 'utf8') });
   await expect(page.getByRole('article', { name: '자산 분류' })).toContainText('자료가 부족해요');
   await expect(page.getByRole('article', { name: '자산 분류' })).not.toHaveAttribute('data-asset-total');
