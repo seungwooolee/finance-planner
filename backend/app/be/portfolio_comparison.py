@@ -17,6 +17,38 @@ CREATE TABLE IF NOT EXISTS portfolio_comparisons(
 
 class PortfolioComparisonMixin:
     @staticmethod
+    def _assert_current_portfolio_policy(review):
+        root = Path(__file__).resolve().parents[1] / "planning"
+        policy = json.loads((root / "product_policy.json").read_text(encoding="utf-8"))
+        catalog = json.loads((root / "product_catalog.json").read_text(encoding="utf-8"))
+        if (review.get("product_policy", {}).get("sha256") != digest(policy)
+                or review.get("catalog", {}).get("sha256") != digest(catalog)
+                or review.get("portfolio_types", {}).get("version") != portfolio_types.VERSION):
+            raise PocError("COMPARISON_POLICY_CHANGED")
+
+    def _portfolio_for_adoption(self, conn, case_id, run, strategy_id, expected):
+        saved = self._portfolio_saved(conn, case_id, run["run_id"])
+        selection = saved["selection"]
+        if (not isinstance(expected, dict) or set(expected) != {"portfolio_type", "comparison_revision"}
+                or type(expected["comparison_revision"]) is not int or expected["comparison_revision"] < 1
+                or not selection or saved["revision"] != expected["comparison_revision"]
+                or selection.get("portfolio_type") != expected["portfolio_type"]
+                or selection.get("strategy_id") != strategy_id
+                or selection.get("input_version") != run["input_version"]
+                or selection.get("input_hash") != run["input_hash"]):
+            raise PocError("PORTFOLIO_SELECTION_CHANGED")
+        review = json.loads(run["result_json"]).get("results", {}).get("OUT-06", {})
+        self._assert_current_portfolio_policy(review)
+        candidate = next((c for c in review.get("candidates", []) if c.get("strategy_id") == strategy_id), {})
+        rows = candidate.get("rows", [])
+        view = rows[0].get("portfolio_type_views", {}).get(selection["portfolio_type"], {}) if rows else {}
+        if view.get("selectable") is not True or review.get("presentation_budget_blocked"):
+            raise PocError("COMPARISON_UNAVAILABLE")
+        return {"portfolio_type": selection["portfolio_type"], "comparison_revision": saved["revision"],
+                "selection_sha256": digest(selection),
+                **{k: selection[k] for k in ("input_hash", "policy_version", "types_version", "catalog_version")}}
+
+    @staticmethod
     def _comparison_run(conn, case_id, run_id):
         run = conn.execute("SELECT * FROM analysis_runs WHERE case_id=? AND run_id=?", (case_id, run_id)).fetchone()
         if run is None:
@@ -58,12 +90,7 @@ class PortfolioComparisonMixin:
                     or value["catalog_version"] != catalog.get("version")):
                 raise PocError("COMPARISON_BINDING_MISMATCH")
             # Old runs remain readable but cannot be selected under replaced policy/catalog files.
-            root = Path(__file__).resolve().parents[1] / "planning"
-            current_policy = json.loads((root / "product_policy.json").read_text(encoding="utf-8"))
-            current_catalog = json.loads((root / "product_catalog.json").read_text(encoding="utf-8"))
-            if (policy.get("sha256") != digest(current_policy) or catalog.get("sha256") != digest(current_catalog)
-                    or types.get("version") != portfolio_types.VERSION):
-                raise PocError("COMPARISON_POLICY_CHANGED")
+            self._assert_current_portfolio_policy(review)
             rows = next((c.get("rows", []) for c in review.get("candidates", [])
                          if c.get("strategy_id") == value["strategy_id"]), [])
             view = rows[0].get("portfolio_type_views", {}).get(value["portfolio_type"], {}) if rows else {}

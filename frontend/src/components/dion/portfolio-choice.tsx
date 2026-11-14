@@ -1,4 +1,5 @@
 "use client";
+import { useState } from 'react';
 import { Document, Json, fieldValue, list, object, textValue } from '@/lib/dion/model';
 import { formatKrw } from '@/lib/dion/money-format';
 import { allocationSlices, isWon } from '@/lib/dion/result-visual';
@@ -16,6 +17,7 @@ const TYPES: Record<string, [string, string, string, string]> = {
 };
 
 export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPlan, chosen, onChoose, onEdit, blocked=false }: { doc: Document | null; review: Record<string, Json>; flow: Record<string, Json>; planRow?: Record<string, Json>; selectedPlan: string; onPlan: (id: string) => void; chosen: string | null; onChoose: (id: string) => void; onEdit: (id: string) => void; blocked?: boolean }) {
+  const [pending, setPending] = useState<string | null>(chosen);
   const preference = doc && fieldValue(doc, 'F17', 'risk_preference_choice_raw');
   const derived = preference === 'PREF_BALANCED' ? 'BALANCED' : ['PREF_LEAN_RETURN', 'PREF_RETURN'].includes(String(preference)) ? 'RETURN' : ['PREF_STABILITY', 'PREF_LEAN_STABILITY'].includes(String(preference)) ? 'STABLE' : null;
   const typeInfo = object(review.portfolio_types);
@@ -53,7 +55,7 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
         const enabled = view.selectable === true && !blocked;
         const slices = ready ? allocationSlices(list(view.allocations), products, view.unallocated_krw) : [];
         const total = month?.scenario_budget_krw;
-        return <div key={id} data-portfolio-type={id} className={`d-portfolio-card ${mine ? 'mine' : ''} ${chosen === id ? 'selected' : ''}`}>
+        return <div key={id} data-portfolio-type={id} className={`d-portfolio-card ${mine ? 'mine' : ''} ${pending === id ? 'selected' : ''}`}>
           {mine && <span className="d-mine-badge">{relative ? '내 기준의 기본 구성' : '저장 당시 성향 기준'}</span>}
           <div className="d-card-head"><span className="d-pill">안 {String(i + 1).padStart(2, '0')}</span></div>
           <h3>{title}</h3><p className="d-type-sub">{subtitle}</p>
@@ -65,10 +67,14 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
           <p className="d-type-line"><b>특징</b> {purpose}</p>
           <p className="d-type-line d-type-risk"><b>위험</b> {risk}</p>
           {view.cash_only === true && <p className="d-inline-note">현재 성향의 정책에 따라 상품 배분 없이 후보금 전액을 현금 대기자금으로 표시해요. 자금 이동이나 현금 보유 확정은 아니에요.</p>}
-          <button type="button" className={enabled ? 'd-primary' : 'd-secondary'} disabled={!enabled} aria-pressed={chosen === id} aria-describedby={`portfolio-state-${id}`} onClick={() => onChoose(id)}>{chosen === id ? '선택됨 · 상품 보기' : `${title} 구성 비교하기`}</button>
-          <small id={`portfolio-state-${id}`} className="d-type-foot">{blocked ? '현재 입력·결과와 저장 상태를 확인해주세요.' : view.selectable === true ? '비교 초안 선택 · 계획 채택은 별도예요.' : Array.isArray(view.reason_codes) && view.reason_codes.length ? view.reason_codes.map(code => textValue(object(review.reason_messages)[String(code)]) || '상품 검토 조건을 확인해주세요.').join(' ') : '이전 결과에는 선택 가능 여부가 없어요. 다시 계산해주세요.'}</small>
+          <button type="button" className={pending === id ? 'd-primary' : 'd-secondary'} disabled={!enabled} aria-pressed={pending === id} aria-describedby={`portfolio-state-${id}`} onClick={() => setPending(id)}>{pending === id ? `${title} 선택됨` : `${title} 선택`}</button>
+          <small id={`portfolio-state-${id}`} className="d-type-foot">{blocked ? '현재 입력·결과와 저장 상태를 확인해주세요.' : view.selectable === true ? chosen === id ? '현재 포트폴리오에 반영한 구성이에요.' : '선택 후 아래 반영 버튼을 눌러주세요.' : Array.isArray(view.reason_codes) && view.reason_codes.length ? view.reason_codes.map(code => textValue(object(review.reason_messages)[String(code)]) || '상품 검토 조건을 확인해주세요.').join(' ') : '이전 결과에는 선택 가능 여부가 없어요. 다시 계산해주세요.'}</small>
         </div>;
       })}</div>
+      <div className="d-portfolio-apply" aria-label="선택한 투자구성 반영">
+        <p role="status">{pending ? `${TYPES[pending][0]} 구성을 선택했어요.${pending === chosen ? ' 현재 포트폴리오에 반영되어 있어요.' : ' 반영 버튼을 누르면 상품과 최종 포트폴리오가 이 구성으로 바뀌어요.'}` : '안정형·중립형·위험추구형 중 하나를 선택해주세요.'}</p>
+        <button type="button" className="d-primary" disabled={blocked || !pending || object(views[pending ?? '']).selectable !== true} onClick={() => pending && onChoose(pending)}>선택한 구성으로 포트폴리오 반영</button>
+      </div>
       <p className="d-inline-note">도넛은 실제 배분액의 비율이고 회색은 현금 대기자금이에요. 현금 대기자금 금액은 현금성 상품으로 자동 대체하지 않아요.</p>
       {relative && <p className="d-inline-note">안정·중립·위험추구는 내 P1~P5 기준 안의 상대적인 선택이에요. 상한이나 배분 보류 조건이 적용되면 두 구성의 금액이 같을 수 있어요. 선택한 구성은 상품 검토와 최종 결과에 이어져요.</p>}
     </article>

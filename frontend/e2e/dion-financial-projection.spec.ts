@@ -13,6 +13,7 @@ test('v0.7 real engine forecast matches chart/table and keeps old basis after ed
   expect(forecast.calc_state).toBe('CALCULATED');
   await page.locator('.d-tabs button').nth(2).click();
   await page.locator('[data-portfolio-type="RETURN"] button').click();
+  await page.getByRole('button', {name: '선택한 구성으로 포트폴리오 반영', exact: true}).click();
   await page.locator('.d-tabs button').nth(4).click();
   const section=page.getByRole('region',{name:'월별 금융자산 전망',exact:true});
   await expect(section).toHaveAttribute('data-projection-hash',forecast.sha256);

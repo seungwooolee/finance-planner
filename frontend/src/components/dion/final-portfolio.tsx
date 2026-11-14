@@ -5,6 +5,7 @@ import { formatKrw } from "@/lib/dion/money-format";
 import { allocationSlices, bpsLabel, isWon, shareBps } from "@/lib/dion/result-visual";
 import { Landmark, Package, PackageOpen, PiggyBank } from "lucide-react";
 import { planName } from "./plan-comparison";
+import { portfolioNames } from "@/lib/dion/portfolio-comparison";
 import { Donut, DonutLegend } from "./donut";
 
 // Final summary of the plan the customer picked. Every figure is copied from the engine rows
@@ -59,7 +60,7 @@ export function IncomeBar({ row }: { row?: Record<string, Json> }) {
   </article>;
 }
 
-export function FinalPortfolio({ plan, row, review }: { plan: string; row?: Record<string, Json>; review: Record<string, Json> }) {
+export function FinalPortfolio({ plan, row, review, portfolio=null }: { plan: string; row?: Record<string, Json>; review: Record<string, Json>; portfolio?: string | null }) {
   const period = textValue(row?.period);
   const month = list(object(list(review.candidates).find(c => c.strategy_id === plan)).rows)[0];
   const allocations = list(month?.allocations);
@@ -68,7 +69,7 @@ export function FinalPortfolio({ plan, row, review }: { plan: string; row?: Reco
   if (!row) return null;
   const slices = allocationSlices(allocations, products, month?.unallocated_krw, "현금 대기자금");
   return <article className="d-card d-final" aria-label="최종 포트폴리오 정리">
-    <div className="d-card-head"><div><span className="d-pill">내가 고른 계획</span><h2>최종 포트폴리오 · {planName(plan)}</h2></div><small>{period ? `${period} 기준` : ""}</small></div>
+    <div className="d-card-head"><div><span className="d-pill">{portfolio ? '내가 반영한 투자구성' : '기본 계산 결과 · 투자구성 선택 전'}</span><h2>최종 포트폴리오 · {planName(plan)}{portfolio ? ` · ${portfolioNames[portfolio]}` : ''}</h2></div><small>{period ? `${period} 기준` : ""}</small></div>
     <div className="d-final-grid">
       <div>
         <h3>투자 후보금의 상품별 배분</h3>
