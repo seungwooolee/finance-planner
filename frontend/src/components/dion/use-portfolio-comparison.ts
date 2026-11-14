@@ -13,6 +13,8 @@ export function usePortfolioComparison(view: ViewResult, token: string | null, c
   const [error, setError] = useState('');
   const [status, setStatus] = useState('');
   const [reload, setReload] = useState(0);
+  // Server-saved comparison draft (COMPARISON_DRAFT). Never an adoption; strategy/portfolio come from the response.
+  const [draft, setDraft] = useState<{ strategy: string; portfolio: string; current: boolean; revision: number } | null>(null);
   const inFlight = useRef(false);
   const alive = useRef(true);
   const review = object(object(view.result.results)['OUT-06']);
@@ -34,6 +36,7 @@ export function usePortfolioComparison(view: ViewResult, token: string | null, c
         setRevision(value.revision);
         if (value.selection && value.selection.run_id === view.runId && value.selection.case_id === caseId) {
           setPlan(value.selection.strategy_id); setPortfolio(value.selection.portfolio_type);
+          setDraft({ strategy: value.selection.strategy_id, portfolio: value.selection.portfolio_type, current: value.is_current, revision: value.revision });
           setStatus(value.is_current ? '저장한 비교 초안을 불러왔어요.' : '이전 입력의 비교 초안이에요. 다시 계산해주세요.');
         }
         setLoaded(true);
@@ -55,13 +58,15 @@ export function usePortfolioComparison(view: ViewResult, token: string | null, c
       if (!r.ok) throw new Error('SAVE');
       const value = await r.json() as ComparisonResponse;
       if (!alive.current) return false;
-      setRevision(value.revision); setPortfolio(type); setStatus('비교 초안을 저장했어요. 계획 채택과 이번 달 기록은 그대로예요.');
+      setRevision(value.revision); setPortfolio(type);
+      if (value.selection) setDraft({ strategy: value.selection.strategy_id, portfolio: value.selection.portfolio_type, current: value.is_current, revision: value.revision });
+      setStatus('비교 초안을 저장했어요. 계획 채택과 이번 달 기록은 그대로예요.');
       return true;
     } catch {
       if (alive.current) setError('비교 초안을 저장하지 못했어요. 현재 입력·결과를 다시 불러온 뒤 선택해주세요.');
       return false;
     } finally { inFlight.current = false; if (alive.current) setBusy(false); }
   };
-  return { plan, portfolio, revision, choose, busy, error, status, retry: () => { setError(''); setLoaded(false); setReload(n=>n+1); }, blocked: stale || busy || (saved && !loaded),
+  return { plan, portfolio, revision, draft, saved, choose, busy, error, status, retry: () => { setError(''); setLoaded(false); setReload(n=>n+1); }, blocked: stale || busy || (saved && !loaded),
     selectPlan: (id: string) => { if (!inFlight.current) { setPlan(id); setPortfolio(null); setStatus('재무안을 비교 중이에요. 투자구성을 선택하면 비교 초안을 저장해요.'); } } };
 }

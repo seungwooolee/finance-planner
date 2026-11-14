@@ -24,8 +24,8 @@ test('monthly record separates blank from 0, lists past months on demand and lin
   await page.getByRole('button', { name: '검토 도구' }).click();
   await page.getByRole('button', { name: '빠른진단 저장·계산' }).click();
   await expect(page.getByText(/검증 사례 저장 · 사회초년생/)).toBeVisible({ timeout: 30_000 });
-  await page.getByRole('button', { name: /결과·이번 달 행동/ }).click();
-  const step = page.getByRole('region', { name: '계획 선택과 이번 달 기록' });
+  await page.getByRole('button', { name: /결과·다음 행동/ }).click();
+  const step = page.getByRole('region', { name: '계획 채택과 이번 달 기록' });
 
   // 1) Record before any plan is chosen: only one transfer item, entered as an actual 0.
   await step.getByLabel('신규 투자 납입 (만원)').fill('0');

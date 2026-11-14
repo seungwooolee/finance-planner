@@ -27,6 +27,13 @@ type Summary = { entered_count: number; amount_count: number; partial: boolean; 
   transfers_entered_krw: string; spending_entered_count?: number | null; transfers_entered_count?: number | null; allocation_check: string; tasks_done: number; tasks_total: number; review_suggested: boolean };
 type PastMonth = { record_month: string; status?: string | null; revision: number; summary?: Summary | null; adoption?: Adoption };
 type Adoption = { adoption_id: string; run_id: string; strategy_id: string; input_version: number; adopted_at: string } | null;
+/** GET /plan as read by the results header. Only `adoption` decides adopted; the record feature itself never does. */
+export type AdoptionView = { state: "LOADING" | "NONE" | "ADOPTED" | "ERROR"; adoption: Adoption; isCurrent: boolean | null; currentInputVersion: number | null; executed: boolean | null };
+type PlanResponse = { adoption?: Adoption; adoption_is_current?: boolean; current_input_version?: number; transaction_executed?: boolean };
+const toView = (p: PlanResponse): AdoptionView => ({ state: p.adoption ? "ADOPTED" : "NONE", adoption: p.adoption ?? null,
+  isCurrent: typeof p.adoption_is_current === "boolean" ? p.adoption_is_current : null,
+  currentInputVersion: typeof p.current_input_version === "number" ? p.current_input_version : null,
+  executed: typeof p.transaction_executed === "boolean" ? p.transaction_executed : null });
 // DION-PLAN-CHECKIN-1.1 binding fields (BE CONTRACT.md). Legacy responses lack contract_version.
 type Binding = { contract: string | null; revision: number; adoptionId: string | null; record: Adoption; current: Adoption;
   state: string | null; kind: string | null; comparison: { state: string; reason: string } | null; review: { action: string; base_run_id: string | null } | null };
@@ -72,10 +79,10 @@ function wonToManwon(value: string | null): string {
   const n = BigInt(value), whole = n / 10000n, rest = (n % 10000n).toString().padStart(4, "0").replace(/0+$/, "");
   return rest ? `${whole}.${rest}` : whole.toString();
 }
-const thisMonth = () => new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 7);
+export const thisMonth = () => new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 7);
 const key = () => `ui-${crypto.randomUUID()}`;
 
-export function PlanCheckin({ view, token, caseId, plan, tasks, onEdit }: { view: ViewResult; token: string; caseId: string; plan: string; tasks: CheckinTask[]; onEdit?: (id: string) => void }) {
+export function PlanCheckin({ view, token, caseId, plan, tasks, onEdit, onAdoption }: { view: ViewResult; token: string; caseId: string; plan: string; tasks: CheckinTask[]; onEdit?: (id: string) => void; onAdoption?: (v: AdoptionView) => void }) {
   const base = `/api/be/v1/cases/${encodeURIComponent(caseId)}`;
   const month = thisMonth();
   const [adoption, setAdoption] = useState<Adoption>(null);
@@ -107,6 +114,7 @@ export function PlanCheckin({ view, token, caseId, plan, tasks, onEdit }: { view
         const [p, c] = await Promise.all([call("/plan"), call(`/checkins/${month}`)]);
         if (!live) return;
         setAdoption(p.adoption);
+        onAdoption?.(toView(p));
         setRevision(c.revision);
         setBinding(toBinding(c));
         if (c.record) {
@@ -114,10 +122,10 @@ export function PlanCheckin({ view, token, caseId, plan, tasks, onEdit }: { view
           setSavedTasks((c.record.tasks as Task[]).map(t => ({ ...t, reason: t.reason ?? "" })));
           setChanges(c.record.changes); setSummary(c.summary); setStatus(c.status);
         }
-      } catch (e) { if (live) setError(`저장된 계획·기록을 불러오지 못했어요 (${(e as Error).message}).`); }
+      } catch (e) { if (live) { setError(`저장된 계획·기록을 불러오지 못했어요 (${(e as Error).message}).`); onAdoption?.({ state: "ERROR", adoption: null, isCurrent: null, currentInputVersion: null, executed: null }); } }
     })();
     return () => { live = false; };
-  }, [call, month]);
+  }, [call, month, onAdoption]);
 
   // Offer this plan's review items as tasks unless a saved record already has its own list.
   // A saved record keeps its own task list; otherwise offer the selected plan's review items.
@@ -130,7 +138,11 @@ export function PlanCheckin({ view, token, caseId, plan, tasks, onEdit }: { view
     setBusy(true); setError("");
     try {
       const r = await call("/plan/adoptions", "POST", { request_key: key(), run_id: view.runId, strategy_id: plan });
-      setAdoption({ adoption_id: r.adoption_id, run_id: r.run_id, strategy_id: r.strategy_id, input_version: r.input_version, adopted_at: new Date().toISOString() });
+      const receipt: Adoption = { adoption_id: r.adoption_id, run_id: r.run_id, strategy_id: r.strategy_id, input_version: r.input_version, adopted_at: r.adopted_at ?? new Date().toISOString() };
+      setAdoption(receipt);
+      // The POST is a receipt; read /plan again so the header shows the server's current adoption.
+      try { const p: PlanResponse = await call("/plan"); setAdoption(p.adoption ?? null); onAdoption?.(toView(p)); }
+      catch { onAdoption?.({ state: "ADOPTED", adoption: receipt, isCurrent: null, currentInputVersion: null, executed: null }); }
     } catch (e) {
       const code = (e as Error).message;
       setError(code === "RUN_NOT_CURRENT" ? "답변이 바뀌어 이 결과는 최신이 아니에요. 다시 계산·저장한 뒤 선택해 주세요."
@@ -166,13 +178,13 @@ export function PlanCheckin({ view, token, caseId, plan, tasks, onEdit }: { view
   }
 
   const adoptedHere = adoption && adoption.run_id === view.runId && adoption.strategy_id === plan;
-  return <section className="d-card" aria-label="계획 선택과 이번 달 기록">
+  return <section className="d-card" aria-label="계획 채택과 이번 달 기록">
     <span className="d-eyebrow">STEP 5 · 6</span>
-    <h2>계획 선택과 이번 달 기록</h2>
-    <p>선택은 이 계산 결과 중 어떤 계획으로 진행할지 기록하는 거예요. 실제 송금·매매·자동이체는 실행되지 않아요.</p>
-    {adoption ? <p className="d-notice">현재 선택한 계획: <strong>{planName(adoption.strategy_id)}</strong> · 입력버전 {adoption.input_version}{adoption.run_id !== view.runId && " · 다른 계산 결과에서 선택함"}</p>
-      : <p className="d-note">아직 선택한 계획이 없어요. 계획 없이도 이번 달 기록은 할 수 있어요.</p>}
-    {!adoptedHere && <button className="d-primary" disabled={busy || view.isCurrent === false} onClick={() => void adopt()}>{planName(plan)}으로 진행할게요</button>}
+    <h2>계획 채택과 이번 달 기록</h2>
+    <p>채택은 이 계산 결과의 재무계획 2안 중 하나로 진행한다고 서버에 기록하는 거예요. 투자구성(비교 초안)은 채택에 포함되지 않고, 실제 송금·매매·자동이체도 실행되지 않아요.</p>
+    {adoption ? <p className="d-notice">현재 채택한 재무계획: <strong>{planName(adoption.strategy_id)}</strong> · 입력버전 {adoption.input_version}{adoption.run_id !== view.runId && " · 다른 계산 결과에서 선택함"}</p>
+      : <p className="d-note">아직 채택한 재무계획이 없어요. 채택 없이도 이번 달 기록은 할 수 있어요.</p>}
+    {!adoptedHere && <button className="d-primary" disabled={busy || view.isCurrent === false} onClick={() => void adopt()}>{planName(plan)} 계획 채택하기</button>}
     {view.isCurrent === false && <p className="d-warning">이 결과 이후 답변이 바뀌었어요. 최신 입력으로 다시 계산·저장한 결과에서 선택할 수 있어요.</p>}
 
     <h3>{month} 실제 기록</h3>

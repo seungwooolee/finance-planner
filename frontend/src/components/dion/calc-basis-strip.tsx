@@ -23,7 +23,7 @@ export function nextStep({ view, result, stale, source, firstAction, onEdit, onR
   if (PARTIAL.includes(state)) return { tone: "info", text: "일부 결과만 계산됐어요. 빠진 정보를 채우면 보류된 결과도 계산돼요.", action: firstAction ? { label: `${firstAction.text}`, run: () => onEdit(firstAction.id) } : undefined };
   const unknown = unknownQuestions(source);
   if (unknown.length) return { tone: "info", text: `‘모름’으로 답한 질문이 ${unknown.length}개 있어요. 관련 결과는 0원으로 채우지 않고 보류했어요.`, action: { label: "모름 답변 확인", run: () => onEdit(unknown[0]) } };
-  return { tone: "ok", text: "확인한 답변으로 모든 화면 결과를 계산했어요." };
+  return { tone: "ok", text: "확인한 답변으로 화면에 연결된 계산(월 현황·자산·목표·두 재무안·상품 검토)을 마쳤어요. 수익 반영 전망·개인별 세금 판정·계좌 연동은 계산 범위에 없어요." };
 }
 
 export function CalcBasisStrip({ view, result, label, stateLabel, next, detail }: { view: BasisView; result: Record<string, Json>; label: string; stateLabel: string; next: Next; detail?: string }) {
