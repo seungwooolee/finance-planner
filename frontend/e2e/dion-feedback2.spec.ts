@@ -88,8 +88,9 @@ test('desktop and mobile welcome, help sizing and signup pending flow stay hones
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await expect(page.locator('.d-cat-travel')).toHaveCSS('animation-name', 'none');
     await page.emulateMedia({ reducedMotion: 'no-preference' });
-    await page.getByRole('button', { name: 'dion 상담 도움말 열기' }).click();
-    const help = page.getByRole('dialog', { name: 'dion 상담 도움말' });
+    await page.getByRole('button', { name: 'dion AI 상담 열기' }).click();
+    const help = page.getByRole('dialog', { name: 'dion AI 상담' });
+    await help.getByText('입력 도움말 · 자주 묻는 질문', { exact: true }).click();
     await help.getByRole('button', { name: /집과 대출은 어디에/ }).click();
     await expect(help).toContainText('시세에서 대출을 미리 빼지 마세요.');
     // Exercise three message shapes in the existing bubble, without changing FAQ source text.
@@ -106,7 +107,7 @@ test('desktop and mobile welcome, help sizing and signup pending flow stay hones
     await page.screenshot({ path: info.outputPath(`help-wrapping-${width}.png`) });
     await bubble.evaluate((element, text) => { element.textContent = text; }, original!);
     await help.getByRole('button', { name: '상담창 닫기' }).click();
-    await expect(page.getByRole('button', { name: 'dion 상담 도움말 열기' })).toBeFocused();
+    await expect(page.getByRole('button', { name: 'dion AI 상담 열기' })).toBeFocused();
     await page.getByRole('button', { name: '로그인', exact: true }).click();
     const login = page.getByRole('dialog', { name: '만나서 반가워요' });
     await login.getByRole('button', { name: '회원가입', exact: true }).click();
