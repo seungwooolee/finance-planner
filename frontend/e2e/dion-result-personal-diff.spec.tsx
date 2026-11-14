@@ -25,7 +25,7 @@ async function show(page: Page, node: React.ReactElement) {
 
 test('summary links state, goal constraint and next action without scores', async ({ page }) => {
   await show(page, <PersonalSummary after="1200000" debt="30000000" goals={goals} firstRows={[row('2026-12', '300000', '500000', '5000000'), row('2026-12', '700000', '100000', '4600000')]}
-    goalLabel={label} next={{ text: '두 재무안을 비교해 보세요.', label: '재무안 비교 보기', run: () => {} }} basis="기준일 2026-11-15 · 입력 3번째 버전"/>);
+    goalLabel={label} next={{ text: '두 재무안을 비교해 보세요.', label: '재무안 비교 보기', run: () => {} }}/>);
   const card = page.getByRole('region', { name: '내 상황 한눈에' });
   await expect(card.getByRole('heading', { level: 3 })).toHaveText(['지금 상태', '중요한 목표·제약', '다음 행동']);
   await expect(card).toContainText('매달 120만원이 남아요');
@@ -33,8 +33,7 @@ test('summary links state, goal constraint and next action without scores', asyn
   await expect(card).toContainText('가장 먼저 챙길 목표는 전세 보증금(2027-06-30)이에요. 900만원이 남아 7회에 걸쳐 회차당 128만 5,715 원씩');
   await expect(card).toContainText('두 재무안 모두 이번 달에 비상금(보호자금)을 먼저 보충해요');
   await expect(card.getByRole('button', { name: '재무안 비교 보기' })).toBeVisible();
-  await expect(card).toContainText('입력 3번째 버전');
-  await show(page, <PersonalSummary after={null} debt="0" goals={{ calc_state: 'NOT_APPLICABLE', rows: [] }} firstRows={[]} goalLabel={label} next={{ text: '정보를 확인해 주세요.' }} basis="기준일 확인 필요 · 입력 1번째 버전"/>);
+  await show(page, <PersonalSummary after={null} debt="0" goals={{ calc_state: 'NOT_APPLICABLE', rows: [] }} firstRows={[]} goalLabel={label} next={{ text: '정보를 확인해 주세요.' }}/>);
   await expect(page.getByRole('region', { name: '내 상황 한눈에' })).toContainText('0원으로 가정하지 않고 보류');
   await expect(page.getByRole('region', { name: '내 상황 한눈에' })).toContainText('입력한 목표가 없어요');
 });
