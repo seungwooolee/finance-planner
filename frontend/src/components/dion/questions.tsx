@@ -26,7 +26,7 @@ export function QuestionForm({ id, doc, onChange }: { id: string; doc: Document;
   } else if (id === "N02") {
     content=<div className="d-choices">{q.options.map(o=><Choice key={o.code} selected={fieldValue(doc,id,"housing_type")===o.code} onClick={()=>set("housing_type",field(o.code))}><span>{o.label}</span></Choice>)}</div>;
   } else if (id === "F06") content=<><div className="d-answer-surface"><MoneyField label="모아둔 돈의 총금액" value={env.fields.financial_assets_total_reported_krw ?? field(null,"KRW_10000")} onChange={v=>set("financial_assets_total_reported_krw",v)}/></div><details className="d-optional"><summary>자산별로 나누어 확인할게요</summary><p>각 자산을 확인한 뒤 합계를 계산해요. 총금액만 적으면 자산별 배분은 보류돼요.</p>{edit("financial_assets")}{edit("accounts")}{edit("financial_assets_detail_status")}</details><AssetCompleteness doc={doc} onChange={onChange}/></>;
-  else if (template) content=<>{Object.keys(template.fields).filter(name=>!/(version|definition|_ref|_id|fingerprint)$/.test(name)).map(edit)}</>;
+  else if (template) content=<>{id === "NEW-06" && <p className="d-note">비상자금은 갑작스러운 지출에, 평소 쓸 돈은 생활비와 대출 상환 등에 대비해 남겨두는 돈이에요. 총금액은 이미 확보한 돈도 포함한 목표이며, 추가로 넣을 금액이 아니에요. 같은 돈을 두 용도에 겹쳐 적지 마세요. DION의 기본 기준보다 적게 입력하면 계산에는 기본 기준이 적용돼요.</p>}{Object.keys(template.fields).filter(name=>!/(version|definition|_ref|_id|fingerprint)$/.test(name)).map(edit)}</>;
   else content=<div className="d-note"><strong>이 항목의 상세 계산은 아직 준비 중이에요.</strong><p>{id==="F08" ? "부동산은 그대로 보유하는 것으로 살펴봐요. 집의 가치를 바로 쓸 수 있는 현금에 더하지 마세요." : "세금·연금·상속의 법정 계산과 투자상품 추천은 아직 제공하지 않아요."}</p><p>확인할 수 있는 소득·지출부터 먼저 살펴보세요.</p></div>;
   return <div className="d-question-content">{content}</div>;
 }
