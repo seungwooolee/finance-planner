@@ -13,6 +13,13 @@ const TYPE_NAMES: Record<string, string> = { STABLE: "안정형", BALANCED: "중
 const isWon = (v: unknown): v is string => typeof v === "string" && /^-?\d+$/.test(v);
 const diff = (a: unknown, b: unknown) => isWon(a) && isWon(b) ? (BigInt(a) - BigInt(b)).toString() : null;
 const pct = (v: unknown) => typeof v === "string" ? `${(Number(v) * 100).toLocaleString("ko-KR")}%` : "확인 필요";
+// Direction of a monthly-amount change from the current plan to an alternative (engine strings, integer math).
+const change = (base: unknown, alt: unknown) => {
+  if (!isWon(base) || !isWon(alt)) return "차이 확인 대기";
+  const d = BigInt(alt) - BigInt(base);
+  if (d === 0n) return "지금 계획과 같아요";
+  return d < 0n ? `매달 ${formatKrw((-d).toString())} 줄어요` : `매달 ${formatKrw(d.toString())} 늘어요`;
+};
 const years = (months: unknown) => typeof months === "number" ? (months % 12 === 0 ? `${months / 12}년` : `${months}개월`) : "";
 
 function Section({ n, title, children }: { n: number; title: string; children: ReactNode }) {
@@ -39,6 +46,7 @@ export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabe
   const preference = preferenceCode ? question("F17").options.find(o => o.code === preferenceCode)?.label ?? "확인 필요" : "미응답";
   const evaluationOn = textValue(object(result.context).evaluation_on) || "기준일 확인 필요";
   const available = ref.state === "CALCULATED";
+  const firstPeriod = textValue(list(list(object(object(result.results)["OUT-05"]).candidates).find(c => c.strategy_id === plan)?.rows)[0]?.period);
   const stress = object(object(list(object(list(object(object(result.results)["OUT-06"]).candidates).find(c => c.strategy_id === plan)).rows)[0]).stress_review).scenario_loss_krw_ceil;
 
   return <article className="d-card d-proposal" aria-label="재무설계 제안서">
@@ -72,8 +80,8 @@ export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabe
           <div className="d-table-wrap"><table><thead><tr><th>목표</th><th>지금 계획 (수익 0%)</th><th>투자 방식 변경 (연 {pct(assumed)})</th><th>목표 시기 1년 늦추기</th></tr></thead><tbody>
             {goals.map(g => <tr key={textValue(g.goal_id)}><th>{goalLabel(g.goal_id)}<small>{textValue(g.due_on)} · 남은 {years(g.months)} · 목표 {formatKrw(g.target_krw)}</small></th>
               <td>{formatKrw(g.current_monthly_krw)}</td>
-              <td>{isWon(g.assumed_return_monthly_krw) ? <>{formatKrw(g.assumed_return_monthly_krw)}<small>매달 {formatKrw(diff(g.current_monthly_krw, g.assumed_return_monthly_krw))} 덜 필요</small></> : <small>3년 미만 목표라 수익률을 가정하지 않아요</small>}</td>
-              <td>{formatKrw(g.delay_monthly_krw)}<small>물가 반영 목표 {formatKrw(g.delay_target_krw)} · 매달 {formatKrw(diff(g.current_monthly_krw, g.delay_monthly_krw))} 덜 필요</small></td></tr>)}
+              <td>{isWon(g.assumed_return_monthly_krw) ? <>{formatKrw(g.assumed_return_monthly_krw)}<small>{change(g.current_monthly_krw, g.assumed_return_monthly_krw)}</small></> : <small>3년 미만 목표라 수익률을 가정하지 않아요</small>}</td>
+              <td>{formatKrw(g.delay_monthly_krw)}<small>물가 반영 목표 {formatKrw(g.delay_target_krw)} · {change(g.current_monthly_krw, g.delay_monthly_krw)}</small></td></tr>)}
           </tbody></table></div>
         </>}
       </>}
@@ -84,6 +92,7 @@ export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabe
         <div><dt>연 수익률</dt><dd>{rates.length ? rates.map(pct).join(" / ") : "확인 필요"} (비교용 두 가지)</dd></div>
         <div><dt>물가상승률</dt><dd>연 {pct(assumptions.inflation_annual)}</dd></div>
         <div><dt>계산 방식</dt><dd>월 복리(연 수익률÷12), 매달 말 같은 금액 납입</dd></div>
+        <div><dt>월 금액 가정</dt><dd>첫 계획 월{firstPeriod ? `(${firstPeriod})` : ""} 금액을 비교 기간 내내 같게 둬요 · 소득 변화·세금·수수료 미반영</dd></div>
         <div><dt>기간</dt><dd>{horizons.length ? horizons.map(years).join(" · ") : "확인 필요"}</dd></div>
         <div><dt>수익률을 가정하지 않는 목표</dt><dd>{years(assumptions.min_months_for_return)} 미만 목표</dd></div>
       </dl>

@@ -108,7 +108,7 @@ export function Results({view,deep,tab,setTab,stale,onEdit,onRecalculate,explana
       <div ref={tasksRef} className="d-scroll-anchor"/><MonthTasks key={`${selectedPlan}:${view.localVersion}`} row={selectedRow} actions={actions} candidates={candidates.length>0} actionList={actionList} onProducts={()=>setTab(3)} onEdit={onEdit}/>
     </>}
     {explanation&&<div className={tab===4?"d-coach":"d-explain-wrap"}>{tab===4&&<div className="d-coach-head" aria-hidden="true"><span><Cat size={18}/></span><strong>냥코치 조언</strong></div>}{explanation}</div>}
-    {tab===4&&checkin&&<div ref={checkinRef}>{checkin(selectedPlan,monthTasks(selectedRow).map(t=>({key:t.key,label:`${t.text} (계획 ${formatKrw(selectedRow?.[t.key])})`})))}</div>}
+    {tab===4&&checkin&&<div ref={checkinRef}>{checkin(selectedPlan,monthTasks(selectedRow).map(t=>({key:t.key,label:`${t.text} (계획 ${textValue(selectedRow?.period)} · ${formatKrw(selectedRow?.[t.key])})`})))}</div>}
     {tab===4&&<div className="d-result-cta"><button className="d-secondary" onClick={()=>window.print()}>이 버전 PDF 리포트 받기</button><button className="d-primary" onClick={()=>setConfirmOpen(true)}>이 계획으로 진행할게요 →</button></div>}
     {confirmOpen&&<div className="d-modal-backdrop" role="presentation" onClick={()=>setConfirmOpen(false)}><div className="d-modal" role="dialog" aria-modal="true" aria-label="계획 진행 확인" onClick={e=>e.stopPropagation()}>
       <span className="d-pill">진행 전 확인</span><h2>{planName(selectedPlan)}으로 진행할까요?</h2>

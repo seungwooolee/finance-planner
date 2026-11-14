@@ -47,6 +47,8 @@ export function PlanCheckin({ view, token, caseId, plan, tasks }: { view: ViewRe
   const month = thisMonth();
   const [adoption, setAdoption] = useState<Adoption>(null);
   const [revision, setRevision] = useState(0);
+  // adoption_id stored on this month's record at save time; may differ from the current adoption.
+  const [recordAdoption, setRecordAdoption] = useState<string | null | undefined>(undefined);
   const [amounts, setAmounts] = useState<Record<string, string>>({});
   const [savedTasks, setSavedTasks] = useState<Task[] | null>(null);
   const [edits, setEdits] = useState<Record<string, Task>>({});
@@ -72,6 +74,7 @@ export function PlanCheckin({ view, token, caseId, plan, tasks }: { view: ViewRe
         if (!live) return;
         setAdoption(p.adoption);
         setRevision(c.revision);
+        setRecordAdoption(c.record ? (c.adoption_id ?? null) : undefined);
         if (c.record) {
           setAmounts(Object.fromEntries(Object.entries(c.record.amounts as Record<string, string | null>).map(([k, v]) => [k, wonToManwon(v)])));
           setSavedTasks((c.record.tasks as Task[]).map(t => ({ ...t, reason: t.reason ?? "" })));
@@ -110,7 +113,7 @@ export function PlanCheckin({ view, token, caseId, plan, tasks }: { view: ViewRe
     try {
       const r = await call(`/checkins/${month}`, "PUT", { expected_revision: revision, request_key: key(), status: next,
         record: { amounts: converted, tasks: taskRows.map(t => ({ key: t.key, label: t.label, state: t.state, ...(t.reason.trim() ? { reason: t.reason.trim() } : {}) })), changes } });
-      setRevision(r.revision); setSummary(r.summary); setStatus(r.status); setSavedTasks(taskRows); setEdits({});
+      setRevision(r.revision); setRecordAdoption(r.adoption_id ?? null); setSummary(r.summary); setStatus(r.status); setSavedTasks(taskRows); setEdits({});
     } catch (e) {
       const code = (e as Error).message;
       setError(code === "VERSION_CONFLICT" ? "다른 곳에서 먼저 저장했어요. 새로고침 후 다시 확인해 주세요. 입력값은 그대로 있어요." : `저장하지 못했어요 (${code}). 입력값은 그대로 있어요.`);
@@ -128,6 +131,11 @@ export function PlanCheckin({ view, token, caseId, plan, tasks }: { view: ViewRe
     {view.isCurrent === false && <p className="d-warning">이 결과 이후 답변이 바뀌었어요. 최신 입력으로 다시 계산·저장한 결과에서 선택할 수 있어요.</p>}
 
     <h3>{month} 실제 기록</h3>
+    {recordAdoption !== undefined && <p className={recordAdoption && recordAdoption === adoption?.adoption_id ? "d-note" : "d-warning"} data-record-adoption={recordAdoption ?? "NONE"}>
+      {recordAdoption === null ? "이 달 기록은 채택 없이 저장됐어요. 계획 금액과 바로 비교하지 않아요."
+        : recordAdoption === adoption?.adoption_id ? "이 달 기록은 현재 채택한 계획에 연결돼 있어요."
+        : "이 달 기록은 저장 당시의 다른 채택에 연결돼 있어요. 현재 채택의 계획 금액과 바로 비교하지 않아요."}</p>}
+    <p className="d-help">할 일 옆 계획 금액은 화면에서 보는 안의 첫 계획 월 기준이에요. 기록 월({month})과 계획 월이 다르면 금액을 직접 비교하지 않아요.</p>
     <p>만원 단위로 입력해요. 빈칸은 &lsquo;아직 입력 안 함&rsquo;, 0은 &lsquo;이번 달 없음&rsquo;이에요. 계획 금액을 실제 금액으로 자동 복사하지 않아요.</p>
     <div className="d-fields">
       {AMOUNTS.map(a => <label key={a.key} className="d-field"><span>{a.label}{a.hint && <small> · {a.hint}</small>}</span>
