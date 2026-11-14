@@ -42,7 +42,7 @@ Render의 [기본 환경변수](https://render.com/docs/environment-variables#re
 배포 승인 후 **실제로 배포한 커밋**을 지정해 다음 읽기 전용 검사를 수행한다. 로컬 Python만 필요하다.
 
 ```powershell
-python scripts/check-deployment.py --backend https://dion-api-review.onrender.com --frontend https://dion-review.vercel.app --expect-commit <실제_배포_SHA> --expect-corpus dion-rag-20261115-demo-r3
+python scripts/check-deployment.py --backend https://dion-api-review.onrender.com --frontend https://dion-review.vercel.app --expect-commit <실제_배포_SHA> --expect-corpus dion-rag-products-20261115-1.1
 ```
 
 필수: 정확한 실행 SHA·corpus 버전, READY/비어 있지 않음, preview·일반 scheme-evidence·v0.5 portfolio-evidence 라우트. FE를 지정하면 같은 corpus로 연결되는지도 비교한다. FE 프록시가 돌려준 BE SHA는 FE 빌드 SHA를 입증하지 않는다. Vercel 인증 복구 후 별도로 FE 커밋/`BACKEND_URL`을 확인해야 한다. 실제 로그인/저장/패널 동작을 이 메타데이터 검사만으로 검증됐다고 표시하지 않는다.
@@ -66,5 +66,9 @@ python scripts/check-deployment.py --backend https://dion-api-review.onrender.co
 PR #49 생성 중 PR #46이 통합되어 로컬에 `a86cdeb`를 병합했다. 같은 URL 보수의 목적지를 보존하고 출처 버전·양쪽 배포 차단·v0.8.0 상담을 함께 유지했다. baseline은 양쪽 1.3 이력을 기록한 1.4다. 영향 검사 최초 **91 passed / 1 failed / 기존 holdout 6 skipped / 1 deselected (109.49s)**. 새로 통합된 생성기 검사가 강조용 별표로 감싼 bare URL도 요구하여, 해당 추출만 1회 보완했다. 실패 1건·생성기/재생성 직접 영향 4건만 재검증해 **5 passed (1.57s)**, Ruff 통과. 이 통합 검사 집합은 총92건 통과이며 앞선182건과 겹치므로 합산하지 않는다. 결과 화면의 다른 작업 변경은 통합 브랜치 이력 그대로 받는다.
 
 이후 `bd6275f`(PR #48)의 FE 파일/배포 차단도 로컬 병합했다. 계산·API 변경은 없고 충돌 없이 통합했으므로 BE 검사를 다시 반복하지 않는다. 사용자 원격 병합이나 에이전트의 통합 브랜치 직접 푸시가 아니라, 작업 브랜치에 최신 이력을 받는 로컬 병합이다.
+
+해당 후보 `57a34e0`의 Core #107은 BE1132통과/87skip·Ruff/pip check·FE 타입/린트 통과였다. 그 후 PR #47이 `7bfc51e`로 통합되어 최신 상품 설명 변경도 로컬 병합했다. 기본 활성 번들은 이 PR의 상품65자료 번들을 유지한다. 네 CON 출처의 버전을 canonical과 일치하도록 재생성했으므로 활성 corpus는 `dion-rag-products-20261115-1.1`이며, 기초 canonical은 앞서 기록한 `dion-rag-20261115-demo-r3`다. 배포 확인 명령도 활성 버전을 요구하도록 갱신했다.
+
+상품 번들의 네 source/chunk 버전과 corpus 버전만 되돌리면 PR #47의 번들과 완전히 같다는 구조 비교를 통과했다. 상품 원문·claim·인용·승인·기한·금융 수치는 변경하지 않았다. 검토 요약의 안내와 내부 시연 안내를 모두 보존하고 독립 전문가 검증과 구분했다. 이 통합의 직접 영향 검사(상품 등록/보호·일반 RAG·URL/메타데이터·배포 식별·v0.5 API)는 **111 passed (66.48s)**, 변경 Ruff/공백 통과다. 앞선 검사들과 겹치므로 통과 수를 합산하지 않는다. 최종 후보의 자동 CI 결과는 PR #49에 별도 기록한다.
 
 사용자 직접 PR 병합 후 Render/Vercel 배포에는 별도 명시 승인이 필요하다(`AGENTS.md` 상시 승인 절). 자동 배포는 켜지 않았다. 배포 전에는 운영 문제가 해결됐다고 표시하지 않는다. 배포 승인 시 위 SHA/corpus/API 검사, Vercel FE 커밋과 BE 연결, 실제 화면 근거 표시를 확인한다. 유료 자연어 모델의 품질·다중 사실 확인 큐·독립 전문가 검토는 이번 통과 수치로 대체하지 않는다.

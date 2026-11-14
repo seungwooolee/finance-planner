@@ -46,7 +46,8 @@ def get_consultation_service():
 
 # The reviewed corpus ships with the repository; without an explicit path the deployed
 # server used to fall back to an empty registry, so R2-b never cited any material.
-BUNDLED_CORPUS = Path(__file__).resolve().parents[3] / "data" / "rag" / "registry" / "corpus.json"
+BUNDLED_CORPUS = (Path(__file__).resolve().parents[3] / "data" / "rag" / "registry"
+                  / "corpus-products-20261115.json")
 
 
 def rag_registry_path():

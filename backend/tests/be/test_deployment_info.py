@@ -24,7 +24,7 @@ def test_identity_has_actual_routes_and_corpus_but_no_secrets(monkeypatch):
     assert response.status_code == 200 and response.headers["cache-control"] == "no-store"
     data = response.json()
     assert data["commit_sha"] == "a" * 40 and data["rag"]["status"] == "READY"
-    assert data["rag"]["corpus_version"] == "dion-rag-20261115-demo-r3" and data["rag"]["source_count"] > 0
+    assert data["rag"]["corpus_version"] == "dion-rag-products-20261115-1.1" and data["rag"]["source_count"] > 0
     assert "/api/fe/v1/preview" in data["api_paths"]
     assert "must-not-appear" not in response.text and "corpus.json" not in response.text
 
