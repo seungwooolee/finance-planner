@@ -24,7 +24,8 @@ def test_received_candidate_and_original_scoring_material_match():
 
 
 @pytest.mark.parametrize("name", ["docs/contest/2026-11-14/ai/dev.json",
-    "backend/tests/be/test_plan_checkin.py", "backend/tests/be/test_scenario.py", "AGENTS.md"])
+    "backend/tests/be/test_plan_checkin.py", "backend/tests/be/test_scenario.py", "AGENTS.md",
+    "data/rag/registry/corpus.json"])
 def test_frozen_expectation_and_any_code_drift_are_rejected(tree, name):
     root, frozen, baseline = tree
     (root / name).write_bytes((root / name).read_bytes() + b"\nchanged")
@@ -57,5 +58,19 @@ def test_policy_override_cannot_expand_to_grading_data(tree):
 def test_original_policy_identity_is_still_required(tree):
     root, frozen, baseline = tree
     baseline["policy_overrides"]["AGENTS.md"]["frozen_sha256"] = "wrong"
+    with pytest.raises(AssertionError, match="original hash"):
+        verify_files(root, frozen, baseline)
+
+
+def test_data_override_cannot_expand_to_grading_data(tree):
+    root, frozen, baseline = tree
+    baseline["data_overrides"]["docs/contest/2026-11-14/ai/dev.json"] = {}
+    with pytest.raises(AssertionError, match="only the registered corpus"):
+        verify_files(root, frozen, baseline)
+
+
+def test_original_corpus_identity_is_still_required(tree):
+    root, frozen, baseline = tree
+    baseline["data_overrides"]["data/rag/registry/corpus.json"]["frozen_sha256"] = "wrong"
     with pytest.raises(AssertionError, match="original hash"):
         verify_files(root, frozen, baseline)

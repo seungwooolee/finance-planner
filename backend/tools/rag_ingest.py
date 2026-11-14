@@ -80,7 +80,10 @@ def original_of(section):
 
 
 def first_url(value):
-    found = re.search(r"(https://[^)\s|]+)", value)
+    # Prefer the Markdown destination; a styled URL label is not the link itself.
+    found = re.search(r"\]\((https://[^\s)]+)\)", value)
+    if found is None:
+        found = re.search(r"(https://[^)\s|*<>\[\]]+)", value)
     if not found:
         raise ValueError("원문 URL row has no https link")
     return found.group(1)

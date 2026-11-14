@@ -62,6 +62,6 @@ export function usePortfolioComparison(view: ViewResult, token: string | null, c
       return false;
     } finally { inFlight.current = false; if (alive.current) setBusy(false); }
   };
-  return { plan, portfolio, choose, busy, error, status, retry: () => { setError(''); setLoaded(false); setReload(n=>n+1); }, blocked: stale || busy || (saved && !loaded),
+  return { plan, portfolio, revision, choose, busy, error, status, retry: () => { setError(''); setLoaded(false); setReload(n=>n+1); }, blocked: stale || busy || (saved && !loaded),
     selectPlan: (id: string) => { if (!inFlight.current) { setPlan(id); setPortfolio(null); setStatus('재무안을 비교 중이에요. 투자구성을 선택하면 비교 초안을 저장해요.'); } } };
 }

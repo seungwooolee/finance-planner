@@ -64,6 +64,7 @@ class SourceDocument(Record):
         url = urlsplit(self.official_url)
         if (not self.source_id.startswith("SRC-") or url.scheme != "https" or not url.hostname
                 or url.username or url.password or "\\" in self.official_url
+                or any(c in self.official_url for c in "*<>[]")
                 or any(c.isspace() or ord(c) < 32 for c in self.official_url)
                 or self.content_sha256 != text_hash(self.original_text)
                 or (self.effective_to is not None and self.effective_to < self.effective_from)
