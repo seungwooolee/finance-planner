@@ -79,6 +79,16 @@
 .d-natural-input :is(h4, h5) { font-weight: 700; margin-block: 16px 8px; }
 .d-natural-input button { min-height: 44px; white-space: normal; }
 .d-natural-input blockquote { margin: 8px 0; padding-inline-start: 12px; border-inline-start: 3px solid var(--d-purple); }
+.d-monthly-coach { margin-block: 24px; padding: 20px; border: 1px solid var(--d-line); border-radius: 16px; overflow-wrap: anywhere; }
+.d-monthly-coach :is(h3, h4) { font-weight: 700; margin-block: 12px 8px; }
+.d-monthly-coach textarea { display: block; width: 100%; min-height: 80px; padding: 12px; border: 1px solid var(--d-line); border-radius: 10px; background: #fff; color: inherit; font: inherit; resize: vertical; }
+.d-monthly-coach button { min-height: 44px; white-space: normal; }
+.d-monthly-coach .d-check { display: flex; align-items: flex-start; gap: 8px; margin-block: 14px; }
+.d-monthly-coach input[type="checkbox"] { flex-shrink: 0; width: 18px; height: 18px; margin-top: 3px; }
+.d-monthly-coach :focus-visible { outline: 3px solid var(--d-purple); outline-offset: 3px; }
+.d-coach-basis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.d-coach-basis ul { padding-inline-start: 20px; list-style: disc; }
+@media (max-width: 600px) { .d-coach-basis { grid-template-columns: 1fr; } .d-monthly-coach { padding: 14px; } }
 .d-scheme-selects { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 12px; margin-block: 12px; }
 .d-scheme-evidence h4, .d-scheme-evidence h5, .d-agent-session [aria-label="답변 충돌 확인"] h5 { font-weight: 700; }
 .d-scheme-scope { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 12px; margin-block: 12px; }

@@ -1,0 +1,51 @@
+{
+  "verified_at": "2026-11-14T19:03:30.675932+00:00",
+  "data_scope": "SYNTHETIC_ONLY",
+  "model": "gpt-6.1-terra",
+  "live_monthly_coach": [
+    {
+      "state": "VALIDATED",
+      "action": "RECORD_AMOUNTS",
+      "model": "gpt-6.1-terra",
+      "total_tokens": 520,
+      "cost_credits": "0.7212",
+      "elapsed_ms": 5156,
+      "structured_output": "OBSERVED_VALID",
+      "gateway_daily_cap_verified": false,
+      "gateway_uncapped_key_authorized": true,
+      "request_id_sha256": "aedbf234210d2007adbf0ca593b565ad8f7861c6ff935bad11426bc1f16e07ec"
+    },
+    {
+      "state": "VALIDATED",
+      "action": "CHECK_TASKS",
+      "model": "gpt-6.1-terra",
+      "total_tokens": 512,
+      "cost_credits": "0.6991",
+      "elapsed_ms": 4344,
+      "structured_output": "OBSERVED_VALID",
+      "gateway_daily_cap_verified": false,
+      "gateway_uncapped_key_authorized": true,
+      "request_id_sha256": "0cc41d29962a2671de60211699f4b50473b3e29565964ab414c63267764d4f7b"
+    },
+    {
+      "state": "VALIDATED",
+      "action": "REVIEW_CHANGE",
+      "model": "gpt-6.1-terra",
+      "total_tokens": 544,
+      "cost_credits": "0.7874",
+      "elapsed_ms": 5389,
+      "structured_output": "OBSERVED_VALID",
+      "gateway_daily_cap_verified": false,
+      "gateway_uncapped_key_authorized": true,
+      "request_id_sha256": "f92cab0e08b260f15b1430ff3e1877e1a84edb7eb6087719a2cf6d1ebdcdbf73"
+    }
+  ],
+  "monthly_calls": 3,
+  "monthly_cost_credits": "2.2077",
+  "combined_live_calls": 14,
+  "combined_total_tokens": 9328,
+  "combined_cost_credits": "13.6173",
+  "combined_cost_krw": "27.2346",
+  "local_grant_max_calls": 14,
+  "remaining_calls": 0
+}

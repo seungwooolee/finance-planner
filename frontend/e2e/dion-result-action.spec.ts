@@ -45,10 +45,13 @@ test('outage retry reuses request key and a mismatched response never displays',
   await page.route('**/result-action', async route => {
     keys.push(route.request().postDataJSON().request_key);
     if (keys.length === 1) return route.fulfill({status: 503, json: {}});
-    const response = await route.fetch();
+    // This override precedes prepare()'s harness routing; keep retries on that same
+    // disposable backend even when the production build rewrites to another port.
+    const url = new URL(route.request().url());
+    const response = await route.fetch({url: `${process.env.DION_TEST_BE_URL}${url.pathname}${url.search}`});
     const answer = await response.json();
     if (keys.length === 2) answer.input_hash = '0'.repeat(64);
-    return route.fulfill({json: answer});
+    return route.fulfill({response, json: answer});
   });
   await panel.getByRole('button', {name: '돈이 남는데 왜 투자 배정이 적어요?', exact: true}).click();
   await panel.getByRole('button', {name: '내 결과로 답변 보기'}).click();
