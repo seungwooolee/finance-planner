@@ -17,5 +17,7 @@ export type ComparisonSelection = {
   case_id: string; run_id: string; strategy_id: string; portfolio_type: string;
   input_version: number; input_hash: string; policy_version: string; types_version: string; catalog_version: string;
   state: 'COMPARISON_DRAFT';
+  selection_scope?: 'WITHIN_CUSTOMER_PREFERENCE';
+  customer_preference?: string; preference_level?: string; target_preference?: string;
 };
 export type ComparisonResponse = { revision: number; selection: ComparisonSelection | null; is_current: boolean };

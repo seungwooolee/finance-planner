@@ -447,9 +447,10 @@ def review_products(document, result, *, catalog=None, policy=None):
     for targets in policy.get("target_slots_by_preference", {}).values():
         guarded_targets(targets, products, policy, "LOSS_30_PLUS")
     slots, stress = guarded_targets(original, products, policy, profile.get("loss_tolerance_band_raw"))
+    relative = portfolio_types.relative_preferences(preference)
     type_targets = {type_id: guarded_targets(policy["target_slots_by_preference"].get(pref, []), products, policy,
                                              profile.get("loss_tolerance_band_raw"))[0]
-                    for type_id, pref in portfolio_types.REPRESENTATIVE_PREFERENCE.items()}
+                    for type_id, pref in relative.items()}
     if not slots or not any(slot["target_bps"] for slot in slots):
         blockers.append("STABILITY_POLICY_UNALLOCATED" if preference == "PREF_STABILITY"
                         else "LOSS_BUDGET_UNRESOLVED" if stress["target_reduced"]
@@ -490,16 +491,30 @@ def review_products(document, result, *, catalog=None, policy=None):
             allocation["stress_review"] = {**stress, "scenario_loss_krw_ceil": str((loss_numerator + 9999) // 10000),
                                             "full_loss_scenario_krw": allocation["allocated_total_krw"]}
             general = [r for r in month_reasons if r not in portfolio_types.PREFERENCE_ONLY_REASONS]
+            if missing or invalid:
+                general.append("PROFILE_INPUT_REQUIRED")
+            # These raw-answer checks live in the product filter, not CORE_FIELDS.
+            # Preserve their hold even when comparing an intentionally empty slot table.
+            general.extend(sorted({reason for product in screened for reason in product["reason_codes"]
+                                   if reason in {"UNDERSTANDING_REQUIRED", "RESTRICTIONS_UNCONFIRMED",
+                                                 "INDUSTRY_EXCLUSION_UNRESOLVED"}}))
             views = {}
             for type_id, type_slots in type_targets.items():
+                # A reviewed all-unallocated alternative is still a selectable comparison.
+                # It must not bypass missing customer facts, dates, or budget guards.
+                cash_only = relative[type_id] == "PREF_STABILITY" and not type_slots
                 view = allocate_budget(month["new_investment_krw"], type_slots, set() if general else month_eligible)
                 type_loss = sum(int(a["review_allocated_krw"]) * policy["scenario_shock_bps_by_role"][
                     next(p for p in products if p["code"] == a["code"])["service_constraints"]["role"]]
                                 for a in view["allocations"])
                 if type_loss > integer(view["scenario_budget_krw"]) * stress["stress_budget_bps"]:
                     raise ContractError("comparison scenario exceeds customer service budget")
-                reasons = sorted(set(general + ([] if view["allocations"] else ["NO_ELIGIBLE_PRODUCTS"])))
+                reasons = sorted(set(general + ([] if view["allocations"] or cash_only else ["NO_ELIGIBLE_PRODUCTS"])))
                 views[type_id] = {**view, "selectable": not reasons, "reason_codes": reasons,
+                                  "basis_preference": preference, "target_preference": relative[type_id],
+                                  "selection_scope": portfolio_types.SELECTION_SCOPE,
+                                  "cash_only": cash_only,
+                                  "notice_codes": ["STABILITY_POLICY_UNALLOCATED"] if cash_only else [],
                                   "calc_state": "CALCULATED" if not reasons else "REVIEW_REQUIRED",
                                   "stress_review": {"scenario_loss_krw_ceil": str((type_loss + 9999) // 10000),
                                                     "full_loss_scenario_krw": view["allocated_total_krw"]}}
@@ -532,6 +547,11 @@ def review_products(document, result, *, catalog=None, policy=None):
                  portfolio_types={"version": portfolio_types.VERSION, "state": portfolio_types.STATE,
                                   "customer_type": portfolio_types.type_of_preference(preference),
                                   "representative_preference": portfolio_types.REPRESENTATIVE_PREFERENCE,
+                                  "selection_scope": portfolio_types.SELECTION_SCOPE,
+                                  "customer_preference": preference,
+                                  "preference_level": "P" + str(portfolio_types.PREFERENCES.index(preference) + 1)
+                                  if preference in portfolio_types.PREFERENCES else None,
+                                  "baseline_type": "BALANCED", "relative_preferences": relative,
                                   "limits_relaxed": False},
                  recommended_new_investment_krw=None, adopted=False, transaction_executed=False,
                  input_source_sha256=digest(document), monthly_budget_source_sha256=digest(plans),

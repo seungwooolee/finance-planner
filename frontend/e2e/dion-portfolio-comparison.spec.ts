@@ -1,6 +1,47 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- inspect exact real engine/store contracts */
 import { expect, test } from '@playwright/test';
 import scenario from '../src/lib/dion/product-review-scenario.json';
+import { question } from '../src/lib/dion/model';
+
+test('P1-P5 each keep their own basis while three relative choices drive real product amounts', async ({ page }) => {
+  test.setTimeout(180000);
+  await page.clock.setFixedTime(new Date(`${scenario.document.context.evaluation_on}T03:00:00+09:00`));
+  await page.goto('/dion');
+  const first = page.waitForResponse(r => r.url().endsWith('/api/fe/v1/preview') && r.request().method() === 'POST');
+  await page.getByRole('button', { name: '예시로 결과 보기 · 대표상품 포함', exact: true }).click();
+  expect((await first).ok()).toBeTruthy();
+  const profiles = ['PREF_STABILITY', 'PREF_LEAN_STABILITY', 'PREF_BALANCED', 'PREF_LEAN_RETURN', 'PREF_RETURN'];
+  for (const [index, preference] of profiles.entries()) {
+    await page.locator('.d-tabs button').nth(2).click();
+    await page.getByRole('button', { name: '투자 선호 수정 →', exact: true }).click();
+    await page.locator('[data-question="F17"]').getByRole('button', {
+      name: question('F17').options.find(o => o.code === preference)!.label, exact: true,
+    }).click();
+    const pending = page.waitForResponse(r => r.url().endsWith('/api/fe/v1/preview') && r.request().method() === 'POST');
+    await page.getByRole('button', { name: /^(계산 미리보기|재계산)$/ }).click();
+    const response = await pending;
+    expect(response.ok()).toBeTruthy();
+    const review = (await response.json()).result.results['OUT-06'];
+    expect(review.portfolio_types.preference_level).toBe(`P${index + 1}`);
+    expect(review.portfolio_types.customer_preference).toBe(preference);
+    const month = review.candidates[0].rows[0];
+    await page.locator('.d-tabs button').nth(2).click();
+    await expect(page.getByRole('heading', { name: new RegExp(`P${index + 1} .* 안에서 투자구성 선택`) })).toBeVisible();
+    for (const type of ['STABLE', 'BALANCED', 'RETURN']) {
+      const view = month.portfolio_type_views[type];
+      expect(view.basis_preference).toBe(preference);
+      await page.locator(`[data-portfolio-type="${type}"] button`).click();
+      await expect(page.locator('[data-allocation-month]').first()).toHaveAttribute('data-allocated', view.allocated_total_krw);
+      await expect(page.locator('[data-allocation-month]').first()).toHaveAttribute('data-unallocated', view.unallocated_krw);
+      expect(BigInt(view.allocated_total_krw) + BigInt(view.unallocated_krw)).toBe(BigInt(month.scenario_budget_krw));
+      await page.getByRole('button', { name: '투자구성 비교로 돌아가기', exact: true }).click();
+    }
+    if (index === 4) {
+      await page.setViewportSize({ width: 390, height: 844 });
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
+    }
+  }
+});
 
 test('three real comparison views drive product and final screens on desktop/mobile', async ({ page }, info) => {
   test.setTimeout(90000);
