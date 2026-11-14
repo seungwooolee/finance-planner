@@ -19,9 +19,9 @@ function Section({ n, title, children }: { n: number; title: string; children: R
   return <section className="d-proposal-section" aria-labelledby={`proposal-s${n}`}><h3 id={`proposal-s${n}`}><span className="d-proposal-num">{n}</span>{title}</h3>{children}</section>;
 }
 
-export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabel, onEdit, onTab, allocation }: {
+export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabel, onEdit, allocation }: {
   result: Record<string, Json>; doc: Document | null; plan: string; portfolio: string | null; deep: boolean;
-  goalLabel: (id: Json) => string; onEdit: (id: string) => void; onTab: (n: number) => void; allocation: ReactNode;
+  goalLabel: (id: Json) => string; onEdit: (id: string) => void; onTab?: (n: number) => void; allocation: ReactNode;
 }) {
   const ref = object(result.proposal_reference);
   const assumptions = object(ref.assumptions);
@@ -49,10 +49,10 @@ export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabe
     <Section n={1} title="내가 선택한 내용">
       <dl className="d-ledger d-proposal-summary">
         <div><dt>진단 방식</dt><dd>{deep ? "정밀 진단" : "빠른 진단"}</dd></div>
-        <div><dt>재무안</dt><dd>{planName(plan)} <button className="d-text-button" onClick={() => onTab(1)}>바꾸기 →</button></dd></div>
-        <div><dt>투자 선호 (내 답변)</dt><dd>{preference} <button className="d-text-button" onClick={() => onEdit("F17")}>수정 →</button></dd></div>
-        <div><dt>투자구성 유형</dt><dd>{portfolio ? TYPE_NAMES[portfolio] ?? portfolio : "아직 고르지 않음"} <button className="d-text-button" onClick={() => onTab(2)}>{portfolio ? "바꾸기" : "고르기"} →</button></dd></div>
-        <div><dt>재무 목표</dt><dd>{goals.length ? goals.map(g => `${goalLabel(g.goal_id)}(${textValue(g.due_on)})`).join(", ") : "계산된 목표 없음"} <button className="d-text-button" onClick={() => onEdit("F11")}>수정 →</button></dd></div>
+        <div><dt>재무안</dt><dd>{planName(plan)}</dd></div>
+        <div><dt>투자 선호 (내 답변)</dt><dd>{preference}</dd></div>
+        <div><dt>투자구성 유형</dt><dd>{portfolio ? TYPE_NAMES[portfolio] ?? portfolio : "아직 고르지 않음"}</dd></div>
+        <div><dt>재무 목표</dt><dd>{goals.length ? goals.map(g => `${goalLabel(g.goal_id)}(${textValue(g.due_on)})`).join(", ") : "계산된 목표 없음"}</dd></div>
       </dl>
     </Section>
 
