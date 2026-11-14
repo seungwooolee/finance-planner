@@ -33,7 +33,7 @@ FE 화면·기존 채택/월기록 API·금융 엔진 산식·원응답 정의·
    → **6 passed, 13 deselected, 38.45s**. 이미 통과한 35건을 반복하지 않았다.
 4. 정책이 다른 결과의 차액과 null/0 경계 추가: `python -m pytest tests/be/test_portfolio_review.py -q --tb=short -k difference_never`
    → **2 passed, 19 deselected, 0.86s**. 고유 관련 검사 총 **43건 통과**.
-5. 변경 BE 파일 Ruff 통과. 마지막 비교 정책 변경분은 별도 정적 검사로 확인한다.
+5. 변경 BE 파일 Ruff 통과. 마지막 비교 정책 변경분 Ruff도 통과, git diff --check 통과.
 6. `python -m app.be.migrate --plan --only 008_portfolio_review_revisions.sql`
    → `database_changed=false`, `database_connected=false`.
    SHA256 `7444721a665bb5fc7f6bf4246cfc971a02a4ab93525eed74af1d13a3401e1a63`.
@@ -60,4 +60,9 @@ AI 선행 162건 통과는 AI 담당의 이전 실행이며 이번 43건에 합�
 
 ## 후보·PR
 
-기능 커밋과 최신 integration 반영 후 SHA/PR을 아래에 추가한다.
+기능 후보 SHA: `f5b31e6` (`feat(be): bind final portfolio generation to reviewed consultation`).
+base: `2e164097b50e4a452faec3e18b9a256314c984f2`.
+최신 integration rebase에서 이미 병합된 AI/FE 배포차단 두 선행 커밋만 자동 제외됐다.
+코드 충돌/내용 변경 없이 기존 BE43건 증거를 유지하며 전체 재검사는 하지 않았다.
+소유 diff: BE 코드/SQL/테스트/계약/인계 13파일, +1203/-3(기능 커밋 기준).
+PR 링크 및 필수 CI 결과는 생성 후 추가한다.
