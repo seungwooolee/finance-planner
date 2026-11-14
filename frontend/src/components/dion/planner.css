@@ -285,6 +285,7 @@
 .dion-app .d-financial-projection dd{overflow-wrap:anywhere}
 
 /* Results: quiet surfaces, one clear numeric priority, readable evidence. */
+.dion-app{--d-question-scroll-offset:144px}
 .dion-app[data-view="results"]{background:#f5f7fa;--d-results-scroll-offset:96px}
 .dion-app[data-view="results"]::after{content:"";position:fixed;inset:auto 0 0;height:80px;background:#fff;border-top:1px solid #e0e5ee;pointer-events:none;z-index:33}
 .dion-app .d-results{
@@ -386,15 +387,16 @@
   .dion-app .d-results .d-asset-mix{grid-template-columns:152px minmax(0,1fr)}
 }
 @media(max-width:760px){
+  .dion-app:not([data-view="welcome"]){--d-question-scroll-offset:180px}
   .dion-app[data-view="results"]{--d-results-scroll-offset:140px}
   .dion-app[data-view="results"]::after{height:calc(76px + env(safe-area-inset-bottom))}
-  .dion-app[data-view="results"] .d-header{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;padding:10px 14px}
-  .dion-app[data-view="results"] .d-header>.d-logo{grid-column:1/-1;font-size:26px;justify-self:start}
-  .dion-app[data-view="results"] .d-header>nav{grid-column:1;min-width:0;gap:2px;padding:4px}
-  .dion-app[data-view="results"] .d-header>nav button{white-space:nowrap;padding:7px 6px;font-size:11px;min-height:44px}
-  .dion-app[data-view="results"] .d-header-actions{grid-column:2;justify-self:end;gap:6px;min-width:0;font-size:11px}
-  .dion-app[data-view="results"] .d-header-actions button{white-space:nowrap;flex-shrink:0;min-height:44px}
-  .dion-app[data-view="results"] .d-header-actions .d-account-button{padding:7px 6px;font-size:11px}
+  .dion-app:not([data-view="welcome"]) .d-header{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px;padding:10px 14px}
+  .dion-app:not([data-view="welcome"]) .d-header>.d-logo{grid-column:1/-1;font-size:26px;justify-self:start}
+  .dion-app:not([data-view="welcome"]) .d-header>nav{grid-column:1;min-width:0;gap:2px;padding:4px}
+  .dion-app:not([data-view="welcome"]) .d-header>nav button{white-space:nowrap;padding:7px 6px;font-size:11px;min-height:44px}
+  .dion-app:not([data-view="welcome"]) .d-header-actions{grid-column:2;justify-self:end;gap:6px;min-width:0;font-size:11px}
+  .dion-app:not([data-view="welcome"]) .d-header-actions button{white-space:nowrap;flex-shrink:0;min-height:44px}
+  .dion-app:not([data-view="welcome"]) .d-header-actions .d-account-button{padding:7px 6px;font-size:11px}
   .dion-app .d-results .d-card{padding:22px 18px;border-radius:16px}
   .dion-app .d-results .d-result-heading{align-items:flex-start;flex-direction:column;gap:14px;margin-bottom:22px}
   .dion-app .d-results .d-result-heading h1{font-size:27px}
@@ -452,3 +454,19 @@
 .dion-app .d-portfolio-evidence summary{min-height:36px;cursor:pointer}
 .dion-app .d-tax-dialog{max-height:90dvh;overflow-y:auto;overflow-wrap:anywhere}
 @media(max-width:700px){.dion-app .d-portfolio-evidence form{display:grid;grid-template-columns:1fr}}
+
+/* Impeccable polish: retain the purple identity; refine alignment and wrapping only. */
+.dion-app .d-welcome-hero p{max-width:58ch}
+.dion-app .d-sample{flex-wrap:wrap;row-gap:10px}
+.dion-app .d-sample>span{min-width:0;overflow-wrap:anywhere}
+.dion-app .d-welcome .d-start{height:100%}
+.dion-app .d-welcome .d-start b{margin-top:auto;padding-top:20px}
+.dion-app .d-results .d-card.d-financial-projection .d-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+.dion-app .d-metric strong{font-variant-numeric:tabular-nums}
+.dion-app .d-login-dialog form>.d-primary,.dion-app .d-help-topics button{min-height:44px}
+.dion-app :is(button,a,summary):focus-visible{outline:3px solid var(--d-primary);outline-offset:4px}
+@media(max-width:700px){
+  .dion-app .d-welcome .d-start{padding:24px;min-height:220px}
+  .dion-app .d-welcome .d-columns{gap:16px}
+  .dion-app .d-sample{align-items:flex-start;gap:10px}
+}

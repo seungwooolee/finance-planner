@@ -52,3 +52,7 @@ OUT-06.portfolio_types에 `selection_scope=WITHIN_CUSTOMER_PREFERENCE`, `custome
 `frontend/vercel.json`에 이 작업 브랜치의 deploymentEnabled=false를 추가하고 기존 설정을 보존했다. GitHub Actions는 검사만 하며 배포 작업은 없다. Render list_services 연결 도구는 `Unknown tool(render.list_services)`로 실패해 최초에는 푸시를 보류했다. 이후 2026-11-15 사용자가 Render 배포 설정 완료를 직접 확인하고 모든 DION 작업의 푸시·PR 생성을 기본 절차로 지시했다. 이를 AGENTS에 반영하고 같은 기능 브랜치의 푸시·검토용 PR 생성을 진행한다. 원격 병합·별도 배포 요청·운영 설정 변경은 수행하지 않는다.
 
 남은 검증은 이 작업본의 테스트 서버가 허용된 환경에서 `dion-portfolio-comparison.spec.ts` 관련 3건을 한 번 실행하는 것이다. 브라우저 검증이 남아 있으므로 PR은 draft로 생성한다. 기존 60건과 242건 엔진 검산은 이번 지침·문서 보완 때문에 반복하지 않는다.
+
+## GitHub 전달 결과
+
+2026-11-15 작업 브랜치를 푸시하고 [Draft PR #45](https://github.com/seungwooolee/finance-planner/pull/45)를 생성했다. PR 생성 중 #44가 통합되어 대상이 e8e8990으로 이동했다. 같은 브랜치에 해당 통합본을 반영하며 개발 로그의 두 기록과 Vercel의 두 브랜치 차단 항목을 모두 보존해 충돌을 해소했다. 통합본의 planner.tsx/planner.css는 원문 그대로 보존했다. 해결 변경은 문서·배포 차단 JSON뿐이며 기존 계산/타입/린트 검사를 반복하지 않고 JSON·공백·근거 동일성만 확인했다. 원격 병합·배포 요청은 수행하지 않았다.

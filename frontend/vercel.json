@@ -3,6 +3,7 @@
   "git": {
     "deploymentEnabled": {
       "codex/preference-composition-20261115": false,
+      "codex/palette-polish": false,
       "codex/peer-reference-research-20261114": false,
       "codex/results-taste-polish": false,
       "codex/release-v0.7.0": false,
