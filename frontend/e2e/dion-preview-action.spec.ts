@@ -46,6 +46,7 @@ test('cancel preserves question, direct login saves once despite lost answer res
   await preview(page);
   await page.locator('.d-tabs button').nth(2).click();
   await page.locator('[data-portfolio-type="RETURN"] button').click();
+  await page.getByRole('button', {name: '선택한 구성으로 포트폴리오 반영', exact: true}).click();
   const card = panel(page);
   const question = '왜 현금 대기자금이 있나요?';
   await card.getByLabel('현재 결과에 대한 질문').fill(question);
@@ -75,6 +76,16 @@ test('cancel preserves question, direct login saves once despite lost answer res
   await card.getByRole('button', {name: '내 결과로 답변 보기'}).click();
   await expect(card).toContainText('저장 결과의 기본 안내');
   await expect(card).toContainText('위험 추구형');
+  await page.locator('.d-tabs button').nth(4).click();
+  const adoption = page.getByRole('region', {name: '계획 선택과 이번 달 기록'});
+  await expect(adoption.getByRole('button', {name: /으로 진행할게요/})).toBeEnabled();
+  const adopted = page.waitForResponse(response => response.url().endsWith('/plan/adoptions') && response.request().method() === 'POST');
+  await adoption.getByRole('button', {name: /으로 진행할게요/}).click();
+  const response = await adopted;
+  expect(response.ok()).toBeTruthy();
+  expect(response.request().postDataJSON().portfolio_selection).toMatchObject({portfolio_type: 'RETURN'});
+  expect(response.request().postDataJSON().portfolio_selection.comparison_revision).toBeGreaterThan(0);
+  await expect(adoption).toContainText('위험 추구형 구성');
 });
 
 test('login without saving preserves preview question and sends explicit AI consent only to authenticated endpoint', async ({page}) => {

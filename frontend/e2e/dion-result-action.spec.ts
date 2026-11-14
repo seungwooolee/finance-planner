@@ -11,6 +11,7 @@ test('selected composition answers use real saved amounts, reset after selection
   const before = await (await request.get(`${base}/analyses/${first.run_id}`, {headers})).json();
   await page.locator('.d-tabs button').nth(2).click();
   await page.locator('[data-portfolio-type="RETURN"] button').click();
+  await page.getByRole('button', {name: '선택한 구성으로 포트폴리오 반영', exact: true}).click();
   const panel = page.locator('.d-results').getByRole('region', {name: '현재 결과 다음 행동 상담'});
   await panel.getByRole('button', {name: '왜 현금 대기자금이 있나요?', exact: true}).click();
   await panel.getByRole('button', {name: '내 결과로 답변 보기'}).press('Enter');
@@ -21,6 +22,7 @@ test('selected composition answers use real saved amounts, reset after selection
   await page.screenshot({path: info.outputPath('selected-result-desktop.png'), fullPage: true});
   await page.getByRole('button', {name: '투자구성 비교로 돌아가기'}).click();
   await page.locator('[data-portfolio-type="STABLE"] button').click();
+  await page.getByRole('button', {name: '선택한 구성으로 포트폴리오 반영', exact: true}).click();
   await expect(panel.getByRole('heading', {name: '현재 결과에 대한 답변'})).toHaveCount(0);
   await panel.getByRole('button', {name: '이 상품의 환율 영향은 어떻게 확인해요?', exact: true}).click();
   await panel.getByRole('button', {name: '내 결과로 답변 보기'}).click();

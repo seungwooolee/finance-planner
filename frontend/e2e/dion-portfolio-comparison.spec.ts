@@ -31,6 +31,7 @@ test('P1-P5 each keep their own basis while three relative choices drive real pr
       const view = month.portfolio_type_views[type];
       expect(view.basis_preference).toBe(preference);
       await page.locator(`[data-portfolio-type="${type}"] button`).click();
+      await page.getByRole('button', {name: '선택한 구성으로 포트폴리오 반영', exact: true}).click();
       await expect(page.locator('[data-allocation-month]').first()).toHaveAttribute('data-allocated', view.allocated_total_krw);
       await expect(page.locator('[data-allocation-month]').first()).toHaveAttribute('data-unallocated', view.unallocated_krw);
       expect(BigInt(view.allocated_total_krw) + BigInt(view.unallocated_krw)).toBe(BigInt(month.scenario_budget_krw));
@@ -44,7 +45,7 @@ test('P1-P5 each keep their own basis while three relative choices drive real pr
 });
 
 test('three real comparison views drive product and final screens on desktop/mobile', async ({ page }, info) => {
-  test.setTimeout(90000);
+  test.setTimeout(180000);
   await page.goto('/dion');
   const preview = page.waitForResponse(r => r.url().endsWith('/api/fe/v1/preview') && r.request().method()==='POST');
   await page.getByRole('button', { name: '예시로 결과 보기 · 대표상품 포함', exact: true }).click();
@@ -54,23 +55,33 @@ test('three real comparison views drive product and final screens on desktop/mob
   for (const type of ['STABLE', 'BALANCED', 'RETURN']) await expect(page.locator(`[data-portfolio-type="${type}"] button`)).toBeEnabled();
   await page.locator('[data-portfolio-type="STABLE"] button').focus();
   await page.keyboard.press('Enter');
+  await expect(page.locator('.d-tabs button').nth(2)).toHaveAttribute('aria-current', 'page');
+  await page.getByRole('button', {name: '선택한 구성으로 포트폴리오 반영', exact: true}).click();
   await expect(page.locator('[data-allocation-month]').first()).toHaveAttribute('data-allocated', '119850');
   await expect(page.getByRole('region', { name: '현금성 비교 후보', exact: true })).toContainText('후보가 없어요');
   await expect(page.getByRole('region', { name: '미국주식 비교 후보', exact: true }).locator('[data-candidate-code]')).toHaveCount(3);
   await page.getByRole('button', { name: '투자구성 비교로 돌아가기' }).click();
+  await page.locator('[data-portfolio-type="BALANCED"] button').click();
+  await expect(page.locator('.d-tabs button').nth(2)).toHaveAttribute('aria-current', 'page');
+  await expect(page.locator('[data-portfolio-type="BALANCED"] button')).toHaveAttribute('aria-pressed', 'true');
+  await page.getByRole('button', {name: '선택한 구성으로 포트폴리오 반영', exact: true}).click();
+  await page.locator('.d-tabs button').nth(4).click();
+  await expect(page.getByRole('article', {name: '최종 포트폴리오 정리'})).toContainText('중립형');
+  await page.locator('.d-tabs button').nth(2).click();
   await page.setViewportSize({width:390,height:844});
   await page.locator('[data-portfolio-type="RETURN"] button').click();
+  await page.getByRole('button', {name: '선택한 구성으로 포트폴리오 반영', exact: true}).click();
   await expect(page.locator('[data-allocation-month]').first()).toHaveAttribute('data-allocated', '185406');
   await expect(page.locator('[data-allocation-month]').first()).toHaveAttribute('data-unallocated', '214094');
   await page.screenshot({path:info.outputPath('comparison-mobile.png'),fullPage:true});
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBeTruthy();
   await page.locator('.d-tabs button').nth(4).click();
-  await expect(page.getByRole('region',{name:'계산 결과'})).toContainText('위험추구형');
+  await expect(page.getByRole('article',{name:'최종 포트폴리오 정리'})).toContainText('위험 추구형');
   await page.screenshot({path:info.outputPath('comparison-summary.png'),fullPage:true});
 });
 
 test('saved comparison restores across reload with original adoption and run untouched', async ({ page, request }, info) => {
-  test.setTimeout(120000);
+  test.setTimeout(180000);
   const harness=process.env.DION_TEST_BE_URL;
   test.skip(!harness,'Requires disposable SQLite/real engine; only identity is mocked.');
   const headers={Authorization:'Bearer MOCK-FE-ONLY'}, id=`portfolio-${Date.now()}`;
@@ -107,6 +118,7 @@ test('saved comparison restores across reload with original adoption and run unt
   await expect(page.locator('[data-portfolio-type="RETURN"] button')).toBeEnabled();
   const saved=page.waitForResponse(r=>r.url().endsWith('/portfolio-comparison')&&r.request().method()==='PUT');
   await page.locator('[data-portfolio-type="RETURN"] button').click();
+  await page.getByRole('button', {name: '선택한 구성으로 포트폴리오 반영', exact: true}).click();
   expect((await saved).ok()).toBeTruthy();
   await expect(page.locator('[data-allocation-month]').first()).toHaveAttribute('data-allocated','185406');
   await page.reload();await openRun();
@@ -114,4 +126,28 @@ test('saved comparison restores across reload with original adoption and run unt
   await page.screenshot({path:info.outputPath('saved-comparison-desktop.png'),fullPage:true});
   expect(await (await request.get(`${base}/plan`,{headers})).json()).toEqual(planBefore);
   expect(await (await request.get(`${base}/analyses/${runId}`,{headers})).json()).toEqual(runBefore);
+  // Failed application keeps the previous applied composition; it does not adopt a plan.
+  await page.route('**/portfolio-comparison', async route => {
+    if (route.request().method() === 'PUT') await route.fulfill({status:503,json:{detail:{code:'STORAGE_FAILURE'}}});
+    else await route.continue();
+  });
+  await page.locator('[data-portfolio-type="STABLE"] button').click();
+  await page.getByRole('button', {name:'선택한 구성으로 포트폴리오 반영',exact:true}).click();
+  await expect(page.getByRole('alert').filter({hasText:'이전 반영 구성은 유지'})).toBeVisible();
+  await page.locator('.d-tabs button').nth(4).click();
+  await expect(page.getByRole('article',{name:'최종 포트폴리오 정리'})).toContainText('위험 추구형');
+  await page.unroute('**/portfolio-comparison');
+  const adopted = page.waitForResponse(r=>r.url().endsWith('/plan/adoptions') && r.request().method()==='POST');
+  const checkin = page.getByRole('region',{name:'계획 선택과 이번 달 기록',exact:true});
+  await checkin.getByRole('button',{name:/으로 진행할게요/}).click();
+  const adoption = await adopted;
+  expect(adoption.ok()).toBeTruthy();
+  expect((await adoption.json()).portfolio.portfolio_type).toBe('RETURN');
+  await expect(checkin).toContainText('위험 추구형 구성');
+  const storedPlan = await (await request.get(`${base}/plan`,{headers})).json();
+  expect(storedPlan.adoption.portfolio.portfolio_type).toBe('RETURN');
+  await page.reload(); await openRun();
+  await page.locator('.d-tabs button').nth(4).click();
+  await expect(page.getByRole('article',{name:'최종 포트폴리오 정리'})).toContainText('위험 추구형');
+  await expect(page.getByRole('region',{name:'계획 선택과 이번 달 기록',exact:true})).toContainText('위험 추구형 구성');
 });
