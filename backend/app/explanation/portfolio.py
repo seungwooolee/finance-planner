@@ -1,5 +1,5 @@
 """Read-only public evidence scoped to a captured result, never portfolio selection."""
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Literal
 
 from pydantic import Field
@@ -48,7 +48,8 @@ def evidence_query(run, request, now):
         item, year = TAX_ITEMS[request.target_id], request.tax_year
     return RetrievalRequest(
         session_scope=_digest(["PORTFOLIO", run["run_id"], run["input_hash"]]), base_run_id=run["run_id"],
-        item_id=item, tax_year=year, effective_on=evaluation, review_on=now.date().isoformat(),
+        item_id=item, tax_year=year, effective_on=evaluation,
+        review_on=now.astimezone(timezone(timedelta(hours=9))).date().isoformat(),
     )
 
 
