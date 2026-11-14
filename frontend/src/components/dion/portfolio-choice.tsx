@@ -15,14 +15,13 @@ const TYPES: Record<string, [string, string, string, string]> = {
   RETURN: ['위험추구형', '성장 비중형', '주식 비중을 높여 수익을 추구하는 방향', '큰 가격 변동과 환율 위험을 감수해야 해요.'],
 };
 
-export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPlan, chosen, onChoose, onEdit }: { doc: Document | null; review: Record<string, Json>; flow: Record<string, Json>; planRow?: Record<string, Json>; selectedPlan: string; onPlan: (id: string) => void; chosen: string | null; onChoose: (id: string) => void; onEdit: (id: string) => void }) {
+export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPlan, chosen, onChoose, onEdit, blocked=false }: { doc: Document | null; review: Record<string, Json>; flow: Record<string, Json>; planRow?: Record<string, Json>; selectedPlan: string; onPlan: (id: string) => void; chosen: string | null; onChoose: (id: string) => void; onEdit: (id: string) => void; blocked?: boolean }) {
   const preference = doc && fieldValue(doc, 'F17', 'risk_preference_choice_raw');
   const derived = preference === 'PREF_BALANCED' ? 'BALANCED' : ['PREF_LEAN_RETURN', 'PREF_RETURN'].includes(String(preference)) ? 'RETURN' : ['PREF_STABILITY', 'PREF_LEAN_STABILITY'].includes(String(preference)) ? 'STABLE' : null;
   const customerType = textValue(object(review.portfolio_types).customer_type) || derived;
   const rows = list(list(review.candidates).find(c => c.strategy_id === selectedPlan)?.rows);
   const month = rows[0];
   const products = list(review.products);
-  const available = rows.some(r => list(r.allocations).length > 0);
   const views = object(month?.portfolio_type_views);
   const order = customerType && TYPES[customerType] ? [...Object.keys(TYPES).filter(id => id !== customerType).slice(0, 1), customerType, ...Object.keys(TYPES).filter(id => id !== customerType).slice(1)] : Object.keys(TYPES);
   const surplus = object(flow.base_surplus).calc_state === 'CALCULATED' ? object(flow.base_surplus).value : null;
@@ -32,8 +31,7 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
       <ol className="d-risk-steps">{PREFS.map(([code, step, label]) => <li key={code} className={preference === code ? 'active' : ''} aria-current={preference === code ? 'true' : undefined}>
         {preference === code && <span className="d-step-badge">선택 응답</span>}<small>{step}</small><strong>{label}</strong>
       </li>)}</ol>
-      {PREFS.some(([code]) => code === preference) ? <p className="d-inline-note">자기보고 선호이며 위험한도나 확정 점수가 아니에요. 나이로 비중을 정하지 않아요.</p>
-        : <p className="d-inline-note">아직 투자 선호를 답하지 않았어요. <button className="d-text-button" onClick={() => onEdit('F17')}>안정성과 수익 선호 답하기 →</button></p>}
+      {!PREFS.some(([code]) => code === preference) && <p className="d-inline-note">아직 투자 선호를 답하지 않았어요. <button className="d-text-button" onClick={() => onEdit('F17')}>안정성과 수익 선호 답하기 →</button></p>}
     </article>
     <div className="d-kpis d-kpis-3">
       <article className="d-kpi"><span>이번 달 신규 투자 후보금</span><strong>{formatKrw(planRow?.new_investment_krw)}</strong><small>목표·보호자금 배정 후</small></article>
@@ -47,10 +45,10 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
         const view = object(views[id]);
         const ready = isWon(view.allocated_total_krw) && list(view.allocations).length > 0;
         const mine = customerType === id;
-        const enabled = mine && available;
+        const enabled = view.selectable === true && !blocked;
         const slices = ready ? allocationSlices(list(view.allocations), products, view.unallocated_krw) : [];
         const total = month?.scenario_budget_krw;
-        return <div key={id} className={`d-portfolio-card ${mine ? 'mine' : ''} ${chosen === id && available ? 'selected' : ''}`}>
+        return <div key={id} data-portfolio-type={id} className={`d-portfolio-card ${mine ? 'mine' : ''} ${chosen === id ? 'selected' : ''}`}>
           {mine && <span className="d-mine-badge">내 성향 기준</span>}
           <div className="d-card-head"><span className="d-pill">안 {String(i + 1).padStart(2, '0')}</span></div>
           <h3>{title}</h3><p className="d-type-sub">{subtitle}</p>
@@ -60,11 +58,11 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
           </> : <div className="d-pending-box"><strong>확인 필요</strong><p>이 유형의 구성 계산이 아직 없어요. 투자 답변과 상품 조건을 확인해주세요.</p></div>}
           <p className="d-type-line"><b>특징</b> {purpose}</p>
           <p className="d-type-line d-type-risk"><b>위험</b> {risk}</p>
-          {mine ? <button className={enabled ? 'd-primary' : 'd-secondary'} disabled={!enabled} aria-pressed={chosen === id && enabled} onClick={() => onChoose(id)}>{chosen === id && enabled ? '선택됨 · 상품 보기' : '이 구성의 상품 보기 →'}</button>
-            : <small className="d-type-foot">비교용 · 선택하려면 투자 선호 답변을 바꿔야 해요</small>}
+          <button type="button" className={enabled ? 'd-primary' : 'd-secondary'} disabled={!enabled} aria-pressed={chosen === id} aria-describedby={`portfolio-state-${id}`} onClick={() => onChoose(id)}>{chosen === id ? '선택됨 · 상품 보기' : `${title} 구성 비교하기`}</button>
+          <small id={`portfolio-state-${id}`} className="d-type-foot">{blocked ? '현재 입력·결과와 저장 상태를 확인해주세요.' : view.selectable === true ? '비교 초안 선택 · 계획 채택은 별도예요.' : Array.isArray(view.reason_codes) && view.reason_codes.length ? view.reason_codes.map(code => textValue(object(review.reason_messages)[String(code)]) || '상품 검토 조건을 확인해주세요.').join(' ') : '이전 결과에는 선택 가능 여부가 없어요. 다시 계산해주세요.'}</small>
         </div>;
       })}</div>
-      <p className="d-inline-note">도넛은 실제 배분액의 비율이고 회색은 미배분이에요. 미배분 금액은 현금성 상품으로 자동 대체하지 않아요.</p>
+      <p className="d-inline-note">도넛은 실제 배분액의 비율이고 회색은 현금 대기자금이에요. 현금 대기자금 금액은 현금성 상품으로 자동 대체하지 않아요.</p>
     </article>
   </>;
 }

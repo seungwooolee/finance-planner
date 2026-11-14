@@ -13,6 +13,7 @@ function BenefitCard({card, onOpen}: {card: TaxCard; onOpen: (card: TaxCard) => 
     {card.recommended && <span className="d-badge">검토 후보 · 적용 여부와 별개</span>}
     <h3 id={heading}>{card.benefit.name}</h3><small>{card.benefit.kind}</small>
     <p>{card.reason}</p><p className="d-inline-note">{card.benefit.check}</p>
+    <small className="d-tax-source">{card.assessment ? `${card.assessment.tax_year}년` : card.benefit.year} · {card.benefit.sources[0] && <a href={card.benefit.sources[0].url} target="_blank" rel="noopener noreferrer">{card.benefit.sources[0].title} ↗</a>}</small>
     <button type="button" className="d-secondary" onClick={() => onOpen(card)}>근거로 자세히 보기</button>
   </article>;
 }

@@ -25,6 +25,12 @@ test('related facts: actual engine result, rent guide, no added questions or AI 
   page.on('request', request => { if (request.method() === 'POST') writes.push(new URL(request.url()).pathname); });
   page.on('pageerror', error => errors.push(error.message));
   const initial = await load(page, '사회초년생');
+  const tax = page.getByRole('region', { name: '확인해볼 절세 혜택' });
+  await expect(tax).toHaveCount(0);
+  for (const index of [1, 2, 3]) {
+    await page.locator('.d-tabs button').nth(index).click();
+    await expect(tax).toHaveCount(0);
+  }
   await page.getByRole('button', { name: '입력 내용 수정 ↗' }).click();
   const navigation = page.getByRole('navigation', { name: '질문 이동' });
   const count = await navigation.getByRole('button').count();
@@ -40,7 +46,7 @@ test('related facts: actual engine result, rent guide, no added questions or AI 
   expect(result.results['OUT-03']).toEqual(initial.result.results['OUT-03']);
   expect(doc.raw_bundle.answers.filter(r => r.envelope.question_ref.design_id.startsWith('TAX-'))).toEqual(
     initial.doc.raw_bundle.answers.filter(r => r.envelope.question_ref.design_id.startsWith('TAX-')));
-  await page.getByRole('button', { name: /결과·이번 달 행동/ }).click();
+  await page.locator('.d-tabs button').nth(4).click();
   const section = page.getByRole('region', { name: '확인해볼 절세 혜택' });
   const rent = section.locator('.d-tax-priority [data-tax-benefit="monthly-rent"]');
   await expect(rent).toContainText('조건 확인 필요');
@@ -60,9 +66,19 @@ test('related facts: actual engine result, rent guide, no added questions or AI 
   expect(payload.sent).toBe(false);
   expect(payload.confirmed_facts[0].value).toEqual(record(doc, 'N02')!.envelope.fields.housing_type);
   await section.locator('.d-tax-all > summary').click();
+  await expect(section.locator('[data-tax-benefit]')).toHaveCount(8);
   await expect(section.locator('.d-tax-all [data-tax-benefit]')).toHaveCount(5);
+  await expect(section.getByRole('heading', { name: '아직 확인되지 않은 정보' })).toHaveCount(0);
   await page.screenshot({ path: info.outputPath('tax-related-desktop.png'), fullPage: true });
   expect(errors).toEqual([]);
+  // Reopen the same captured result in the direct precision path, without new calculation.
+  await page.getByRole('button', { name: '정밀진단', exact: true }).click();
+  await page.getByRole('button', { name: '이전 결과 보기', exact: true }).click();
+  const deepTabs = page.getByRole('navigation', { name: '정밀 결과 5뷰' });
+  await deepTabs.getByRole('button').nth(4).click();
+  await expect(section).toHaveCount(1);
+  await deepTabs.getByRole('button').nth(0).click();
+  await expect(section).toHaveCount(0);
 });
 
 test('insufficient facts: actual partial results survive and mobile guide needs no new answers', async ({ page }, info) => {
@@ -72,7 +88,7 @@ test('insufficient facts: actual partial results survive and mobile guide needs 
   expect(record(doc, 'F03')!.envelope.fields.monthly_net_income_krw).toEqual({ state: 'UNKNOWN', raw_value: null, unit: 'KRW_10000' });
   expect(result.results['OUT-03'].base_surplus.value).toBeNull();
   expect(result.results['OUT-02'].calc_state).toBe('CALCULATED');
-  await page.getByRole('button', { name: /결과·이번 달 행동/ }).click();
+  await page.locator('.d-tabs button').nth(4).click();
   const section = page.getByRole('region', { name: '확인해볼 절세 혜택' });
   await expect(section).toContainText('개인별 절세액을 확정한 결과는 아니에요');
   await section.locator('.d-tax-all > summary').click();

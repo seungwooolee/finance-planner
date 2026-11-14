@@ -14,6 +14,8 @@ from pathlib import Path
 
 from . import portfolio_types
 from .common import ContractError, Missing, digest, integer, output
+from .product_candidates import VERSION as COMPARISON_VERSION
+from .product_candidates import comparison_groups
 from .product_explanation import explain
 from .product_scoring import score_role
 from .statuses import axes
@@ -416,7 +418,7 @@ def review_products(document, result, *, catalog=None, policy=None):
                          "disclosure": {**{k: (product.get("facts") or {}).get(k) for k in (
                              "risk_grade", "annual_base_fee_percent", "annual_total_expense_percent",
                              "transaction_cost_percent", "asset_class", "fx_exposed", "principal_loss_possible",
-                             "deposit_protected", "cash_conversion")},
+                             "deposit_protected", "benchmark", "cash_conversion", "foreign_underlying")},
                              "source_as_of": {k: v.get("source_as_of") for k, v in
                                               (product.get("facts") or {}).get("evidence", {}).items()},
                              "source_urls": {k: v.get("url") for k, v in
@@ -491,11 +493,19 @@ def review_products(document, result, *, catalog=None, policy=None):
             views = {}
             for type_id, type_slots in type_targets.items():
                 view = allocate_budget(month["new_investment_krw"], type_slots, set() if general else month_eligible)
-                views[type_id] = {"allocated_total_krw": view["allocated_total_krw"],
-                                  "unallocated_krw": view["unallocated_krw"],
-                                  "allocations": [{"code": a["code"], "review_allocated_krw": a["review_allocated_krw"]}
-                                                  for a in view["allocations"]]}
+                type_loss = sum(int(a["review_allocated_krw"]) * policy["scenario_shock_bps_by_role"][
+                    next(p for p in products if p["code"] == a["code"])["service_constraints"]["role"]]
+                                for a in view["allocations"])
+                if type_loss > integer(view["scenario_budget_krw"]) * stress["stress_budget_bps"]:
+                    raise ContractError("comparison scenario exceeds customer service budget")
+                reasons = sorted(set(general + ([] if view["allocations"] else ["NO_ELIGIBLE_PRODUCTS"])))
+                views[type_id] = {**view, "selectable": not reasons, "reason_codes": reasons,
+                                  "calc_state": "CALCULATED" if not reasons else "REVIEW_REQUIRED",
+                                  "stress_review": {"scenario_loss_krw_ceil": str((type_loss + 9999) // 10000),
+                                                    "full_loss_scenario_krw": view["allocated_total_krw"]}}
             rows.append({"period": month["period"], **allocation, "portfolio_type_views": views,
+                         "comparison_groups": comparison_groups(products, set() if general else month_eligible,
+                                                                default_codes),
                          "reason_codes": sorted(set(month_reasons)),
                          "adjustment_codes": ["STRESS_TARGET_REDUCED"] if stress["target_reduced"] else [],
                          "calc_state": "REVIEW_REQUIRED" if month_reasons else "CALCULATED"})
@@ -518,6 +528,7 @@ def review_products(document, result, *, catalog=None, policy=None):
                                  "regulatory_certification": False},
                  products=screened, candidates=candidates, reason_messages=MESSAGES,
                  comparison_scores=comparison_scores,
+                 comparison_version=COMPARISON_VERSION,
                  portfolio_types={"version": portfolio_types.VERSION, "state": portfolio_types.STATE,
                                   "customer_type": portfolio_types.type_of_preference(preference),
                                   "representative_preference": portfolio_types.REPRESENTATIVE_PREFERENCE,
@@ -567,7 +578,11 @@ def block_product_budget(result):
             if "stress_review" in month:
                 month["stress_review"].update(scenario_loss_krw_ceil="0", full_loss_scenario_krw="0")
             for view in month.get("portfolio_type_views", {}).values():
-                view.update(allocations=[], allocated_total_krw="0", unallocated_krw=month["scenario_budget_krw"])
+                view.update(allocations=[], allocated_total_krw="0", unallocated_krw=month["scenario_budget_krw"],
+                            selectable=False, calc_state="NEEDS_INPUT", reason_codes=["BUDGET_UNAVAILABLE"])
+                view["stress_review"] = {"scenario_loss_krw_ceil": "0", "full_loss_scenario_krw": "0"}
+            for group in month.get("comparison_groups", []):
+                group.update(product_codes=[], state="NO_ELIGIBLE_CANDIDATES", reason="BUDGET_UNAVAILABLE")
             month["reason_codes"] = sorted(set(month["reason_codes"] + ["BUDGET_UNAVAILABLE"]))
     row["status_axes"] = axes("NEEDS_INPUT", "OUT-06", adapter_blocked=True)
     row["status_axes"]["investment_suitability"]["state"] = "REVIEW_BLOCKED"

@@ -31,7 +31,7 @@ export function ResultTiles({ row, month, totalAssets }: { row?: Record<string, 
   return <div className="d-kpis d-kpis-4" aria-label="이번 달 숫자 구분">
     <article className="d-kpi"><i className="d-kpi-icon" aria-hidden="true"><PiggyBank size={18}/></i><span>이번 달 신규 투자 후보금</span><strong>{formatKrw(row?.new_investment_krw)}</strong><small>한 달 납입 · 새로 들어가는 돈</small></article>
     <article className="d-kpi"><i className="d-kpi-icon" aria-hidden="true"><Package size={18}/></i><span>그중 상품 배분액</span><strong className="d-accent">{formatKrw(month?.allocated_total_krw)}</strong><small>후보 상품에 나눠 담는 금액</small></article>
-    <article className="d-kpi"><i className="d-kpi-icon" aria-hidden="true"><PackageOpen size={18}/></i><span>그중 상품 미배분</span><strong>{formatKrw(month?.unallocated_krw)}</strong><small>투자 후보금 중 상품에 담지 않은 금액 · 현금 잔고와 별개</small></article>
+    <article className="d-kpi"><i className="d-kpi-icon" aria-hidden="true"><PackageOpen size={18}/></i><span>그중 현금 대기자금</span><strong>{formatKrw(month?.unallocated_krw)}</strong><small>이번 달 투자 후보 중 상품에 아직 배정하지 않은 금액</small></article>
     <article className="d-kpi d-kpi-soft"><i className="d-kpi-icon" aria-hidden="true"><Landmark size={18}/></i><span>전체 보유자산 · 참고</span><strong>{formatKrw(totalAssets)}</strong><small>이미 가진 자산 · 이번 배분과 별개</small></article>
   </div>;
 }
@@ -39,7 +39,7 @@ export function ResultTiles({ row, month, totalAssets }: { row?: Record<string, 
 /** Keeps "which plan am I looking at" apart from "which plan did I adopt". */
 export function ChoiceStatus({ plan, hasCheckin, onJump }: { plan: string; hasCheckin: boolean; onJump: () => void }) {
   return <div className="d-choice-status" aria-label="화면 선택과 계획 채택 구분">
-    <div><span>화면에서 보는 안</span><strong>{planName(plan)}</strong><small>비교용 선택 · 저장되지 않아요</small></div>
+    <div><span>화면에서 보는 안</span><strong>{planName(plan)}</strong><small>투자구성 비교 초안과 계획 채택은 별개예요</small></div>
     <div><span>계획 채택</span><strong>{hasCheckin ? "아래 기록에서 확인" : "아직 채택 전"}</strong><small>{hasCheckin ? "채택한 안과 입력 버전이 함께 저장돼요" : "로그인하고 결과를 저장하면 채택할 수 있어요"}</small></div>
     <button className="d-secondary" onClick={onJump}>이번 달 할 일로 이동</button>
   </div>;
@@ -66,7 +66,7 @@ export function FinalPortfolio({ plan, row, review }: { plan: string; row?: Reco
   const products = list(review.products);
   const budget = month?.scenario_budget_krw;
   if (!row) return null;
-  const slices = allocationSlices(allocations, products, month?.unallocated_krw, "상품 미배분");
+  const slices = allocationSlices(allocations, products, month?.unallocated_krw, "현금 대기자금");
   return <article className="d-card d-final" aria-label="최종 포트폴리오 정리">
     <div className="d-card-head"><div><span className="d-pill">내가 고른 계획</span><h2>최종 포트폴리오 · {planName(plan)}</h2></div><small>{period ? `${period} 기준` : ""}</small></div>
     <div className="d-final-grid">
@@ -75,13 +75,13 @@ export function FinalPortfolio({ plan, row, review }: { plan: string; row?: Reco
         {allocations.length > 0 ? <div className="d-final-chart">
           <Donut slices={slices} total={budget} size={150} center={<><small>후보금</small><strong>{formatKrw(budget)}</strong></>} />
           <DonutLegend slices={slices} total={budget} />
-        </div> : <p className="d-alert-card">{review.review_version ? "현재 조건으로 배분된 상품이 없어 투자 후보금은 전액 상품 미배분이에요. 현금 잔고에 더하지 않아요. 상품 정보 탭에서 사유와 보완할 답변을 확인해주세요." : "상품 검토 결과가 없어요. 현재 입력으로 다시 계산하면 확인할 수 있어요."}</p>}
+        </div> : <p className="d-alert-card">{review.review_version ? "현재 조건으로 배분된 상품이 없어 투자 후보금은 전액 현금 대기자금으로 남았어요. 현금 잔고에 더하지 않아요. 상품 정보 탭에서 사유와 보완할 답변을 확인해주세요." : "상품 검토 결과가 없어요. 현재 입력으로 다시 계산하면 확인할 수 있어요."}</p>}
         {allocations.length > 0 && <p className="d-inline-note">내부 하락 시나리오 손실액 {formatKrw(object(month?.stress_review).scenario_loss_krw_ceil)} · 실제 손실은 더 클 수 있어요.</p>}
       </div>
       <div>
         <h3>이번 달 자금 배정</h3>
         <dl className="d-ledger">{ITEMS.map(([key, label]) => <div key={key}><dt>{label}</dt><dd>{formatKrw(row[key])}</dd></div>)}
-          {allocations.length > 0 && <><div><dt>상품에 배분한 금액</dt><dd>{formatKrw(month?.allocated_total_krw)}</dd></div><div><dt>상품 미배분 · 현금 잔고에 더하지 않음</dt><dd>{formatKrw(month?.unallocated_krw)}</dd></div></>}</dl>
+          {allocations.length > 0 && <><div><dt>상품에 배분한 금액</dt><dd>{formatKrw(month?.allocated_total_krw)}</dd></div><div><dt>현금 대기자금 · 현금 잔고에 더하지 않음</dt><dd>{formatKrw(month?.unallocated_krw)}</dd></div></>}</dl>
       </div>
     </div>
   </article>;

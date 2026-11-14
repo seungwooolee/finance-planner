@@ -59,4 +59,3 @@ export async function saveResult(page:Page){
   await expect(page.getByRole('status').filter({hasText:'답변과 계산 결과를 저장했어요'})).toBeVisible();
   await expect(page.getByRole('button',{name:'이 결과 설명해 줘',exact:true})).toBeVisible();
 }
-
