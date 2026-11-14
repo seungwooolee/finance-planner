@@ -12,6 +12,8 @@ from .adapter import ADAPTER_VERSION, build_engine_input
 from .plan_checkin import HISTORY_TABLES as PLAN_HISTORY_TABLES
 from .plan_checkin import SCHEMA as PLAN_SCHEMA
 from .plan_checkin import PlanCheckinMixin
+from .portfolio_comparison import SCHEMA as PORTFOLIO_SCHEMA
+from .portfolio_comparison import PortfolioComparisonMixin
 from .question_bridge import run_frontend_questions
 from .raw_store import PocError, RawAnswerStore, _digest, _id, _json, _now
 
@@ -32,13 +34,13 @@ CREATE TABLE IF NOT EXISTS case_plan_links(
 """
 
 
-class BackendStore(PlanCheckinMixin, RawAnswerStore):
+class BackendStore(PortfolioComparisonMixin, PlanCheckinMixin, RawAnswerStore):
     def __init__(self, database_path):
         super().__init__(database_path)
         conn = self._connect()
         try:
-            conn.executescript(EXTRA_SCHEMA + AGENT_SCHEMA + PLAN_SCHEMA)
-            for table in ("analysis_runs", "analysis_drafts", *PLAN_HISTORY_TABLES):
+            conn.executescript(EXTRA_SCHEMA + AGENT_SCHEMA + PLAN_SCHEMA + PORTFOLIO_SCHEMA)
+            for table in ("analysis_runs", "analysis_drafts", *PLAN_HISTORY_TABLES, "portfolio_comparisons"):
                 for operation in ("UPDATE", "DELETE"):
                     conn.execute(f"CREATE TRIGGER IF NOT EXISTS immutable_{table}_{operation} "
                                  f"BEFORE {operation} ON {table} "

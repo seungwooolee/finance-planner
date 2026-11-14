@@ -26,3 +26,11 @@
 ## 전달
 
 frontend/vercel.json은 이 작업 브랜치의 deploymentEnabled=false를 포함한다. 커밋·작업 브랜치 push·통합 대상 PR까지만 수행하며 원격 병합은 사용자가 한다. 후속 v0.3.0은 이번 범위에 포함하지 않는다.
+
+## PR #39 병합 충돌 수정 — 2026-11-14
+
+- 기존 커밋 `02d7a46`의 GitHub Core #76은 success였다. 이후 PR #37·#38이 통합되어 PR #39에 병합 충돌이 발생했다. 최신 통합 `a8b293c`를 이 작업 브랜치에만 로컬 병합했다. 원격 통합/main 병합은 수행하지 않는다.
+- 충돌 6개: CHANGELOG·development-log·project-status는 양쪽 이력을 보존했다. package.json·package-lock.json은 통합본의 앱 버전 0.4.0을 유지했다. vercel.json은 v0.2.3/v0.3.0/v0.4.0과 기존 브랜치별 배포 차단을 모두 보존했다. 새 버전·의존성을 추가하지 않았다.
+- 자동 병합된 Results/FinalPortfolio/PortfolioChoice/ProductAllocation/CSS를 대조했다. 고양이 상담 단일 마운트, 투자구성 비교 선택과 선택된 구성의 상품·최종 화면 연결, 자산 차트·최종 탭 절세·현금 대기자금 표현을 함께 유지했다. backend는 최신 통합과 완전히 동일하며 이 수정에서 별도 엔진/API 변경은 없다.
+- 이번 실행: TypeScript PASS, 합쳐진 TSX 4파일 ESLint PASS, 기존 Edge 관련 3건 PASS(56.3s). 실제 엔진의 자산 합계·상품 배분/현금 대기 합계, 안정형/위험추구형 선택→상품→최종 화면, 빠른/정밀 최종 탭 절세 한정 표시·제도 안내·닫기/포커스 복귀를 확인했다. 데스크톱 자산·모바일 상품 캡처를 직접 확인했다.
+- 검사용 BE 하네스만 소유권을 확인해 최신 코드로 재시작했다(:8339). FE :3338과 사용자 서버·.env는 보존했다. mock 인증/임시 SQLite·실제 엔진 검사이며 운영 계정/DB·실제 AI 상담은 미검증이다. 전체 Core/Build·전체 E2E·배포는 로컬에서 반복하지 않았다. 이번 커밋의 원격 Core 결과는 GitHub 실행을 별도로 확인한다.

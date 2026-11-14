@@ -1,6 +1,8 @@
 {
   "version": "0.2.3",
   "base_sha": "8fa586b1db82467082bb84472500b557b55e49e1",
+  "integrated_base_sha": "a8b293c52e3e1ff48a95029a62905a6d2cbbf6f7",
+  "app_version_after_integration": "0.4.0",
   "previous_release_pr": 36,
   "previous_release_merged": true,
   "branch": "codex/release-v0.2.3",
