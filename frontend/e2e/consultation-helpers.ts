@@ -4,10 +4,11 @@ import example from "../src/lib/dion/fictional-example.json";
 import catalog from "../src/lib/dion/catalog.json";
 const headers={Authorization:"Bearer MOCK-FE-ONLY"};
 const harness=process.env.DION_TEST_BE_URL;
-export async function prepare(page:Page,request:APIRequestContext,missing=false,scenario=false) {
+export async function prepare(page:Page,request:APIRequestContext,missing=false,scenario=false,products=false) {
   test.skip(!harness,'Disposable SQLite/real engine harness required; identity only is mocked.');
   const id=`explanation-${Date.now()}-${Math.random().toString(16).slice(2)}`;
   const doc:any=structuredClone(example);
+  if(products) doc.requested_outputs.push("OUT-06");
   const q=catalog.questions.find(q=>q.id==='N01')!;
   const property=structuredClone(doc.raw_bundle.answers[0].envelope);
   property.question_ref={namespace:'DION-DESIGN',design_id:'N01',definition_version:q.version,
