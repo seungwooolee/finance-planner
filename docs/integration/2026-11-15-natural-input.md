@@ -19,7 +19,7 @@
 | 추가 등록 필드·허용목록·최대 후보 검사만 실행 | 10 passed, 5.12초; 고유 Python 합계 86 |
 | 변경 Python Ruff | 최초 import 순서 2건 보완 후 통과; 추가 probe/검사 파일도 통과 |
 | TypeScript·변경 파일 ESLint | 통과. 최초 render 중 ref 대입을 layout effect로 옮겨 1회 재검증 |
-| Next production build | 통과. 최종 스타일/신뢰된 필드명/버전 반영 후 다시 통과, 이후 제품 코드 수정 없음 |
+| Next production build (`npm run build -- --webpack`) | 통과. 최종 스타일/신뢰된 필드명/버전 반영 후 다시 통과 |
 | Edge `e2e/dion-natural-input.spec.ts --workers=1` | 최초 공통 테스트 선택자에서 3실패. 감싼 label의 옵션 텍스트 때문에 exact label이 맞지 않아 접근성 이름의 combobox 선택자로 수정; 1회 재검증 3 passed, 38.6초 |
 | `git diff --check` | 통과 |
 
@@ -32,3 +32,11 @@
 - 실제 계정·원격 DB·운영 브라우저·전체 로컬 Core/E2E는 미실행이다. PR의 기존 Core CI 결과는 PR 검사 탭을 기준으로 한다.
 - 미리보기 캐시는 프로세스별 최대 128건, 재사용 만료 기준 5분이며 다음 요청 때 만료 항목을 정리한다. 분당 제한도 프로세스별이다. 다중 인스턴스 통합 제한 및 엄격한 시각 기반 메모리 삭제는 별도 운영 보완 범위다.
 - 시작 기준은 통합 `a86cdeb76af8f7346c39400f0badbefc19d6b2b6`, 작업 브랜치는 `codex/natural-input-confirmation-20261115`이다. 이 브랜치 Vercel 배포를 차단했고 Render `autoDeploy=no`를 확인했다. 원격 병합·배포는 실행하지 않는다.
+
+## 최신 통합 반영
+
+작업 중 병합된 PR #47~49의 통합 `887f0779bdd8f086f83d5c86a60da5a7887cb1b3`를 반영했다. 상품 RAG 확장·기존 자연어 상담 수정·개인화 결과 화면과 모든 브랜치 배포 차단을 보존하고 문서 충돌은 양쪽 이력을 유지했다. 기존 자연어 상담 Turn과 후보 확인의 연결에 영향이 있어 관련 pytest 3파일(`test_input_preview`, `test_consultation`, `test_natural_proposal`)을 다시 검사했고 **98 passed / 77.00초**다.
+
+통합 후 기본 `npm run build`는 로컬 `node_modules` junction이 Turbopack root 밖을 가리켜 패키지 해석에서 실패했다. 설치된 Next 문서의 linked dependency/root 제약을 확인하고 기존 검증 방식인 `npm run build -- --webpack`으로 1회 재검증하여 통과했다. 프로젝트 설정/의존성을 바꾸지 않았으며 TypeScript·정적 페이지 생성도 완료했다.
+
+통합 후 같은 Edge 3경로도 **3 passed / 1.1분**으로 재확인했다. 장애 주입 테스트의 후속 요청은 프런트 기본 프록시 설정에 의존하지 않도록 일회용 BE를 직접 지정했다. 데스크톱 후보 편집/390px 모바일 캡처도 확인했다(`frontend/test-results`의 로컬 산출물, Git 제외). 이번 작업이 시작한 3355/8355 테스트 서버만 종료했다.

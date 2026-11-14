@@ -28,6 +28,7 @@ test('multiple grounded candidates can be corrected and confirmed without changi
   await expect(editor.getByRole('heading')).toBeFocused();
   await expect(editor.getByRole('button', {name: '이 후보를 상담 확인으로 보내기'})).toBeDisabled();
   await editor.getByLabel('확인한 값', {exact: true}).fill('345');
+  await page.screenshot({path: test.info().outputPath('candidate-editor-desktop.png')});
   await editor.getByLabel('본인의 실제 답변이며 항목·값·단위·기간·포함 관계를 확인했어요').check();
   await editor.getByRole('button', {name: '이 후보를 상담 확인으로 보내기'}).press('Enter');
   await expect(session.getByRole('heading', {name: '답변 확인 대기', exact: true})).toBeFocused();
@@ -70,13 +71,14 @@ test('unknown and missing unit remain explicit; correction asks again and cancel
 
 test('outage retry preserves text and key; tampered source is rejected; mobile form fits', async ({page, request}) => {
   test.setTimeout(120_000);
-  const {first} = await prepare(page, request, false, true);
+  const {first, base} = await prepare(page, request, false, true);
   const {assistant} = await openAssistant(page, first.run_id);
   const keys: string[] = [];
   await page.route('**/input-previews', async route => {
     keys.push(route.request().postDataJSON().request_key);
     if (keys.length === 1) return route.fulfill({status: 503, json: {}});
-    const response = await route.fetch();
+    const target = new URL(route.request().url());
+    const response = await route.fetch({url: `${new URL(base).origin}${target.pathname}${target.search}`});
     const value = await response.json();
     if (keys.length === 2) value.candidates[0].source_text = '다른 사람의 소득';
     return route.fulfill({json: value});
@@ -94,4 +96,5 @@ test('outage retry preserves text and key; tampered source is rejected; mobile f
   await page.setViewportSize({width: 390, height: 844});
   await assistant.scrollIntoViewIfNeeded();
   expect(await assistant.evaluate(node => node.scrollWidth <= node.clientWidth)).toBeTruthy();
+  await page.screenshot({path: test.info().outputPath('candidate-mobile.png')});
 });
