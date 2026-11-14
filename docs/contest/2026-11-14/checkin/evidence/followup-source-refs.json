@@ -1,0 +1,14 @@
+{
+  "lead_manifest": {
+    "path": "C:/Users/LG/Projects/DION-contest-lead-20261114/docs/contest/2026-11-14/lead/manifest.json",
+    "sha256": "c80b89ff988dd7aec3a685f5fbbf21d12d561d46c808569242ab44889601ecf5"
+  },
+  "engine_mapping": {
+    "path": "C:/Users/LG/Projects/DION-contest-lead-20261114/docs/contest/2026-11-14/engine/question-result-trace.md",
+    "sha256": "bb8b26027590084337a0f62d8a531ab0834954f3eb1f01bc2b6d3e658b19a3aa"
+  },
+  "canonical_b": {
+    "path": "C:/Users/LG/Projects/DION-contest-checkin-20261114/docs/design/2026-11-10/connected-demo/submission-input.json",
+    "sha256": "3afcb98cef3729aee85e19aff9075ea2a78795e7cb9f91e2261bf1a2ddae5bb4"
+  }
+}

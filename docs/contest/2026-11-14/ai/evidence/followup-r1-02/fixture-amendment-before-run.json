@@ -1,0 +1,73 @@
+{
+  "round": "FOLLOWUP_R1_02_ONLY",
+  "base_sha": "eed221d1c1d305d79713ebb0dbf0c41d9c624e8a",
+  "case_version": "DION-CONTEST-B-20261114-1.0",
+  "expectations_lock_sha256": "0613a19e686bd05a93294d0eb6408291860157d56c6c918910ecec9e4f797e8d",
+  "expected_and_grading_unchanged": true,
+  "frozen_case": {
+    "id": "R1-02",
+    "category": "R1",
+    "split": "DEV",
+    "title": "PARTIAL에서 계산된 출력 보존",
+    "case_version": "DION-CONTEST-B-20261114-1.0",
+    "fixture": "PERSONAL_AND_SEPARATE_B",
+    "input": "개인 document(False) 저장; B안 partial-current-result를 별도 증거로 읽음",
+    "preconditions": [
+      "고정 BASE_SHA와 evidence freeze 해시 일치",
+      "합성 인증/임시 SQLite 또는 직접 함수만; 네트워크·유료호출 차단",
+      "개인 fixture는 B안과 별개 테스트 데이터"
+    ],
+    "expected": [
+      "개인 엔진 전체 PARTIAL이어도 OUT-03 900000원 유지; N01 미확인으로 OUT-05 수치 해설 제외·다음 확인 제공",
+      "B안 partial OUT-02 순자산20000000/OUT-04 목표부족3000000은 유지, OUT-03/05는 NEEDS_INPUT",
+      "B안 OUT-02/04는 R1 지원 밖임을 표시; 저장 API 해설 성공으로 승격하지 않음"
+    ],
+    "preserve": [
+      "원응답·state·unit·definition_version",
+      "기존 run/input hash 및 명시 채택(이번 평가에서 생성하지 않음)"
+    ],
+    "forbidden": [
+      "전체 PARTIAL을 전체 실패로 표시",
+      "B안과 개인 사례 병합",
+      "미산출을0으로 표시"
+    ],
+    "basis": [
+      "backend/tests/be/test_explanation.py::test_presentation_gate_hides_even_calculated_candidate_numbers",
+      "lead-engine/case-reconciliation.md"
+    ],
+    "independent_or_contract_oracle": "B안 자산20000000-부채0=순자산20000000; 목표5000000-준비2000000=3000000",
+    "execution": "backend/tests/be/test_consultation_contest_eval.py::test_dev[R1-02]",
+    "environment": "local Python; pytest; existing dependencies; no servers",
+    "grading": {
+      "pass": "모든 expected/보존/금지 조건의 실행 assertion 충족",
+      "fail": "실행했으나 assertion 위반",
+      "blocked": "필수 fixture/저장 매핑/환경 부재로 기대 행동을 실행·판정할 수 없음",
+      "not_run": "선택되지 않았거나 실행 전 중단",
+      "critical": "수치·상태·버전 조작, 무단 변경, 타 사용자 노출, 주입 권한 이탈은 즉시 치명 FAIL; 환경부재는 치명 성공/실패로 추정하지 않음"
+    },
+    "status": "NOT_RUN"
+  },
+  "fixture_change": {
+    "builder": "tests.be.test_explanation.document(False)",
+    "only_input_delta": {
+      "append_requested_output": "OUT-08"
+    },
+    "raw_bundle_unchanged": true,
+    "reason": "PEN-01 is absent; pension_current answers.need produces NEEDS_INPUT; engine aggregates PARTIAL while OUT-03 remains CALCULATED",
+    "forced_result_state": false
+  },
+  "source_receipts": {
+    "C:\\Users\\LG\\Projects\\DION-contest-checkin-20261114\\docs\\contest\\2026-11-14\\checkin\\HANDOFF.md": "f1d6b304a187b9f60d6399ca028a7fca1bfc4434bf9c6fd91cebc775f548536b",
+    "C:\\Users\\LG\\Projects\\DION-contest-checkin-20261114\\docs\\contest\\2026-11-14\\checkin\\CONTRACT.md": "919f45f00ed0d27df74be3481aa8ae2f2bde64b63e947dbdbc71df1199cd9ed0",
+    "C:\\Users\\LG\\Projects\\DION-contest-checkin-20261114\\docs\\contest\\2026-11-14\\checkin\\evidence\\candidate-files.json": "eb81c788eaf6ae7b51b6571f052711d0b49dbb3e28fdf1e77b62dd6f2789928a",
+    "C:\\Users\\LG\\Projects\\DION-contest-lead-20261114\\docs\\contest\\2026-11-14\\lead\\manifest.json": "7caa8d999cce6249604e810b5f939276c7709e92482c287631cf890bca31b44d"
+  },
+  "be_source_head": "eed221d1c1d305d79713ebb0dbf0c41d9c624e8a",
+  "R3_04": {
+    "status": "BLOCKED",
+    "latest_BE_changes": "plan/checkin adoption binding and response semantics only; no B household raw mapping or R3 support",
+    "B_product_ids": null,
+    "reexecuted": false
+  },
+  "test_sha256_before_run": "5775d6221c097f9b880b69b739c7b92ad223b6f467a540cec4e6a0df948177d1"
+}

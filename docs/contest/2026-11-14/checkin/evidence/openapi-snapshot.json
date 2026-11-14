@@ -1,0 +1,797 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "FastAPI",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/be/v1/cases/{case_id}/plan": {
+      "get": {
+        "tags": [
+          "Plan adoption and monthly check-in"
+        ],
+        "summary": "Read Plan",
+        "operationId": "read_plan_api_be_v1_cases__case_id__plan_get",
+        "parameters": [
+          {
+            "name": "case_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Case Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/be/v1/cases/{case_id}/plan/adoptions": {
+      "post": {
+        "tags": [
+          "Plan adoption and monthly check-in"
+        ],
+        "summary": "Adopt Plan",
+        "operationId": "adopt_plan_api_be_v1_cases__case_id__plan_adoptions_post",
+        "parameters": [
+          {
+            "name": "case_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Case Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/be/v1/cases/{case_id}/checkins": {
+      "get": {
+        "tags": [
+          "Plan adoption and monthly check-in"
+        ],
+        "summary": "List Checkins",
+        "operationId": "list_checkins_api_be_v1_cases__case_id__checkins_get",
+        "parameters": [
+          {
+            "name": "case_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Case Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckinList"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/be/v1/cases/{case_id}/checkins/{month}": {
+      "get": {
+        "tags": [
+          "Plan adoption and monthly check-in"
+        ],
+        "summary": "Read Checkin",
+        "operationId": "read_checkin_api_be_v1_cases__case_id__checkins__month__get",
+        "parameters": [
+          {
+            "name": "case_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Case Id"
+            }
+          },
+          {
+            "name": "month",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Month"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckinView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Plan adoption and monthly check-in"
+        ],
+        "summary": "Save Checkin",
+        "operationId": "save_checkin_api_be_v1_cases__case_id__checkins__month__put",
+        "parameters": [
+          {
+            "name": "case_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Case Id"
+            }
+          },
+          {
+            "name": "month",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Month"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckinView"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AdoptionRef": {
+        "properties": {
+          "adoption_id": {
+            "type": "string",
+            "title": "Adoption Id"
+          },
+          "run_id": {
+            "type": "string",
+            "title": "Run Id"
+          },
+          "strategy_id": {
+            "type": "string",
+            "enum": [
+              "STABILITY_FIRST",
+              "INVESTMENT_CAPACITY"
+            ],
+            "title": "Strategy Id"
+          },
+          "input_version": {
+            "type": "integer",
+            "title": "Input Version"
+          },
+          "adopted_at": {
+            "type": "string",
+            "title": "Adopted At"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "adoption_id",
+          "run_id",
+          "strategy_id",
+          "input_version",
+          "adopted_at"
+        ],
+        "title": "AdoptionRef"
+      },
+      "CheckinComparison": {
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": [
+              "NO_ADOPTED_PLAN",
+              "MONTH_NOT_IN_PLAN",
+              "POLICY_REQUIRED",
+              "BINDING_CONFLICT"
+            ],
+            "title": "State"
+          },
+          "reason": {
+            "type": "string",
+            "title": "Reason"
+          },
+          "record_month": {
+            "type": "string",
+            "title": "Record Month"
+          },
+          "amount_differences_krw": {
+            "type": "null",
+            "title": "Amount Differences Krw"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "state",
+          "reason",
+          "record_month",
+          "amount_differences_krw"
+        ],
+        "title": "CheckinComparison"
+      },
+      "CheckinList": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/CheckinView"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "CheckinList"
+      },
+      "CheckinRecord": {
+        "properties": {
+          "amounts": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^(0|[1-9]\\d{0,12})$"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "propertyNames": {
+              "enum": [
+                "income",
+                "living",
+                "loan",
+                "goal",
+                "invest_existing",
+                "invest_new",
+                "emergency",
+                "extra_cash"
+              ]
+            },
+            "type": "object",
+            "title": "Amounts"
+          },
+          "tasks": {
+            "items": {
+              "$ref": "#/components/schemas/CheckinTask"
+            },
+            "type": "array",
+            "title": "Tasks"
+          },
+          "changes": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "INCOME",
+                "UNEXPECTED_EXPENSE",
+                "DEBT",
+                "GOAL",
+                "INVESTMENT_VIEW",
+                "NONE"
+              ]
+            },
+            "type": "array",
+            "title": "Changes"
+          },
+          "memo": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Memo"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "amounts",
+          "tasks",
+          "changes",
+          "memo"
+        ],
+        "title": "CheckinRecord"
+      },
+      "CheckinSummary": {
+        "properties": {
+          "entered_count": {
+            "type": "integer",
+            "title": "Entered Count"
+          },
+          "amount_count": {
+            "type": "integer",
+            "title": "Amount Count"
+          },
+          "partial": {
+            "type": "boolean",
+            "title": "Partial"
+          },
+          "spending_entered_krw": {
+            "type": "string",
+            "title": "Spending Entered Krw"
+          },
+          "transfers_entered_krw": {
+            "type": "string",
+            "title": "Transfers Entered Krw"
+          },
+          "spending_entered_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Spending Entered Count"
+          },
+          "transfers_entered_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Transfers Entered Count"
+          },
+          "allocation_check": {
+            "type": "string",
+            "enum": [
+              "INCOME_NOT_ENTERED",
+              "OVER_INCOME_CHECK_SOURCE",
+              "INCOMPLETE_RECORD",
+              "WITHIN_INCOME"
+            ],
+            "title": "Allocation Check"
+          },
+          "tasks_done": {
+            "type": "integer",
+            "title": "Tasks Done"
+          },
+          "tasks_total": {
+            "type": "integer",
+            "title": "Tasks Total"
+          },
+          "review_suggested": {
+            "type": "boolean",
+            "title": "Review Suggested"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "entered_count",
+          "amount_count",
+          "partial",
+          "spending_entered_krw",
+          "transfers_entered_krw",
+          "allocation_check",
+          "tasks_done",
+          "tasks_total",
+          "review_suggested"
+        ],
+        "title": "CheckinSummary"
+      },
+      "CheckinTask": {
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "PLANNED",
+              "IN_PROGRESS",
+              "DONE",
+              "HELD"
+            ],
+            "title": "State"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "key",
+          "label",
+          "state",
+          "reason"
+        ],
+        "title": "CheckinTask"
+      },
+      "CheckinView": {
+        "properties": {
+          "record_month": {
+            "type": "string",
+            "pattern": "^\\d{4}-(0[1-9]|1[0-2])$",
+            "title": "Record Month"
+          },
+          "contract_version": {
+            "anyOf": [
+              {
+                "type": "string",
+                "const": "DION-PLAN-CHECKIN-1.1"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Contract Version"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Revision"
+          },
+          "record": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CheckinRecord"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "DRAFT",
+                  "CLOSED"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "checkin_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Checkin Id"
+          },
+          "adoption_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Adoption Id"
+          },
+          "recorded_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recorded At"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CheckinSummary"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "adoption": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AdoptionRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "current_adoption": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AdoptionRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "original_adoption_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Original Adoption Id"
+          },
+          "binding_state": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "UNRECORDED",
+                  "LOCKED",
+                  "CONFLICT"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Binding State"
+          },
+          "record_kind": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "UNRECORDED",
+                  "GENERAL_RECORD",
+                  "ADOPTED_PLAN"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Record Kind"
+          },
+          "comparison": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CheckinComparison"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "review": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DraftReview"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "record_month",
+          "revision",
+          "record"
+        ],
+        "title": "CheckinView",
+        "description": "Authoritative OpenAPI response; absent new fields on old receipt replays stay absent."
+      },
+      "DraftReview": {
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "NONE",
+              "CREATE_NEW_DRAFT"
+            ],
+            "title": "Action"
+          },
+          "base_run_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Base Run Id"
+          },
+          "adoption_changed": {
+            "type": "boolean",
+            "const": false,
+            "title": "Adoption Changed"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "action",
+          "base_run_id",
+          "adoption_changed"
+        ],
+        "title": "DraftReview"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

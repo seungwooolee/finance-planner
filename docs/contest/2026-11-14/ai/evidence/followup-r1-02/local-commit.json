@@ -1,0 +1,17 @@
+{
+  "code_candidate_sha": "d70e1f1e35ab948094fd3399332b47998de57e66",
+  "base_sha": "eed221d1c1d305d79713ebb0dbf0c41d9c624e8a",
+  "branch": "codex/contest-ai-eval-20261114",
+  "case_version": "DION-CONTEST-B-20261114-1.0",
+  "test_sha256": "5775d6221c097f9b880b69b739c7b92ad223b6f467a540cec4e6a0df948177d1",
+  "expectations_lock_sha256": "0613a19e686bd05a93294d0eb6408291860157d56c6c918910ecec9e4f797e8d",
+  "candidate_git_blobs_match_original_expectation_lock": true,
+  "followup_result": "R1-02 PASS, one attempt, no retry",
+  "current_24_scenario_run": false,
+  "R3_04": "BLOCKED, not rerun",
+  "CI_integration": "NOT_READY: unrelated latest BE test bytes conflict with historical all-file lock",
+  "final_handoff": "Follow-up documentation commit descends from this code candidate; obtain final HEAD with git rev-parse HEAD",
+  "github_push": false,
+  "remote_merge": false,
+  "deploy": false
+}

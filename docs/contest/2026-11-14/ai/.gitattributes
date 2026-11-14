@@ -1,0 +1,2 @@
+# Keep recorded inputs, hashes and original test output byte-identical in Git.
+evidence/** -text

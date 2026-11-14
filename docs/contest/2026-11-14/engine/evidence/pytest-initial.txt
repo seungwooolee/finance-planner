@@ -1,0 +1,37 @@
+........................F...FFF......................................... [ 29%]
+........................................................................ [ 59%]
+........................................................................ [ 89%]
+..........................                                               [100%]
+================================== FAILURES ===================================
+_ test_non_cash_assets_never_create_current_goal_or_investment_cash[RENTAL_DEPOSIT] _
+tests\planning\test_contest_reconciliation.py:150: in test_non_cash_assets_never_create_current_goal_or_investment_cash
+    assert result["results"]["OUT-02"]["net_worth"]["value"] == "70000000"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'net_worth'
+_ test_dated_goal_is_not_relabelled_as_equal_monthly_reference[multiple_per_month] _
+tests\planning\test_contest_reconciliation.py:202: in test_dated_goal_is_not_relabelled_as_equal_monthly_reference
+    assert result["results"]["OUT-04"]["calc_state"] == "CALCULATED"
+E   AssertionError: assert 'INVALID_INPUT' == 'CALCULATED'
+E     
+E     - CALCULATED
+E     + INVALID_INPUT
+_ test_dated_goal_is_not_relabelled_as_equal_monthly_reference[skipped_month] _
+tests\planning\test_contest_reconciliation.py:202: in test_dated_goal_is_not_relabelled_as_equal_monthly_reference
+    assert result["results"]["OUT-04"]["calc_state"] == "CALCULATED"
+E   AssertionError: assert 'INVALID_INPUT' == 'CALCULATED'
+E     
+E     - CALCULATED
+E     + INVALID_INPUT
+_ test_dated_goal_is_not_relabelled_as_equal_monthly_reference[early_payment] _
+tests\planning\test_contest_reconciliation.py:202: in test_dated_goal_is_not_relabelled_as_equal_monthly_reference
+    assert result["results"]["OUT-04"]["calc_state"] == "CALCULATED"
+E   AssertionError: assert 'INVALID_INPUT' == 'CALCULATED'
+E     
+E     - CALCULATED
+E     + INVALID_INPUT
+=========================== short test summary info ===========================
+FAILED tests/planning/test_contest_reconciliation.py::test_non_cash_assets_never_create_current_goal_or_investment_cash[RENTAL_DEPOSIT]
+FAILED tests/planning/test_contest_reconciliation.py::test_dated_goal_is_not_relabelled_as_equal_monthly_reference[multiple_per_month]
+FAILED tests/planning/test_contest_reconciliation.py::test_dated_goal_is_not_relabelled_as_equal_monthly_reference[skipped_month]
+FAILED tests/planning/test_contest_reconciliation.py::test_dated_goal_is_not_relabelled_as_equal_monthly_reference[early_payment]
+4 failed, 238 passed in 7.85s

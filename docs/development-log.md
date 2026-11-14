@@ -1,3 +1,67 @@
+# 2026-11-14 — 로컬 앱 버전 v0.2.0
+
+검증한 통합본을 한 버전 커밋과 로컬 태그 v0.2.0으로 묶었다. frontend/package.json·package-lock.json의 루트 버전만0.1.0→0.2.0으로 변경했다. 의존성·사례 B1.1·엔진/API 계약은 유지하고 CHANGELOG·업데이트 안내에 기능 묶음별 버전/PR 원칙을 기록했다.
+
+이번은 메타데이터/문서 변경으로 버전 일치·의존성 불변·공백만 확인한다. 이전 관련 Python8건·B1.1 브라우저1건·Ruff/ESLint는 반복하지 않는다. push·원격 merge·배포·운영DB·유료 호출 없음. 아래는 당시 단계 기록이다.
+
+---
+
+# 2026-11-14 — 총괄: B1.1 전체 경로·AI baseline·표시 기준 후속
+
+사용자 후속 요청과 ‘가상 보완본 B1.1’ 선택을 근거로 추가 가정/독립 기대값을 수정 전에 고정했다. 원본1.0·이전 manifest·총괄 상태 문서6개를 byte 보존했다. 기존 provider 코드는 유지하고 backend/tests에 B1.1 fixture/API 회귀, 테스트 하네스 월 시계, AI baseline helper/보호 검사를 추가했다. frozen evaluation 보존본을 활성 테스트 경로로 복원하고 원 lock 대신 별도 exact baseline 검사만 연결했다. 기대값·채점표·오프라인 차단·보류 opt-in은 변경하지 않았다.
+
+실행: `python -m pytest tests/be/test_contest_b_lifecycle.py tests/be/test_contest_ai_baseline.py tests/be/test_consultation_contest_eval.py::test_dev[R1-02] -q` — 첫 실행8 PASS. 이후 CI의 실제 달에 의존하지 않도록 B 검사 양쪽 시계를 고정한 변경으로 해당1건만 재실행해1 PASS(2.52초). 실패/동일 오류 재시도0, 고유8건이다. 관련6파일 Ruff 및 마지막 변경 파일 Ruff PASS. 실제 원 응답/JUnit은 lead/cases/b1.1에 보존했다.
+
+실행: 임시 SQLite 하네스 `--port 8337 --scheme-fixture --test-clock 2026-12-31T12:00:00+09:00`, Next dev/webpack3337에서 `node docs/contest/2026-11-14/lead/run-b11-browser.mjs` — 같은 B1.1 경로1 PASS/첫 실행. API로 입력·분석·소득 변경, UI로 비교·명시 채택·12월 기록을 수행하고 새 초안 UI/기존 이력 불변을 확인했다. 인증만 모킹했으며 응답 변조 없음. 금액 기준 문구도 같은 경로와 해당 TSX ESLint로 확인했다. [증거/ID/시계 범위](contest/2026-11-14/lead/cases/b1.1/HANDOFF.md).
+
+이번 소유3337/8337만 종료했고 기존3000/8001/8202는 유지했다. 통과한 담당 검사·보류6개·전체24평가·전체 Core/TypeScript/Build/E2E는 반복하지 않았다. 운영 DB·실모델·유료 호출·원격 쓰기·배포 없음. R3 가구 미지원과 기타 출력 상태는 보존했다. 활성 manifest/공통 인계/상태/접수/계약/증거표와 후보 diff/검토 ZIP을 갱신했으며 제출 보고서는 제품 완성 후다.
+
+---
+
+# 2026-11-14 — 총괄: FE707 수령·실제 연결 E2E2건
+
+사용자 제공 원격을 fetch해 `707da4156b1cbfafdf4be81b4b15060008e02aad`와 261e005→1e6617c→41c70b9→707da41 순서를 확인했다. 기존789194e 이후7경로를 선별 반영하고 이전6파일 byte/hash를 lead/received/results/pre-707에 보존했다. 브랜치 전환·엔진 중복 적용·Vercel 설정 변경 없음. 담당 원문 HANDOFF의 미푸시/원격789194e는 과거 기록으로 구분했다.
+
+관련 새 결합만 검사했다. lead/backend에서 `python -m tests.fe_http_harness --port 8337 --scheme-fixture`, lead/frontend에서 `BACKEND_URL=http://127.0.0.1:8337`·`NEXT_PUBLIC_SHOW_REVIEW_TOOLS=true`를 설정해 `next dev --hostname 127.0.0.1 --port 3337 --webpack`을 실행했다. 기존 설치 의존성을 junction으로 재사용했으며 설치·업데이트·빌드는 하지 않았다. lead 루트에서 `node docs/contest/2026-11-14/lead/run-fe707-integration.mjs` 실행 결과2 PASS/0 FAIL, 재시도0. [응답·실제 합성ID](contest/2026-11-14/lead/fe707-integration.json).
+
+1) F12 요청 납입일만 같은 달3회로 조정한 실제 engine preview가 goal_omissions를 생성했고 원래 OUT-04 목표30만원을 유지했다. FE 표시와 고정 가정을 확인했다. 2) 실제 UI 저장·A채택·부분기록 후 테스터 명시 API로 B를 채택했다. 화면 재진입/점검완료 revision2에서도 기존A/현재B·LOCKED·POLICY_REQUIRED/null·새 초안 안내와 자동 채택 변경 없음을 확인했다. 운영DB·실제 금융 실행·유료 모델은 사용하지 않았다. 두 개인 합성 사례를 공통 B안으로 재사용하지 않았다.
+
+검사에서 시작한3337/8337만 종료하고 기존3000/8001/8202는 유지했다. 통과한 담당 검사/API probe·전체 Core/Build/E2E는 반복하지 않았다. 금액 기준 문구·동일 B안·AI baseline은 남으며 제출 보고서는 제품 완성 후다. manifest/접수/계약/미해결/공통 상태/HANDOFF와 후보 diff·검토 ZIP을 갱신했다. 로컬 미커밋 후보이며 push·원격 merge·배포 없음.
+
+---
+
+# 2026-11-14 — 총괄: BE·FE 선별 통합과 단일 결합 probe
+
+기존 총괄/엔진 delta를 보존하고 BE 완료 diff/hash의17파일과 FE 원격789194e의 제품10파일을 대조·통합했다. AI는 업데이트 중 접수를 보류한 뒤 최종02d9a5f7의 증거를 수령하고, 평가 코드는 .py.txt로 보존했다. BE의 B안 원문/부분 매핑 PARTIAL 저장run·실제 ID도 인수했다. FE의 원격 존재와 과거 'push 안 함'을 구분하고 배포 설정을 제외했다. 제출 보고서는 제품 완성 후 작업으로 명시했다.
+
+기존 관련 테스트 반복 대신 새 결합의 임시 SQLite/TestClient 검사를1회 실행해 PASS했다. 엔진 추가 참고 필드→preview/저장run, 월 원래 채택/현재 채택 분리, no-store·부분/null, metadata 입력버전 변경 후 새 초안과 기존 run/채택 불변을 확인했다. 이 fixture는 B안이 아니며 재무 금액 변경의 시연으로 주장하지 않는다. 원출력/실제 합성 ID는 lead/integration-probe.json에 보존했다.
+
+담당242/120건의 기존 검사는 재실행하지 않았다. 공통 manifest/접수/계약/증거표/미해결/후보 인계를 갱신했다. FE 소비/공통 B안/AI baseline 잠금은 미해결, 운영·유료·배포는 미검증이다. 기존 checkout/서버/고정 증거/원응답을 보존했고 원격 쓰기는 하지 않았다.
+
+---
+
+# 2026-11-14 — 공모전 총괄: 엔진 완료 결과 접수·로컬 통합
+
+완료된 engine HANDOFF·candidate.patch·candidate-files.json을 수령했다. 공통 base/case·파일 소유권·소비 계약을 검토하고 22파일의 원본 및 복사본 SHA256을 대조했다. 원본 엔진 worktree는 변경하지 않았다. [접수 근거](contest/2026-11-14/lead/engine-intake.json)에 고정 파일 목록과 HANDOFF hash를 남겼다.
+
+provider 수정은 불규칙 납입 횟수를 경과 개월로 오해한 참고 비교를 보류하고 goal_omissions를 추가한다. 실제 OUT-04/05·질문 원문·Decimal·원응답·상태·단위·정책은 보존했다. FE 소비 변경은 소유 담당에게 인계하고 공통 manifest/증거표/접수표/미해결표를 갱신했다.
+
+엔진 담당이 실행한 고유 242건과 Ruff 결과를 수령했다. 동일 소스의 통과 검사는 반복하지 않고 JUnit 실패/재검증 연결·해시·문서 링크·변경 공백만 총괄 검증 범위로 삼았다. BE/AI/FE/제출은 미수령이고 현재 제품 ID는 null이다. 전체 Core/Build/E2E·운영 DB·유료 호출·서버 시작/종료·커밋/푸시/원격 merge/배포는 수행하지 않았다.
+
+---
+
+# 2026-11-14 — 공모전 총괄: 기준·사례·소유권 고정
+
+실제 원격을 fetch/ls-remote하고 worktree/HEAD/status/diff를 확인했다. 기존 현재 폴더는 Projects 부모 Git의 ZIP export라 실제 저장소의 `C:\Users\LG\Projects\DION-contest-lead-20261114`에 `codex/contest-lead-20261114`를 생성했다. BASE_SHA는 `eed221d1c1d305d79713ebb0dbf0c41d9c624e8a`이며 새 worktree는 clean으로 시작했다. 기존 checkout은 전환/수정하지 않았다.
+
+`contract-first`의 계약 권위·provider/consumer·파일 소유권 합의만 적용했다. B안 입력/기존 DOCX와 기본 제품 예제의 SHA-256을 고정하고 CASE_VERSION `DION-CONTEST-B-20261114-1.0`을 만들었다. 실행하지 않은 제품 ID는 null로 유지했다. Git에서 제외된 과거 snapshot3개의 실제 식별자/input_version·입력hash를 로컬 원본으로 대조했으며 두 경로의 파일 hash가 같았다. 원본 복사·ignore 변경·새 .10x 체계는 만들지 않았다.
+
+현행 API의 미래 월 차단과 B안의 미래 날짜, 직접 엔진 입력과 제품 원응답의 계약 차이를 필수 인계로 남겼다. 엔진 담당의 같은base worktree는 확인했으나 완료 인계가 없어 제품 변경은 가져오지 않았다. [manifest](contest/2026-11-14/lead/manifest.json), [소유권/경계](contest/2026-11-14/lead/OWNERSHIP-CONTRACTS.md), [6단계 증거](contest/2026-11-14/lead/EVIDENCE-CHAIN.md), [접수표](contest/2026-11-14/lead/INTEGRATION-INTAKE.md), [HANDOFF](contest/2026-11-14/lead/HANDOFF.md)를 생성했다.
+
+문서/JSON 내용·hash·경로·소유권·공백 검증 1회를 이번 범위로 정했다. 제품 코드/테스트/빌드·E2E·서버·운영 DB·실계정·유료 모델은 변경/실행하지 않았다. 최종 검증 결과와 후보 diff는 HANDOFF에 기록한다. 커밋·푸시·원격 merge·Vercel/Render 배포는 수행하지 않았다.
+
+---
+
 # 2026-11-14 — PR #23 E2E 실패 6건 보완
 
 사용자 실행 로그의 13통과·6실패 중 실패한 경로만 보완했다. 선택상자 locator, quick 모드 유지 기대값, 90초 네트워크 재시도 대기, 검토 도구의 빌드 시 활성화가 원인이었다. 선택상자 수정 뒤 발견된 합성 입력의 진단일/현금 평가일 불일치도 테스트 기준일을 원본 합성 사례(2026-11-13)에 맞춰 해결했다. 기존 사례 파일·엔진·정책·금액 기대값은 변경하지 않았다.

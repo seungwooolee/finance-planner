@@ -1,0 +1,66 @@
+{
+  "role": "results",
+  "source_head_sha": "789194e8a62df04fc1f53cb52e75c98eee621a3a",
+  "source_kind": "REMOTE_COMMIT",
+  "base_sha": "eed221d1c1d305d79713ebb0dbf0c41d9c624e8a",
+  "accepted_files": [
+    {
+      "path": "frontend/e2e/dion.spec.ts",
+      "sha256": "8504d7320ecd58ab45e35e4966e2607e25572658e2238872ddc1c055aded457f",
+      "git_blob": "865769849daf56122d388ac917add5ecaf33f7c6"
+    },
+    {
+      "path": "frontend/src/components/dion/calc-basis-strip.tsx",
+      "sha256": "3cb03e3471ad51a8f80ffa8099d6c657477bcb198303d1d7fa52e861633b2af4",
+      "git_blob": "2af07e3b3531eff0bbd3d8111763723b2eea623f"
+    },
+    {
+      "path": "frontend/src/components/dion/final-portfolio.tsx",
+      "sha256": "ecb732975802af862e4d99950a7a673062b9c1e2e432f13cf315fca0b5d82acb",
+      "git_blob": "789c42110339cca6fd7da29bc969edb64bc33447"
+    },
+    {
+      "path": "frontend/src/components/dion/financial-overview.tsx",
+      "sha256": "6cc21066a8b44f706c283ee376ff15090f75ea19958910c77c086f81f0144223",
+      "git_blob": "43a90af9e4ca9a1826ed2f3856a4b72cfd17839d"
+    },
+    {
+      "path": "frontend/src/components/dion/financial-proposal.tsx",
+      "sha256": "6e432f0b5fc32e017f4f0dc5116c5d26f98f5e9fe009991dc8a9f29ae83ccaff",
+      "git_blob": "915f5cc48750f6d363894e7d624e7221584f8179"
+    },
+    {
+      "path": "frontend/src/components/dion/plan-comparison.tsx",
+      "sha256": "697d2a8dc18138971850c87609ba04895ee3c9002aefd14e7cb1cdf1bec04708",
+      "git_blob": "00dc9f6c5caedc7028aab3a2b4b9dcff6157fbc3"
+    },
+    {
+      "path": "frontend/src/components/dion/planner.css",
+      "sha256": "10b42cf42095a979335afe6ad1fea6aff8bd06b09861909b9de012102003aa82",
+      "git_blob": "9b763ba6595b98a81299ae8e548858863e15271b"
+    },
+    {
+      "path": "frontend/src/components/dion/planner.tsx",
+      "sha256": "2b4b791daa77c5636972e799e22963f53b2ec7f4ba5fe7735086a24fb4659731",
+      "git_blob": "8d4e9ad48c8513fedd8fe7eefeae438a166d89df"
+    },
+    {
+      "path": "frontend/src/components/dion/results.tsx",
+      "sha256": "e30c431607291614359948d5fbeca32ad791addf82b8d22912762dbc13ca9942",
+      "git_blob": "e8cc745b89247c0a6d50b2f6e3554c8f538f33f2"
+    },
+    {
+      "path": "frontend/src/lib/dion/result-visual.ts",
+      "sha256": "af4af31216fb606b2afa652e75fdd7cd2bcc6c810f3210123c49245a61ea79c0",
+      "git_blob": "4b7acb75bd1fdcc0884b473d9bb51060d7719a30"
+    }
+  ],
+  "excluded_paths": [
+    "HANDOFF.md",
+    "frontend/vercel.json"
+  ],
+  "handoff_relocated_to": "docs/contest/2026-11-14/lead/received/results/source-HANDOFF.md",
+  "source_handoff_stale_push_statement": true,
+  "source_validation_case_is_common_B": false,
+  "deployment_config_applied": false
+}

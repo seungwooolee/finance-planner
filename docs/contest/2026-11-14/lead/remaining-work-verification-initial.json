@@ -1,0 +1,59 @@
+{
+  "state": "FAIL",
+  "scope": "NEW_FOLLOWUP_PATHS_IMMUTABLE_CONTRACTS_AND_SAME_CASE_GRAPH",
+  "issues": [
+    "missing link: docs/contest/2026-11-14/lead/HANDOFF.md -> remaining-work-verification.json"
+  ],
+  "active_case_version": "DION-CONTEST-B-20261114-1.1",
+  "same_browser_case_graph": "PASS",
+  "B10_source_and_manifest_preserved": true,
+  "original_AI_lock_sha256": "0613a19e686bd05a93294d0eb6408291860157d56c6c918910ecec9e4f797e8d",
+  "frozen_files_unchanged": 41,
+  "exact_BE_overrides_valid": 2,
+  "grading_and_egress_AST_unchanged": true,
+  "provider_runtime_bytes_unchanged_since_intake": [
+    "backend/app/be/plan_api.py",
+    "backend/app/be/plan_checkin.py",
+    "backend/app/planning/proposal_reference.py"
+  ],
+  "protected_paths_unchanged": true,
+  "new_json_parse_count": 10,
+  "added_editable_links_checked": 74,
+  "whitespace_returncode": 0,
+  "pytest": [
+    {
+      "path": "pytest-initial.xml",
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0
+    },
+    {
+      "path": "pytest-fixed-clock.xml",
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0
+    }
+  ],
+  "unique_new_python_tests": 8,
+  "same_error_retries": 0,
+  "browser": {
+    "state": "PASS",
+    "scenarios": 1,
+    "grouped_checks": 6,
+    "retries": 0
+  },
+  "ruff": "PASS_6_CHANGED_FILES_PLUS_FINAL_CLOCK_TEST",
+  "eslint": "PASS_CHANGED_COMPONENT_ONLY",
+  "full_core": "NOT_RUN",
+  "typecheck": "NOT_RUN_COPY_ONLY",
+  "build": "NOT_RUN",
+  "full_e2e": "NOT_RUN",
+  "full_24_ai_rerun": false,
+  "holdout_rerun": false,
+  "operating_DB": false,
+  "paid_calls": 0,
+  "push": false,
+  "remote_merge": false,
+  "deploy": false,
+  "servers": "OWN_3337_8337_STOPPED_EXISTING_3000_8001_8202_PRESERVED"
+}

@@ -1,0 +1,2350 @@
+{
+  "eval_id": "R1-04",
+  "environment": "SYNTHETIC_LOCAL_ONLY",
+  "product_B_ids_created": false,
+  "responses": [
+    {
+      "layer": "EXPLANATION_SERVICE",
+      "body": {
+        "contract_version": "DION-EXPLANATION-1.0",
+        "fact_schema_version": "DION-EXPLANATION-FACTS-1.0",
+        "validator_version": "DION-EXPLANATION-VALIDATOR-1.0",
+        "prompt_version": "DION-EXPLANATION-SELECTION-1.0",
+        "provider_version": "TEMPLATE-1.0",
+        "provider_usage": null,
+        "explanation_id": "exp_1bc29393b6e34c3aa77cc82dff9624ad",
+        "request_key": "request-one",
+        "case_id": "case-A",
+        "run_id": "run_c1befc16e1d344f08b3299fd9522f90d",
+        "input_version": 14,
+        "raw_snapshot_id": "raw_06f1e5f5ede94934a5776ee7d5aeace7",
+        "input_hash": "af896c110764436dafb4b19c3f4373a4e935be24d105c885b9c1e395af80ba06",
+        "normalized_input_hash": "cef155b98f22a134e31ac85f917d55e4d24dcc7c1fda88db88382194e055e8bc",
+        "result_sha256": "d522c180359d0ce25cce7f7e51ff531e2b8ef567ab7482f0df5200f1402250ce",
+        "fact_set_sha256": "557ae507f34504b017407d4d51b2a8688a085a2bd0d8cffe02f75deb3a8fd4cc",
+        "evaluation_on": "2026-10-31",
+        "detail_level": "SHORT",
+        "output_ids": [
+          "OUT-03",
+          "OUT-05"
+        ],
+        "strategy_id": null,
+        "explained_at": "2026-11-14T09:19:20.317702+00:00",
+        "elapsed_ms": 61,
+        "status": "FALLBACK",
+        "source": "DETERMINISTIC",
+        "reason_code": "DRAFT_SCHEMA_INVALID",
+        "verification_scope": "STORED_RESULT_EXPLANATION_CONSISTENCY_ONLY",
+        "blocks": [
+          {
+            "claim_id": "MONTHLY_REMAINDER_AFTER_EXISTING",
+            "kind": "SUMMARY",
+            "text": "2026-10-01 ~ 2026-10-31 기준, 상환과 기존 납입을 반영한 월 잔여는 90만원입니다. 목표·보호자금 배정 전 금액이에요.",
+            "fact_refs": [
+              "fact_bdbea38993a86dd7c997be5ae44f86c1788412ce7584f447b5cc4bb2510a3026"
+            ],
+            "source_refs": [
+              "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+              "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+              "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+              "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a",
+              "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+              "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce"
+            ],
+            "assumption_refs": []
+          },
+          {
+            "claim_id": "FLOW_IS_NOT_RECOMMENDATION",
+            "kind": "LIMITATION",
+            "text": "이 월 잔여는 투자 권장액이 아니며, 앞으로도 같은 소득·지출이 이어진다는 보장은 없어요.",
+            "fact_refs": [],
+            "source_refs": [],
+            "assumption_refs": []
+          },
+          {
+            "claim_id": "SCENARIO_ALLOCATION_STABILITY_FIRST",
+            "kind": "SUMMARY",
+            "text": "첫 계산 월 2026-11의 안정 후보는 신규 투자 배정 30만원, 추가 현금 유지 30만원입니다.",
+            "fact_refs": [
+              "fact_f78498d1470bbb63439cc30cdf4a0d9fd43e772e50e0081892fb6595a80414bc",
+              "fact_411544706638442be1b77c85de94eca353b412c40ab0ab1f51217c9e99886d8f"
+            ],
+            "source_refs": [
+              "raw-revision:ans_0571ebe8194242a08c581f6b068777bd",
+              "raw-revision:ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+              "raw-revision:ans_1423bc0f269241c096ec53462f7b9c62",
+              "raw-revision:ans_1834bfbc566f4ca59c1524c3b7b372dc",
+              "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+              "raw-revision:ans_7605c2fbb55d40068cdcb565eead4125",
+              "raw-revision:ans_8e8c633980fe45d5bee32ea5f88a3dee",
+              "raw-revision:ans_98c6688aba744f16bbb1582b6774d10f",
+              "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+              "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+              "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a",
+              "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+              "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce"
+            ],
+            "assumption_refs": [
+              "CURRENT_BALANCES_CARRIED_FORWARD_SCENARIO",
+              "ZERO_RETURN",
+              "CONFIRMED_FUTURE_INPUT"
+            ]
+          },
+          {
+            "claim_id": "SCENARIO_ALLOCATION_INVESTMENT_CAPACITY",
+            "kind": "SUMMARY",
+            "text": "첫 계산 월 2026-11의 확대 후보는 신규 투자 배정 48만원, 추가 현금 유지 12만원입니다.",
+            "fact_refs": [
+              "fact_f04e6807e0ab48d32848f571f468843102a880ca243747c2a11f6a536ab42b75",
+              "fact_1ddbe7cd99fb9333c6df435de551a387a9cc78a7c109e1cc6c169df99868a4b1"
+            ],
+            "source_refs": [
+              "raw-revision:ans_0571ebe8194242a08c581f6b068777bd",
+              "raw-revision:ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+              "raw-revision:ans_1423bc0f269241c096ec53462f7b9c62",
+              "raw-revision:ans_1834bfbc566f4ca59c1524c3b7b372dc",
+              "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+              "raw-revision:ans_7605c2fbb55d40068cdcb565eead4125",
+              "raw-revision:ans_8e8c633980fe45d5bee32ea5f88a3dee",
+              "raw-revision:ans_98c6688aba744f16bbb1582b6774d10f",
+              "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+              "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+              "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a",
+              "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+              "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce"
+            ],
+            "assumption_refs": [
+              "CURRENT_BALANCES_CARRIED_FORWARD_SCENARIO",
+              "ZERO_RETURN",
+              "CONFIRMED_FUTURE_INPUT"
+            ]
+          },
+          {
+            "claim_id": "SCENARIO_LIMITS",
+            "kind": "LIMITATION",
+            "text": "확인한 미래소득·지출과 현재 잔액 이월, 수익률 0의 시나리오입니다. 실제 투자 권장액은 미정이고, 지급일별 잔고 보장·계획 채택·금융거래를 뜻하지 않아요. 해설은 첫 계산 월을 다루며 전체 기간은 기존 결과에서 확인하세요.",
+            "fact_refs": [],
+            "source_refs": [],
+            "assumption_refs": [
+              "CURRENT_BALANCES_CARRIED_FORWARD_SCENARIO",
+              "ZERO_RETURN",
+              "CONFIRMED_FUTURE_INPUT"
+            ]
+          }
+        ],
+        "facts": [
+          {
+            "fact_id": "fact_bdbea38993a86dd7c997be5ae44f86c1788412ce7584f447b5cc4bb2510a3026",
+            "run_id": "run_c1befc16e1d344f08b3299fd9522f90d",
+            "output_id": "OUT-03",
+            "locator": {
+              "output_id": "OUT-03",
+              "metric": "after_existing_contributions_krw",
+              "strategy_id": null,
+              "period": "2026-10-01",
+              "period_end": "2026-10-31",
+              "scope": "personal",
+              "owner_scope_hash": "c787d6c804600c438f39b89b64134a2b1d1552d9f2de11f3a3413931dda3b166"
+            },
+            "result_path": "/results/OUT-03/after_existing_contributions_krw",
+            "value": "900000",
+            "unit": "KRW",
+            "value_kind": "OBSERVED_PERIOD_CASHFLOW",
+            "evaluation_on": "2026-10-31",
+            "displayable": true,
+            "source_refs": [
+              "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+              "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+              "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+              "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+              "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce",
+              "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a"
+            ],
+            "input_evidence_refs": [
+              {
+                "source_ref": "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+                "answer_revision_id": "ans_a1745287d0b94082aa27fbeacc456216",
+                "question_id": "NEW-01",
+                "definition_version": "1.2.1",
+                "input_version": 1,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "assessment_scope",
+                  "asset_coverage",
+                  "included_owner_ids",
+                  "owner_confirmation_ref",
+                  "scope_acknowledged",
+                  "scope_version"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+                "answer_revision_id": "ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+                "question_id": "F03",
+                "definition_version": "1.2",
+                "input_version": 2,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "includes_one_off_income",
+                  "income_amount_status",
+                  "income_definition_version",
+                  "income_period_end",
+                  "income_period_start",
+                  "income_reference_period",
+                  "monthly_net_income_krw"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+                "answer_revision_id": "ans_42d6e83fb945426c8564643c934ca1b1",
+                "question_id": "F04",
+                "definition_version": "1.2.1",
+                "input_version": 3,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "essential_living",
+                  "exclusions_confirmed",
+                  "expense_basis",
+                  "included_contributions",
+                  "included_debt",
+                  "living",
+                  "period_end",
+                  "period_start",
+                  "response_definition_version"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+                "answer_revision_id": "ans_c6b49b6f8bb94e33b65550916e26d8ec",
+                "question_id": "NEW-04",
+                "definition_version": "1.2",
+                "input_version": 5,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "has_liabilities"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce",
+                "answer_revision_id": "ans_e2c79b90492e49899ebb81b6714f68ce",
+                "question_id": "F09+F10+D08",
+                "definition_version": "1.2.1",
+                "input_version": 6,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "debts"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a",
+                "answer_revision_id": "ans_be807b1d240c482993e5b62e0b5b243a",
+                "question_id": "NEW-03",
+                "definition_version": "1.2",
+                "input_version": 7,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "existing_contributions"
+                ]
+              }
+            ],
+            "policy_refs": [],
+            "calc_state": "CALCULATED"
+          },
+          {
+            "fact_id": "fact_f78498d1470bbb63439cc30cdf4a0d9fd43e772e50e0081892fb6595a80414bc",
+            "run_id": "run_c1befc16e1d344f08b3299fd9522f90d",
+            "output_id": "OUT-05",
+            "locator": {
+              "output_id": "OUT-05",
+              "metric": "new_investment_krw",
+              "strategy_id": "STABILITY_FIRST",
+              "period": "2026-11",
+              "period_end": null,
+              "scope": "personal",
+              "owner_scope_hash": "c787d6c804600c438f39b89b64134a2b1d1552d9f2de11f3a3413931dda3b166"
+            },
+            "result_path": "/results/OUT-05/candidates/0/rows/0/new_investment_krw",
+            "value": "300000",
+            "unit": "KRW",
+            "value_kind": "MONTHLY_SCENARIO_ALLOCATION",
+            "evaluation_on": "2026-10-31",
+            "displayable": true,
+            "source_refs": [
+              "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+              "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+              "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+              "raw-revision:ans_0571ebe8194242a08c581f6b068777bd",
+              "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+              "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce",
+              "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a",
+              "raw-revision:ans_1423bc0f269241c096ec53462f7b9c62",
+              "raw-revision:ans_8e8c633980fe45d5bee32ea5f88a3dee",
+              "raw-revision:ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+              "raw-revision:ans_1834bfbc566f4ca59c1524c3b7b372dc",
+              "raw-revision:ans_98c6688aba744f16bbb1582b6774d10f",
+              "raw-revision:ans_7605c2fbb55d40068cdcb565eead4125"
+            ],
+            "input_evidence_refs": [
+              {
+                "source_ref": "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+                "answer_revision_id": "ans_a1745287d0b94082aa27fbeacc456216",
+                "question_id": "NEW-01",
+                "definition_version": "1.2.1",
+                "input_version": 1,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "assessment_scope",
+                  "asset_coverage",
+                  "included_owner_ids",
+                  "owner_confirmation_ref",
+                  "scope_acknowledged",
+                  "scope_version"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+                "answer_revision_id": "ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+                "question_id": "F03",
+                "definition_version": "1.2",
+                "input_version": 2,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "includes_one_off_income",
+                  "income_amount_status",
+                  "income_definition_version",
+                  "income_period_end",
+                  "income_period_start",
+                  "income_reference_period",
+                  "monthly_net_income_krw"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+                "answer_revision_id": "ans_42d6e83fb945426c8564643c934ca1b1",
+                "question_id": "F04",
+                "definition_version": "1.2.1",
+                "input_version": 3,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "essential_living",
+                  "exclusions_confirmed",
+                  "expense_basis",
+                  "included_contributions",
+                  "included_debt",
+                  "living",
+                  "period_end",
+                  "period_start",
+                  "response_definition_version"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_0571ebe8194242a08c581f6b068777bd",
+                "answer_revision_id": "ans_0571ebe8194242a08c581f6b068777bd",
+                "question_id": "F06",
+                "definition_version": "1.2",
+                "input_version": 4,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "accounts",
+                  "financial_assets",
+                  "financial_assets_detail_status",
+                  "financial_assets_total_reported_krw"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+                "answer_revision_id": "ans_c6b49b6f8bb94e33b65550916e26d8ec",
+                "question_id": "NEW-04",
+                "definition_version": "1.2",
+                "input_version": 5,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "has_liabilities"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce",
+                "answer_revision_id": "ans_e2c79b90492e49899ebb81b6714f68ce",
+                "question_id": "F09+F10+D08",
+                "definition_version": "1.2.1",
+                "input_version": 6,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "debts"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a",
+                "answer_revision_id": "ans_be807b1d240c482993e5b62e0b5b243a",
+                "question_id": "NEW-03",
+                "definition_version": "1.2",
+                "input_version": 7,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "existing_contributions"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_1423bc0f269241c096ec53462f7b9c62",
+                "answer_revision_id": "ans_1423bc0f269241c096ec53462f7b9c62",
+                "question_id": "NEW-02",
+                "definition_version": "1.2",
+                "input_version": 8,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "events",
+                  "income_change_status"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_8e8c633980fe45d5bee32ea5f88a3dee",
+                "answer_revision_id": "ans_8e8c633980fe45d5bee32ea5f88a3dee",
+                "question_id": "NEW-05",
+                "definition_version": "1.2",
+                "input_version": 9,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "planned_expenses"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+                "answer_revision_id": "ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+                "question_id": "NEW-06",
+                "definition_version": "1.2.1",
+                "input_version": 10,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "customer_operating_total",
+                  "customer_protection_total",
+                  "customer_target_mode",
+                  "policy_version",
+                  "reservations"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_1834bfbc566f4ca59c1524c3b7b372dc",
+                "answer_revision_id": "ans_1834bfbc566f4ca59c1524c3b7b372dc",
+                "question_id": "F11",
+                "definition_version": "1.2",
+                "input_version": 11,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "goals"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_98c6688aba744f16bbb1582b6774d10f",
+                "answer_revision_id": "ans_98c6688aba744f16bbb1582b6774d10f",
+                "question_id": "F12",
+                "definition_version": "1.2",
+                "input_version": 12,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "goals"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_7605c2fbb55d40068cdcb565eead4125",
+                "answer_revision_id": "ans_7605c2fbb55d40068cdcb565eead4125",
+                "question_id": "F13",
+                "definition_version": "1.2",
+                "input_version": 13,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "goals"
+                ]
+              }
+            ],
+            "policy_refs": [
+              "DION-ALLOCATION-1.0"
+            ],
+            "calc_state": "CALCULATED"
+          },
+          {
+            "fact_id": "fact_411544706638442be1b77c85de94eca353b412c40ab0ab1f51217c9e99886d8f",
+            "run_id": "run_c1befc16e1d344f08b3299fd9522f90d",
+            "output_id": "OUT-05",
+            "locator": {
+              "output_id": "OUT-05",
+              "metric": "additional_cash_krw",
+              "strategy_id": "STABILITY_FIRST",
+              "period": "2026-11",
+              "period_end": null,
+              "scope": "personal",
+              "owner_scope_hash": "c787d6c804600c438f39b89b64134a2b1d1552d9f2de11f3a3413931dda3b166"
+            },
+            "result_path": "/results/OUT-05/candidates/0/rows/0/additional_cash_krw",
+            "value": "300000",
+            "unit": "KRW",
+            "value_kind": "MONTHLY_SCENARIO_ALLOCATION",
+            "evaluation_on": "2026-10-31",
+            "displayable": true,
+            "source_refs": [
+              "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+              "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+              "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+              "raw-revision:ans_0571ebe8194242a08c581f6b068777bd",
+              "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+              "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce",
+              "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a",
+              "raw-revision:ans_1423bc0f269241c096ec53462f7b9c62",
+              "raw-revision:ans_8e8c633980fe45d5bee32ea5f88a3dee",
+              "raw-revision:ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+              "raw-revision:ans_1834bfbc566f4ca59c1524c3b7b372dc",
+              "raw-revision:ans_98c6688aba744f16bbb1582b6774d10f",
+              "raw-revision:ans_7605c2fbb55d40068cdcb565eead4125"
+            ],
+            "input_evidence_refs": [
+              {
+                "source_ref": "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+                "answer_revision_id": "ans_a1745287d0b94082aa27fbeacc456216",
+                "question_id": "NEW-01",
+                "definition_version": "1.2.1",
+                "input_version": 1,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "assessment_scope",
+                  "asset_coverage",
+                  "included_owner_ids",
+                  "owner_confirmation_ref",
+                  "scope_acknowledged",
+                  "scope_version"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+                "answer_revision_id": "ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+                "question_id": "F03",
+                "definition_version": "1.2",
+                "input_version": 2,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "includes_one_off_income",
+                  "income_amount_status",
+                  "income_definition_version",
+                  "income_period_end",
+                  "income_period_start",
+                  "income_reference_period",
+                  "monthly_net_income_krw"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+                "answer_revision_id": "ans_42d6e83fb945426c8564643c934ca1b1",
+                "question_id": "F04",
+                "definition_version": "1.2.1",
+                "input_version": 3,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "essential_living",
+                  "exclusions_confirmed",
+                  "expense_basis",
+                  "included_contributions",
+                  "included_debt",
+                  "living",
+                  "period_end",
+                  "period_start",
+                  "response_definition_version"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_0571ebe8194242a08c581f6b068777bd",
+                "answer_revision_id": "ans_0571ebe8194242a08c581f6b068777bd",
+                "question_id": "F06",
+                "definition_version": "1.2",
+                "input_version": 4,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "accounts",
+                  "financial_assets",
+                  "financial_assets_detail_status",
+                  "financial_assets_total_reported_krw"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+                "answer_revision_id": "ans_c6b49b6f8bb94e33b65550916e26d8ec",
+                "question_id": "NEW-04",
+                "definition_version": "1.2",
+                "input_version": 5,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "has_liabilities"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce",
+                "answer_revision_id": "ans_e2c79b90492e49899ebb81b6714f68ce",
+                "question_id": "F09+F10+D08",
+                "definition_version": "1.2.1",
+                "input_version": 6,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "debts"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a",
+                "answer_revision_id": "ans_be807b1d240c482993e5b62e0b5b243a",
+                "question_id": "NEW-03",
+                "definition_version": "1.2",
+                "input_version": 7,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "existing_contributions"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_1423bc0f269241c096ec53462f7b9c62",
+                "answer_revision_id": "ans_1423bc0f269241c096ec53462f7b9c62",
+                "question_id": "NEW-02",
+                "definition_version": "1.2",
+                "input_version": 8,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "events",
+                  "income_change_status"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_8e8c633980fe45d5bee32ea5f88a3dee",
+                "answer_revision_id": "ans_8e8c633980fe45d5bee32ea5f88a3dee",
+                "question_id": "NEW-05",
+                "definition_version": "1.2",
+                "input_version": 9,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "planned_expenses"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+                "answer_revision_id": "ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+                "question_id": "NEW-06",
+                "definition_version": "1.2.1",
+                "input_version": 10,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "customer_operating_total",
+                  "customer_protection_total",
+                  "customer_target_mode",
+                  "policy_version",
+                  "reservations"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_1834bfbc566f4ca59c1524c3b7b372dc",
+                "answer_revision_id": "ans_1834bfbc566f4ca59c1524c3b7b372dc",
+                "question_id": "F11",
+                "definition_version": "1.2",
+                "input_version": 11,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "goals"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_98c6688aba744f16bbb1582b6774d10f",
+                "answer_revision_id": "ans_98c6688aba744f16bbb1582b6774d10f",
+                "question_id": "F12",
+                "definition_version": "1.2",
+                "input_version": 12,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "goals"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_7605c2fbb55d40068cdcb565eead4125",
+                "answer_revision_id": "ans_7605c2fbb55d40068cdcb565eead4125",
+                "question_id": "F13",
+                "definition_version": "1.2",
+                "input_version": 13,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "goals"
+                ]
+              }
+            ],
+            "policy_refs": [
+              "DION-ALLOCATION-1.0"
+            ],
+            "calc_state": "CALCULATED"
+          },
+          {
+            "fact_id": "fact_f04e6807e0ab48d32848f571f468843102a880ca243747c2a11f6a536ab42b75",
+            "run_id": "run_c1befc16e1d344f08b3299fd9522f90d",
+            "output_id": "OUT-05",
+            "locator": {
+              "output_id": "OUT-05",
+              "metric": "new_investment_krw",
+              "strategy_id": "INVESTMENT_CAPACITY",
+              "period": "2026-11",
+              "period_end": null,
+              "scope": "personal",
+              "owner_scope_hash": "c787d6c804600c438f39b89b64134a2b1d1552d9f2de11f3a3413931dda3b166"
+            },
+            "result_path": "/results/OUT-05/candidates/1/rows/0/new_investment_krw",
+            "value": "480000",
+            "unit": "KRW",
+            "value_kind": "MONTHLY_SCENARIO_ALLOCATION",
+            "evaluation_on": "2026-10-31",
+            "displayable": true,
+            "source_refs": [
+              "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+              "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+              "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+              "raw-revision:ans_0571ebe8194242a08c581f6b068777bd",
+              "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+              "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce",
+              "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a",
+              "raw-revision:ans_1423bc0f269241c096ec53462f7b9c62",
+              "raw-revision:ans_8e8c633980fe45d5bee32ea5f88a3dee",
+              "raw-revision:ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+              "raw-revision:ans_1834bfbc566f4ca59c1524c3b7b372dc",
+              "raw-revision:ans_98c6688aba744f16bbb1582b6774d10f",
+              "raw-revision:ans_7605c2fbb55d40068cdcb565eead4125"
+            ],
+            "input_evidence_refs": [
+              {
+                "source_ref": "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+                "answer_revision_id": "ans_a1745287d0b94082aa27fbeacc456216",
+                "question_id": "NEW-01",
+                "definition_version": "1.2.1",
+                "input_version": 1,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "assessment_scope",
+                  "asset_coverage",
+                  "included_owner_ids",
+                  "owner_confirmation_ref",
+                  "scope_acknowledged",
+                  "scope_version"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+                "answer_revision_id": "ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+                "question_id": "F03",
+                "definition_version": "1.2",
+                "input_version": 2,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "includes_one_off_income",
+                  "income_amount_status",
+                  "income_definition_version",
+                  "income_period_end",
+                  "income_period_start",
+                  "income_reference_period",
+                  "monthly_net_income_krw"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+                "answer_revision_id": "ans_42d6e83fb945426c8564643c934ca1b1",
+                "question_id": "F04",
+                "definition_version": "1.2.1",
+                "input_version": 3,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "essential_living",
+                  "exclusions_confirmed",
+                  "expense_basis",
+                  "included_contributions",
+                  "included_debt",
+                  "living",
+                  "period_end",
+                  "period_start",
+                  "response_definition_version"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_0571ebe8194242a08c581f6b068777bd",
+                "answer_revision_id": "ans_0571ebe8194242a08c581f6b068777bd",
+                "question_id": "F06",
+                "definition_version": "1.2",
+                "input_version": 4,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "accounts",
+                  "financial_assets",
+                  "financial_assets_detail_status",
+                  "financial_assets_total_reported_krw"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+                "answer_revision_id": "ans_c6b49b6f8bb94e33b65550916e26d8ec",
+                "question_id": "NEW-04",
+                "definition_version": "1.2",
+                "input_version": 5,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "has_liabilities"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce",
+                "answer_revision_id": "ans_e2c79b90492e49899ebb81b6714f68ce",
+                "question_id": "F09+F10+D08",
+                "definition_version": "1.2.1",
+                "input_version": 6,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "debts"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a",
+                "answer_revision_id": "ans_be807b1d240c482993e5b62e0b5b243a",
+                "question_id": "NEW-03",
+                "definition_version": "1.2",
+                "input_version": 7,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "existing_contributions"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_1423bc0f269241c096ec53462f7b9c62",
+                "answer_revision_id": "ans_1423bc0f269241c096ec53462f7b9c62",
+                "question_id": "NEW-02",
+                "definition_version": "1.2",
+                "input_version": 8,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "events",
+                  "income_change_status"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_8e8c633980fe45d5bee32ea5f88a3dee",
+                "answer_revision_id": "ans_8e8c633980fe45d5bee32ea5f88a3dee",
+                "question_id": "NEW-05",
+                "definition_version": "1.2",
+                "input_version": 9,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "planned_expenses"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+                "answer_revision_id": "ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+                "question_id": "NEW-06",
+                "definition_version": "1.2.1",
+                "input_version": 10,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "customer_operating_total",
+                  "customer_protection_total",
+                  "customer_target_mode",
+                  "policy_version",
+                  "reservations"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_1834bfbc566f4ca59c1524c3b7b372dc",
+                "answer_revision_id": "ans_1834bfbc566f4ca59c1524c3b7b372dc",
+                "question_id": "F11",
+                "definition_version": "1.2",
+                "input_version": 11,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "goals"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_98c6688aba744f16bbb1582b6774d10f",
+                "answer_revision_id": "ans_98c6688aba744f16bbb1582b6774d10f",
+                "question_id": "F12",
+                "definition_version": "1.2",
+                "input_version": 12,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "goals"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_7605c2fbb55d40068cdcb565eead4125",
+                "answer_revision_id": "ans_7605c2fbb55d40068cdcb565eead4125",
+                "question_id": "F13",
+                "definition_version": "1.2",
+                "input_version": 13,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "goals"
+                ]
+              }
+            ],
+            "policy_refs": [
+              "DION-ALLOCATION-1.0"
+            ],
+            "calc_state": "CALCULATED"
+          },
+          {
+            "fact_id": "fact_1ddbe7cd99fb9333c6df435de551a387a9cc78a7c109e1cc6c169df99868a4b1",
+            "run_id": "run_c1befc16e1d344f08b3299fd9522f90d",
+            "output_id": "OUT-05",
+            "locator": {
+              "output_id": "OUT-05",
+              "metric": "additional_cash_krw",
+              "strategy_id": "INVESTMENT_CAPACITY",
+              "period": "2026-11",
+              "period_end": null,
+              "scope": "personal",
+              "owner_scope_hash": "c787d6c804600c438f39b89b64134a2b1d1552d9f2de11f3a3413931dda3b166"
+            },
+            "result_path": "/results/OUT-05/candidates/1/rows/0/additional_cash_krw",
+            "value": "120000",
+            "unit": "KRW",
+            "value_kind": "MONTHLY_SCENARIO_ALLOCATION",
+            "evaluation_on": "2026-10-31",
+            "displayable": true,
+            "source_refs": [
+              "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+              "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+              "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+              "raw-revision:ans_0571ebe8194242a08c581f6b068777bd",
+              "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+              "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce",
+              "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a",
+              "raw-revision:ans_1423bc0f269241c096ec53462f7b9c62",
+              "raw-revision:ans_8e8c633980fe45d5bee32ea5f88a3dee",
+              "raw-revision:ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+              "raw-revision:ans_1834bfbc566f4ca59c1524c3b7b372dc",
+              "raw-revision:ans_98c6688aba744f16bbb1582b6774d10f",
+              "raw-revision:ans_7605c2fbb55d40068cdcb565eead4125"
+            ],
+            "input_evidence_refs": [
+              {
+                "source_ref": "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+                "answer_revision_id": "ans_a1745287d0b94082aa27fbeacc456216",
+                "question_id": "NEW-01",
+                "definition_version": "1.2.1",
+                "input_version": 1,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "assessment_scope",
+                  "asset_coverage",
+                  "included_owner_ids",
+                  "owner_confirmation_ref",
+                  "scope_acknowledged",
+                  "scope_version"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+                "answer_revision_id": "ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+                "question_id": "F03",
+                "definition_version": "1.2",
+                "input_version": 2,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "includes_one_off_income",
+                  "income_amount_status",
+                  "income_definition_version",
+                  "income_period_end",
+                  "income_period_start",
+                  "income_reference_period",
+                  "monthly_net_income_krw"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+                "answer_revision_id": "ans_42d6e83fb945426c8564643c934ca1b1",
+                "question_id": "F04",
+                "definition_version": "1.2.1",
+                "input_version": 3,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "essential_living",
+                  "exclusions_confirmed",
+                  "expense_basis",
+                  "included_contributions",
+                  "included_debt",
+                  "living",
+                  "period_end",
+                  "period_start",
+                  "response_definition_version"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_0571ebe8194242a08c581f6b068777bd",
+                "answer_revision_id": "ans_0571ebe8194242a08c581f6b068777bd",
+                "question_id": "F06",
+                "definition_version": "1.2",
+                "input_version": 4,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "accounts",
+                  "financial_assets",
+                  "financial_assets_detail_status",
+                  "financial_assets_total_reported_krw"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+                "answer_revision_id": "ans_c6b49b6f8bb94e33b65550916e26d8ec",
+                "question_id": "NEW-04",
+                "definition_version": "1.2",
+                "input_version": 5,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "has_liabilities"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce",
+                "answer_revision_id": "ans_e2c79b90492e49899ebb81b6714f68ce",
+                "question_id": "F09+F10+D08",
+                "definition_version": "1.2.1",
+                "input_version": 6,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "debts"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a",
+                "answer_revision_id": "ans_be807b1d240c482993e5b62e0b5b243a",
+                "question_id": "NEW-03",
+                "definition_version": "1.2",
+                "input_version": 7,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "existing_contributions"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_1423bc0f269241c096ec53462f7b9c62",
+                "answer_revision_id": "ans_1423bc0f269241c096ec53462f7b9c62",
+                "question_id": "NEW-02",
+                "definition_version": "1.2",
+                "input_version": 8,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "events",
+                  "income_change_status"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_8e8c633980fe45d5bee32ea5f88a3dee",
+                "answer_revision_id": "ans_8e8c633980fe45d5bee32ea5f88a3dee",
+                "question_id": "NEW-05",
+                "definition_version": "1.2",
+                "input_version": 9,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "planned_expenses"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+                "answer_revision_id": "ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+                "question_id": "NEW-06",
+                "definition_version": "1.2.1",
+                "input_version": 10,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "customer_operating_total",
+                  "customer_protection_total",
+                  "customer_target_mode",
+                  "policy_version",
+                  "reservations"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_1834bfbc566f4ca59c1524c3b7b372dc",
+                "answer_revision_id": "ans_1834bfbc566f4ca59c1524c3b7b372dc",
+                "question_id": "F11",
+                "definition_version": "1.2",
+                "input_version": 11,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "goals"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_98c6688aba744f16bbb1582b6774d10f",
+                "answer_revision_id": "ans_98c6688aba744f16bbb1582b6774d10f",
+                "question_id": "F12",
+                "definition_version": "1.2",
+                "input_version": 12,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "goals"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_7605c2fbb55d40068cdcb565eead4125",
+                "answer_revision_id": "ans_7605c2fbb55d40068cdcb565eead4125",
+                "question_id": "F13",
+                "definition_version": "1.2",
+                "input_version": 13,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "goals"
+                ]
+              }
+            ],
+            "policy_refs": [
+              "DION-ALLOCATION-1.0"
+            ],
+            "calc_state": "CALCULATED"
+          }
+        ],
+        "next_checks": [
+          {
+            "check_id": "check_NEW-02",
+            "question_id": "NEW-02",
+            "text": "적용한 미래 소득 가정이 지금도 맞는지 확인해 주세요."
+          },
+          {
+            "check_id": "check_F12",
+            "question_id": "F12",
+            "text": "적용한 목표 사용일이 지금도 맞는지 확인해 주세요."
+          }
+        ],
+        "limitations": [
+          "이 월 잔여는 투자 권장액이 아니며, 앞으로도 같은 소득·지출이 이어진다는 보장은 없어요.",
+          "확인한 미래소득·지출과 현재 잔액 이월, 수익률 0의 시나리오입니다. 실제 투자 권장액은 미정이고, 지급일별 잔고 보장·계획 채택·금융거래를 뜻하지 않아요. 해설은 첫 계산 월을 다루며 전체 기간은 기존 결과에서 확인하세요."
+        ],
+        "is_current": true,
+        "current_input_version": 14
+      }
+    },
+    {
+      "layer": "IN_PROCESS_API",
+      "method": "POST",
+      "path": "/api/be/v1/cases/case-A/analyses/run_c1befc16e1d344f08b3299fd9522f90d/explanation",
+      "status": 200,
+      "body": {
+        "contract_version": "DION-EXPLANATION-1.0",
+        "fact_schema_version": "DION-EXPLANATION-FACTS-1.0",
+        "validator_version": "DION-EXPLANATION-VALIDATOR-1.0",
+        "prompt_version": "DION-EXPLANATION-SELECTION-1.0",
+        "provider_version": "TEMPLATE-1.0",
+        "provider_usage": null,
+        "explanation_id": "exp_1bc29393b6e34c3aa77cc82dff9624ad",
+        "request_key": "request-one",
+        "case_id": "case-A",
+        "run_id": "run_c1befc16e1d344f08b3299fd9522f90d",
+        "input_version": 14,
+        "raw_snapshot_id": "raw_06f1e5f5ede94934a5776ee7d5aeace7",
+        "input_hash": "af896c110764436dafb4b19c3f4373a4e935be24d105c885b9c1e395af80ba06",
+        "normalized_input_hash": "cef155b98f22a134e31ac85f917d55e4d24dcc7c1fda88db88382194e055e8bc",
+        "result_sha256": "d522c180359d0ce25cce7f7e51ff531e2b8ef567ab7482f0df5200f1402250ce",
+        "fact_set_sha256": "557ae507f34504b017407d4d51b2a8688a085a2bd0d8cffe02f75deb3a8fd4cc",
+        "evaluation_on": "2026-10-31",
+        "detail_level": "SHORT",
+        "output_ids": [
+          "OUT-03",
+          "OUT-05"
+        ],
+        "strategy_id": null,
+        "explained_at": "2026-11-14T09:19:20.317702+00:00",
+        "elapsed_ms": 61,
+        "status": "FALLBACK",
+        "source": "DETERMINISTIC",
+        "reason_code": "DRAFT_SCHEMA_INVALID",
+        "verification_scope": "STORED_RESULT_EXPLANATION_CONSISTENCY_ONLY",
+        "blocks": [
+          {
+            "claim_id": "MONTHLY_REMAINDER_AFTER_EXISTING",
+            "kind": "SUMMARY",
+            "text": "2026-10-01 ~ 2026-10-31 기준, 상환과 기존 납입을 반영한 월 잔여는 90만원입니다. 목표·보호자금 배정 전 금액이에요.",
+            "fact_refs": [
+              "fact_bdbea38993a86dd7c997be5ae44f86c1788412ce7584f447b5cc4bb2510a3026"
+            ],
+            "source_refs": [
+              "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+              "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+              "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+              "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a",
+              "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+              "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce"
+            ],
+            "assumption_refs": []
+          },
+          {
+            "claim_id": "FLOW_IS_NOT_RECOMMENDATION",
+            "kind": "LIMITATION",
+            "text": "이 월 잔여는 투자 권장액이 아니며, 앞으로도 같은 소득·지출이 이어진다는 보장은 없어요.",
+            "fact_refs": [],
+            "source_refs": [],
+            "assumption_refs": []
+          },
+          {
+            "claim_id": "SCENARIO_ALLOCATION_STABILITY_FIRST",
+            "kind": "SUMMARY",
+            "text": "첫 계산 월 2026-11의 안정 후보는 신규 투자 배정 30만원, 추가 현금 유지 30만원입니다.",
+            "fact_refs": [
+              "fact_f78498d1470bbb63439cc30cdf4a0d9fd43e772e50e0081892fb6595a80414bc",
+              "fact_411544706638442be1b77c85de94eca353b412c40ab0ab1f51217c9e99886d8f"
+            ],
+            "source_refs": [
+              "raw-revision:ans_0571ebe8194242a08c581f6b068777bd",
+              "raw-revision:ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+              "raw-revision:ans_1423bc0f269241c096ec53462f7b9c62",
+              "raw-revision:ans_1834bfbc566f4ca59c1524c3b7b372dc",
+              "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+              "raw-revision:ans_7605c2fbb55d40068cdcb565eead4125",
+              "raw-revision:ans_8e8c633980fe45d5bee32ea5f88a3dee",
+              "raw-revision:ans_98c6688aba744f16bbb1582b6774d10f",
+              "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+              "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+              "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a",
+              "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+              "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce"
+            ],
+            "assumption_refs": [
+              "CURRENT_BALANCES_CARRIED_FORWARD_SCENARIO",
+              "ZERO_RETURN",
+              "CONFIRMED_FUTURE_INPUT"
+            ]
+          },
+          {
+            "claim_id": "SCENARIO_ALLOCATION_INVESTMENT_CAPACITY",
+            "kind": "SUMMARY",
+            "text": "첫 계산 월 2026-11의 확대 후보는 신규 투자 배정 48만원, 추가 현금 유지 12만원입니다.",
+            "fact_refs": [
+              "fact_f04e6807e0ab48d32848f571f468843102a880ca243747c2a11f6a536ab42b75",
+              "fact_1ddbe7cd99fb9333c6df435de551a387a9cc78a7c109e1cc6c169df99868a4b1"
+            ],
+            "source_refs": [
+              "raw-revision:ans_0571ebe8194242a08c581f6b068777bd",
+              "raw-revision:ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+              "raw-revision:ans_1423bc0f269241c096ec53462f7b9c62",
+              "raw-revision:ans_1834bfbc566f4ca59c1524c3b7b372dc",
+              "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+              "raw-revision:ans_7605c2fbb55d40068cdcb565eead4125",
+              "raw-revision:ans_8e8c633980fe45d5bee32ea5f88a3dee",
+              "raw-revision:ans_98c6688aba744f16bbb1582b6774d10f",
+              "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+              "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+              "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a",
+              "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+              "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce"
+            ],
+            "assumption_refs": [
+              "CURRENT_BALANCES_CARRIED_FORWARD_SCENARIO",
+              "ZERO_RETURN",
+              "CONFIRMED_FUTURE_INPUT"
+            ]
+          },
+          {
+            "claim_id": "SCENARIO_LIMITS",
+            "kind": "LIMITATION",
+            "text": "확인한 미래소득·지출과 현재 잔액 이월, 수익률 0의 시나리오입니다. 실제 투자 권장액은 미정이고, 지급일별 잔고 보장·계획 채택·금융거래를 뜻하지 않아요. 해설은 첫 계산 월을 다루며 전체 기간은 기존 결과에서 확인하세요.",
+            "fact_refs": [],
+            "source_refs": [],
+            "assumption_refs": [
+              "CURRENT_BALANCES_CARRIED_FORWARD_SCENARIO",
+              "ZERO_RETURN",
+              "CONFIRMED_FUTURE_INPUT"
+            ]
+          }
+        ],
+        "facts": [
+          {
+            "fact_id": "fact_bdbea38993a86dd7c997be5ae44f86c1788412ce7584f447b5cc4bb2510a3026",
+            "run_id": "run_c1befc16e1d344f08b3299fd9522f90d",
+            "output_id": "OUT-03",
+            "locator": {
+              "output_id": "OUT-03",
+              "metric": "after_existing_contributions_krw",
+              "strategy_id": null,
+              "period": "2026-10-01",
+              "period_end": "2026-10-31",
+              "scope": "personal",
+              "owner_scope_hash": "c787d6c804600c438f39b89b64134a2b1d1552d9f2de11f3a3413931dda3b166"
+            },
+            "result_path": "/results/OUT-03/after_existing_contributions_krw",
+            "value": "900000",
+            "unit": "KRW",
+            "value_kind": "OBSERVED_PERIOD_CASHFLOW",
+            "evaluation_on": "2026-10-31",
+            "displayable": true,
+            "source_refs": [
+              "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+              "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+              "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+              "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+              "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce",
+              "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a"
+            ],
+            "input_evidence_refs": [
+              {
+                "source_ref": "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+                "answer_revision_id": "ans_a1745287d0b94082aa27fbeacc456216",
+                "question_id": "NEW-01",
+                "definition_version": "1.2.1",
+                "input_version": 1,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "assessment_scope",
+                  "asset_coverage",
+                  "included_owner_ids",
+                  "owner_confirmation_ref",
+                  "scope_acknowledged",
+                  "scope_version"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+                "answer_revision_id": "ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+                "question_id": "F03",
+                "definition_version": "1.2",
+                "input_version": 2,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "includes_one_off_income",
+                  "income_amount_status",
+                  "income_definition_version",
+                  "income_period_end",
+                  "income_period_start",
+                  "income_reference_period",
+                  "monthly_net_income_krw"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+                "answer_revision_id": "ans_42d6e83fb945426c8564643c934ca1b1",
+                "question_id": "F04",
+                "definition_version": "1.2.1",
+                "input_version": 3,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "essential_living",
+                  "exclusions_confirmed",
+                  "expense_basis",
+                  "included_contributions",
+                  "included_debt",
+                  "living",
+                  "period_end",
+                  "period_start",
+                  "response_definition_version"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+                "answer_revision_id": "ans_c6b49b6f8bb94e33b65550916e26d8ec",
+                "question_id": "NEW-04",
+                "definition_version": "1.2",
+                "input_version": 5,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "has_liabilities"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce",
+                "answer_revision_id": "ans_e2c79b90492e49899ebb81b6714f68ce",
+                "question_id": "F09+F10+D08",
+                "definition_version": "1.2.1",
+                "input_version": 6,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "debts"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a",
+                "answer_revision_id": "ans_be807b1d240c482993e5b62e0b5b243a",
+                "question_id": "NEW-03",
+                "definition_version": "1.2",
+                "input_version": 7,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "existing_contributions"
+                ]
+              }
+            ],
+            "policy_refs": [],
+            "calc_state": "CALCULATED"
+          },
+          {
+            "fact_id": "fact_f78498d1470bbb63439cc30cdf4a0d9fd43e772e50e0081892fb6595a80414bc",
+            "run_id": "run_c1befc16e1d344f08b3299fd9522f90d",
+            "output_id": "OUT-05",
+            "locator": {
+              "output_id": "OUT-05",
+              "metric": "new_investment_krw",
+              "strategy_id": "STABILITY_FIRST",
+              "period": "2026-11",
+              "period_end": null,
+              "scope": "personal",
+              "owner_scope_hash": "c787d6c804600c438f39b89b64134a2b1d1552d9f2de11f3a3413931dda3b166"
+            },
+            "result_path": "/results/OUT-05/candidates/0/rows/0/new_investment_krw",
+            "value": "300000",
+            "unit": "KRW",
+            "value_kind": "MONTHLY_SCENARIO_ALLOCATION",
+            "evaluation_on": "2026-10-31",
+            "displayable": true,
+            "source_refs": [
+              "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+              "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+              "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+              "raw-revision:ans_0571ebe8194242a08c581f6b068777bd",
+              "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+              "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce",
+              "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a",
+              "raw-revision:ans_1423bc0f269241c096ec53462f7b9c62",
+              "raw-revision:ans_8e8c633980fe45d5bee32ea5f88a3dee",
+              "raw-revision:ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+              "raw-revision:ans_1834bfbc566f4ca59c1524c3b7b372dc",
+              "raw-revision:ans_98c6688aba744f16bbb1582b6774d10f",
+              "raw-revision:ans_7605c2fbb55d40068cdcb565eead4125"
+            ],
+            "input_evidence_refs": [
+              {
+                "source_ref": "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+                "answer_revision_id": "ans_a1745287d0b94082aa27fbeacc456216",
+                "question_id": "NEW-01",
+                "definition_version": "1.2.1",
+                "input_version": 1,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "assessment_scope",
+                  "asset_coverage",
+                  "included_owner_ids",
+                  "owner_confirmation_ref",
+                  "scope_acknowledged",
+                  "scope_version"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+                "answer_revision_id": "ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+                "question_id": "F03",
+                "definition_version": "1.2",
+                "input_version": 2,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "includes_one_off_income",
+                  "income_amount_status",
+                  "income_definition_version",
+                  "income_period_end",
+                  "income_period_start",
+                  "income_reference_period",
+                  "monthly_net_income_krw"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+                "answer_revision_id": "ans_42d6e83fb945426c8564643c934ca1b1",
+                "question_id": "F04",
+                "definition_version": "1.2.1",
+                "input_version": 3,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "essential_living",
+                  "exclusions_confirmed",
+                  "expense_basis",
+                  "included_contributions",
+                  "included_debt",
+                  "living",
+                  "period_end",
+                  "period_start",
+                  "response_definition_version"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_0571ebe8194242a08c581f6b068777bd",
+                "answer_revision_id": "ans_0571ebe8194242a08c581f6b068777bd",
+                "question_id": "F06",
+                "definition_version": "1.2",
+                "input_version": 4,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "accounts",
+                  "financial_assets",
+                  "financial_assets_detail_status",
+                  "financial_assets_total_reported_krw"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+                "answer_revision_id": "ans_c6b49b6f8bb94e33b65550916e26d8ec",
+                "question_id": "NEW-04",
+                "definition_version": "1.2",
+                "input_version": 5,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "has_liabilities"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce",
+                "answer_revision_id": "ans_e2c79b90492e49899ebb81b6714f68ce",
+                "question_id": "F09+F10+D08",
+                "definition_version": "1.2.1",
+                "input_version": 6,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "debts"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a",
+                "answer_revision_id": "ans_be807b1d240c482993e5b62e0b5b243a",
+                "question_id": "NEW-03",
+                "definition_version": "1.2",
+                "input_version": 7,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "existing_contributions"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_1423bc0f269241c096ec53462f7b9c62",
+                "answer_revision_id": "ans_1423bc0f269241c096ec53462f7b9c62",
+                "question_id": "NEW-02",
+                "definition_version": "1.2",
+                "input_version": 8,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "events",
+                  "income_change_status"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_8e8c633980fe45d5bee32ea5f88a3dee",
+                "answer_revision_id": "ans_8e8c633980fe45d5bee32ea5f88a3dee",
+                "question_id": "NEW-05",
+                "definition_version": "1.2",
+                "input_version": 9,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "planned_expenses"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+                "answer_revision_id": "ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+                "question_id": "NEW-06",
+                "definition_version": "1.2.1",
+                "input_version": 10,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "customer_operating_total",
+                  "customer_protection_total",
+                  "customer_target_mode",
+                  "policy_version",
+                  "reservations"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_1834bfbc566f4ca59c1524c3b7b372dc",
+                "answer_revision_id": "ans_1834bfbc566f4ca59c1524c3b7b372dc",
+                "question_id": "F11",
+                "definition_version": "1.2",
+                "input_version": 11,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "goals"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_98c6688aba744f16bbb1582b6774d10f",
+                "answer_revision_id": "ans_98c6688aba744f16bbb1582b6774d10f",
+                "question_id": "F12",
+                "definition_version": "1.2",
+                "input_version": 12,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "goals"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_7605c2fbb55d40068cdcb565eead4125",
+                "answer_revision_id": "ans_7605c2fbb55d40068cdcb565eead4125",
+                "question_id": "F13",
+                "definition_version": "1.2",
+                "input_version": 13,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "goals"
+                ]
+              }
+            ],
+            "policy_refs": [
+              "DION-ALLOCATION-1.0"
+            ],
+            "calc_state": "CALCULATED"
+          },
+          {
+            "fact_id": "fact_411544706638442be1b77c85de94eca353b412c40ab0ab1f51217c9e99886d8f",
+            "run_id": "run_c1befc16e1d344f08b3299fd9522f90d",
+            "output_id": "OUT-05",
+            "locator": {
+              "output_id": "OUT-05",
+              "metric": "additional_cash_krw",
+              "strategy_id": "STABILITY_FIRST",
+              "period": "2026-11",
+              "period_end": null,
+              "scope": "personal",
+              "owner_scope_hash": "c787d6c804600c438f39b89b64134a2b1d1552d9f2de11f3a3413931dda3b166"
+            },
+            "result_path": "/results/OUT-05/candidates/0/rows/0/additional_cash_krw",
+            "value": "300000",
+            "unit": "KRW",
+            "value_kind": "MONTHLY_SCENARIO_ALLOCATION",
+            "evaluation_on": "2026-10-31",
+            "displayable": true,
+            "source_refs": [
+              "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+              "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+              "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+              "raw-revision:ans_0571ebe8194242a08c581f6b068777bd",
+              "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+              "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce",
+              "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a",
+              "raw-revision:ans_1423bc0f269241c096ec53462f7b9c62",
+              "raw-revision:ans_8e8c633980fe45d5bee32ea5f88a3dee",
+              "raw-revision:ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+              "raw-revision:ans_1834bfbc566f4ca59c1524c3b7b372dc",
+              "raw-revision:ans_98c6688aba744f16bbb1582b6774d10f",
+              "raw-revision:ans_7605c2fbb55d40068cdcb565eead4125"
+            ],
+            "input_evidence_refs": [
+              {
+                "source_ref": "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+                "answer_revision_id": "ans_a1745287d0b94082aa27fbeacc456216",
+                "question_id": "NEW-01",
+                "definition_version": "1.2.1",
+                "input_version": 1,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "assessment_scope",
+                  "asset_coverage",
+                  "included_owner_ids",
+                  "owner_confirmation_ref",
+                  "scope_acknowledged",
+                  "scope_version"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+                "answer_revision_id": "ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+                "question_id": "F03",
+                "definition_version": "1.2",
+                "input_version": 2,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "includes_one_off_income",
+                  "income_amount_status",
+                  "income_definition_version",
+                  "income_period_end",
+                  "income_period_start",
+                  "income_reference_period",
+                  "monthly_net_income_krw"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+                "answer_revision_id": "ans_42d6e83fb945426c8564643c934ca1b1",
+                "question_id": "F04",
+                "definition_version": "1.2.1",
+                "input_version": 3,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "essential_living",
+                  "exclusions_confirmed",
+                  "expense_basis",
+                  "included_contributions",
+                  "included_debt",
+                  "living",
+                  "period_end",
+                  "period_start",
+                  "response_definition_version"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_0571ebe8194242a08c581f6b068777bd",
+                "answer_revision_id": "ans_0571ebe8194242a08c581f6b068777bd",
+                "question_id": "F06",
+                "definition_version": "1.2",
+                "input_version": 4,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "accounts",
+                  "financial_assets",
+                  "financial_assets_detail_status",
+                  "financial_assets_total_reported_krw"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+                "answer_revision_id": "ans_c6b49b6f8bb94e33b65550916e26d8ec",
+                "question_id": "NEW-04",
+                "definition_version": "1.2",
+                "input_version": 5,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "has_liabilities"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce",
+                "answer_revision_id": "ans_e2c79b90492e49899ebb81b6714f68ce",
+                "question_id": "F09+F10+D08",
+                "definition_version": "1.2.1",
+                "input_version": 6,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "debts"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a",
+                "answer_revision_id": "ans_be807b1d240c482993e5b62e0b5b243a",
+                "question_id": "NEW-03",
+                "definition_version": "1.2",
+                "input_version": 7,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "existing_contributions"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_1423bc0f269241c096ec53462f7b9c62",
+                "answer_revision_id": "ans_1423bc0f269241c096ec53462f7b9c62",
+                "question_id": "NEW-02",
+                "definition_version": "1.2",
+                "input_version": 8,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "events",
+                  "income_change_status"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_8e8c633980fe45d5bee32ea5f88a3dee",
+                "answer_revision_id": "ans_8e8c633980fe45d5bee32ea5f88a3dee",
+                "question_id": "NEW-05",
+                "definition_version": "1.2",
+                "input_version": 9,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "planned_expenses"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+                "answer_revision_id": "ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+                "question_id": "NEW-06",
+                "definition_version": "1.2.1",
+                "input_version": 10,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "customer_operating_total",
+                  "customer_protection_total",
+                  "customer_target_mode",
+                  "policy_version",
+                  "reservations"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_1834bfbc566f4ca59c1524c3b7b372dc",
+                "answer_revision_id": "ans_1834bfbc566f4ca59c1524c3b7b372dc",
+                "question_id": "F11",
+                "definition_version": "1.2",
+                "input_version": 11,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "goals"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_98c6688aba744f16bbb1582b6774d10f",
+                "answer_revision_id": "ans_98c6688aba744f16bbb1582b6774d10f",
+                "question_id": "F12",
+                "definition_version": "1.2",
+                "input_version": 12,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "goals"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_7605c2fbb55d40068cdcb565eead4125",
+                "answer_revision_id": "ans_7605c2fbb55d40068cdcb565eead4125",
+                "question_id": "F13",
+                "definition_version": "1.2",
+                "input_version": 13,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "goals"
+                ]
+              }
+            ],
+            "policy_refs": [
+              "DION-ALLOCATION-1.0"
+            ],
+            "calc_state": "CALCULATED"
+          },
+          {
+            "fact_id": "fact_f04e6807e0ab48d32848f571f468843102a880ca243747c2a11f6a536ab42b75",
+            "run_id": "run_c1befc16e1d344f08b3299fd9522f90d",
+            "output_id": "OUT-05",
+            "locator": {
+              "output_id": "OUT-05",
+              "metric": "new_investment_krw",
+              "strategy_id": "INVESTMENT_CAPACITY",
+              "period": "2026-11",
+              "period_end": null,
+              "scope": "personal",
+              "owner_scope_hash": "c787d6c804600c438f39b89b64134a2b1d1552d9f2de11f3a3413931dda3b166"
+            },
+            "result_path": "/results/OUT-05/candidates/1/rows/0/new_investment_krw",
+            "value": "480000",
+            "unit": "KRW",
+            "value_kind": "MONTHLY_SCENARIO_ALLOCATION",
+            "evaluation_on": "2026-10-31",
+            "displayable": true,
+            "source_refs": [
+              "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+              "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+              "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+              "raw-revision:ans_0571ebe8194242a08c581f6b068777bd",
+              "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+              "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce",
+              "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a",
+              "raw-revision:ans_1423bc0f269241c096ec53462f7b9c62",
+              "raw-revision:ans_8e8c633980fe45d5bee32ea5f88a3dee",
+              "raw-revision:ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+              "raw-revision:ans_1834bfbc566f4ca59c1524c3b7b372dc",
+              "raw-revision:ans_98c6688aba744f16bbb1582b6774d10f",
+              "raw-revision:ans_7605c2fbb55d40068cdcb565eead4125"
+            ],
+            "input_evidence_refs": [
+              {
+                "source_ref": "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+                "answer_revision_id": "ans_a1745287d0b94082aa27fbeacc456216",
+                "question_id": "NEW-01",
+                "definition_version": "1.2.1",
+                "input_version": 1,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "assessment_scope",
+                  "asset_coverage",
+                  "included_owner_ids",
+                  "owner_confirmation_ref",
+                  "scope_acknowledged",
+                  "scope_version"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+                "answer_revision_id": "ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+                "question_id": "F03",
+                "definition_version": "1.2",
+                "input_version": 2,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "includes_one_off_income",
+                  "income_amount_status",
+                  "income_definition_version",
+                  "income_period_end",
+                  "income_period_start",
+                  "income_reference_period",
+                  "monthly_net_income_krw"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+                "answer_revision_id": "ans_42d6e83fb945426c8564643c934ca1b1",
+                "question_id": "F04",
+                "definition_version": "1.2.1",
+                "input_version": 3,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "essential_living",
+                  "exclusions_confirmed",
+                  "expense_basis",
+                  "included_contributions",
+                  "included_debt",
+                  "living",
+                  "period_end",
+                  "period_start",
+                  "response_definition_version"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_0571ebe8194242a08c581f6b068777bd",
+                "answer_revision_id": "ans_0571ebe8194242a08c581f6b068777bd",
+                "question_id": "F06",
+                "definition_version": "1.2",
+                "input_version": 4,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "accounts",
+                  "financial_assets",
+                  "financial_assets_detail_status",
+                  "financial_assets_total_reported_krw"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+                "answer_revision_id": "ans_c6b49b6f8bb94e33b65550916e26d8ec",
+                "question_id": "NEW-04",
+                "definition_version": "1.2",
+                "input_version": 5,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "has_liabilities"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce",
+                "answer_revision_id": "ans_e2c79b90492e49899ebb81b6714f68ce",
+                "question_id": "F09+F10+D08",
+                "definition_version": "1.2.1",
+                "input_version": 6,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "debts"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a",
+                "answer_revision_id": "ans_be807b1d240c482993e5b62e0b5b243a",
+                "question_id": "NEW-03",
+                "definition_version": "1.2",
+                "input_version": 7,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "existing_contributions"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_1423bc0f269241c096ec53462f7b9c62",
+                "answer_revision_id": "ans_1423bc0f269241c096ec53462f7b9c62",
+                "question_id": "NEW-02",
+                "definition_version": "1.2",
+                "input_version": 8,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "events",
+                  "income_change_status"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_8e8c633980fe45d5bee32ea5f88a3dee",
+                "answer_revision_id": "ans_8e8c633980fe45d5bee32ea5f88a3dee",
+                "question_id": "NEW-05",
+                "definition_version": "1.2",
+                "input_version": 9,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "planned_expenses"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+                "answer_revision_id": "ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+                "question_id": "NEW-06",
+                "definition_version": "1.2.1",
+                "input_version": 10,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "customer_operating_total",
+                  "customer_protection_total",
+                  "customer_target_mode",
+                  "policy_version",
+                  "reservations"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_1834bfbc566f4ca59c1524c3b7b372dc",
+                "answer_revision_id": "ans_1834bfbc566f4ca59c1524c3b7b372dc",
+                "question_id": "F11",
+                "definition_version": "1.2",
+                "input_version": 11,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "goals"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_98c6688aba744f16bbb1582b6774d10f",
+                "answer_revision_id": "ans_98c6688aba744f16bbb1582b6774d10f",
+                "question_id": "F12",
+                "definition_version": "1.2",
+                "input_version": 12,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "goals"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_7605c2fbb55d40068cdcb565eead4125",
+                "answer_revision_id": "ans_7605c2fbb55d40068cdcb565eead4125",
+                "question_id": "F13",
+                "definition_version": "1.2",
+                "input_version": 13,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "goals"
+                ]
+              }
+            ],
+            "policy_refs": [
+              "DION-ALLOCATION-1.0"
+            ],
+            "calc_state": "CALCULATED"
+          },
+          {
+            "fact_id": "fact_1ddbe7cd99fb9333c6df435de551a387a9cc78a7c109e1cc6c169df99868a4b1",
+            "run_id": "run_c1befc16e1d344f08b3299fd9522f90d",
+            "output_id": "OUT-05",
+            "locator": {
+              "output_id": "OUT-05",
+              "metric": "additional_cash_krw",
+              "strategy_id": "INVESTMENT_CAPACITY",
+              "period": "2026-11",
+              "period_end": null,
+              "scope": "personal",
+              "owner_scope_hash": "c787d6c804600c438f39b89b64134a2b1d1552d9f2de11f3a3413931dda3b166"
+            },
+            "result_path": "/results/OUT-05/candidates/1/rows/0/additional_cash_krw",
+            "value": "120000",
+            "unit": "KRW",
+            "value_kind": "MONTHLY_SCENARIO_ALLOCATION",
+            "evaluation_on": "2026-10-31",
+            "displayable": true,
+            "source_refs": [
+              "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+              "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+              "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+              "raw-revision:ans_0571ebe8194242a08c581f6b068777bd",
+              "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+              "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce",
+              "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a",
+              "raw-revision:ans_1423bc0f269241c096ec53462f7b9c62",
+              "raw-revision:ans_8e8c633980fe45d5bee32ea5f88a3dee",
+              "raw-revision:ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+              "raw-revision:ans_1834bfbc566f4ca59c1524c3b7b372dc",
+              "raw-revision:ans_98c6688aba744f16bbb1582b6774d10f",
+              "raw-revision:ans_7605c2fbb55d40068cdcb565eead4125"
+            ],
+            "input_evidence_refs": [
+              {
+                "source_ref": "raw-revision:ans_a1745287d0b94082aa27fbeacc456216",
+                "answer_revision_id": "ans_a1745287d0b94082aa27fbeacc456216",
+                "question_id": "NEW-01",
+                "definition_version": "1.2.1",
+                "input_version": 1,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "assessment_scope",
+                  "asset_coverage",
+                  "included_owner_ids",
+                  "owner_confirmation_ref",
+                  "scope_acknowledged",
+                  "scope_version"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+                "answer_revision_id": "ans_b94aafd5affd4bee8a61cfba7c7ba6cb",
+                "question_id": "F03",
+                "definition_version": "1.2",
+                "input_version": 2,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "includes_one_off_income",
+                  "income_amount_status",
+                  "income_definition_version",
+                  "income_period_end",
+                  "income_period_start",
+                  "income_reference_period",
+                  "monthly_net_income_krw"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_42d6e83fb945426c8564643c934ca1b1",
+                "answer_revision_id": "ans_42d6e83fb945426c8564643c934ca1b1",
+                "question_id": "F04",
+                "definition_version": "1.2.1",
+                "input_version": 3,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "essential_living",
+                  "exclusions_confirmed",
+                  "expense_basis",
+                  "included_contributions",
+                  "included_debt",
+                  "living",
+                  "period_end",
+                  "period_start",
+                  "response_definition_version"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_0571ebe8194242a08c581f6b068777bd",
+                "answer_revision_id": "ans_0571ebe8194242a08c581f6b068777bd",
+                "question_id": "F06",
+                "definition_version": "1.2",
+                "input_version": 4,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "accounts",
+                  "financial_assets",
+                  "financial_assets_detail_status",
+                  "financial_assets_total_reported_krw"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_c6b49b6f8bb94e33b65550916e26d8ec",
+                "answer_revision_id": "ans_c6b49b6f8bb94e33b65550916e26d8ec",
+                "question_id": "NEW-04",
+                "definition_version": "1.2",
+                "input_version": 5,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "has_liabilities"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_e2c79b90492e49899ebb81b6714f68ce",
+                "answer_revision_id": "ans_e2c79b90492e49899ebb81b6714f68ce",
+                "question_id": "F09+F10+D08",
+                "definition_version": "1.2.1",
+                "input_version": 6,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "debts"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_be807b1d240c482993e5b62e0b5b243a",
+                "answer_revision_id": "ans_be807b1d240c482993e5b62e0b5b243a",
+                "question_id": "NEW-03",
+                "definition_version": "1.2",
+                "input_version": 7,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "existing_contributions"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_1423bc0f269241c096ec53462f7b9c62",
+                "answer_revision_id": "ans_1423bc0f269241c096ec53462f7b9c62",
+                "question_id": "NEW-02",
+                "definition_version": "1.2",
+                "input_version": 8,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "events",
+                  "income_change_status"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_8e8c633980fe45d5bee32ea5f88a3dee",
+                "answer_revision_id": "ans_8e8c633980fe45d5bee32ea5f88a3dee",
+                "question_id": "NEW-05",
+                "definition_version": "1.2",
+                "input_version": 9,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "planned_expenses"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+                "answer_revision_id": "ans_0d8b4f3247154c6e84a6f75b98fa7ce1",
+                "question_id": "NEW-06",
+                "definition_version": "1.2.1",
+                "input_version": 10,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "customer_operating_total",
+                  "customer_protection_total",
+                  "customer_target_mode",
+                  "policy_version",
+                  "reservations"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_1834bfbc566f4ca59c1524c3b7b372dc",
+                "answer_revision_id": "ans_1834bfbc566f4ca59c1524c3b7b372dc",
+                "question_id": "F11",
+                "definition_version": "1.2",
+                "input_version": 11,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "goals"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_98c6688aba744f16bbb1582b6774d10f",
+                "answer_revision_id": "ans_98c6688aba744f16bbb1582b6774d10f",
+                "question_id": "F12",
+                "definition_version": "1.2",
+                "input_version": 12,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "goals"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_7605c2fbb55d40068cdcb565eead4125",
+                "answer_revision_id": "ans_7605c2fbb55d40068cdcb565eead4125",
+                "question_id": "F13",
+                "definition_version": "1.2",
+                "input_version": 13,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "goals"
+                ]
+              }
+            ],
+            "policy_refs": [
+              "DION-ALLOCATION-1.0"
+            ],
+            "calc_state": "CALCULATED"
+          }
+        ],
+        "next_checks": [
+          {
+            "check_id": "check_NEW-02",
+            "question_id": "NEW-02",
+            "text": "적용한 미래 소득 가정이 지금도 맞는지 확인해 주세요."
+          },
+          {
+            "check_id": "check_F12",
+            "question_id": "F12",
+            "text": "적용한 목표 사용일이 지금도 맞는지 확인해 주세요."
+          }
+        ],
+        "limitations": [
+          "이 월 잔여는 투자 권장액이 아니며, 앞으로도 같은 소득·지출이 이어진다는 보장은 없어요.",
+          "확인한 미래소득·지출과 현재 잔액 이월, 수익률 0의 시나리오입니다. 실제 투자 권장액은 미정이고, 지급일별 잔고 보장·계획 채택·금융거래를 뜻하지 않아요. 해설은 첫 계산 월을 다루며 전체 기간은 기존 결과에서 확인하세요."
+        ],
+        "is_current": true,
+        "current_input_version": 14
+      }
+    }
+  ]
+}

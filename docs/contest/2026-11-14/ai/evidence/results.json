@@ -1,0 +1,612 @@
+{
+  "suite_version": "DION-CONTEST-AI-EVAL-1.0",
+  "base_sha": "eed221d1c1d305d79713ebb0dbf0c41d9c624e8a",
+  "case_version": "DION-CONTEST-B-20261114-1.0",
+  "python": "3.12.4",
+  "environment": "Windows/local SQLite/mock auth/in-process API/httpx.MockTransport; no real model or production",
+  "summary": {
+    "PASS": 22,
+    "FAIL": 1,
+    "NOT_RUN": 0,
+    "BLOCKED": 1
+  },
+  "total_scenarios": 24,
+  "executed_pass_or_fail": 23,
+  "test_invocations_including_retry": 40,
+  "product_code_changed": false,
+  "ruff": "PASS",
+  "case_results": [
+    {
+      "id": "R1-01",
+      "status": "PASS",
+      "pytest_time_seconds": "1.404",
+      "reason": null,
+      "source": "dev-retry.xml",
+      "category": "R1",
+      "split": "DEV",
+      "title": "저장 OUT-03/05의 수치·기간·단위·버전·근거",
+      "critical_product_error_confirmed": false,
+      "expression_rubric": "NOT_RUN"
+    },
+    {
+      "id": "R1-02",
+      "status": "FAIL",
+      "pytest_time_seconds": "0.971",
+      "reason": "AssertionError: assert 'CALCULATED' == 'PARTIAL'\n  \n  - PARTIAL\n  + CALCULATED",
+      "source": "dev-retry.xml",
+      "category": "R1",
+      "split": "DEV",
+      "title": "PARTIAL에서 계산된 출력 보존",
+      "critical_product_error_confirmed": false,
+      "expression_rubric": "NOT_RUN",
+      "failure_owner": "AI_EVALUATION_FIXTURE",
+      "product_behavior_verdict": "UNDETERMINED_FOR_PARTIAL",
+      "note": "Required PARTIAL precondition not established; the preserved B checks below the failing assertion did not execute. No oracle relaxation or further retry."
+    },
+    {
+      "id": "R1-03",
+      "status": "PASS",
+      "pytest_time_seconds": "2.954",
+      "reason": null,
+      "source": "dev-retry.xml",
+      "category": "R1",
+      "split": "DEV",
+      "title": "실제 0과 미확인·미입력",
+      "critical_product_error_confirmed": false,
+      "expression_rubric": "NOT_RUN"
+    },
+    {
+      "id": "R2-01",
+      "status": "PASS",
+      "pytest_time_seconds": "1.390",
+      "reason": null,
+      "source": "dev-retry.xml",
+      "category": "R2",
+      "split": "DEV",
+      "title": "복합 의도는 명시 선택",
+      "critical_product_error_confirmed": false,
+      "expression_rubric": "NOT_RUN"
+    },
+    {
+      "id": "R2-02",
+      "status": "PASS",
+      "pytest_time_seconds": "1.353",
+      "reason": null,
+      "source": "dev-retry.xml",
+      "category": "R2",
+      "split": "DEV",
+      "title": "값 충돌과 명시 확인",
+      "critical_product_error_confirmed": false,
+      "expression_rubric": "NOT_RUN"
+    },
+    {
+      "id": "R2-03",
+      "status": "PASS",
+      "pytest_time_seconds": "0.100",
+      "reason": null,
+      "source": "dev-initial.xml",
+      "category": "R2",
+      "split": "DEV",
+      "title": "asked_fields·가상·추정은 실제 완료 아님",
+      "critical_product_error_confirmed": false,
+      "expression_rubric": "NOT_RUN"
+    },
+    {
+      "id": "R2-04",
+      "status": "PASS",
+      "pytest_time_seconds": "1.795",
+      "reason": null,
+      "source": "dev-retry.xml",
+      "category": "R2",
+      "split": "DEV",
+      "title": "미확인 단위 검증과 null 보존",
+      "critical_product_error_confirmed": false,
+      "expression_rubric": "NOT_RUN"
+    },
+    {
+      "id": "R2-05",
+      "status": "PASS",
+      "pytest_time_seconds": "1.395",
+      "reason": null,
+      "source": "dev-retry.xml",
+      "category": "R2",
+      "split": "DEV",
+      "title": "상담 저장·재개·저장 취소·삭제",
+      "critical_product_error_confirmed": false,
+      "expression_rubric": "NOT_RUN"
+    },
+    {
+      "id": "R3-01",
+      "status": "PASS",
+      "pytest_time_seconds": "2.315",
+      "reason": null,
+      "source": "dev-retry.xml",
+      "category": "R3",
+      "split": "DEV",
+      "title": "명시 비교 확인과 원안 불변",
+      "critical_product_error_confirmed": false,
+      "expression_rubric": "NOT_RUN"
+    },
+    {
+      "id": "R3-02",
+      "status": "PASS",
+      "pytest_time_seconds": "5.135",
+      "reason": null,
+      "source": "dev-retry.xml",
+      "category": "R3",
+      "split": "DEV",
+      "title": "월 전체 출금 변경·단일 조건 유지",
+      "critical_product_error_confirmed": false,
+      "expression_rubric": "NOT_RUN"
+    },
+    {
+      "id": "R3-03",
+      "status": "PASS",
+      "pytest_time_seconds": "3.951",
+      "reason": null,
+      "source": "dev-retry.xml",
+      "category": "R3",
+      "split": "DEV",
+      "title": "다른 run·버전·만료 확인 차단",
+      "critical_product_error_confirmed": false,
+      "expression_rubric": "NOT_RUN"
+    },
+    {
+      "id": "RAG-01",
+      "status": "PASS",
+      "pytest_time_seconds": "0.487",
+      "reason": null,
+      "source": "dev-retry.xml",
+      "category": "RAG",
+      "split": "DEV",
+      "title": "등록 자료·인용·버전·기본로딩",
+      "critical_product_error_confirmed": false,
+      "expression_rubric": "NOT_RUN"
+    },
+    {
+      "id": "RAG-02",
+      "status": "PASS",
+      "pytest_time_seconds": "0.064",
+      "reason": null,
+      "source": "dev-initial.xml",
+      "category": "RAG",
+      "split": "DEV",
+      "title": "근거 없음·기간·충돌",
+      "critical_product_error_confirmed": false,
+      "expression_rubric": "NOT_RUN"
+    },
+    {
+      "id": "RAG-03",
+      "status": "PASS",
+      "pytest_time_seconds": "3.023",
+      "reason": null,
+      "source": "dev-retry.xml",
+      "category": "RAG",
+      "split": "DEV",
+      "title": "세션 범위에서 검색·상담 불변",
+      "critical_product_error_confirmed": false,
+      "expression_rubric": "NOT_RUN"
+    },
+    {
+      "id": "SAFE-01",
+      "status": "PASS",
+      "pytest_time_seconds": "2.778",
+      "reason": null,
+      "source": "dev-retry.xml",
+      "category": "SAFETY",
+      "split": "DEV",
+      "title": "지원 밖 요청",
+      "critical_product_error_confirmed": false,
+      "expression_rubric": "NOT_RUN"
+    },
+    {
+      "id": "SAFE-02",
+      "status": "PASS",
+      "pytest_time_seconds": "4.897",
+      "reason": null,
+      "source": "dev-retry.xml",
+      "category": "SAFETY",
+      "split": "DEV",
+      "title": "사용자·원응답 프롬프트 주입",
+      "critical_product_error_confirmed": false,
+      "expression_rubric": "NOT_RUN"
+    },
+    {
+      "id": "SAFE-03",
+      "status": "PASS",
+      "pytest_time_seconds": "0.074",
+      "reason": null,
+      "source": "dev-retry.xml",
+      "category": "SAFETY",
+      "split": "DEV",
+      "title": "검색 문서 프롬프트 주입",
+      "critical_product_error_confirmed": false,
+      "expression_rubric": "NOT_RUN"
+    },
+    {
+      "id": "SAFE-04",
+      "status": "PASS",
+      "pytest_time_seconds": "1.493",
+      "reason": null,
+      "source": "dev-retry.xml",
+      "category": "SAFETY",
+      "split": "DEV",
+      "title": "타 사용자·사례 접근과 캐시",
+      "critical_product_error_confirmed": false,
+      "expression_rubric": "NOT_RUN"
+    },
+    {
+      "id": "R1-04",
+      "status": "PASS",
+      "pytest_time_seconds": "1.197",
+      "reason": null,
+      "source": "holdout-once.xml",
+      "category": "R1",
+      "split": "HOLDOUT",
+      "title": "다른 run·숫자·의미의 동시 오염",
+      "critical_product_error_confirmed": false,
+      "expression_rubric": "NOT_RUN"
+    },
+    {
+      "id": "R2-06",
+      "status": "PASS",
+      "pytest_time_seconds": "1.488",
+      "reason": null,
+      "source": "holdout-once.xml",
+      "category": "R2",
+      "split": "HOLDOUT",
+      "title": "맥락 불일치 이력과 오래된 확인",
+      "critical_product_error_confirmed": false,
+      "expression_rubric": "NOT_RUN"
+    },
+    {
+      "id": "R3-04",
+      "status": "BLOCKED",
+      "pytest_time_seconds": "0.134",
+      "reason": "BLOCKED: B household 1.3-engine saved-case mapping/run absent; R3 personal adapter contract only",
+      "source": "holdout-once.xml",
+      "category": "R3",
+      "split": "HOLDOUT",
+      "title": "B안 제품 저장→비교 연결",
+      "critical_product_error_confirmed": false,
+      "expression_rubric": "NOT_RUN",
+      "note": "Passed direct artifact value checks then BLOCKED before product execution. B IDs remain null."
+    },
+    {
+      "id": "RAG-04",
+      "status": "PASS",
+      "pytest_time_seconds": "0.369",
+      "reason": null,
+      "source": "holdout-once.xml",
+      "category": "RAG",
+      "split": "HOLDOUT",
+      "title": "만료·연도 다른 인용·허위 citation",
+      "critical_product_error_confirmed": false,
+      "expression_rubric": "NOT_RUN"
+    },
+    {
+      "id": "SAFE-05",
+      "status": "PASS",
+      "pytest_time_seconds": "3.466",
+      "reason": null,
+      "source": "holdout-once.xml",
+      "category": "SAFETY",
+      "split": "HOLDOUT",
+      "title": "모델·검색·네트워크 장애",
+      "critical_product_error_confirmed": false,
+      "expression_rubric": "NOT_RUN"
+    },
+    {
+      "id": "SAFE-06",
+      "status": "PASS",
+      "pytest_time_seconds": "4.793",
+      "reason": null,
+      "source": "holdout-once.xml",
+      "category": "SAFETY",
+      "split": "HOLDOUT",
+      "title": "중복 요청과 사용량 불명 비용",
+      "critical_product_error_confirmed": false,
+      "expression_rubric": "NOT_RUN"
+    }
+  ],
+  "attempts": [
+    {
+      "source": "dev-initial.xml",
+      "pytest_cases": 18,
+      "results": [
+        {
+          "id": "R1-01",
+          "status": "FAIL",
+          "pytest_time_seconds": "0.601",
+          "reason": "Failed: External socket connection forbidden in contract/mock evaluation",
+          "source": "dev-initial.xml"
+        },
+        {
+          "id": "R1-02",
+          "status": "FAIL",
+          "pytest_time_seconds": "0.628",
+          "reason": "Failed: External socket connection forbidden in contract/mock evaluation",
+          "source": "dev-initial.xml"
+        },
+        {
+          "id": "R1-03",
+          "status": "FAIL",
+          "pytest_time_seconds": "0.542",
+          "reason": "Failed: External socket connection forbidden in contract/mock evaluation",
+          "source": "dev-initial.xml"
+        },
+        {
+          "id": "R2-01",
+          "status": "FAIL",
+          "pytest_time_seconds": "1.313",
+          "reason": "Failed: External socket connection forbidden in contract/mock evaluation",
+          "source": "dev-initial.xml"
+        },
+        {
+          "id": "R2-02",
+          "status": "FAIL",
+          "pytest_time_seconds": "1.402",
+          "reason": "Failed: External socket connection forbidden in contract/mock evaluation",
+          "source": "dev-initial.xml"
+        },
+        {
+          "id": "R2-03",
+          "status": "PASS",
+          "pytest_time_seconds": "0.100",
+          "reason": null,
+          "source": "dev-initial.xml"
+        },
+        {
+          "id": "R2-04",
+          "status": "FAIL",
+          "pytest_time_seconds": "1.413",
+          "reason": "Failed: External socket connection forbidden in contract/mock evaluation",
+          "source": "dev-initial.xml"
+        },
+        {
+          "id": "R2-05",
+          "status": "FAIL",
+          "pytest_time_seconds": "1.392",
+          "reason": "Failed: External socket connection forbidden in contract/mock evaluation",
+          "source": "dev-initial.xml"
+        },
+        {
+          "id": "R3-01",
+          "status": "FAIL",
+          "pytest_time_seconds": "1.315",
+          "reason": "Failed: External socket connection forbidden in contract/mock evaluation",
+          "source": "dev-initial.xml"
+        },
+        {
+          "id": "R3-02",
+          "status": "FAIL",
+          "pytest_time_seconds": "1.187",
+          "reason": "Failed: External socket connection forbidden in contract/mock evaluation",
+          "source": "dev-initial.xml"
+        },
+        {
+          "id": "R3-03",
+          "status": "FAIL",
+          "pytest_time_seconds": "1.232",
+          "reason": "Failed: External socket connection forbidden in contract/mock evaluation",
+          "source": "dev-initial.xml"
+        },
+        {
+          "id": "RAG-01",
+          "status": "FAIL",
+          "pytest_time_seconds": "0.319",
+          "reason": "Failed: External socket connection forbidden in contract/mock evaluation",
+          "source": "dev-initial.xml"
+        },
+        {
+          "id": "RAG-02",
+          "status": "PASS",
+          "pytest_time_seconds": "0.064",
+          "reason": null,
+          "source": "dev-initial.xml"
+        },
+        {
+          "id": "RAG-03",
+          "status": "FAIL",
+          "pytest_time_seconds": "1.152",
+          "reason": "Failed: External socket connection forbidden in contract/mock evaluation",
+          "source": "dev-initial.xml"
+        },
+        {
+          "id": "SAFE-01",
+          "status": "FAIL",
+          "pytest_time_seconds": "0.948",
+          "reason": "Failed: External socket connection forbidden in contract/mock evaluation",
+          "source": "dev-initial.xml"
+        },
+        {
+          "id": "SAFE-02",
+          "status": "FAIL",
+          "pytest_time_seconds": "0.540",
+          "reason": "Failed: External socket connection forbidden in contract/mock evaluation",
+          "source": "dev-initial.xml"
+        },
+        {
+          "id": "SAFE-03",
+          "status": "FAIL",
+          "pytest_time_seconds": "0.085",
+          "reason": "Failed: External socket connection forbidden in contract/mock evaluation",
+          "source": "dev-initial.xml"
+        },
+        {
+          "id": "SAFE-04",
+          "status": "FAIL",
+          "pytest_time_seconds": "0.587",
+          "reason": "Failed: External socket connection forbidden in contract/mock evaluation",
+          "source": "dev-initial.xml"
+        }
+      ]
+    },
+    {
+      "source": "dev-retry.xml",
+      "pytest_cases": 16,
+      "results": [
+        {
+          "id": "R1-01",
+          "status": "PASS",
+          "pytest_time_seconds": "1.404",
+          "reason": null,
+          "source": "dev-retry.xml"
+        },
+        {
+          "id": "R1-02",
+          "status": "FAIL",
+          "pytest_time_seconds": "0.971",
+          "reason": "AssertionError: assert 'CALCULATED' == 'PARTIAL'\n  \n  - PARTIAL\n  + CALCULATED",
+          "source": "dev-retry.xml"
+        },
+        {
+          "id": "R1-03",
+          "status": "PASS",
+          "pytest_time_seconds": "2.954",
+          "reason": null,
+          "source": "dev-retry.xml"
+        },
+        {
+          "id": "R2-01",
+          "status": "PASS",
+          "pytest_time_seconds": "1.390",
+          "reason": null,
+          "source": "dev-retry.xml"
+        },
+        {
+          "id": "R2-02",
+          "status": "PASS",
+          "pytest_time_seconds": "1.353",
+          "reason": null,
+          "source": "dev-retry.xml"
+        },
+        {
+          "id": "R2-04",
+          "status": "PASS",
+          "pytest_time_seconds": "1.795",
+          "reason": null,
+          "source": "dev-retry.xml"
+        },
+        {
+          "id": "R2-05",
+          "status": "PASS",
+          "pytest_time_seconds": "1.395",
+          "reason": null,
+          "source": "dev-retry.xml"
+        },
+        {
+          "id": "R3-01",
+          "status": "PASS",
+          "pytest_time_seconds": "2.315",
+          "reason": null,
+          "source": "dev-retry.xml"
+        },
+        {
+          "id": "R3-02",
+          "status": "PASS",
+          "pytest_time_seconds": "5.135",
+          "reason": null,
+          "source": "dev-retry.xml"
+        },
+        {
+          "id": "R3-03",
+          "status": "PASS",
+          "pytest_time_seconds": "3.951",
+          "reason": null,
+          "source": "dev-retry.xml"
+        },
+        {
+          "id": "RAG-01",
+          "status": "PASS",
+          "pytest_time_seconds": "0.487",
+          "reason": null,
+          "source": "dev-retry.xml"
+        },
+        {
+          "id": "RAG-03",
+          "status": "PASS",
+          "pytest_time_seconds": "3.023",
+          "reason": null,
+          "source": "dev-retry.xml"
+        },
+        {
+          "id": "SAFE-01",
+          "status": "PASS",
+          "pytest_time_seconds": "2.778",
+          "reason": null,
+          "source": "dev-retry.xml"
+        },
+        {
+          "id": "SAFE-02",
+          "status": "PASS",
+          "pytest_time_seconds": "4.897",
+          "reason": null,
+          "source": "dev-retry.xml"
+        },
+        {
+          "id": "SAFE-03",
+          "status": "PASS",
+          "pytest_time_seconds": "0.074",
+          "reason": null,
+          "source": "dev-retry.xml"
+        },
+        {
+          "id": "SAFE-04",
+          "status": "PASS",
+          "pytest_time_seconds": "1.493",
+          "reason": null,
+          "source": "dev-retry.xml"
+        }
+      ]
+    },
+    {
+      "source": "holdout-once.xml",
+      "pytest_cases": 6,
+      "results": [
+        {
+          "id": "R1-04",
+          "status": "PASS",
+          "pytest_time_seconds": "1.197",
+          "reason": null,
+          "source": "holdout-once.xml"
+        },
+        {
+          "id": "R2-06",
+          "status": "PASS",
+          "pytest_time_seconds": "1.488",
+          "reason": null,
+          "source": "holdout-once.xml"
+        },
+        {
+          "id": "R3-04",
+          "status": "BLOCKED",
+          "pytest_time_seconds": "0.134",
+          "reason": "BLOCKED: B household 1.3-engine saved-case mapping/run absent; R3 personal adapter contract only",
+          "source": "holdout-once.xml"
+        },
+        {
+          "id": "RAG-04",
+          "status": "PASS",
+          "pytest_time_seconds": "0.369",
+          "reason": null,
+          "source": "holdout-once.xml"
+        },
+        {
+          "id": "SAFE-05",
+          "status": "PASS",
+          "pytest_time_seconds": "3.466",
+          "reason": null,
+          "source": "holdout-once.xml"
+        },
+        {
+          "id": "SAFE-06",
+          "status": "PASS",
+          "pytest_time_seconds": "4.793",
+          "reason": null,
+          "source": "holdout-once.xml"
+        }
+      ]
+    }
+  ]
+}

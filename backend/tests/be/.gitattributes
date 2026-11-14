@@ -1,0 +1,3 @@
+# These received files are pinned byte-for-byte by the AI integration baseline.
+test_plan_checkin.py -text
+test_question_bridge.py -text

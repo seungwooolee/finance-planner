@@ -1,0 +1,287 @@
+diff --git a/backend/app/planning/proposal_reference.py b/backend/app/planning/proposal_reference.py
+index b7ff034..edc69b4 100644
+--- a/backend/app/planning/proposal_reference.py
++++ b/backend/app/planning/proposal_reference.py
+@@ -12,6 +12,7 @@ Rules (user-approved 2026-11-14, see docs/integration/2026-11-14-proposal-refere
+ - Projected sums are floored to the won; required monthly payments are ceiled to the won.
+ - The first plan month is held constant; no raises, no taxes, no fees.
+ """
++from datetime import date
+ from decimal import ROUND_CEILING, ROUND_FLOOR, Decimal, localcontext
+ 
+ VERSION = "DION-PROPOSAL-REFERENCE-0.1"
+@@ -74,6 +75,29 @@ def _points(monthly):
+     return rows
+ 
+ 
++def _monthly_goal_calendar(row, context):
++    """Do not reinterpret dated contribution counts as elapsed months.
++
++    Legacy reference-only callers have no calendar. Actual engine rows do, and
++    must match the existing equal-monthly, single-final-payment model.
++    """
++    if "funding_schedule" not in row:
++        return True
++    try:
++        start = date.fromisoformat(context["evaluation_on"])
++        due = date.fromisoformat(row["due_on"])
++        start_month = start.year * 12 + start.month
++        end_month = due.year * 12 + due.month
++        months = [date.fromisoformat(r["on"]) for r in row["funding_schedule"]]
++        actual = [d.year * 12 + d.month for d in months]
++        payments = row["payments"]
++        return (actual == list(range(start_month + 1, end_month + 1))
++                and len(actual) == row["contribution_count"]
++                and len(payments) == 1 and payments[0]["on"] == row["due_on"])
++    except (KeyError, TypeError, ValueError):
++        return False
++
++
+ def build(result):
+     with localcontext() as ctx:
+         ctx.prec = 50
+@@ -99,13 +123,17 @@ def _build(result):
+             first = first or row
+             plans.append({"strategy_id": candidate["strategy_id"], "period": row.get("period"),
+                           "monthly_new_investment_krw": _won(monthly), "points": _points(monthly)})
+-    goals = []
++    goals, goal_omissions = [], []
+     if goals_out.get("calc_state") == "CALCULATED":
+         for row in goals_out.get("rows", []):
+             target, prepared = _int(row.get("target_krw")), _int(row.get("prepared_krw"))
+             months, current = row.get("contribution_count"), _int(row.get("level_contribution_krw"))
+             if row.get("calc_state") != "CALCULATED" or None in (target, prepared, current) or not isinstance(months, int):
+                 continue
++            if not _monthly_goal_calendar(row, result.get("context", {})):
++                goal_omissions.append({"goal_id": row.get("goal_id"),
++                                       "reason": "MONTHLY_REFERENCE_CALENDAR_UNSUPPORTED"})
++                continue
+             invest = (_won(required_monthly(target, prepared, RATES[1], months), ROUND_CEILING)
+                       if months >= MIN_MONTHS_FOR_RETURN else None)
+             delayed_target = target * (1 + INFLATION) ** (Decimal(GOAL_DELAY_MONTHS) / 12)
+@@ -123,7 +151,11 @@ def _build(result):
+         expense = {"living_krw": _won(living), "cut_rate": str(EXPENSE_CUT),
+                    "monthly_extra_krw": _won(extra), "points": _points(Decimal(_won(extra)))}
+     state = "CALCULATED" if plans or goals else "NOT_AVAILABLE"
+-    return {**base, "state": state, "plans": plans, "goals": goals, "expense_adjustment": expense}
++    if goal_omissions:
++        base["limitations"] = [*LIMITATIONS,
++                               "매월 1회 납입·만기 1회 지출 조건과 다른 목표는 월 납입 참고 비교를 보류했어요. 원래 목표 계산은 유지돼요."]
++    return {**base, "state": state, "plans": plans, "goals": goals, "goal_omissions": goal_omissions,
++            "expense_adjustment": expense}
+ 
+ 
+ def attach(result):
+diff --git a/backend/tests/planning/test_contest_reconciliation.py b/backend/tests/planning/test_contest_reconciliation.py
+new file mode 100644
+index 0000000..4955612
+--- /dev/null
++++ b/backend/tests/planning/test_contest_reconciliation.py
+@@ -0,0 +1,207 @@
++"""SUBMISSION-B-01: literal/independent oracles, never golden current-engine output."""
++import copy
++import hashlib
++import json
++import os
++from fractions import Fraction
++from math import floor
++from pathlib import Path
++
++import pytest
++
++from app.planning.engine import run_engine
++from app.planning.proposal_reference import build
++from app.planning.question_v12 import run_question_v12
++from tests.planning.cases import base_case, m, put, raw
++
++EVIDENCE = Path(__file__).resolve().parents[3] / "docs/contest/2026-11-14/engine/evidence"
++
++
++@pytest.fixture(scope="module", params=["initial", "revised", "partial"])
++def replay(request):
++    capture = json.loads((EVIDENCE / f"{request.param}-input.json").read_text(encoding="utf-8"))
++    original = copy.deepcopy(capture)
++    result = run_engine(capture["engine_input"])
++    assert capture == original
++    # Opt-in evidence output for the one scoped verification run; no DB or API.
++    if os.environ.get("DION_CONTEST_WRITE_EVIDENCE") == "1":
++        (EVIDENCE / f"{request.param}-current-result.json").write_text(
++            json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
++        )
++    return request.param, capture, result
++
++
++def test_submission_assets_reservations_and_goal_dates(replay):
++    _, capture, result = replay
++    assert result["input_snapshot"] == capture["engine_input"]
++    assert result["context"]["evaluation_on"] == "2026-11-30"
++    assets = result["results"]["OUT-02"]
++    assert assets["total_assets"]["value"] == "20000000"
++    assert assets["total_debt"]["value"] == "0"
++    assert assets["net_worth"]["value"] == "20000000"
++    # 20m cash = protection 6m + operating 2m + education 2m + free 10m.
++    reserves = next(a["raw_response"] for a in capture["engine_input"]["answers"]
++                    if a["question_id"] == "NEW-06")
++    assert [Fraction(r["amount"]["value"]) * 10000 for r in reserves["items"]] == [6000000, 2000000, 2000000]
++    goal = result["results"]["OUT-04"]["rows"][0]
++    assert (goal["target_krw"], goal["prepared_krw"], goal["gap_krw"]) == ("5000000", "2000000", "3000000")
++    assert goal["due_on"] == "2027-02-28"
++    assert goal["funding_schedule"] == [
++        {"on": day, "amount_krw": "1000000"} for day in ["2026-12-15", "2027-01-15", "2027-02-15"]
++    ]
++    assert goal["level_contribution_krw"] == "1000000"  # (5m - 2m) / 3
++
++
++def test_submission_monthly_conservation_and_no_implicit_recommendation(replay):
++    variant, capture, result = replay
++    flow = result["results"]["OUT-03"]
++    plans = result["results"]["OUT-05"]
++    if variant == "partial":
++        assert flow["base_surplus"]["value"] is None
++        assert plans["calc_state"] == "NEEDS_INPUT"
++        assert not plans.get("candidates")
++        income = next(a["raw_response"]["monthly_net_income"] for a in capture["engine_input"]["answers"]
++                      if a["question_id"] == "F03")
++        raw = next(a["envelope"]["fields"]["payload"]["raw_value"]["monthly_net_income"]
++                   for a in capture["raw_answers"]["answers"] if a["envelope"]["question_ref"]["design_id"] == "F03")
++        assert raw["state"] == "NOT_ENTERED" and raw["value"] is None
++        assert income["state"] == "UNKNOWN" and income["value"] is None
++        return
++    income = 5000000 if variant == "initial" else 5200000
++    residual = income - 2000000 - 500000 - 1000000
++    assert flow["after_existing_contributions_krw"] == str(income - 2500000)
++    assert [p["strategy_id"] for p in plans["candidates"]] == ["STABILITY_FIRST", "INVESTMENT_CAPACITY"]
++    for candidate, ratio in zip(plans["candidates"], [Fraction(1, 2), Fraction(4, 5)], strict=True):
++        investment = int(residual * ratio)
++        cash = 20000000
++        assert len(candidate["rows"]) == 3
++        for index, row in enumerate(candidate["rows"]):
++            goal_payment = 5000000 if index == 2 else 0
++            cash += income - 2000000 - 500000 - investment - goal_payment
++            assert row["period"] == ["2026-12", "2027-01", "2027-02"][index]
++            assert row["new_investment_krw"] == str(investment)
++            assert row["additional_cash_krw"] == str(residual - investment)
++            assert row["kept_noncash_krw"] == "500000"
++            assert row["goal_deposits_krw"] == "1000000"
++            assert row["goal_paid_krw"] == str(goal_payment)
++            assert row["closing_cash_krw"] == str(cash)
++            assert row["goals"][0]["closing_cash_krw"] == ["3000000", "4000000", "0"][index]
++            assert row["cash_difference_krw"] == "0"
++            assert row["recommended_new_investment_krw"] is None
++        # Contributions remain assets. Only living and education are consumed.
++        assert candidate["final_net_worth_krw"] == str(20000000 + 3 * income - 6000000 - 5000000)
++        assert candidate["final_cash_krw"] == str(cash)
++    assert result["results"]["OUT-06"]["calc_state"] == "NOT_SUPPORTED"
++
++
++def test_legacy_submission_payload_is_not_current_question_adapter(replay):
++    _, capture, _ = replay
++    document = {
++        "schema_version": "DION-QUESTION12-ADAPTER-1.1",
++        "context": capture["engine_input"]["context"],
++        "scope_ref": "household",
++        "raw_bundle": capture["raw_answers"],
++        "confirmations": [],
++        "requested_outputs": capture["engine_input"]["requested_outputs"],
++    }
++    result = run_question_v12(document)
++    # No assertion of automatic migration: preserved 1.3-engine payloads aren't 1.2/1.2.1 fields.
++    assert result["calc_state"] != "CALCULATED"
++
++
++@pytest.mark.parametrize("months", [36, 60, 120])
++@pytest.mark.parametrize("monthly", ["0", "300000", "750000", "1200000"])
++def test_reference_exact_fraction_accumulation_and_inflation(months, monthly):
++    original = {"results": {"OUT-05": {"calc_state": "CALCULATED", "candidates": [{
++        "strategy_id": "STABILITY_FIRST", "rows": [{"period": "2026-12", "new_investment_krw": monthly,
++                                                     "living_krw": "2000000"}]
++    }]}}}
++    before = copy.deepcopy(original)
++    result = build(original)
++    point = next(p for p in result["plans"][0]["points"] if p["months"] == months)
++    # Sum each month-end deposit's exact growth independently of production annuity helper.
++    accumulated = sum(Fraction(int(monthly)) * Fraction(301, 300) ** n for n in range(months))
++    assert point["assumed_return_krw"] == str(floor(accumulated))
++    assert point["assumed_return_real_krw"] == str(floor(accumulated / Fraction(51, 50) ** (months // 12)))
++    assert point["zero_return_krw"] == str(int(monthly) * months)
++    assert original == before
++    assert result["reference_only"] is True
++
++
++@pytest.mark.parametrize("months", [0, 35, 36])
++def test_reference_goal_zero_and_short_term_boundary(months):
++    goal = {"goal_id": "boundary", "calc_state": "CALCULATED", "target_krw": "0", "prepared_krw": "0",
++            "contribution_count": months, "level_contribution_krw": "0", "due_on": "2030-12-31"}
++    result = build({"results": {"OUT-04": {"calc_state": "CALCULATED", "rows": [goal]}}})
++    row = result["goals"][0]
++    assert row["assumed_return_monthly_krw"] == ("0" if months == 36 else None)
++    assert row["assumed_return_reason"] == (None if months == 36 else "SHORT_TERM_GOAL_NO_RETURN")
++    assert row["delay_monthly_krw"] == "0"
++
++
++@pytest.mark.parametrize("kind", ["RENTAL_DEPOSIT", "REAL_ESTATE"])
++def test_non_cash_assets_never_create_current_goal_or_investment_cash(kind):
++    doc = base_case()
++    asset = copy.deepcopy(raw(doc, "F06")["items"][0])
++    asset.update(asset_id="illiquid-1", kind=kind, value=m(50000000), available_on="2028-01-31",
++                 withdrawal_constraint="LOCKED")
++    put(doc, "NEW-09" if kind == "RENTAL_DEPOSIT" else "F08", {"items": [asset]})
++    result = run_engine(doc)
++    assert result["results"]["OUT-02"]["net_worth"]["value"] == "70000000"
++    a, b = result["results"]["OUT-05"]["candidates"]
++    assert [a["final_cash_krw"], b["final_cash_krw"]] == ["20250000", "18900000"]
++    assert a["rows"][0]["new_investment_krw"] == "750000"
++    # Merely recording availability does not sell property or receive the deposit.
++    assert all(r["event_in_krw"] == "0" for r in a["rows"])
++
++
++def test_actual_zero_income_remains_a_deficit_not_missing():
++    doc = base_case()
++    raw(doc, "F03")["monthly_net_income"] = m(0)
++    result = run_engine(doc)
++    flow = result["results"]["OUT-03"]
++    assert flow["after_existing_contributions_krw"] == "-2500000"
++    assert flow["feasibility"] == "SHORTFALL"
++    assert result["input_snapshot"]["answers"] == doc["answers"]
++
++
++def test_frozen_manifest_and_canonical_case():
++    manifest = json.loads((EVIDENCE / "lead-manifest.json").read_text(encoding="utf-8"))
++    path = EVIDENCE.parents[4] / manifest["case"]["canonical_input_path"]
++    assert hashlib.sha256(path.read_bytes()).hexdigest() == manifest["case"]["canonical_input_sha256"]
++    doc = json.loads(path.read_text(encoding="utf-8"))
++    result = run_engine(doc)
++    assert result["results"]["OUT-02"]["net_worth"]["value"] == "20000000"
++    a, b = result["results"]["OUT-05"]["candidates"]
++    assert [a["final_cash_krw"], b["final_cash_krw"]] == ["20250000", "18900000"]
++    assert [a["final_net_worth_krw"], b["final_net_worth_krw"]] == ["24000000", "24000000"]
++    reference = build(result)
++    assert reference["goal_omissions"] == []
++    assert reference["goals"][0]["months"] == 3
++    if os.environ.get("DION_CONTEST_WRITE_EVIDENCE") == "1":
++        (EVIDENCE / "canonical-current-result.json").write_text(
++            json.dumps({"engine": result, "proposal_reference": reference}, ensure_ascii=False, indent=2) + "\n",
++            encoding="utf-8",
++        )
++
++
++@pytest.mark.parametrize("kind", ["multiple_per_month", "skipped_month", "early_payment"])
++def test_dated_goal_is_not_relabelled_as_equal_monthly_reference(kind):
++    doc = base_case()
++    if kind == "multiple_per_month":
++        raw(doc, "F12")["items"][0]["contribution_dates"] = ["2027-01-01", "2027-01-10", "2027-01-15"]
++    elif kind == "skipped_month":
++        raw(doc, "F12")["items"][0]["contribution_dates"] = ["2027-01-15", "2027-03-15"]
++    else:
++        payment = raw(doc, "F13")["items"][0]["payments"][0]
++        payment["amount"] = m(4000000)
++        raw(doc, "F13")["items"][0]["payments"].append(
++            {"on": "2027-01-20", "amount": m(1000000), "economic_event_id": "early"}
++        )
++    result = run_engine(doc)
++    assert result["results"]["OUT-04"]["calc_state"] == "CALCULATED"
++    before = copy.deepcopy(result)
++    reference = build(result)
++    assert reference["goals"] == []
++    assert reference["goal_omissions"] == [{"goal_id": "goal-1", "reason": "MONTHLY_REFERENCE_CALENDAR_UNSUPPORTED"}]
++    assert result == before

@@ -1,0 +1,928 @@
+{
+  "demo_contract": "DION-UI-DEMO-1.0",
+  "simulation": true,
+  "raw_snapshot_id": "raw_dbda754484d944298fa66bf08ae28c25",
+  "input_version": 14,
+  "recorded_at": "2026-11-10T13:31:46.180268+00:00",
+  "engine_input": {
+    "schema_version": "DION-ENGINE-1.0",
+    "context": {
+      "case_id": "SUBMISSION-B-01",
+      "snapshot_id": "raw_dbda754484d944298fa66bf08ae28c25",
+      "profile_version": "14",
+      "evaluation_on": "2026-11-30",
+      "scope": "household",
+      "included_owner_ids": [
+        "adult-1",
+        "adult-2"
+      ],
+      "currency": "KRW",
+      "timezone": "Asia/Seoul",
+      "projection_start": "2026-12-01",
+      "projection_end": "2027-02-28"
+    },
+    "answers": [
+      {
+        "answer_id": "a:NEW-01",
+        "question_id": "NEW-01",
+        "definition_version": "1.3-engine",
+        "revision": 1,
+        "raw_response": {
+          "scope": "household",
+          "owner_ids": [
+            "adult-1",
+            "adult-2"
+          ],
+          "asset_coverage": "complete"
+        }
+      },
+      {
+        "answer_id": "a:F03",
+        "question_id": "F03",
+        "definition_version": "1.3-engine",
+        "revision": 14,
+        "raw_response": {
+          "monthly_net_income": {
+            "value": null,
+            "state": "UNKNOWN",
+            "unit": "KRW_10000",
+            "basis": "SCENARIO"
+          },
+          "period_start": "2026-11-01",
+          "period_end": "2026-11-30",
+          "includes_one_off": "NO"
+        }
+      },
+      {
+        "answer_id": "a:F04",
+        "question_id": "F04",
+        "definition_version": "1.3-engine",
+        "revision": 3,
+        "raw_response": {
+          "living": {
+            "value": "00200.0000",
+            "state": "KNOWN",
+            "unit": "KRW_10000",
+            "basis": "SCENARIO"
+          },
+          "expense_basis": "LIVING_ONLY",
+          "exclusions_confirmed": true,
+          "essential_living": {
+            "value": "00200.0000",
+            "state": "KNOWN",
+            "unit": "KRW_10000",
+            "basis": "SCENARIO"
+          },
+          "period_start": "2026-11-01",
+          "period_end": "2026-11-30"
+        }
+      },
+      {
+        "answer_id": "a:F06",
+        "question_id": "F06",
+        "definition_version": "1.3-engine",
+        "revision": 4,
+        "raw_response": {
+          "items": [
+            {
+              "asset_id": "cash-1",
+              "kind": "CASH",
+              "parent_asset_id": null,
+              "owner_ids": [
+                "adult-1",
+                "adult-2"
+              ],
+              "value": {
+                "value": "02000.0000",
+                "state": "KNOWN",
+                "unit": "KRW_10000",
+                "basis": "SCENARIO"
+              },
+              "valuation_on": "2026-11-30",
+              "value_basis": "SCOPE_SHARE",
+              "share_numerator": "1",
+              "share_denominator": "1",
+              "detail_coverage": "complete",
+              "available_on": "2026-11-30",
+              "withdrawal_constraint": "NONE_CONFIRMED"
+            }
+          ]
+        }
+      },
+      {
+        "answer_id": "a:NEW-04",
+        "question_id": "NEW-04",
+        "definition_version": "1.3-engine",
+        "revision": 5,
+        "raw_response": {
+          "status": "NONE"
+        }
+      },
+      {
+        "answer_id": "a:NEW-03",
+        "question_id": "NEW-03",
+        "definition_version": "1.3-engine",
+        "revision": 6,
+        "raw_response": {
+          "status": "KNOWN",
+          "items": [
+            {
+              "contribution_id": "invest-existing",
+              "owner_ref": "adult-1",
+              "purpose": "INVESTMENT",
+              "amount": {
+                "value": "00050.0000",
+                "state": "KNOWN",
+                "unit": "KRW_10000",
+                "basis": "SCENARIO"
+              },
+              "destination": "NONCASH",
+              "pay_day": 15,
+              "period_basis": "CONFIRMED_CONSTANT",
+              "already_deducted_from_net_income": false
+            }
+          ]
+        }
+      },
+      {
+        "answer_id": "a:NEW-02",
+        "question_id": "NEW-02",
+        "definition_version": "1.3-engine",
+        "revision": 7,
+        "raw_response": {
+          "carry_forward_snapshot": true,
+          "zero_return": true,
+          "unchanged_living_confirmed": true,
+          "income_basis": "CONFIRMED_CONSTANT"
+        }
+      },
+      {
+        "answer_id": "a:NEW-05",
+        "question_id": "NEW-05",
+        "definition_version": "1.3-engine",
+        "revision": 8,
+        "raw_response": {
+          "status": "NONE",
+          "items": []
+        }
+      },
+      {
+        "answer_id": "a:NEW-06",
+        "question_id": "NEW-06",
+        "definition_version": "1.3-engine",
+        "revision": 9,
+        "raw_response": {
+          "coverage": "complete",
+          "customer_protection_target": {
+            "value": "00600.0000",
+            "state": "KNOWN",
+            "unit": "KRW_10000",
+            "basis": "SCENARIO"
+          },
+          "customer_operating_target": {
+            "value": "00200.0000",
+            "state": "KNOWN",
+            "unit": "KRW_10000",
+            "basis": "SCENARIO"
+          },
+          "items": [
+            {
+              "reservation_id": "r-p",
+              "asset_ref": "cash-1",
+              "purpose": "PROTECTION",
+              "amount": {
+                "value": "00600.0000",
+                "state": "KNOWN",
+                "unit": "KRW_10000",
+                "basis": "SCENARIO"
+              }
+            },
+            {
+              "reservation_id": "r-o",
+              "asset_ref": "cash-1",
+              "purpose": "OPERATING",
+              "amount": {
+                "value": "00200.0000",
+                "state": "KNOWN",
+                "unit": "KRW_10000",
+                "basis": "SCENARIO"
+              }
+            },
+            {
+              "reservation_id": "r-g",
+              "asset_ref": "cash-1",
+              "purpose": "GOAL",
+              "goal_ref": "goal-1",
+              "amount": {
+                "value": "00200.0000",
+                "state": "KNOWN",
+                "unit": "KRW_10000",
+                "basis": "SCENARIO"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "answer_id": "a:F11",
+        "question_id": "F11",
+        "definition_version": "1.3-engine",
+        "revision": 10,
+        "raw_response": {
+          "status": "KNOWN",
+          "items": [
+            {
+              "goal_id": "goal-1",
+              "type": "EDUCATION",
+              "priority": 1,
+              "owner_ref": "adult-1",
+              "confirmed": true
+            }
+          ]
+        }
+      },
+      {
+        "answer_id": "a:F12",
+        "question_id": "F12",
+        "definition_version": "1.3-engine",
+        "revision": 11,
+        "raw_response": {
+          "items": [
+            {
+              "goal_id": "goal-1",
+              "due_on": "2027-02-28",
+              "contribution_dates": [
+                "2026-12-15",
+                "2027-01-15",
+                "2027-02-15"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "answer_id": "a:F13",
+        "question_id": "F13",
+        "definition_version": "1.3-engine",
+        "revision": 12,
+        "raw_response": {
+          "items": [
+            {
+              "goal_id": "goal-1",
+              "price_basis": "FUTURE_NOMINAL",
+              "return_basis": "ZERO_RETURN",
+              "prepared_reservation_ids": [
+                "r-g"
+              ],
+              "payments": [
+                {
+                  "on": "2027-02-28",
+                  "amount": {
+                    "value": "00500.0000",
+                    "state": "KNOWN",
+                    "unit": "KRW_10000",
+                    "basis": "SCENARIO"
+                  },
+                  "economic_event_id": "tuition-1"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
+    "requested_outputs": [
+      "OUT-02",
+      "OUT-03",
+      "OUT-04",
+      "OUT-05",
+      "OUT-06",
+      "OUT-08",
+      "OUT-09",
+      "OUT-10",
+      "OUT-11",
+      "OUT-12",
+      "OUT-14"
+    ]
+  },
+  "raw_answers": {
+    "raw_snapshot_id": "raw_dbda754484d944298fa66bf08ae28c25",
+    "kind": "RAW_ANSWERS_ONLY",
+    "input_version": 14,
+    "is_current": true,
+    "answers": [
+      {
+        "answer_revision_id": "ans_9de36359fa6b4c998412fc1d0499ed1a",
+        "input_version": 10,
+        "prior_revision_id": null,
+        "recorded_at": "2026-11-10T13:31:46.188488+00:00",
+        "envelope": {
+          "wire_version": "POC-RAW-0.1",
+          "question_ref": {
+            "namespace": "DION-DESIGN",
+            "design_id": "F11",
+            "definition_version": "1.3-engine",
+            "definition_ref": "docs/questions/v1.3-engine/bindings.json#F11",
+            "definition_text": "지금 가장 먼저 준비하고 싶은 일은 무엇인가요?",
+            "option_labels": {}
+          },
+          "subject_refs": {
+            "person_ref": "adult-1"
+          },
+          "context": {
+            "scope_ref": "household",
+            "as_of": "2026-11-30",
+            "period_start": "2026-11-01",
+            "period_end": "2026-11-30",
+            "source_ref": "ui-demo:a:F11",
+            "basis": "SCENARIO"
+          },
+          "fields": {
+            "payload": {
+              "state": "KNOWN",
+              "raw_value": {
+                "status": "KNOWN",
+                "items": [
+                  {
+                    "goal_id": "goal-1",
+                    "type": "EDUCATION",
+                    "priority": 1,
+                    "owner_ref": "adult-1",
+                    "confirmed": true
+                  }
+                ]
+              },
+              "unit": "JSON"
+            }
+          }
+        }
+      },
+      {
+        "answer_revision_id": "ans_67068dd7badf408b95c792e2f9355a34",
+        "input_version": 11,
+        "prior_revision_id": null,
+        "recorded_at": "2026-11-10T13:31:46.190821+00:00",
+        "envelope": {
+          "wire_version": "POC-RAW-0.1",
+          "question_ref": {
+            "namespace": "DION-DESIGN",
+            "design_id": "F12",
+            "definition_version": "1.3-engine",
+            "definition_ref": "docs/questions/v1.3-engine/bindings.json#F12",
+            "definition_text": "목표에 실제로 돈이 필요한 날과 적립 가능한 날을 확인해주세요.",
+            "option_labels": {}
+          },
+          "subject_refs": {
+            "person_ref": "adult-1"
+          },
+          "context": {
+            "scope_ref": "household",
+            "as_of": "2026-11-30",
+            "period_start": "2026-11-01",
+            "period_end": "2026-11-30",
+            "source_ref": "ui-demo:a:F12",
+            "basis": "SCENARIO"
+          },
+          "fields": {
+            "payload": {
+              "state": "KNOWN",
+              "raw_value": {
+                "items": [
+                  {
+                    "goal_id": "goal-1",
+                    "due_on": "2027-02-28",
+                    "contribution_dates": [
+                      "2026-12-15",
+                      "2027-01-15",
+                      "2027-02-15"
+                    ]
+                  }
+                ]
+              },
+              "unit": "JSON"
+            }
+          }
+        }
+      },
+      {
+        "answer_revision_id": "ans_ad5710c61d0641d383823296dbfa6e58",
+        "input_version": 3,
+        "prior_revision_id": null,
+        "recorded_at": "2026-11-10T13:31:46.171305+00:00",
+        "envelope": {
+          "wire_version": "POC-RAW-0.1",
+          "question_ref": {
+            "namespace": "DION-DESIGN",
+            "design_id": "F04",
+            "definition_version": "1.3-engine",
+            "definition_ref": "docs/questions/v1.3-engine/bindings.json#F04",
+            "definition_text": "대출 상환과 저축·투자 이체를 제외한 월 생활비는 얼마인가요?",
+            "option_labels": {}
+          },
+          "subject_refs": {
+            "person_ref": "adult-1"
+          },
+          "context": {
+            "scope_ref": "household",
+            "as_of": "2026-11-30",
+            "period_start": "2026-11-01",
+            "period_end": "2026-11-30",
+            "source_ref": "ui-demo:a:F04",
+            "basis": "SCENARIO"
+          },
+          "fields": {
+            "payload": {
+              "state": "KNOWN",
+              "raw_value": {
+                "living": {
+                  "value": "00200.0000",
+                  "state": "KNOWN",
+                  "unit": "KRW_10000",
+                  "basis": "SCENARIO"
+                },
+                "expense_basis": "LIVING_ONLY",
+                "exclusions_confirmed": true,
+                "essential_living": {
+                  "value": "00200.0000",
+                  "state": "KNOWN",
+                  "unit": "KRW_10000",
+                  "basis": "SCENARIO"
+                },
+                "period_start": "2026-11-01",
+                "period_end": "2026-11-30"
+              },
+              "unit": "JSON"
+            }
+          }
+        }
+      },
+      {
+        "answer_revision_id": "ans_b4b13eeb56954d09bbfe1f4ae30f6992",
+        "input_version": 8,
+        "prior_revision_id": null,
+        "recorded_at": "2026-11-10T13:31:46.182633+00:00",
+        "envelope": {
+          "wire_version": "POC-RAW-0.1",
+          "question_ref": {
+            "namespace": "DION-DESIGN",
+            "design_id": "NEW-05",
+            "definition_version": "1.3-engine",
+            "definition_ref": "docs/questions/v1.3-engine/bindings.json#NEW-05",
+            "definition_text": "앞서 적은 목표 외에, 예정된 큰 지출이나 가족 지원이 있나요?",
+            "option_labels": {}
+          },
+          "subject_refs": {
+            "person_ref": "adult-1"
+          },
+          "context": {
+            "scope_ref": "household",
+            "as_of": "2026-11-30",
+            "period_start": "2026-11-01",
+            "period_end": "2026-11-30",
+            "source_ref": "ui-demo:a:NEW-05",
+            "basis": "SCENARIO"
+          },
+          "fields": {
+            "payload": {
+              "state": "KNOWN",
+              "raw_value": {
+                "status": "NONE",
+                "items": []
+              },
+              "unit": "JSON"
+            }
+          }
+        }
+      },
+      {
+        "answer_revision_id": "ans_c5d2491a94f549d5b76bd685775ed9f8",
+        "input_version": 12,
+        "prior_revision_id": null,
+        "recorded_at": "2026-11-10T13:31:46.193356+00:00",
+        "envelope": {
+          "wire_version": "POC-RAW-0.1",
+          "question_ref": {
+            "namespace": "DION-DESIGN",
+            "design_id": "F13",
+            "definition_version": "1.3-engine",
+            "definition_ref": "docs/questions/v1.3-engine/bindings.json#F13",
+            "definition_text": "목표에 필요한 금액과 이미 준비한 돈을 확인해주세요.",
+            "option_labels": {}
+          },
+          "subject_refs": {
+            "person_ref": "adult-1"
+          },
+          "context": {
+            "scope_ref": "household",
+            "as_of": "2026-11-30",
+            "period_start": "2026-11-01",
+            "period_end": "2026-11-30",
+            "source_ref": "ui-demo:a:F13",
+            "basis": "SCENARIO"
+          },
+          "fields": {
+            "payload": {
+              "state": "KNOWN",
+              "raw_value": {
+                "items": [
+                  {
+                    "goal_id": "goal-1",
+                    "price_basis": "FUTURE_NOMINAL",
+                    "return_basis": "ZERO_RETURN",
+                    "prepared_reservation_ids": [
+                      "r-g"
+                    ],
+                    "payments": [
+                      {
+                        "on": "2027-02-28",
+                        "amount": {
+                          "value": "00500.0000",
+                          "state": "KNOWN",
+                          "unit": "KRW_10000",
+                          "basis": "SCENARIO"
+                        },
+                        "economic_event_id": "tuition-1"
+                      }
+                    ]
+                  }
+                ]
+              },
+              "unit": "JSON"
+            }
+          }
+        }
+      },
+      {
+        "answer_revision_id": "ans_bbc8b3ef5e654b93802a3ad927da0305",
+        "input_version": 6,
+        "prior_revision_id": null,
+        "recorded_at": "2026-11-10T13:31:46.178450+00:00",
+        "envelope": {
+          "wire_version": "POC-RAW-0.1",
+          "question_ref": {
+            "namespace": "DION-DESIGN",
+            "design_id": "NEW-03",
+            "definition_version": "1.3-engine",
+            "definition_ref": "docs/questions/v1.3-engine/bindings.json#NEW-03",
+            "definition_text": "현재 매달 저축하거나 투자하는 금액이 있나요?",
+            "option_labels": {}
+          },
+          "subject_refs": {
+            "person_ref": "adult-1"
+          },
+          "context": {
+            "scope_ref": "household",
+            "as_of": "2026-11-30",
+            "period_start": "2026-11-01",
+            "period_end": "2026-11-30",
+            "source_ref": "ui-demo:a:NEW-03",
+            "basis": "SCENARIO"
+          },
+          "fields": {
+            "payload": {
+              "state": "KNOWN",
+              "raw_value": {
+                "status": "KNOWN",
+                "items": [
+                  {
+                    "contribution_id": "invest-existing",
+                    "owner_ref": "adult-1",
+                    "purpose": "INVESTMENT",
+                    "amount": {
+                      "value": "00050.0000",
+                      "state": "KNOWN",
+                      "unit": "KRW_10000",
+                      "basis": "SCENARIO"
+                    },
+                    "destination": "NONCASH",
+                    "pay_day": 15,
+                    "period_basis": "CONFIRMED_CONSTANT",
+                    "already_deducted_from_net_income": false
+                  }
+                ]
+              },
+              "unit": "JSON"
+            }
+          }
+        }
+      },
+      {
+        "answer_revision_id": "ans_922dbe2372f34f95a4211319a1c52e65",
+        "input_version": 14,
+        "prior_revision_id": "ans_a869de1cd30b430882fa2fa5a28a79c8",
+        "recorded_at": "2026-11-10T13:39:42.113036+00:00",
+        "envelope": {
+          "wire_version": "POC-RAW-0.1",
+          "question_ref": {
+            "namespace": "DION-DESIGN",
+            "design_id": "F03",
+            "definition_version": "1.3-engine",
+            "definition_ref": "docs/questions/v1.3-engine/bindings.json#F03",
+            "definition_text": "월평균 세후소득은 얼마인가요?",
+            "option_labels": {}
+          },
+          "subject_refs": {
+            "person_ref": "adult-1"
+          },
+          "context": {
+            "scope_ref": "household",
+            "as_of": "2026-11-30",
+            "period_start": "2026-11-01",
+            "period_end": "2026-11-30",
+            "source_ref": "ui-demo:a:F03",
+            "basis": "SCENARIO"
+          },
+          "fields": {
+            "payload": {
+              "state": "KNOWN",
+              "raw_value": {
+                "monthly_net_income": {
+                  "value": null,
+                  "state": "NOT_ENTERED",
+                  "unit": "KRW_10000",
+                  "basis": "SCENARIO"
+                },
+                "period_start": "2026-11-01",
+                "period_end": "2026-11-30",
+                "includes_one_off": "NO"
+              },
+              "unit": "JSON"
+            }
+          }
+        }
+      },
+      {
+        "answer_revision_id": "ans_9251da24501944dcb5ce3b677f67675b",
+        "input_version": 9,
+        "prior_revision_id": null,
+        "recorded_at": "2026-11-10T13:31:46.185824+00:00",
+        "envelope": {
+          "wire_version": "POC-RAW-0.1",
+          "question_ref": {
+            "namespace": "DION-DESIGN",
+            "design_id": "NEW-06",
+            "definition_version": "1.3-engine",
+            "definition_ref": "docs/questions/v1.3-engine/bindings.json#NEW-06",
+            "definition_text": "현재 현금 중 비상자금·생활비·목표에 남겨둘 돈을 확인해주세요.",
+            "option_labels": {}
+          },
+          "subject_refs": {
+            "person_ref": "adult-1"
+          },
+          "context": {
+            "scope_ref": "household",
+            "as_of": "2026-11-30",
+            "period_start": "2026-11-01",
+            "period_end": "2026-11-30",
+            "source_ref": "ui-demo:a:NEW-06",
+            "basis": "SCENARIO"
+          },
+          "fields": {
+            "payload": {
+              "state": "KNOWN",
+              "raw_value": {
+                "coverage": "complete",
+                "customer_protection_target": {
+                  "value": "00600.0000",
+                  "state": "KNOWN",
+                  "unit": "KRW_10000",
+                  "basis": "SCENARIO"
+                },
+                "customer_operating_target": {
+                  "value": "00200.0000",
+                  "state": "KNOWN",
+                  "unit": "KRW_10000",
+                  "basis": "SCENARIO"
+                },
+                "items": [
+                  {
+                    "reservation_id": "r-p",
+                    "asset_ref": "cash-1",
+                    "purpose": "PROTECTION",
+                    "amount": {
+                      "value": "00600.0000",
+                      "state": "KNOWN",
+                      "unit": "KRW_10000",
+                      "basis": "SCENARIO"
+                    }
+                  },
+                  {
+                    "reservation_id": "r-o",
+                    "asset_ref": "cash-1",
+                    "purpose": "OPERATING",
+                    "amount": {
+                      "value": "00200.0000",
+                      "state": "KNOWN",
+                      "unit": "KRW_10000",
+                      "basis": "SCENARIO"
+                    }
+                  },
+                  {
+                    "reservation_id": "r-g",
+                    "asset_ref": "cash-1",
+                    "purpose": "GOAL",
+                    "goal_ref": "goal-1",
+                    "amount": {
+                      "value": "00200.0000",
+                      "state": "KNOWN",
+                      "unit": "KRW_10000",
+                      "basis": "SCENARIO"
+                    }
+                  }
+                ]
+              },
+              "unit": "JSON"
+            }
+          }
+        }
+      },
+      {
+        "answer_revision_id": "ans_aad7ba2eadad4278a49f8200092223b4",
+        "input_version": 4,
+        "prior_revision_id": null,
+        "recorded_at": "2026-11-10T13:31:46.173978+00:00",
+        "envelope": {
+          "wire_version": "POC-RAW-0.1",
+          "question_ref": {
+            "namespace": "DION-DESIGN",
+            "design_id": "F06",
+            "definition_version": "1.3-engine",
+            "definition_ref": "docs/questions/v1.3-engine/bindings.json#F06",
+            "definition_text": "현재 보유한 금융자산은 어떤 종류이고, 각각 얼마인가요?",
+            "option_labels": {}
+          },
+          "subject_refs": {
+            "person_ref": "adult-1"
+          },
+          "context": {
+            "scope_ref": "household",
+            "as_of": "2026-11-30",
+            "period_start": "2026-11-01",
+            "period_end": "2026-11-30",
+            "source_ref": "ui-demo:a:F06",
+            "basis": "SCENARIO"
+          },
+          "fields": {
+            "payload": {
+              "state": "KNOWN",
+              "raw_value": {
+                "items": [
+                  {
+                    "asset_id": "cash-1",
+                    "kind": "CASH",
+                    "parent_asset_id": null,
+                    "owner_ids": [
+                      "adult-1",
+                      "adult-2"
+                    ],
+                    "value": {
+                      "value": "02000.0000",
+                      "state": "KNOWN",
+                      "unit": "KRW_10000",
+                      "basis": "SCENARIO"
+                    },
+                    "valuation_on": "2026-11-30",
+                    "value_basis": "SCOPE_SHARE",
+                    "share_numerator": "1",
+                    "share_denominator": "1",
+                    "detail_coverage": "complete",
+                    "available_on": "2026-11-30",
+                    "withdrawal_constraint": "NONE_CONFIRMED"
+                  }
+                ]
+              },
+              "unit": "JSON"
+            }
+          }
+        }
+      },
+      {
+        "answer_revision_id": "ans_4e58ab727f7c492e9b8dc86fcc194299",
+        "input_version": 1,
+        "prior_revision_id": null,
+        "recorded_at": "2026-11-10T13:31:46.164131+00:00",
+        "envelope": {
+          "wire_version": "POC-RAW-0.1",
+          "question_ref": {
+            "namespace": "DION-DESIGN",
+            "design_id": "NEW-01",
+            "definition_version": "1.3-engine",
+            "definition_ref": "docs/questions/v1.3-engine/bindings.json#NEW-01",
+            "definition_text": "누구의 재무상황을 함께 살펴볼까요?",
+            "option_labels": {}
+          },
+          "subject_refs": {
+            "person_ref": "adult-1"
+          },
+          "context": {
+            "scope_ref": "household",
+            "as_of": "2026-11-30",
+            "period_start": "2026-11-01",
+            "period_end": "2026-11-30",
+            "source_ref": "ui-demo:a:NEW-01",
+            "basis": "SCENARIO"
+          },
+          "fields": {
+            "payload": {
+              "state": "KNOWN",
+              "raw_value": {
+                "scope": "household",
+                "owner_ids": [
+                  "adult-1",
+                  "adult-2"
+                ],
+                "asset_coverage": "complete"
+              },
+              "unit": "JSON"
+            }
+          }
+        }
+      },
+      {
+        "answer_revision_id": "ans_03b756db5d234af59e8fb6e5988e7d77",
+        "input_version": 5,
+        "prior_revision_id": null,
+        "recorded_at": "2026-11-10T13:31:46.176452+00:00",
+        "envelope": {
+          "wire_version": "POC-RAW-0.1",
+          "question_ref": {
+            "namespace": "DION-DESIGN",
+            "design_id": "NEW-04",
+            "definition_version": "1.3-engine",
+            "definition_ref": "docs/questions/v1.3-engine/bindings.json#NEW-04",
+            "definition_text": "현재 대출이나 앞으로 갚아야 할 채무가 있나요?",
+            "option_labels": {}
+          },
+          "subject_refs": {
+            "person_ref": "adult-1"
+          },
+          "context": {
+            "scope_ref": "household",
+            "as_of": "2026-11-30",
+            "period_start": "2026-11-01",
+            "period_end": "2026-11-30",
+            "source_ref": "ui-demo:a:NEW-04",
+            "basis": "SCENARIO"
+          },
+          "fields": {
+            "payload": {
+              "state": "KNOWN",
+              "raw_value": {
+                "status": "NONE"
+              },
+              "unit": "JSON"
+            }
+          }
+        }
+      },
+      {
+        "answer_revision_id": "ans_b3db344f654b47e39daa093e672893fe",
+        "input_version": 7,
+        "prior_revision_id": null,
+        "recorded_at": "2026-11-10T13:31:46.180268+00:00",
+        "envelope": {
+          "wire_version": "POC-RAW-0.1",
+          "question_ref": {
+            "namespace": "DION-DESIGN",
+            "design_id": "NEW-02",
+            "definition_version": "1.3-engine",
+            "definition_ref": "docs/questions/v1.3-engine/bindings.json#NEW-02",
+            "definition_text": "계획 기간에 소득이 바뀌거나 연금 수령이 시작되나요?",
+            "option_labels": {}
+          },
+          "subject_refs": {
+            "person_ref": "adult-1"
+          },
+          "context": {
+            "scope_ref": "household",
+            "as_of": "2026-11-30",
+            "period_start": "2026-11-01",
+            "period_end": "2026-11-30",
+            "source_ref": "ui-demo:a:NEW-02",
+            "basis": "SCENARIO"
+          },
+          "fields": {
+            "payload": {
+              "state": "KNOWN",
+              "raw_value": {
+                "carry_forward_snapshot": true,
+                "zero_return": true,
+                "unchanged_living_confirmed": true,
+                "income_basis": "CONFIRMED_CONSTANT"
+              },
+              "unit": "JSON"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "raw_mapping": "POC payload JSON to 1.3-engine raw_response; NOT_ENTERED remains raw",
+  "runtime": {
+    "storage": "POC-RAW-0.1 SQLite",
+    "engine": "DION-ENGINE-1.0",
+    "production_auth": false,
+    "production_api": false,
+    "transactions": false
+  }
+}

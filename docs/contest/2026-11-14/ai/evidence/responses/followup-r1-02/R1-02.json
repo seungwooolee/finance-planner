@@ -1,0 +1,422 @@
+{
+  "eval_id": "R1-02",
+  "environment": "SYNTHETIC_LOCAL_ONLY",
+  "product_B_ids_created": false,
+  "responses": [
+    {
+      "layer": "EXPLANATION_SERVICE",
+      "body": {
+        "contract_version": "DION-EXPLANATION-1.0",
+        "fact_schema_version": "DION-EXPLANATION-FACTS-1.0",
+        "validator_version": "DION-EXPLANATION-VALIDATOR-1.0",
+        "prompt_version": "DION-EXPLANATION-SELECTION-1.0",
+        "provider_version": "DION-MOCK-SELECTION-1.0",
+        "provider_usage": null,
+        "explanation_id": "exp_c649f8b3bef94979a54b944f274656c3",
+        "request_key": "request-one",
+        "case_id": "case-A",
+        "run_id": "run_07cf5a8758404b2384469142a91ad5aa",
+        "input_version": 13,
+        "raw_snapshot_id": "raw_73cdeb561e554b99bab30ee607e5f04c",
+        "input_hash": "05fe0c04064cb8679cacde9de15b45e2c45f3fa4f4bae82f46a82f9e6eac6174",
+        "normalized_input_hash": "008c2033dc43a771711b0015ecc9738507a231a08e904e1b96a7d3cdcfde46af",
+        "result_sha256": "6f2890afe48f6fe2134c1ee8d0f200ce478dc3d0c093360e064ff6694d618b83",
+        "fact_set_sha256": "be41802841aeabb19f3a639a18624dd515f1e242de94375b6cc138570892318c",
+        "evaluation_on": "2026-10-31",
+        "detail_level": "SHORT",
+        "output_ids": [
+          "OUT-03",
+          "OUT-05"
+        ],
+        "strategy_id": null,
+        "explained_at": "2026-11-14T09:32:53.162251+00:00",
+        "elapsed_ms": 15,
+        "status": "EXPLAINED",
+        "source": "MOCK",
+        "reason_code": null,
+        "verification_scope": "STORED_RESULT_EXPLANATION_CONSISTENCY_ONLY",
+        "blocks": [
+          {
+            "claim_id": "MONTHLY_REMAINDER_AFTER_EXISTING",
+            "kind": "SUMMARY",
+            "text": "2026-10-01 ~ 2026-10-31 기준, 상환과 기존 납입을 반영한 월 잔여는 90만원입니다. 목표·보호자금 배정 전 금액이에요.",
+            "fact_refs": [
+              "fact_c454f3b92aad40196022dc39391e6568353fba6cdc0a7ac847a985fa66680d51"
+            ],
+            "source_refs": [
+              "raw-revision:ans_1540bf3124c849afbb6761fafcfa8fab",
+              "raw-revision:ans_40e0e5aff24c4cf9bfb39fbb53efa53f",
+              "raw-revision:ans_6e4da4d2cdaa429c87c37419ad749c5a",
+              "raw-revision:ans_86e6ad4347614290a5aa95e0eab5b09f",
+              "raw-revision:ans_9aad293e40da4250aafa3c1c25314e60",
+              "raw-revision:ans_ede6d7796eb74df9b0dc4ee6785f6c26"
+            ],
+            "assumption_refs": []
+          },
+          {
+            "claim_id": "FLOW_IS_NOT_RECOMMENDATION",
+            "kind": "LIMITATION",
+            "text": "이 월 잔여는 투자 권장액이 아니며, 앞으로도 같은 소득·지출이 이어진다는 보장은 없어요.",
+            "fact_refs": [],
+            "source_refs": [],
+            "assumption_refs": []
+          },
+          {
+            "claim_id": "UNAVAILABLE_OUT-05",
+            "kind": "UNAVAILABLE",
+            "text": "안정·확대 후보 해설은 보류합니다. 정보·근거 또는 계산 상태를 더 확인해야 해요. 미확인 금액을 0원으로 채우지 않아요.",
+            "fact_refs": [],
+            "source_refs": [],
+            "assumption_refs": []
+          }
+        ],
+        "facts": [
+          {
+            "fact_id": "fact_c454f3b92aad40196022dc39391e6568353fba6cdc0a7ac847a985fa66680d51",
+            "run_id": "run_07cf5a8758404b2384469142a91ad5aa",
+            "output_id": "OUT-03",
+            "locator": {
+              "output_id": "OUT-03",
+              "metric": "after_existing_contributions_krw",
+              "strategy_id": null,
+              "period": "2026-10-01",
+              "period_end": "2026-10-31",
+              "scope": "personal",
+              "owner_scope_hash": "c787d6c804600c438f39b89b64134a2b1d1552d9f2de11f3a3413931dda3b166"
+            },
+            "result_path": "/results/OUT-03/after_existing_contributions_krw",
+            "value": "900000",
+            "unit": "KRW",
+            "value_kind": "OBSERVED_PERIOD_CASHFLOW",
+            "evaluation_on": "2026-10-31",
+            "displayable": true,
+            "source_refs": [
+              "raw-revision:ans_ede6d7796eb74df9b0dc4ee6785f6c26",
+              "raw-revision:ans_1540bf3124c849afbb6761fafcfa8fab",
+              "raw-revision:ans_86e6ad4347614290a5aa95e0eab5b09f",
+              "raw-revision:ans_9aad293e40da4250aafa3c1c25314e60",
+              "raw-revision:ans_40e0e5aff24c4cf9bfb39fbb53efa53f",
+              "raw-revision:ans_6e4da4d2cdaa429c87c37419ad749c5a"
+            ],
+            "input_evidence_refs": [
+              {
+                "source_ref": "raw-revision:ans_ede6d7796eb74df9b0dc4ee6785f6c26",
+                "answer_revision_id": "ans_ede6d7796eb74df9b0dc4ee6785f6c26",
+                "question_id": "NEW-01",
+                "definition_version": "1.2.1",
+                "input_version": 1,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "assessment_scope",
+                  "asset_coverage",
+                  "included_owner_ids",
+                  "owner_confirmation_ref",
+                  "scope_acknowledged",
+                  "scope_version"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_1540bf3124c849afbb6761fafcfa8fab",
+                "answer_revision_id": "ans_1540bf3124c849afbb6761fafcfa8fab",
+                "question_id": "F03",
+                "definition_version": "1.2",
+                "input_version": 2,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "includes_one_off_income",
+                  "income_amount_status",
+                  "income_definition_version",
+                  "income_period_end",
+                  "income_period_start",
+                  "income_reference_period",
+                  "monthly_net_income_krw"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_86e6ad4347614290a5aa95e0eab5b09f",
+                "answer_revision_id": "ans_86e6ad4347614290a5aa95e0eab5b09f",
+                "question_id": "F04",
+                "definition_version": "1.2.1",
+                "input_version": 3,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "essential_living",
+                  "exclusions_confirmed",
+                  "expense_basis",
+                  "included_contributions",
+                  "included_debt",
+                  "living",
+                  "period_end",
+                  "period_start",
+                  "response_definition_version"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_9aad293e40da4250aafa3c1c25314e60",
+                "answer_revision_id": "ans_9aad293e40da4250aafa3c1c25314e60",
+                "question_id": "NEW-04",
+                "definition_version": "1.2",
+                "input_version": 5,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "has_liabilities"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_40e0e5aff24c4cf9bfb39fbb53efa53f",
+                "answer_revision_id": "ans_40e0e5aff24c4cf9bfb39fbb53efa53f",
+                "question_id": "F09+F10+D08",
+                "definition_version": "1.2.1",
+                "input_version": 6,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "debts"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_6e4da4d2cdaa429c87c37419ad749c5a",
+                "answer_revision_id": "ans_6e4da4d2cdaa429c87c37419ad749c5a",
+                "question_id": "NEW-03",
+                "definition_version": "1.2",
+                "input_version": 7,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "existing_contributions"
+                ]
+              }
+            ],
+            "policy_refs": [],
+            "calc_state": "CALCULATED"
+          }
+        ],
+        "next_checks": [
+          {
+            "check_id": "check_N01",
+            "question_id": "N01",
+            "text": "부동산 보유 여부의 미확인 값과 기준을 확인해 주세요."
+          }
+        ],
+        "limitations": [
+          "이 월 잔여는 투자 권장액이 아니며, 앞으로도 같은 소득·지출이 이어진다는 보장은 없어요."
+        ],
+        "is_current": true,
+        "current_input_version": 13
+      }
+    },
+    {
+      "layer": "IN_PROCESS_API",
+      "method": "POST",
+      "path": "/api/be/v1/cases/case-A/analyses/run_07cf5a8758404b2384469142a91ad5aa/explanation",
+      "status": 200,
+      "body": {
+        "contract_version": "DION-EXPLANATION-1.0",
+        "fact_schema_version": "DION-EXPLANATION-FACTS-1.0",
+        "validator_version": "DION-EXPLANATION-VALIDATOR-1.0",
+        "prompt_version": "DION-EXPLANATION-SELECTION-1.0",
+        "provider_version": "DION-MOCK-SELECTION-1.0",
+        "provider_usage": null,
+        "explanation_id": "exp_c649f8b3bef94979a54b944f274656c3",
+        "request_key": "request-one",
+        "case_id": "case-A",
+        "run_id": "run_07cf5a8758404b2384469142a91ad5aa",
+        "input_version": 13,
+        "raw_snapshot_id": "raw_73cdeb561e554b99bab30ee607e5f04c",
+        "input_hash": "05fe0c04064cb8679cacde9de15b45e2c45f3fa4f4bae82f46a82f9e6eac6174",
+        "normalized_input_hash": "008c2033dc43a771711b0015ecc9738507a231a08e904e1b96a7d3cdcfde46af",
+        "result_sha256": "6f2890afe48f6fe2134c1ee8d0f200ce478dc3d0c093360e064ff6694d618b83",
+        "fact_set_sha256": "be41802841aeabb19f3a639a18624dd515f1e242de94375b6cc138570892318c",
+        "evaluation_on": "2026-10-31",
+        "detail_level": "SHORT",
+        "output_ids": [
+          "OUT-03",
+          "OUT-05"
+        ],
+        "strategy_id": null,
+        "explained_at": "2026-11-14T09:32:53.162251+00:00",
+        "elapsed_ms": 15,
+        "status": "EXPLAINED",
+        "source": "MOCK",
+        "reason_code": null,
+        "verification_scope": "STORED_RESULT_EXPLANATION_CONSISTENCY_ONLY",
+        "blocks": [
+          {
+            "claim_id": "MONTHLY_REMAINDER_AFTER_EXISTING",
+            "kind": "SUMMARY",
+            "text": "2026-10-01 ~ 2026-10-31 기준, 상환과 기존 납입을 반영한 월 잔여는 90만원입니다. 목표·보호자금 배정 전 금액이에요.",
+            "fact_refs": [
+              "fact_c454f3b92aad40196022dc39391e6568353fba6cdc0a7ac847a985fa66680d51"
+            ],
+            "source_refs": [
+              "raw-revision:ans_1540bf3124c849afbb6761fafcfa8fab",
+              "raw-revision:ans_40e0e5aff24c4cf9bfb39fbb53efa53f",
+              "raw-revision:ans_6e4da4d2cdaa429c87c37419ad749c5a",
+              "raw-revision:ans_86e6ad4347614290a5aa95e0eab5b09f",
+              "raw-revision:ans_9aad293e40da4250aafa3c1c25314e60",
+              "raw-revision:ans_ede6d7796eb74df9b0dc4ee6785f6c26"
+            ],
+            "assumption_refs": []
+          },
+          {
+            "claim_id": "FLOW_IS_NOT_RECOMMENDATION",
+            "kind": "LIMITATION",
+            "text": "이 월 잔여는 투자 권장액이 아니며, 앞으로도 같은 소득·지출이 이어진다는 보장은 없어요.",
+            "fact_refs": [],
+            "source_refs": [],
+            "assumption_refs": []
+          },
+          {
+            "claim_id": "UNAVAILABLE_OUT-05",
+            "kind": "UNAVAILABLE",
+            "text": "안정·확대 후보 해설은 보류합니다. 정보·근거 또는 계산 상태를 더 확인해야 해요. 미확인 금액을 0원으로 채우지 않아요.",
+            "fact_refs": [],
+            "source_refs": [],
+            "assumption_refs": []
+          }
+        ],
+        "facts": [
+          {
+            "fact_id": "fact_c454f3b92aad40196022dc39391e6568353fba6cdc0a7ac847a985fa66680d51",
+            "run_id": "run_07cf5a8758404b2384469142a91ad5aa",
+            "output_id": "OUT-03",
+            "locator": {
+              "output_id": "OUT-03",
+              "metric": "after_existing_contributions_krw",
+              "strategy_id": null,
+              "period": "2026-10-01",
+              "period_end": "2026-10-31",
+              "scope": "personal",
+              "owner_scope_hash": "c787d6c804600c438f39b89b64134a2b1d1552d9f2de11f3a3413931dda3b166"
+            },
+            "result_path": "/results/OUT-03/after_existing_contributions_krw",
+            "value": "900000",
+            "unit": "KRW",
+            "value_kind": "OBSERVED_PERIOD_CASHFLOW",
+            "evaluation_on": "2026-10-31",
+            "displayable": true,
+            "source_refs": [
+              "raw-revision:ans_ede6d7796eb74df9b0dc4ee6785f6c26",
+              "raw-revision:ans_1540bf3124c849afbb6761fafcfa8fab",
+              "raw-revision:ans_86e6ad4347614290a5aa95e0eab5b09f",
+              "raw-revision:ans_9aad293e40da4250aafa3c1c25314e60",
+              "raw-revision:ans_40e0e5aff24c4cf9bfb39fbb53efa53f",
+              "raw-revision:ans_6e4da4d2cdaa429c87c37419ad749c5a"
+            ],
+            "input_evidence_refs": [
+              {
+                "source_ref": "raw-revision:ans_ede6d7796eb74df9b0dc4ee6785f6c26",
+                "answer_revision_id": "ans_ede6d7796eb74df9b0dc4ee6785f6c26",
+                "question_id": "NEW-01",
+                "definition_version": "1.2.1",
+                "input_version": 1,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "assessment_scope",
+                  "asset_coverage",
+                  "included_owner_ids",
+                  "owner_confirmation_ref",
+                  "scope_acknowledged",
+                  "scope_version"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_1540bf3124c849afbb6761fafcfa8fab",
+                "answer_revision_id": "ans_1540bf3124c849afbb6761fafcfa8fab",
+                "question_id": "F03",
+                "definition_version": "1.2",
+                "input_version": 2,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "includes_one_off_income",
+                  "income_amount_status",
+                  "income_definition_version",
+                  "income_period_end",
+                  "income_period_start",
+                  "income_reference_period",
+                  "monthly_net_income_krw"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_86e6ad4347614290a5aa95e0eab5b09f",
+                "answer_revision_id": "ans_86e6ad4347614290a5aa95e0eab5b09f",
+                "question_id": "F04",
+                "definition_version": "1.2.1",
+                "input_version": 3,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "essential_living",
+                  "exclusions_confirmed",
+                  "expense_basis",
+                  "included_contributions",
+                  "included_debt",
+                  "living",
+                  "period_end",
+                  "period_start",
+                  "response_definition_version"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_9aad293e40da4250aafa3c1c25314e60",
+                "answer_revision_id": "ans_9aad293e40da4250aafa3c1c25314e60",
+                "question_id": "NEW-04",
+                "definition_version": "1.2",
+                "input_version": 5,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "has_liabilities"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_40e0e5aff24c4cf9bfb39fbb53efa53f",
+                "answer_revision_id": "ans_40e0e5aff24c4cf9bfb39fbb53efa53f",
+                "question_id": "F09+F10+D08",
+                "definition_version": "1.2.1",
+                "input_version": 6,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "debts"
+                ]
+              },
+              {
+                "source_ref": "raw-revision:ans_6e4da4d2cdaa429c87c37419ad749c5a",
+                "answer_revision_id": "ans_6e4da4d2cdaa429c87c37419ad749c5a",
+                "question_id": "NEW-03",
+                "definition_version": "1.2",
+                "input_version": 7,
+                "period_start": "2026-10-01",
+                "period_end": "2026-10-31",
+                "field_refs": [
+                  "existing_contributions"
+                ]
+              }
+            ],
+            "policy_refs": [],
+            "calc_state": "CALCULATED"
+          }
+        ],
+        "next_checks": [
+          {
+            "check_id": "check_N01",
+            "question_id": "N01",
+            "text": "부동산 보유 여부의 미확인 값과 기준을 확인해 주세요."
+          }
+        ],
+        "limitations": [
+          "이 월 잔여는 투자 권장액이 아니며, 앞으로도 같은 소득·지출이 이어진다는 보장은 없어요."
+        ],
+        "is_current": true,
+        "current_input_version": 13
+      }
+    }
+  ]
+}

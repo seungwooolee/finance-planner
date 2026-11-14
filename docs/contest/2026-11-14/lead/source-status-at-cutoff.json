@@ -1,0 +1,20 @@
+{
+  "engine": {
+    "head_sha": "6e37441e666bf9c8cdb9ffaa490de81735bdd9c1",
+    "branch": "codex/contest-engine-20261114",
+    "status": "",
+    "diff_stat": ""
+  },
+  "checkin": {
+    "head_sha": "db5a31d0dbe76d6b6c29b664cabe2a9857c094d5",
+    "branch": "codex/contest-checkin-20261114",
+    "status": "",
+    "diff_stat": ""
+  },
+  "ai-eval": {
+    "head_sha": "02d9a5f7d0684208b4eb53a0ac5aea07b9e5b2fb",
+    "branch": "codex/contest-ai-eval-20261114",
+    "status": "",
+    "diff_stat": ""
+  }
+}

@@ -1,0 +1,209 @@
+{
+  "role": "checkin",
+  "source_workspace": "C:\\Users\\LG\\Projects\\DION-contest-checkin-20261114",
+  "source_head_sha": "db5a31d0dbe76d6b6c29b664cabe2a9857c094d5",
+  "source_kind": "IMMUTABLE_LOCAL_COMMIT_WITH_PRESERVED_RAW_BYTES",
+  "base_sha": "eed221d1c1d305d79713ebb0dbf0c41d9c624e8a",
+  "accepted_files": [
+    {
+      "path": "backend/app/be/plan_api.py",
+      "source_path": "backend/app/be/plan_api.py",
+      "sha256": "291a280fb06bbb4f0b1e9b4986ec444ac2370b3c12c7b3a335153ce567db3f6b",
+      "source_git_blob_sha256": "291a280fb06bbb4f0b1e9b4986ec444ac2370b3c12c7b3a335153ce567db3f6b"
+    },
+    {
+      "path": "backend/app/be/plan_checkin.py",
+      "source_path": "backend/app/be/plan_checkin.py",
+      "sha256": "2fff91e15c1aa294fa8edae23883fe45532da384b15f14810fa417fc920e68e4",
+      "source_git_blob_sha256": "2fff91e15c1aa294fa8edae23883fe45532da384b15f14810fa417fc920e68e4"
+    },
+    {
+      "path": "backend/tests/be/test_plan_checkin.py",
+      "source_path": "backend/tests/be/test_plan_checkin.py",
+      "sha256": "b4d132304d3b6ca75bc5f6b6508183f5648cae313a65c0240d1f4242baeb9933",
+      "source_git_blob_sha256": "4dcc7aa32ebc743184ab2fbe25f1c355e0e7a66418ec0a91b6ff4449332e3d6a"
+    },
+    {
+      "path": "backend/tests/be/test_question_bridge.py",
+      "source_path": "backend/tests/be/test_question_bridge.py",
+      "sha256": "42c11148c517b2ccca0539a3573ca19fc0fa7e29cdf5c59f26411fcdc0b7310b",
+      "source_git_blob_sha256": "42c11148c517b2ccca0539a3573ca19fc0fa7e29cdf5c59f26411fcdc0b7310b"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/CONTRACT.md",
+      "source_path": "docs/contest/2026-11-14/checkin/CONTRACT.md",
+      "sha256": "b8c1701e31f5877f68fc240ac9fe60cd0a33a59ca2ec21c1951e233e0b630381",
+      "source_git_blob_sha256": "b8c1701e31f5877f68fc240ac9fe60cd0a33a59ca2ec21c1951e233e0b630381"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/HANDOFF.md",
+      "source_path": "docs/contest/2026-11-14/checkin/HANDOFF.md",
+      "sha256": "8ae2ee61331d715527c2b78e6c7d08ce8bdc8c0c19d4a52748490bf6c5afe317",
+      "source_git_blob_sha256": "8ae2ee61331d715527c2b78e6c7d08ce8bdc8c0c19d4a52748490bf6c5afe317"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/SUBMISSION-B-MAPPING.md",
+      "source_path": "docs/contest/2026-11-14/checkin/SUBMISSION-B-MAPPING.md",
+      "sha256": "182e8ce0233b73855d5e141fab5c3c7483e226d9e1272dd7c34063fb1ac3c9fa",
+      "source_git_blob_sha256": "182e8ce0233b73855d5e141fab5c3c7483e226d9e1272dd7c34063fb1ac3c9fa"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/baseline-binding-reproduction.json",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/baseline-binding-reproduction.json",
+      "sha256": "0cd9088416adb813f967bde0d8d5d92378de57860c0919cbbd6c41559554e0ea",
+      "source_git_blob_sha256": "f95c0bd27f9011d6af7565863721800eae3a7910077143c89292a81f7c289c91"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/candidate-files.json",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/candidate-files.json",
+      "sha256": "eb81c788eaf6ae7b51b6571f052711d0b49dbb3e28fdf1e77b62dd6f2789928a",
+      "source_git_blob_sha256": "73030bea1658be0a94e04883030763751c23818878faed551a8ee9f6c5117f64"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/candidate.patch",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/candidate.patch",
+      "sha256": "353dd3cd49d6092abbb7834573f9adf67038d6afeb8d5a973ea2ad3b671dfc40",
+      "source_git_blob_sha256": "353dd3cd49d6092abbb7834573f9adf67038d6afeb8d5a973ea2ad3b671dfc40"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/followup-source-refs.json",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/followup-source-refs.json",
+      "sha256": "d2f7022f58db9f188d5abe5cca9edc551625b346dec8b5b63e609ba21bab965e",
+      "source_git_blob_sha256": "0788e08b81b5a8ed34ff55067c2169ccca1031ebfb51fa5a205e72485b5d8ed0"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/followup-tests.patch",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/followup-tests.patch",
+      "sha256": "8008b754111151b33b8ebe0a9fb97f219cd426996857f85723a233988421acb4",
+      "source_git_blob_sha256": "8008b754111151b33b8ebe0a9fb97f219cd426996857f85723a233988421acb4"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/followup-verification.json",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/followup-verification.json",
+      "sha256": "0ac4b59801f80b2402d4c89ebafb718463eb6bbeb4878c1060158ddd220c6c53",
+      "source_git_blob_sha256": "0ac4b59801f80b2402d4c89ebafb718463eb6bbeb4878c1060158ddd220c6c53"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/lead-manifest.json",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/lead-manifest.json",
+      "sha256": "7caa8d999cce6249604e810b5f939276c7709e92482c287631cf890bca31b44d",
+      "source_git_blob_sha256": "d4fc7c04d4f4f66b09463610bf0cd96d76ca1005649ce341560647e1ee1bc601"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/lifecycle-postgres.json",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/lifecycle-postgres.json",
+      "sha256": "0b9514ff3ab0c2bb6886f8e3b5be9dc510d2976acf1aa66bfaf1eea15bc6227f",
+      "source_git_blob_sha256": "f74860c772148c512076ebbd3f47b17ba672899b53e46cad8f62185257f919ac"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/lifecycle-sqlite.json",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/lifecycle-sqlite.json",
+      "sha256": "314510af6e52e8eef95a477e2bba43e831007467a65a102aea4b4cbe4f3a7792",
+      "source_git_blob_sha256": "0baa05fc0b6d59548f39e48e9e917f5ddf9609fdba9f133d9b5cfa5d47dc86a0"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/openapi-snapshot.json",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/openapi-snapshot.json",
+      "sha256": "01577eaf882cfcf197d24064ee510eb8b192e37974348e32489f8a7b2a3d0160",
+      "source_git_blob_sha256": "cd6857523be2525e8fd5643d9f1b1f7e97e01134753161337f27fca6b2df0a86"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/pytest-b-followup.txt",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/pytest-b-followup.txt",
+      "sha256": "270a2c320de81452b0a7ecf873a4e2a76062dda5dc621fbee29501879a6fcceb",
+      "source_git_blob_sha256": "2e7454e3b5e418fba88bda5255847ba969c7070f748faea54178cdb09dc78753"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/pytest-b-followup.xml",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/pytest-b-followup.xml",
+      "sha256": "c6c089d1fbaa15189bac8c675fdea44aba5c4ce7cd7b2f5510cb2c7bade4070d",
+      "source_git_blob_sha256": "c6c089d1fbaa15189bac8c675fdea44aba5c4ce7cd7b2f5510cb2c7bade4070d"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/pytest-b-mapping-recheck.txt",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/pytest-b-mapping-recheck.txt",
+      "sha256": "418ee3168d8b2bc8308fdb14b162182a43827741bdf05a291a514fc7e415f425",
+      "source_git_blob_sha256": "f66b95113875abfb55c07a2dee15d40a54c56ce89bf9537bfa4480b6b6d9981c"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/pytest-b-mapping-recheck.xml",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/pytest-b-mapping-recheck.xml",
+      "sha256": "aeec280b80e676e46f2034cc597eeb4f902b98f0a4a108c83c4e570c9e85e771",
+      "source_git_blob_sha256": "aeec280b80e676e46f2034cc597eeb4f902b98f0a4a108c83c4e570c9e85e771"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/pytest-initial.txt",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/pytest-initial.txt",
+      "sha256": "f167897c0be9bf64c0dcecdce2fd926c498ce8dd2e8d81e383af48a987c935b9",
+      "source_git_blob_sha256": "778bb19d66a83dba283df405e0e124aa98585fe4c9c580667c2fc5a7fa84da0d"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/pytest-initial.xml",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/pytest-initial.xml",
+      "sha256": "b1c00a26febd8273baed280d572d89be954ee269251d1d22088d0692bb114b0b",
+      "source_git_blob_sha256": "ccd6ee46121b159c4e32970e7818430b55af8b0bda192c1b46d3c300477b667f"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/pytest-retry.txt",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/pytest-retry.txt",
+      "sha256": "0d8539ceeb4021b64a7d31132741c46ef89bddeb611caf18c0cda4be731ebb85",
+      "source_git_blob_sha256": "13b7d64b6bb032a63e9d5abf0227d37886f12f900710578266c29122c35f9b71"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/pytest-retry.xml",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/pytest-retry.xml",
+      "sha256": "72027a0d7582e54fd209a9b89008c62868689e10e494193cffcc96d45ad4ae7c",
+      "source_git_blob_sha256": "72027a0d7582e54fd209a9b89008c62868689e10e494193cffcc96d45ad4ae7c"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/response-examples.json",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/response-examples.json",
+      "sha256": "c45c10667052f79b10c2d5b74f3158e08cd50e0060ff6653c610e2b5260841db",
+      "source_git_blob_sha256": "593869bb84df02b1b55d284cad0acc6eb446fbd481df2a8850d34540ffbfd78f"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/submission-b-archive.json",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/submission-b-archive.json",
+      "sha256": "f8224f84110100d400895cf918177f638ca74ce4bba159b1b2975ae6bb0aa02d",
+      "source_git_blob_sha256": "7d53e0b17afb8664cf45a465b790907aed5cfc78322498846498f58c31579500"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/submission-b-mapped-initial.json",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/submission-b-mapped-initial.json",
+      "sha256": "806c699860e2a31c5c3a76b1dcff80ede3cd9db58b933f930c7fd3b476bd30b9",
+      "source_git_blob_sha256": "4a9046a17227d01204d691c05ca3976be7858730552841be37e364643a2cea70"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/submission-b-mapped.json",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/submission-b-mapped.json",
+      "sha256": "aa445fc99a12158246917ee31dea92a9cddfb0f45ab6750cdd4cffb4640c0f5c",
+      "source_git_blob_sha256": "e74a11518638e0dfeba58f7fef12c3fbba4c0d9ac6c75f74d6a5b5333e44ae41"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/verification.json",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/verification.json",
+      "sha256": "47dc1c6811f1f49f73c0b040da38726468b642b598e5e1e1440e8d72bff5639a",
+      "source_git_blob_sha256": "939e090e2b8efadfea721fe42f8fb86a79bb063596e2dce9710c19d298401d4c"
+    }
+  ],
+  "excluded_active_files": [],
+  "preserved_previous_intake": [
+    {
+      "path": "backend/tests/be/test_question_bridge.py",
+      "old_sha256": "7f95b37b28da9bef81a06309a4eae060a168108fbad3d87bd3b753b0f056a29a",
+      "preserved_at": "docs/contest/2026-11-14/lead/received/checkin/previous-intake/backend/tests/be/test_question_bridge.py"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/CONTRACT.md",
+      "old_sha256": "919f45f00ed0d27df74be3481aa8ae2f2bde64b63e947dbdbc71df1199cd9ed0",
+      "preserved_at": "docs/contest/2026-11-14/lead/received/checkin/previous-intake/docs/contest/2026-11-14/checkin/CONTRACT.md"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/HANDOFF.md",
+      "old_sha256": "f1d6b304a187b9f60d6399ca028a7fca1bfc4434bf9c6fd91cebc775f548536b",
+      "preserved_at": "docs/contest/2026-11-14/lead/received/checkin/previous-intake/docs/contest/2026-11-14/checkin/HANDOFF.md"
+    }
+  ],
+  "source_worktree_unchanged": true,
+  "cutoff_rule": "Pinned committed snapshot; later owner commits do not move this intake"
+}
