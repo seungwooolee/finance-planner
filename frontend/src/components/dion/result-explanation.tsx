@@ -18,7 +18,7 @@ type Explanation = {
 };
 type Props={view:ViewResult;token:string;editVersion:number;selectedCaseId:string;stale:boolean;onSave:()=>void;onEdit:(qid:string)=>void};
 type State={view:ViewResult;token:string;editVersion:number;selectedCaseId:string;detail:Detail;loading:boolean;response?:Explanation;error?:string};
-const names:Record<string,string>={"after_existing_contributions_krw":"기존 납입 후 월 잔여","normalized_living/value":"상환·납입 제외 생활비","base_surplus/value":"상환 후 잔여","existing_cash_contributions_krw":"기존 납입","new_investment_krw":"신규 투자 배정 후보","additional_cash_krw":"추가 현금 유지","goal_deposits_krw":"추가 목표 적립","protection_topup_krw":"보호자금 보충","operating_refill_krw":"운영자금 보충"};
+const names:Record<string,string>={"financial_projection/final_balance_krw":"종료월 금융자산 원금선","financial_projection/cumulative_goal_withdrawal_krw":"기간 중 목표 인출","after_existing_contributions_krw":"기존 납입 후 월 잔여","normalized_living/value":"상환·납입 제외 생활비","base_surplus/value":"상환 후 잔여","existing_cash_contributions_krw":"기존 납입","new_investment_krw":"신규 투자 배정 후보","additional_cash_krw":"추가 현금 유지","goal_deposits_krw":"추가 목표 적립","protection_topup_krw":"보호자금 보충","operating_refill_krw":"운영자금 보충"};
 
 function validResponse(value:Explanation, view:ViewResult, caseId:string, detail:Detail, requestKey:string):boolean {
   return !!value && value.contract_version==="DION-EXPLANATION-1.0" && value.case_id===caseId

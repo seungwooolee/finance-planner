@@ -48,7 +48,8 @@ class PortfolioComparisonMixin:
             self._version(value["input_version"], run["input_version"])
             if value["input_hash"] != run["input_hash"]:
                 raise PocError("COMPARISON_BINDING_MISMATCH")
-            review = json.loads(run["result_json"]).get("results", {}).get("OUT-06", {})
+            outputs = json.loads(run["result_json"]).get("results", {})
+            review = outputs.get("OUT-06", {})
             policy = review.get("product_policy", {})
             types = review.get("portfolio_types", {})
             catalog = review.get("catalog", {})
@@ -77,6 +78,11 @@ class PortfolioComparisonMixin:
                                                     "policy_version", "types_version", "catalog_version")}
             selection.update(run_id=run_id, case_id=case_id, state="COMPARISON_DRAFT",
                              period=rows[0]["period"], recorded_at=_now())
+            projection = next((c.get("financial_projection") for c in outputs.get("OUT-05", {}).get("candidates", [])
+                               if c.get("strategy_id") == value["strategy_id"]), None)
+            if projection is not None:
+                selection["projection_ref"] = {"sha256": projection["sha256"], "version": projection["version"],
+                                               "assumption_version": projection["assumptions"]["version"]}
             conn.execute("INSERT INTO portfolio_comparisons VALUES(?,?,?,?,?)",
                          (case_id, run_id, saved["revision"] + 1, _json(selection), selection["recorded_at"]))
             response = {**self._portfolio_saved(conn, case_id, run_id), "is_current": True}
