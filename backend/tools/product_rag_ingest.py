@@ -62,7 +62,7 @@ def add(corpus, item, label, url, drive, statements, *, status="APPROVED"):
 
 def build():
     corpus = load(ROOT / "data/rag/registry/corpus.json")
-    corpus["corpus_version"] = "dion-rag-products-20261115-1.0"
+    corpus["corpus_version"] = "dion-rag-products-20261115-1.1"
     documents = load(SOURCE / "documents.json")["documents"]
     research = {p["code"]: p for p in load(ROOT / "docs/research/product-rag/2026-11-15/research-manifest.json")["products"]}
     catalog = {p["code"]: p for p in load(ROOT / "backend/app/planning/product_catalog.json")["products"]}

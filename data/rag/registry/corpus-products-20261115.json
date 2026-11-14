@@ -1,6 +1,6 @@
 {
   "schema_version": "DION-RAG-CORPUS-1.0",
-  "corpus_version": "dion-rag-products-20261115-1.0",
+  "corpus_version": "dion-rag-products-20261115-1.1",
   "item_ids": [
     "CON-01",
     "CON-02",
@@ -380,7 +380,7 @@
     },
     {
       "source_id": "SRC-CON-12",
-      "source_version": "2026-11-13",
+      "source_version": "2026-11-15-url1",
       "source_kind": "OFFICIAL_DOCUMENT",
       "access_scope": "PUBLIC",
       "official_url": "https://kind.krx.co.kr/external/2026/04/09/000051/20260409000066/68648.htm",
@@ -402,7 +402,7 @@
     },
     {
       "source_id": "SRC-CON-13",
-      "source_version": "2026-11-13",
+      "source_version": "2026-11-15-url1",
       "source_kind": "OFFICIAL_DOCUMENT",
       "access_scope": "PUBLIC",
       "official_url": "https://kind.krx.co.kr/external/2026/06/16/000415/20260616000922/68616.htm",
@@ -424,7 +424,7 @@
     },
     {
       "source_id": "SRC-CON-14",
-      "source_version": "2026-11-13",
+      "source_version": "2026-11-15-url1",
       "source_kind": "OFFICIAL_DOCUMENT",
       "access_scope": "PUBLIC",
       "official_url": "https://kind.krx.co.kr/external/2026/06/12/000502/20260612001028/68152.htm",
@@ -446,7 +446,7 @@
     },
     {
       "source_id": "SRC-CON-15",
-      "source_version": "2026-11-13",
+      "source_version": "2026-11-15-url1",
       "source_kind": "OFFICIAL_DOCUMENT",
       "access_scope": "PUBLIC",
       "official_url": "https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1033258305",
@@ -1681,7 +1681,7 @@
     {
       "chunk_id": "CHUNK-CON-12-2",
       "source_id": "SRC-CON-12",
-      "source_version": "2026-11-13",
+      "source_version": "2026-11-15-url1",
       "section_ref": "2. 공식 정의 원문",
       "start": 112,
       "end": 351,
@@ -1691,7 +1691,7 @@
     {
       "chunk_id": "CHUNK-CON-13-2",
       "source_id": "SRC-CON-13",
-      "source_version": "2026-11-13",
+      "source_version": "2026-11-15-url1",
       "section_ref": "2. 공식 정의 원문",
       "start": 93,
       "end": 248,
@@ -1701,7 +1701,7 @@
     {
       "chunk_id": "CHUNK-CON-14-2",
       "source_id": "SRC-CON-14",
-      "source_version": "2026-11-13",
+      "source_version": "2026-11-15-url1",
       "section_ref": "2. 공식 정의 원문",
       "start": 88,
       "end": 241,
@@ -1711,7 +1711,7 @@
     {
       "chunk_id": "CHUNK-CON-15-2",
       "source_id": "SRC-CON-15",
-      "source_version": "2026-11-13",
+      "source_version": "2026-11-15-url1",
       "section_ref": "2. 공식 정의 원문",
       "start": 110,
       "end": 276,
