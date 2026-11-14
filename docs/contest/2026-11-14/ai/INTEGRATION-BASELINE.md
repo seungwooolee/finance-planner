@@ -1,5 +1,9 @@
 # 통합 평가 기준 분리 — 2026-11-14
 
+## v0.8.0 근거 URL 보수 — 기준 1.3 (2026-11-15)
+
+기능 1 구현·PR 위임 범위에서 CON-12/13/14/15의 Markdown으로 오염된 공식 주소를 원문 목적지로 복구했다. corpus 버전을 r3-url-repair로 올리고 baseline의 `data_overrides`에는 corpus 한 파일만 허용한다. 원본 잠금 SHA·원/새 corpus SHA·네 주소·기준 커밋·구현 계약을 기록했다. claim·인용·효력일·검토 승인과 채점 입력/정답은 바뀌지 않았다. 원 expectations-lock와 기존 code/policy 예외를 보존하며 baseline 자체의 새 SHA도 고정한다. 고정 기준·허용 경로/해시 변조 거부 12건과 등록 자료 재생성 1건 통과. [범위·검증·제약](../../../integration/2026-11-15-result-action.md).
+
 ## PR #34 지침 변경 접수 — 기준 1.1
 
 사용자가 커밋·푸시·PR 생성/갱신을 상시 위임해 AGENTS.md에 추가한 절이 과거 문서 해시와 충돌했다. 원 expectations-lock.json과 기대값·채점표는 변경하지 않고 integration-baseline 1.1에 AGENTS.md의 원 SHA·현재 SHA·승인 변경 커밋 f06b0b8을 별도 policy_overrides로 고정했다. 변경 전 AGENTS.md 바이트가 원 잠금과 일치함을 대조했다. BE 코드 예외는 기존 2파일 그대로이고 정책 예외는 AGENTS.md만 허용한다. 나머지 40파일은 원래 잠금을 따른다. 추가 문서 변조와 채점 데이터로 예외를 확장하는 시도도 거부한다. 이전 baseline SHA를 기록하며 현재 baseline 자체도 helper의 SHA로 고정한다. 아래 검사 수치는 이전 라운드 기록이다.
