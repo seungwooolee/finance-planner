@@ -44,3 +44,5 @@
 PR #47 생성 사이 통합 브랜치가 `a86cdeb`(결과 상담 v0.8.0)로 전진했다. 문서2개·portfolio-evidence·vercel.json의 충돌4개를 해결해 기존 상담의 initialTopic과 이번 referenceOnly/product 주제를 함께 보존했다. PR #46의 공식 URL4개 정정·엄격 URL 검증·승인 평가 baseline1.3을 그대로 계승하고 복합 corpus도 최신29개 기준으로 재생성했다. 해당 corpus/평가기준은 통합 대상과 바이트 동일하며 이번 작업에서 평가 원본·기대값을 바꾸지 않았다.
 
 통합 영향의 상품 등록·근거 API·고정 기준·결과 상담 검사 **96 passed (106.47s)**, v0.8.0 TypeScript와 충돌 FE 파일 ESLint 통과다. 앞의102건과 중복이 있어 합산하지 않는다. 충돌 표식 없음·양쪽 브랜치 배포 차단·공백을 확인한 뒤 같은 PR을 갱신한다. 전체 로컬 검사·E2E·실모델·배포는 반복하지 않았다.
+
+이어 PR #48의 FE 변경으로 기준이 `bd6275f`로 전진했다. portfolio-evidence의 고정 topic·note·출처 표시와 이번 product/referenceOnly를 함께 보존하고 브랜치 배포 차단을 합쳤다. 이 통합은 backend/data 변경이 없음을 확인해 위96건을 반복하지 않았다. 변경 FE의 ESLint와 v0.8.0 TypeScript는 통과했다. 같은 PR #47을 갱신한다.
