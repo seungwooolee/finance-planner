@@ -17,9 +17,9 @@ function Bar({ value, axis, own = false }: { value: string | null; axis: AssetAx
   </div>;
 }
 
-export function AssetReference({ value, stale, selection, onSelect, compact = false, onEdit, onRecalculate }: {
+export function AssetReference({ value, stale, selection, onSelect, compact = false, savedResult = false, onEdit, onRecalculate }: {
   value: Json | undefined; stale: boolean; selection: AssetReferenceSelection;
-  onSelect: (value: AssetReferenceSelection) => void; compact?: boolean; onEdit: () => void; onRecalculate?: () => void;
+  onSelect: (value: AssetReferenceSelection) => void; compact?: boolean; savedResult?: boolean; onEdit: () => void; onRecalculate?: () => void;
 }) {
   const id = useId();
   const { data, cohort, cohorts, metrics, net, canSwitchNet } = assetReferenceView(value, selection);
@@ -32,7 +32,7 @@ export function AssetReference({ value, stale, selection, onSelect, compact = fa
     data-asset-reference={compact ? "final" : "assets"} data-input-version={String(data.input_version ?? "")} data-data-version={textValue(data.data_version)}>
     <div className="d-asset-ref-heading"><h2 id={id}><ChartNoAxesCombined size={20} aria-hidden="true"/>{title}</h2><span className="d-pill">보유 잔액 · 참고용</span></div>
     {compact && <p className="d-inline-note">앞에서 확인한 현재 보유자산이에요. 위 월 납입안을 적용한 뒤의 자산이나 미래 전망을 뜻하지 않아요.</p>}
-    {!metrics.length ? <div className="d-note"><p>{data.version ? "이 결과에는 그래프로 표시할 검토된 자산 통계가 없어요. 내 재무 결과는 그대로 확인할 수 있어요." : "이전 결과에는 참고 통계가 저장되어 있지 않아요. 현재 입력으로 다시 계산하면 확인할 수 있어요."}</p>{onRecalculate && <button type="button" className="d-text-button" onClick={onRecalculate}>현재 입력으로 다시 계산</button>}</div> : <>
+    {!metrics.length ? <div className="d-note" role="status"><p>{data.version ? "이 결과에는 그래프로 표시할 검토된 자산 통계가 없어요. 내 재무 결과는 그대로 확인할 수 있어요." : savedResult ? "이 저장 결과에는 참고 통계가 포함되어 있지 않아요. 저장 원본은 그대로 보존해요. 통계를 지원하는 서버에서 새 결과를 만들면 그래프를 확인할 수 있어요." : "계산 서버가 자산·생활단계 참고 통계를 보내지 않았어요. 그래프를 표시하려면 서버의 통계 연결이 필요해요. 재무 계산 결과는 그대로 확인할 수 있어요."}</p>{savedResult && !data.version && onRecalculate && <button type="button" className="d-text-button" onClick={onRecalculate}>현재 입력으로 새 결과 만들기</button>}</div> : <>
       {stale && <p className="d-warning" role="status">이전 입력 기준의 자산·통계예요. 수정 중인 답변과 섞지 않았어요.</p>}
       <div className="d-asset-ref-controls">
         {cohorts.length > 1 && <label htmlFor={`${id}-cohort`}>살펴볼 조사 집단<select id={`${id}-cohort`} value={cohort!.id} onChange={e => onSelect({ ...selection, cohort: e.target.value })}>{cohorts.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}</select></label>}

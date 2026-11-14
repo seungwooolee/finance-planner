@@ -1,3 +1,9 @@
+# 참고 통계 그래프 연결 인계 — 2026-11-15
+
+`codex/reference-chart-connect-20261115`: [원인·수정·검사·배포 담당 조치](docs/integration/2026-11-15-reference-chart-connect-HANDOFF.md).
+배포 BE 새 계산 응답의 통계 누락과 생활단계 그래프 부족을 구분했다. FE 표시 개선·관련 컴포넌트 검사 완료.
+실제 배포 사이트 반영은 BE 통합본 반영 및 별도 FE 병합/배포가 필요하다. 병합·배포·운영 DB 변경은 하지 않았다.
+
 # 결과 화면 정리 인계 — 2026-11-15
 
 `codex/result-review-polish-20261115`: [변경·계약·실제 검사·미실행](docs/integration/2026-11-15-result-review-polish-HANDOFF.md).
