@@ -37,12 +37,12 @@ const ORDER = ["BOND", "KR_EQUITY", "GLOBAL_EQUITY", "OTHER"];
 export type Slice = { key: string; label: string; detail?: string; value: string; color: string };
 
 /** One slice per engine allocation (no summing), ordered by asset group, plus the unallocated rest. */
-export function allocationSlices(allocations: Obj[], products: Obj[], unallocated: unknown): Slice[] {
+export function allocationSlices(allocations: Obj[], products: Obj[], unallocated: unknown, restLabel = "미배분"): Slice[] {
   const slices = allocations.filter(a => isWon(a.review_allocated_krw)).map(a => {
     const product = products.find(p => p.code === a.code);
     const group = assetGroup(product);
     return { key: String(a.code), label: group.label, detail: typeof product?.name === "string" ? product.name : String(a.code), value: String(a.review_allocated_krw), color: group.color, order: ORDER.indexOf(group.id) };
   }).sort((a, b) => a.order - b.order).map((s): Slice => ({ key: s.key, label: s.label, detail: s.detail, value: s.value, color: s.color }));
-  if (isWon(unallocated) && BigInt(unallocated) > 0n) slices.push({ key: "UNALLOCATED", label: "미배분", value: unallocated, color: UNALLOCATED_COLOR });
+  if (isWon(unallocated) && BigInt(unallocated) > 0n) slices.push({ key: "UNALLOCATED", label: restLabel, value: unallocated, color: UNALLOCATED_COLOR });
   return slices;
 }

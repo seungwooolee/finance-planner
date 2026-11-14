@@ -227,3 +227,48 @@
 .dion-app .d-scroll-anchor{scroll-margin-top:96px}
 @media(max-width:760px){.dion-app .d-plan-diff th,.dion-app .d-plan-diff td{padding:8px 6px;font-size:13px}.dion-app .d-choice-status>button{justify-self:stretch}.dion-app .d-basis-next>button{flex:1 1 100%}}
 @media(max-width:760px){.dion-app .d-plan-diff table{table-layout:fixed}.dion-app .d-plan-diff thead th:first-child,.dion-app .d-plan-diff tbody th[scope=row]{width:36%}.dion-app .d-plan-diff td{font-size:12px;word-break:keep-all}.dion-app .d-diff-tag{display:block;width:max-content;margin:2px 0 0}}
+/* 2026-11-14 결과 화면 시각화·아이콘 */
+.dion-app .d-results h2>svg,.dion-app .d-results h1 .d-title-icon{vertical-align:-3px;margin-right:6px;color:var(--d-primary)}
+.dion-app .d-title-icon{display:inline-grid;place-items:center;width:44px;height:44px;border-radius:14px;background:#e5e7ff;margin-right:12px;vertical-align:-8px}
+.dion-app .d-metric{position:relative}
+.dion-app .d-metric-icon,.dion-app .d-kpi-icon{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:11px;background:#eef0ff;color:var(--d-primary);margin-bottom:8px}
+.dion-app .d-kpi-soft .d-kpi-icon{background:#fff}
+.dion-app .d-plan-choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:12px}
+.dion-app .d-plan-choice{font:inherit;text-align:left;cursor:pointer;background:#fff;border:1.5px solid #e3e5f2;border-radius:20px;padding:20px 22px;display:flex;flex-direction:column;gap:12px;color:#161b29;transition:border-color .15s,box-shadow .15s}
+.dion-app .d-plan-choice:hover{border-color:#b8bff5}
+.dion-app .d-plan-choice:focus-visible{outline:3px solid #9aa4f2;outline-offset:2px}
+.dion-app .d-plan-choice.on{border:2px solid var(--d-primary);box-shadow:0 10px 26px #3848ce1f;background:#fbfbff}
+.dion-app .d-plan-choice-top{display:flex;align-items:center;gap:12px}
+.dion-app .d-plan-icon{display:grid;place-items:center;width:44px;height:44px;border-radius:14px;background:#eef0ff;color:var(--d-primary);flex-shrink:0}
+.dion-app .d-plan-choice.on .d-plan-icon{background:var(--d-primary);color:#fff}
+.dion-app .d-plan-choice-name{font-size:19px;font-weight:800;flex:1}
+.dion-app .d-plan-check{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;border:2px solid #c9cdfa;color:#fff}
+.dion-app .d-plan-choice.on .d-plan-check{background:var(--d-primary);border-color:var(--d-primary)}
+.dion-app .d-plan-choice-body{display:flex;flex-direction:column;gap:10px}
+.dion-app .d-plan-choice-line{font-size:14px;color:#4a4f60}
+.dion-app .d-plan-choice-figs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dion-app .d-plan-choice-figs>span{background:#f4f5fc;border-radius:12px;padding:10px 12px}
+.dion-app .d-plan-choice-figs small{display:block;font-size:12px;color:#4a4f60}.dion-app .d-plan-choice-figs strong{font-size:19px;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.dion-app .d-plan-choice-state{font-size:12px;font-weight:700;color:var(--d-primary)}
+.dion-app .d-plan-choice:not(.on) .d-plan-choice-state{color:#626775}
+.dion-app .d-plan-bars{display:grid;gap:12px;margin:4px 0 10px}
+.dion-app .d-plan-bars>div{display:grid;grid-template-columns:120px minmax(0,1fr);gap:12px;align-items:center;font-size:14px;font-weight:600;color:#4a4f60}
+.dion-app .d-plan-bars>div.on{color:#161b29}.dion-app .d-plan-bars .d-stack-bar{margin:0;height:28px;gap:2px;background:transparent}
+.dion-app .d-plan-bars .d-stack-bar span{border-radius:4px}
+.dion-app .d-plan-bars>div:not(.on) .d-stack-bar{opacity:.55}
+.dion-app .d-stack-empty{background:#eceef8!important}
+.dion-app .d-legend-row{list-style:none;padding:0;margin:0 0 16px;display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12px;color:#3d4150}
+.dion-app .d-legend-row li{display:flex;align-items:center;gap:6px}.dion-app .d-legend-row i,.dion-app .d-swatch{display:inline-block;width:10px;height:10px;border-radius:3px}
+.dion-app .d-swatch{margin-right:8px;vertical-align:0}
+.dion-app .d-plan-care svg{vertical-align:-2px}
+.dion-app .d-goals-card{margin-top:18px}
+.dion-app .d-balance-bars{margin:14px 0 8px;display:grid;gap:8px}
+.dion-app .d-balance-bars figcaption{font-size:12px;color:#4a4f60}
+.dion-app .d-balance-bars>div{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:10px;align-items:center;font-size:13px}
+.dion-app .d-balance-track{height:12px;background:#eceef8;border-radius:6px;overflow:hidden}.dion-app .d-balance-track i{display:block;height:100%;border-radius:6px}
+.dion-app .d-balance-bars strong{font-variant-numeric:tabular-nums;min-width:84px;text-align:right}
+.dion-app .d-asset-mix{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:center;margin-bottom:12px}
+@media(max-width:760px){.dion-app .d-plan-bars>div{grid-template-columns:1fr}.dion-app .d-asset-mix{grid-template-columns:1fr}.dion-app .d-title-icon{width:36px;height:36px;border-radius:12px;margin-right:8px}}
+@media (prefers-reduced-motion:reduce){.dion-app .d-plan-choice{transition:none}}
+.dion-app .d-results h2>svg,.dion-app .d-plan-care svg,.dion-app .d-coach-head svg{display:inline-block}
+.dion-app .d-explain-wrap{margin-top:24px}
