@@ -1,6 +1,6 @@
 # 조사 검토와 적용 결과
 
-검토 2026-11-14~15. 작업 기준 통합 `823113e` (PR #40까지). 기존 v0.7 PR #41은 별도 보존한다.
+검토 2026-11-14~15. 최초 구현 기준은 통합 `823113e`(PR #40까지)다. 2026-11-15 병합 충돌 수정에서 PR #41 통합 `8cd95a5` 및 수정된 PR #42 `6fc1108`을 동기화했다. 참고 통계의 데이터/규칙 버전과 기존 계산 계약은 그대로 보존한다.
 
 ## 검토 대상과 판정
 
@@ -41,3 +41,9 @@
 - 실제 Edge `e2e/dion-peer-reference.spec.ts --workers=1`: 최초 개발 빌드 65초로 전체 90초 제한 초과. 제한시간만 180초로 보완하고 같은 검사 1회 재실행하여 **1 passed (20.9s, 시나리오 8.7s)**. 실제 API/엔진의 28행·공개15행, 집단 선택, 평균/중앙값, 출처, 상업이용금지 수치 비노출, 모바일 가로 넘침 없음, 투자선호 상태를 확인했다. 데스크톱/모바일 캡처 직접 확인. section 캡처에 기존 고정 헤더가 겹쳐 담기므로 픽셀 회귀 승인 증거는 아니다. stale 표시 분기와 이전 필드 없는 결과 안내는 구현했지만 별도 브라우저 경로는 미실행.
 - 전체 Core/Build/E2E·운영 DB·실계정·유료 모델·배포는 미실행. GitHub PR 자동 Core 실행 결과는 PR Checks로 구분한다.
 - 푸시 전 Vercel 작업 브랜치 false, Render 운영 branch=dion/integration-20261111 / autoDeploy=no / previews.generation=off / pullRequestPreviewsEnabled=no 확인. 설정 변경·배포 호출 없음.
+
+## PR #42·#43 동기화 — 2026-11-15
+
+PR #41이 병합된 통합 `8cd95a5`와 충돌 수정된 PR #42 `6fc1108`을 #43에 로컬 병합했다. CHANGELOG·README·개발 로그는 양쪽 이력을 보존하고, results.tsx는 참고 통계와 금융자산 전망 import/표시를 함께 유지했다. Vercel의 #42/#43/v0.7 작업 브랜치 차단과 package/lock의 0.7.0도 보존했다. 참고 통계와 전망 BE 모듈은 각 원 PR과 동일함을 대조했다.
+
+이번 검사: TypeScript·results/peer-reference/financial-projection ESLint 통과. 실제 Edge 관련 2건 2 passed(1.1m, 최초 검사): v0.7 월별 정확한 표·선택 구성·모바일·입력 수정 뒤 이전 전망, #43 집단/출처/중앙값·보류·모바일·선호 안내. 합쳐진 모바일 캡처도 직접 확인했다. 같은 검사를 추가 반복하지 않았다. 새 금융 계산 변경이 없어 기존 Python/Build는 로컬에서 반복하지 않았다. PR #42 GitHub Core #92 success 확인; #43 새 head 자동 검사는 PR Checks로 별도 확인한다. 배포·원격 병합·운영DB 변경 없음.

@@ -330,7 +330,7 @@ export function DionPlanner() {
     setMessage("로그인했어요. 작성한 답변은 그대로 있어요. 내 상담에서 상담을 조회하거나 저장할 수 있어요.");
   }
   const verifyTools=<div className="d-toolbar" aria-label="저장 검증"><strong>사회초년생 검증</strong><button className="d-secondary" disabled={saveBusy} onClick={()=>void verifyEarly(false)}>빠른진단 저장·계산</button><button className="d-secondary" disabled={saveBusy} onClick={()=>void verifyEarly(true)}>정밀진단 저장·계산</button></div>;
-  return <div className="dion-app">
+  return <div className="dion-app" data-view={showResults ? "results" : mode}>
     <header className={`d-header ${mode==="welcome"?"d-header-welcome":""}`}><Link href="/dion" className="d-logo" onClick={()=>{setMode("welcome");setShowResults(false);window.scrollTo({top:0});}}>dion<span>.</span></Link>{mode==="welcome"?<HeaderCat/>:<nav aria-label="진단 방식"><button className={mode==="quick"?"active":""} onClick={()=>{setMode("quick");setShowResults(false);}}>빠른진단</button><button className={mode==="deep"?"active":""} onClick={()=>{setMode("deep");setShowResults(false);}}>정밀진단</button></nav>}<div className="d-header-actions"><button className="d-account-button" aria-expanded={accountOpen} onClick={()=>{setAccountOpen(!accountOpen);if(token)void fetchCases();}}>내 상담</button>{token?<button className="d-account-button" disabled={saveBusy} onClick={signOut}>로그아웃</button>:<button className="d-account-button" disabled={saveBusy} onClick={()=>setLoginOpen(true)}>로그인</button>}{showReviewTools&&<button aria-expanded={reviewOpen} onClick={()=>setReviewOpen(!reviewOpen)}>검토 도구</button>}</div></header>
     <main className="d-main">
       <ServerWakeNotice waiting={waking} exhausted={wakeFailed} onRetry={()=>retryAction.current?.()}/>

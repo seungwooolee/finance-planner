@@ -23,6 +23,7 @@ import displayCatalog from "@/lib/dion/result-display-catalog.json";
 import { comparisonReview, portfolioNames } from "@/lib/dion/portfolio-comparison";
 import { usePortfolioComparison } from "./use-portfolio-comparison";
 import { PeerReference } from "./peer-reference";
+import { FinancialProjection } from "./financial-projection";
 
 const stateLabels: Record<string,string> = { CALCULATED:"계산됨", PARTIAL:"부분 결과", NEEDS_INPUT:"정보 보완 필요", INVALID_INPUT:"입력 확인 필요", NOT_SUPPORTED:"미지원", NOT_IMPLEMENTED:"준비 중", NOT_APPLICABLE:"해당 없음", NOT_REQUESTED:"요청하지 않음", REVIEW_ONLY:"검토 목록", INTERNAL_ERROR:"계산 오류", INFEASIBLE:"월 예산 부족", CALCULATED_MONTHLY_SCENARIO:"월 예산 시나리오" };
 const TASKS=[
@@ -87,7 +88,7 @@ export function Results({view,deep,tab,setTab,stale,onEdit,onRecalculate,explana
   const selectedMonth=list(list(selectedReview.candidates).find(c=>c.strategy_id===selectedPlan)?.rows)[0];
   const tabs=deep?["자산·목표","재무안 비교","투자선호·구성","상품·비중","요약·다음 확인"]:["재무현황","재무안 선택","투자구성","상품 정보","결과·이번 달 행동"];
   return <section className="d-results" aria-label="계산 결과">
-    <div className="d-result-heading"><div><span className="d-eyebrow">{deep?"정밀 진단 결과":"빠른 진단 결과"}</span><h1 ref={heading} tabIndex={-1} style={{scrollMarginTop:96}}>{(()=>{const Icon=TAB_ICONS[tab];return Icon?<i className="d-title-icon" aria-hidden="true"><Icon size={26}/></i>:null;})()}{tabs[tab]}</h1><p>{["현재 재무 상태를 먼저 확인해요","두 재무안 중 하나를 골라 남는 돈의 배정을 비교해요","투자 선호와 신규 납입금의 구성을 확인해요","신규 납입금을 담을 상품과 현금 대기자금을 확인해요","이번 달 납입안과 할 일을 정리해요"][tab]}</p></div><button className="d-secondary" onClick={()=>onEdit("F03")}>입력 내용 수정 ↗</button></div>
+    <div className="d-result-heading"><div><span className="d-eyebrow">{deep?"정밀 진단 결과":"빠른 진단 결과"}</span><h1 ref={heading} tabIndex={-1} style={{scrollMarginTop:"var(--d-results-scroll-offset, 96px)"}}>{(()=>{const Icon=TAB_ICONS[tab];return Icon?<i className="d-title-icon" aria-hidden="true"><Icon size={26}/></i>:null;})()}{tabs[tab]}</h1><p>{["현재 재무 상태를 먼저 확인해요","두 재무안 중 하나를 골라 남는 돈의 배정을 비교해요","투자 선호와 신규 납입금의 구성을 확인해요","신규 납입금을 담을 상품과 현금 대기자금을 확인해요","이번 달 납입안과 할 일을 정리해요"][tab]}</p></div><button className="d-secondary" onClick={()=>onEdit("F03")}>입력 내용 수정 ↗</button></div>
     <CalcBasisStrip view={view} result={result} label={stale?"이전 입력 기준 · 현재 작성값과 다른 결과예요":view.runStatus==="FAILED"?"현재 입력의 계산 실패 기록":"현재 입력 기준 결과"} stateLabel={stateLabels[textValue(result.calc_state)]??textValue(result.calc_state)} next={nextStep({view,result,stale,source:sourceDoc,firstAction:actions[0],onEdit,onRecalculate})} detail={technical?[view.adapterVersion,view.runId&&`실행 ${view.runId}`].filter(Boolean).join(" · "):undefined}/>
     {gates.map((g,i)=><div className="d-warning" key={i}><strong>연결 범위 확인 필요</strong><p>{String(g.reason)}</p><p>영향받는 결과만 보류했어요. 다른 결과와 엔진 원문은 유지해요.</p>{g.question_id!=="NEW-09"?<button className="d-text-button" onClick={()=>onEdit(String(g.question_id))}>관련 답변 확인 →</button>:<p>보증금 상세 입력·계산 연결은 준비 중이에요.</p>}</div>)}
     <nav className="d-tabs" aria-label={`${deep?"정밀":"빠른"} 결과 5뷰`}>{tabs.map((name,i)=><button aria-current={tab===i?"page":undefined} className={i<tab?"done":undefined} onClick={()=>setTab(i)} key={name}><small aria-hidden="true">{i+1}</small>{name}</button>)}</nav>
@@ -114,6 +115,7 @@ export function Results({view,deep,tab,setTab,stale,onEdit,onRecalculate,explana
       <FinancialProposal result={{...result,results:{...outputs,"OUT-06":selectedReview}}} doc={sourceDoc} plan={selectedPlan} portfolio={selectedPortfolio} deep={deep} goalLabel={displayGoal} onEdit={onEdit} onTab={setTab}
         allocation={<><FinalPortfolio plan={selectedPlan} row={selectedRow} review={selectedReview}/><IncomeBar row={selectedRow}/></>}/>
       <div ref={tasksRef} className="d-scroll-anchor"/><MonthTasks key={`${selectedPlan}:${view.localVersion}`} row={selectedRow} actions={actions} candidates={candidates.length>0} actionList={actionList} onProducts={()=>setTab(3)} onEdit={onEdit}/>
+      <FinancialProjection candidate={candidates.find(c=>c.strategy_id===selectedPlan)} plan={selectedPlan} portfolio={selectedPortfolio} stale={stale} runId={view.runId} inputVersion={view.serverVersion??view.localVersion} onEdit={()=>onEdit("ASSUMPTIONS")}/>
     </>}
     {explanation&&<div className={tab===4?"d-coach":"d-explain-wrap"}>{tab===4&&<div className="d-coach-head" aria-hidden="true"><span><Cat size={18}/></span><strong>냥코치 조언</strong></div>}{selectedPortfolio&&<p className="d-note">아래 상담은 원래 입력·계산 결과 기준이에요. 선택 구성의 상품 비교 설명은 준비 중이에요.</p>}{explanation}</div>}
     {tab===4&&checkin&&<div ref={checkinRef}>{checkin(selectedPlan,monthTasks(selectedRow).map(t=>({key:t.key,label:`${t.text} (계획 ${textValue(selectedRow?.period)} · ${formatKrw(selectedRow?.[t.key])})`})))}</div>}
