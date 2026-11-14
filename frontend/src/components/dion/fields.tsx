@@ -1,6 +1,6 @@
 "use client";
 
-import { formatKrw } from "@/lib/dion/money-format";
+import { fieldKrw, formatKrw } from "@/lib/dion/money-format";
 import { Field, Json, State, field, object, states } from "@/lib/dion/model";
 
 export const labels: Record<string, string> = {
@@ -71,11 +71,8 @@ export function MoneyField({ label, value, onChange }: { label: string; value: F
   const raw = typeof value.raw_value === "string" ? value.raw_value : "";
   const valid = (value.unit === "KRW" ? /^\d+$/ : /^\d+(?:\.\d{1,4})?$/).test(raw);
   let readable = "";
-  if (valid && raw.length < 50) {
-    const [whole, fraction = ""] = raw.split(".");
-    const won = value.unit === "KRW" ? whole : whole + fraction.padEnd(4, "0");
-    readable = formatKrw(BigInt(won).toString());
-  }
+  const won = valid && raw.length < 50 ? fieldKrw(value) : null;
+  if (won !== null) readable = formatKrw(won);
   const deferred = !["KNOWN", "NOT_ENTERED", "NOT_ASKED"].includes(value.state);
   return <div className="d-field d-money-field"><label><span>{label}</span><div className={`d-amount ${raw && !valid ? "invalid" : ""}`}><input aria-label={label} aria-invalid={raw ? !valid : undefined} inputMode="decimal" autoComplete="off" value={raw} onChange={e => { const next=e.target.value.replaceAll(",", ""); if ((value.unit === "KRW" ? /^\d*$/ : /^\d*(?:\.\d{0,4})?$/).test(next) && next.length <= 40) onChange(field(next, value.unit)); }} /><span>{value.unit === "KRW" ? "원" : "만원"}</span>{raw && <button type="button" aria-label={`${label} 지우기`} className="d-clear-money" onClick={() => onChange(field(null, value.unit))}>×</button>}</div></label><div className="d-money-caption"><small className={readable ? "d-won-value" : ""} aria-live="polite"><span className="d-won-symbol" aria-hidden="true">₩</span>{raw && !valid ? "쉼표 없이 숫자로 적어주세요. 소수는 넷째 자리까지 입력할 수 있어요." : readable || (deferred ? "금액을 확인한 뒤 이어서 적어주세요." : "만원으로 입력하면, 원 단위로 바로 보여드려요.")}</small><button type="button" className="d-text-button" onClick={() => onChange(field(null, value.unit, deferred ? "NOT_ENTERED" : "DEFERRED"))}>{deferred ? "지금 입력하기" : "나중에 입력"}</button></div></div>;
 }

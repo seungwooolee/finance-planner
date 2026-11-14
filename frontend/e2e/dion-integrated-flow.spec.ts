@@ -14,7 +14,7 @@ async function load(page: Page, title: string) {
   await expect(page.getByRole('region', { name: '계산 결과', exact: true })).toBeVisible();
 }
 test('exact KRW and archived raw goals preserve zero, dates and identifiers', () => {
-  for (const [input, expected] of [['100000000', '1억원'], ['10000000', '1,000만원'], ['1000000', '100만원'], ['9000', '9,000원'], ['189000', '18만 9천원'], ['0', '0원']]) expect(formatKrw(input)).toBe(expected);
+  for (const [input, expected] of [['100000000', '1억원'], ['10000000', '1,000만원'], ['1000000', '100만원'], ['9000', '9,000원'], ['189000', '18만 9천 원'], ['0', '0원']]) expect(formatKrw(input)).toBe(expected);
   expect(formatKrw(null)).toBe('확인 대기');
   const doc = clone(source[0].document) as unknown as Document;
   const id = String(list(fieldValue(doc, 'F11', 'goals'))[0].goal_id);
