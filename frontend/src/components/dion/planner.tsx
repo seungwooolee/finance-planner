@@ -47,6 +47,7 @@ export function DionPlanner() {
   const [assumptionsOpen,setAssumptionsOpen]=useState(false);
   const [current,setCurrent]=useState("NEW-01"),[showResults,setShowResults]=useState(false),[tab,setTab]=useState(0);
   const [consultationOpen,setConsultationOpen]=useState(false);
+  const [conversationResume,setConversationResume]=useState<{token:string;caseId:string;runId:string;sessionId:string}|null>(null);
   const [reviewResume,setReviewResume]=useState<ReviewResume|null>(null);
   const [explainRequested,setExplainRequested]=useState(false);
   useEffect(()=>{if(!explainRequested||!showResults)return;const frame=requestAnimationFrame(()=>{document.getElementById("dion-explain-trigger")?.click();setExplainRequested(false);});return ()=>cancelAnimationFrame(frame);},[explainRequested,showResults]);
@@ -317,12 +318,14 @@ export function DionPlanner() {
     await verifyScenario(early,deep);
   }
   async function savedCalculation(engineV2=false){await serverAction(()=>persistCalculation(engineV2));}
-  async function openRun(runId:string){await serverAction(async()=>{
+  async function openRun(runId:string, consultationSessionId?:string){await serverAction(async()=>{
     const ownerGeneration=sessionGeneration.current,editSequence=sequence.current;
     const r=await request(`${base()}/analyses/${encodeURIComponent(runId)}`,"GET",undefined,token);
     if(ownerGeneration!==sessionGeneration.current||editSequence!==sequence.current)return;
     const next:ViewResult={result:r.result,sourceSignature:["DION-QUESTION12-ADAPTER-1.0","DION-QUESTION12-ADAPTER-1.1"].includes(r.engine_input?.schema_version)?signature(r.engine_input):"legacy-input",localVersion:0,storage:"SAVED",runId:r.run_id,serverVersion:r.input_version,isCurrent:r.is_current,adapterVersion:r.adapter_version,runStatus:r.status,currentInputVersion:r.current_input_version,source:r.engine_input,inputHash:r.input_hash,rawSnapshotId:r.raw_snapshot_id};
     setView(next);setShowResults(true);if(mode==="welcome")setMode("quick");setMessage("과거 결과를 읽기 전용으로 열었어요. 작성 중인 답변은 바꾸지 않았어요.");
+    setConversationResume(consultationSessionId?{token,caseId,runId,sessionId:consultationSessionId}:null);
+    if(consultationSessionId!==undefined)setConsultationOpen(true);
   });}
   async function restoreRunInputs(){
     if(!view?.runId)return;
@@ -427,10 +430,12 @@ export function DionPlanner() {
           {showReviewTools&&<><label className="d-field">상담 ID<input aria-label="상담 ID" disabled={saveBusy} value={caseId} onChange={e=>{setCaseId(e.target.value);setServerVersion(null);pending.current=null;pendingAnalysis.current=null;connectedCase.current=null;saved.current={};setRuns([]);}} /></label>
           <div className="d-toolbar"><button disabled={saveBusy || !token} className="d-primary" onClick={saveAndCalculate}>답변 저장·계산</button><button disabled={saveBusy || !token} className="d-secondary" onClick={createCase}>새 상담 만들기</button><button disabled={saveBusy || !token} className="d-secondary" onClick={()=>void restore()}>상담 ID로 다시 열기</button><button disabled={saveBusy || !token} className="d-secondary" onClick={()=>serverAction(async()=>{setRuns(await request(`${base()}/analyses`,"GET",undefined,token));setMessage("이전 계산 목록을 불러왔어요. 작성값은 그대로 유지해요.");})}>이전 계산 전체 조회</button><button disabled={saveBusy || !token} className="d-secondary" onClick={saveDraft}>초안 저장·재시도</button><button disabled={saveBusy || !token} className="d-primary" onClick={()=>void savedCalculation()}>기존 저장 계산</button><button disabled={saveBusy || !token} className="d-primary" onClick={()=>void savedCalculation(true)}>엔진 v2 저장 계산</button></div></>}
           {showReviewTools&&view?.storage==="SAVED"&&<button className="d-secondary" disabled={saveBusy||!token} onClick={()=>void restoreRunInputs()}>이 결과의 입력 복원</button>}<p role="status">{showReviewTools?`서버 입력버전: ${serverVersion??"조회 전"}`:serverVersion!==null?"저장된 상담에 연결돼 있어요":"아직 저장하지 않았어요"}{saveBusy?" · 처리 중…":""}</p>
-          {runs.map(r=><button key={String(r.run_id)} className="d-run" disabled={saveBusy} onClick={()=>openRun(String(r.run_id))}>입력버전 {String(r.input_version)} · {String(r.adapter_version??"이전 계약")} · {String(r.status)} · {r.is_current?"서버 최신 입력":"과거 입력"}<small>{String(r.run_id)}</small></button>)}
+          {runs.map(r=><div key={String(r.run_id)}><button className="d-run" disabled={saveBusy} onClick={()=>openRun(String(r.run_id))}>입력버전 {String(r.input_version)} · {String(r.adapter_version??"이전 계약")} · {String(r.status)} · {r.is_current?"서버 최신 입력":"과거 입력"}<small>{String(r.run_id)}</small></button>
+            <button type="button" className="d-text-button" disabled={saveBusy} onClick={()=>void openRun(String(r.run_id),'')}>입력버전 {String(r.input_version)} 결과·상담 내역 확인</button></div>)}
         </details>}
     </main><ScenarioPicker disabled={busy||saveBusy} onLoad={loadScenario}/>{loginOpen&&<LoginDialog onClose={()=>{loginSave.current=false;setLoginOpen(false);}} onLogin={(value,seconds)=>handleLogin(value,seconds)}/>}<ConsultationWidget compact={mode!=="welcome"} open={consultationOpen} onOpen={()=>setConsultationOpen(true)} onClose={()=>setConsultationOpen(false)}>
       <ConsultationContent view={view} token={token} selectedCaseId={caseId} editVersion={doc.raw_bundle.input_version} stale={stale} open={consultationOpen}
+        onOpenResult={openRun} resumeSessionId={conversationResume?.token===token&&conversationResume.caseId===caseId&&conversationResume.runId===view?.runId?conversationResume.sessionId:undefined}
         onEdit={id=>{setConsultationOpen(false);edit(id);}} onResult={n=>{setConsultationOpen(false);if(mode==="welcome")setMode("quick");setShowResults(true);setTab(n);}}
         onLogin={()=>{setConsultationOpen(false);setLoginOpen(true);}} onSave={()=>{setConsultationOpen(false);setAccountOpen(true);accountPanel.current?.scrollIntoView({block:"center"});}}
         onExplain={()=>{setConsultationOpen(false);if(mode==="welcome")setMode("quick");setShowResults(true);setExplainRequested(true);}}/>

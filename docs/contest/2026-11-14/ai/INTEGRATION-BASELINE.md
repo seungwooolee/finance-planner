@@ -1,5 +1,9 @@
 # 통합 평가 기준 분리 — 2026-11-14
 
+## 담당 독점 제한 해제 — 기준 1.5 (2026-11-15)
+
+사용자는 API/저장 BE 전용 및 FE 공통 파일 FE 전용 제한을 직접 해제했다. 승인된 AGENTS 변경은 `32a67d0`에 있으며, PR #63 최초 CI는 이 지침의 과거 고정 해시 때문에 실패했다. 지침의 원 SHA는 유지하고 현재 승인 SHA `ebb1c9c073012dce22f0b0dcb8e5e005b20e9fbb9231726da3e101997e7242d3`만 policy override로 등록했다. 직전 1.4 바이트는 [보존본](evidence/integration-baseline-1.4.json)에 남겼다. 1.5 기준 SHA는 `2ef8e79dacae00a0247a2edf1732b73438d1a87b6a62111a9bffd2fd072b7683`이다. 원 expectations-lock, dev/holdout 입력·기대값·판정 코드, 기존 code/data 예외와 금융 정책은 변경하지 않았다.
+
 ## PR #46/#49 통합 — 기준 1.4 (2026-11-15)
 
 양쪽 1.3 이력을 보존하고 직전 통합 기준(027196f...) 및 병렬 후보(28df665...)를 기록했다. 같은 네 href 수정을 유지하며 source/chunk 버전만 `2026-11-15-url1`, corpus는 `dion-rag-20261115-demo-r3`로 연결한다. 네 URL/버전 메타데이터를 되돌렸을 때 원본 고정 corpus의 바이트 SHA와 같아야 한다. 본문/claim/인용/승인/정답 변경은 허용하지 않는다. 원본 lock, 기존 code/policy 예외, v0.8.0 상담 및 검사를 보존한다. [이번 통합·검사](../../../integration/2026-11-15-rag-dialog-deployment.md).

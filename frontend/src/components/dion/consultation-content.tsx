@@ -10,6 +10,7 @@ type Props = {
   view: ViewResult | null; token: string; selectedCaseId: string; editVersion: number;
   stale: boolean; open: boolean; onLogin: () => void; onSave: () => void; onExplain: () => void;
   onEdit: (id: string) => void; onResult: (tab: number) => void;
+  resumeSessionId?: string; onOpenResult?: (runId: string, sessionId: string) => Promise<void>;
 };
 type Adoption = { adoption_id: string; run_id: string; input_version: number; strategy_id: string };
 
@@ -55,6 +56,7 @@ export function ConsultationContent(props: Props) {
     {stale && <p className="d-warning" role="status">입력이 달라졌어요. 이전 상담은 이 결과의 기록으로만 확인해 주세요. 새 계산을 저장하면 새 기준으로 상담할 수 있어요.</p>}
     <AdoptionContext key={`${contextKey}-${open}`} caseId={caseId} token={token} view={view} open={open}/>
     <ResultActionConsultation view={view} token={token} caseId={caseId} stale={stale} onEdit={props.onEdit} onResult={props.onResult}/>
-    <AgentConsultation view={view} token={token} selectedCaseId={selectedCaseId} editVersion={editVersion} stale={stale} onExplain={onExplain}/>
+    <AgentConsultation view={view} token={token} selectedCaseId={selectedCaseId} editVersion={editVersion} stale={stale} onExplain={onExplain}
+      resumeSessionId={props.resumeSessionId} onOpenResult={props.onOpenResult}/>
   </div>;
 }

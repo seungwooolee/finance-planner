@@ -43,6 +43,7 @@ def main():
     parser.add_argument("--port", type=int, default=8002)
     parser.add_argument("--scheme-fixture", action="store_true", help="Enable test-only synthetic scheme evidence")
     parser.add_argument("--portfolio-fixture", action="store_true", help="Enable test-only product/tax evidence mappings")
+    parser.add_argument("--conversation-fixture", action="store_true", help="Enable synthetic conversational replies, no model calls")
     parser.add_argument("--test-clock", help="TEST ONLY: timezone-aware ISO time for the month guard; store timestamps remain actual")
     args = parser.parse_args()
     fixed = datetime.fromisoformat(args.test_clock) if args.test_clock else None
@@ -77,6 +78,10 @@ def main():
             consultation = ConsultationService(clock=lambda: datetime(2026, 11, 12, 5, tzinfo=timezone.utc),
                                                proposal_provider=mock_proposal)
             app.dependency_overrides[get_consultation_service] = lambda: consultation
+        if args.conversation_fixture:
+            from tests.be.test_conversation_storage import Provider
+            conversation = ConsultationService(assistant_provider=Provider())
+            app.dependency_overrides[get_consultation_service] = lambda: conversation
         clock = patch.object(plan_checkin, "datetime", FictionalMonthClock) if fixed else nullcontext()
         with clock:
             uvicorn.run(app, host="127.0.0.1", port=args.port, access_log=False)
