@@ -10,11 +10,11 @@ const topics = {risk: ["위험등급", "CON-01"], fee: ["비용 비교", "CON-03
 const taxItems: Record<string, string> = {"pension-contribution": "TAX-01", "isa-account": "TAX-02", "isa-maturity": "TAX-03", "monthly-rent": "TAX-04", "sme-employment": "TAX-05", "marriage-credit": "TAX-06", "marriage-birth-gift": "TAX-07", "pension-withdrawal": "TAX-08"};
 type Result = {answer: Answer; retrievedAt: string; year: number | null};
 
-export function PortfolioEvidence({access, kind, targetId, stale = false, initialTopic = "fee"}: {
-  access?: EvidenceAccess; kind: "PRODUCT" | "TAX"; targetId: string; stale?: boolean; initialTopic?: keyof typeof topics;
+export function PortfolioEvidence({access, kind, targetId, stale = false, initialTopic = "fee", topic: fixedTopic, note}: {
+  access?: EvidenceAccess; kind: "PRODUCT" | "TAX"; targetId: string; stale?: boolean; initialTopic?: keyof typeof topics; topic?: keyof typeof topics; note?: string;
 }) {
   const id = useId();
-  const [topic, setTopic] = useState<keyof typeof topics>(initialTopic);
+  const [topic, setTopic] = useState<keyof typeof topics>(fixedTopic ?? initialTopic);
   const [year, setYear] = useState("");
   const [result, setResult] = useState<Result | null>(null);
   const [error, setError] = useState("");
@@ -54,15 +54,16 @@ export function PortfolioEvidence({access, kind, targetId, stale = false, initia
     }
   }
   return <section className="d-portfolio-evidence" aria-label={kind === "TAX" ? "절세 등록 근거 설명" : "상품 등록 근거 설명"} aria-busy={busy}>
-    <p className="d-inline-note">{kind === "TAX" ? "등록된 공식 자료의 요건과 예외를 확인해요. 개인별 적용 여부와 절세액은 확정하지 않아요." : "이 상품의 검토 결과와 함께 읽을 일반 개념이에요. 상품별 수치와 선정 이유는 저장된 결과 기준이에요."}</p>
+    <p className="d-inline-note">{note ?? (kind === "TAX" ? "등록된 공식 자료의 요건과 예외를 확인해요. 개인별 적용 여부와 절세액은 확정하지 않아요." : "이 상품의 검토 결과와 함께 읽을 일반 개념이에요. 상품별 수치와 선정 이유는 저장된 결과 기준이에요.")}</p>
     {!access ? <p>로그인 후 결과를 저장하면 해당 결과에 연결된 근거를 확인할 수 있어요.</p> : stale ? <p>이전 입력 기준 결과예요. 현재 답변으로 다시 계산하고 저장한 뒤 근거를 확인해 주세요.</p> : <form onSubmit={event => {event.preventDefault(); void lookup();}}>
       {kind === "TAX" ? <label htmlFor={id}>확인할 귀속연도<input id={id} type="number" min="1900" max="2200" step="1" required value={year} disabled={busy} placeholder="예: 2026" onChange={event => {setYear(event.target.value); setResult(null); setError("");}}/></label>
-        : <label htmlFor={id}>설명 주제<select id={id} value={topic} disabled={busy} onChange={event => {setTopic(event.target.value as keyof typeof topics); setResult(null); setError("");}}>{Object.entries(topics).map(([key, entry]) => <option key={key} value={key}>{entry[0]}</option>)}</select></label>}
+        : fixedTopic ? null : <label htmlFor={id}>설명 주제<select id={id} value={topic} disabled={busy} onChange={event => {setTopic(event.target.value as keyof typeof topics); setResult(null); setError("");}}>{Object.entries(topics).map(([key, entry]) => <option key={key} value={key}>{entry[0]}</option>)}</select></label>}
       <button type="submit" className="d-secondary" disabled={busy || (kind === "TAX" && !year)}>{busy ? "근거 확인 중…" : error ? "근거 다시 확인" : "등록 근거로 설명 보기"}</button>
     </form>}
     {error && <p role="alert">{error}</p>}
     {result && <div role="status"><p>{result.answer.guidance}</p></div>}
     {result?.answer.status === "ANSWERED" && <>
+      {!!result.answer.citations.length && <p className="d-inline-note">출처 {result.answer.citations[0].issuer}{result.answer.citations.length > 1 ? ` 외 ${result.answer.citations.length - 1}건` : ""} · 결과 기준일 {access?.evaluationOn} · 참고자료이며 계산 결과를 바꾸지 않아요</p>}
       {result.answer.blocks.map(block => <article key={block.claim_id} className="d-scheme-claim"><p>{block.statement.text}</p>
         {!!(block.conditions.length || block.exceptions.length) && <details><summary>조건과 예외</summary>
           {!!block.conditions.length && <><strong>조건</strong><ul>{block.conditions.map(row => <li key={row.citation_id}>{row.text}</li>)}</ul></>}
