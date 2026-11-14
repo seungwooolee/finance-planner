@@ -276,6 +276,13 @@
 @media (prefers-reduced-motion:reduce){.dion-app .d-plan-choice{transition:none}}
 .dion-app .d-results h2>svg,.dion-app .d-plan-care svg,.dion-app .d-coach-head svg{display:inline-block}
 .dion-app .d-explain-wrap{margin-top:24px}
+.dion-app .d-financial-projection{margin-top:24px;min-width:0}
+.dion-app .d-financial-projection figure{margin:20px 0}
+.dion-app .d-financial-projection figure>svg{width:100%;height:auto;display:block}
+.dion-app .d-financial-projection details{margin-top:16px}
+.dion-app .d-financial-projection summary{cursor:pointer;font-weight:600;padding:8px 0}
+.dion-app .d-financial-projection caption{text-align:left;font-size:12px;padding:8px 0}
+.dion-app .d-financial-projection dd{overflow-wrap:anywhere}
 
 /* v0.3: one persistent consultation, native modal focus and mobile sheet. */
 .d-ai-window{position:fixed;inset:auto 20px 20px auto;margin:0;padding:0;width:460px;max-width:calc(100vw - 32px);height:min(760px,calc(100dvh - 40px));max-height:calc(100dvh - 40px);border:1px solid #dce1f3;border-radius:24px;background:#fff;color:#202940;box-shadow:0 16px 60px #17244133;overflow:hidden}

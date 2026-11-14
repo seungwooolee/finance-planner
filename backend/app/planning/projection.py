@@ -12,6 +12,7 @@ from calendar import monthrange
 
 from ..financial_contract import ident, iso_day, scoped_value
 from .common import ContractError, Missing, Unsupported, flag, money, month_end, months, output, require, unique
+from .financial_projection import financial_projection
 from .goals import reservations
 from .modules import cash_event, owner, pension_forecasts
 from .policies import allocation_rules
@@ -598,6 +599,10 @@ def project(answers, current, goals, modules):
         )
     data = projection_inputs(answers, current, goals, modules)
     candidates = [run_candidate(answers, data, strategy) for strategy in STRATEGIES]
+    for candidate in candidates:
+        candidate["financial_projection"] = financial_projection(
+            data["snapshot"], candidate, answers.context, answers.sha256
+        )
     state = "CALCULATED" if all(r["calc_state"] == "CALCULATED_MONTHLY_SCENARIO" for r in candidates) else "PARTIAL"
     if any(r["calc_state"] == "INVALID_INPUT" for r in candidates):
         state = "INVALID_INPUT"
