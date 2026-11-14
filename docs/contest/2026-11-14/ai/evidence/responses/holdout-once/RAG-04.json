@@ -1,0 +1,61 @@
+{
+  "eval_id": "RAG-04",
+  "environment": "SYNTHETIC_LOCAL_ONLY",
+  "product_B_ids_created": false,
+  "responses": [
+    {
+      "layer": "RAG_SERVICE",
+      "body": {
+        "contract_version": "DION-SCHEME-EVIDENCE-1.0",
+        "status": "FALLBACK",
+        "reason_code": "INVALID_GROUNDED_ANSWER",
+        "base_run_id": "run-private",
+        "item_id": "SCHEME-TEST",
+        "tax_year": 2026,
+        "effective_on": "2026-10-31",
+        "review_on": "2026-11-12",
+        "context_status": "USABLE",
+        "guidance": "현재 확인할 수 있는 등록 근거가 부족해 제도 설명을 보류했어요. 저장된 진단 결과는 계속 확인할 수 있어요.",
+        "blocks": [],
+        "citations": [],
+        "application_status": "NOT_APPLIED"
+      }
+    },
+    {
+      "layer": "RAG_SERVICE",
+      "body": {
+        "contract_version": "DION-SCHEME-EVIDENCE-1.0",
+        "status": "FALLBACK",
+        "reason_code": "INVALID_GROUNDED_ANSWER",
+        "base_run_id": "run-private",
+        "item_id": "TAX-01",
+        "tax_year": 2026,
+        "effective_on": "2026-11-13",
+        "review_on": "2026-11-13",
+        "context_status": "USABLE",
+        "guidance": "현재 확인할 수 있는 등록 근거가 부족해 제도 설명을 보류했어요. 저장된 진단 결과는 계속 확인할 수 있어요.",
+        "blocks": [],
+        "citations": [],
+        "application_status": "NOT_APPLIED"
+      }
+    },
+    {
+      "layer": "RAG_SERVICE",
+      "body": {
+        "contract_version": "DION-SCHEME-EVIDENCE-1.0",
+        "status": "FALLBACK",
+        "reason_code": "INVALID_GROUNDED_ANSWER",
+        "base_run_id": "run-private",
+        "item_id": "TAX-01",
+        "tax_year": 2026,
+        "effective_on": "2026-11-13",
+        "review_on": "2026-11-13",
+        "context_status": "USABLE",
+        "guidance": "현재 확인할 수 있는 등록 근거가 부족해 제도 설명을 보류했어요. 저장된 진단 결과는 계속 확인할 수 있어요.",
+        "blocks": [],
+        "citations": [],
+        "application_status": "NOT_APPLIED"
+      }
+    }
+  ]
+}

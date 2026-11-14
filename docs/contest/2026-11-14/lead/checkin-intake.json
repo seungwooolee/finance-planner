@@ -1,0 +1,97 @@
+{
+  "role": "checkin",
+  "source_workspace": "C:\\Users\\LG\\Projects\\DION-contest-checkin-20261114",
+  "source_head_sha": "eed221d1c1d305d79713ebb0dbf0c41d9c624e8a",
+  "source_kind": "COMPLETED_UNCOMMITTED_HASHED_HANDOFF",
+  "case_version": "DION-CONTEST-B-20261114-1.0",
+  "accepted_files": [
+    {
+      "path": "backend/app/be/plan_api.py",
+      "source_path": "backend/app/be/plan_api.py",
+      "sha256": "291a280fb06bbb4f0b1e9b4986ec444ac2370b3c12c7b3a335153ce567db3f6b"
+    },
+    {
+      "path": "backend/app/be/plan_checkin.py",
+      "source_path": "backend/app/be/plan_checkin.py",
+      "sha256": "2fff91e15c1aa294fa8edae23883fe45532da384b15f14810fa417fc920e68e4"
+    },
+    {
+      "path": "backend/tests/be/test_plan_checkin.py",
+      "source_path": "backend/tests/be/test_plan_checkin.py",
+      "sha256": "b4d132304d3b6ca75bc5f6b6508183f5648cae313a65c0240d1f4242baeb9933"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/CONTRACT.md",
+      "source_path": "docs/contest/2026-11-14/checkin/CONTRACT.md",
+      "sha256": "919f45f00ed0d27df74be3481aa8ae2f2bde64b63e947dbdbc71df1199cd9ed0"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/baseline-binding-reproduction.json",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/baseline-binding-reproduction.json",
+      "sha256": "0cd9088416adb813f967bde0d8d5d92378de57860c0919cbbd6c41559554e0ea"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/candidate.patch",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/candidate.patch",
+      "sha256": "353dd3cd49d6092abbb7834573f9adf67038d6afeb8d5a973ea2ad3b671dfc40"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/lead-manifest.json",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/lead-manifest.json",
+      "sha256": "7caa8d999cce6249604e810b5f939276c7709e92482c287631cf890bca31b44d"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/lifecycle-postgres.json",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/lifecycle-postgres.json",
+      "sha256": "0b9514ff3ab0c2bb6886f8e3b5be9dc510d2976acf1aa66bfaf1eea15bc6227f"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/lifecycle-sqlite.json",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/lifecycle-sqlite.json",
+      "sha256": "314510af6e52e8eef95a477e2bba43e831007467a65a102aea4b4cbe4f3a7792"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/openapi-snapshot.json",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/openapi-snapshot.json",
+      "sha256": "01577eaf882cfcf197d24064ee510eb8b192e37974348e32489f8a7b2a3d0160"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/pytest-initial.txt",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/pytest-initial.txt",
+      "sha256": "f167897c0be9bf64c0dcecdce2fd926c498ce8dd2e8d81e383af48a987c935b9"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/pytest-initial.xml",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/pytest-initial.xml",
+      "sha256": "b1c00a26febd8273baed280d572d89be954ee269251d1d22088d0692bb114b0b"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/pytest-retry.txt",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/pytest-retry.txt",
+      "sha256": "0d8539ceeb4021b64a7d31132741c46ef89bddeb611caf18c0cda4be731ebb85"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/pytest-retry.xml",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/pytest-retry.xml",
+      "sha256": "72027a0d7582e54fd209a9b89008c62868689e10e494193cffcc96d45ad4ae7c"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/verification.json",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/verification.json",
+      "sha256": "47dc1c6811f1f49f73c0b040da38726468b642b598e5e1e1440e8d72bff5639a"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/HANDOFF.md",
+      "source_path": "docs/contest/2026-11-14/checkin/HANDOFF.md",
+      "sha256": "f1d6b304a187b9f60d6399ca028a7fca1bfc4434bf9c6fd91cebc775f548536b"
+    },
+    {
+      "path": "docs/contest/2026-11-14/checkin/evidence/candidate-files.json",
+      "source_path": "docs/contest/2026-11-14/checkin/evidence/candidate-files.json",
+      "sha256": "eb81c788eaf6ae7b51b6571f052711d0b49dbb3e28fdf1e77b62dd6f2789928a"
+    }
+  ],
+  "excluded_active_files": [],
+  "hash_verification": "SOURCE_AND_DESTINATION_PASS",
+  "source_worktree_unchanged": true
+}

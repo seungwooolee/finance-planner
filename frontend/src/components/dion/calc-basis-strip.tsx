@@ -33,7 +33,8 @@ export function CalcBasisStrip({ view, result, label, stateLabel, next, detail }
     <div className="d-basis-head"><strong>{label}</strong><span>{stateLabel} · {view.storage === "NOT_SAVED" ? "서버에 저장하지 않은 미리보기" : "서버에 기록된 계산"}</span></div>
     <dl className="d-basis-facts">
       <div><dt>계산 기준일</dt><dd>{evaluationOn}</dd></div>
-      <div><dt>금액 단위</dt><dd>원 · 한 달 기준</dd></div>
+      <div><dt>금액 표시</dt><dd>만원·원 · 각 항목에 표시</dd></div>
+      <div><dt>금액 기준</dt><dd>자산은 기준일 잔액 · 소득·지출·납입은 해당 월 · 목표는 목표일·기간 기준</dd></div>
       <div><dt>입력 버전</dt><dd>{version}</dd></div>
     </dl>
     {detail && <small className="d-basis-detail">{detail}</small>}

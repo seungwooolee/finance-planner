@@ -1,0 +1,148 @@
+{
+  "source_head_sha": "707da4156b1cbfafdf4be81b4b15060008e02aad",
+  "previous_source_head_sha": "789194e8a62df04fc1f53cb52e75c98eee621a3a",
+  "source_kind": "FETCHED_REMOTE_COMMIT",
+  "commits_in_order": [
+    "261e005",
+    "1e6617c",
+    "41c70b9",
+    "707da41"
+  ],
+  "accepted_files": [
+    {
+      "path": "docs/contest/2026-11-14/results/HANDOFF.md",
+      "sha256": "3b9f559c52fcb942e0a52d89794e322ed2e4359e5b91e6fe23228a7151a6f29e"
+    },
+    {
+      "path": "frontend/e2e/dion-proposal.spec.ts",
+      "sha256": "68a137fa754d5d2d6f466c991e12ee4ecec3655a19037f33d5cde9002665b7b6"
+    },
+    {
+      "path": "frontend/e2e/dion-verify.spec.ts",
+      "sha256": "8a8f1a9ec14f578763d181f252de4445f949037f8734e2b63e3e74a306f2460c"
+    },
+    {
+      "path": "frontend/src/components/dion/final-portfolio.tsx",
+      "sha256": "d6e976874d6f4ce6f82ad36f23a527e9b33b7f5732fabe522ad3b02278e3022f"
+    },
+    {
+      "path": "frontend/src/components/dion/financial-proposal.tsx",
+      "sha256": "9fbca5abe441456a9b7289b6d281b6a8e3710d5a6331c17b79fdf20cdcf55f2b"
+    },
+    {
+      "path": "frontend/src/components/dion/plan-checkin.tsx",
+      "sha256": "479e17458c2ba7f10703cad446fe9deaa76657da3ad48465a919425d49077f8b"
+    },
+    {
+      "path": "frontend/src/components/dion/results.tsx",
+      "sha256": "b59b8b5f98080acff8d964763f150c79e277ee33b4000f0691e784d92ab97cb5"
+    }
+  ],
+  "skipped_changes": [
+    {
+      "path": "HANDOFF.md",
+      "action": "source root handoff deletion; no root file added to lead previously"
+    }
+  ],
+  "vercel_changed_in_delta": false,
+  "root_checkout_unchanged": true,
+  "source_handoff_push_statements_are_historical": true,
+  "real_provider_E2E": {
+    "state": "PASS",
+    "scenario_count": 2,
+    "runs": 1,
+    "retries": 0,
+    "result_path": "docs/contest/2026-11-14/lead/fe707-integration.json",
+    "common_B_case": false,
+    "response_overrides": false,
+    "identity": "MOCK-FE-ONLY",
+    "servers": "OWN_3337_8337_STARTED_AND_STOPPED_EXISTING_3000_8001_8202_PRESERVED"
+  },
+  "current_accepted_source_paths": [
+    {
+      "path": "docs/contest/2026-11-14/results/HANDOFF.md",
+      "sha256": "3b9f559c52fcb942e0a52d89794e322ed2e4359e5b91e6fe23228a7151a6f29e"
+    },
+    {
+      "path": "frontend/e2e/dion-proposal.spec.ts",
+      "sha256": "68a137fa754d5d2d6f466c991e12ee4ecec3655a19037f33d5cde9002665b7b6"
+    },
+    {
+      "path": "frontend/e2e/dion-verify.spec.ts",
+      "sha256": "8a8f1a9ec14f578763d181f252de4445f949037f8734e2b63e3e74a306f2460c"
+    },
+    {
+      "path": "frontend/e2e/dion.spec.ts",
+      "sha256": "8504d7320ecd58ab45e35e4966e2607e25572658e2238872ddc1c055aded457f"
+    },
+    {
+      "path": "frontend/src/components/dion/calc-basis-strip.tsx",
+      "sha256": "3cb03e3471ad51a8f80ffa8099d6c657477bcb198303d1d7fa52e861633b2af4"
+    },
+    {
+      "path": "frontend/src/components/dion/final-portfolio.tsx",
+      "sha256": "d6e976874d6f4ce6f82ad36f23a527e9b33b7f5732fabe522ad3b02278e3022f"
+    },
+    {
+      "path": "frontend/src/components/dion/financial-overview.tsx",
+      "sha256": "6cc21066a8b44f706c283ee376ff15090f75ea19958910c77c086f81f0144223"
+    },
+    {
+      "path": "frontend/src/components/dion/financial-proposal.tsx",
+      "sha256": "9fbca5abe441456a9b7289b6d281b6a8e3710d5a6331c17b79fdf20cdcf55f2b"
+    },
+    {
+      "path": "frontend/src/components/dion/plan-checkin.tsx",
+      "sha256": "479e17458c2ba7f10703cad446fe9deaa76657da3ad48465a919425d49077f8b"
+    },
+    {
+      "path": "frontend/src/components/dion/plan-comparison.tsx",
+      "sha256": "697d2a8dc18138971850c87609ba04895ee3c9002aefd14e7cb1cdf1bec04708"
+    },
+    {
+      "path": "frontend/src/components/dion/planner.css",
+      "sha256": "10b42cf42095a979335afe6ad1fea6aff8bd06b09861909b9de012102003aa82"
+    },
+    {
+      "path": "frontend/src/components/dion/planner.tsx",
+      "sha256": "2b4b791daa77c5636972e799e22963f53b2ec7f4ba5fe7735086a24fb4659731"
+    },
+    {
+      "path": "frontend/src/components/dion/results.tsx",
+      "sha256": "b59b8b5f98080acff8d964763f150c79e277ee33b4000f0691e784d92ab97cb5"
+    },
+    {
+      "path": "frontend/src/lib/dion/result-visual.ts",
+      "sha256": "af4af31216fb606b2afa652e75fdd7cd2bcc6c810f3210123c49245a61ea79c0"
+    }
+  ],
+  "accepted_union_count": 14,
+  "preupdate_backups": [
+    {
+      "path": "docs/contest/2026-11-14/lead/received/results/pre-707/frontend/e2e/dion-proposal.spec.ts",
+      "sha256": "78d11905aa1a70f150cb834b3a4673484d8898c85e35697eeb77abf15ed5b5ea"
+    },
+    {
+      "path": "docs/contest/2026-11-14/lead/received/results/pre-707/frontend/e2e/dion-verify.spec.ts",
+      "sha256": "40dda0decfe18a4106b370c7992f17fa367b4366e3d121aeb6e82d642af7bd0f"
+    },
+    {
+      "path": "docs/contest/2026-11-14/lead/received/results/pre-707/frontend/src/components/dion/final-portfolio.tsx",
+      "sha256": "ecb732975802af862e4d99950a7a673062b9c1e2e432f13cf315fca0b5d82acb"
+    },
+    {
+      "path": "docs/contest/2026-11-14/lead/received/results/pre-707/frontend/src/components/dion/financial-proposal.tsx",
+      "sha256": "6e432f0b5fc32e017f4f0dc5116c5d26f98f5e9fe009991dc8a9f29ae83ccaff"
+    },
+    {
+      "path": "docs/contest/2026-11-14/lead/received/results/pre-707/frontend/src/components/dion/plan-checkin.tsx",
+      "sha256": "c493210079325aad02fa4d7d3f0cd5ba2354cdb6f5eb73a15db64dd94e6dd73a"
+    },
+    {
+      "path": "docs/contest/2026-11-14/lead/received/results/pre-707/frontend/src/components/dion/results.tsx",
+      "sha256": "e30c431607291614359948d5fbeca32ad791addf82b8d22912762dbc13ca9942"
+    }
+  ],
+  "lead_commit_created": false,
+  "push_or_remote_merge_or_deploy": false
+}

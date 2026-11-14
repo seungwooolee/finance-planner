@@ -1,15 +1,21 @@
 """Saved question 1.2.1 answers reach engine v2 through the authenticated BE route."""
 
 import copy
+import hashlib
 import json
+import os
 from pathlib import Path
+from uuid import uuid4
 
 from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
 
 from app.be.api import get_store, router
 from app.be.auth import get_actor
+from app.be.plan_api import router as plan_router
 from app.be.store import BackendStore
+from app.planning.common import digest
+from app.planning.question_v12 import CONFIRMATION_VERSION, map_question, map_question_v121
 
 SAMPLE = Path(__file__).resolve().parents[2] / "examples/planning-v1.2/dated_funded_input.json"
 
@@ -106,3 +112,210 @@ def test_saved_calendar_keeps_provenance_and_idempotency(tmp_path):
     assert saved["result"]["results"]["OUT-05"]["payment_calendar_evaluation"] == "NEEDS_INPUT"
     assert not saved["result"]["results"]["OUT-05"]["dated_cash_evaluation"]["verified_fundable"]
     assert client.post(url, json={**payload, "payment_calendar": {}}).status_code == 409
+
+
+# Submission B is deliberately independent of SAMPLE and every other demonstration fixture.
+ROOT = Path(__file__).resolve().parents[3]
+B_SOURCE = ROOT / "docs/design/2026-11-10/connected-demo/submission-input.json"
+B_SHA = "3afcb98cef3729aee85e19aff9075ea2a78795e7cb9f91e2261bf1a2ddae5bb4"
+
+
+def b_leaf(value, unit="JSON", state="KNOWN"):
+    return {"state": state, "raw_value": value, "unit": unit}
+
+
+def b_money(value):
+    return b_leaf(value["value"], value["unit"], value["state"])
+
+
+def b_input(mapped):
+    assert hashlib.sha256(B_SOURCE.read_bytes()).hexdigest() == B_SHA
+    source = json.loads(B_SOURCE.read_text(encoding="utf-8"))
+    raw = {a["question_id"]: a["raw_response"] for a in source["answers"]}
+    contract = json.loads((ROOT / "docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json").read_text(encoding="utf-8"))
+    definitions = {q["question_id"]: q for q in contract["engine_field_inventory"]}
+    fields = {q: {"payload": b_leaf(r)} for q, r in raw.items()}
+    extras = {}
+    if mapped:
+        fields["NEW-01"] = {"assessment_scope": b_leaf(raw["NEW-01"]["scope"]),
+                            "included_owner_ids": b_leaf(raw["NEW-01"]["owner_ids"]),
+                            "asset_coverage": b_leaf(raw["NEW-01"]["asset_coverage"]),
+                            "scope_acknowledged": b_leaf(None, state="NOT_ENTERED"),
+                            "owner_confirmation_ref": b_leaf(None, state="NOT_ENTERED")}
+        r = raw["F03"]
+        fields["F03"] = {"monthly_net_income_krw": b_money(r["monthly_net_income"]),
+                         "income_period_start": b_leaf(r["period_start"]), "income_period_end": b_leaf(r["period_end"]),
+                         "includes_one_off_income": b_leaf(r["includes_one_off"])}
+        r = raw["F04"]
+        # These zeros mean explicitly excluded components, not missing observations.
+        assert r["expense_basis"] == "LIVING_ONLY" and r["exclusions_confirmed"] is True
+        fields["F04"] = {k: b_money(r[k]) for k in ("living", "essential_living")}
+        fields["F04"].update({k: b_leaf(r[k]) for k in ("expense_basis", "exclusions_confirmed", "period_start", "period_end")})
+        fields["F04"].update(response_definition_version=b_leaf("1.2.1"),
+                             included_debt=b_leaf("0", "KRW"), included_contributions=b_leaf("0", "KRW"))
+        assets, asset_extras = [], {}
+        for r in raw["F06"]["items"]:
+            assets.append({"asset_id": r["asset_id"], "asset_class": r["kind"], "owner_refs": r["owner_ids"],
+                           "market_value_krw": b_money(r["value"]), "amount_status": r["value"]["state"],
+                           "valuation_on": r["valuation_on"], "available_date": r["available_on"],
+                           "withdrawal_constraint": r["withdrawal_constraint"], "share_basis": r["value_basis"]})
+            asset_extras[r["asset_id"]] = {k: r[k] for k in (
+                "parent_asset_id", "value_basis", "share_numerator", "share_denominator", "detail_coverage")}
+        fields["F06"] = {"financial_assets": b_leaf(assets)}
+        extras["F06"] = {"items": asset_extras, "coverage": raw["NEW-01"]["asset_coverage"]}
+        assert raw["NEW-04"]["status"] == "NONE"
+        fields["NEW-04"] = {"has_liabilities": b_leaf(False, "BOOLEAN")}
+        fields["NEW-03"] = {"existing_contributions": b_leaf([
+            {"contribution_id": r["contribution_id"], "owner_ref": r["owner_ref"], "amount": b_money(r["amount"]),
+             "payroll_deducted": r["already_deducted_from_net_income"],
+             "frequency": None, "employee_or_employer": None} for r in raw["NEW-03"]["items"]])}
+        extras["NEW-03"] = {"items": {r["contribution_id"]: {k: r[k] for k in (
+            "purpose", "destination", "pay_day", "period_basis")} for r in raw["NEW-03"]["items"]}}
+        fields["NEW-02"] = {k: b_leaf(None, state="NOT_ENTERED") for k in ("income_change_status", "events")}
+        extras["NEW-02"] = copy.deepcopy(raw["NEW-02"])
+        # Mechanical provenance is available; this is not a customer confirmation.
+        extras["NEW-02"].update(source_income_fingerprint=digest(fields["F03"]),
+            source_period_start=raw["F03"]["period_start"], source_period_end=raw["F03"]["period_end"],
+            applies_from=source["context"]["projection_start"], applies_to=source["context"]["projection_end"])
+        assert raw["NEW-05"] == {"status": "NONE", "items": []}
+        fields["NEW-05"] = {"planned_expenses": b_leaf([])}
+        fields["NEW-06"] = {"reservations": b_leaf([
+            {**r, "amount": b_money(r["amount"])} for r in raw["NEW-06"]["items"]]),
+            "policy_version": b_leaf(None, state="NOT_ENTERED"),
+            "customer_target_mode": b_leaf(None, state="NOT_ENTERED"),
+            "customer_protection_total": b_leaf(None, "KRW_10000", "NOT_ENTERED"),
+            "customer_operating_total": b_leaf(None, "KRW_10000", "NOT_ENTERED")}
+        extras["NEW-06"] = {"coverage": raw["NEW-06"]["coverage"]}
+        fields["F11"] = {"goals": b_leaf([{**{k: r[k] for k in ("goal_id", "type", "priority", "confirmed")},
+                                            "owner_refs": [r["owner_ref"]]} for r in raw["F11"]["items"]])}
+        fields["F12"] = {"goals": b_leaf([{"goal_id": r["goal_id"], "target_date": r["due_on"]} for r in raw["F12"]["items"]])}
+        extras["F12"] = {"items": {r["goal_id"]: {"contribution_dates": r["contribution_dates"]} for r in raw["F12"]["items"]}}
+        goals, goal_extras = [], {}
+        for r in raw["F13"]["items"]:
+            assert len(r["payments"]) == 1  # ONE_OFF/ONCE follows the explicit single event.
+            payment = r["payments"][0]
+            goals.append({"goal_id": r["goal_id"], "price_basis": r["price_basis"],
+                          "target_amount_krw": b_money(payment["amount"]), "amount_status": payment["amount"]["state"],
+                          "payment_type": "ONE_OFF", "frequency": "ONCE", "payment_start": payment["on"],
+                          "payment_end": payment["on"], "prepared_asset_refs": [
+                              reservation["asset_ref"] for reservation in raw["NEW-06"]["items"]
+                              if reservation["reservation_id"] in r["prepared_reservation_ids"]]})
+            goal_extras[r["goal_id"]] = {"return_basis": r["return_basis"], "prepared_reservation_ids": r["prepared_reservation_ids"],
+                                         "economic_event_id": payment["economic_event_id"]}
+        fields["F13"] = {"goals": b_leaf(goals)}
+        extras["F13"] = {"items": goal_extras}
+    envelopes = []
+    for answer in source["answers"]:
+        q = answer["question_id"]
+        version = contract["question_definition_versions"][q] if mapped else answer["definition_version"]
+        envelopes.append({"wire_version": "POC-RAW-0.1", "question_ref": {
+            "namespace": "DION-DESIGN", "design_id": q, "definition_version": version,
+            "definition_ref": ("docs/questions/v1.2/DION_Adaptive_Question_Contract_v1_2.json#" if mapped
+                               else "docs/questions/v1.3-engine/bindings.json#") + q,
+            "definition_text": definitions[q]["source_question"], "option_labels": {}},
+            # Transport anchor within the declared household; item owner lists remain intact.
+            "subject_refs": {"person_ref": source["context"]["included_owner_ids"][0]},
+            "context": {"scope_ref": source["context"]["scope"], "as_of": source["context"]["evaluation_on"],
+                        "period_start": raw[q].get("period_start"), "period_end": raw[q].get("period_end"),
+                        "source_ref": "sha256:" + B_SHA + "#answers/" + answer["answer_id"], "basis": "SCENARIO"},
+            "fields": fields[q]})
+    confirmations = [{"question_id": q, "definition_version": CONFIRMATION_VERSION,
+                      "source_ref": "sha256:" + B_SHA + "#explicit-mapping/" + q, "values": values}
+                     for q, values in extras.items()]
+    return source, envelopes, confirmations
+
+
+def b_case(tmp_path, mapped):
+    source, envelopes, confirmations = b_input(mapped)
+    case_id = "contest-b-" + ("mapped-" if mapped else "archive-") + uuid4().hex
+    store = BackendStore(tmp_path / "submission-b-only.sqlite3")
+    app = FastAPI()
+    app.include_router(router)
+    app.include_router(plan_router)
+    app.dependency_overrides[get_store] = lambda: store
+    app.dependency_overrides[get_actor] = lambda: "MOCK-CONTEST-B-ONLY"
+    client = TestClient(app)
+    base = "/api/be/v1/cases/" + case_id
+    assert client.post("/api/be/v1/cases", json={"case_id": case_id}).status_code == 201
+    receipts = []
+    for i, envelope in enumerate(envelopes):
+        response = client.put(base + "/answers", json={"expected_version": i, "request_key": f"b-answer-{i}", "envelope": envelope})
+        assert response.status_code == 200, response.text
+        receipts.append(response.json())
+    restored = client.get(base + "/answers").json()
+    assert {r["envelope"]["question_ref"]["design_id"]: r["envelope"] for r in restored["answers"]} == {
+        e["question_ref"]["design_id"]: e for e in envelopes}
+    assessment = {k: v for k, v in source["context"].items() if k not in {"case_id", "snapshot_id", "profile_version"}}
+    assessment["scope_ref"] = source["context"]["scope"]
+    response = client.post(base + "/analyses/question-v12", json={"expected_version": len(envelopes),
+        "request_key": "b-analysis", "assessment": assessment, "confirmations": confirmations,
+        "requested_outputs": source["requested_outputs"]})
+    assert response.status_code == 200, response.text
+    receipt = response.json()
+    run = client.get(base + "/analyses/" + receipt["run_id"]).json()
+    snapshot = client.get(base + "/snapshots/" + receipt["raw_snapshot_id"]).json()
+    assert snapshot["input_version"] == 12 and snapshot["answers"] == restored["answers"]
+    adoption = client.post(base + "/plan/adoptions", json={"request_key": "b-adopt-blocked",
+        "run_id": receipt["run_id"], "strategy_id": "STABILITY_FIRST"})
+    assert adoption.status_code == 422 and adoption.json()["detail"]["code"] in {"RUN_NOT_ADOPTABLE", "PLAN_NOT_AVAILABLE"}
+    assert client.get(base + "/plan").json()["adoption"] is None
+    assert client.get(base + "/checkins").json() == {"items": []}
+    # Keep the production future-month guard. No source/evaluation date is advanced.
+    future = client.put(base + "/checkins/2026-12", json={"expected_revision": 0,
+        "request_key": "b-december-future", "status": "DRAFT", "record": {"amounts": {}}})
+    assert future.status_code == 422 and future.json() == {"detail": {"code": "FUTURE_MONTH"}}
+    evidence = {"case_version": "DION-CONTEST-B-20261114-1.0", "source_sha256": B_SHA,
+        "environment": "isolated temporary SQLite; FastAPI TestClient; MOCK identity; no network",
+        "data_scope": "B_EXPLICIT_PARTIAL_MAPPING" if mapped else "B_ORIGINAL_1_3_ENGINE_ARCHIVE",
+        "operating_clock": "2026-11-14; unmodified; December is future; no simulated record",
+        "case_id": case_id, "input_version": 12, "answer_receipts": receipts,
+        "analysis_receipt": receipt, "run": run, "snapshot": snapshot,
+        "adoption_id": None, "checkin_id": None, "checkin_revision": None,
+        "adoption_error": adoption.json(), "december_error": future.json(),
+        "plan": client.get(base + "/plan").json()}
+    return client, source, envelopes, confirmations, evidence
+
+
+def write_b_evidence(name, evidence):
+    directory = os.getenv("DION_CHECKIN_EVIDENCE_DIR")
+    if directory:
+        (Path(directory) / name).write_text(json.dumps(evidence, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def test_contest_b_original_archive_is_preserved_without_version_relabel(tmp_path):
+    client, source, _, _, evidence = b_case(tmp_path, False)
+    with client:
+        stored = {r["envelope"]["question_ref"]["design_id"]: r["envelope"] for r in evidence["snapshot"]["answers"]}
+        for answer in source["answers"]:
+            env = stored[answer["question_id"]]
+            assert env["question_ref"]["definition_version"] == "1.3-engine"
+            assert env["fields"]["payload"]["raw_value"] == answer["raw_response"]
+        issues = evidence["run"]["result"]["adapter"]["issues"]
+        assert {i["question_id"] for i in issues if i["code"] == "NOT_SUPPORTED"} == set(stored)
+        write_b_evidence("submission-b-archive.json", evidence)
+
+
+def test_contest_b_explicit_partial_mapping_stops_at_missing_confirmations(tmp_path):
+    client, source, envelopes, confirmations, evidence = b_case(tmp_path, True)
+    with client:
+        raw = {a["question_id"]: a["raw_response"] for a in source["answers"]}
+        extras = {c["question_id"]: c["values"] for c in confirmations}
+        complete = {"F03", "F04", "F06", "NEW-04", "NEW-05", "F11", "F12", "F13"}
+        roundtrips = {}
+        for env in envelopes:
+            q = env["question_ref"]["design_id"]
+            if q not in complete:
+                continue
+            mapper = map_question_v121 if env["question_ref"]["definition_version"] == "1.2.1" else map_question
+            actual = mapper(q, env["fields"], extras.get(q, {}), source["context"], "SCENARIO")
+            assert all(actual[k] == v for k, v in raw[q].items()), q
+            roundtrips[q] = actual
+        issues = evidence["run"]["result"]["adapter"]["issues"]
+        assert {i["question_id"] for i in issues} == {"NEW-01", "NEW-02", "NEW-03", "NEW-06"}
+        assert evidence["analysis_receipt"]["draft_id"] is None
+        assert evidence["analysis_receipt"]["status"] == "PARTIAL"
+        assert all(i["code"] != "INVALID_INPUT" for i in issues)
+        assert not evidence["run"]["result"]["results"]["OUT-05"].get("candidates")
+        evidence["verified_roundtrips"] = roundtrips
+        evidence["missing_confirmation_questions"] = ["NEW-01", "NEW-02", "NEW-03", "NEW-06"]
+        write_b_evidence("submission-b-mapped.json", evidence)

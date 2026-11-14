@@ -1,0 +1,20 @@
+{
+  "state": "BLOCKED",
+  "frozen_lock_unchanged": true,
+  "locked_file_count": 43,
+  "mismatches": [
+    {
+      "path": "backend/tests/be/test_plan_checkin.py",
+      "locked_sha256": "73c1b60c147c96223061c3d3c1d98bacc31ca928a60d416da4e56ad7a4fd79af",
+      "candidate_sha256": "b4d132304d3b6ca75bc5f6b6508183f5648cae313a65c0240d1f4242baeb9933"
+    },
+    {
+      "path": "backend/tests/be/test_question_bridge.py",
+      "locked_sha256": "7f95b37b28da9bef81a06309a4eae060a168108fbad3d87bd3b753b0f056a29a",
+      "candidate_sha256": "42c11148c517b2ccca0539a3573ca19fc0fa7e29cdf5c59f26411fcdc0b7310b"
+    }
+  ],
+  "active_test_included": false,
+  "held_source": "docs/contest/2026-11-14/ai/evidence/held-test_consultation_contest_eval.py.txt",
+  "action": "Do not regenerate lock or weaken expectation; agree separate candidate-code baseline contract with AI owner."
+}

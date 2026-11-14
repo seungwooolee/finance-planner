@@ -1,0 +1,142 @@
+{
+  "round": "FOLLOWUP_R1_02_ONLY",
+  "base_sha": "eed221d1c1d305d79713ebb0dbf0c41d9c624e8a",
+  "case_version": "DION-CONTEST-B-20261114-1.0",
+  "scenario_results": [
+    {
+      "id": "R1-02",
+      "status": "PASS",
+      "pytest_time_seconds": "1.422",
+      "source": "pytest.xml"
+    }
+  ],
+  "attempts": 1,
+  "retry": 0,
+  "other_22_rerun": false,
+  "holdout_rerun": false,
+  "previous_round": {
+    "PASS": 22,
+    "FAIL": 1,
+    "BLOCKED": 1
+  },
+  "latest_known_cross_round": {
+    "PASS": 23,
+    "FAIL": 0,
+    "BLOCKED": 1,
+    "new_round_24_case_run": false
+  },
+  "R3_04": {
+    "status": "BLOCKED",
+    "BE_handoff_read": true,
+    "BE_candidate_hash_checks": [
+      {
+        "path": "backend/app/be/plan_api.py",
+        "expected": "291a280fb06bbb4f0b1e9b4986ec444ac2370b3c12c7b3a335153ce567db3f6b",
+        "actual": "291a280fb06bbb4f0b1e9b4986ec444ac2370b3c12c7b3a335153ce567db3f6b"
+      },
+      {
+        "path": "backend/app/be/plan_checkin.py",
+        "expected": "2fff91e15c1aa294fa8edae23883fe45532da384b15f14810fa417fc920e68e4",
+        "actual": "2fff91e15c1aa294fa8edae23883fe45532da384b15f14810fa417fc920e68e4"
+      },
+      {
+        "path": "backend/tests/be/test_plan_checkin.py",
+        "expected": "b4d132304d3b6ca75bc5f6b6508183f5648cae313a65c0240d1f4242baeb9933",
+        "actual": "b4d132304d3b6ca75bc5f6b6508183f5648cae313a65c0240d1f4242baeb9933"
+      },
+      {
+        "path": "docs/contest/2026-11-14/checkin/CONTRACT.md",
+        "expected": "919f45f00ed0d27df74be3481aa8ae2f2bde64b63e947dbdbc71df1199cd9ed0",
+        "actual": "919f45f00ed0d27df74be3481aa8ae2f2bde64b63e947dbdbc71df1199cd9ed0"
+      },
+      {
+        "path": "docs/contest/2026-11-14/checkin/evidence/baseline-binding-reproduction.json",
+        "expected": "0cd9088416adb813f967bde0d8d5d92378de57860c0919cbbd6c41559554e0ea",
+        "actual": "0cd9088416adb813f967bde0d8d5d92378de57860c0919cbbd6c41559554e0ea"
+      },
+      {
+        "path": "docs/contest/2026-11-14/checkin/evidence/candidate.patch",
+        "expected": "353dd3cd49d6092abbb7834573f9adf67038d6afeb8d5a973ea2ad3b671dfc40",
+        "actual": "353dd3cd49d6092abbb7834573f9adf67038d6afeb8d5a973ea2ad3b671dfc40"
+      },
+      {
+        "path": "docs/contest/2026-11-14/checkin/evidence/lead-manifest.json",
+        "expected": "7caa8d999cce6249604e810b5f939276c7709e92482c287631cf890bca31b44d",
+        "actual": "7caa8d999cce6249604e810b5f939276c7709e92482c287631cf890bca31b44d"
+      },
+      {
+        "path": "docs/contest/2026-11-14/checkin/evidence/lifecycle-postgres.json",
+        "expected": "0b9514ff3ab0c2bb6886f8e3b5be9dc510d2976acf1aa66bfaf1eea15bc6227f",
+        "actual": "0b9514ff3ab0c2bb6886f8e3b5be9dc510d2976acf1aa66bfaf1eea15bc6227f"
+      },
+      {
+        "path": "docs/contest/2026-11-14/checkin/evidence/lifecycle-sqlite.json",
+        "expected": "314510af6e52e8eef95a477e2bba43e831007467a65a102aea4b4cbe4f3a7792",
+        "actual": "314510af6e52e8eef95a477e2bba43e831007467a65a102aea4b4cbe4f3a7792"
+      },
+      {
+        "path": "docs/contest/2026-11-14/checkin/evidence/openapi-snapshot.json",
+        "expected": "01577eaf882cfcf197d24064ee510eb8b192e37974348e32489f8a7b2a3d0160",
+        "actual": "01577eaf882cfcf197d24064ee510eb8b192e37974348e32489f8a7b2a3d0160"
+      },
+      {
+        "path": "docs/contest/2026-11-14/checkin/evidence/pytest-initial.txt",
+        "expected": "f167897c0be9bf64c0dcecdce2fd926c498ce8dd2e8d81e383af48a987c935b9",
+        "actual": "f167897c0be9bf64c0dcecdce2fd926c498ce8dd2e8d81e383af48a987c935b9"
+      },
+      {
+        "path": "docs/contest/2026-11-14/checkin/evidence/pytest-initial.xml",
+        "expected": "b1c00a26febd8273baed280d572d89be954ee269251d1d22088d0692bb114b0b",
+        "actual": "b1c00a26febd8273baed280d572d89be954ee269251d1d22088d0692bb114b0b"
+      },
+      {
+        "path": "docs/contest/2026-11-14/checkin/evidence/pytest-retry.txt",
+        "expected": "0d8539ceeb4021b64a7d31132741c46ef89bddeb611caf18c0cda4be731ebb85",
+        "actual": "0d8539ceeb4021b64a7d31132741c46ef89bddeb611caf18c0cda4be731ebb85"
+      },
+      {
+        "path": "docs/contest/2026-11-14/checkin/evidence/pytest-retry.xml",
+        "expected": "72027a0d7582e54fd209a9b89008c62868689e10e494193cffcc96d45ad4ae7c",
+        "actual": "72027a0d7582e54fd209a9b89008c62868689e10e494193cffcc96d45ad4ae7c"
+      },
+      {
+        "path": "docs/contest/2026-11-14/checkin/evidence/verification.json",
+        "expected": "47dc1c6811f1f49f73c0b040da38726468b642b598e5e1e1440e8d72bff5639a",
+        "actual": "47dc1c6811f1f49f73c0b040da38726468b642b598e5e1e1440e8d72bff5639a"
+      }
+    ],
+    "B_product_mapping_verified": false,
+    "household_R3_supported": false,
+    "evaluated_again": false,
+    "B_product_ids": null
+  },
+  "ci": {
+    "R1_02_on_BASE": "PASS",
+    "ruff": "PASS",
+    "full_core_or_CI_executed": false,
+    "unconditional_integration_ready": false,
+    "blocker": "Existing evaluation lock includes unrelated BE test bytes; latest BE candidate differs, so frozen_and_offline would reject it before scenario execution. Historical lock not rewritten.",
+    "conflicting_path": "backend/tests/be/test_plan_checkin.py",
+    "locked_sha256": "73c1b60c147c96223061c3d3c1d98bacc31ca928a60d416da4e56ad7a4fd79af",
+    "BE_candidate_sha256": "b4d132304d3b6ca75bc5f6b6508183f5648cae313a65c0240d1f4242baeb9933"
+  },
+  "preserved_round1_sha256": {
+    "dev.json": "a85102cd5da9243e473ac1e0bf92fa1f2fde614d450315af2b98e680056e9721",
+    "holdout.json": "12ba3f9e2126a8fc20277e1f3d35cb86d6df0bc51edc37fb04e33cb64ec106a6",
+    "EVALUATION.md": "80c0a107a1c217eb7faec7292bfa15f22054cd3b82dafa2f404d8585c84d6091",
+    "evidence/expectations-lock.json": "0613a19e686bd05a93294d0eb6408291860157d56c6c918910ecec9e4f797e8d",
+    "evidence/results.json": "52198768dd7556444af1c4376ad7497f830e5099517fa9f2f2e9360291f8a97a",
+    "evidence/dev-initial.xml": "b43a0a52e6641e55f379c4742b240cf7f5a098302a3eac698dbc1614b86d0140",
+    "evidence/dev-retry.xml": "6b7e88de8a465c8e08af1bd5eaca5520b498b211932fe2db35d1b52d654d9a62",
+    "evidence/holdout-once.xml": "3f8ee740d3a814ed4e44993dbed80b021c8d7626f0a991bb2a8392a4bec961f7",
+    "evidence/candidate-before-holdout.json": "ac0b590a68ddceabc0e435c78c13b490c9c94d0d1c2105a9851a36257a2cc5c5",
+    "evidence/candidate.patch": "d8aa0d484852ac13383e26a769a34a3688d2fd030d7b1598b095879b4bb3392d"
+  },
+  "product_changes": [],
+  "security_review": "NOT_APPLIED_NO_PRODUCT_SECURITY_CHANGES",
+  "github_push": false,
+  "remote_merge": false,
+  "deploy": false,
+  "production_db": false,
+  "paid_model": false
+}

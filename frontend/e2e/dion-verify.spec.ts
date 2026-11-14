@@ -67,4 +67,33 @@ test.describe('검토 도구 · 사회초년생 저장 검증', () => {
     await page.getByRole('link',{name:/^dion/}).first().click();
     await expect(page.getByRole('heading',{name:/내 돈의 현재를 알고/})).toBeVisible();
   });
+
+  // BE DION-PLAN-CHECKIN-1.1 (checkin CONTRACT.md, evidence/response-examples.json read_after_B): the record's
+  // binding (A, input 13) stays apart from the current pointer (B, input 14); no plan-vs-actual difference is shown.
+  for (const conflict of [false,true]) test(`월 기록 1.1 연결 표시${conflict?' · 연결 충돌이면 저장 중지':''}`, async ({page}) => {
+    const month=new Date(Date.now()+9*3600_000).toISOString().slice(0,7);
+    const ref=(id:string,run:string,strategy:string,iv:number)=>({adoption_id:id,run_id:run,strategy_id:strategy,input_version:iv,adopted_at:'2026-11-14T09:13:33+00:00'});
+    const body={contract_version:'DION-PLAN-CHECKIN-1.1',record_month:month,revision:1,checkin_id:'chk_fixture',status:'DRAFT',
+      adoption_id:'adp_A',original_adoption_id:'adp_A',adoption:ref('adp_A','run_A','STABILITY_FIRST',13),current_adoption:ref('adp_B','run_B','INVESTMENT_CAPACITY',14),
+      binding_state:conflict?'CONFLICT':'LOCKED',record_kind:'ADOPTED_PLAN',
+      comparison:{state:conflict?'BINDING_CONFLICT':'POLICY_REQUIRED',reason:'ACTUAL_AND_PLAN_AMOUNT_SEMANTICS_REQUIRE_CONFIRMATION',record_month:month,amount_differences_krw:null},
+      record:{amounts:{income:'3000000',living:null,loan:null,goal:null,invest_existing:null,invest_new:'0',emergency:null,extra_cash:null},tasks:[],changes:[],memo:null},
+      summary:{entered_count:2,amount_count:8,partial:true,spending_entered_krw:'0',transfers_entered_krw:'0',spending_entered_count:0,transfers_entered_count:1,allocation_check:'INCOMPLETE_RECORD',tasks_done:0,tasks_total:0,review_suggested:false},
+      review:{action:'NONE',base_run_id:'run_A',adoption_changed:false}};
+    await page.route(/\/checkins\/\d{4}-\d{2}$/,route=>route.request().method()==='GET'?route.fulfill({json:body}):route.fallback());
+    await page.getByRole('button',{name:'검토 도구'}).click();
+    await page.getByRole('button',{name:'빠른진단 저장·계산'}).click();
+    await expect(page.getByText(/검증 사례 저장 · 사회초년생/)).toBeVisible({timeout:30_000});
+    await page.getByRole('button',{name:/결과·이번 달 행동/}).click();
+    const step=page.getByRole('region',{name:'계획 선택과 이번 달 기록'});
+    const note=step.locator('[data-binding]');
+    await expect(note).toHaveAttribute('data-binding',conflict?'CONFLICT':'LOCKED');
+    await expect(note).toContainText('이 달 기록 기준: 생활 안정 우선 · 입력버전 13');
+    await expect(note).toContainText('지금 채택한 계획은 투자 여력 확대 · 입력버전 14');
+    await expect(note.locator('[data-comparison]')).toHaveAttribute('data-comparison',conflict?'BINDING_CONFLICT':'POLICY_REQUIRED');
+    await expect(step.getByLabel('신규 투자 납입 (만원)')).toHaveValue('0');
+    await expect(step.getByLabel('생활비로 쓴 돈 (만원)')).toHaveValue('');
+    if (conflict) await expect(step.getByRole('button',{name:'임시 저장'})).toBeDisabled();
+    else await expect(step.getByRole('button',{name:'임시 저장'})).toBeEnabled();
+  });
 });

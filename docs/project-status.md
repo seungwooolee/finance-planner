@@ -1,3 +1,65 @@
+# 2026-11-14 — 로컬 앱 버전 v0.2.0
+
+검증한 통합본을 한 버전 커밋과 로컬 태그 v0.2.0으로 묶었다. frontend/package.json·package-lock.json의 루트 버전만0.1.0→0.2.0으로 변경했다. 의존성·사례 B1.1·엔진/API 계약은 유지하고 CHANGELOG·업데이트 안내에 기능 묶음별 버전/PR 원칙을 기록했다.
+
+이번은 메타데이터/문서 변경으로 버전 일치·의존성 불변·공백만 확인한다. 이전 관련 Python8건·B1.1 브라우저1건·Ruff/ESLint는 반복하지 않는다. push·원격 merge·배포·운영DB·유료 호출 없음. 아래는 당시 단계 기록이다.
+
+---
+
+# 2026-11-14 — B1.1 전체 가상 경로·AI 기준 분리·금액 문구 완료
+
+사용자가 선택한 별도 가상 보완본 `DION-CONTEST-B-20261114-1.1`을 만들고, 부모1.0·원문·이전 증거 hash를 보존했다. 실제 같은 가구 case의 입력/분석→두 안 UI 비교→명시 채택→12월 가상 기록→소득500→520만원 변경→새 초안 UI를 연결했다. 원래 run/채택/월기록은 불변이며 금융 거래는 실행하지 않았다. [B1.1 증거](contest/2026-11-14/lead/cases/b1.1/HANDOFF.md).
+
+AI의 원 기대값/채점표/입력 잠금은 유지하고 BE2파일의 정확한 코드 baseline을 분리해 활성 평가를 복원했다. 금액 기준 띠도 잔액·월 흐름·목표기간·만원/원 표시를 구분했다. Python 고유8건 PASS(시계 안정화 후 변경1건 재실행 PASS), 같은 B1.1 브라우저1 PASS·재시도0, 관련 Ruff/ESLint PASS. [최종 인계](contest/2026-11-14/lead/HANDOFF.md).
+
+R3 가구 지원·미입력/미지원 출력과 운영 검증은 별도다. 전체 CI/Build/E2E·실계정/운영DB·실모델/유료 호출·push/원격 merge/배포는 미실행. 테스트 전용 시계만 사용하고 운영 FUTURE_MONTH는 보존했다. 제출 보고서는 제품 완성 후 작성한다. 아래는 이전 단계 기록이다.
+
+---
+
+# 2026-11-14 — FE707 추가 통합·실제 provider 연결 확인
+
+원격 `codex/contest-results-20261114@707da415`의 추가4커밋을 총괄 브랜치 전환 없이 선별 반영했다. 기존 엔진·BE·AI 증거와 FE 이전 파일6개를 보존했다. BASE `eed221d`·CASE_VERSION은 유지하며 새 Vercel 설정은 반영하지 않았다.
+
+실제 통합 엔진·BE1.1·임시 SQLite와 Next dev/Edge를 연결한 관련 E2E2건이 첫 실행에 모두 통과했다. 응답 변조 없이 goal_omissions/원래 목표30만원 표시, 월 기록A/현재 채택B 분리, 미입력/null·실제0, 비교 보류·새 초안 안내를 확인했다. 인증만 모킹한 개인 합성 사례이며 B안 전체 경로나 운영 성공이 아니다. [실제 결과](contest/2026-11-14/lead/fe707-integration.json)·[최신 인계](contest/2026-11-14/lead/HANDOFF.md).
+
+공통 B안 확인·채택/기록/새 초안, AI 잠금의 BE2파일 차이, FE 금액 기준 문구가 남는다. 담당 통과 검사·전체 Core/Build/E2E는 반복하지 않았다. 이번 서버3337/8337만 종료하고 기존 서버는 보존했다. push·원격 merge·배포·운영 DB·유료 호출 없음. 제출 보고서는 제품 완성 후 작성한다. 아래는 이전 단계의 기록이다.
+
+---
+
+# 2026-11-14 — 공모전 제품 로컬 통합 후보 (보고서는 제품 완성 후)
+
+고정 BASE `eed221d`·CASE_VERSION `DION-CONTEST-B-20261114-1.0`을 유지하고 기존 엔진 변경에 최종 소비 인계를 더하고 BE30파일·AI88파일·FE 원격789194e의 제품10파일을 선별 반영했다. FE 배포 설정/root HANDOFF의 직접 덮어쓰기는 제외했다. 제출 보고서는 사용자 요청으로 제품 완성 후 작성한다.
+
+새 결합의 FastAPI TestClient·임시 SQLite probe1회 PASS(24개 assertion, AI24개 평가와 별개). 다른1.2.1 synthetic fixture이며 B안 ID/완료 증거로 승격하지 않는다. 입력 metadata 수정 후 새 run·원래 채택/기록 유지·no-store·null/부분기록·새 엔진 참고 필드의 저장 연결을 확인했다.
+
+AI R1-02 후속1건 PASS·최종 인계를 수령했고, 평가 코드는 통합 baseline 충돌 때문에 CI에서 보류했다. 기대값 lock의 옛 BE test 해시와 통합 BE의 충돌, B안 R3 가구 범위·저장 매핑, FE의 새 월기록/참고 비교 계약 소비, 동일 B안 제품 경로가 남는다. [접수](contest/2026-11-14/lead/INTEGRATION-INTAKE.md)·[계약](contest/2026-11-14/lead/CONTRACT-REVIEW.md)·[후보 인계](contest/2026-11-14/lead/HANDOFF.md)를 따른다.
+
+전체 Core/Build/E2E·운영 DB·유료 호출·push/원격 merge/배포는 미실행이다. 과거 검증과 이번 검사를 합산하지 않는다.
+
+---
+
+# 2026-11-14 — 공모전 총괄 엔진 인계 선별 통합 (로컬)
+
+BASE_SHA `eed221d1c1d305d79713ebb0dbf0c41d9c624e8a`·CASE_VERSION `DION-CONTEST-B-20261114-1.0`은 유지한다. [엔진 완료 인계](contest/2026-11-14/engine/HANDOFF.md)의 Python 2파일과 문서/증거 20파일을 해시로 고정해 총괄 worktree에 반영했다. 불규칙 일정의 월 참고 비교만 보류하며 실제 목표·배분 정책은 유지한다.
+
+[독립 대사](contest/2026-11-14/engine/case-reconciliation.md)·[55개 질문 추적 및 B안 매핑](contest/2026-11-14/engine/question-result-trace.md)·4종 직접 엔진 결과를 수령했다. 담당 검증 기록은 최초 238통과/4실패, 신규 fixture 보정 뒤 실패 4건만 1회 재검증해 4통과(고유 242건)다. 통합본이 동일 hash여서 통과 검사를 반복하지 않는다. 총괄의 증거/문서 검사와 담당 실행 결과는 [HANDOFF](contest/2026-11-14/lead/HANDOFF.md)에서 구별한다.
+
+BE/AI/FE/제출 결과는 미수령이다. 제품 raw 매핑·저장run·명시 채택·가상 기록·상황 변화·새 초안은 아직 미완성이며 제품 실행 ID는 null이다. FE의 참고 비교 보류 사유·납입 차이 문구·고정 가정 표시가 남는다. [필수 미해결과 운영 미검증](contest/2026-11-14/lead/BLOCKERS.md)을 구분한다. 전체 검사/Build/E2E·운영 DB·유료 AI·push/원격 merge/배포는 미실행, 기존 서버와 작업본은 보존했다.
+
+---
+
+# 2026-11-14 — 공모전 총괄 공통 인계 (로컬)
+
+`codex/contest-lead-20261114`의 전용 worktree에서 최신 조회 integration `eed221d1c1d305d79713ebb0dbf0c41d9c624e8a`를 BASE_SHA로 고정했다. PR #31의 제안서/RAG 보완이 포함되며 main `8a9f80f`와는 다르다. 아래의 과거 “main=integration”·통과 수·운영 상태를 이번 관찰로 읽지 않는다.
+
+제출 사례는 기존 B안 `SUBMISSION-B-01`, CASE_VERSION `DION-CONTEST-B-20261114-1.0`으로 고정했다. 2026-11-30/12~2월은 미래 가상 조건이다. 현행 앱 기본 예제와 서로 다른 사례이고 1.3-engine 입력을 현행 원응답에 단순 재라벨하지 않는다. 실제 제품 input/run/adoption/plan/기록 ID는 아직 null이다. 기존 PoC input12/13/14 스냅샷은 로컬 두 원본에서 동일 hash로 찾았지만 Git ignored 자료이므로 최신 제품 실행 증거가 아니다.
+
+[공통 인계](contest/2026-11-14/lead/COMMON-HANDOFF.md)·[manifest](contest/2026-11-14/lead/manifest.json)에 담당 파일·작업 공간·의존성을 지정했다. 엔진 worktree는 같은base에 존재하나 완료 HANDOFF는 미수령이고 다른 담당도 접수 대기다. 이번 delta는 문서뿐이며 제품 변경 선별 통합과 같은 사례의 6단계 실행 검증은 아직 수행되지 않았다. [필수 미해결/운영 미검증](contest/2026-11-14/lead/BLOCKERS.md), [후보·검사 인계](contest/2026-11-14/lead/HANDOFF.md)를 따른다.
+
+이번 확인은 소스/경계·hash·문서 검증이다. 전체/관련 앱 테스트·Build·E2E·실계정·운영 DB·유료 AI·push·원격 merge·배포는 미실행이며 기존 서버/사용자 변경을 보존했다.
+
+---
+
 # 2026-11-14 — PR #23 E2E 실패 6건 보완
 
 사용자 실행 로그의 13통과·6실패 중 실패한 경로만 보완했다. 선택상자 locator, quick 모드 유지 기대값, 90초 네트워크 재시도 대기, 검토 도구의 빌드 시 활성화가 원인이었다. 선택상자 수정 뒤 발견된 합성 입력의 진단일/현금 평가일 불일치도 테스트 기준일을 원본 합성 사례(2026-11-13)에 맞춰 해결했다. 기존 사례 파일·엔진·정책·금액 기대값은 변경하지 않았다.

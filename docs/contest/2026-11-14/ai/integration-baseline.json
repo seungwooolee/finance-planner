@@ -1,0 +1,29 @@
+{
+  "version": "DION-CONTEST-AI-INTEGRATION-BASELINE-1.1",
+  "previous_baseline_sha256": "9465f945cd29c0b1f11a7f4eda621184a9c68efbb52afe1a22ebef65da47d56f",
+  "base_sha": "eed221d1c1d305d79713ebb0dbf0c41d9c624e8a",
+  "frozen_lock_sha256": "0613a19e686bd05a93294d0eb6408291860157d56c6c918910ecec9e4f797e8d",
+  "expected_values_changed": false,
+  "code_overrides": {
+    "backend/tests/be/test_plan_checkin.py": {
+      "frozen_sha256": "73c1b60c147c96223061c3d3c1d98bacc31ca928a60d416da4e56ad7a4fd79af",
+      "candidate_sha256": "b4d132304d3b6ca75bc5f6b6508183f5648cae313a65c0240d1f4242baeb9933",
+      "source_commit": "db5a31d0dbe76d6b6c29b664cabe2a9857c094d5",
+      "reason": "Accepted BE checkin1.1 and B partial-mapping tests; not AI expected behavior or grading data."
+    },
+    "backend/tests/be/test_question_bridge.py": {
+      "frozen_sha256": "7f95b37b28da9bef81a06309a4eae060a168108fbad3d87bd3b753b0f056a29a",
+      "candidate_sha256": "42c11148c517b2ccca0539a3573ca19fc0fa7e29cdf5c59f26411fcdc0b7310b",
+      "source_commit": "db5a31d0dbe76d6b6c29b664cabe2a9857c094d5",
+      "reason": "Accepted BE checkin1.1 and B partial-mapping tests; not AI expected behavior or grading data."
+    }
+  },
+  "policy_overrides": {
+    "AGENTS.md": {
+      "frozen_sha256": "e6d9069a8dd4c7dd5b3b8666d477bf15ed658a57432e7aed65d95e174649cde9",
+      "candidate_sha256": "2640c02066d3759c319f30aa743ee783b82141321e782649ff5a16e81741b2df",
+      "source_commit": "f06b0b8eb40325d7f65ae205dac693bbc270bf14",
+      "reason": "User explicitly authorized branch push and PR updates; only the governance section was added, with prior instructions and all scoring material preserved."
+    }
+  }
+}

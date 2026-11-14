@@ -4,12 +4,15 @@ Run python -m tests.fe_http_harness --port 8002 from backend.
 Never imported by app entrypoints. Only fictional browser-test inputs belong here.
 """
 import argparse
+from contextlib import nullcontext
 from datetime import datetime, timezone
 from tempfile import TemporaryDirectory
+from unittest.mock import patch
 
 import uvicorn
 from fastapi import FastAPI, HTTPException, Request
 
+from app.be import plan_checkin
 from app.be.api import get_store, router
 from app.be.auth import get_actor
 from app.be.consultation_api import get_consultation_service, get_scheme_evidence_service
@@ -29,7 +32,17 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=8002)
     parser.add_argument("--scheme-fixture", action="store_true", help="Enable test-only synthetic scheme evidence")
+    parser.add_argument("--test-clock", help="TEST ONLY: timezone-aware ISO time for the month guard; store timestamps remain actual")
     args = parser.parse_args()
+    fixed = datetime.fromisoformat(args.test_clock) if args.test_clock else None
+    if fixed is not None and fixed.tzinfo is None:
+        parser.error("--test-clock requires an explicit timezone")
+
+    class FictionalMonthClock(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return fixed.astimezone(tz)
+
     app = FastAPI(title="FICTIONAL TEST HARNESS - NOT PRODUCTION AUTH")
     app.include_router(router)
     app.include_router(question_router)
@@ -53,7 +66,9 @@ def main():
             consultation = ConsultationService(clock=lambda: datetime(2026, 11, 12, 5, tzinfo=timezone.utc),
                                                proposal_provider=mock_proposal)
             app.dependency_overrides[get_consultation_service] = lambda: consultation
-        uvicorn.run(app, host="127.0.0.1", port=args.port, access_log=False)
+        clock = patch.object(plan_checkin, "datetime", FictionalMonthClock) if fixed else nullcontext()
+        with clock:
+            uvicorn.run(app, host="127.0.0.1", port=args.port, access_log=False)
 
 
 if __name__ == "__main__":

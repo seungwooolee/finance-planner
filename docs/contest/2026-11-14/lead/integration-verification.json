@@ -1,0 +1,70 @@
+{
+  "state": "FUNCTIONAL_EVIDENCE_ACCEPTED_WITH_DOCUMENT_LIMITATIONS",
+  "scope": "INTEGRATION_STATIC_AND_OWNER_EVIDENCE_REVIEW",
+  "observed_on": "2026-11-14",
+  "base_sha": "eed221d1c1d305d79713ebb0dbf0c41d9c624e8a",
+  "case_version": "DION-CONTEST-B-20261114-1.0",
+  "changed_file_count": 33,
+  "changed_files_by_owner": {
+    "engine": 22,
+    "lead": 11
+  },
+  "first_pass_completed": {
+    "json_parse": "PASS",
+    "json_file_count": 14,
+    "ownership_overlap_count": 0,
+    "protected_files_changed": [],
+    "product_ids": "ALL_NOT_EXECUTED_NULL"
+  },
+  "link_validation": {
+    "state": "PASS_FOR_ADDED_OR_CHANGED_MARKDOWN_LINES",
+    "scope_corrections": 1,
+    "preexisting_missing_target": "docs/integration/2026-11-11-result-recovery.md",
+    "present_in_head_development_log": true,
+    "historical_content_preserved": true
+  },
+  "engine_transfer": {
+    "source_and_destination_hashes": "PASS_AT_INTAKE",
+    "files": 22,
+    "receipt": "engine-intake.json"
+  },
+  "engine_test_evidence": {
+    "state": "JUNIT_PROVENANCE_VERIFIED",
+    "initial_tests": 242,
+    "initial_passed": 238,
+    "initial_failed": 4,
+    "retry_passed": 4,
+    "unique_passed": 242,
+    "retry_matches_initial_failures": true,
+    "rerun_by_lead": false
+  },
+  "whitespace": {
+    "state": "FAIL_ONE_IMMUTABLE_EVIDENCE_EOF_BLANK_LINE",
+    "scope": [
+      "*.py",
+      "*.md",
+      "*.json"
+    ],
+    "path": "docs/contest/2026-11-14/engine/evidence/lead-manifest.json",
+    "line": 274,
+    "reason": "new blank line at EOF",
+    "action": "PRESERVED_HASHED_SNAPSHOT_NO_FIX_OR_RETRY",
+    "immutable_patch_and_test_logs": "PRESERVED_BYTES_NOT_NORMALIZED",
+    "exit_state": "NONZERO_OBSERVED_EXACT_CODE_NOT_RECORDED"
+  },
+  "app_tests_by_lead": "NOT_REPEATED_NO_FURTHER_CODE_CHANGE",
+  "full_core": "NOT_RUN",
+  "build": "NOT_RUN",
+  "e2e": "NOT_RUN",
+  "operating_db": "NOT_ACCESSED",
+  "paid_ai": "NOT_RUN",
+  "servers": "NOT_TOUCHED",
+  "push": false,
+  "remote_merge": false,
+  "deployment": false,
+  "detached_diff": {
+    "path": "C:/Users/LG/Projects/DION-contest-lead-20261114.diff",
+    "sha256_file": "C:/Users/LG/Projects/DION-contest-lead-20261114.diff.sha256",
+    "includes_this_report": true
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "case_version": "DION-CONTEST-B-20261114-1.0",
+  "base_sha": "eed221d1c1d305d79713ebb0dbf0c41d9c624e8a",
+  "runtime_candidate_commit": "e27520db12da8c69eaa4da0e93f67baae42f2021",
+  "existing_unique_120": {
+    "preserved_not_rerun": true,
+    "junit_unique_passed": 120,
+    "workspace_hashes_unchanged": [
+      "backend/app/be/plan_api.py",
+      "backend/app/be/plan_checkin.py",
+      "backend/tests/be/test_plan_checkin.py",
+      "docs/contest/2026-11-14/checkin/evidence/baseline-binding-reproduction.json",
+      "docs/contest/2026-11-14/checkin/evidence/candidate.patch",
+      "docs/contest/2026-11-14/checkin/evidence/lead-manifest.json",
+      "docs/contest/2026-11-14/checkin/evidence/lifecycle-postgres.json",
+      "docs/contest/2026-11-14/checkin/evidence/lifecycle-sqlite.json",
+      "docs/contest/2026-11-14/checkin/evidence/openapi-snapshot.json",
+      "docs/contest/2026-11-14/checkin/evidence/pytest-initial.txt",
+      "docs/contest/2026-11-14/checkin/evidence/pytest-initial.xml",
+      "docs/contest/2026-11-14/checkin/evidence/pytest-retry.txt",
+      "docs/contest/2026-11-14/checkin/evidence/pytest-retry.xml",
+      "docs/contest/2026-11-14/checkin/evidence/verification.json"
+    ],
+    "committed_blob_sha256": {
+      "backend/app/be/plan_api.py": "291a280fb06bbb4f0b1e9b4986ec444ac2370b3c12c7b3a335153ce567db3f6b",
+      "backend/app/be/plan_checkin.py": "2fff91e15c1aa294fa8edae23883fe45532da384b15f14810fa417fc920e68e4",
+      "backend/tests/be/test_plan_checkin.py": "4dcc7aa32ebc743184ab2fbe25f1c355e0e7a66418ec0a91b6ff4449332e3d6a",
+      "docs/contest/2026-11-14/checkin/evidence/baseline-binding-reproduction.json": "f95c0bd27f9011d6af7565863721800eae3a7910077143c89292a81f7c289c91",
+      "docs/contest/2026-11-14/checkin/evidence/candidate.patch": "353dd3cd49d6092abbb7834573f9adf67038d6afeb8d5a973ea2ad3b671dfc40",
+      "docs/contest/2026-11-14/checkin/evidence/lead-manifest.json": "d4fc7c04d4f4f66b09463610bf0cd96d76ca1005649ce341560647e1ee1bc601",
+      "docs/contest/2026-11-14/checkin/evidence/lifecycle-postgres.json": "f74860c772148c512076ebbd3f47b17ba672899b53e46cad8f62185257f919ac",
+      "docs/contest/2026-11-14/checkin/evidence/lifecycle-sqlite.json": "0baa05fc0b6d59548f39e48e9e917f5ddf9609fdba9f133d9b5cfa5d47dc86a0",
+      "docs/contest/2026-11-14/checkin/evidence/openapi-snapshot.json": "cd6857523be2525e8fd5643d9f1b1f7e97e01134753161337f27fca6b2df0a86",
+      "docs/contest/2026-11-14/checkin/evidence/pytest-initial.txt": "778bb19d66a83dba283df405e0e124aa98585fe4c9c580667c2fc5a7fa84da0d",
+      "docs/contest/2026-11-14/checkin/evidence/pytest-initial.xml": "ccd6ee46121b159c4e32970e7818430b55af8b0bda192c1b46d3c300477b667f",
+      "docs/contest/2026-11-14/checkin/evidence/pytest-retry.txt": "13b7d64b6bb032a63e9d5abf0227d37886f12f900710578266c29122c35f9b71",
+      "docs/contest/2026-11-14/checkin/evidence/pytest-retry.xml": "72027a0d7582e54fd209a9b89008c62868689e10e494193cffcc96d45ad4ae7c",
+      "docs/contest/2026-11-14/checkin/evidence/verification.json": "939e090e2b8efadfea721fe42f8fb86a79bb063596e2dce9710c19d298401d4c"
+    },
+    "historical_workspace_hash_manifest": "candidate-files.json",
+    "line_endings": "Historical hashes describe original workspace bytes; Git normalizes text to LF in commits."
+  },
+  "additional_tests": {
+    "initial": "2 passed, 3 deselected, 3.09s",
+    "affected_mapping_recheck": "1 passed, 4 deselected, 2.13s",
+    "unique_passed": 2,
+    "overlap": 1,
+    "total_unique_across_previous_and_followup": 122,
+    "reason_for_one_recheck": "Review of first passing mapping test found missing mechanical fingerprint/source period; linked original metadata, strengthened assertion against INVALID_INPUT; reran mapping only."
+  },
+  "ruff": "tests/be/test_question_bridge.py PASS, initial and after the one mapping correction",
+  "code_diff": "followup-tests.patch",
+  "code_diff_sha256": "8008b754111151b33b8ebe0a9fb97f219cd426996857f85723a233988421acb4",
+  "scoped_contract_first": "Canonical CheckinView models/OpenAPI unchanged in followup; FE semantics/examples expanded.",
+  "scoped_security_review": "No runtime/auth/schema changes in followup. Test-only MOCK dependency overrides; fresh temporary SQLite; no provider call; source scope/version/state/units retained.",
+  "future_month": "Actual API 422 FUTURE_MONTH; no December checkin, no virtual-clock adopted-plan execution; no production clock change.",
+  "not_executed": [
+    "old120 repeat",
+    "new PostgreSQL run",
+    "FE edits/type/lint/build/E2E",
+    "B complete calculation/adoption/checkin",
+    "remote authentication",
+    "operating DB or migration",
+    "push/merge/deploy",
+    "paid calls"
+  ]
+}

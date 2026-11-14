@@ -1,0 +1,8 @@
+docs/contest/2026-11-14/ai/evidence/dev-initial.txt:935: trailing whitespace.
++  
+docs/contest/2026-11-14/ai/evidence/dev-initial.txt:945: trailing whitespace.
++  
+docs/contest/2026-11-14/ai/evidence/dev-retry.txt:9: trailing whitespace.
++E     
+docs/contest/2026-11-14/ai/evidence/dev-retry.xml:6: trailing whitespace.
++E     

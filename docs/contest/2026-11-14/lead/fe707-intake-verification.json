@@ -1,0 +1,60 @@
+{
+  "state": "PASS",
+  "scope": "FE707_DELTA_SOURCE_BYTES_AND_CHANGED_LEAD_DOCUMENTS_ONLY",
+  "issues": [],
+  "source_files": [
+    {
+      "path": "docs/contest/2026-11-14/results/HANDOFF.md",
+      "exact_source_bytes": true
+    },
+    {
+      "path": "frontend/e2e/dion-proposal.spec.ts",
+      "exact_source_bytes": true
+    },
+    {
+      "path": "frontend/e2e/dion-verify.spec.ts",
+      "exact_source_bytes": true
+    },
+    {
+      "path": "frontend/src/components/dion/final-portfolio.tsx",
+      "exact_source_bytes": true
+    },
+    {
+      "path": "frontend/src/components/dion/financial-proposal.tsx",
+      "exact_source_bytes": true
+    },
+    {
+      "path": "frontend/src/components/dion/plan-checkin.tsx",
+      "exact_source_bytes": true
+    },
+    {
+      "path": "frontend/src/components/dion/results.tsx",
+      "exact_source_bytes": true
+    }
+  ],
+  "raw_backups_unchanged": true,
+  "protected_paths_unchanged": true,
+  "new_json_files_parsed": 3,
+  "added_lead_links_checked": 67,
+  "whitespace_returncode": 0,
+  "real_provider_e2e": {
+    "state": "PASS",
+    "scenarios": 2,
+    "runs": 1,
+    "retries": 0,
+    "same_common_B_case": false,
+    "identity_mocked": true,
+    "response_overrides": false
+  },
+  "old_owner_tests_and_build_not_repeated": true,
+  "previous_static_report_preserved": "product-integration-verification.json",
+  "servers": "OWN_3337_8337_STOPPED_EXISTING_3000_8001_8202_PRESERVED",
+  "remaining": [
+    "COMMON_B_CONFIRMATIONS_AND_COMPLETE_LIFECYCLE",
+    "AI_2_BE_TEST_LOCK_BASELINE_MISMATCHES",
+    "FE_BALANCE_VS_MONTHLY_FLOW_BASIS_COPY"
+  ],
+  "push": false,
+  "remote_merge": false,
+  "deploy": false
+}

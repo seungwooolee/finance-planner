@@ -12,6 +12,7 @@ Rules (user-approved 2026-11-14, see docs/integration/2026-11-14-proposal-refere
 - Projected sums are floored to the won; required monthly payments are ceiled to the won.
 - The first plan month is held constant; no raises, no taxes, no fees.
 """
+from datetime import date
 from decimal import ROUND_CEILING, ROUND_FLOOR, Decimal, localcontext
 
 VERSION = "DION-PROPOSAL-REFERENCE-0.1"
@@ -74,6 +75,29 @@ def _points(monthly):
     return rows
 
 
+def _monthly_goal_calendar(row, context):
+    """Do not reinterpret dated contribution counts as elapsed months.
+
+    Legacy reference-only callers have no calendar. Actual engine rows do, and
+    must match the existing equal-monthly, single-final-payment model.
+    """
+    if "funding_schedule" not in row:
+        return True
+    try:
+        start = date.fromisoformat(context["evaluation_on"])
+        due = date.fromisoformat(row["due_on"])
+        start_month = start.year * 12 + start.month
+        end_month = due.year * 12 + due.month
+        months = [date.fromisoformat(r["on"]) for r in row["funding_schedule"]]
+        actual = [d.year * 12 + d.month for d in months]
+        payments = row["payments"]
+        return (actual == list(range(start_month + 1, end_month + 1))
+                and len(actual) == row["contribution_count"]
+                and len(payments) == 1 and payments[0]["on"] == row["due_on"])
+    except (KeyError, TypeError, ValueError):
+        return False
+
+
 def build(result):
     with localcontext() as ctx:
         ctx.prec = 50
@@ -99,12 +123,16 @@ def _build(result):
             first = first or row
             plans.append({"strategy_id": candidate["strategy_id"], "period": row.get("period"),
                           "monthly_new_investment_krw": _won(monthly), "points": _points(monthly)})
-    goals = []
+    goals, goal_omissions = [], []
     if goals_out.get("calc_state") == "CALCULATED":
         for row in goals_out.get("rows", []):
             target, prepared = _int(row.get("target_krw")), _int(row.get("prepared_krw"))
             months, current = row.get("contribution_count"), _int(row.get("level_contribution_krw"))
             if row.get("calc_state") != "CALCULATED" or None in (target, prepared, current) or not isinstance(months, int):
+                continue
+            if not _monthly_goal_calendar(row, result.get("context", {})):
+                goal_omissions.append({"goal_id": row.get("goal_id"),
+                                       "reason": "MONTHLY_REFERENCE_CALENDAR_UNSUPPORTED"})
                 continue
             invest = (_won(required_monthly(target, prepared, RATES[1], months), ROUND_CEILING)
                       if months >= MIN_MONTHS_FOR_RETURN else None)
@@ -123,7 +151,11 @@ def _build(result):
         expense = {"living_krw": _won(living), "cut_rate": str(EXPENSE_CUT),
                    "monthly_extra_krw": _won(extra), "points": _points(Decimal(_won(extra)))}
     state = "CALCULATED" if plans or goals else "NOT_AVAILABLE"
-    return {**base, "state": state, "plans": plans, "goals": goals, "expense_adjustment": expense}
+    if goal_omissions:
+        base["limitations"] = [*LIMITATIONS,
+                               "매월 1회 납입·만기 1회 지출 조건과 다른 목표는 월 납입 참고 비교를 보류했어요. 원래 목표 계산은 유지돼요."]
+    return {**base, "state": state, "plans": plans, "goals": goals, "goal_omissions": goal_omissions,
+            "expense_adjustment": expense}
 
 
 def attach(result):

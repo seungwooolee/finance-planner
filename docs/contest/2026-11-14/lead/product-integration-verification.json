@@ -1,0 +1,44 @@
+{
+  "state": "PASS",
+  "issues": [],
+  "scope": "STATIC_INTAKE_AND_OWNER_EVIDENCE_REVIEW_PLUS_ONE_PREVIOUSLY_EXECUTED_COMBINED_API_PROBE",
+  "changed_files": 183,
+  "json_parse_count": 101,
+  "editable_markdown_added_links": 55,
+  "ownership_and_protected_paths": "PASS",
+  "evidence_checks": {
+    "BE_original_120": true,
+    "pytest-b-followup.xml": true,
+    "pytest-b-mapping-recheck.xml": true,
+    "AI_R1_followup_one_pass": true,
+    "AI_lock_bytes_unchanged": true,
+    "AI_active_test_not_included": true,
+    "B_complete_adoption_not_invented": true,
+    "B_attempts_are_partial_and_unadopted": true
+  },
+  "whitespace": {
+    "returncode": 0,
+    "scope": "new FE/BE bridge test + editable lead/status/log; immutable source evidence and prior-known EOF not rechecked"
+  },
+  "integration_probe": {
+    "state": "PASS",
+    "runs": 1,
+    "assertions": 24,
+    "not_AI_evaluations": true,
+    "common_B_case": false,
+    "subsequent_intake_runtime_changed": false
+  },
+  "owner_tests_not_repeated": true,
+  "AI_baseline_mismatches": 2,
+  "release_state": "NOT_READY_FE_CONTRACTS_B_CONFIRMATIONS_AI_BASELINE",
+  "submission": "DEFERRED_BY_USER_AFTER_PRODUCT_COMPLETE",
+  "full_core": "NOT_RUN",
+  "build": "NOT_RUN",
+  "e2e": "NOT_RUN",
+  "operating_DB": "NOT_ACCESSED",
+  "paid_calls": 0,
+  "servers": "NOT_TOUCHED",
+  "push": false,
+  "remote_merge": false,
+  "deployment": false
+}
