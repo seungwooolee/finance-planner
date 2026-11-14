@@ -28,36 +28,6 @@ function fieldText(f: Field | undefined) {
   return String(f.raw_value);
 }
 
-export function ReviewConfirmation({flow, basis, tab, visited, blocked, onTab, onPrepared}: {
-  flow: ReviewFlow; basis: ReviewBasis | null; tab: number; visited: number[]; blocked: boolean;
-  onTab: (n: number) => void; onPrepared: (review: PortfolioReview) => void;
-}) {
-  const review = flow.review;
-  const matched = sameReviewBasis(review?.basis, basis);
-  const confirmed = matched ? review!.confirmed_steps : [];
-  async function confirm() {
-    if (blocked || !basis || tab > 3) return;
-    const current = review?.basis === null && review.current_run_id === basis.run_id
-      ? await flow.mutate("selection", {basis}) : matched && review?.is_current && !review.final ? review : await flow.create(basis);
-    if (!current) return;
-    const saved = await flow.mutate("confirm-steps", {steps: [tab + 1], confirmed: true}, current);
-    if (saved) onPrepared(saved);
-  }
-  return <section className="d-card d-review-confirm" aria-label="상담 전 결과 확인">
-    <h2>살펴본 화면과 확인한 내용을 구분해요</h2>
-    <ol className="d-review-steps">{reviewStepNames.map((name, i) => <li key={name} data-confirmed={confirmed.includes(i + 1)}>
-      <button type="button" className="d-text-button" onClick={() => onTab(i)}>{i + 1}. {name}</button>
-      <span>{confirmed.includes(i + 1) ? "내용 확인됨" : visited.includes(i) ? "방문함 · 확인 전" : "아직 열지 않음"}</span>
-    </li>)}</ol>
-    <p>재무안과 투자구성은 상담용 검토안이에요. 이 확인만으로 최종 생성하거나 계획을 채택하지 않아요.</p>
-    {tab < 4 && <button type="button" className="d-secondary" disabled={blocked || !basis || !flow.loaded || flow.busy || confirmed.includes(tab + 1)} onClick={() => void confirm()}>
-      {confirmed.includes(tab + 1) ? `${tab + 1}단계 확인됨` : `${tab + 1}단계 내용을 확인했어요`}
-    </button>}
-    {!basis && <p className="d-inline-note">로그인해 결과를 저장하고 3번의 투자구성 검토안을 반영하면 확인 내용을 보관할 수 있어요. 기본 결과는 계속 볼 수 있어요.</p>}
-    {flow.error && <div role="alert"><p>{flow.error}</p><button type="button" className="d-secondary" disabled={flow.busy} onClick={flow.reload}>검토 상태 다시 불러오기</button></div>}
-  </section>;
-}
-
 function ChangeEditor({doc, flow, disabled, session}: {doc: Document; flow: ReviewFlow; disabled: boolean; session: AgentSession | null}) {
   const [draft, setDraft] = useState(() => clone(doc));
   const [id, setId] = useState("F03");
@@ -126,8 +96,8 @@ function Recalculation({review}: {review: PortfolioReview}) {
   </details>;
 }
 
-export function PortfolioReviewFlow({flow, basis, view, token, caseId, stale, doc, onTab, onOpenRun, onReadRun, onPrepared, onAdopt}: {
-  flow: ReviewFlow; basis: ReviewBasis | null; view: ViewResult; token: string | null; caseId: string; stale: boolean;
+export function PortfolioReviewFlow({visited,selectionBlocked=false,flow, basis, view, token, caseId, stale, doc, onTab, onOpenRun, onReadRun, onPrepared, onAdopt}: {
+  visited: number[]; selectionBlocked?: boolean; flow: ReviewFlow; basis: ReviewBasis | null; view: ViewResult; token: string | null; caseId: string; stale: boolean;
   doc: Document | null; onTab: (n: number) => void; onOpenRun: (id: string) => Promise<void>; onReadRun: (id: string) => Promise<void>;
   onPrepared: (r: PortfolioReview) => void; onAdopt: () => void;
 }) {
@@ -140,7 +110,7 @@ export function PortfolioReviewFlow({flow, basis, view, token, caseId, stale, do
   useEffect(() => {if (review?.final || review?.proposal?.state === "PROPOSED") heading.current?.focus({preventScroll: true});}, [review?.final, review?.proposal]);
   const matched = sameReviewBasis(review?.basis, basis);
   const blocked = stale || !review?.is_current || !matched || flow.busy || !flow.loaded;
-  const stepsDone = review?.confirmed_steps.length === 4;
+  const stepsDone = matched && review?.is_current === true && review.confirmed_steps.length === 4;
   const completed = review?.consultation?.completed_session_version !== null && !!review?.consultation;
   async function onSession(value: AgentSession) {
     setSession(value);
@@ -148,20 +118,32 @@ export function PortfolioReviewFlow({flow, basis, view, token, caseId, stale, do
     const updated = await flow.mutate("consultation", {session_id: value.session_id, expected_session_version: value.session_version});
     if (updated) onPrepared(updated);
   }
+  const missingVisits = reviewStepNames.map((name,i)=>({name,i})).filter(({i})=>!visited.includes(i));
+  async function confirmForConsultation() {
+    if (!basis || stale || selectionBlocked || flow.busy || !flow.loaded || missingVisits.length) return;
+    const current = review?.basis === null && review.current_run_id === basis.run_id
+      ? await flow.mutate("selection", {basis}) : matched && review?.is_current && !review.final ? review : await flow.create(basis);
+    if (!current) return;
+    const saved = await flow.mutate("confirm-steps", {steps:[1,2,3,4],confirmed:true}, current);
+    if (saved) onPrepared(saved);
+  }
   const proposal = review?.proposal;
   return <section id="dion-portfolio-review" className="d-card d-portfolio-review" aria-label="DION 상담과 최종 포트폴리오" aria-busy={flow.busy}>
     <span className="d-eyebrow">상담 → 변경 검토 → 최종 생성 → 별도 채택</span>
     <h2 tabIndex={-1} ref={heading}>DION과 함께 검토안을 완성해요</h2>
     <p>상담용 검토안: <strong>{planName(basis?.strategy_id ?? "")} · {basis ? portfolioNames[basis.portfolio_type] : "구성 선택 전"}</strong></p>
     <p>참조 결과: 입력 {view.serverVersion ?? "저장 전"}번째 버전 · {stale ? "이전 입력 기준" : "현재 화면의 계산"}. 대화와 제안만으로 답변·계획이 바뀌지 않아요.</p>
-    {!review && <p className="d-note">1~4단계에서 현재 내용을 확인해 주세요. 로그인·결과 저장·투자구성 선택이 필요해요.</p>}
+    {!stepsDone&&<div className="d-consultation-entry">
+      {missingVisits.length>0&&<div className="d-toolbar">{missingVisits.map(({name,i})=><button type="button" className="d-text-button" key={name} onClick={()=>onTab(i)}>{name} 살펴보기 →</button>)}</div>}
+      <button type="button" className="d-primary" disabled={!basis||stale||selectionBlocked||flow.busy||!flow.loaded||missingVisits.length>0} onClick={()=>void confirmForConsultation()}>검토 내용 확인하고 상담 준비</button>
+      {!basis&&<p className="d-inline-note">저장한 결과와 선택한 투자구성이 있어야 상담을 이어갈 수 있어요.</p>}
+    </div>}
     {review && <>
       <p role="status">{review.final ? "서버에 최종 포트폴리오가 생성됐어요. 계획은 아직 자동 채택되지 않았어요." : review.incomplete_reasons.map(r => reviewReasons[r] ?? "기준과 지원 상태를 확인해 주세요.").join(" ") || "최종 생성을 요청할 수 있어요."}</p>
       <p className="d-note">{review.opening_text}</p>
       {(!matched || stale) && <p className="d-warning">기준 결과나 선택이 달라졌어요. 이전 기록을 현재안의 완료 상태로 사용하지 않아요.</p>}
       {review.basis === null && <button type="button" className="d-primary" disabled={!basis || stale || flow.busy} onClick={() => basis && void flow.mutate("selection", {basis})}>새 계산의 선택으로 비교 준비</button>}
       {!matched && review.basis !== null && basis && <button type="button" className="d-secondary" disabled={stale || flow.busy} onClick={() => void flow.create(basis)}>현재 선택으로 새 검토 시작</button>}
-      {!stepsDone && <div className="d-toolbar">{reviewStepNames.map((name, i) => !review.confirmed_steps.includes(i + 1) && <button key={name} type="button" className="d-secondary" onClick={() => onTab(i)}>{i + 1}. {name} 확인하러 가기</button>)}</div>}
       {stepsDone && !review.final && !review.recalculation && token && <AgentConsultation
         key={`${review.review_id}:${token}`} view={view} token={token} selectedCaseId={caseId} editVersion={view.serverVersion ?? 0} stale={stale}
         onExplain={() => onTab(0)} finalization={{sessionId: review.consultation?.session_id, blocked: blocked || completed, onSession}}/>}

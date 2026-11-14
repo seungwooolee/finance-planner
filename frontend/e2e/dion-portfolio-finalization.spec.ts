@@ -9,14 +9,12 @@ async function select(page: Page) {
   await expect(page.locator(".d-tabs button").nth(3)).toHaveAttribute("aria-current", "page");
 }
 async function confirmSteps(page: Page) {
-  for (let i = 0; i < 4; i++) {
-    await page.locator(".d-tabs button").nth(i).click();
-    const button = page.getByRole("button", {name: `${i + 1}단계 내용을 확인했어요`, exact: true});
-    await button.click();
-    await expect(page.getByRole("button", {name: `${i + 1}단계 확인됨`, exact: true})).toBeDisabled();
-  }
+  for (let i = 0; i < 4; i++) await page.locator(".d-tabs button").nth(i).click();
   await page.getByRole("button", {name: "DION과 상담하기", exact: true}).click();
   await expect(panel(page).getByRole("heading", {name: "DION과 함께 검토안을 완성해요"})).toBeFocused();
+  const confirmed=page.waitForResponse(r=>r.url().endsWith("/confirm-steps")&&r.request().method()==="POST");
+  await panel(page).getByRole("button", {name:"검토 내용 확인하고 상담 준비",exact:true}).click();
+  expect((await confirmed).ok()).toBeTruthy();
 }
 async function consult(page: Page) {
   const p = panel(page);
@@ -37,7 +35,7 @@ test("no-change consultation, failed save/retry, final server artifact, resume a
   const before = await (await request.get(`${base}/plan`, {headers})).json();
   await page.getByRole("button", {name:new RegExp(first.run_id)}).click();
   await select(page);
-  await expect(page.getByRole("region", {name:"상담 전 결과 확인"})).toContainText("방문함 · 확인 전");
+  await expect(page.getByRole("region", {name:"상담 전 결과 확인"})).toHaveCount(0);
   await confirmSteps(page); await consult(page);
   let fail = true;
   const keys: string[] = [];
@@ -102,13 +100,14 @@ test("late review response cannot overwrite edited inputs or mark the old result
   test.setTimeout(120_000);
   const {first} = await prepare(page,request,false,false,false,scenario.document);
   await page.getByRole("button",{name:new RegExp(first.run_id)}).click();await select(page);
-  await page.locator(".d-tabs button").nth(0).click();
+  for(let i=0;i<4;i++)await page.locator(".d-tabs button").nth(i).click();
+  await page.getByRole("button",{name:"DION과 상담하기",exact:true}).click();
   let release!:()=>void;
   const held = new Promise<void>(resolve=>release=resolve);
   let entered!:()=>void;
   const ready = new Promise<void>(resolve=>entered=resolve);
   await page.route("**/portfolio-reviews/*/confirm-steps",async route=>{const response=await route.fetch();entered();await held;await route.fulfill({response});});
-  await page.getByRole("button",{name:"1단계 내용을 확인했어요",exact:true}).click();await ready;
+  await panel(page).getByRole("button",{name:"검토 내용 확인하고 상담 준비",exact:true}).click();await ready;
   await page.getByRole("button",{name:"입력 내용 수정 ↗",exact:true}).click();
   const amount = page.getByLabel("한 달 평균 세후 소득은 얼마인가요?",{exact:true});
   await amount.fill("0");release();

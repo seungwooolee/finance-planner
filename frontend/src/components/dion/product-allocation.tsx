@@ -10,6 +10,7 @@ import { PortfolioEvidence, type EvidenceAccess } from "./portfolio-evidence";
 import { sourceHref } from "./scheme-evidence";
 import { Donut, DonutLegend } from "./donut";
 import { ProductCandidates } from "./product-candidates";
+import { ProductComparison } from "./product-comparison";
 
 export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="", evidenceAccess, stale=false }: { evidenceAccess?: EvidenceAccess; stale?: boolean; review: Record<string, Json>; selectedPlan?: string; evaluationOn?: string; onEdit: (id: string) => void }) {
   const empty=productEmptyCause(review,evaluationOn);
@@ -79,7 +80,7 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
         </div>}
       </div>;
     })}
-    {defaults.length+alternatives.length>0&&<article className="d-card"><h2>후보별 비용·유동성·환율·위험 비교</h2><p>같은 저장 결과의 기록을 나란히 보여줘요. 미확인 조건을 같다고 보거나 더 유리한 상품으로 단정하지 않아요.</p><div className="d-table-wrap"><table><thead><tr><th>검토 후보</th><th>연간 총보수·비용</th><th>매도 후 현금화</th><th>환율 영향</th><th>공시 위험등급</th></tr></thead><tbody>{[...defaults,...alternatives].map(p=>{const d=object(p.disclosure);return <tr key={String(p.code)}><th>{textValue(p.name)}<small>{p.allocation_role==="DEFAULT_SLOT"?"기본 배분 후보":"비교 대안"} · {p.state==="ELIGIBLE_FOR_REVIEW"?"검토 조건 통과":"제외·보류"}</small></th><td>{textValue(d.annual_total_expense_percent)?`${textValue(d.annual_total_expense_percent)}%`:"미확인"}<small>{textValue(object(d.source_as_of).annual_total_expense_percent)||"기준일 미확인"}</small></td><td>{d.cash_conversion==="KRX_T_PLUS_2_BUSINESS_DAYS"?"매도 후 2영업일 결제 · 거래 가능 여부 별도 확인":"미확인"}</td><td>{d.fx_exposed===true?"환노출":d.fx_exposed===false?"직접 환노출 없음":"미확인"}</td><td>{typeof d.risk_grade==="number"?`${d.risk_grade}등급`:"미확인"}</td></tr>;})}</tbody></table></div><p className="d-inline-note">공시 시점이 다를 수 있어요. 실제 매매 비용·세금·수익률 비교나 자동 대체·재배분은 수행하지 않아요.</p></article>}
+    <ProductComparison products={[...defaults,...alternatives]}/>
     {alternatives.length>0&&<details className="d-card d-fold"><summary>비교 대안 상품 {alternatives.length}개 · 자동 배분 없음</summary><p>기본 상품이 제외돼도 비교 대안으로 자동 대체하거나 추가 배분하지 않아요.</p>{alternatives.map(evidence)}</details>}
     {products.length>0&&<details className="d-card d-fold"><summary>조사 상품 {products.length}개 · 검토 상태와 공식 출처</summary><p>기록된 공시값과 기준일이에요. 보류·제외 상품의 과거 값은 현재 검토 근거로 쓰지 않아요. 세금·증권사 수수료·호가 차이를 포함한 실제 총비용은 계산하지 않아요.</p><div className="d-table-wrap"><table><thead><tr><th>상품·코드</th><th>기록 위험등급</th><th>기록 연간 비용</th><th>배분 검토 결과</th><th>근거</th></tr></thead><tbody>{products.map(product=>{
       const disclosure=object(product.disclosure),dates=object(disclosure.source_as_of),urls=object(disclosure.source_urls);
