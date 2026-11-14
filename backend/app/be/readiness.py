@@ -114,6 +114,17 @@ def preflight(*, database=False):
         checks["authentication"] = "CONFIGURED_NOT_PROBED"
     except HTTPException:
         checks["authentication"] = "AUTH_CONFIG_MISSING"
+    # Codes only: which explainer answers and whether R2-b has registered material.
+    checks["explanation_provider"] = os.getenv("DION_EXPLANATION_PROVIDER", "mock").upper()
+    checks["consultation_model"] = "ONEPORT" if os.getenv("DION_R2_ONEPORT_PROPOSAL") == "1" else "RULES_ONLY"
+    checks["rag_selector"] = "ONEPORT" if os.getenv("DION_RAG_ONEPORT") == "1" else "RULES_ONLY"
+    try:
+        from ..consultation.rag_registry import RegisteredCorpus
+        from .consultation_api import rag_registry_path
+        corpus = RegisteredCorpus(rag_registry_path())()
+        checks["rag"] = f"CORPUS_READY_{len(corpus.sources)}" if corpus.sources else "CORPUS_EMPTY"
+    except (OSError, ValueError):
+        checks["rag"] = "CORPUS_INVALID"
     try:
         provider = os.getenv("DION_EXPLANATION_PROVIDER", "mock")
         if provider not in {"mock", "deterministic", "oneport"}:
@@ -129,7 +140,9 @@ def preflight(*, database=False):
         checks["explanation"] = "ONEPORT_CONFIG_INVALID"
     except PocError:
         checks["explanation"] = "ONEPORT_LEDGER_UNAVAILABLE"
-    ready = all(v in {"READY", "CONFIGURED_NOT_PROBED"} for v in checks.values())
+    # Informational codes (provider, RAG) never change readiness.
+    gates = ("database", "authentication", "explanation")
+    ready = all(checks.get(k) in {"READY", "CONFIGURED_NOT_PROBED"} for k in gates if k in checks)
     return {"status": "ready" if ready else "not_ready", "checks": checks,
             "database_probed": database, "auth_network_called": False, "provider_network_called": False,
             "details": details}

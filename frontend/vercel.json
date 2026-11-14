@@ -9,7 +9,9 @@
       "codex/oneport-ledger-integration-20261114": false,
       "feat/final-portfolio-20261114": false,
       "feat/beta-gate-20261114": false,
-      "feat/result-stitch-20261114": false
+      "feat/result-stitch-20261114": false,
+      "dion/proposal-20261114": false,
+      "codex/contest-results-20261114": false
     }
   }
 }

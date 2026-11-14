@@ -329,7 +329,7 @@ test('API failure and cross-run response cannot replace existing results',async(
   await page.getByRole('button',{name:'이 결과 설명해 줘',exact:true}).click();
   const panel=page.getByRole('complementary',{name:'결과 해설'});
   await expect(panel.getByRole('alert')).toContainText('해설을 불러오지 못했어요');
-  await expect(panel).toContainText('기본 안내');
+  await expect(panel).toContainText('결과를 읽는 방법');
   await page.unroute(explanationPath);
   await page.route(explanationPath,async route=>{
     const actual=await route.fetch({url:`${harness}${new URL(route.request().url()).pathname}`});
@@ -347,7 +347,7 @@ test('API failure and cross-run response cannot replace existing results',async(
   });
   await panel.getByRole('button',{name:'해설 다시 확인'}).click();
   await expect(panel.getByRole('alert')).toContainText('기준이 달라');
-  await expect(panel).toContainText('기본 안내');
+  await expect(panel).toContainText('결과를 읽는 방법');
   await expect(page.locator('.d-metric').filter({hasText:'저축·투자까지 반영하고 남는 돈'})).toContainText('90');
   await page.unroute(explanationPath);
   let calls=0;
@@ -386,7 +386,7 @@ test('browser deadline restores basic guidance, never hides result',async({page,
   await page.route(explanationPath,async route=>{await new Promise(resolve=>setTimeout(resolve,21_000));await route.abort().catch(()=>{});});
   await page.getByRole('button',{name:'이 결과 설명해 줘',exact:true}).click();
   const panel=page.getByRole('complementary',{name:'결과 해설'});
-  await expect(panel).toContainText('기본 안내');
+  await expect(panel).toContainText('결과를 읽는 방법');
   await expect(panel.getByRole('alert')).toContainText('응답이 늦어',{timeout:25_000});
   await expect(page.locator('.d-metric').filter({hasText:'저축·투자까지 반영하고 남는 돈'})).toContainText('90');
 });

@@ -31,21 +31,34 @@ ALLOWED = {
 }
 
 
+WEAK_RESULT_WORDS = ("왜", "얼마나", "적당", "괜찮")
+RULES = (
+    ("EXPLAIN_RESULT", ("결과설명", "결과해설", "결과알려", "설명해", "무슨뜻", "무슨의미", "의미가", "이해가안", "이해안",
+                        "어떻게나온", "근거가", "이렇게나온") + WEAK_RESULT_WORDS),
+    ("EXPLAIN_SCHEME", ("절세", "월세", "연금", "irp", "isa", "공제", "혼인", "증여", "청약", "비과세")),
+    ("CHECK_CONDITIONS", ("확인필요", "추가질문", "정보부족", "조건확인", "답변확인", "입력부족", "틀렸", "잘못입력",
+                          "잘못넣", "다시입력", "빠졌", "누락")),
+    ("PROPOSE_CHANGE", ("늘리면", "줄이면", "올리면", "낮추면", "오르면", "내리면", "늦추면", "앞당기면", "바꾸면",
+                        "변경", "재계산", "가정하면", "가정해", "라고가정", "가상", "목표역산", "실적재검토")),
+)
+# Personal product/insurance/debt-order advice is outside this consultation; say so instead of asking to clarify.
+ADVICE_ONLY = ("etf추천", "펀드추천", "종목추천", "상품추천", "추천해줘", "추천해주", "보험", "뭐사", "사야해", "갚는게나아",
+               "먼저갚", "어디에투자")
+
+
 def classify(message, selected=None):
     if selected:
         return {"intent": selected, "reason_code": "EXPLICIT_SELECTION", "candidates": [selected]}
     text = "".join(message.lower().split())
     if any(s in text for s in ("sql", "systemprompt", "시스템프롬프트", "키알려", "송금", "매수", "자동납입", "주식추천", "ignoreprevious")):
         return {"intent": "UNSUPPORTED", "reason_code": "OUTSIDE_ALLOWLIST", "candidates": []}
-    found = []
-    for intent, words in (
-        ("EXPLAIN_RESULT", ("왜", "결과설명", "결과해설", "결과알려")),
-        ("EXPLAIN_SCHEME", ("절세", "월세", "연금", "irp", "isa", "공제", "혼인", "증여")),
-        ("CHECK_CONDITIONS", ("확인필요", "추가질문", "정보부족", "조건확인", "답변확인", "입력부족")),
-        ("PROPOSE_CHANGE", ("늘리면", "줄이면", "변경", "재계산", "가정", "가상", "목표역산", "실적재검토")),
-    ):
-        if any(w in text for w in words):
-            found.append(intent)
+    if any(s in text for s in ADVICE_ONLY):
+        return {"intent": "UNSUPPORTED", "reason_code": "PERSONAL_PRODUCT_ADVICE", "candidates": []}
+    found = [intent for intent, words in RULES if any(w in text for w in words)]
+    # "왜/얼마나" only signals a result question when no more specific intent is present.
+    if (len(found) > 1 and "EXPLAIN_RESULT" in found
+            and not any(w in text for w in RULES[0][1] if w not in WEAK_RESULT_WORDS)):
+        found.remove("EXPLAIN_RESULT")
     if len(found) != 1:
         return {"intent": "CLARIFY", "reason_code": "MULTIPLE_INTENTS" if found else "AMBIGUOUS_INTENT", "candidates": found}
     return {"intent": found[0], "reason_code": "RULE_MATCH", "candidates": found}
@@ -58,5 +71,5 @@ def guidance(intent):
         "EXPLAIN_SCHEME": "확인할 제도와 귀속연도를 선택해 주세요. 지금은 상세 세무정보를 수집하지 않아요.",
         "PROPOSE_CHANGE": "가상 조건을 별도로 기록해요. 월 현황에서는 소득·월 지출 총액을 한 항목씩 확인한 뒤 비교할 수 있어요. 진단에는 반영하지 않아요.",
         "CLARIFY": "어떤 도움을 먼저 받을지 선택해 주세요. 모호한 요청으로 값을 변경하지 않아요.",
-        "UNSUPPORTED": "현재 지원하는 작업은 결과 확인, 필요한 입력 확인, 상담 사실·가상 조건의 기록이에요.",
+        "UNSUPPORTED": "현재 지원하는 작업은 결과 확인, 필요한 입력 확인, 상담 사실·가상 조건의 기록이에요. 개별 상품 추천·보험·상환 순서처럼 개인별 판단이 필요한 내용은 답하지 않아요. 상품은 결과의 ‘상품 정보’에서 검토용 후보와 사유를 확인해 주세요.",
     }[intent]

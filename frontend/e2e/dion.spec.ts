@@ -32,7 +32,7 @@ test('DION actual input, engine oracles, raw spelling, five result views and edi
   await page.evaluate(()=>window.scrollTo(0,0));
   await page.evaluate(()=>window.scrollTo(0,0));
   await page.screenshot({path:info.outputPath('dion-feedback-desktop-overview.png'),fullPage:true});
-  await page.getByRole('button',{name:/생활 안정·투자 확대/}).click();
+  await page.getByRole('button',{name:/재무안 선택/}).click();
   await expect(page.locator('.d-candidate')).toHaveCount(2);
   await expect(page.locator('.d-candidate').first()).toContainText('30');
   await expect(page.locator('.d-candidate').last()).toContainText('48');
@@ -51,7 +51,7 @@ test('DION actual input, engine oracles, raw spelling, five result views and edi
   const updated=await calculate(page);
   expect(updated.body.result.results['OUT-03'].after_existing_contributions_krw).toBe('1100000');
   expect(updated.body.result.results['OUT-05'].calc_state).toBe('NEEDS_INPUT');
-  await page.getByRole('button',{name:/생활 안정·투자 확대/}).click();
+  await page.getByRole('button',{name:/재무안 선택/}).click();
   await expect(page.locator('.d-candidate')).toHaveCount(0);
 });
 
@@ -113,7 +113,7 @@ test('DION expense and goal edits change real engine results; unsupported proper
   await calculate(page);
   await expect(page.locator('.d-metric').filter({hasText:'전체 자산'})).toContainText('확인 대기');
   await expect(page.locator('.d-metric').filter({hasText:'저축·투자까지 반영하고 남는 돈'})).toContainText('80');
-  await page.getByRole('button',{name:/생활 안정·투자 확대/}).click();
+  await page.getByRole('button',{name:/재무안 선택/}).click();
   await expect(page.locator('.d-candidate')).toHaveCount(0);
 });
 
@@ -183,7 +183,7 @@ test('DION one-month income and expense period mapping preserves raw money and h
   // The previous future-income confirmation still refers to October; it must not be silently rewritten.
   expect(r.body.result.results['OUT-05'].calc_state).toBe('INVALID_INPUT');
   expect(r.body.result.adapter.issues).toEqual(expect.arrayContaining([expect.objectContaining({question_id:'NEW-02',reason:'future income assumption references a different historical period'})]));
-  await page.getByRole('button',{name:/생활 안정·투자 확대/}).click();await expect(page.locator('.d-candidate')).toHaveCount(0);
+  await page.getByRole('button',{name:/재무안 선택/}).click();await expect(page.locator('.d-candidate')).toHaveCount(0);
 });
 
 test('DION failed recalculation preserves input and old result; late responses cannot replace new results',async({page})=>{
@@ -228,7 +228,7 @@ test('DION direct deep entry and mobile input/result remain within viewport',asy
   expect((await scenarioResponse).ok()).toBeTruthy();
   await expect(page.getByRole('region',{name:'계산 결과'})).toBeVisible();
   await page.getByRole('button',{name:'정밀진단',exact:true}).click();await calculate(page);
-  await page.getByRole('button',{name:/두 방식의 자산 변화/}).click();
+  await page.getByRole('button',{name:/재무안 비교/}).click();
   await expect(page.locator('.d-candidate')).toHaveCount(2);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
   await page.evaluate(()=>window.scrollTo(0,0));
