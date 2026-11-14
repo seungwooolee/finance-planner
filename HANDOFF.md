@@ -1,3 +1,10 @@
+# 로그인 복구·초기 계산 연결 인계 — 2026-11-15
+
+`codex/login-calculation-20261115`: [계약·검사·운영 미검증](docs/integration/2026-11-15-login-calculation.md).
+로그인 상태 확인의 일시 실패로 버튼이 잠기는 경로를 복구하고 첫 화면에서 서버 연결을 미리 시작한다.
+타입·변경 린트·단위14건·Edge 고유5건 통과. 최초 E2E의 fixture 2건 실패는 1회 보정·관련 재검사로 통과.
+BE/금액/원응답/DB 계약 변경 없음. 운영 30초 대기의 실제 개선율은 미검증이며 병합·배포하지 않는다.
+
 # 결과 화면 정리 인계 — 2026-11-15
 
 `codex/result-review-polish-20261115`: [변경·계약·실제 검사·미실행](docs/integration/2026-11-15-result-review-polish-HANDOFF.md).
