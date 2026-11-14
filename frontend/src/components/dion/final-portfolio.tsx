@@ -26,12 +26,21 @@ const INCOME: [string, string, string, boolean][] = [
   ["additional_cash_krw", "추가로 남긴 현금", "#d9dbe8", true],
 ];
 
-export function ResultTiles({ row, month }: { row?: Record<string, Json>; month?: Record<string, Json> }) {
-  return <div className="d-kpis d-kpis-4">
-    <article className="d-kpi"><span>이번 달 신규 투자 후보금</span><strong>{formatKrw(row?.new_investment_krw)}</strong></article>
-    <article className="d-kpi"><span>상품 배분액</span><strong className="d-accent">{formatKrw(month?.allocated_total_krw)}</strong></article>
-    <article className="d-kpi"><span>목표 적립</span><strong>{formatKrw(row?.goal_deposits_krw)}</strong></article>
-    <article className="d-kpi d-kpi-soft"><span>월 소득</span><strong>{formatKrw(row?.income_krw)}</strong></article>
+export function ResultTiles({ row, month, totalAssets }: { row?: Record<string, Json>; month?: Record<string, Json>; totalAssets?: unknown }) {
+  return <div className="d-kpis d-kpis-4" aria-label="이번 달 숫자 구분">
+    <article className="d-kpi"><span>이번 달 신규 투자 후보금</span><strong>{formatKrw(row?.new_investment_krw)}</strong><small>한 달 납입 · 새로 들어가는 돈</small></article>
+    <article className="d-kpi"><span>그중 상품 배분액</span><strong className="d-accent">{formatKrw(month?.allocated_total_krw)}</strong><small>후보 상품에 나눠 담는 금액</small></article>
+    <article className="d-kpi"><span>그중 미배분</span><strong>{formatKrw(month?.unallocated_krw)}</strong><small>상품에 담지 않고 그대로 둔 금액</small></article>
+    <article className="d-kpi d-kpi-soft"><span>전체 보유자산 · 참고</span><strong>{formatKrw(totalAssets)}</strong><small>이미 가진 자산 · 이번 배분과 별개</small></article>
+  </div>;
+}
+
+/** Keeps "which plan am I looking at" apart from "which plan did I adopt". */
+export function ChoiceStatus({ plan, hasCheckin, onJump }: { plan: string; hasCheckin: boolean; onJump: () => void }) {
+  return <div className="d-choice-status" aria-label="화면 선택과 계획 채택 구분">
+    <div><span>화면에서 보는 안</span><strong>{planName(plan)}</strong><small>비교용 선택 · 저장되지 않아요</small></div>
+    <div><span>계획 채택</span><strong>{hasCheckin ? "아래 기록에서 확인" : "아직 채택 전"}</strong><small>{hasCheckin ? "채택한 안과 입력 버전이 함께 저장돼요" : "로그인하고 결과를 저장하면 채택할 수 있어요"}</small></div>
+    <button className="d-secondary" onClick={onJump}>이번 달 할 일로 이동</button>
   </div>;
 }
 

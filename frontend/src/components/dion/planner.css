@@ -191,3 +191,39 @@
 @media(max-width:760px){.dion-app .d-portfolio-grid,.dion-app .d-kpis-3,.dion-app .d-summary-band,.dion-app .d-income-list{grid-template-columns:1fr}.dion-app .d-risk-steps{grid-template-columns:repeat(5,minmax(62px,1fr));overflow-x:auto;padding-top:10px}.dion-app .d-risk-steps li{padding:14px 4px}.dion-app .d-risk-steps li strong{font-size:12px}.dion-app .d-risk-steps li.active strong{font-size:13px}.dion-app .d-step-badge{right:2px;font-size:9px}.dion-app .d-tabs button{flex:0 0 132px;font-size:12px}.dion-app .d-portfolio-card.mine{order:-1;margin-top:10px}.dion-app .d-final-chart{grid-template-columns:1fr}.dion-app .d-kpi strong{font-size:22px}.dion-app .d-result-cta>button{flex:1 1 100%}}
 @media print{.dion-app .d-header,.dion-app .d-tabs,.dion-app .d-result-cta,.dion-app .d-footer,.dion-app .d-calc-bar,.dion-app .d-scenario-launch,.dion-app .d-modal-backdrop,.dion-app details:not([open]),.dion-app button{display:none!important}.dion-app{background:#fff}.dion-app .d-card,.dion-app .d-kpi{break-inside:avoid;box-shadow:none}.dion-app .d-main{padding:0}}
 .dion-app .d-product-status{margin:0 0 16px}
+/* 2026-11-14 contest results: 계산 기준 띠 · 두 안 차이 · 선택/채택 구분 */
+.dion-app .d-basis-strip{background:#fff;border:1px solid #e3e5f2;border-left:5px solid var(--d-primary);border-radius:16px;padding:14px 18px;margin:0 0 18px;display:grid;gap:10px}
+.dion-app .d-basis-warn{border-left-color:#d98a3a;background:#fffaf3}
+.dion-app .d-basis-error{border-left-color:#c2412d;background:#fff6f4}
+.dion-app .d-basis-info{border-left-color:#5e559a}
+.dion-app .d-basis-head{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}.dion-app .d-basis-head span{font-size:13px;color:#4a4f60}
+.dion-app .d-basis-facts{display:flex;flex-wrap:wrap;gap:8px;margin:0}
+.dion-app .d-basis-facts>div{background:#f4f5fc;border-radius:10px;padding:6px 12px;display:flex;gap:8px;align-items:baseline}
+.dion-app .d-basis-facts dt{font-size:12px;color:#4a4f60}.dion-app .d-basis-facts dd{margin:0;font-size:13px;font-weight:700}
+.dion-app .d-basis-next{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between}
+.dion-app .d-basis-next p{margin:0;font-size:14px;flex:1 1 280px}
+.dion-app .d-basis-detail{font-size:11px;color:#4a4f60}
+.dion-app .d-flow-note{margin:0 0 14px}
+.dion-app .d-plan-compare>.d-card-head{margin-bottom:8px}.dion-app .d-plan-compare>.d-card-head .d-toolbar{margin:0}
+.dion-app .d-plan-diff table{width:100%;border-collapse:collapse}
+.dion-app .d-plan-diff caption{text-align:left;font-size:13px;color:#4a4f60;padding:0 0 10px}
+.dion-app .d-plan-diff th,.dion-app .d-plan-diff td{padding:10px 12px;border-bottom:1px solid #eef0f8;text-align:left;font-variant-numeric:tabular-nums}
+.dion-app .d-plan-diff td{text-align:right}
+.dion-app .d-plan-diff thead th{font-size:13px}.dion-app .d-plan-diff thead th small{display:block;font-weight:500;color:var(--d-primary)}
+.dion-app .d-plan-diff .d-col-selected{background:#eef0ff}
+.dion-app .d-row-group th{background:#f4f5fc;font-size:12px;color:#3d4150;font-weight:700}
+.dion-app .d-row-diff th,.dion-app .d-row-diff td{font-weight:800}
+.dion-app .d-diff-tag{display:inline-block;margin-left:8px;background:#e5e7ff;color:#3848ce;font-size:11px;padding:1px 8px;border-radius:999px;vertical-align:1px}
+.dion-app .d-plan-reason{margin-top:16px;background:#eef0ff;border-radius:12px;padding:12px 16px}.dion-app .d-plan-reason p{margin:2px 0 0}
+.dion-app .d-plan-fits{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:12px}
+.dion-app .d-plan-fits>div{border:1px solid #e6e7f3;border-radius:12px;padding:12px 16px}.dion-app .d-plan-fits p{margin:4px 0 0;font-size:14px}
+.dion-app .d-plan-care{color:#7b4b24}
+.dion-app .d-subhead{margin:24px 0 10px;font-size:16px}
+.dion-app .d-money-kind{margin:10px 0 4px;font-size:12px;font-weight:700;color:var(--d-primary)}
+.dion-app .d-money-balance{color:#5e559a}
+.dion-app .d-choice-status{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;align-items:center;background:#fff;border:1px solid #e3e5f2;border-radius:16px;padding:14px 18px;margin-bottom:16px}
+.dion-app .d-choice-status span,.dion-app .d-choice-status small{display:block;font-size:12px;color:#4a4f60}.dion-app .d-choice-status strong{display:block;font-size:16px}
+.dion-app .d-choice-status>button{justify-self:end}
+.dion-app .d-scroll-anchor{scroll-margin-top:96px}
+@media(max-width:760px){.dion-app .d-plan-diff th,.dion-app .d-plan-diff td{padding:8px 6px;font-size:13px}.dion-app .d-choice-status>button{justify-self:stretch}.dion-app .d-basis-next>button{flex:1 1 100%}}
+@media(max-width:760px){.dion-app .d-plan-diff table{table-layout:fixed}.dion-app .d-plan-diff thead th:first-child,.dion-app .d-plan-diff tbody th[scope=row]{width:36%}.dion-app .d-plan-diff td{font-size:12px;word-break:keep-all}.dion-app .d-diff-tag{display:block;width:max-content;margin:2px 0 0}}
