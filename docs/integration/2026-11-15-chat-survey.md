@@ -78,3 +78,5 @@
 
 - 최초 PR CI #156: pytest **1383 passed, 96 skipped** / Ruff / pip check / FE typecheck·전체 ESLint 모두 성공.
 - CI 대기 중 PR #65가 integration에 반영되어 `eff4a6a`를 로컬 병합했다. 개발 로그 두 항목과 Vercel 두 브랜치의 배포 차단을 모두 보존하여 문서/JSON 충돌만 해소했다. 금융·대화 코드 충돌은 없었다. JSON 구문·배포 차단·diff 공백 검사 통과. 최종 병합 후보 CI는 같은 PR에서 확인한다.
+
+- 통합 후 CI #161도 1383 passed/96 skipped 및 모든 Core 검사 성공. 마지막 조회 사이 PR #66이 반영되어 `389f0ac`를 추가 통합했다. 질문 문구 개선을 보존하고 개발 로그/배포 설정 항목만 병합했으며 코드 충돌은 없었다. JSON/배포 차단/diff 검사 통과.

@@ -3,6 +3,7 @@
   "git": {
     "deploymentEnabled": {
       "codex/chat-survey-20261115": false,
+      "codex/question-clarity-20261115": false,
       "codex/portfolio-selection-20261115": false,
       "codex/consultation-finalization-fe-20261115": false,
       "codex/consultation-finalization-be-20261115": false,
