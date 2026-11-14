@@ -5,6 +5,7 @@ import { expect, test } from '@playwright/test';
 import { AssetComposition } from '../src/components/dion/financial-overview';
 import { assetComposition } from '../src/lib/dion/result-visual';
 import { list, object, textValue, type Json } from '../src/lib/dion/model';
+import { formatKrw } from '../src/lib/dion/money-format';
 
 const snapshot = (total = '1000000'): Record<string, Json> => ({
   total_assets: { calc_state: 'CALCULATED', value: total }, total_debt: { calc_state: 'CALCULATED', value: '500000' },
@@ -66,8 +67,28 @@ test('actual engine asset snapshot and cash waiting budget reach the result scre
   expect(values.reduce<bigint>((sum, value) => sum + BigInt(String(value)), 0n)).toBe(BigInt(String(object(assets.total_assets).value)));
   await expect(page.getByRole('heading', { name: '주요 문제와 판단 근거' })).toHaveCount(0);
   await expect(page.getByRole('region', { name: '확인해볼 절세 혜택' })).toHaveCount(0);
+  const summary = page.getByRole('region', { name: '내 상황 한눈에' });
+  const flow = page.getByRole('article', { name: '월 현금흐름 차감표' });
+  const after = object(outputs['OUT-03']).after_existing_contributions_krw;
+  await expect(summary).toContainText(formatKrw(typeof after === 'string' ? after : object(after).value));
+  expect(await summary.evaluate(el => !!(document.querySelector('.d-cashflow-card')!.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING))).toBe(true);
+  await expect(summary).not.toContainText('번째 버전');
+  await expect(page.getByText('월 현금흐름 숫자의 근거', { exact: true })).toHaveCount(0);
+  await expect(page.getByText('자산·채무 숫자의 근거', { exact: true })).toHaveCount(0);
+  await expect(page.getByText('내 상담 · 저장과 다시 열기', { exact: true })).toHaveCount(0);
   await page.screenshot({ path: info.outputPath('assets-desktop.png'), fullPage: true });
-  await page.locator('.d-tabs button').nth(3).click();
+  await page.setViewportSize({ width: 390, height: 844 });
+  await summary.scrollIntoViewIfNeeded();
+  await expect(flow).toBeAttached();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.screenshot({ path: info.outputPath('overview-mobile.png'), fullPage: true });
+  for (const tab of [1, 2, 3]) {
+    const next = page.getByRole('navigation', { name: '다음 결과 단계' }).getByRole('button');
+    await next.scrollIntoViewIfNeeded();
+    await next.click();
+    await expect(page.locator('.d-tabs button').nth(tab)).toHaveAttribute('aria-current', 'page');
+    await expect(page.getByRole('region', { name: '계산 결과' }).getByRole('heading', { level: 1 })).toBeInViewport();
+  }
   const month = list(list(object(outputs['OUT-06']).candidates)[0]?.rows)[0];
   const budget = page.locator('[data-allocation-month]').first();
   await expect(budget).toContainText('현금 대기자금');

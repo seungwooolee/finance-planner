@@ -22,7 +22,7 @@
 - 변경 TS/TSX 및 신규 E2E 파일 ESLint: 통과.
 - `playwright test e2e/dion-asset-reference.spec.ts --grep 'asset display|chart coordinates' --workers=1 --reporter=line`: **2 passed (11.5s)**. 실제0/null/음수/큰 정수, 개인·가구 불일치, 보류/단위 불일치 비노출, 스냅샷 불변과 표시 좌표를 검사했다.
 - 기존 React/TypeScript/Playwright로 실제 새 컴포넌트를 서버 없이 렌더링했다. 기존 BE `attach_peer_reference`와 공식 등록 통계를 사용하되 내 금액은 가상 fixture다. 자산/최종 각각 1440·1024·390px의 **6개 배치**에서 넘침 없음, 실제0/음수 막대, 개인 범위의 내 막대 미표시, 중앙값·stale 안내, 출처 펼침 통과. 실행 중인 Next/API 통합 E2E를 대체한 것으로 보고하지 않는다. 로컬 도구·fixture·캡처는 무시되는 `logs/`에만 있다.
-- 실제 preview→범위 변경→재계산→최종→수정 후 이전 결과의 E2E 경로를 `frontend/e2e/dion-asset-reference.spec.ts`에 추가했지만 **미실행**이다. 로컬 FE/BE 개발 서버를 시작하는 `Start-Process` 명령이 자동 승인 검토에서 `blocked by policy`로 거절됐다. 동일 서버 시작을 다른 방식으로 재시도하지 않았다.
+- 실제 preview→개인/가구 범위 분리 표시→집단/중앙값 선택→최종→수정 후 이전 결과의 E2E 경로를 `frontend/e2e/dion-asset-reference.spec.ts`에 추가했지만 **미실행**이다. 가구의 연결 금액은 별도 컴포넌트 fixture로 검증했다. 로컬 FE/BE 개발 서버를 시작하는 `Start-Process` 명령이 자동 승인 검토에서 `blocked by policy`로 거절됐다. 동일 서버 시작을 다른 방식으로 재시도하지 않았다.
 - 전체 Core/Build/E2E·실계정·운영 DB·유료 모델·배포: 미실행. 기존 금융 엔진·등록 통계·검토 정책·API 계약에는 변경이 없다.
 
 ## 구현 위치
@@ -33,3 +33,7 @@
 - 작업 폴더: `C:\Users\LG\Projects\DION-assets-reference-web-20261115`, 브랜치 `codex/assets-reference-web-20261115`. 원래 통합 ZIP과 다른 작업의 변경은 수정하지 않았다.
 
 실제 사용자 화면에 보이는 지표는 결과 안에 검토되어 저장된 행뿐이다. 이전 디자인 시안의 가상 자산·상품 금액이나 미승인 청년 납입액을 앱에 넣지 않았다. 직접 비교 승인·추천 활성화는 이번 변경에 포함되지 않는다.
+
+## 최신 통합 동기화
+
+구현 중 병합된 PR #54의 통합 `2333fba`를 반영했다. 재무현황 요약의 하단 이동·다음 결과 버튼·기존 월 코치를 보존했다. 개발 로그의 두 이력과 Vercel의 두 작업 브랜치 배포 차단을 함께 유지해 충돌을 해결했다. 자동 병합된 `results.tsx`의 새 그래프 연결을 대조했다. 최신 CSS/컴포넌트 조합의 렌더 및 변경된 TSX 타입·lint는 동기화 후 확인한다.

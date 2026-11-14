@@ -336,10 +336,11 @@
 .dion-app .d-results>.d-metrics>.d-metric{border-color:var(--d-line);border-radius:16px;padding:22px;display:flex;flex-direction:column}
 .dion-app .d-results>.d-metrics>.d-metric>span{min-height:40px;font-size:12px;line-height:1.7}
 .dion-app .d-results>.d-metrics>.d-metric strong{font-size:clamp(25px,2.1vw,31px);letter-spacing:-.045em;margin:8px 0;line-height:1.4}
-.dion-app .d-results>.d-metrics>.d-metric:last-child{background:var(--d-result-ink);border-color:var(--d-result-ink);color:#fff}
-.dion-app .d-results>.d-metrics>.d-metric:last-child :is(strong,span,small){color:#fff}
-.dion-app .d-results>.d-metrics>.d-metric:last-child>small{font-size:11px;line-height:1.8;color:#d9e2f7}
-.dion-app .d-results>.d-metrics>.d-metric:last-child .d-metric-icon{background:#ffffff1a;color:#e6ecff}
+.dion-app .d-results>.d-metrics>.d-metric:last-child{background:#eeedff;border-color:#d8d6f7;color:var(--d-primary)}
+.dion-app .d-results>.d-metrics>.d-metric:last-child strong{color:var(--d-primary)}
+.dion-app .d-results>.d-metrics>.d-metric:last-child>span{color:#454654}
+.dion-app .d-results>.d-metrics>.d-metric:last-child>small{font-size:11px;line-height:1.8;color:#5e5783}
+.dion-app .d-results>.d-metrics>.d-metric:last-child .d-metric-icon{background:#fff;color:var(--d-primary)}
 .dion-app .d-results>.d-columns{align-items:stretch;gap:20px}
 .dion-app .d-results>.d-columns>.d-card:first-child{display:flex;flex-direction:column}
 .dion-app .d-results>.d-columns>.d-card:first-child>.d-text-button{margin-top:auto;align-self:flex-start;min-height:44px}
@@ -495,11 +496,14 @@
   .dion-app .d-sample{align-items:flex-start;gap:10px}
 }
 /* 2026-11-15 개인화 요약·목표 준비 상황·두 안 실제 차이 */
-.dion-app .d-results .d-personal-summary{margin:0 0 20px;border-left:5px solid var(--d-primary)}
-.dion-app .d-personal-flow{list-style:none;margin:6px 0 12px;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
-.dion-app .d-personal-flow li{display:flex;gap:12px;align-items:flex-start;min-width:0}
-.dion-app .d-personal-flow h3{margin:0 0 4px;font-size:13px;color:var(--d-primary);font-weight:750}
-.dion-app .d-personal-flow p{margin:0;font-size:14px;line-height:1.75;color:var(--d-result-ink,#202d50);word-break:keep-all}
+.dion-app .d-results .d-personal-summary{margin:0 0 28px;border-color:#dedcf5;background:#fdfcff}
+.dion-app .d-personal-flow{list-style:none;margin:4px 0 0;padding:0;display:grid;grid-template-columns:1fr;gap:0}
+.dion-app .d-personal-flow li{display:flex;gap:16px;align-items:flex-start;min-width:0;padding:22px 0;border-top:1px solid #e9e6f5}
+.dion-app .d-personal-flow li:first-child{padding-top:8px;border-top:0}
+.dion-app .d-personal-flow li:last-child{padding-bottom:0}
+.dion-app .d-personal-flow li>div{max-width:72ch;min-width:0}
+.dion-app .d-personal-flow h3{margin:0 0 8px;font-size:15px;color:var(--d-primary);font-weight:750}
+.dion-app .d-personal-flow p{margin:0;font-size:15px;line-height:1.9;color:var(--d-result-ink,#202d50);word-break:keep-all;overflow-wrap:anywhere}
 .dion-app .d-personal-flow .d-secondary{margin-top:10px;min-height:44px}
 .dion-app .d-personal-icon{flex:0 0 34px;height:34px;border-radius:10px;background:var(--d-soft);color:var(--d-primary);display:grid;place-items:center}
 .dion-app .d-goal-table th[scope=row] small,.dion-app .d-goal-plan small{display:block;font-weight:500;color:var(--d-result-muted,#536071);font-size:12px}
@@ -514,8 +518,13 @@
 .dion-app .d-plan-liquidity{margin-top:14px}
 .dion-app .d-plan-liquidity summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font-weight:700}
 .dion-app .d-plan-liquidity summary:focus-visible,.dion-app .d-personal-summary button:focus-visible{outline:2px solid var(--d-primary);outline-offset:2px}
+.dion-app .d-result-next{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:24px 0;margin-top:28px;border-top:1px solid var(--d-line);break-inside:avoid}
+.dion-app .d-result-next span{display:block;font-size:12px;color:var(--d-result-muted,#536071);margin-bottom:4px}
+.dion-app .d-result-next strong{font-size:18px;color:var(--d-result-ink,#202d50)}
+.dion-app .d-result-next .d-primary{min-height:48px;white-space:normal}
 @media(max-width:760px){
-  .dion-app .d-personal-flow{grid-template-columns:1fr;gap:14px}
+  .dion-app .d-personal-flow li{gap:12px;padding:18px 0}
+  .dion-app .d-result-next{align-items:stretch;flex-direction:column;gap:14px;padding:22px 0}
   .dion-app .d-goal-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
   .dion-app .d-goal-table,.dion-app .d-goal-table tbody,.dion-app .d-goal-table tr,.dion-app .d-goal-table th,.dion-app .d-goal-table td{display:block;width:100%}
   .dion-app .d-goal-table tr{border:1px solid var(--d-line);border-radius:14px;padding:12px 14px;margin-bottom:10px}
