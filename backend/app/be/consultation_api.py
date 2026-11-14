@@ -17,6 +17,7 @@ from ..consultation.contract import (
     Persistence,
     Turn,
 )
+from ..consultation.input_preview import InputPreviewProvider, InputPreviewRequest, InputPreviewService
 from ..consultation.model_proposal import mock_proposal
 from ..consultation.oneport_proposal import OnePortProposalProvider
 from ..consultation.rag import OnePortEvidenceSelector, SchemeEvidenceService
@@ -42,6 +43,39 @@ def get_consultation_service():
         return ConsultationService(oneport_provider=provider)
     provider = mock_proposal if environ.get("DION_R2_MOCK_PROPOSAL") == "1" else None
     return ConsultationService(proposal_provider=provider)
+
+
+@lru_cache
+def get_input_preview_service():
+    mode = environ.get("DION_INPUT_ASSISTANT_PROVIDER", environ.get("DION_EXPLANATION_PROVIDER", "deterministic"))
+    if mode == "oneport":
+        try:
+            return InputPreviewService(InputPreviewProvider(OnePortConfig.from_env()))
+        except ConfigurationError:
+            return InputPreviewService(configuration_error=True)
+    return InputPreviewService(configuration_error=mode not in {"deterministic", "mock"})
+
+
+@router.post("/{sid}/input-previews")
+async def input_preview(case_id: str, sid: str, value=Depends(body), actor=Depends(get_actor), store=Depends(get_store),
+                        consultation=Depends(get_consultation_service), service=Depends(get_input_preview_service)):
+    request = parse(InputPreviewRequest, value)
+    if not request.message.strip():
+        raise HTTPException(422, detail={"code": "EMPTY_INPUT_MESSAGE"})
+
+    def current():
+        state = call(consultation.get, store, actor, case_id, sid)
+        if (state["session_version"] != request.expected_session_version or state["progress"] in {"RECONFIRM_REQUIRED", "PAUSED"}
+                or state["pending_proposal"] or state["intent"] != "CHECK_CONDITIONS"):
+            raise HTTPException(409, detail={"code": "INPUT_PREVIEW_CONTEXT_CHANGED"})
+        return state
+
+    state = await run_in_threadpool(current)
+    result = await service.preview(actor, state, request)
+    checked = await run_in_threadpool(current)
+    if checked["base_input_hash"] != state["base_input_hash"]:
+        raise HTTPException(409, detail={"code": "INPUT_PREVIEW_CONTEXT_CHANGED"})
+    return respond(result)
 
 
 # The reviewed corpus ships with the repository; without an explicit path the deployed
