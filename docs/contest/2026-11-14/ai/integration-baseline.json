@@ -1,6 +1,6 @@
 {
-  "version": "DION-CONTEST-AI-INTEGRATION-BASELINE-1.3",
-  "previous_baseline_sha256": "07b73f7a0a4f36b7bbe1ded2d236cbe300e53041215facd81c9e0a8a81446824",
+  "version": "DION-CONTEST-AI-INTEGRATION-BASELINE-1.4",
+  "previous_baseline_sha256": "027196fb8662586999e8199b60b514306c4a2e273d2ca277f4f385454cd5eaf8",
   "base_sha": "eed221d1c1d305d79713ebb0dbf0c41d9c624e8a",
   "frozen_lock_sha256": "0613a19e686bd05a93294d0eb6408291860157d56c6c918910ecec9e4f797e8d",
   "expected_values_changed": false,
@@ -36,7 +36,31 @@
     "data/rag/registry/corpus.json": {
       "frozen_sha256": "8cf933a67b0f7fa8c160a858b24a0eeb11b6497ecad6b5270340ec2e1dbf7a95",
       "candidate_sha256": "08ae76473fda5aa62533b47e0f306da3f7215f7d4db0e8238703535161b90de8",
-      "reason": "2026-11-15 user requested CON-12..15 malformed official URL repairs. Only corpus/source versions and these four official URLs differ; original text, hashes, claims, review decisions, grading inputs and expectations stay frozen.",
+      "source_base_commit": "bb0f389562a70e0e5232635ef4f1bb391c230441",
+      "contract": "docs/integration/2026-11-15-result-action-contract.md",
+      "reason": "User-authorized feature 1 implementation: repair four Markdown-contaminated official URL destinations and identify corpus revision r3. Claims, citations, dates, approvals, scoring inputs and expected values are unchanged. Integrated PR #46 and #49: preserve the same repaired destinations, add source/chunk metadata versions and prove frozen original content by reversing only these metadata fields.",
+      "url_repairs": [
+        {
+          "source_id": "SRC-CON-12",
+          "old_url": "https://kind.krx.co.kr/external/2026/04/09/000051/20260409000066/68648.htm*](https://kind.krx.co.kr/external/2026/04/09/000051/20260409000066/68648.htm",
+          "new_url": "https://kind.krx.co.kr/external/2026/04/09/000051/20260409000066/68648.htm"
+        },
+        {
+          "source_id": "SRC-CON-13",
+          "old_url": "https://kind.krx.co.kr/external/2026/06/16/000415/20260616000922/68616.htm*](https://kind.krx.co.kr/external/2026/06/16/000415/20260616000922/68616.htm",
+          "new_url": "https://kind.krx.co.kr/external/2026/06/16/000415/20260616000922/68616.htm"
+        },
+        {
+          "source_id": "SRC-CON-14",
+          "old_url": "https://kind.krx.co.kr/external/2026/06/12/000502/20260612001028/68152.htm*](https://kind.krx.co.kr/external/2026/06/12/000502/20260612001028/68152.htm",
+          "new_url": "https://kind.krx.co.kr/external/2026/06/12/000502/20260612001028/68152.htm"
+        },
+        {
+          "source_id": "SRC-CON-15",
+          "old_url": "https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1033258305*](https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1033258305",
+          "new_url": "https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1033258305"
+        }
+      ],
       "before": {
         "corpus_version": "dion-rag-20261113-demo-r2",
         "sources": {
@@ -59,5 +83,6 @@
         }
       }
     }
-  }
+  },
+  "parallel_baseline_sha256": "28df66529c6dc39265a2a3deb07d8fe07c345dd8162683a65947aad485246e15"
 }

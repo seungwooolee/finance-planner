@@ -367,6 +367,7 @@ export function DionPlanner() {
         </details>
     </main><ScenarioPicker disabled={busy||saveBusy} onLoad={loadScenario}/>{loginOpen&&<LoginDialog onClose={()=>setLoginOpen(false)} onLogin={(value,seconds)=>handleLogin(value,seconds)}/>}<ConsultationWidget compact={mode!=="welcome"} open={consultationOpen} onOpen={()=>setConsultationOpen(true)} onClose={()=>setConsultationOpen(false)}>
       <ConsultationContent view={view} token={token} selectedCaseId={caseId} editVersion={doc.raw_bundle.input_version} stale={stale} open={consultationOpen}
+        onEdit={id=>{setConsultationOpen(false);edit(id);}} onResult={n=>{setConsultationOpen(false);if(mode==="welcome")setMode("quick");setShowResults(true);setTab(n);}}
         onLogin={()=>{setConsultationOpen(false);setLoginOpen(true);}} onSave={()=>{setConsultationOpen(false);setAccountOpen(true);accountPanel.current?.scrollIntoView({block:"center"});}}
         onExplain={()=>{setConsultationOpen(false);if(mode==="welcome")setMode("quick");setShowResults(true);setExplainRequested(true);}}/>
     </ConsultationWidget><footer className="d-footer"><strong>dion.</strong><span>확인한 정보로, 나에게 맞는 다음 단계.</span><small>계산 미리보기 · 상품 추천과 금융거래는 준비 중</small></footer>

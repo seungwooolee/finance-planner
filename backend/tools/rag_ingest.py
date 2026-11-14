@@ -84,7 +84,7 @@ def first_url(value):
     # href before considering bare links; never merge label and destination.
     found = re.search(r"\[[^\]\r\n]*\]\((https://[^\s<>]+)\)", value)
     if not found:
-        found = re.search(r"(https://[^\s|<>]+)", value)
+        found = re.search(r"(https://[^)\s|*<>\[\]]+)", value)
     if not found:
         raise ValueError("원문 URL row has no https link")
     url = found.group(1)

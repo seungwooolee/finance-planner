@@ -2,7 +2,8 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "git": {
     "deploymentEnabled": {
-      "codex/rag-dialog-grounding-20261115": false,
+      "codex/result-personal-diff-20261115": false,
+      "codex/result-action-consultation-20261115": false,
       "codex/preference-composition-20261115": false,
       "codex/palette-polish": false,
       "codex/peer-reference-research-20261114": false,
@@ -23,7 +24,8 @@
       "dion/proposal-20261114": false,
       "codex/contest-lead-20261114": false,
       "codex/contest-results-20261114": false,
-      "codex/release-v0.5.0": false
+      "codex/release-v0.5.0": false,
+      "codex/rag-dialog-grounding-20261115": false
     }
   }
 }

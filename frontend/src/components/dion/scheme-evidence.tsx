@@ -46,6 +46,7 @@ export function validAnswer(value: unknown, runId: string, item: string, year: n
 
 export function sourceHref(value: string) {
   try {
+    if (/[\s\\*<>\[\]]/.test(value)) return undefined;
     const url = new URL(value);
     if (url.protocol === "https:" && !url.username && !url.password) return url.href;
   } catch {

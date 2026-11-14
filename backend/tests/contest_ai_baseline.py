@@ -6,7 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 ARTIFACT = ROOT / "docs/contest/2026-11-14/ai"
 FROZEN_SHA = "0613a19e686bd05a93294d0eb6408291860157d56c6c918910ecec9e4f797e8d"
-BASELINE_SHA = "28df66529c6dc39265a2a3deb07d8fe07c345dd8162683a65947aad485246e15"
+BASELINE_SHA = "511e904f7a0a43d090c8f50491638470188784f5be87d4fc8709d977ee9c7262"
 CODE_PATHS = frozenset({"backend/tests/be/test_plan_checkin.py", "backend/tests/be/test_question_bridge.py"})
 POLICY_PATHS = frozenset({"AGENTS.md"})
 DATA_PATHS = frozenset({"data/rag/registry/corpus.json"})
@@ -15,7 +15,6 @@ URL_SOURCE_IDS = frozenset(f"SRC-CON-{number}" for number in range(12, 16))
 
 def verify_source_metadata(root, frozen, data):
     """Undo only the four reviewed URL/version repairs to prove frozen content."""
-    assert set(data) == DATA_PATHS, "only the reviewed corpus metadata may differ"
     for name, entry in data.items():
         original = entry["before"]
         assert set(original) == {"corpus_version", "sources"}, "only URL/version metadata"
@@ -43,13 +42,14 @@ def verify_files(root, frozen, baseline):
     policy = baseline["policy_overrides"]
     assert set(policy) == POLICY_PATHS, "only the approved AGENTS.md policy may differ"
     data = baseline["data_overrides"]
-    verify_source_metadata(root, frozen, data)
+    assert set(data) == DATA_PATHS, "only the registered corpus metadata may differ"
     reviewed = {**overrides, **policy, **data}
     for name, entry in reviewed.items():
         assert entry["frozen_sha256"] == frozen["files"][name], name + " original hash"
     for name, original in frozen["files"].items():
         expected = reviewed[name]["candidate_sha256"] if name in reviewed else original
         assert hashlib.sha256((root / name).read_bytes()).hexdigest() == expected, name
+    verify_source_metadata(root, frozen, data)
 
 
 def assert_eval_baselines():

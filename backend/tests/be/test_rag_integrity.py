@@ -23,6 +23,7 @@ tree = test_contest_ai_baseline.tree
     "https://www.law.go.kr/a%5D%28https://evil.test",
     "https://www.law.go.kr/a%0Aheader", "https://www.law.go.kr/a%xy",
     "https://www.law.go.kr:wrong/a", "https://www.law.go.kr/<a>",
+    "https://www.law.go.kr/a*",
 ])
 def test_registration_and_retrieval_reject_malformed_source_urls(url):
     doc = manifest()
@@ -73,7 +74,7 @@ def test_first_url_extracts_destination_without_markdown_label(value):
 def test_data_override_cannot_expand_to_grading_data(tree):
     root, frozen, baseline = tree
     baseline["data_overrides"]["docs/contest/2026-11-14/ai/dev.json"] = {}
-    with pytest.raises(AssertionError, match="only the reviewed corpus"):
+    with pytest.raises(AssertionError, match="only the registered corpus"):
         verify_files(root, frozen, baseline)
 
 

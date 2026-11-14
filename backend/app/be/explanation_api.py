@@ -11,12 +11,44 @@ from ..explanation.contract import ExplanationRequest
 from ..explanation.oneport import OnePortProvider
 from ..explanation.oneport_config import ConfigurationError, OnePortConfig
 from ..explanation.portfolio import PortfolioEvidenceRequest, explain_portfolio
+from ..explanation.result_action import ActionProvider, ResultActionRequest, ResultActionService, context_for
 from ..explanation.service import ExplanationService
 from .api import body, call, get_store
 from .auth import get_actor
 from .consultation_api import get_scheme_evidence_service
 
 router = APIRouter(tags=["Stored result explanations"])
+
+
+@lru_cache
+def get_result_action_service():
+    mode = os.getenv("DION_RESULT_ACTION_PROVIDER", os.getenv("DION_EXPLANATION_PROVIDER", "mock"))
+    if mode == "oneport":
+        try:
+            return ResultActionService(ActionProvider(OnePortConfig.from_env()))
+        except ConfigurationError:
+            return ResultActionService(configuration_error=True)
+    return ResultActionService(configuration_error=mode not in {"mock", "deterministic"})
+
+
+@router.post("/api/be/v1/cases/{case_id}/analyses/{run_id}/result-action")
+async def result_action(case_id: str, run_id: str, value=Depends(body), actor=Depends(get_actor),
+                        store=Depends(get_store), service=Depends(get_result_action_service)):
+    run = await run_in_threadpool(call, store.read_run, actor, case_id, run_id)
+    comparison = await run_in_threadpool(call, store.read_portfolio_comparison, actor, case_id, run_id)
+    try:
+        request = ResultActionRequest.model_validate(value)
+        if not request.question.strip():
+            raise ValueError()
+    except (ValidationError, ValueError):
+        raise HTTPException(422, detail={"code": "INVALID_RESULT_ACTION_REQUEST"}) from None
+    response = await service.answer(actor, case_id, run, comparison, request)
+    current = await run_in_threadpool(call, store.read_run, actor, case_id, run_id)
+    selected = await run_in_threadpool(call, store.read_portfolio_comparison, actor, case_id, run_id)
+    checked = context_for(current, selected, request)
+    if checked["context_sha256"] != response["context_sha256"]:
+        raise HTTPException(409, detail={"code": "RESULT_ACTION_BASIS_MISMATCH"})
+    return JSONResponse(response, headers={"Cache-Control": "no-store", "Pragma": "no-cache"})
 
 
 @lru_cache

@@ -40,7 +40,7 @@ def valid_source_url(value):
     decoded = unquote(value)
     return bool(url.scheme == "https" and url.hostname and not url.username and not url.password
                 and (port is None or 0 < port <= 65535)
-                and not any(c in value for c in '\\[]<>"`')
+                and not any(c in value for c in '\\[]<>"`*')
                 and not any(c.isspace() or ord(c) < 32 or ord(c) == 127 for c in value)
                 and not re.search(r"%(?![0-9A-Fa-f]{2})", value)
                 and not any(ord(c) < 32 or ord(c) == 127 for c in decoded)
