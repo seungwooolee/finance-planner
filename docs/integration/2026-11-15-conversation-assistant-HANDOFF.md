@@ -54,9 +54,18 @@
 - 브랜치: `codex/consultation-result-history-20261115`.
 - Vercel 작업 브랜치 차단은 FE PR62 설정을 재사용. Render 서비스 `autoDeploy=no` 읽기 확인.
 - 기능 후보 SHA: `32a67d0` (동의·대화·저장·공통 결과 내역 연결 포함).
-- PR은 FE PR62 브랜치 `codex/consultation-finalization-fe-20261115`를 base로 하는 후속 Draft로 생성한다.
+- [Draft PR #63](https://github.com/seungwooolee/finance-planner/pull/63)은 FE PR62 브랜치 `codex/consultation-finalization-fe-20261115`를 base로 한다.
   PR62 병합 후 integration으로 base를 전환해야 하며 에이전트는 병합하지 않는다.
 - Planner/ConsultationContent 연결 완료. 최신 공통 연결 타입/린트 통과,
   마지막 세션별 작성 초안 분리는 PR 필수 CI에서도 검사한다. 전체 E2E와 운영 저장은 미완료다.
 - 첫 Ruff fixture 이름 충돌과 후속 보존 검사 추가 시 import 순서는 각각 한 번 수정하여 통과했다.
 - 병합·배포·운영 DB·migration 적용 미실행.
+
+## PR 필수 CI 지침 해시 보정
+
+- `120e026` 최초 CI: FE 통과. BE는 승인된 AGENTS 담당 제한 해제와 과거 policy hash 불일치로
+  4 failed / 1346 passed / 90 skipped / 24 errors. 원인 파일은 AGENTS.md이며 평가 원본은 변경하지 않았다.
+- 기준 1.4 원본을 보존하고 승인 근거·변경 커밋·새 지침 해시를 기준 1.5에 등록했다.
+  기대값/금융 정책/원 잠금/채점 코드는 그대로다. [기준 변경 기록](../contest/2026-11-14/ai/INTEGRATION-BASELINE.md).
+- 1회 수정 후 관련 baseline/contest eval/RAG integrity 검사: **46 passed / 6 skipped**, Ruff/diff check 통과.
+  보류 6건은 기존 opt-in 평가이며 이번 실제 모델 3회와 별개다. 같은 PR의 CI 재실행 결과는 PR Checks에서 확인한다.

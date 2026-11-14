@@ -6,6 +6,10 @@ API/저장·FE 담당 독점 해제는 사용자 후속 결정으로 반영했�
 변경 타입/린트 통과와 브라우저 마지막 assertion 미완료를 [인계](integration/2026-11-15-conversation-assistant-HANDOFF.md)에 기록한다.
 운영 DB/migration 적용·병합·배포는 수행하지 않았다.
 
+PR #63 최초 CI는 FE 통과, BE의 승인된 AGENTS 해시 불일치로 실패했다. 기존 평가 자료·기대값을 보존하고
+담당 제한 해제 승인/커밋/해시를 integration baseline 1.5에 기록했다(1.4 바이트 별도 보존).
+1회 보정 후 관련 baseline/contest/RAG 검사 46 passed/6 skipped, Ruff/diff check 통과. CI 재실행은 같은 PR에 연결한다.
+
 # 상담 기반 최종 포트폴리오 FE — 2026-11-15
 
 최신 integration의 기존 결과 5뷰와 계산을 유지하면서 방문/명시 확인, 상담용 검토안, 저장 상담 연결, 기존 값→제안 값의 확인 후 새 계산, 서버 최종 생성과 별도 채택을 연결했다. BE PR #61의 권위 계약만 소비하고 FE 산식을 만들지 않는다. 타입/변경 린트 통과, 로컬 실제 엔진/임시 DB 브라우저 검증과 운영 미검증을 구분해 [FE 인계](integration/2026-11-15-portfolio-review-FE-HANDOFF.md)에 기록한다. 기존 채택/월 기록·원응답/단위/버전은 보존한다.
