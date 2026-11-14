@@ -53,5 +53,10 @@
 - 기반: integration `b494b1f`(BE PR61 포함), FE PR62 `ebe93e8`.
 - 브랜치: `codex/consultation-result-history-20261115`.
 - Vercel 작업 브랜치 차단은 FE PR62 설정을 재사용. Render 서비스 `autoDeploy=no` 읽기 확인.
-- PR/후보 SHA와 공통 결과 내역 연결 상태는 최종 인계에서 갱신한다.
+- 기능 후보 SHA: `32a67d0` (동의·대화·저장·공통 결과 내역 연결 포함).
+- PR은 FE PR62 브랜치 `codex/consultation-finalization-fe-20261115`를 base로 하는 후속 Draft로 생성한다.
+  PR62 병합 후 integration으로 base를 전환해야 하며 에이전트는 병합하지 않는다.
+- Planner/ConsultationContent 연결 완료. 최신 공통 연결 타입/린트 통과,
+  마지막 세션별 작성 초안 분리는 PR 필수 CI에서도 검사한다. 전체 E2E와 운영 저장은 미완료다.
+- 첫 Ruff fixture 이름 충돌과 후속 보존 검사 추가 시 import 순서는 각각 한 번 수정하여 통과했다.
 - 병합·배포·운영 DB·migration 적용 미실행.
