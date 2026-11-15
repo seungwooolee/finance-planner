@@ -30,5 +30,6 @@
 ## 후보·운영 상태
 
 - 기반 integration: 1fad081 (PR #74). 브랜치: codex/chat-response-feedback-20261115.
+- 기능 후보 SHA: 46627da. [PR #75](https://github.com/seungwooolee/finance-planner/pull/75). 필수 CI와 병합 가능 여부는 최신 PR Checks 기준이다.
 - 작업 브랜치 Vercel 자동 배포 false. 기존 Render 자동 배포 off와 다른 설정 보존.
 - 이번 변경은 아직 운영 UI에 반영되지 않았다. 사용자 병합과 FE/BE 릴리스 후 운영 화면에서 전송→대기→응답을 확인해야 한다.
