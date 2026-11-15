@@ -13,7 +13,8 @@ import { PlanComparison, PlanSelector, planName } from "./plan-comparison";
 import { PortfolioChoice } from "./portfolio-choice";
 import { InvestmentFollowup } from "./investment-followup";
 import { ProductAllocation } from "./product-allocation";
-import { ChoiceStatus, FinalPortfolio, IncomeBar, ResultTiles } from "./final-portfolio";
+import { ChoiceStatus, FinalPortfolio, IncomeBar } from "./final-portfolio";
+import { ResultDashboard } from "./result-dashboard";
 import { FinancialProposal, ProposalAssumptions } from "./financial-proposal";
 import { ResultBasis } from "./result-basis";
 import { ResultNotice, nextStep } from "./calc-basis-strip";
@@ -199,11 +200,15 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
     {tab===3 && <><div className="d-plan-row"><div><strong>{planName(selectedPlan)} · 상품 정보</strong><button className="d-text-button" onClick={()=>setTab(2)}>투자구성 비교로 돌아가기</button>{selectedPortfolio&&<button className="d-secondary" disabled={comparison.blocked} onClick={()=>setTab(4)}>반영한 포트폴리오 확인 →</button>}</div><PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/></div><ProductAllocation evidenceAccess={evidenceAccess} stale={stale} review={productScreenReview} selectedPlan={selectedPlan} evaluationOn={textValue(object(result.context).evaluation_on)} onEdit={onEdit}/></>}
     {tab===3&&<div className="d-result-cta"><button type="button" className="d-primary" onClick={openConsultation}>DION과 상담하기</button><p>1~4 확인 후 상담과 변경 검토를 거쳐 최종 생성을 요청해요.</p></div>}
     <div hidden={tab!==4}><PortfolioReviewFlow taxSelection={currentTax} clearTaxSelection={()=>setTaxSelection(undefined)} chatHandoff={chatHandoff} visited={visited} selectionBlocked={comparison.blocked} flow={reviewFlow} basis={basis} view={view} token={token} caseId={caseId} stale={stale} doc={sourceDoc} onTab={setTab} onOpenRun={onOpenRun??(async()=>{})} onReadRun={onReadRun??onOpenRun??(async()=>{})} onPrepared={r=>onReviewResume?.(r)} onAdopt={focusAdoption}/></div>
-    {tab===4 && <><ChoiceStatus plan={selectedPlan} portfolio={selectedPortfolio} draft={comparison.draft}
+    {tab===4 && <><ResultDashboard after={metricValue(flow,"after_existing_contributions_krw")} row={selectedRow} month={selectedMonth} review={selectedReview}
+      plan={selectedPlan} portfolio={selectedPortfolio} generated={generated} evaluationOn={textValue(object(result.context).evaluation_on)} goals={goals} goalLabel={displayGoal}
+      portfolioSummary={<FinalPortfolio generated={generated} plan={selectedPlan} row={selectedRow} review={selectedReview} portfolio={selectedPortfolio} assetReference={assetReference(true)}/>} returnChart={<InvestmentReturnChart key={`${view.inputHash}:${view.runId}:${selectedPlan}:${selectedPortfolio}:${comparison.revision}`} view={view} plan={selectedPlan} portfolio={selectedPortfolio} revision={comparison.revision} blocked={stale||comparison.blocked} token={token} caseId={caseId}/>}
+      status={<ChoiceStatus plan={selectedPlan} portfolio={selectedPortfolio} draft={comparison.draft}
       stored={comparison.saved} adoption={adoption} runId={view.runId} evaluationOn={textValue(object(result.context).evaluation_on)}
-      planMonth={textValue(selectedRow?.period)} recordMonth={recordMonth??thisMonth()} onJump={()=>tasksRef.current?.scrollIntoView({behavior:"smooth",block:"start"})}/><ResultTiles row={selectedRow} month={selectedMonth} totalAssets={totalAssets}/>
+      planMonth={textValue(selectedRow?.period)} recordMonth={recordMonth??thisMonth()} onJump={()=>tasksRef.current?.scrollIntoView({behavior:"smooth",block:"start"})}/>}
+      onEdit={onEdit} onPortfolio={()=>setTab(2)} onProducts={()=>setTab(3)} onConsult={openConsultation} onAsk={onAskResult} onAdopt={focusAdoption}/>
       <FinancialProposal result={{...result,results:{...outputs,"OUT-06":selectedReview}}} doc={sourceDoc} plan={selectedPlan} portfolio={selectedPortfolio} deep={deep} goalLabel={displayGoal} onEdit={onEdit} onAsk={onAskResult}
-        allocation={<><FinalPortfolio generated={generated} plan={selectedPlan} row={selectedRow} review={selectedReview} portfolio={selectedPortfolio} assetReference={assetReference(true)}/><InvestmentReturnChart key={`${view.inputHash}:${view.runId}:${selectedPlan}:${selectedPortfolio}:${comparison.revision}`} view={view} plan={selectedPlan} portfolio={selectedPortfolio} revision={comparison.revision} blocked={stale||comparison.blocked} token={token} caseId={caseId}/><IncomeBar row={selectedRow}/></>}/>
+        allocation={<IncomeBar row={selectedRow}/>}/>
       <div ref={tasksRef} className="d-scroll-anchor"/><MonthTasks key={`${selectedPlan}:${view.localVersion}`} row={selectedRow} actions={actions} candidates={candidates.length>0} actionList={actionList} onProducts={()=>setTab(3)} onEdit={onEdit}/>
       <FinancialProjection candidate={candidates.find(c=>c.strategy_id===selectedPlan)} plan={selectedPlan} portfolio={selectedPortfolio} stale={stale} runId={view.runId} inputVersion={view.serverVersion??view.localVersion} onEdit={()=>onEdit("ASSUMPTIONS")}/>
     </>}
