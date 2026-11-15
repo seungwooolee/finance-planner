@@ -21,7 +21,7 @@ import { ResultNotice, nextStep } from "./calc-basis-strip";
 import { resultHints } from "@/lib/dion/result-guidance";
 import { MoneyAmount } from "./money-amount";
 import { fieldKrw, formatKrw } from "@/lib/dion/money-format";
-import { allocationTargetLabel } from "@/lib/dion/result-visual";
+import { allocationTargetLabel, investmentDisplayMonth } from "@/lib/dion/result-visual";
 import { type EvidenceAccess } from "./portfolio-evidence";
 import { TaxBenefits } from "./tax-benefits";
 import { TaxReview } from "@/lib/dion/tax-benefits";
@@ -134,7 +134,7 @@ export function Results({view,demoScenario,deep,tab,setTab:changeTab,stale,onEdi
   const selectedRow=list(candidates.find(c=>c.strategy_id===selectedPlan)?.rows)[0];
   const selectedReview=comparisonReview(visible("OUT-06"),selectedPlan,selectedPortfolio);
   const previewReview=previewType ? comparisonReview(visible("OUT-06"),selectedPlan,previewType) : null;
-  const previewMonth=list(list(previewReview?.candidates).find(c=>c.strategy_id===selectedPlan)?.rows)[0];
+  const previewMonth=investmentDisplayMonth(list(list(previewReview?.candidates).find(c=>c.strategy_id===selectedPlan)?.rows));
   const targetPreview=!!previewReview&&previewMonth?.comparison_only===true&&!comparison.blocked;
   const productScreenReview=targetPreview?previewReview:selectedReview;
   const selectedMonth=list(list(selectedReview.candidates).find(c=>c.strategy_id===selectedPlan)?.rows)[0];

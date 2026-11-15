@@ -7,6 +7,13 @@ const obj = (v: Json | undefined): Obj => v && typeof v === "object" && !Array.i
 
 export const isWon = (v: unknown): v is string => typeof v === "string" && /^\d+$/.test(v);
 
+/** Show the first funded month's review when the first plan month has a confirmed zero budget. */
+export function investmentDisplayMonth(rows: Obj[]): Obj | undefined {
+  const first = rows[0];
+  if (first?.scenario_budget_krw !== "0") return first;
+  return rows.find(row => isWon(row.scenario_budget_krw) && BigInt(row.scenario_budget_krw) > 0n) ?? first;
+}
+
 /** part / total in basis points (0–10000), integer math only. 0 when either side is not a won string. */
 export function shareBps(part: unknown, total: unknown): number {
   if (!isWon(part) || !isWon(total) || BigInt(total) === 0n) return 0;
@@ -48,13 +55,27 @@ export function allocationRemainder(row: Obj | undefined): Slice[] {
   return [{ key: "UNALLOCATED", label: "현금 대기자금", value: row.unallocated_krw, color: UNALLOCATED_COLOR }];
 }
 
+const TARGET_GROUPS = [
+  ["BOND", GROUPS.BOND.label, GROUPS.BOND.color],
+  ["KR_EQUITY", GROUPS.KR_EQUITY.label, GROUPS.KR_EQUITY.color],
+  ["US_EQUITY", "미국주식", GROUPS.GLOBAL_EQUITY.color],
+  ["CASH", "현금", UNALLOCATED_COLOR],
+] as const;
+
 export function allocationTargetLabel(row: Obj | undefined): string | null {
   const mix = obj(row?.target_mix_bps);
-  const entries = [
-    ["BOND", "채권"], ["KR_EQUITY", "국내주식"], ["US_EQUITY", "미국주식"], ["CASH", "현금"],
-  ] as const;
-  if (!entries.every(([id]) => typeof mix[id] === "number")) return null;
-  return entries.map(([id, label]) => `${label} ${bpsLabel(mix[id] as number)}`).join(" · ");
+  if (!TARGET_GROUPS.every(([id]) => typeof mix[id] === "number")) return null;
+  return TARGET_GROUPS.map(([id, label]) => `${label} ${bpsLabel(mix[id] as number)}`).join(" · ");
+}
+
+/** Display geometry in basis points from the server's target, without assigning money. */
+export function allocationTargetSlices(row: Obj): Slice[] {
+  const mix = obj(row.target_mix_bps);
+  const weights = TARGET_GROUPS.map(([key]) => mix[key]);
+  if (!weights.every((value): value is number => typeof value === "number" && Number.isInteger(value) && value >= 0)
+      || weights.reduce((sum, value) => sum + value, 0) !== 10000) return [];
+  return TARGET_GROUPS.map(([key, label, color], index) => ({key, label, color, value:String(weights[index])}))
+    .filter(slice => slice.value !== "0");
 }
 
 /** One slice per engine allocation (no summing), ordered by asset group, plus the unallocated rest. */

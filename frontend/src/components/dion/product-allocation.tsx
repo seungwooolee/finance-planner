@@ -5,7 +5,7 @@ import { formatKrw } from "@/lib/dion/money-format";
 import { riskTitles } from "@/lib/dion/investment-review";
 import { InvestmentFollowup } from "./investment-followup";
 import { policyDateMessage, productEmptyCause } from "@/lib/dion/product-empty";
-import { allocationRemainder, allocationSlices, allocationTargetLabel, assetGroup, bpsLabel, cashWaitingText, shareBps } from "@/lib/dion/result-visual";
+import { allocationRemainder, allocationSlices, allocationTargetLabel, assetGroup, bpsLabel, cashWaitingText, investmentDisplayMonth, shareBps } from "@/lib/dion/result-visual";
 import { PortfolioEvidence, type EvidenceAccess } from "./portfolio-evidence";
 import { sourceHref } from "./scheme-evidence";
 import { Donut, DonutLegend } from "./donut";
@@ -45,11 +45,12 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
     {!candidates.length&&review.review_version&&<article className="d-card"><h2>월 투자예산 확인 필요</h2><p>배분할 월 투자예산이 아직 계산되지 않았어요. 미확인 금액을 0원으로 표시하지 않아요.</p><button className="d-secondary" onClick={()=>onEdit("ASSUMPTIONS")}>월 후보에 필요한 확인 →</button></article>}
     {!candidates.length&&review.review_version&&<ProductCandidates review={review}/>}
     {candidates.map(candidate=>{
-      const months=list(candidate.rows), month=months[0];
+      const months=list(candidate.rows), month=investmentDisplayMonth(months);
       const allocations=list(month?.allocations);
       const slices=allocationSlices(allocations,products,month);
       const target=allocationTargetLabel(month);
       return <div key={String(candidate.strategy_id)}>
+        {month&&month!==months[0]&&<p className="d-inline-note">{textValue(month.period)} 신규 투자 후보금을 기준으로 상품을 확인해요. 첫 계획 월 {textValue(months[0]?.period)}의 후보금은 0원이에요.</p>}
         <ProductCandidates review={review} month={month}/>
         {months.map((m,i)=><div className="d-summary-band" key={i} data-allocation-month={String(m.period)} data-budget={textValue(m.scenario_budget_krw)} data-allocated={textValue(m.allocated_total_krw)} data-unallocated={textValue(m.unallocated_krw)}>
           <div><span>{String(m.period)} 신규 투자 후보금</span><strong>{formatKrw(m.scenario_budget_krw)}</strong></div>
@@ -74,7 +75,7 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
             {allocations.length>0&&<p className="d-inline-note">내부 하락 시나리오 손실액 {formatKrw(object(month?.stress_review).scenario_loss_krw_ceil)} · 실제 손실은 더 클 수 있고 최대 손실을 보장하지 않아요.</p>}
             {Array.isArray(month?.adjustment_codes)&&month.adjustment_codes.map(code=><p className="d-note" key={String(code)}>{reason(code)}</p>)}
           </article>
-          <aside className="d-card d-donut-card" aria-label="이번 달 상품 구성"><h2>이번 달 상품 구성</h2>
+          <aside className="d-card d-donut-card" aria-label="상품 구성"><h2>{textValue(month?.period)} 상품 구성</h2>
             {target&&<p className="d-inline-note">목표 비중 · {target}</p>}
             {month&&<Donut slices={slices} total={month.scenario_budget_krw} size={168} center={<><small>배분</small><strong>{bpsLabel(shareBps(month.allocated_total_krw,month.scenario_budget_krw))}</strong></>}/>}
             {month&&<DonutLegend slices={slices} total={month.scenario_budget_krw}/>}
