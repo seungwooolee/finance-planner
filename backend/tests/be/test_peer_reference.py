@@ -26,7 +26,7 @@ def inputs(scope="household", amount="0", state="CALCULATED", gates=()):
     return document, result
 
 
-def test_registry_reproducible_existing_and_under30_rows():
+def test_registry_reproduces_unchanged_household_and_new_personal_rows():
     script = Path(__file__).resolve().parents[3] / "scripts/import_peer_research.py"
     importer = runpy.run_path(str(script))
     assert importer["build"]() == json.loads(DATA_PATH.read_text(encoding="utf-8"))
@@ -42,7 +42,9 @@ def test_registry_reproducible_existing_and_under30_rows():
     assert len(original["records"]) == 28
     assert registry["records"][:28] == original["records"]
     assert registry["research_sha256"] == original["research_sha256"]
-    assert len(registry["records"]) == 42
+    assert len(registry["records"]) == 50
+    reviewed_household = importer["build"](include_personal=False)
+    assert registry["records"][:42] == reviewed_household["records"]
     previous = importer["build"](include_under30=False)
     assert registry["records"][:34] == previous["records"]
     assert registry["data_version"] != original["data_version"]
@@ -54,11 +56,21 @@ def test_registry_reproducible_existing_and_under30_rows():
         ("C20", "중앙값", "72600000"), ("C20", "중앙값", "50000000"),
         ("C07", "중앙값", "302700000"), ("C08", "중앙값", "204200000"), ("C09", "중앙값", "280600000")]
     published = [r for r in registry["records"] if r["review_status"] == "REFERENCE_ONLY"]
-    assert len(published) == 29
-    assert [(r["cohort_id"], r["statistic_type"], r["value"]) for r in registry["records"][39:]] == [
+    assert len(published) == 37
+    assert [(r["cohort_id"], r["statistic_type"], r["value"]) for r in registry["records"][39:42]] == [
         ("C20", "평균", "155000000"), ("C20", "평균", "47030000"), ("C20", "평균", "107960000")]
-    assert {r["source_id"] for r in published} == {"S01", "S03"}
-    assert all(r["license"] == "KOGL_TYPE_1" for r in published)
+    assert {r["source_id"] for r in published} == {"S01", "S03", "S10"}
+    youth = registry["records"][42:]
+    assert [(r["cohort_id"], r["metric_key"], r["value"]) for r in youth] == [
+        ("C21", "proposal.total_assets", "50120000"), ("C21", "proposal.total_liabilities", "16370000"),
+        ("C22", "proposal.total_assets", "13980000"), ("C22", "proposal.total_liabilities", "2710000"),
+        ("C23", "proposal.total_assets", "43740000"), ("C23", "proposal.total_liabilities", "13390000"),
+        ("C24", "proposal.total_assets", "91660000"), ("C24", "proposal.total_liabilities", "32650000"),
+    ]
+    assert all(r["target_unit"] == "개인" and r["statistic_type"] == "평균" for r in youth)
+    assert all(r["period_start"] == r["period_end"] == "2023-12-31" for r in youth)
+    assert all(r["review_status"] == "REFERENCE_ONLY" and r["sample_size"] is None for r in youth)
+    assert all(r["license"] == "KOGL_TYPE_1" for r in published[:-len(youth)])
 
 
 @pytest.mark.parametrize("amount", ["0", "-100", "9007199254740993", None])
@@ -87,13 +99,13 @@ def test_scope_missing_and_presentation_gates_block_user_value(scope, state, gat
     assert all(r["user_value"] is None and r["difference"] is None for r in rows)
 
 
-def test_personal_assets_available_for_explicit_household_confirmation_only():
+def test_personal_assets_and_youth_references_keep_their_scope():
     doc, result = inputs(scope="personal", amount="0")
     doc["context"]["included_owner_ids"] = ["person_self"]
     doc["raw_bundle"]["answers"][0]["envelope"]["fields"]["life_stage_primary"]["raw_value"] = "LC_EARLY_CAREER"
     peer = attach_peer_reference(doc, result)["peer_reference"]
     assert peer["primary_stage"] == "LC_EARLY_CAREER"
-    assert peer["stage_hints"][0]["cohort_ids"][0] == "C20"
+    assert peer["stage_hints"][0]["cohort_ids"][:2] == ["C20", "C21"]
     assert peer["personal_asset_values"] == {"proposal.net_assets": "0"}
     assert all(row["user_value"] is None for row in peer["records"])
     result["frontend_integration"]["presentation_gates"] = [{"affected_outputs": ["OUT-02"]}]
