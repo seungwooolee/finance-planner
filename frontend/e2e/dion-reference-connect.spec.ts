@@ -20,7 +20,7 @@ from app.be.question_bridge import run_frontend_questions
 doc=json.loads(Path('../frontend/src/lib/dion/product-review-scenario.json').read_text(encoding='utf-8'))['document']
 peer=run_frontend_questions(doc)['peer_reference']
 assert peer['version']=='DION-PEER-REFERENCE-1.0'
-assert len(peer['records'])==50
+assert len(peer['records'])==62
 print(json.dumps(peer,ensure_ascii=True))
 `],{cwd:"../backend",encoding:"utf8",timeout:45000,maxBuffer:2_000_000}));
 });
@@ -56,7 +56,8 @@ test("fresh unsupported response never promises recalculation will supply data; 
   await expect(page.getByRole("status")).toContainText("저장 결과에는 참고 통계가 포함되어 있지 않아요");
   await expect(page.getByRole("button",{name:"현재 입력으로 새 결과 만들기",exact:true})).toBeVisible();
   const snapshot = reference as Record<string, Json>;
-  const legacy = {...snapshot, records: (snapshot.records as Record<string, Json>[]).filter(row => row.source_id !== "S10")};
+  const legacy = {...snapshot, asset_fallback_cohort_id: null,
+    records: (snapshot.records as Record<string, Json>[]).filter(row => row.target_unit !== "개인")};
   await show(page,assets(legacy,true));
   await expect(page.getByRole("status")).toContainText("이 저장 결과에는 비교할 개인 평균이 없어요");
   await expect(page.locator('[data-asset-series="reference"]')).toHaveCount(0);
