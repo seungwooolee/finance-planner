@@ -15,7 +15,7 @@ from pathlib import Path
 
 from . import portfolio_types
 from .common import ContractError, Missing, digest, integer, output
-from .product_candidates import GROUPS, comparison_groups
+from .product_candidates import GROUPS, comparison_groups, review_universe_groups
 from .product_candidates import VERSION as COMPARISON_VERSION
 from .product_disclosures import REVIEWED_ON, apply_disclosures
 from .product_explanation import explain
@@ -474,6 +474,9 @@ def review_products(document, result, *, catalog=None, policy=None):
         and product.get("recommendation_eligible") is True
         and not _facts_complete(product, reference_on, policy)
     }
+    performance = json.loads((root / "product_performance_202610.json").read_text(
+        encoding="utf-8")) if use_current_disclosures else {}
+    returns = performance.get("products", {}) if performance and _day(performance["published_on"]) <= on else {}
     for product in products:
         in_review = product["code"] in review_codes
         reasons = filter_product(product, profile, missing, invalid, policy, on, in_review_universe=in_review)
@@ -486,6 +489,7 @@ def review_products(document, result, *, catalog=None, policy=None):
                          "COMPARISON_ALTERNATIVE" if product.get("recommendation_eligible") or not reasons
                          else "REFERENCE_ONLY",
                          "official_source": product["official_source"],
+                         **({"historical_return": returns[product["code"]]} if product["code"] in returns else {}),
                          "detail_review_state": product.get("audit_state", "UNKNOWN"),
                          "disclosure": {**{k: (product.get("facts") or {}).get(k) for k in (
                              "risk_grade", "annual_base_fee_percent", "annual_total_expense_percent",
@@ -630,6 +634,7 @@ def review_products(document, result, *, catalog=None, policy=None):
                                   "stress_review": {"scenario_loss_krw_ceil": str((type_loss + 9999) // 10000),
                                                     "full_loss_scenario_krw": view["allocated_total_krw"]}}
             rows.append({"period": month["period"], **allocation, "portfolio_type_views": views,
+                         "comparison_eligible_codes": sorted(month_eligible & review_codes) if not general else [],
                          "comparison_groups": comparison_groups(products, set() if general else month_eligible,
                                                                 default_codes),
                          "reason_codes": sorted(set(month_reasons)),
@@ -656,7 +661,11 @@ def review_products(document, result, *, catalog=None, policy=None):
                                  "regulatory_certification": False},
                  products=screened, candidates=candidates, reason_messages=messages,
                  catalog_comparison={"reviewed_on": reference_on.isoformat(),
-                                     "groups": comparison_groups(products, reference_products, default_codes)},
+                                     "groups": comparison_groups(products, reference_products, default_codes),
+                                     "review_universe_groups": review_universe_groups(
+                                         [product for product in products if product["code"] in review_codes], returns),
+                                     "performance": {key: performance[key] for key in ("period_end", "basis")}
+                                     if returns else None},
                  comparison_scores=comparison_scores,
                  comparison_version=COMPARISON_VERSION,
                  portfolio_types={"version": portfolio_types.VERSION, "state": portfolio_types.STATE,
@@ -711,7 +720,7 @@ def block_product_budget(result):
     for candidate in row.get("candidates", []):
         for month in candidate["rows"]:
             month.update(allocations=[], allocated_total_krw="0", unallocated_krw=month["scenario_budget_krw"],
-                         calc_state="NEEDS_INPUT")
+                         calc_state="NEEDS_INPUT", comparison_eligible_codes=[])
             if "stress_review" in month:
                 month["stress_review"].update(scenario_loss_krw_ceil="0", full_loss_scenario_krw="0")
             for view in month.get("portfolio_type_views", {}).values():

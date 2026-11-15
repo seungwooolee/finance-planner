@@ -175,7 +175,14 @@ def test_dated_disclosures_feed_variants_and_keep_review_gates():
     assert (sol["risk_grade"], sol["annual_base_fee_percent"], sol["annual_total_expense_percent"],
             sol["transaction_cost_percent"]) == (5, "0.040", "0.0596", "0.0084")
     assert screened["133690"]["disclosure"]["transaction_cost_percent"] is None
+    grouped = review["catalog_comparison"]["review_universe_groups"]
+    assert sorted(code for group in grouped for code in group["product_codes"]) == sorted(screened)
+    bonds = next(group["product_codes"] for group in grouped if group["asset_group"] == "BOND")
+    assert bonds[:2] == ["214980", "153130"]
+    assert screened["214980"]["historical_return"]["percent"] == "2.46"
+    assert "historical_return" not in screened["469830"]
     row = review["candidates"][0]["rows"][0]
+    assert len(row["comparison_eligible_codes"]) == 12
     assert [a["code"] for a in row["allocations"]] == ["153130", "069500", "360200"]
     expected = {
         "STABLE": ("469830", "90000", "4500"),
