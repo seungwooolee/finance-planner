@@ -44,11 +44,15 @@ export function AssetReference({ value, ownValues, ownScope, stale, selection, o
       savedResult ? "이 저장 결과에는 참고 통계가 포함되어 있지 않아요." : "계산 서버가 자산 참고 통계를 보내지 않았어요."}</p>}
     {!data.version && savedResult && onRecalculate &&
       <button type="button" className="d-text-button" onClick={onRecalculate}>현재 입력으로 새 결과 만들기</button>}
-    {!!sources.length && <p className="d-asset-ref-context">{cohort?.label && <span>{cohort.label}</span>}{sources.map(([url, source]) => {
-      const href = sourceHref(url);
-      return <span key={url}>{href ? <a href={href} target="_blank" rel="noopener noreferrer">{source.title}</a> : source.title}
-        {source.date && ` · ${source.date} 기준`}</span>;
-    })}</p>}
+    {!!sources.length && cohort?.label && <p className="d-asset-ref-context">{cohort.label}</p>}
+    {!!sources.length && <details className="d-fold d-asset-ref-context">
+      <summary>통계 출처와 기준일</summary>
+      {sources.map(([url, source]) => {
+        const href = sourceHref(url);
+        return <span key={url}>{href ? <a href={href} target="_blank" rel="noopener noreferrer">{source.title}</a> : source.title}
+          {source.date && ` · ${source.date} 기준`}</span>;
+      })}
+    </details>}
     {!!relatedRows.length && <ul className="d-asset-ref-context">{relatedRows.map(row => {
       const href = sourceHref(textValue(row.source_url));
       return <li key={textValue(row.statistic_id)}>

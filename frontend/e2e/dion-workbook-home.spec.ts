@@ -20,6 +20,8 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
     await expect(rendered.locator("[data-portfolio-type]")).toHaveCount(3);
     await expect(rendered.locator("[data-portfolio-type] .d-donut")).toHaveCount(3);
     await expect(rendered.locator("[data-portfolio-type] .d-pending-box")).toHaveCount(0);
+    await expect(rendered.getByRole("button",{name:"재계산",exact:true})).toHaveCount(0);
+    await expect(rendered.getByText(/검토용 초안 · 실제 가입|구성을 선택해 비교할 수 있어요|검토 조건을 모두 통과한 상품이 없어|배분 정책의 검토 기준일|도넛 가운데 표시/)).toHaveCount(0);
     await resultTabs.getByRole("button", {name:"상품 정보", exact:true}).click();
     await expect(rendered.getByRole("region", {name:"상품 적합성·배분 검토"})).toBeVisible();
     await rendered.getByText("개인별 검토 대상 29종", {exact:true}).click();
@@ -55,10 +57,12 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   expect(earlyProducts.reason_codes).toContain("POLICY_DISCLOSURE_STALE");
   expect(earlyProducts.candidates[0].rows[0]).toMatchObject({allocated_total_krw:"0", unallocated_krw:"399500"});
   await expect(rendered.getByText(/109만 9천\s*원/).first()).toBeVisible();
-  await expect(assumptions).toContainText("2031-10-31 자산 잔액 1억원");
+  await expect(assumptions).toHaveCount(0);
+  await expect(rendered.getByRole("button",{name:"재계산",exact:true})).toHaveCount(0);
   await resultTabs.getByRole("button", {name:"재무안 선택",exact:true}).click();
   await expect(plans.getByRole("button",{name:"생활 안정 우선"})).toBeVisible();
   await expect(plans.getByRole("button",{name:"투자 여력 확대"})).toBeVisible();
+  await expect(rendered.getByRole("button",{name:"재계산",exact:true})).toHaveCount(0);
   await expect(rendered.getByRole("rowheader", {name:/^시연용 목돈 준비/})).toBeVisible();
   await checkPortfolioViews();
 
@@ -94,10 +98,11 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
     .toEqual(expect.arrayContaining(["FUND_USE_UNDECIDED","LOSS_BUDGET_UNRESOLVED"]));
   expect(retiredProducts.candidates[0].rows[1]).toMatchObject({allocated_total_krw:"0",unallocated_krw:"550000"});
   await expect(rendered.locator(".d-metric").filter({hasText:"순자산"}).locator("strong")).toHaveText("14억원");
-  await expect(assumptions).toContainText("은퇴·상속 의향");
+  await expect(assumptions).toHaveCount(0);
   await resultTabs.getByRole("button", {name:"재무안 선택",exact:true}).click();
   await expect(plans.getByRole("button",{name:"생활 안정 우선"})).toBeVisible();
   await expect(plans.getByRole("button",{name:"투자 여력 확대"})).toBeVisible();
+  await expect(rendered.getByRole("button",{name:"재계산",exact:true})).toHaveCount(0);
   await expect(rendered.getByRole("rowheader", {name:/^시연용 주거 정비비/})).toBeVisible();
   await resultTabs.getByRole("button",{name:"투자구성",exact:true}).click();
   const budget = rendered.locator(".d-kpi").filter({hasText:"2027-01 신규 투자 후보금"});

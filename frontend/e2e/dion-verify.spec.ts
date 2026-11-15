@@ -47,7 +47,7 @@ test.describe('검토 도구 · 사회초년생 저장 검증', () => {
       await openQuestions();
       await expect(questions).toBeVisible();
       await page.getByRole('button',{name:'상담창 닫기',exact:true}).click();
-      await expect(tools.getByRole('button',{name:'재계산',exact:true})).toHaveCount(1);
+      await expect(tools.getByRole('button',{name:'재계산',exact:true})).toHaveCount(0);
     });
   }
 
