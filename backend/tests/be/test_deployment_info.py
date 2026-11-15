@@ -43,5 +43,6 @@ def test_real_entrypoint_exposes_both_general_and_v05_evidence_routes():
 
     paths = app.openapi()["paths"]
     assert "/api/deployment-info" in paths
+    assert "/api/be/v1/dialogue" in paths
     assert "/api/be/v1/cases/{case_id}/analyses/{run_id}/portfolio-evidence" in paths
     assert "/api/be/v1/cases/{case_id}/agent-sessions/{sid}/scheme-evidence" in paths

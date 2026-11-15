@@ -5,6 +5,7 @@ from urllib.parse import urlsplit
 from urllib.request import urlopen
 
 REQUIRED_PATHS = {
+    "/api/be/v1/dialogue",
     "/api/fe/v1/preview",
     "/api/be/v1/cases/{case_id}/analyses/{run_id}/portfolio-evidence",
     "/api/be/v1/cases/{case_id}/agent-sessions/{sid}/scheme-evidence",
