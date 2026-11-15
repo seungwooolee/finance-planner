@@ -27,12 +27,14 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
   const profileName = profile ? `${profile[1]} ${profile[2]}` : '투자 선호 확인 후';
   const rows = list(list(review.candidates).find(c => c.strategy_id === selectedPlan)?.rows);
   const month = rows[0];
+  const budgetPending = !month && !!review.review_version;
   const products = list(review.products);
   const views = object(month?.portfolio_type_views);
   const order = Object.keys(TYPES);
   const selected = chosen ? TYPES[chosen] : undefined;
   const footText = (id: string) => {
     const view = object(views[id]);
+    if (budgetPending) return '신규 투자 후보금 계산 후 상품과 배분액을 확인할 수 있어요.';
     if (blocked) return '현재 입력·결과와 저장 상태를 확인해주세요.';
     if (view.selectable === true) return chosen === id ? '현재 상담용 포트폴리오 검토안에 반영한 구성이에요.' : '선택하면 이 구성의 상품·비중을 검토안에 반영해요.';
     const codes = Array.isArray(view.reason_codes) ? view.reason_codes : [];
@@ -57,8 +59,8 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
       <article className="d-kpi d-kpi-soft"><span>기존 저축·투자 납입</span><strong><MoneyAmount value={flow.existing_cash_contributions_krw}/></strong><small>바꾸지 않고 별도로 유지해요</small></article>
     </div>
     <article className="d-card d-portfolio-section" aria-label="포트폴리오 검토 유형">
-      <div className="d-card-head"><div><h2>{relative ? `${profileName} 안에서 투자구성 선택` : '저장 당시의 투자구성 비교'}</h2><p>{relative ? '내 기준을 유지하면서 안정·중립·위험추구 중 운용 방향을 골라보세요.' : '이전 방식으로 계산된 결과예요. 내 기준 안의 세 가지 구성을 보려면 다시 계산해주세요.'} 이번 달 신규 투자 후보금에 적용돼요.</p></div><PlanSelector selected={selectedPlan} onSelect={onPlan} /></div>
-      {(!relative || order.some(id => typeof object(views[id]).selectable !== 'boolean')) && <div className="d-note"><p>저장된 각 안의 상세 내역은 아래에서 확인할 수 있어요. 현재 입력으로 다시 계산하면 최신 조건으로 선택 가능 여부를 확인해요.</p><button type="button" className="d-secondary" disabled={!onRecalculate} onClick={onRecalculate}>현재 입력으로 다시 계산</button></div>}
+      <div className="d-card-head"><div><h2>{budgetPending ? '투자구성 비교' : relative ? `${profileName} 안에서 투자구성 선택` : '저장 당시의 투자구성 비교'}</h2><p>{budgetPending ? '세 구성의 운용 방향을 먼저 살펴보세요.' : relative ? '내 기준을 유지하면서 안정·중립·위험추구 중 운용 방향을 골라보세요. 이번 달 신규 투자 후보금에 적용돼요.' : '이전 방식으로 계산된 결과예요. 내 기준 안의 세 가지 구성을 보려면 다시 계산해주세요.'}</p></div><PlanSelector selected={selectedPlan} onSelect={onPlan} /></div>
+      {!budgetPending && (!relative || order.some(id => typeof object(views[id]).selectable !== 'boolean')) && <div className="d-note"><p>저장된 각 안의 상세 내역은 아래에서 확인할 수 있어요. 현재 입력으로 다시 계산하면 최신 조건으로 선택 가능 여부를 확인해요.</p><button type="button" className="d-secondary" disabled={!onRecalculate} onClick={onRecalculate}>현재 입력으로 다시 계산</button></div>}
       {commonFoot && <p className="d-inline-note d-portfolio-common" role="note">{commonFoot}</p>}
       <div className="d-portfolio-grid">{order.map((id, i) => {
         const [title, subtitle, purpose, risk] = TYPES[id];
@@ -78,7 +80,7 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
           {ready ? <>
             <Donut slices={slices} total={total} center={<><small>배분</small><strong>{formatKrw(view.allocated_total_krw)}</strong></>} />
             <DonutLegend slices={slices} total={total} />
-          </> : <div className="d-pending-box"><strong>확인 필요</strong><p>이 유형의 구성 계산이 아직 없어요. 투자 답변과 상품 조건을 확인해주세요.</p></div>}
+          </> : <div className="d-pending-box"><strong>{budgetPending ? '배분액 확인 대기' : '확인 필요'}</strong>{!budgetPending && <p>이 유형의 구성 계산이 아직 없어요. 투자 답변과 상품 조건을 확인해주세요.</p>}</div>}
           <p className="d-type-line"><b>특징</b> {purpose}</p>
           <p className="d-type-line d-type-risk"><b>위험</b> {risk}</p>
           {view.cash_only === true && <p className="d-inline-note">현재 성향의 정책에 따라 상품 배분 없이 후보금 전액을 현금 대기자금으로 표시해요. 자금 이동이나 현금 보유 확정은 아니에요.</p>}
