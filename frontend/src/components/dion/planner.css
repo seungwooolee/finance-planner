@@ -758,8 +758,17 @@
 .dion-app .d-summary-label{margin:0;font-size:14px;color:#4c5568}
 .dion-app .d-summary-figure{margin:2px 0 8px;font-size:32px;line-height:1.2;font-weight:800;letter-spacing:-.03em;color:var(--d-result-ink,#202d50);font-variant-numeric:tabular-nums;word-break:keep-all}
 .dion-app .d-summary-pending{font-size:24px;color:#6a5a2c}
-.dion-app .d-summary-tags{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
-.dion-app .d-summary-tags li{font-size:14px;font-weight:650;border:1px solid #d5d9ee;border-radius:8px;padding:2px 8px;background:#fff}
+.dion-app .d-summary-hero{background:#f4effa;border-radius:14px;padding:14px 16px}
+.dion-app .d-personal-flow .d-summary-hero .d-summary-figure{color:#4f3277;font-size:clamp(25px,3vw,38px);overflow-wrap:anywhere}
+.dion-app .d-personal-flow .d-summary-hero .d-summary-shortage{color:#8a3e36}
+.dion-app .d-personal-flow .d-summary-hero .d-summary-pending{font-size:23px;color:#6a5a2c}
+.dion-app .d-personal-flow .d-summary-facts small{display:block}
+.dion-app .d-summary-facts dt{flex-shrink:0}
+.dion-app .d-summary-facts dd{min-width:0;overflow-wrap:anywhere}
+.dion-app .d-goal-remaining{color:#553382;font-weight:800}
+.dion-app .d-goals-card .d-goal-table :is(th,td){white-space:normal}
+.dion-app .d-goals-card h2{margin-bottom:16px}
+@media(max-width:760px){.dion-app .d-goal-table .d-goal-plan{display:grid;grid-template-columns:minmax(0,1fr);gap:4px}.dion-app .d-goal-table .d-goal-plan::before{text-align:right}}
 .dion-app .d-summary-note{margin:8px 0 0;font-size:14px;color:#4c5568}
 .dion-app .d-summary-goal{margin:0 0 6px;font-size:18px;font-weight:750}
 .dion-app .d-summary-facts{margin:0;display:grid;gap:2px}
