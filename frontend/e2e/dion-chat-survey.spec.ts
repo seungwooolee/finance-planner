@@ -32,7 +32,7 @@ test('chat only: consent, confirmed input, engine result and recoverable AI fail
  await chat.getByRole('button',{name:'확인한 답변으로 계산'}).click();const doc=(await calculation).postDataJSON();
  expect(doc.context.scope).toBe('personal');expect(doc.raw_bundle.answers.some((r:{envelope:{fields:{monthly_net_income_krw?:{raw_value:string}}}})=>r.envelope.fields.monthly_net_income_krw?.raw_value==='300')).toBe(true);
  await expect(chat.getByRole('log')).toContainText('새 결과를 확인할 수 있어요');
- await input.fill('장애 테스트');await input.press('Enter');await expect(chat.getByRole('alert')).toContainText('AI 응답을 받지 못했어요');await expect(input).toHaveValue('장애 테스트');
+ await input.fill('장애 테스트');await input.press('Enter');await expect(chat.getByRole('alert')).toContainText('AI 응답을 받지 못했어요');await expect(input).toHaveValue('');await expect(chat.locator('.d-chat-message.user')).toContainText(['장애 테스트']);
  await page.setViewportSize({width:390,height:844});expect(await chat.evaluate(n=>n.scrollWidth<=n.clientWidth)).toBe(true);
  await expect(input).toBeInViewport();await input.press('Escape');await expect(chat).not.toBeVisible();await expect(page.getByRole('button',{name:'dion AI 상담 열기',exact:true})).toBeFocused();
 });
