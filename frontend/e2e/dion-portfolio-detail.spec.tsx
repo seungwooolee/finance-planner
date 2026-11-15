@@ -43,14 +43,14 @@ test('each composition opens read-only monthly detail by keyboard on desktop and
     await page.setContent(`<style>body{margin:0}${css}</style><div class="dion-app"><main class="d-main d-results">${renderToStaticMarkup(<PortfolioChoice {...base}/>)}</main></div>`);
     for (const [i, type] of types.entries()) {
       const card = page.locator(`[data-portfolio-type="${type}"]`);
-      const summary = card.locator('summary');
+      const summary = card.locator(':scope > details > summary').first();
       await expect(summary).toContainText(`${titles[i]} 상세 보기`);
       await summary.focus(); await page.keyboard.press('Enter');
-      await expect(card.locator('details')).toHaveAttribute('open', '');
+      await expect(card.locator(':scope > details').first()).toHaveAttribute('open', '');
       const month = card.getByRole('region', {name: '2026-11 구성 상세'});
       await expect(month).toContainText(`${i + 1}만원`);
       await expect(month).toContainText(`후보금 대비 ${(i + 1) * 10}%`);
-      await expect(month).toContainText('연 총보수 0%');
+      await expect(month).toContainText('총보수(연) 0%');
       await expect(card.getByRole('region', {name: '2026-12 구성 상세'})).toBeVisible();
       await expect(card.locator(':scope > button')).toBeEnabled();
       await expect(card.locator(':scope > button')).toHaveAttribute('aria-pressed', 'false');

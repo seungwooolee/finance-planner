@@ -739,3 +739,100 @@
   scroll-margin-top: var(--d-results-scroll-offset, 96px);
 }
 .dion-app .d-selected-composition > button { margin-top: 12px; }
+/* 2026-11-15 결과 가독성: 제목·대표 금액·본문·보조 설명 위계 */
+.dion-app .d-results{font-size:16px;line-height:1.65}
+.dion-app .d-results .d-card>h2,.dion-app .d-results .d-card-head h2,.dion-app .d-results .d-product-comparison>h2{font-size:22px;line-height:1.35;letter-spacing:-.02em}
+.dion-app .d-results .d-inline-note{font-size:14px;line-height:1.7;color:#4c5568}
+.dion-app .d-results :focus-visible{outline:3px solid var(--d-primary);outline-offset:2px}
+.dion-app .d-results summary{cursor:pointer;min-height:44px;padding:10px 0;box-sizing:border-box;font-weight:650}
+/* 내 상황 한눈에 */
+.dion-app .d-personal-summary .d-personal-flow{grid-template-columns:1.15fr 1fr .9fr;gap:28px}
+.dion-app .d-personal-summary .d-personal-flow li{padding:8px 0 0;border-top:0}
+.dion-app .d-personal-summary .d-personal-flow li+li{border-left:1px solid #e9e6f5;padding-left:24px}
+.dion-app .d-personal-flow .d-summary-figure{margin:2px 0 8px;font-size:32px;line-height:1.2;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.dion-app .d-personal-flow .d-summary-pending{font-size:24px;color:#6a5a2c}
+.dion-app .d-personal-flow .d-summary-label,.dion-app .d-personal-flow .d-summary-note{font-size:14px;line-height:1.6;color:#4c5568}
+.dion-app .d-personal-flow .d-summary-note{margin-top:8px}
+.dion-app .d-personal-flow .d-summary-goal{font-size:18px;font-weight:750;margin-bottom:6px}
+.dion-app .d-personal-flow h3{font-size:15px}
+.dion-app .d-summary-label{margin:0;font-size:14px;color:#4c5568}
+.dion-app .d-summary-figure{margin:2px 0 8px;font-size:32px;line-height:1.2;font-weight:800;letter-spacing:-.03em;color:var(--d-result-ink,#202d50);font-variant-numeric:tabular-nums;word-break:keep-all}
+.dion-app .d-summary-pending{font-size:24px;color:#6a5a2c}
+.dion-app .d-summary-tags{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.dion-app .d-summary-tags li{font-size:14px;font-weight:650;border:1px solid #d5d9ee;border-radius:8px;padding:2px 8px;background:#fff}
+.dion-app .d-summary-note{margin:8px 0 0;font-size:14px;color:#4c5568}
+.dion-app .d-summary-goal{margin:0 0 6px;font-size:18px;font-weight:750}
+.dion-app .d-summary-facts{margin:0;display:grid;gap:2px}
+.dion-app .d-summary-facts div{display:flex;justify-content:space-between;gap:12px;padding:5px 0;border-bottom:1px solid var(--d-line)}
+.dion-app .d-summary-facts dt{color:#4c5568;font-size:15px}.dion-app .d-summary-facts dd{margin:0;font-weight:750;text-align:right;font-variant-numeric:tabular-nums}
+.dion-app .d-personal-flow .d-primary{margin-top:12px;min-height:48px}
+/* 구성 상세 */
+.dion-app .d-composition-kpis{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:8px 0 12px}
+.dion-app .d-composition-kpis div{border:1px solid var(--d-line);border-radius:12px;padding:10px 12px;min-width:0}
+.dion-app .d-composition-kpis dt{font-size:13px;color:#4c5568}.dion-app .d-composition-kpis dd{margin:2px 0 0;font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;word-break:keep-all}
+.dion-app .d-composition-bar{margin:0 0 10px}.dion-app .d-composition-bar .d-stack-bar{gap:2px;height:18px;margin:4px 0 8px}
+.dion-app .d-composition-bar .d-stack-bar i{display:block;height:100%}
+.dion-app .d-stack-legend{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px}
+.dion-app .d-stack-legend small{color:#4c5568}
+.dion-app .d-dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:baseline}
+.dion-app .d-composition-risk{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin:0 0 12px;font-size:14px}
+.dion-app .d-composition-status{border:1px dashed #9aa1b8;border-radius:8px;padding:2px 8px;color:#4c5568;font-weight:650}
+.dion-app .d-composition-risk strong{color:#8a3b2a}
+.dion-app .d-composition-product-head{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.dion-app .d-composition-amount{text-align:right;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.dion-app .d-composition-amount small{display:block;font-weight:500;font-size:13px;color:#4c5568}
+.dion-app .d-composition-meta{margin:4px 0 0;font-size:14px;color:#4c5568}
+.dion-app .d-composition-more summary{font-size:14px;min-height:40px}
+/* 후보 비교 */
+.dion-app .d-comparison-common{background:#fff6ec;border:1px solid #f0d9bd;border-radius:12px;padding:10px 14px;font-size:15px}
+.dion-app .d-comparison-table caption{caption-side:top;text-align:left;font-size:14px;color:#4c5568;padding-bottom:8px}
+.d-product-comparison tbody th strong{font-size:15px}
+.d-comparison-role{font-size:13px}.d-comparison-alt{background:#fff;border:1px dashed #9d8bb8;color:#5b4b78}
+.d-comparison-reason-grid p,.d-comparison-reason-grid li{font-size:14px}.d-comparison-reason-grid h3{font-size:14px}.d-comparison-reason-grid a{font-size:14px}
+.d-product-comparison .d-comparison-reasons td{padding:0 14px 16px}
+.d-product-comparison .d-comparison-reasons summary{font-size:14px;color:#4b3f8f}
+/* 제안서 비교·가정·위험 */
+.dion-app .d-proposal-scope{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:15px;margin:8px 0 12px}
+.dion-app .d-proposal-scope b{color:var(--d-primary);margin-right:6px}
+.dion-app .d-proposal-compare caption{caption-side:top;text-align:left;font-size:14px;color:#4c5568;padding-bottom:8px}
+.dion-app .d-rate-line{display:flex;justify-content:space-between;gap:10px;font-weight:750;font-variant-numeric:tabular-nums}
+.dion-app .d-rate-line em{font-style:normal;font-weight:600;font-size:13px;color:#4c5568;white-space:nowrap}
+.dion-app .d-proposal-extra th,.dion-app .d-proposal-extra td{background:#fafafc}
+.dion-app .d-proposal-assume{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0}
+.dion-app .d-proposal-assume div{border:1px solid var(--d-line);border-radius:12px;padding:10px 12px}
+.dion-app .d-proposal-assume dt{font-size:13px;color:#4c5568}.dion-app .d-proposal-assume dd{margin:2px 0 0;font-weight:750}
+.dion-app .d-proposal-assume small{display:block;font-weight:500;font-size:13px;color:#4c5568}
+.dion-app .d-proposal-key{font-size:15px;font-weight:600;margin:12px 0 4px}
+.dion-app .d-proposal-risks{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.dion-app .d-proposal-risks li{display:grid;grid-template-columns:150px 1fr;gap:12px;padding:8px 0;border-bottom:1px solid var(--d-line)}
+.dion-app .d-proposal-risks li b{font-size:15px}
+@media(max-width:760px){
+  .dion-app .d-personal-summary .d-personal-flow{grid-template-columns:1fr}
+  .dion-app .d-personal-summary .d-personal-flow li+li{border-left:0;padding-left:0;border-top:1px solid #e9e6f5;padding-top:16px}
+  .dion-app .d-personal-flow .d-summary-figure{font-size:28px}
+  .dion-app .d-summary-figure{font-size:28px}
+  .dion-app .d-composition-kpis{grid-template-columns:1fr}
+  .dion-app .d-proposal-assume{grid-template-columns:1fr 1fr}
+  .dion-app .d-proposal-risks li{grid-template-columns:1fr;gap:2px}
+  .dion-app .d-proposal-compare thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .dion-app .d-proposal-compare,.dion-app .d-proposal-compare tbody,.dion-app .d-proposal-compare tr,.dion-app .d-proposal-compare th,.dion-app .d-proposal-compare td{display:block;width:100%}
+  .dion-app .d-proposal-compare tr{border:1px solid var(--d-line);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+  .dion-app .d-proposal-compare td{border:0;padding:4px 0}
+  .dion-app .d-proposal-compare td::before{content:attr(data-label);display:block;font-size:13px;color:#4c5568}
+}
+@media print{
+  .dion-app .d-no-print{display:none!important}
+  .dion-app .d-proposal details.d-proposal-more{display:block!important}
+  .dion-app .d-proposal details.d-proposal-more::details-content{content-visibility:visible;display:contents}
+}
+.dion-app .d-proposal-compare{table-layout:fixed;width:100%}
+.dion-app .d-proposal-compare thead th:nth-child(1){width:15%}.dion-app .d-proposal-compare thead th:nth-child(2){width:17%}
+.dion-app .d-proposal-compare thead th:nth-child(3){width:14%}.dion-app .d-proposal-compare thead th:nth-child(4){width:28%}
+.dion-app .d-rate-line{flex-wrap:wrap}.dion-app .d-rate-line>:not(em){white-space:nowrap}
+.dion-app .d-proposal-risks li{grid-template-columns:200px 1fr}
+.dion-app .d-proposal-risks li.d-warning{padding:10px 14px;border-radius:12px}
+@media(max-width:760px){.dion-app .d-proposal-compare thead th{width:auto}.dion-app .d-proposal-risks li{grid-template-columns:1fr}}
+@media(max-width:760px){
+  .dion-app .d-comparison-table caption,.dion-app .d-proposal-compare caption{display:block;width:auto}
+}
+.dion-app .d-results .d-card h2{word-break:keep-all}
