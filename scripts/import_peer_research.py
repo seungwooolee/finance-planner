@@ -12,6 +12,7 @@ SOURCE = ROOT / "docs/research/peer-reference/research-snapshot.csv"
 DESTINATION = ROOT / "backend/app/planning/peer_reference_data.json"
 SUPPLEMENT = ROOT / "docs/research/peer-reference/asset-supplement-20261115.json"
 UNDER30 = ROOT / "docs/research/peer-reference/asset-under30-20261116.json"
+PERSONAL_ASSETS = ROOT / "docs/research/peer-reference/personal-assets-20261116.json"
 
 
 def normalize(value, unit):
@@ -28,7 +29,38 @@ def normalize(value, unit):
         return format(converted, "f") if unit == "%" else str(int(converted))
 
 
-def build(include_supplement=True, *, include_under30=True):
+def _add_personal_assets(registry):
+    raw = PERSONAL_ASSETS.read_text(encoding="utf-8").rstrip() + "\n"
+    report = json.loads(raw)
+    seen = {row["statistic_id"] for row in registry["records"]}
+    for cohort in report["cohorts"]:
+        for field, metric_key in (("assets", "proposal.total_assets"), ("debt", "proposal.total_liabilities")):
+            source_value = cohort[field]
+            statistic_id = cohort[f"{field}_id"]
+            value = normalize(source_value, "만원")
+            if statistic_id in seen or value is None or int(value) < 0:
+                raise ValueError(f"{statistic_id}: duplicate ID or invalid personal asset statistic")
+            seen.add(statistic_id)
+            metric = report["metric_definitions"][metric_key]
+            registry["records"].append({
+                "id": f"D{statistic_id[1:]}", "statistic_id": statistic_id, "cohort_id": cohort["id"],
+                "metric_key": metric_key, "label": metric["label"], "value": value, "unit": "KRW",
+                "source_value": source_value, "source_unit": "만원", "statistic_type": "평균", "target_unit": "개인",
+                "definition": metric["definition"], "definition_version": "DION-PEER-PERSONAL-ASSET-1.0",
+                "period_start": report["period"], "period_end": report["period"],
+                "cohort_definition": f"2024년 청년 삶 실태조사 · 전국 {cohort['label']}",
+                "source_id": report["source_id"], "source_title": report["source_title"],
+                "publisher": report["publisher"], "source_url": report["source_url"], "published_on": None,
+                "source_position": f"{metric['position']} · {cohort['source_row']}",
+                "source_file_sha256": report["source_file_sha256"], "sample_size": None, "quality": report["quality"],
+                "limitations": report["limitations"], "license": report["license"], "review_status": "REFERENCE_ONLY",
+                "reason": "공표 집계값을 참고합니다. 집단 해당 여부와 DION의 지표 정의·기간 일치는 확인하지 않았습니다.",
+            })
+    registry.update(data_version=report["data_version"], reviewed_on=report["reviewed_on"],
+                    personal_assets_sha256=hashlib.sha256(raw.encode("utf-8")).hexdigest())
+
+
+def build(include_supplement=True, *, include_under30=True, include_personal=True):
     # Hash the canonical UTF-8/LF snapshot, independent of Windows checkout endings.
     raw = (SOURCE.read_text(encoding="utf-8-sig").rstrip() + "\n").encode("utf-8")
     tabs = [list(csv.DictReader(io.StringIO(part.strip())))
@@ -126,6 +158,8 @@ def build(include_supplement=True, *, include_under30=True):
                 })
             registry.update({"data_version": appendix["data_version"], "reviewed_on": appendix["reviewed_on"],
                              "under30_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest()})
+    if include_supplement and include_under30 and include_personal:
+        _add_personal_assets(registry)
     return registry
 
 

@@ -99,9 +99,23 @@ test("asset reference web flow uses real preview data and shares selection, snap
   await expect(chart.locator('[data-asset-series="own"][data-value="12000000"]')).toHaveCount(1);
   await expect(chart).toContainText("내 현재값 · 개인");
   expect(result.peer_reference.scope).toBe("personal");
-  await expect(chart.getByLabel("비교할 참고 집단")).toHaveCount(0);
-  await expect(chart).toContainText("개인 단위로 비교할 수 있는 평균 자료를 아직 확보하지 못했어요");
-  await expect(chart.locator('[data-asset-series="reference"]')).toHaveCount(0);
+  const cohortControl = chart.getByLabel("비교할 참고 집단");
+  await expect(cohortControl).toHaveValue("ANSWER");
+  await expect(chart).toHaveAttribute("data-selected-cohort","C21");
+  await expect(chart).toContainText("만 19~34세 청년 개인");
+  await expect(chart).toContainText("조사 평균 · 개인");
+  await expect(cohortControl.locator('option[value="C20"]')).toHaveCount(0);
+  const asset = chart.locator('[data-asset-metric="proposal.total_assets"] [data-asset-series="reference"]');
+  const debt = chart.locator('[data-asset-metric="proposal.total_liabilities"] [data-asset-series="reference"]');
+  await expect(asset).toHaveAttribute("data-value","50120000");
+  await expect(debt).toHaveAttribute("data-value","16370000");
+  await expect(chart.locator('[data-asset-metric="proposal.net_assets"] [data-asset-series="reference"]')).toHaveText("자료 없음");
+  await chart.getByText("통계 출처와 기준일",{exact:true}).click();
+  await expect(chart.getByRole("link",{name:/2024년 청년 삶 실태조사/})).toHaveAttribute("href",/paper-collections\/2063/);
+  await expect(chart.locator("details[open]")).toContainText("2023-12-31");
+  await cohortControl.selectOption("C23");
+  await expect(asset).toHaveAttribute("data-value","43740000");
+  await expect(debt).toHaveAttribute("data-value","13390000");
   await expect(chart.locator("[data-asset-metric]")).toHaveCount(3);
   await expect(page.getByRole("region", {name:"생활단계 참고 통계", exact:true})).toHaveCount(0);
   const ownValues = await chart.locator('[data-asset-series="own"]').evaluateAll(els => els.map(el => el.getAttribute("data-value")));
@@ -114,8 +128,8 @@ test("asset reference web flow uses real preview data and shares selection, snap
   await expect(final).toBeHidden();
   await referenceToggle.click({timeout:15_000});
   await expect(final).toBeVisible();
-  await expect(final.getByRole("combobox")).toHaveCount(0);
-  await expect(final.locator('[data-asset-series="reference"]')).toHaveCount(0);
+  await expect(final.getByRole("combobox")).toHaveValue("C23");
+  await expect(final.locator('[data-statistic-id="V047"] [data-asset-series="reference"]')).toHaveAttribute("data-value","43740000");
   expect(await final.locator('[data-asset-series="own"]').evaluateAll(els => els.map(el => el.getAttribute("data-value")))).toEqual(ownValues);
   await expect(final).toHaveAttribute("data-input-version", String(result.peer_reference.input_version));
   await final.screenshot({ path: info.outputPath("final-web.png") });
@@ -139,6 +153,7 @@ test("asset reference web flow uses real preview data and shares selection, snap
   await expect(chart).toContainText("내 현재값 · 가구");
   await expect(chart).toContainText("조사 평균 · 가구");
   await expect(chart).toHaveAttribute("data-selected-cohort","C09");
+  await expect(chart.getByLabel("비교할 참고 집단").locator('option[value="C21"]')).toHaveCount(0);
   const values = chart.locator('[data-asset-series="reference"]');
   expect(await values.evaluateAll(els=>els.map(el=>el.getAttribute("data-value"))))
     .toEqual(["600950000","65040000","535910000"]);

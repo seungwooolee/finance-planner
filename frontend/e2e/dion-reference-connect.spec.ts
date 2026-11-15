@@ -20,7 +20,7 @@ from app.be.question_bridge import run_frontend_questions
 doc=json.loads(Path('../frontend/src/lib/dion/product-review-scenario.json').read_text(encoding='utf-8'))['document']
 peer=run_frontend_questions(doc)['peer_reference']
 assert peer['version']=='DION-PEER-REFERENCE-1.0'
-assert len(peer['records'])==42
+assert len(peer['records'])==50
 print(json.dumps(peer,ensure_ascii=True))
 `],{cwd:"../backend",encoding:"utf8",timeout:45000,maxBuffer:2_000_000}));
 });
@@ -35,7 +35,7 @@ test("preview engine snapshot renders asset and life-stage graphs immediately on
   for(const [name,size] of [["desktop",{width:1440,height:1000}],["mobile",{width:390,height:844}]] as const){
     await page.setViewportSize(size);
     await show(page,React.createElement(React.Fragment,null,assets(reference),React.createElement(PeerReference,{value:reference,stale:false})));
-    await expect(page.getByRole("figure",{name:"현재 자산 금액 그래프"})).toBeVisible();
+    await expect(page.getByRole("figure",{name:"현재 자산과 과거 조사 통계의 금액 그래프"})).toBeVisible();
     const life=page.getByRole("region",{name:"생활단계 참고 통계",exact:true});
     await expect(life.getByRole("combobox")).toHaveValue("C07");
     await expect(life.getByRole("figure",{name:"총자산 참고 그래프",exact:true}).filter({hasText:"조사 평균"})).toBeVisible();
@@ -54,5 +54,11 @@ test("fresh unsupported response never promises recalculation will supply data; 
   await expect(page.getByRole("figure")).toHaveCount(0);
   await show(page,assets(undefined,true));
   await expect(page.getByRole("status")).toContainText("저장 결과에는 참고 통계가 포함되어 있지 않아요");
+  await expect(page.getByRole("button",{name:"현재 입력으로 새 결과 만들기",exact:true})).toBeVisible();
+  const snapshot = reference as Record<string, Json>;
+  const legacy = {...snapshot, records: (snapshot.records as Record<string, Json>[]).filter(row => row.source_id !== "S10")};
+  await show(page,assets(legacy,true));
+  await expect(page.getByRole("status")).toContainText("이 저장 결과에는 비교할 개인 평균이 없어요");
+  await expect(page.locator('[data-asset-series="reference"]')).toHaveCount(0);
   await expect(page.getByRole("button",{name:"현재 입력으로 새 결과 만들기",exact:true})).toBeVisible();
 });
