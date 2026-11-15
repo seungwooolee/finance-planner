@@ -1,5 +1,6 @@
 "use client";
 import { Document, Json, fieldValue, list, object, textValue } from '@/lib/dion/model';
+import { MoneyAmount } from "./money-amount";
 import { formatKrw } from '@/lib/dion/money-format';
 import { allocationSlices, isWon } from '@/lib/dion/result-visual';
 import { PlanSelector } from './plan-comparison';
@@ -50,9 +51,9 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
       <p className="d-inline-note">투자 선호와 함께 생활비·보호자금, 손실 허용 범위, 사용 시점과 상품 조건을 확인해 실제 배분을 제한해요. 아래 구성 선택으로 P1~P5 응답이 바뀌지는 않아요.</p>
     </article>
     <div className="d-kpis d-kpis-3">
-      <article className="d-kpi"><span>이번 달 신규 투자 후보금</span><strong>{formatKrw(planRow?.new_investment_krw)}</strong><small>목표·보호자금 배정 후</small></article>
-      <article className="d-kpi"><span>생활비·상환 후 남는 돈</span><strong>{formatKrw(surplus)}</strong><small>월 기준 · 투자 권장액 아님</small></article>
-      <article className="d-kpi d-kpi-soft"><span>기존 저축·투자 납입</span><strong>{formatKrw(flow.existing_cash_contributions_krw)}</strong><small>바꾸지 않고 별도로 유지해요</small></article>
+      <article className="d-kpi"><span>이번 달 신규 투자 후보금</span><strong><MoneyAmount value={planRow?.new_investment_krw}/></strong><small>목표·보호자금 배정 후</small></article>
+      <article className="d-kpi"><span>생활비·상환 후 남는 돈</span><strong><MoneyAmount value={surplus}/></strong><small>월 기준 · 투자 권장액 아님</small></article>
+      <article className="d-kpi d-kpi-soft"><span>기존 저축·투자 납입</span><strong><MoneyAmount value={flow.existing_cash_contributions_krw}/></strong><small>바꾸지 않고 별도로 유지해요</small></article>
     </div>
     <article className="d-card d-portfolio-section" aria-label="포트폴리오 검토 유형">
       <div className="d-card-head"><div><h2>{relative ? `${profileName} 안에서 투자구성 선택` : '저장 당시의 투자구성 비교'}</h2><p>{relative ? '내 기준을 유지하면서 안정·중립·위험추구 중 운용 방향을 골라보세요.' : '이전 방식으로 계산된 결과예요. 내 기준 안의 세 가지 구성을 보려면 다시 계산해주세요.'} 이번 달 신규 투자 후보금에 적용돼요.</p></div><PlanSelector selected={selectedPlan} onSelect={onPlan} /></div>

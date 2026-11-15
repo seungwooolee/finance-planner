@@ -24,15 +24,21 @@ test('monthly record separates blank from 0, lists past months on demand and lin
   await page.getByRole('button', { name: '검토 도구' }).click();
   await page.getByRole('button', { name: '빠른진단 저장·계산' }).click();
   await expect(page.getByText(/검증 사례 저장 · 사회초년생/)).toBeVisible({ timeout: 30_000 });
-  await page.getByRole('button', { name: /결과·이번 달 행동/ }).click();
+  await page.getByRole('button', { name: /결과·다음 행동/ }).click();
   const step = page.getByRole('region', { name: '계획 선택과 이번 달 기록' });
 
   // 1) Record before any plan is chosen: only one transfer item, entered as an actual 0.
   await step.getByLabel('신규 투자 납입 (만원)').fill('0');
+  const saved = page.waitForRequest(r => r.method() === 'PUT' && r.url().endsWith('/review-record'));
   await step.getByRole('button', { name: '임시 저장' }).click();
-  const status = step.getByRole('status');
+  const { record } = (await saved).postDataJSON();
+  expect(record.amounts).toMatchObject({ invest_new: '0', living: null });
+  const status = step.getByRole('status').filter({ hasText: '입력한 항목' });
+  await expect(status).toContainText('입력한 항목 1/8');
+  await expect(status).toContainText('자산 이동 0원');
   await expect(status).toContainText('입력 없음');
   await expect(status).not.toContainText('생활비·상환 0원');
+  await expect(step.getByText('채택 없이 저장한 일반 기록이에요.',{exact:false})).toBeVisible();
 
   // 3) Past months are fetched only when opened.
   await step.getByText('지난 달 기록 보기').click();
@@ -41,7 +47,10 @@ test('monthly record separates blank from 0, lists past months on demand and lin
   // 4) A reported change offers a real way back to the answers; the record stays saved.
   await step.getByRole('button', { name: '소득이 바뀌었어요' }).click();
   await step.getByRole('button', { name: '점검 완료' }).click();
-  await expect(status).toContainText('점검 완료 · 저장 2회차');
+  await expect(step.getByRole('alert').filter({hasText:'중간 기록으로 저장'})).toBeVisible();
+  await expect(step.getByLabel('신규 투자 납입 (만원)')).toHaveValue('0');
+  await step.getByRole('button', { name: '임시 저장' }).click();
+  await expect(status).toContainText('중간 기록 · 저장 2회차');
   await step.getByRole('button', { name: '답변 고치러 가기' }).click();
   await expect(step).toBeHidden();
 });

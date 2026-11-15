@@ -11,6 +11,7 @@ test('selected composition answers use real saved amounts, reset after selection
   const before = await (await request.get(`${base}/analyses/${first.run_id}`, {headers})).json();
   await page.locator('.d-tabs button').nth(2).click();
   await page.locator('[data-portfolio-type="RETURN"] > button').click();
+  await page.getByRole('region',{name:'결과 공통 도구'}).getByText('결과에 질문하기',{exact:true}).click();
   const panel = page.locator('.d-results').getByRole('region', {name: '현재 결과 다음 행동 상담'});
   await panel.getByRole('button', {name: '왜 현금 대기자금이 있나요?', exact: true}).click();
   await panel.getByRole('button', {name: '내 결과로 답변 보기'}).press('Enter');
@@ -40,6 +41,7 @@ test('outage retry reuses request key and a mismatched response never displays',
   test.setTimeout(90_000);
   const {first} = await prepare(page, request, false, false, false, scenario.document);
   await page.getByRole('button', {name: new RegExp(first.run_id)}).click();
+  await page.getByRole('region',{name:'결과 공통 도구'}).getByText('결과에 질문하기',{exact:true}).click();
   const panel = page.locator('.d-results').getByRole('region', {name: '현재 결과 다음 행동 상담'});
   const keys: string[] = [];
   await page.route('**/result-action', async route => {

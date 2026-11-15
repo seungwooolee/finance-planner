@@ -13,6 +13,7 @@ async function preview(page: Page) {
   await page.route('**/api/be/v1/auth/login', route => route.fulfill({json: {access_token: 'MOCK-FE-ONLY', expires_in: 3600}}));
   await page.goto('/dion');
   await page.getByRole('button', {name: '예시로 결과 보기 · 대표상품 포함'}).click();
+  await page.getByRole('region',{name:'결과 공통 도구'}).getByText('결과에 질문하기',{exact:true}).click();
   await expect(panel(page)).toBeVisible();
 }
 
