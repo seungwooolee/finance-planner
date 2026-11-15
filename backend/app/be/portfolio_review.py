@@ -16,6 +16,7 @@ from .checkin_followup import _projection_assumption, _won
 from .portfolio_review_contract import VERSION
 from .raw_store import PocError, _digest, _json, _now, logical_key, validate_envelope
 from .store import QUESTION_ADAPTER_VERSION, QUESTION_V12_ADAPTER_VERSION
+from .tax_scenario import selected_view
 
 SUPPORTED_FIELDS = {
     "F03": {"monthly_net_income_krw"},
@@ -333,6 +334,8 @@ def mutate(store, actor, case_id, review_id, operation, request, chat_basis=None
         fingerprint_request.pop("chat_request_key", None)
     if operation == "consultation-confirmation" and not fingerprint_request.get("followups"):
         fingerprint_request.pop("followups", None)
+    if operation == "finalizations" and fingerprint_request.get("tax_scenario") is None:
+        fingerprint_request.pop("tax_scenario", None)
     fingerprint = _digest({"operation": operation, "review_id": review_id, **fingerprint_request})
     with store._transaction(write=True) as conn:
         case = store._authorize(conn, actor, case_id)
@@ -434,6 +437,10 @@ def mutate(store, actor, case_id, review_id, operation, request, chat_basis=None
                         "product_rows": rows, "raw_snapshot_id": run["raw_snapshot_id"],
                         "result_hash": _digest(json.loads(run["result_json"])),
                         "adoption_at_generation": store._adoption(conn, case_id)}
+            if request.get("tax_scenario"):
+                artifact["tax_scenario"] = selected_view(
+                    request["tax_scenario"], run, json.loads(run["engine_input_json"]),
+                )
             state["final"] = {**artifact, "final_id": "final_" + uuid4().hex, "sha256": _digest(artifact),
                               "generated_at": _now(), "state": "GENERATED_NOT_ADOPTED"}
         else:

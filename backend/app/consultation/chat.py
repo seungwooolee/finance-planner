@@ -178,7 +178,7 @@ class ChatService:
             raise HTTPException(401, detail={"code": "AUTH_REQUIRED_FOR_MODEL"})
         if not request.message.strip() or any(row.field_ref not in labels() for row in request.answers):
             raise HTTPException(422, detail={"code": "INVALID_CHAT_CONTEXT"})
-        result = fast_result(request.message, context.get("claims", {}))
+        result = context.get("tax_answer") or fast_result(request.message, context.get("claims", {}))
         if self.provider is None and result is None:
             raise HTTPException(503, detail={"code": "CHAT_NOT_CONFIGURED"})
         now = monotonic()

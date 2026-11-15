@@ -9,6 +9,7 @@ import {AgentConsultation, type AgentSession} from "./agent-consultation";
 import type { ChatReviewHandoff } from "./chat-survey";
 import {planName} from "./plan-comparison";
 import {QuestionForm} from "./questions";
+import {TaxScenarioSummary, validTaxScenario, type TaxSelection} from "./tax-scenario";
 import {usePortfolioReview} from "./use-portfolio-review";
 import type {ViewResult} from "./results";
 
@@ -104,13 +105,26 @@ function Recalculation({review}: {review: PortfolioReview}) {
   </details>;
 }
 
-export function PortfolioReviewFlow({chatHandoff,visited,selectionBlocked=false,flow, basis, view, token, caseId, stale, doc, onTab, onOpenRun, onReadRun, onPrepared, onAdopt}: {
+export function PortfolioReviewFlow({taxSelection,clearTaxSelection,chatHandoff,visited,selectionBlocked=false,flow, basis, view, token, caseId, stale, doc, onTab, onOpenRun, onReadRun, onPrepared, onAdopt}: {
+  taxSelection?: TaxSelection; clearTaxSelection?:()=>void;
   chatHandoff?: ChatReviewHandoff;
   visited: number[]; selectionBlocked?: boolean; flow: ReviewFlow; basis: ReviewBasis | null; view: ViewResult; token: string | null; caseId: string; stale: boolean;
   doc: Document | null; onTab: (n: number) => void; onOpenRun: (id: string) => Promise<void>; onReadRun: (id: string) => Promise<void>;
   onPrepared: (r: PortfolioReview) => void; onAdopt: () => void;
 }) {
   const review = flow.review;
+  const selectedTax = taxSelection && basis?.run_id === taxSelection.run_id && basis.input_hash === taxSelection.input_hash ? taxSelection : undefined;
+  const finalTax = review?.final?.tax_scenario;
+  async function generate() {
+    const result = await flow.mutate("finalizations", {confirmed:true, ...(selectedTax ? {tax_scenario:{
+      run_id:selectedTax.run_id,input_hash:selectedTax.input_hash,fingerprint:selectedTax.fingerprint,
+      confirmed:true,facts:selectedTax.facts,
+    }} : {})});
+    if (result) {
+      clearTaxSelection?.();
+      onPrepared(result);
+    }
+  }
   const [session, setSession] = useState<AgentSession | null>(null);
   const [confirmedAssumptions, setConfirmedAssumptions] = useState("");
   const [discardedHandoff, setDiscardedHandoff] = useState<ChatReviewHandoff>();
@@ -229,12 +243,18 @@ export function PortfolioReviewFlow({chatHandoff,visited,selectionBlocked=false,
       </section>}
       {review.recalculation && <><button type="button" className="d-secondary" onClick={() => void onOpenRun(review.current_run_id)}>재계산한 답변·결과 다시 열기</button><Recalculation review={review}/>
         {!review.recalculation.reviewed && <button type="button" className="d-secondary" disabled={blocked || !stepsDone || !review.recalculation.comparison_hash} onClick={() => void flow.mutate("recalculation-confirmation", {comparison_hash: review.recalculation!.comparison_hash, confirmed: true})}>기존안과 새 초안의 차이를 확인했어요</button>}</>}
-      {!review.final && <button type="button" className="d-primary" disabled={blocked || review.state !== "READY_TO_GENERATE" || (linkedToChat && pendingChanges.length > 0)} onClick={() => void flow.mutate("finalizations", {confirmed: true}).then(r => {if (r) onPrepared(r);})}>최종 포트폴리오 생성</button>}
+      {!review.final && selectedTax && <details className="d-fold"><summary>최종안에 포함할 절세 시나리오</summary>
+        <TaxScenarioSummary value={selectedTax.view}/><button type="button" className="d-secondary" disabled={flow.busy} onClick={clearTaxSelection}>시나리오 제외</button>
+      </details>}
+      {!review.final && <button type="button" className="d-primary" disabled={blocked || review.state !== "READY_TO_GENERATE" || (linkedToChat && pendingChanges.length > 0)} onClick={() => void generate()}>최종 포트폴리오 생성</button>}
       {review.final && <div className="d-note" aria-label="서버 최종 생성 기록"><h3>최종 생성 완료 · 채택은 별도</h3><p>{review.final.generated_at} · {planName(review.final.basis.strategy_id)} · {portfolioNames[review.final.basis.portfolio_type]}</p><p>저장한 입력 {review.final.basis.input_version}번째 버전 · 엔진이 지원하는 월 시나리오 범위 · 금융거래 미실행</p>
         {review.final.consultation_changes && <section><h4>상담에서 반영한 변경</h4>
           {review.final.consultation_changes.length ? <ChangesList items={review.final.consultation_changes}/> : <p>이번 생성에 반영한 입력 변경은 없어요.</p>}</section>}
         {!!review.final.consultation_followups?.length && <section><h4>확인이 남은 사항</h4>
           <ul>{review.final.consultation_followups.map(code => <li key={code}>{followupLabels[code]}</li>)}</ul></section>}
+        {selectedTax && matched && !stale && <button type="button" className="d-secondary" disabled={blocked || selectionBlocked || !basis}
+          onClick={()=>basis&&void flow.create(basis).then(r=>{if (r) onPrepared(r);})}>이 절세안으로 새 검토 시작</button>}
+        {validTaxScenario(finalTax) && <details><summary>생성본에 포함한 절세 시나리오</summary><TaxScenarioSummary value={finalTax}/></details>}
         <details><summary>이 생성본에 고정한 월별 포트폴리오</summary>{review.final.product_rows.map((month,i)=><section key={i}><h4>{textValue(month.period)||"기준월 확인 필요"}</h4><p>월 투자 후보금 {formatKrw(month.scenario_budget_krw)} · 상품 배분 {formatKrw(month.allocated_total_krw)} · 미배분 {formatKrw(month.unallocated_krw)}</p><ul>{list(month.allocations).map((a,j)=><li key={j}>{textValue(a.code)} · {formatKrw(a.review_allocated_krw)}</li>)}</ul></section>)}</details>
         <button type="button" className="d-primary" disabled={blocked} onClick={onAdopt}>이 최종안의 계획 채택 검토하기</button>
       </div>}

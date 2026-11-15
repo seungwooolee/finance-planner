@@ -26,7 +26,7 @@ export type PortfolioReview = {
   final: {final_id: string; sha256: string; generated_at: string; state: "GENERATED_NOT_ADOPTED";
     basis: ReviewBasis; plan: Record<string, Json>; product_rows: Record<string, Json>[]; raw_snapshot_id: string;
     result_hash: string; adoption_at_generation: Json; scope: string;
-    consultation_changes?: ConsultationChange[]; consultation_followups?: ReviewFollowup[]} | null;
+    consultation_changes?: ConsultationChange[]; consultation_followups?: ReviewFollowup[]; tax_scenario?: Json} | null;
   incomplete_reasons: string[]; is_current: boolean; adoption_changed: false; transaction_executed: false;
   opening_text: string; summary_text: string; explanation_mode: "DETERMINISTIC_SAVED_RESULT";
 };
@@ -90,6 +90,8 @@ export const reviewReasons: Record<string, string> = {
   CHANGES_PENDING: "변경 제안을 적용하거나 취소해 주세요. 아직 원응답은 바뀌지 않았어요.",
   SELECTION_REQUIRED: "새 계산 결과에서 재무안과 투자구성을 선택해 주세요.",
   RECALCULATION_REVIEW_REQUIRED: "기존안과 새 초안의 비교를 확인해 주세요.",
+  TAX_SCENARIO_BASIS_MISMATCH: "절세 비교와 최종안의 입력 버전이 달라요. 현재 결과에서 다시 비교해 주세요.",
+  TAX_SCENARIO_REVIEW_REQUIRED: "절세 근거나 입력이 바뀌었어요. 조건을 다시 비교하거나 시나리오를 제외해 주세요.",
   RUN_NOT_CURRENT: "답변이 바뀌어 이전 결과가 됐어요. 최신 저장 결과를 열어 주세요.",
   PORTFOLIO_SELECTION_CHANGED: "선택한 구성이 바뀌었어요. 현재 구성으로 새 검토를 시작해 주세요.",
   CONSULTATION_STALE: "상담이 만료됐거나 기준이 바뀌었어요. 새 검토와 상담이 필요해요.",
