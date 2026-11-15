@@ -318,7 +318,7 @@ def test_current_verified_subset_has_literal_budget_and_cost_oracles():
     assert codes['0091C0']['state'] == 'EXCLUDED_FROM_ALLOCATION'
 
 
-def test_stress_sizing_uses_original_slots_before_exclusions():
+def test_stress_sizing_uses_only_eligible_slots_without_refilling_exclusions():
     d = current_product_document()
     change(d, 'NEW-10', 'loss_tolerance_band_raw', field('LOSS_10_20'))
     first = current_review(d)['candidates'][0]['rows'][0]
@@ -329,10 +329,10 @@ def test_stress_sizing_uses_original_slots_before_exclusions():
     assert first['stress_review']['scenario_loss_krw_ceil'] == '29973'
     change(d, 'D18', 'fx_preference_raw_v2', field('FX_REJECT'))
     blocked = current_review(d)['candidates'][0]['rows'][0]
-    assert [a['review_allocated_krw'] for a in blocked['allocations']] == ['46140', '15360']
-    assert blocked['unallocated_krw'] == '238500'
+    assert [a['review_allocated_krw'] for a in blocked['allocations']] == ['90000', '30000']
+    assert blocked['unallocated_krw'] == '180000'
     assert blocked['weight_renormalized'] is False
-    assert blocked['stress_review']['sizing_basis'] == 'ORIGINAL_TARGETS_BEFORE_FILTERING'
+    assert blocked['stress_review']['sizing_basis'] == 'ELIGIBLE_TARGETS_ONLY'
 
 
 def test_ambiguous_small_loss_band_and_stability_are_deliberately_unallocated():
