@@ -149,6 +149,10 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
   const comparisonMessage=comparison.busy?"비교 초안을 저장하고 있어요…":comparison.status||
     (tab>=3?"구성을 선택해 비교할 수 있어요. 계획 채택과 월 기록은 별도로 유지돼요.":"");
   const tabs=deep?["자산·목표","재무안 비교","투자선호·구성","상품·비중","요약·다음 확인"]:["재무현황","재무안 선택","투자구성","상품 정보","결과·다음 행동"];
+  const comparisonStatus=(selectedPortfolio||comparisonMessage||comparison.error)&&<div aria-label="투자구성 비교 상태">
+      {(selectedPortfolio||comparisonMessage)&&<p role="status">{[selectedPortfolio?`${portfolioNames[selectedPortfolio]} 비교 초안`:"",comparisonMessage].filter(Boolean).join(" · ")}</p>}
+      {comparison.error&&<div role="alert"><p>{comparison.error}</p><button type="button" className="d-secondary" onClick={comparison.retry}>비교 초안 다시 불러오기</button></div>}
+    </div>;
   return <section className="d-results" aria-label="계산 결과">
     <div className="d-result-heading"><div>{actionFlow?.fictional&&<span className="d-example-tag">예시 결과</span>}<span className="d-eyebrow">{deep?"정밀 진단 결과":"빠른 진단 결과"}</span><h1 ref={heading} tabIndex={-1} style={{scrollMarginTop:"var(--d-results-scroll-offset, 96px)"}}>{(()=>{const Icon=TAB_ICONS[tab];return Icon?<i className="d-title-icon" aria-hidden="true"><Icon size={26}/></i>:null;})()}{tabs[tab]}</h1><p>{["현재 재무 상태를 먼저 확인해요","두 재무안 중 하나를 골라 남는 돈의 배정을 비교해요","투자 선호와 신규 납입금의 구성을 확인해요","신규 납입금을 담을 상품과 현금 대기자금을 확인해요","첫 계획 월의 납입안과 할 일, 채택·기록 상태를 확인해요"][tab]}</p></div><button className="d-secondary" onClick={()=>onEdit("F03")}>입력 내용 수정 ↗</button></div>
     <ResultNotice next={next}/>
@@ -167,10 +171,7 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
     {tab>=2&&productReview.diagnosis_scope==="household"&&<p className="d-note">가구의 월 신규 투자 후보금을 기준으로 구성을 검토해요.</p>}
     {tab>=3&&previewType&&targetPreview&&<p className="d-note">{portfolioNames[previewType]} 목표 비중 비교 · {allocationTargetLabel(previewMonth)} · 상품 배분 확인 대기</p>}
     {tab===3&&previewType&&!targetPreview&&<p className="d-note">{portfolioNames[previewType]} 구성 미리보기 · 상품은 공시 기준으로 확인할 수 있어요.</p>}
-    {tab>=2&&(selectedPortfolio||comparisonMessage||comparison.error)&&<div aria-label="투자구성 비교 상태">
-      {(selectedPortfolio||comparisonMessage)&&<p role="status">{[selectedPortfolio?`${portfolioNames[selectedPortfolio]} 비교 초안`:"",comparisonMessage].filter(Boolean).join(" · ")}</p>}
-      {comparison.error&&<div role="alert"><p>{comparison.error}</p><button type="button" className="d-secondary" onClick={comparison.retry}>비교 초안 다시 불러오기</button></div>}
-    </div>}
+    {tab>=3&&comparisonStatus}
     {tab===0 && <>
       <h2>현재 재무 상태</h2>
       {needsEvaluationDate && sourceDoc && <ReportedAmounts doc={sourceDoc}/>}
@@ -193,6 +194,7 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
       onChoose={id=>{void comparison.choose(id).then(ok=>{if(ok)setPortfolioPreview(null);});}}
       onPreview={id=>setPortfolioPreview({plan:selectedPlan,type:id})}
       onProducts={()=>setTab(3)} onRecalculate={onRecalculate} blocked={comparison.blocked} onEdit={onEdit}/>}
+    {tab===2&&comparisonStatus}
     
     {tab===3 && <><div className="d-plan-row"><div><strong>{planName(selectedPlan)} · 상품 정보</strong><button className="d-text-button" onClick={()=>setTab(2)}>투자구성 비교로 돌아가기</button>{selectedPortfolio&&<button className="d-secondary" disabled={comparison.blocked} onClick={()=>setTab(4)}>반영한 포트폴리오 확인 →</button>}</div><PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/></div><ProductAllocation evidenceAccess={evidenceAccess} stale={stale} review={productScreenReview} selectedPlan={selectedPlan} evaluationOn={textValue(object(result.context).evaluation_on)} onEdit={onEdit}/></>}
     {tab===3&&<div className="d-result-cta"><button type="button" className="d-primary" onClick={openConsultation}>DION과 상담하기</button><p>1~4 확인 후 상담과 변경 검토를 거쳐 최종 생성을 요청해요.</p></div>}

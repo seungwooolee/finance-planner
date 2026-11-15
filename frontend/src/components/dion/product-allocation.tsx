@@ -39,7 +39,7 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
     {!review.review_version&&<p className="d-note">이전 계산에는 상품 검토 결과가 없어요. 현재 입력으로 다시 계산하면 확인할 수 있어요.</p>}
     {review.review_version&&<>
       <InvestmentFollowup review={review} onEdit={onEdit}/>
-      {empty?.date&&<div className="d-alert-card" data-product-empty="DATE"><strong>대표상품 0개 · 기준일 확인</strong><p>{policyDateMessage(review,evaluationOn)}</p></div>}
+      {empty?.date&&<div className="d-alert-card" data-product-empty="DATE"><strong>이전 결과의 상품 검토 기준일</strong><p>{policyDateMessage(review,evaluationOn)}</p></div>}
       {Array.isArray(review.reason_codes)&&review.reason_codes.filter(c=>c!=="POLICY_DISCLOSURE_STALE"||!empty?.date).map(code=><p className="d-note" key={String(code)}>{reason(code)}</p>)}
       {missing.length>0&&<div className="d-alert-card"><strong>투자 답변 보완이 필요해요</strong><p>아래 답변을 확인하면 상품 배분을 다시 검토할 수 있어요.</p><div className="d-toolbar">{missing.filter(id=>titles[String(id)]).map(id=><button className="d-secondary" key={String(id)} onClick={()=>onEdit(String(id))}>{titles[String(id)]} 확인 →</button>)}</div></div>}
     </>}

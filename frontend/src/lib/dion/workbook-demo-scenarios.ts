@@ -6,12 +6,14 @@ const assumed = (value: string) => field(value, "KRW_10000");
 const json = (value: Json) => field(value, "JSON");
 const date = (value: string) => field(value, "DATE");
 const period = { start: "2026-10-01", end: "2026-10-31" };
+const earlyReviewOn = "2026-11-30";
+const earlyPlanMonth = "2026-12";
 const revisionOn = "2026-11-16T00:00:00+09:00";
 
 // Derive a separate case from the submissions. Only the derived case goes through preview.
-function demoCase(source: Scenario, evaluationOn: string) {
+function demoCase(source: Scenario, evaluationOn: string, version = "v3") {
   const doc = clone(source.document);
-  const caseId = `${doc.context.case_id}-demo-v3`;
+  const caseId = `${doc.context.case_id}-demo-${version}`;
   Object.assign(doc.context, {case_id:caseId, snapshot_id:`${caseId}-input`, evaluation_on:evaluationOn});
   doc.raw_bundle.case_id = caseId;
   for (const answer of doc.raw_bundle.answers) answer.envelope.context.as_of = evaluationOn;
@@ -51,25 +53,40 @@ function demoCase(source: Scenario, evaluationOn: string) {
 }
 
 function earlyDemo(source: Scenario): Scenario {
-  const {doc, amend, confirm, datedGoal} = demoCase(source, source.document.context.evaluation_on);
+  const {doc, amend, confirm, datedGoal} = demoCase(source, earlyReviewOn, "v4");
+  const start = `${earlyPlanMonth}-01`, end = `${earlyPlanMonth}-31`;
+  Object.assign(doc.context, {projection_start:start, projection_end:end});
+  const incomeAssumptions = doc.confirmations.find(row => row.question_id === "NEW-02")!.values;
+  confirm("NEW-02", {...incomeAssumptions, applies_from:start, applies_to:end,
+    assumption_text:"시연에서 10월 소득·생활비와 11월 말 보유잔액을 12월 계획에 사용하며 수익률은 0%로 놓는다."});
+  const assets = list(fieldValue(doc,"F06","financial_assets"));
+  amend("F06", {financial_assets:json(assets.map(asset => ({...asset, valuation_on:earlyReviewOn})))});
+  const debts = list(fieldValue(doc,"F09+F10+D08","debts"));
+  amend("F09+F10+D08", {debts:json(debts.map(debt => ({
+    ...debt, balance_as_of:earlyReviewOn,
+    schedule:list(debt.schedule).map(row => ({...row, period:earlyPlanMonth})),
+  })))}, period);
   amend("F04", {essential_living:assumed("160")});
   confirm("NEW-06", {coverage:"complete"});
   // Use the old fixed demo's 300,000 won one-off cash requirement, separate from the workbook's asset balance goal.
-  datedGoal("시연용 목돈 준비", "30", "2026-11-30", ["2026-11-15"]);
+  datedGoal("시연용 목돈 준비", "30", end, [`${earlyPlanMonth}-15`]);
   amend("F15", {monthly_new_fund_link:field(true, "BOOLEAN")});
+  const experience = fieldValue(doc,"F16","investment_experience_products");
+  amend("F16", {investment_experience_products:json([...(Array.isArray(experience) ? experience : []),
+    "EXPERIENCE_PRODUCTS_05"])});
   confirm("F15", {fund_ref:"workbook-investment-fund", budget_scope:"MONTHLY_NEW_CONTRIBUTIONS"}, "DION-PRODUCT-CONFIRM-0.1");
   amend("D14", {restricted_assets:json(["RESTRICTED_ASSETS_01"])});
   amend("D18", {fx_preference_raw_v2:field("FX_ACCEPT")});
   amend("D19", {product_understanding:field("PRODUCT_UNDERSTANDING_01")});
   return {
     ...source, document:doc, inputGaps:[],
-    demoReference:"엑셀의 2031-10-31 자산 잔액 1억원 목표는 참고로 보존했어요. 재무안은 별도의 11월 목돈 30만원을 기준으로 계산해요.",
+    demoReference:"엑셀의 2031-10-31 자산 잔액 1억원 목표는 참고로 보존했어요. 시연 재무안은 12월 목돈 30만원을 기준으로 계산해요.",
     assumptions:[
       "원본은 진단 기준일 2026-10-31, 11월 계획, 월 반복 소득 300만원, 전체 출금 190만 1천원이에요.",
       "시연에서는 분리한 생활비 160만원을 전부 필수로 보고, 기존 보호·운영자금 배정이 모두 확인됐다고 가정해요.",
-      "시연용 목돈은 11월 15일에 적립하고 11월 30일에 사용할 30만원이에요. 기존 자산 목표의 적립액 계산은 보류해요.",
-      "신규 투자금에 원본의 사용 조건을 적용하고, 제외 상품 없음·환율 변동 수용·상품 설명 이해를 가정해요.",
-      "원본 기준일은 상품 정책 검토일 2026-11-13 이전이어서 미배분 사유가 표시돼요.",
+      "시연용 목돈은 12월 15일에 적립하고 12월 31일에 사용할 30만원이에요. 기존 자산 목표의 적립액 계산은 보류해요.",
+      "신규 투자금의 원본 사용 조건을 유지하고, ETF 경험·제외 상품 없음·환율 변동 수용·상품 설명 이해를 가정해요.",
+      "시연은 10월 소득·지출을 사용하고, 11월 말 자산·채무 잔액과 12월 상환액은 원본과 같다고 가정해요.",
     ],
   };
 }
