@@ -117,14 +117,12 @@ test('fresh UI saves every entered answer exactly and reopens after refresh',asy
   const nav=page.getByRole('navigation',{name:'질문 이동'});
   await nav.getByRole('button',{name:/한 달 소득/}).click();
   await page.getByRole('textbox',{name:'한 달 평균 세후 소득은 얼마인가요?',exact:true}).fill('00300.0000');
-  await page.getByText('계산 기준기간 확인 · 필요할 때만',{exact:true}).click();
   await page.getByLabel('소득 기준월').fill(todayInSeoul().slice(0,7));
   await page.getByRole('button',{name:'평소 받는 돈만 적었어요',exact:true}).click();
   await nav.getByRole('button',{name:/한 달 지출/}).click();
   await page.getByRole('button',{name:/생활비만 입력할게요/}).click();
   await page.getByRole('textbox',{name:'한 달 평균 생활비는 얼마인가요?',exact:true}).fill('160');
   await page.getByRole('checkbox',{name:/대출 갚는 돈과 저축/}).check();
-  await page.getByText('계산 기준기간 확인 · 필요할 때만',{exact:true}).click();
   await page.getByRole('checkbox',{name:/소득과 같은/}).check();
   await nav.getByRole('button',{name:/갚아야 할 돈/}).click();
   await page.getByRole('button',{name:'없어요',exact:true}).click();
