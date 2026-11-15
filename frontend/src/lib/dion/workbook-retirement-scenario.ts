@@ -1,4 +1,4 @@
-import { blankDocument, emptyEnvelope, field, type Field } from "./model";
+import { blankDocument, emptyEnvelope, field, fieldValue, list, record, type Field, type Json } from "./model";
 
 // User-supplied synthetic workbook Sheet1 B2:B42. Do not inherit answers or confirmations.
 export function retirementScenario() {
@@ -89,5 +89,83 @@ export function retirementScenario() {
       "가족 정보 동의가 미선택이고 목표 시점·금액이 비어 있어 관련 계산은 확인 대기로 남아요.",
     ],
     document:doc,
+  };
+}
+
+
+export function retirementCalculationScenario() {
+  const source = retirementScenario();
+  const doc = source.document;
+  const caseId = "FE-FICTIONAL-workbook-retired-current-v1";
+  const asOf = doc.context.evaluation_on;
+  const owners = doc.context.included_owner_ids;
+  const start = "2026-10-01", end = "2026-10-31";
+  const basisRef = "fictional:workbook-retired:current-v1";
+  doc.context = {...doc.context, case_id:caseId, snapshot_id:caseId+"-input"};
+  doc.raw_bundle.case_id = caseId;
+
+  function supplement(id: string, fields: Record<string, Field>, monthly = false) {
+    const answer = record(doc, id)!;
+    const prior = answer.answer_revision_id;
+    answer.answer_revision_id = caseId+"-rev-"+answer.input_version;
+    answer.prior_revision_id = prior;
+    answer.envelope.context.source_ref = basisRef+":"+id;
+    if (monthly) {
+      answer.envelope.context.period_start = start;
+      answer.envelope.context.period_end = end;
+    }
+    Object.assign(answer.envelope.fields, fields);
+  }
+
+  function confirm(id: string, values: Record<string, Json>) {
+    doc.confirmations.push({question_id:id, definition_version:"DION-ADAPTER-CONFIRM-1.0",
+      source_ref:basisRef+":"+id, values});
+  }
+
+  supplement("NEW-01", {scope_acknowledged:field(true,"BOOLEAN"), owner_confirmation_ref:field(basisRef+":family-scope")});
+  supplement("F03", {income_period_start:field(start,"DATE"), income_period_end:field(end,"DATE")}, true);
+  supplement("F04", {period_start:field(start,"DATE"), period_end:field(end,"DATE")}, true);
+
+  // Use the one reported household aggregate. No account allocation or cash availability is inferred.
+  const assetsId = "workbook-retired-financial-total";
+  const reported = record(doc, "F06")!.envelope.fields.financial_assets_total_reported_krw;
+  supplement("F06", {financial_assets:field([{
+    asset_id:assetsId, owner_refs:owners, asset_class:"OTHER", share_basis:"SCOPE_SHARE",
+    market_value_krw:field(reported.raw_value, reported.unit) as unknown as Json,
+    amount_status:reported.state, valuation_on:asOf, withdrawal_constraint:"UNKNOWN", available_date:null,
+  }],"JSON")});
+  confirm("F06", {coverage:"complete", items:{[assetsId]:{
+    parent_asset_id:null, value_basis:"SCOPE_SHARE", share_numerator:"1", share_denominator:"1", detail_coverage:"unknown",
+  }}});
+
+  const [debt] = list(fieldValue(doc,"F09+F10+D08","debts"));
+  supplement("F09+F10+D08", {debts:field([{...debt, owner_ids:owners, balance_as_of:asOf,
+    balance_timing:"AFTER_PAYMENT", pay_on:end, value_basis:"SCOPE_SHARE", payment_basis:"SCOPE_SHARE",
+    payment_period:{start,end}}],"JSON")}, true);
+  confirm("F09+F10+D08", {coverage:"complete", items:{[String(debt.debt_id)]:{
+    share_numerator:"1", share_denominator:"1", period_start:start, period_end:end,
+  }}});
+
+  const [contribution] = list(fieldValue(doc,"NEW-03","existing_contributions"));
+  supplement("NEW-03", {existing_contributions:field([{
+    ...contribution, employee_or_employer:"EMPLOYEE", payroll_deducted:false,
+  }],"JSON")});
+  // The current-flow contract uses the contribution amount and payroll flag.
+  // Missing future payment evidence continues to block projection.
+  confirm("NEW-03", {items:{[String(contribution.contribution_id)]:{
+    purpose:null, destination:null, pay_day:null, period_basis:null, goal_ref:null,
+  }}});
+
+  const calculationAssumptions = [
+    "가상 가족의 진단 범위가 확인된 것으로 설정하고, 소득·생활비·대출 납부 기준월은 2026년 10월로 맞췄어요.",
+    "가구 금융자산 5억 원은 11월 13일 기준 종류 미확인 합계 한 건으로 반영했어요. 보호자금 1,000만 원은 따로 더하지 않았어요.",
+    "대출은 가구 채무로 보고 11월 13일 원금 잔액과 10월 말 납부액을 사용했어요. 월 저축·투자 10만 원은 세후 소득에서 별도로 납입한다고 가정했어요.",
+  ];
+  return {
+    ...source,
+    purpose:"엑셀에 입력된 금액과 시연용 가정으로 월 현금흐름과 자산을 계산해요.",
+    assumptions:[...source.assumptions.slice(0,4), ...calculationAssumptions,
+      "엑셀의 가족 동의는 미선택이에요. 목표 금액과 시점은 미입력이라 목표와 재무안은 확인 대기로 남아요."],
+    calculationAssumptions,
   };
 }

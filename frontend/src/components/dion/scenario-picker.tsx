@@ -2,8 +2,9 @@
 
 import { useId, useRef, useState } from "react";
 import { Document, states } from "@/lib/dion/model";
+import { earlyCareerWorkbookScenario, RETIREMENT_WORKBOOK_GOAL } from "@/lib/dion/workbook-scenario-targets";
 
-export type Scenario = {id:string;title:string;group:string;purpose:string;assumptions:string[];document:Document};
+export type Scenario = {id:string;title:string;group:string;purpose:string;assumptions:string[];calculationAssumptions?:string[];workbookGoal?:string;document:Document};
 
 let publicCases: Promise<Scenario[]> | null = null;
 let reviewCases: Promise<Scenario[]> | null = null;
@@ -12,7 +13,9 @@ export function loadScenarios(): Promise<Scenario[]> {
     .then(([source, workbook]) => {
       const early = (source.default as unknown as Scenario[]).find(s=>s.id==="early");
       if (!early) throw new Error("Early-career scenario missing");
-      return [early, workbook.retirementScenario()];
+      const retired = workbook.retirementCalculationScenario();
+      return [earlyCareerWorkbookScenario(early), {...retired, workbookGoal: RETIREMENT_WORKBOOK_GOAL,
+        purpose: RETIREMENT_WORKBOOK_GOAL}];
     }).catch(error=>{ publicCases = null; throw error; });
   return publicCases;
 }

@@ -219,13 +219,15 @@ test('DION direct deep entry and mobile input/result remain within viewport',asy
   await expect(page.getByRole('heading',{name:'나의 상황부터 알려주세요'})).toBeVisible();
   await page.evaluate(()=>window.scrollTo(0,0));
   await page.screenshot({path:info.outputPath('dion-feedback-mobile-input.png'),fullPage:true});
-  await page.getByRole('button',{name:'가상 사례 불러오기',exact:true}).click();
+  await openReviewTools(page);
+  await page.getByRole('button',{name:'검증용 고정 사례 불러오기',exact:true}).click();
   const scenarioResponse=page.waitForResponse(r=>r.url().endsWith('/api/fe/v1/preview')&&r.request().method()==='POST');
-  await page.getByRole('dialog',{name:'요즘 나의 생활 · 가상 사례'}).getByRole('button',{name:'사회초년생 불러오기',exact:true}).click();
+  await page.getByRole('dialog',{name:'검증용 고정 사례',exact:true}).getByRole('button',{name:'사회초년생 불러오기',exact:true}).click();
   expect((await scenarioResponse).ok()).toBeTruthy();
   await expect(page.getByRole('region',{name:'계산 결과'})).toBeVisible();
   await page.getByRole('button',{name:'정밀진단',exact:true}).click();await calculate(page);
-  await page.getByRole('button',{name:/재무안 비교/}).click();
+  await page.getByRole('navigation',{name:'정밀 결과 5뷰',exact:true})
+    .getByRole('button',{name:'재무안 비교',exact:true}).click();
   await expect(page.locator('.d-candidate')).toHaveCount(2);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
   await page.evaluate(()=>window.scrollTo(0,0));
