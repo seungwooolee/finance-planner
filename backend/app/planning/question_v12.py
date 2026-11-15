@@ -813,6 +813,11 @@ def normalize_question_v12(document):
                     "raw_answer_preserved": True,
                 }
             )
+    # The question interface asks about overall coverage separately from confirming the financial inventory.
+    mapped = {answer["question_id"]: answer["raw_response"] for answer in answers}
+    scope = mapped.get("NEW-01", {})
+    if scope.get("asset_coverage") == "complete" and mapped.get("F06", {}).get("coverage") != "complete":
+        scope["asset_coverage"] = "partial"
     normalized = {
         "schema_version": "DION-ENGINE-1.0",
         "context": copy.deepcopy(context),

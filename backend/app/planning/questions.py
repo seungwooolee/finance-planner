@@ -105,9 +105,6 @@ def normalize_assets(answers):
     records = []
     # A complete financial-account list alone does not establish total asset coverage.
     coverage = (answers.get("NEW-01") or {}).get("asset_coverage", "unknown")
-    financial = answers.get("F06")
-    if coverage == "complete" and (financial is None or financial.get("coverage") != "complete"):
-        coverage = "partial"
     for qid, kind in (("F06", None), ("F08", "REAL_ESTATE"), ("NEW-09", "RENTAL_DEPOSIT")):
         raw = answers.get(qid)
         if raw is None:
