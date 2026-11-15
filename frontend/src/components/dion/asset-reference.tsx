@@ -13,14 +13,18 @@ export function AssetReference({ value, ownValues, ownScope, stale, selection, o
   onSelect: (value: AssetReferenceSelection) => void; compact?: boolean; savedResult?: boolean; onRecalculate?: () => void;
 }) {
   const id = useId();
-  const { data, referenceUnit, cohort, cohorts, metrics, hint, comparisonState, membershipState, selectionOrigin } =
+  const { data, referenceUnit, cohort, cohorts, metrics, hint, usesScopeFallback, comparisonState, membershipState, selectionOrigin } =
     assetReferenceView(value, selection, ownValues, ownScope);
   const hasReference = metrics.some(metric => metric.reference !== null);
   const missingPersonalRows = referenceUnit === "개인" && !cohorts.length;
   const stageLabel = textValue(hint.label);
-  const personalNote = referenceUnit === "개인" ? textValue(metrics.find(metric => metric.reference !== null)?.row.limitations) : "";
-  const sources = [...new Map(metrics.filter(metric => metric.reference !== null).map(({ row }) =>
-    [textValue(row.source_url), { title: textValue(row.source_title), date: textValue(row.period_start) }])).entries()];
+  const needsNewSnapshot = !data.asset_fallback_cohort_id && (metrics.length < 3 || metrics.some(metric => metric.reference === null));
+  const sourceRows = metrics.filter(metric => metric.reference !== null).map(metric => metric.row);
+  const notes = [...new Set(sourceRows.map(row => textValue(row.limitations)).filter(Boolean))];
+  const sources = [...new Map(sourceRows.map(row => {
+    const url = textValue(row.source_url), date = textValue(row.period_start);
+    return [`${url}|${date}`, { url, title: textValue(row.source_title), date }];
+  })).values()];
   const title = compact ? "현재 자산과 참고 통계" : "보유자산 · 참고 통계와 함께 보기";
   return <section className={`d-asset-ref ${compact ? "d-asset-ref-compact" : "d-card"}`} aria-labelledby={id}
     data-asset-reference={compact ? "final" : "assets"} data-input-version={String(data.input_version ?? "")}
@@ -33,7 +37,7 @@ export function AssetReference({ value, ownValues, ownScope, stale, selection, o
     {!!cohorts.length && <div className="d-asset-ref-controls">
       <label htmlFor={`${id}-cohort`}>비교할 참고 집단
         <select id={`${id}-cohort`} value={selection.cohort} onChange={e => onSelect({cohort: e.target.value})}>
-          <option value="ANSWER">{stageLabel ? `답변 관련 집단 · ${stageLabel}` : "질문 답변 기준"}</option>
+          <option value="ANSWER">{usesScopeFallback ? "같은 진단 범위의 기본 참고 집단" : stageLabel ? `답변 관련 집단 · ${stageLabel}` : "질문 답변 기준"}</option>
           {cohorts.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
         </select>
       </label>
@@ -46,17 +50,18 @@ export function AssetReference({ value, ownValues, ownScope, stale, selection, o
         : data.version ? "선택 집단의 자산 평균 자료가 없어요."
         : savedResult ? "이 저장 결과에는 참고 통계가 포함되어 있지 않아요." : "계산 서버가 자산 참고 통계를 보내지 않았어요."}
     </p>}
-    {savedResult && (!data.version || missingPersonalRows) && onRecalculate &&
+    {savedResult && needsNewSnapshot && onRecalculate &&
       <button type="button" className="d-text-button" onClick={onRecalculate}>현재 입력으로 새 결과 만들기</button>}
     {!!sources.length && cohort?.label && <p className="d-asset-ref-context">{cohort.label}</p>}
-    {personalNote && <p className="d-asset-ref-context">{personalNote}</p>}
+    {metrics.some(metric => metric.fallbackLabel) && <p className="d-asset-ref-context">선택한 집단의 공표값이 없는 항목에는 같은 진단 범위의 별도 참고 평균을 표시해요.</p>}
     {!!sources.length && <details className="d-fold d-asset-ref-context">
       <summary>통계 출처와 기준일</summary>
-      {sources.map(([url, source]) => {
-        const href = sourceHref(url);
-        return <span key={url}>{href ? <a href={href} target="_blank" rel="noopener noreferrer">{source.title}</a> : source.title}
+      {sources.map(source => {
+        const href = sourceHref(source.url);
+        return <span key={`${source.url}|${source.date}`}>{href ? <a href={href} target="_blank" rel="noopener noreferrer">{source.title}</a> : source.title}
           {source.date && ` · ${source.date} 기준`}</span>;
       })}
+      {notes.map(note => <p key={note}>{note}</p>)}
     </details>}
   </section>;
 }

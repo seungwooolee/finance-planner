@@ -42,7 +42,8 @@ def test_registry_reproduces_unchanged_household_and_new_personal_rows():
     assert len(original["records"]) == 28
     assert registry["records"][:28] == original["records"]
     assert registry["research_sha256"] == original["research_sha256"]
-    assert len(registry["records"]) == 50
+    assert len(registry["records"]) == 62
+    assert registry["records"][:50] == importer["build"](include_coverage=False)["records"]
     reviewed_household = importer["build"](include_personal=False)
     assert registry["records"][:42] == reviewed_household["records"]
     previous = importer["build"](include_under30=False)
@@ -56,11 +57,11 @@ def test_registry_reproduces_unchanged_household_and_new_personal_rows():
         ("C20", "중앙값", "72600000"), ("C20", "중앙값", "50000000"),
         ("C07", "중앙값", "302700000"), ("C08", "중앙값", "204200000"), ("C09", "중앙값", "280600000")]
     published = [r for r in registry["records"] if r["review_status"] == "REFERENCE_ONLY"]
-    assert len(published) == 37
+    assert len(published) == 49
     assert [(r["cohort_id"], r["statistic_type"], r["value"]) for r in registry["records"][39:42]] == [
         ("C20", "평균", "155000000"), ("C20", "평균", "47030000"), ("C20", "평균", "107960000")]
-    assert {r["source_id"] for r in published} == {"S01", "S03", "S10"}
-    youth = registry["records"][42:]
+    assert {r["source_id"] for r in published} == {"S01", "S03", "S10", "S11"}
+    youth = registry["records"][42:50]
     assert [(r["cohort_id"], r["metric_key"], r["value"]) for r in youth] == [
         ("C21", "proposal.total_assets", "50120000"), ("C21", "proposal.total_liabilities", "16370000"),
         ("C22", "proposal.total_assets", "13980000"), ("C22", "proposal.total_liabilities", "2710000"),
@@ -70,7 +71,21 @@ def test_registry_reproduces_unchanged_household_and_new_personal_rows():
     assert all(r["target_unit"] == "개인" and r["statistic_type"] == "평균" for r in youth)
     assert all(r["period_start"] == r["period_end"] == "2023-12-31" for r in youth)
     assert all(r["review_status"] == "REFERENCE_ONLY" and r["sample_size"] is None for r in youth)
-    assert all(r["license"] == "KOGL_TYPE_1" for r in published[:-len(youth)])
+    assert all(r["license"] == "KOGL_TYPE_1" for r in published if r["source_id"] in {"S01", "S03"})
+    coverage = registry["records"][50:]
+    assert [(r["cohort_id"], r["target_unit"], r["period_start"], r["value"]) for r in coverage] == [
+        *[("C25", "개인", "2024-03-31", v) for v in ("134427000", "33931000", "100496000")],
+        *[("C26", "가구", "2025-03-31", v) for v in ("359580000", "108990000", "250600000")],
+        *[("C27", "가구", "2025-03-31", v) for v in ("627140000", "143250000", "483890000")],
+        *[("C28", "가구", "2025-03-31", v) for v in ("662050000", "110440000", "551610000")],
+    ]
+
+
+@pytest.mark.parametrize("scope,expected", [("personal", "C25"), ("household", "C07"), (None, None)])
+def test_asset_fallback_uses_only_the_captured_scope(scope, expected):
+    document, result = inputs(scope=scope)
+    review = attach_peer_reference(document, result)["peer_reference"]
+    assert review.get("asset_fallback_cohort_id") == expected
 
 
 @pytest.mark.parametrize("amount", ["0", "-100", "9007199254740993", None])

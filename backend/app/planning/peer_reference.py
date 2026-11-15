@@ -29,6 +29,10 @@ COHORTS = {
     "C22": "만 19~24세 청년 개인",
     "C23": "만 25~29세 청년 개인",
     "C24": "만 30~34세 청년 개인",
+    "C25": "만 18세 이상 개인 · 명의 기준 연구",
+    "C26": "가구주 30~39세 가구",
+    "C27": "가구주 40~49세 가구",
+    "C28": "가구주 50~59세 가구",
 }
 STAGES = {
     "LC_EARLY_CAREER": ("사회초년생", ["C20", "C21", "C18", "C16"],
@@ -104,4 +108,7 @@ def attach_peer_reference(document, result):
         "comparison_state": "REFERENCE_ONLY", "direct_comparison_count": 0,
         "preference_reason": "외부 투자성향 조사의 원 질문·분류 절차와 이용조건이 확인되지 않아 DION 5단계 선호에 연결하지 않았습니다.",
     }
+    fallback = registry.get("asset_fallback_cohort_ids", {}).get(context.get("scope"))
+    if fallback:
+        result["peer_reference"]["asset_fallback_cohort_id"] = fallback
     return result

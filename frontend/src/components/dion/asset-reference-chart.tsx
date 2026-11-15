@@ -10,13 +10,15 @@ export function AssetReferenceChart({ metrics, scope }: { metrics: AssetReferenc
     <table aria-label={hasReference ? "내 자산과 조사 평균" : "내 자산"}>
       <thead><tr><th scope="col">항목</th><th scope="col">내 현재값{scope && ` · ${scope}`}</th>{hasReference && <th scope="col">조사 평균 · {scope}</th>}</tr></thead>
       <tbody>{metrics.map(m => <tr className="d-asset-compare-metric" key={m.key} data-asset-metric={m.key}
-        data-statistic-id={typeof m.row.statistic_id === "string" ? m.row.statistic_id : undefined}>
+        data-statistic-id={typeof m.row.statistic_id === "string" ? m.row.statistic_id : undefined}
+        data-reference-cohort={typeof m.row.cohort_id === "string" ? m.row.cohort_id : undefined}>
         <th scope="row">{m.label}</th>
         {([{value: m.own, kind: "own", color: "#3848ce"},
           ...(hasReference ? [{value: m.reference, kind: "reference", color: "#64748b"}] : [])]).map(s => {
           const mark = assetBar(s.value, axis);
           return <td className="d-asset-compare-series" key={s.kind} data-asset-series={s.kind} data-value={s.value ?? undefined}>
             <strong>{s.kind === "reference" && s.value === null ? "자료 없음" : formatKrw(s.value)}</strong>
+            {s.kind === "reference" && m.fallbackLabel && <small>별도 참고 · {m.fallbackLabel}</small>}
             <svg viewBox="0 0 1000 24" preserveAspectRatio="none" aria-hidden="true">
               <line x1={zero} x2={zero} y1="0" y2="24" stroke="#64748b"/>
               {mark && <rect x={mark.x} y="5" width={mark.width} height="14" rx="3" fill={s.color}/>}

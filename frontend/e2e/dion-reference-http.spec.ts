@@ -16,8 +16,8 @@ test('actual HTTP preview connects its reference snapshot to the selected cohort
   expect(payload.storage).toBe('NOT_SAVED');
   const peer = payload.result.peer_reference;
   expect(peer?.version, 'The deployed preview must provide statistics; UI-only data is insufficient').toBe('DION-PEER-REFERENCE-1.0');
-  expect(peer.records).toHaveLength(50);
-  expect(peer.records.filter((r: { review_status: string }) => r.review_status === 'REFERENCE_ONLY')).toHaveLength(37);
+  expect(peer.records).toHaveLength(62);
+  expect(peer.records.filter((r: { review_status: string }) => r.review_status === 'REFERENCE_ONLY')).toHaveLength(49);
   expect(peer.input_version).toBe(response.request().postDataJSON().raw_bundle.input_version);
   expect(peer.input_sha256).toBe(payload.result.adapter.source_sha256);
   const total = peer.records.find((r: { statistic_id: string }) => r.statistic_id === 'V043');

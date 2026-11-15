@@ -1,0 +1,125 @@
+{
+  "data_version": "dion-peer-reviewed-20261116-v6",
+  "reviewed_on": "2026-11-16",
+  "fallback_cohort_ids": {
+    "personal": "C25",
+    "household": "C07"
+  },
+  "sources": {
+    "S11": {
+      "source_id": "S11",
+      "source_title": "자산 격차 요인 분석과 정책 과제 (연구보고서 2025-23)",
+      "publisher": "한국보건사회연구원",
+      "source_url": "https://www.kihasa.re.kr/api/kihasa/file/download?seq=32448",
+      "publisher_url": "https://www.kihasa.re.kr/publish/report/research/view?seq=73409",
+      "source_file_sha256": "7a512446be932f90a59349be4943b462ed6ef460cfe1bbc52ebd4db4b5707d7b",
+      "period": "2024-03-31",
+      "license": "PUBLIC_AGGREGATE_FACTS",
+      "quality": "2024년 가계금융복지조사 원격접근서비스를 활용한 연구. 가구 가중치에 가구원 수를 곱한 개인 가중치 적용. 세부셀 표본수 미공표.",
+      "limitations": "만 18세 이상 개인 명의 기준의 가중 평균이에요. 연구의 자산·부채 보유 조건을 적용하며, 연구에서는 음수 순자산을 0으로 처리해요.",
+      "position": "94쪽 그림 4-2 · 2024년 열"
+    },
+    "S01": {
+      "source_id": "S01",
+      "source_title": "국가지표체계 · 가구순자산 (2025년 가계금융복지조사)",
+      "source_url": "https://www.index.go.kr/unity/potal/eNara/sub/showStblGams3.do?stts_cd=F013901",
+      "period": "2025-03-31",
+      "quality": "2025년 열의 정수 만원 공표값. 지표별 공표값을 그대로 사용합니다.",
+      "limitations": "가구주 연령에 해당하는 전국 가구 평균이에요. 생애단계나 가구원 수는 별도로 구분하지 않아요.",
+      "position": "가구순자산 통계표 · 2025년 열"
+    }
+  },
+  "metrics": [
+    {
+      "key": "proposal.total_assets",
+      "label": "총자산",
+      "household_label": "가구자산",
+      "template_id": "V001",
+      "personal_definition": "개인 명의 실물자산과 금융자산의 합의 가중 평균."
+    },
+    {
+      "key": "proposal.total_liabilities",
+      "label": "총부채",
+      "household_label": "가구부채",
+      "template_id": "V003",
+      "personal_definition": "개인 명의 총부채의 가중 평균."
+    },
+    {
+      "key": "proposal.net_assets",
+      "label": "순자산",
+      "household_label": "가구순자산",
+      "template_id": "V004",
+      "personal_definition": "연구에서 공표한 개인 순자산 가중 평균. 연구에서는 음수를 0으로 처리."
+    }
+  ],
+  "cohorts": [
+    {
+      "id": "C25",
+      "source_id": "S11",
+      "target_unit": "개인",
+      "label": "만 18세 이상 개인 · 명의 기준 연구",
+      "source_row": "만 18세 이상 개인",
+      "statistic_ids": [
+        "V051",
+        "V052",
+        "V053"
+      ],
+      "source_values": [
+        "13442.7",
+        "3393.1",
+        "10049.6"
+      ]
+    },
+    {
+      "id": "C26",
+      "source_id": "S01",
+      "target_unit": "가구",
+      "label": "가구주 30~39세 가구",
+      "source_row": "가구주연령별 30–39세",
+      "statistic_ids": [
+        "V054",
+        "V055",
+        "V056"
+      ],
+      "source_values": [
+        "35958",
+        "10899",
+        "25060"
+      ]
+    },
+    {
+      "id": "C27",
+      "source_id": "S01",
+      "target_unit": "가구",
+      "label": "가구주 40~49세 가구",
+      "source_row": "가구주연령별 40–49세",
+      "statistic_ids": [
+        "V057",
+        "V058",
+        "V059"
+      ],
+      "source_values": [
+        "62714",
+        "14325",
+        "48389"
+      ]
+    },
+    {
+      "id": "C28",
+      "source_id": "S01",
+      "target_unit": "가구",
+      "label": "가구주 50~59세 가구",
+      "source_row": "가구주연령별 50–59세",
+      "statistic_ids": [
+        "V060",
+        "V061",
+        "V062"
+      ],
+      "source_values": [
+        "66205",
+        "11044",
+        "55161"
+      ]
+    }
+  ]
+}

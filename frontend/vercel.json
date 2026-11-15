@@ -95,7 +95,8 @@
       "codex/dion-p1-household-portfolio-20261116": false,
       "codex/dion-retirement-investment-month-20261116": false,
       "codex/dion-asset-reference-scope-20261116": false,
-      "codex/dion-personal-asset-reference-20261116": false
+      "codex/dion-personal-asset-reference-20261116": false,
+      "codex/dion-asset-reference-coverage-20261116": false
     }
   }
 }
