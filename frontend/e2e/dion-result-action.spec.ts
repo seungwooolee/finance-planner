@@ -15,8 +15,9 @@ test('selected composition answers use real saved amounts, reset after selection
   await panel.getByRole('button', {name: '왜 현금 대기자금이 있나요?', exact: true}).click();
   await panel.getByRole('button', {name: '내 결과로 답변 보기'}).press('Enter');
   await expect(panel.getByRole('heading', {name: '현재 결과에 대한 답변'})).toBeFocused();
-  await expect(panel).toContainText('18.5406만원');
-  await expect(panel).toContainText('21.4094만원');
+  await expect(panel).toContainText('상품 배분액은 16.7149만원');
+  await expect(panel).toContainText('목표 현금은 3.995만원');
+  await expect(panel).toContainText('배분 보류액은 19.2401만원');
   await expect(panel).toContainText('저장 결과의 기본 안내');
   await page.screenshot({path: info.outputPath('selected-result-desktop.png'), fullPage: true});
   await page.getByRole('button', {name: '상담창 닫기', exact: true}).click();

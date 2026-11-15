@@ -3,6 +3,7 @@
   "git": {
     "deploymentEnabled": {
       "codex/cohort-comparison-20261115": false,
+      "codex/return-allocation-20261115": false,
       "codex/results-cleanup-20261115": false,
       "codex/ui-review-20261115": false,
       "codex/selected-asset-line-20261115": false,

@@ -66,12 +66,19 @@ test('three real comparison views drive product and final screens on desktop/mob
   await page.locator('.d-tabs button').nth(2).click();
   await page.setViewportSize({width:390,height:844});
   await page.locator('[data-portfolio-type="RETURN"] > button').click();
-  await expect(page.locator('[data-allocation-month]').first()).toHaveAttribute('data-allocated', '185406');
-  await expect(page.locator('[data-allocation-month]').first()).toHaveAttribute('data-unallocated', '214094');
+  const month = page.locator('[data-allocation-month]').first();
+  await expect(month).toHaveAttribute('data-allocated', '167149');
+  await expect(month).toHaveAttribute('data-unallocated', '232351');
+  await expect(month).toContainText('목표 현금');
+  await expect(month).toContainText('배분 보류');
   await page.screenshot({path:info.outputPath('comparison-mobile.png'),fullPage:true});
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBeTruthy();
   await page.locator('.d-tabs button').nth(4).click();
-  await expect(page.getByRole('article',{name:'상담용 포트폴리오 검토안'})).toContainText('위험 추구형');
+  const portfolio = page.getByRole('article',{name:'상담용 포트폴리오 검토안'});
+  await expect(portfolio).toContainText('위험 추구형');
+  await expect(portfolio).toContainText('채권 20% · 국내주식 35% · 미국주식 35% · 현금 10%');
+  await expect(portfolio).toContainText('목표 현금');
+  await expect(portfolio).toContainText('배분 보류');
   await page.screenshot({path:info.outputPath('comparison-summary.png'),fullPage:true});
 });
 
@@ -114,7 +121,7 @@ test('saved comparison restores across reload with original adoption and run unt
   const saved=page.waitForResponse(r=>r.url().endsWith('/portfolio-comparison')&&r.request().method()==='PUT');
   await page.locator('[data-portfolio-type="RETURN"] > button').click();
   expect((await saved).ok()).toBeTruthy();
-  await expect(page.locator('[data-allocation-month]').first()).toHaveAttribute('data-allocated','185406');
+  await expect(page.locator('[data-allocation-month]').first()).toHaveAttribute('data-allocated','167149');
   await page.reload();await openRun();
   await expect(page.locator('[data-portfolio-type="RETURN"] > button')).toHaveAttribute('aria-pressed','true');
   const comparisonBefore=await (await request.get(`${base}/analyses/${runId}/portfolio-comparison`,{headers})).json();
