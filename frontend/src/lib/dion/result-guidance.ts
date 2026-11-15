@@ -4,7 +4,12 @@ import { copy, customerStep } from "./customer-flow";
 export type InputHint={id:string;text:string};
 export function inputHints(doc:Document):InputHint[] {
   const hints:InputHint[]=[];
-  if(!doc.context.scope||!doc.context.included_owner_ids.length||fieldValue(doc,"NEW-01","scope_acknowledged")!==true) hints.push({id:"NEW-01",text:"살펴볼 사람과 가족의 동의 여부를 먼저 확인해주세요."});
+  if(!doc.context.scope||!doc.context.included_owner_ids.length||fieldValue(doc,"NEW-01","scope_acknowledged")!==true) {
+    const text = doc.context.scope === "household"
+      ? "함께 살펴볼 가족을 선택하고 동의 여부를 확인해주세요."
+      : "‘나 혼자’ 또는 ‘가족과 함께’를 선택해 진단 범위를 확인해주세요.";
+    hints.push({id:"NEW-01",text});
+  }
   if(!fieldValue(doc,"NEW-01","asset_coverage")) hints.push({id:"F06",text:"아직 확인할 자산이 있는지 선택해주세요. 자산이 일부만 확인돼도 다른 결과부터 살펴볼 수 있어요."});
   for(const [id,key,label] of [["F03","monthly_net_income_krw","소득"],["F04","living","지출"]]) {
     const f=record(doc,id)?.envelope.fields[key];

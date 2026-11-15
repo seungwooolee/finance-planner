@@ -5,7 +5,7 @@ import { formatKrw } from "@/lib/dion/money-format";
 import { riskTitles } from "@/lib/dion/investment-review";
 import { InvestmentFollowup } from "./investment-followup";
 import { policyDateMessage, productEmptyCause } from "@/lib/dion/product-empty";
-import { allocationSlices, assetGroup, bpsLabel, cashWaitingText, shareBps } from "@/lib/dion/result-visual";
+import { allocationRemainder, allocationSlices, allocationTargetLabel, assetGroup, bpsLabel, cashWaitingText, shareBps } from "@/lib/dion/result-visual";
 import { PortfolioEvidence, type EvidenceAccess } from "./portfolio-evidence";
 import { sourceHref } from "./scheme-evidence";
 import { Donut, DonutLegend } from "./donut";
@@ -46,13 +46,14 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
     {candidates.map(candidate=>{
       const months=list(candidate.rows), month=months[0];
       const allocations=list(month?.allocations);
-      const slices=allocationSlices(allocations,products,month?.unallocated_krw);
+      const slices=allocationSlices(allocations,products,month);
+      const target=allocationTargetLabel(month);
       return <div key={String(candidate.strategy_id)}>
         <ProductCandidates review={review} month={month}/>
         {months.map((m,i)=><div className="d-summary-band" key={i} data-allocation-month={String(m.period)} data-budget={textValue(m.scenario_budget_krw)} data-allocated={textValue(m.allocated_total_krw)} data-unallocated={textValue(m.unallocated_krw)}>
           <div><span>{String(m.period)} 신규 투자 후보금</span><strong>{formatKrw(m.scenario_budget_krw)}</strong></div>
           <div><span>상품 배분액</span><strong className="d-accent">{formatKrw(m.allocated_total_krw)}</strong></div>
-          <div><span>현금 대기자금</span><strong>{formatKrw(m.unallocated_krw)}</strong><small>현금 잔고에 자동으로 더하지 않아요</small></div>
+          {allocationRemainder(m).map(part=><div key={part.key}><span>{part.label}</span><strong>{formatKrw(part.value)}</strong></div>)}
           {Array.isArray(m.reason_codes)&&m.reason_codes.length>0&&<p className="d-band-note">{m.reason_codes.map(code=>code==="POLICY_DISCLOSURE_STALE"?policyDateMessage(review,evaluationOn,String(m.period)):reason(code)).join(" ")}</p>}
         </div>)}
         {defaults.length>0&&<div className="d-product-layout">
@@ -73,9 +74,10 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
             {Array.isArray(month?.adjustment_codes)&&month.adjustment_codes.map(code=><p className="d-note" key={String(code)}>{reason(code)}</p>)}
           </article>
           <aside className="d-card d-donut-card" aria-label="이번 달 상품 구성"><h2>이번 달 상품 구성</h2>
+            {target&&<p className="d-inline-note">목표 비중 · {target}</p>}
             {month&&<Donut slices={slices} total={month.scenario_budget_krw} size={168} center={<><small>배분</small><strong>{bpsLabel(shareBps(month.allocated_total_krw,month.scenario_budget_krw))}</strong></>}/>}
             {month&&<DonutLegend slices={slices} total={month.scenario_budget_krw}/>}
-            <p className="d-inline-note">회색은 현금 대기자금이에요. 남은 상품으로 비중을 자동 재분배하지 않아요.</p>
+            {target&&<p className="d-inline-note">배분 보류액에는 손실 한도·상품 조건과 원 단위 내림을 반영했어요.</p>}
           </aside>
         </div>}
       </div>;
