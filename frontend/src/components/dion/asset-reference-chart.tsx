@@ -5,12 +5,13 @@ import { formatKrw } from '@/lib/dion/money-format';
 export function AssetReferenceChart({ metrics, scope }: { metrics: AssetReferenceMetric[]; scope: string }) {
   const axis = assetAxis(metrics.flatMap(m => [m.own, m.reference]));
   const zero = assetBar('0', axis)!.zero;
-  return <figure className="d-asset-ref-chart" aria-label="현재 자산과 과거 조사 통계의 금액 그래프">
+  const hasReference = metrics.some(metric => metric.reference !== null);
+  return <figure className="d-asset-ref-chart" aria-label={hasReference ? "현재 자산과 과거 조사 통계의 금액 그래프" : "현재 자산 금액 그래프"}>
     {metrics.map(m => <div className="d-asset-compare-metric" key={m.key} data-asset-metric={m.key}
       data-statistic-id={typeof m.row.statistic_id === "string" ? m.row.statistic_id : undefined}>
       <h3>{m.label}</h3>
-      {[{label: `내 현재값${scope ? ` · ${scope}` : ""}`, value: m.own, own: true},
-        {label: "조사 평균 · 가구", value: m.reference, own: false}].map(s => {
+      {[{label: `내 현재값 · ${scope}`, value: m.own, own: true},
+        ...(hasReference ? [{label: `조사 평균 · ${scope}`, value: m.reference, own: false}] : [])].map(s => {
         const mark = assetBar(s.value, axis);
         return <div className="d-asset-compare-series" key={s.label} data-asset-series={s.own ? "own" : "reference"} data-value={s.value ?? undefined}>
           <span>{s.label}</span><svg viewBox="0 0 1000 24" preserveAspectRatio="none" aria-hidden="true">

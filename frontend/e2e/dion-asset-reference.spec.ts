@@ -31,7 +31,9 @@ test("asset display preserves zero, null, signed and large won while excluding w
   expect(view.metrics.map(m => m.own)).toEqual(["0", null, "-15000000"]);
   expect(view.metrics[0].reference).toBe("900719925474099312345");
   expect(view.cohorts.map(c => c.id)).toEqual(["C07"]);
-  expect(assetReferenceView({ ...snapshot, scope: "personal" }, explicit).metrics.every(m => m.own === null)).toBe(true);
+  const personal = assetReferenceView({ ...snapshot, scope: "personal" }, explicit);
+  expect(personal.metrics).toEqual([]);
+  expect(personal.cohorts.map(c => c.id)).toEqual(["wrong-scope"]);
   expect(assetReferenceView({ records: snapshot.records }, explicit).metrics).toEqual([]);
   expect(JSON.stringify(snapshot)).toBe(before);
 });
@@ -66,20 +68,24 @@ test("partial, withheld and conflicting records stay absent without a substitute
   expect(assetReferenceView(snapshot,{...explicit,cohort:"not-in-this-run"}).metrics).toHaveLength(0);
 });
 
-test("average stays fixed and the same snapshot's personal amount is shown independently", () => {
-  const mean = row("proposal.net_assets","471440000","-100");
-  const median = row("proposal.net_assets","238600000","-100",{statistic_type:"중앙값",source_id:"OTHER"});
+test("selects only reviewed averages in the captured diagnosis scope", () => {
+  const household = row("proposal.net_assets","471440000",null);
+  const personal = row("proposal.net_assets","12300000",null,{target_unit:"개인"});
+  const median = {...personal,value:"5670000",statistic_type:"중앙값"};
   const selection = {cohort:"C07"};
-  const snapshot = {version:"test",scope:"personal",records:[mean,median]};
-  const before = JSON.stringify(snapshot), view = assetReferenceView(snapshot, selection, {"proposal.net_assets":"-100"});
-  expect(view.metrics[0]).toMatchObject({reference:"471440000",own:"-100"});
-  const old = assetReferenceView({...snapshot, records:[median]}, selection, {"proposal.net_assets":"0"});
-  expect(old.metrics[0]).toMatchObject({reference:null, own:"0"});
+  const snapshot = {version:"test",scope:"personal",records:[household,personal,median]};
+  const own = {"proposal.net_assets":"-100"};
+  const before = JSON.stringify(snapshot);
+  expect(assetReferenceView(snapshot, selection, own).metrics[0]).toMatchObject({reference:"12300000",own:"-100"});
+  expect(assetReferenceView(snapshot, selection, own, "household").metrics[0]).toMatchObject({reference:"471440000",own:"-100"});
+  const withNoPersonalMean = assetReferenceView({...snapshot,records:[household,median]}, selection, {"proposal.net_assets":"0"});
+  expect(withNoPersonalMean.metrics[0]).toMatchObject({reference:null, own:"0"});
+  expect(withNoPersonalMean.cohorts).toEqual([]);
   expect(JSON.stringify(snapshot)).toBe(before);
 });
 
 test("asset reference web flow uses real preview data and shares selection, snapshot and stale status with final portfolio", async ({ page }, info) => {
-  test.setTimeout(180000);
+  test.setTimeout(210_000);
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/dion");
   await page.getByRole("button", {name:"가상 사례 불러오기", exact:true}).click();
@@ -93,44 +99,25 @@ test("asset reference web flow uses real preview data and shares selection, snap
   await expect(chart.locator('[data-asset-series="own"][data-value="12000000"]')).toHaveCount(1);
   await expect(chart).toContainText("내 현재값 · 개인");
   expect(result.peer_reference.scope).toBe("personal");
-  await expect(chart.getByLabel("비교할 참고 집단")).toHaveValue("ANSWER");
-  await expect(chart).toContainText("사회초년생");
+  await expect(chart.getByLabel("비교할 참고 집단")).toHaveCount(0);
+  await expect(chart).toContainText("개인 단위로 비교할 수 있는 평균 자료를 아직 확보하지 못했어요");
+  await expect(chart.locator('[data-asset-series="reference"]')).toHaveCount(0);
   await expect(chart.locator("[data-asset-metric]")).toHaveCount(3);
   await expect(page.getByRole("region", {name:"생활단계 참고 통계", exact:true})).toHaveCount(0);
-  await chart.getByLabel("비교할 참고 집단").selectOption("C07");
-  await expect(chart.locator(".d-asset-compare-metric")).toHaveCount(3);
-  const net = chart.locator('[data-asset-metric="proposal.net_assets"]');
-  await expect(net).toHaveAttribute("data-statistic-id", "V004");
-  await expect(net.locator('[data-asset-series="reference"]')).toHaveAttribute("data-value", "471440000");
   const ownValues = await chart.locator('[data-asset-series="own"]').evaluateAll(els => els.map(el => el.getAttribute("data-value")));
   const expectedOwn = ["proposal.total_assets", "proposal.total_liabilities", "proposal.net_assets"].map(key => result.peer_reference.personal_asset_values[key] ?? null);
   expect(ownValues).toEqual(expectedOwn);
-  await chart.getByLabel("비교할 참고 집단").selectOption("C08");
-  await expect(chart.locator("[data-asset-metric]")).toHaveCount(3);
-  await expect(chart).toContainText("39세 이하");
-  expect(await chart.locator('[data-asset-series="reference"]').evaluateAll(els=>els.map(el=>el.getAttribute('data-value')))).toEqual(["314980000","95480000","219500000"]);
-  await chart.getByLabel("비교할 참고 집단").selectOption("C09");
-  await expect(chart).toContainText("60세 이상");
-  expect(await chart.locator('[data-asset-series="reference"]').evaluateAll(els=>els.map(el=>el.getAttribute('data-value')))).toEqual(["600950000","65040000","535910000"]);
-  await chart.getByLabel("비교할 참고 집단").selectOption("C07");
-  await expect(chart.getByRole("link").first()).toHaveAttribute("href", /list_no=439535/);
   await chart.screenshot({ path: info.outputPath("assets-web.png") });
   await page.locator(".d-tabs button").nth(4).click();
   const final = page.locator('[data-asset-reference="final"]');
+  const referenceToggle = page.locator(".d-final > details > summary").filter({hasText:"보유자산 참고 통계 다시 보기"});
   await expect(final).toBeHidden();
-  await page.getByText("보유자산 참고 통계 다시 보기", {exact:true}).click();
+  await referenceToggle.click({timeout:15_000});
   await expect(final).toBeVisible();
-  await expect(final.getByRole("combobox")).toHaveCount(1);
+  await expect(final.getByRole("combobox")).toHaveCount(0);
+  await expect(final.locator('[data-asset-series="reference"]')).toHaveCount(0);
   expect(await final.locator('[data-asset-series="own"]').evaluateAll(els => els.map(el => el.getAttribute("data-value")))).toEqual(ownValues);
   await expect(final).toHaveAttribute("data-input-version", String(result.peer_reference.input_version));
-  await final.getByRole("combobox", {name:"비교할 참고 집단",exact:true}).selectOption("C09");
-  const selectedValues=await final.locator('[data-asset-series="reference"]').evaluateAll(els=>els.map(el=>el.getAttribute('data-value')));
-  expect(selectedValues).toEqual(["600950000","65040000","535910000"]);
-  await page.locator(".d-tabs button").nth(0).click();
-  await expect(chart.getByRole("combobox",{name:"비교할 참고 집단",exact:true})).toHaveValue("C09");
-  expect(await chart.locator('[data-asset-series="reference"]').evaluateAll(els=>els.map(el=>el.getAttribute('data-value')))).toEqual(selectedValues);
-  await page.locator(".d-tabs button").nth(4).click();
-  await page.getByText("보유자산 참고 통계 다시 보기", {exact:true}).click();
   await final.screenshot({ path: info.outputPath("final-web.png") });
   for (const width of [1024, 390]) {
     await page.setViewportSize({ width, height: 900 });
@@ -142,8 +129,25 @@ test("asset reference web flow uses real preview data and shares selection, snap
   await page.getByRole("textbox", { name: "한 달 평균 세후 소득은 얼마인가요?", exact: true }).fill("777");
   await page.getByRole("button", { name: "이전 결과 보기", exact: true }).click();
   await page.locator(".d-tabs button").nth(4).click();
-  await page.getByText("보유자산 참고 통계 다시 보기", {exact:true}).click();
+  await referenceToggle.click({timeout:15_000});
   await expect(final).toContainText("이전 입력 기준의 자산·통계");
   expect(await final.locator('[data-asset-series="own"]').evaluateAll(els => els.map(el => el.getAttribute("data-value")))).toEqual(ownValues);
   await expect(final).toHaveAttribute("data-data-version", result.peer_reference.data_version);
+
+  await page.getByRole("button", {name:"가상 사례 불러오기", exact:true}).click();
+  await page.getByRole("button", {name:"은퇴기 불러오기", exact:true}).click();
+  await expect(chart).toContainText("내 현재값 · 가구");
+  await expect(chart).toContainText("조사 평균 · 가구");
+  await expect(chart).toHaveAttribute("data-selected-cohort","C09");
+  const values = chart.locator('[data-asset-series="reference"]');
+  expect(await values.evaluateAll(els=>els.map(el=>el.getAttribute("data-value"))))
+    .toEqual(["600950000","65040000","535910000"]);
+  await chart.getByLabel("비교할 참고 집단").selectOption("C07");
+  await expect(chart.locator('[data-statistic-id="V004"] [data-asset-series="reference"]'))
+    .toHaveAttribute("data-value","471440000");
+  await page.locator(".d-tabs button").nth(4).click();
+  await referenceToggle.click({timeout:15_000});
+  await expect(final.getByLabel("비교할 참고 집단")).toHaveValue("C07");
+  await expect(final.locator('[data-statistic-id="V004"] [data-asset-series="reference"]'))
+    .toHaveAttribute("data-value","471440000");
 });

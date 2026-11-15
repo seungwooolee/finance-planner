@@ -13,15 +13,17 @@ export type AssetReferenceSelection = { cohort: string };
 export const INITIAL_ASSET_REFERENCE: AssetReferenceSelection = { cohort: "ANSWER" };
 // Shared display contract for the results and portfolio consumers. These states never
 // authorize arithmetic comparison or claim that the customer belongs to the cohort.
-export const ASSET_REFERENCE_VIEW_VERSION = "DION-ASSET-REFERENCE-VIEW-1.2";
+export const ASSET_REFERENCE_VIEW_VERSION = "DION-ASSET-REFERENCE-VIEW-1.3";
 export type AssetReferenceMetric = { key: string; label: string; own: string | null; reference: string | null; row: Row };
 
-export function assetReferenceView(value: unknown, selection: AssetReferenceSelection, ownValues?: Row) {
+export function assetReferenceView(value: unknown, selection: AssetReferenceSelection, ownValues?: Row, ownScope?: string) {
   const data = object(value);
+  const scope = ownScope || text(data.scope);
+  const referenceUnit = scope === "personal" ? "개인" : scope === "household" ? "가구" : null;
   const records = text(data.version) && Array.isArray(data.records) ? data.records.map(object) : [];
   const relevant = records.filter(r => METRICS.some(([key]) => key === r.metric_key));
   const reviewed = relevant.filter(r =>
-    r.review_status === "REFERENCE_ONLY" && r.unit === "KRW" && r.target_unit === "가구" &&
+    r.review_status === "REFERENCE_ONLY" && r.unit === "KRW" && referenceUnit !== null && r.target_unit === referenceUnit &&
     r.statistic_type === "평균" && signedWon(r.value) &&
     /^\d{4}-\d{2}-\d{2}$/.test(text(r.period_start)) && r.period_start === r.period_end &&
     (r.metric_key === "proposal.net_assets" || BigInt(r.value) >= 0n));
@@ -48,9 +50,7 @@ export function assetReferenceView(value: unknown, selection: AssetReferenceSele
     if (!row && own === null) return [];
     return [{key, label, own, reference: row ? row.value as string : null, row: row ?? {}}];
   });
-  const relatedRows = automatic ? records.filter(r => ids.includes(r.cohort_id) && r.review_status === "REFERENCE_ONLY"
-    && r.unit === "KRW" && r.target_unit === "부부" && signedWon(r.value)) : [];
-  return {data, cohort, cohorts, cohortId, metrics, hint, automatic, relatedRows,
+  return {data, scope, referenceUnit, cohort, cohorts, cohortId, metrics, hint, automatic,
     comparisonState: "REFERENCE_ONLY" as const, membershipState: "UNCONFIRMED" as const,
     selectionOrigin: automatic ? "ANSWER_HINT" as const : "EXPLICIT" as const};
 }

@@ -35,7 +35,7 @@ test("preview engine snapshot renders asset and life-stage graphs immediately on
   for(const [name,size] of [["desktop",{width:1440,height:1000}],["mobile",{width:390,height:844}]] as const){
     await page.setViewportSize(size);
     await show(page,React.createElement(React.Fragment,null,assets(reference),React.createElement(PeerReference,{value:reference,stale:false})));
-    await expect(page.getByRole("figure",{name:"현재 자산과 과거 조사 통계의 금액 그래프"})).toBeVisible();
+    await expect(page.getByRole("figure",{name:"현재 자산 금액 그래프"})).toBeVisible();
     const life=page.getByRole("region",{name:"생활단계 참고 통계",exact:true});
     await expect(life.getByRole("combobox")).toHaveValue("C07");
     await expect(life.getByRole("figure",{name:"총자산 참고 그래프",exact:true}).filter({hasText:"조사 평균"})).toBeVisible();
