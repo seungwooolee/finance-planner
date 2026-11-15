@@ -1,0 +1,84 @@
+{
+  "data_version": "dion-peer-reviewed-20261115-v2",
+  "reviewed_on": "2026-11-15",
+  "source_id": "S01",
+  "source_url": "https://www.mods.go.kr/boardDownload.es?bid=215&list_no=439535&seq=8",
+  "source_title": "2025년 가계금융복지조사 부록 통계표",
+  "source_sha256": "fe3cf0fe60d3e0b94530e3a5b75e8a51241b36e7837d7fe6c6a1a2fcc858f7e6",
+  "sheet": "통계표1~10",
+  "source_unit": "만원",
+  "display_format": "Excel built-in numFmtId 41: integer accounting display (#,##0); preserved displayed integers, not full-precision estimates",
+  "headers": {
+    "BR": "표5 부채 / 전체가구 평균 / 2025년",
+    "DH": "표8 순자산 / 전체가구 평균 / 2025년",
+    "DL": "표8 순자산 / 중앙값 / 2025년"
+  },
+  "cohort_rows": {
+    "16": "가구주 연령대별 39세이하",
+    "21": "가구주 연령대별 60세이상"
+  },
+  "license": "KOGL_TYPE_1",
+  "license_evidence": "Existing S01 source-review-hashes.json s01.pdf page 1; same official release appendix",
+  "records": [
+    {
+      "statistic_id": "V029",
+      "id": "REG-ASSET-029",
+      "cohort_id": "C08",
+      "template_statistic_id": "V003",
+      "source_cell": "BR16",
+      "source_value": "9548",
+      "source_raw_decimal": "9547.8114175999999",
+      "statistic_type": "평균"
+    },
+    {
+      "statistic_id": "V030",
+      "id": "REG-ASSET-030",
+      "cohort_id": "C08",
+      "template_statistic_id": "V004",
+      "source_cell": "DH16",
+      "source_value": "21950",
+      "source_raw_decimal": "21949.952292999998",
+      "statistic_type": "평균"
+    },
+    {
+      "statistic_id": "V031",
+      "id": "REG-ASSET-031",
+      "cohort_id": "C08",
+      "template_statistic_id": "V005",
+      "source_cell": "DL16",
+      "source_value": "12640",
+      "source_raw_decimal": "12640",
+      "statistic_type": "중앙값"
+    },
+    {
+      "statistic_id": "V032",
+      "id": "REG-ASSET-032",
+      "cohort_id": "C09",
+      "template_statistic_id": "V003",
+      "source_cell": "BR21",
+      "source_value": "6504",
+      "source_raw_decimal": "6504.2014114000003",
+      "statistic_type": "평균"
+    },
+    {
+      "statistic_id": "V033",
+      "id": "REG-ASSET-033",
+      "cohort_id": "C09",
+      "template_statistic_id": "V004",
+      "source_cell": "DH21",
+      "source_value": "53591",
+      "source_raw_decimal": "53591.291169999997",
+      "statistic_type": "평균"
+    },
+    {
+      "statistic_id": "V034",
+      "id": "REG-ASSET-034",
+      "cohort_id": "C09",
+      "template_statistic_id": "V005",
+      "source_cell": "DL21",
+      "source_value": "25000",
+      "source_raw_decimal": "25000",
+      "statistic_type": "중앙값"
+    }
+  ]
+}
