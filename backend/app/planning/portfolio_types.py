@@ -1,11 +1,11 @@
 """Three relative composition choices within the customer's unchanged P1-P5 profile.
 
-Each type reuses a neighbouring reviewed slot table of the product policy. The customer's own limits
+Types use reviewed slot tables, with an explicit return-seeking target for P3–P5. The customer's own limits
 (risk floor, loss band, essentials, restrictions, fund dates, product freshness) are NOT relaxed:
 a type view only changes which reviewed slot table is laid over the products the customer is
 already eligible for. Views are comparisons; the customer's own preference stays the allocation.
 """
-VERSION = "DION-PORTFOLIO-TYPES-0.2"
+VERSION = "DION-PORTFOLIO-TYPES-0.3"
 STATE = "REVIEWED_FOR_PREVIEW"  # 2026-11-13: user delegated the decision; kept as proposed (docs/integration/2026-11-13-stage4-decisions.md).
 REPRESENTATIVE_PREFERENCE = {
     "STABLE": "PREF_LEAN_STABILITY",
@@ -17,6 +17,12 @@ PREFERENCES = (
     "PREF_STABILITY", "PREF_LEAN_STABILITY", "PREF_BALANCED", "PREF_LEAN_RETURN", "PREF_RETURN",
 )
 SELECTION_SCOPE = "WITHIN_CUSTOMER_PREFERENCE"
+RETURN_MIX_PRODUCT_POLICY = "DION-PRODUCT-POLICY-20261113-0.3.1"
+RETURN_TARGETS = (
+    ("BOND", "153130", 2000), ("KR_EQUITY", "069500", 3500), ("US_EQUITY", "360200", 3500),
+)
+RETURN_MIX_BPS = {**{role: weight for role, _, weight in RETURN_TARGETS},
+                  "CASH": 10000 - sum(weight for _, _, weight in RETURN_TARGETS)}
 # Reasons that come from the customer's own preference slot table, not from their limits.
 PREFERENCE_ONLY_REASONS = {"STABILITY_POLICY_UNALLOCATED", "ALLOCATION_TARGETS_UNCONFIRMED", "NO_ELIGIBLE_PRODUCTS"}
 

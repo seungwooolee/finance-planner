@@ -11,9 +11,9 @@ from tests.planning.test_product_allocation import change, current_product_docum
 def test_three_views_exact_money_and_bounded_candidates():
     review = current_review()
     month = review['candidates'][0]['rows'][0]
-    # 300,000 budget. RETURN: 20/15/30 slots scaled by 20/28 => 1428/1071/2142 bps.
+    # 300,000 budget. RETURN: 20/35/35 slots scaled by 20/43 => 930/1627/1627 bps.
     expected = {'STABLE': ('90000', '210000'), 'BALANCED': ('180000', '120000'),
-                'RETURN': ('139230', '160770')}
+                'RETURN': ('125520', '174480')}
     for kind, (allocated, cash) in expected.items():
         view = month['portfolio_type_views'][kind]
         assert view['selectable'] is True
@@ -21,6 +21,12 @@ def test_three_views_exact_money_and_bounded_candidates():
         assert sum(int(a['review_allocated_krw']) for a in view['allocations']) == int(allocated)
         assert int(allocated) + int(cash) == 300000
         assert len({a['code'] for a in view['allocations']}) == len(view['allocations'])
+    risk = month['portfolio_type_views']['RETURN']
+    assert risk['target_mix_bps'] == {'BOND': 2000, 'KR_EQUITY': 3500, 'US_EQUITY': 3500, 'CASH': 1000}
+    assert (risk['target_cash_krw'], risk['held_krw']) == ('30000', '144480')
+    assert [(a['code'], a['review_allocated_krw']) for a in risk['allocations']] == [
+        ('153130', '27900'), ('069500', '48810'), ('360200', '48810'),
+    ]
     groups = {g['asset_group']: g for g in month['comparison_groups']}
     assert groups['CASH']['product_codes'] == []
     assert groups['BOND']['product_codes'] == ['153130', '214980']
@@ -47,6 +53,10 @@ def test_restrictions_unknown_and_host_gate_apply_to_every_comparison():
             assert all(not v['selectable'] and v['allocated_total_krw'] == '0'
                        and v['unallocated_krw'] == row['scenario_budget_krw'] for v in row['portfolio_type_views'].values())
             assert all(not g['product_codes'] for g in row['comparison_groups'])
+            risk = row['portfolio_type_views']['RETURN']
+            budget = int(row['scenario_budget_krw'])
+            assert int(risk['target_cash_krw']) == budget // 10
+            assert int(risk['held_krw']) + int(risk['target_cash_krw']) == budget
 
 
 def test_candidate_cap_and_unapproved_role_do_not_relax_filter():
@@ -59,9 +69,9 @@ def test_candidate_cap_and_unapproved_role_do_not_relax_filter():
 @pytest.mark.parametrize(('preference', 'targets', 'allocated'), [
     ('PREF_STABILITY', ('PREF_STABILITY',) * 3, (0, 0, 0)),
     ('PREF_LEAN_STABILITY', ('PREF_STABILITY', 'PREF_LEAN_STABILITY', 'PREF_BALANCED'), (0, 90000, 90000)),
-    ('PREF_BALANCED', ('PREF_LEAN_STABILITY', 'PREF_BALANCED', 'PREF_LEAN_RETURN'), (90000, 180000, 139230)),
-    ('PREF_LEAN_RETURN', ('PREF_BALANCED', 'PREF_LEAN_RETURN', 'PREF_RETURN'), (180000, 139230, 114990)),
-    ('PREF_RETURN', ('PREF_LEAN_RETURN', 'PREF_RETURN', 'PREF_RETURN'), (139230, 114990, 114990)),
+    ('PREF_BALANCED', ('PREF_LEAN_STABILITY', 'PREF_BALANCED', 'PREF_LEAN_RETURN'), (90000, 180000, 125520)),
+    ('PREF_LEAN_RETURN', ('PREF_BALANCED', 'PREF_LEAN_RETURN', 'PREF_RETURN'), (180000, 139230, 125520)),
+    ('PREF_RETURN', ('PREF_LEAN_RETURN', 'PREF_RETURN', 'PREF_RETURN'), (139230, 114990, 125520)),
 ])
 def test_fifteen_relative_choices_preserve_source_and_customer_limits(preference, targets, allocated):
     doc = current_product_document()
