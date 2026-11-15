@@ -53,7 +53,7 @@ test('goal table separates target, prepared, remaining and per-contribution plan
     await expect(g1).toContainText('마지막 회차 128만 5,710 원');
     await expect(table.getByRole('row', { name: /여행/ })).toContainText('계산 불가');
     await expect(table.getByRole('row', { name: /자동차/ })).toContainText('추가 적립 없음');
-    await expect(page.getByText(/확률/)).toContainText('달성확률도 계산하지 않아요');
+    await expect(page.getByText(/달성확률도 계산하지 않아요/)).toHaveCount(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     await page.screenshot({ path: info.outputPath(`goals-${name}.png`), fullPage: true });
   }
@@ -72,8 +72,7 @@ test('plan diff shows exact same-month differences and never infers cash from in
     await expect(table.getByRole('row', { name: /목표 적립/ })).toContainText('같음');
     await expect(table.getByRole('row', { name: /월말 현금 합계/ })).toContainText('−40만원');
     await expect(section.getByLabel('두 안의 같은 점과 다른 점')).toHaveCount(0);
-    await expect(section).toContainText('재무계획 2안');
-    await expect(section).toContainText('투자구성 3유형(안정형·중립형·위험 추구형)');
+    await expect(section.getByText(/화면 비교용 선택|재무계획 2안|같은 계산 결과|장기 수익·세금/)).toHaveCount(0);
     await expect(page.getByText('현금을 따로 남기는 이유 · 등록 근거')).toHaveCount(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     await page.screenshot({ path: info.outputPath(`plan-diff-${name}.png`), fullPage: true });
@@ -90,11 +89,12 @@ test('plan diff shows exact same-month differences and never infers cash from in
 
 test('standard results omit repeated metadata and consultation, while old results retain the warning and next button', async ({page}) => {
   const view: ViewResult = {result:{calc_state:'CALCULATED'}, source:{}, storage:'NOT_SAVED', localVersion:22, sourceSignature:'fixture'};
-  const draw = (stale: boolean) => <div className="dion-app"><Results view={view} deep tab={0} setTab={()=>{}} stale={stale} onEdit={()=>{}} onRecalculate={()=>{}}/></div>;
+  const draw = (stale: boolean) => <div className="dion-app"><Results view={view} deep tab={0} setTab={()=>{}} stale={stale} onEdit={()=>{}} onRecalculate={()=>{}} calcBar={<button>재계산</button>}/></div>;
   await page.setContent(renderToStaticMarkup(draw(false)));
   const main=page.getByRole('region',{name:'계산 결과',exact:true});
   await expect(main.getByText(/현재 입력 기준 결과|금액 표시|저장 전 편집 22번째 버전|모든 화면 결과를 계산/)).toHaveCount(0);
   await expect(main.getByRole('region',{name:'현재 결과 다음 행동 상담'})).toHaveCount(0);
+  await expect(main.getByRole('button',{name:'재계산',exact:true})).toHaveCount(0);
   const next=main.getByRole('navigation',{name:'다음 결과 단계',exact:true});
   await expect(next).not.toContainText('다음 단계');
   await expect(next.getByRole('button',{name:'다음 · 재무안 비교',exact:true})).toBeVisible();
