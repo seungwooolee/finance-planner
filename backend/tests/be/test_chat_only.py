@@ -198,3 +198,57 @@ def test_chat_evidence_only_includes_scoped_registered_spans(monkeypatch):
     context = {"claims": {}}
     chat_context.add_public_evidence(context, run, "환헤지 개념을 설명해 주세요", lambda: corpus(payload))
     assert not context["claims"]
+
+def test_general_isa_uses_registered_answer_before_preview_or_saved_basis(monkeypatch):
+    from datetime import datetime
+
+    from fastapi import FastAPI
+    from fastapi.testclient import TestClient
+
+    from app.be.api import get_store
+    from app.be.auth import get_actor
+    from app.be.survey_api import get_chat_service, router
+    from app.consultation import tax_chat
+
+    class Clock(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return cls(2026, 11, 16, 13, tzinfo=tz)
+
+    class NoModel:
+        async def answer(self, *_):
+            pytest.fail("A public ISA question must not call the model")
+
+    monkeypatch.setattr(tax_chat, "datetime", Clock)
+    app = FastAPI()
+    app.include_router(router)
+    app.dependency_overrides[get_store] = lambda: object()
+    app.dependency_overrides[get_actor] = lambda: "synthetic"
+    app.dependency_overrides[get_chat_service] = lambda: ChatService(NoModel())
+    preview = {"contract_version": "DION-PREVIEW-ACTION-1.0", "request_key": "preview",
+               "document": {}, "input_hash": "0" * 64, "result_sha256": "1" * 64,
+               "strategy_id": "STABILITY_FIRST", "portfolio_type": None, "question": "preview",
+               "allow_model_question": True}
+    cases = [("isa계좌가 뭐야?", {"preview": preview}, "개인종합자산관리계좌"),
+             ("isa계좌 가입조건", {"preview": preview}, "만 19세"),
+             ("ＩＳＡ 가입 요건", {"saved": {"case_id": "other", "run_id": "stale", "input_hash": "0"*64}}, "만 15세")]
+    with TestClient(app) as client:
+        for i, (message, fields, expected) in enumerate(cases):
+            response = client.post("/api/be/v1/dialogue", json=request(
+                message=message, request_key=f"isa-{i}", **fields).model_dump())
+            assert response.status_code == 200, response.text
+            body = response.json()
+            assert body["source"] == "DETERMINISTIC" and expected in body["reply"]
+            assert body["citations"][0]["sources"][0]["url"].startswith("https://")
+            assert "reviewable" not in body and body["candidates"] == []
+            assert "provider;dur=0" in response.headers["server-timing"]
+
+        personal = client.post("/api/be/v1/dialogue", json=request(
+            message="저도 ISA 가입조건에 맞나요?", preview=preview).model_dump())
+        assert personal.status_code == 409 and personal.json()["detail"]["code"] == "PREVIEW_BASIS_MISMATCH"
+        stale_year = client.post("/api/be/v1/dialogue", json=request(
+            message="2025년 ISA 가입조건", preview=preview).model_dump()).json()
+        assert "등록 근거를 확인하지 못했어요" in stale_year["reply"] and stale_year["citations"] == []
+
+        del app.dependency_overrides[get_actor]
+        assert client.post("/api/be/v1/dialogue", json=request(message="isa계좌 가입조건").model_dump()).status_code == 401

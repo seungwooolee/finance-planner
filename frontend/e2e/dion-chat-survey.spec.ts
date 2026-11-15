@@ -32,7 +32,7 @@ test('chat only: consent, confirmed input, engine result and recoverable AI fail
  await chat.getByRole('button',{name:'확인한 답변으로 계산'}).click();const doc=(await calculation).postDataJSON();
  expect(doc.context.scope).toBe('personal');expect(doc.raw_bundle.answers.some((r:{envelope:{fields:{monthly_net_income_krw?:{raw_value:string}}}})=>r.envelope.fields.monthly_net_income_krw?.raw_value==='300')).toBe(true);
  await expect(chat.getByRole('log')).toContainText('새 결과를 확인할 수 있어요');
- await input.fill('장애 테스트');await input.press('Enter');await expect(chat.getByRole('alert')).toContainText('AI 응답을 받지 못했어요');await expect(input).toHaveValue('');await expect(chat.locator('.d-chat-message.user')).toContainText(['장애 테스트']);
+ await input.fill('장애 테스트');await input.press('Enter');await expect(chat.getByRole('alert')).toContainText('AI 모델에 연결하지 못했어요');await expect(input).toHaveValue('');await expect(chat.locator('.d-chat-message.user')).toContainText(['장애 테스트']);
  await page.setViewportSize({width:390,height:844});expect(await chat.evaluate(n=>n.scrollWidth<=n.clientWidth)).toBe(true);
  await expect(input).toBeInViewport();await input.press('Escape');await expect(chat).not.toBeVisible();await expect(page.getByRole('button',{name:'dion AI 상담 열기',exact:true})).toBeFocused();
 });
@@ -69,4 +69,33 @@ test('chat save connects transcript to the existing result session after explici
  const saved=await (await request.get(`${base}/agent-sessions/${sessions.items[0].session_id}`,{headers:{Authorization:'Bearer MOCK-FE-ONLY'}})).json();
  expect(saved.conversation.survey_history.items.some((r:{content:string})=>r.content==='대화 저장해줘')).toBe(true);
  expect(saved.conversation.messages).toEqual([]);expect(saved.persistence_mode).toBe('SAVED');
+});
+
+test('ISA definitions and eligibility answer through the API with an outdated preview',async({page,request})=>{
+  test.setTimeout(150000);
+  await prepare(page,request);
+  await page.getByRole('button',{name:'저장하고 결과 보기',exact:true}).click();
+  await expect(page.getByRole('status').filter({hasText:'답변과 계산 결과를 저장했어요'})).toBeVisible();
+  await page.route('**/api/be/v1/dialogue',async route=>{
+    const {saved,...payload}=route.request().postDataJSON();
+    expect(saved?.run_id).toBeTruthy();
+    const preview={contract_version:'DION-PREVIEW-ACTION-1.0',request_key:'preview-old',
+      document:{},input_hash:'0'.repeat(64),result_sha256:'1'.repeat(64),
+      strategy_id:'STABILITY_FIRST',portfolio_type:null,question:payload.message,allow_model_question:true};
+    await route.fulfill({response:await route.fetch({url:harness+'/api/be/v1/dialogue',postData:{...payload,preview}})});
+  });
+  await page.getByRole('button',{name:'dion AI 상담 열기',exact:true}).click();
+  const chat=page.getByRole('dialog',{name:'dion AI 상담',exact:true});
+  await chat.getByRole('button',{name:'동의하고 대화 시작'}).click();
+  const input=chat.getByRole('textbox',{name:'DION에게 메시지'});
+  for (const [question,expected] of [['isa계좌가 뭐야?','개인종합자산관리계좌'],['isa계좌 가입조건','만 19세']]) {
+    await input.fill(question);
+    await input.press('Enter');
+    await expect(chat.getByRole('log')).toContainText(expected);
+  }
+  await expect(chat.getByRole('alert')).toHaveCount(0);
+  const evidence=chat.getByText('등록 근거 보기',{exact:true});
+  await expect(evidence).toHaveCount(2);
+  await evidence.last().press('Enter');
+  await expect(chat.locator('a[href*="law.go.kr"]').last()).toBeVisible();
 });
