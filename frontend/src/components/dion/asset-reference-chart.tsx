@@ -21,13 +21,15 @@ export function AssetReferenceChart({ metrics, scope }: { metrics: AssetReferenc
         </span></th>)}
       </tr></thead>
       {metrics.map(metric => <tbody className="d-asset-compare-metric" key={metric.key} data-asset-metric={metric.key}
-        data-statistic-id={typeof metric.row.statistic_id === "string" ? metric.row.statistic_id : undefined}>
+        data-statistic-id={typeof metric.row.statistic_id === "string" ? metric.row.statistic_id : undefined}
+        data-reference-cohort={typeof metric.row.cohort_id === "string" ? metric.row.cohort_id : undefined}>
         <tr className="d-asset-compare-values">
           <th scope="row">{metric.label}</th>
           {series.map(item => {
             const amount = item.key === "own" ? metric.own : metric.reference;
             return <td className="d-asset-compare-series" key={item.key} data-asset-series={item.key} data-value={amount ?? undefined}>
               <strong>{item.key === "reference" && amount === null ? "자료 없음" : formatKrw(amount)}</strong>
+              {item.key === "reference" && metric.fallbackLabel && <small>별도 참고 · {metric.fallbackLabel}</small>}
             </td>;
           })}
         </tr>

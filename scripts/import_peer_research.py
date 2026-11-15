@@ -13,6 +13,7 @@ DESTINATION = ROOT / "backend/app/planning/peer_reference_data.json"
 SUPPLEMENT = ROOT / "docs/research/peer-reference/asset-supplement-20261115.json"
 UNDER30 = ROOT / "docs/research/peer-reference/asset-under30-20261116.json"
 PERSONAL_ASSETS = ROOT / "docs/research/peer-reference/personal-assets-20261116.json"
+ASSET_COVERAGE = ROOT / "docs/research/peer-reference/asset-coverage-20261116.json"
 
 
 def normalize(value, unit):
@@ -60,7 +61,54 @@ def _add_personal_assets(registry):
                     personal_assets_sha256=hashlib.sha256(raw.encode("utf-8")).hexdigest())
 
 
-def build(include_supplement=True, *, include_under30=True, include_personal=True):
+def _add_asset_coverage(registry):
+    raw = ASSET_COVERAGE.read_text(encoding="utf-8").rstrip() + "\n"
+    report = json.loads(raw)
+    records = registry["records"]
+    templates = {row["statistic_id"]: row for row in records}
+    seen = set(templates)
+    for cohort in report["cohorts"]:
+        source = report["sources"][cohort["source_id"]]
+        for metric, statistic_id, source_value in zip(
+            report["metrics"], cohort["statistic_ids"], cohort["source_values"], strict=True,
+        ):
+            template = templates[metric["template_id"]]
+            value = normalize(source_value, "만원")
+            if statistic_id in seen or value is None or template["metric_key"] != metric["key"]:
+                raise ValueError(f"{statistic_id}: invalid asset coverage statistic")
+            seen.add(statistic_id)
+            personal = cohort["target_unit"] == "개인"
+            indicator = metric["label"] if personal else metric["household_label"]
+            records.append({
+                **template,
+                "id": f"D{statistic_id[1:]}", "statistic_id": statistic_id, "cohort_id": cohort["id"],
+                "label": metric["label"], "value": value, "source_value": source_value,
+                "target_unit": cohort["target_unit"], "cohort_definition": cohort["label"],
+                "period_start": source["period"], "period_end": source["period"],
+                "definition": metric["personal_definition"] if personal else template["definition"],
+                "definition_version": "DION-PEER-PERSONAL-ASSET-1.0" if personal else template["definition_version"],
+                "source_id": source["source_id"], "source_title": source["source_title"], "source_url": source["source_url"],
+                "publisher": source.get("publisher", template["publisher"]),
+                "published_on": None if personal else template["published_on"],
+                "source_position": f"{source['position']} · {cohort['source_row']} · {indicator}",
+                "source_file_sha256": source.get("source_file_sha256"), "sample_size": None,
+                "quality": source["quality"], "limitations": source["limitations"],
+                "license": source.get("license", template["license"]),
+            })
+    fallback_ids = report["fallback_cohort_ids"]
+    for scope, unit in (("personal", "개인"), ("household", "가구")):
+        rows = [row for row in records if row["cohort_id"] == fallback_ids[scope] and
+                row["review_status"] == "REFERENCE_ONLY" and row["value"] is not None and
+                row["unit"] == "KRW" and row["statistic_type"] == "평균" and row["target_unit"] == unit]
+        keys = sorted(row["metric_key"] for row in rows if row["metric_key"] in {m["key"] for m in report["metrics"]})
+        if keys != sorted(m["key"] for m in report["metrics"]):
+            raise ValueError(f"{scope}: asset fallback must contain exactly one mean per metric")
+    registry.update(data_version=report["data_version"], reviewed_on=report["reviewed_on"],
+                    asset_coverage_sha256=hashlib.sha256(raw.encode("utf-8")).hexdigest(),
+                    asset_fallback_cohort_ids=fallback_ids)
+
+
+def build(include_supplement=True, *, include_under30=True, include_personal=True, include_coverage=True):
     # Hash the canonical UTF-8/LF snapshot, independent of Windows checkout endings.
     raw = (SOURCE.read_text(encoding="utf-8-sig").rstrip() + "\n").encode("utf-8")
     tabs = [list(csv.DictReader(io.StringIO(part.strip())))
@@ -160,6 +208,8 @@ def build(include_supplement=True, *, include_under30=True, include_personal=Tru
                              "under30_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest()})
     if include_supplement and include_under30 and include_personal:
         _add_personal_assets(registry)
+        if include_coverage:
+            _add_asset_coverage(registry)
     return registry
 
 

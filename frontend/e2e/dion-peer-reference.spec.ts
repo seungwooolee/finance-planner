@@ -8,8 +8,8 @@ test('reviewed research reaches real results with source, cohort, withholding an
   await page.getByRole('button', { name: '사회초년생 불러오기', exact: true }).click();
   const result = (await (await response).json()).result;
   const review = result.peer_reference;
-  expect(review.records).toHaveLength(50);
-  expect(review.records.filter((r: { review_status: string }) => r.review_status === 'REFERENCE_ONLY')).toHaveLength(37);
+  expect(review.records).toHaveLength(62);
+  expect(review.records.filter((r: { review_status: string }) => r.review_status === 'REFERENCE_ONLY')).toHaveLength(49);
   await page.locator('.d-tabs button').nth(0).click();
   const panel = page.getByRole('region', { name: '보유자산 · 참고 통계와 함께 보기', exact: true });
   await expect(panel).toHaveCount(1);
