@@ -1,0 +1,89 @@
+{
+  "version": "DION-CONTEST-AI-INTEGRATION-BASELINE-1.5",
+  "previous_baseline_sha256": "511e904f7a0a43d090c8f50491638470188784f5be87d4fc8709d977ee9c7262",
+  "base_sha": "eed221d1c1d305d79713ebb0dbf0c41d9c624e8a",
+  "frozen_lock_sha256": "0613a19e686bd05a93294d0eb6408291860157d56c6c918910ecec9e4f797e8d",
+  "expected_values_changed": false,
+  "code_overrides": {
+    "backend/tests/be/test_plan_checkin.py": {
+      "frozen_sha256": "73c1b60c147c96223061c3d3c1d98bacc31ca928a60d416da4e56ad7a4fd79af",
+      "candidate_sha256": "b4d132304d3b6ca75bc5f6b6508183f5648cae313a65c0240d1f4242baeb9933",
+      "source_commit": "db5a31d0dbe76d6b6c29b664cabe2a9857c094d5",
+      "reason": "Accepted BE checkin1.1 and B partial-mapping tests; not AI expected behavior or grading data."
+    },
+    "backend/tests/be/test_question_bridge.py": {
+      "frozen_sha256": "7f95b37b28da9bef81a06309a4eae060a168108fbad3d87bd3b753b0f056a29a",
+      "candidate_sha256": "42c11148c517b2ccca0539a3573ca19fc0fa7e29cdf5c59f26411fcdc0b7310b",
+      "source_commit": "db5a31d0dbe76d6b6c29b664cabe2a9857c094d5",
+      "reason": "Accepted BE checkin1.1 and B partial-mapping tests; not AI expected behavior or grading data."
+    }
+  },
+  "policy_overrides": {
+    "AGENTS.md": {
+      "frozen_sha256": "e6d9069a8dd4c7dd5b3b8666d477bf15ed658a57432e7aed65d95e174649cde9",
+      "candidate_sha256": "ebb1c9c073012dce22f0b0dcb8e5e005b20e9fbb9231726da3e101997e7242d3",
+      "source_commit": "32a67d0bf55224ef3d5c14e6e8b81daf1c2fafa0",
+      "reason": "User explicitly removed exclusive BE API/storage and FE shared-file ownership restrictions on 2026-11-15 for continuing the shared conversation assistant. Only governance instructions changed. Frozen grading inputs, expected behavior, original identities, code overrides and corpus overrides remain unchanged. Previous baseline is preserved in evidence/integration-baseline-1.4.json.",
+      "previous_candidate_sha256": "369166b272c77165df18eca7e27dba5b6f04558e52a0ef83c9b9b0294310eaff",
+      "previous_source_commit": "53add73ca6f87a33fc75e41f08fe04d4649f33d8",
+      "source_changes": [
+        "acce5d396dea64be695cf0e7ab182b955e3cb840",
+        "53add73ca6f87a33fc75e41f08fe04d4649f33d8",
+        "32a67d0bf55224ef3d5c14e6e8b81daf1c2fafa0"
+      ]
+    }
+  },
+  "data_overrides": {
+    "data/rag/registry/corpus.json": {
+      "frozen_sha256": "8cf933a67b0f7fa8c160a858b24a0eeb11b6497ecad6b5270340ec2e1dbf7a95",
+      "candidate_sha256": "08ae76473fda5aa62533b47e0f306da3f7215f7d4db0e8238703535161b90de8",
+      "source_base_commit": "bb0f389562a70e0e5232635ef4f1bb391c230441",
+      "contract": "docs/integration/2026-11-15-result-action-contract.md",
+      "reason": "User-authorized feature 1 implementation: repair four Markdown-contaminated official URL destinations and identify corpus revision r3. Claims, citations, dates, approvals, scoring inputs and expected values are unchanged. Integrated PR #46 and #49: preserve the same repaired destinations, add source/chunk metadata versions and prove frozen original content by reversing only these metadata fields.",
+      "url_repairs": [
+        {
+          "source_id": "SRC-CON-12",
+          "old_url": "https://kind.krx.co.kr/external/2026/04/09/000051/20260409000066/68648.htm*](https://kind.krx.co.kr/external/2026/04/09/000051/20260409000066/68648.htm",
+          "new_url": "https://kind.krx.co.kr/external/2026/04/09/000051/20260409000066/68648.htm"
+        },
+        {
+          "source_id": "SRC-CON-13",
+          "old_url": "https://kind.krx.co.kr/external/2026/06/16/000415/20260616000922/68616.htm*](https://kind.krx.co.kr/external/2026/06/16/000415/20260616000922/68616.htm",
+          "new_url": "https://kind.krx.co.kr/external/2026/06/16/000415/20260616000922/68616.htm"
+        },
+        {
+          "source_id": "SRC-CON-14",
+          "old_url": "https://kind.krx.co.kr/external/2026/06/12/000502/20260612001028/68152.htm*](https://kind.krx.co.kr/external/2026/06/12/000502/20260612001028/68152.htm",
+          "new_url": "https://kind.krx.co.kr/external/2026/06/12/000502/20260612001028/68152.htm"
+        },
+        {
+          "source_id": "SRC-CON-15",
+          "old_url": "https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1033258305*](https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1033258305",
+          "new_url": "https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1033258305"
+        }
+      ],
+      "before": {
+        "corpus_version": "dion-rag-20261113-demo-r2",
+        "sources": {
+          "SRC-CON-12": {
+            "official_url": "https://kind.krx.co.kr/external/2026/04/09/000051/20260409000066/68648.htm*](https://kind.krx.co.kr/external/2026/04/09/000051/20260409000066/68648.htm",
+            "source_version": "2026-11-13"
+          },
+          "SRC-CON-13": {
+            "official_url": "https://kind.krx.co.kr/external/2026/06/16/000415/20260616000922/68616.htm*](https://kind.krx.co.kr/external/2026/06/16/000415/20260616000922/68616.htm",
+            "source_version": "2026-11-13"
+          },
+          "SRC-CON-14": {
+            "official_url": "https://kind.krx.co.kr/external/2026/06/12/000502/20260612001028/68152.htm*](https://kind.krx.co.kr/external/2026/06/12/000502/20260612001028/68152.htm",
+            "source_version": "2026-11-13"
+          },
+          "SRC-CON-15": {
+            "official_url": "https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1033258305*](https://www.law.go.kr/lsLinkCommonInfo.do?lsJoLnkSeq=1033258305",
+            "source_version": "2026-11-13"
+          }
+        }
+      }
+    }
+  },
+  "parallel_baseline_sha256": "28df66529c6dc39265a2a3deb07d8fe07c345dd8162683a65947aad485246e15"
+}
