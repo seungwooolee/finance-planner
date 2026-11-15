@@ -3,6 +3,8 @@
   "git": {
     "deploymentEnabled": {
       "codex/chat-deployment-repair-20261115": false,
+
+      "codex/reference-deployment-check-20261115": false,
       "codex/chat-only-assistant-20261115": false,
 
       "codex/reference-chart-connect-20261115": false,
