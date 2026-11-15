@@ -86,7 +86,9 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
     document.querySelector<HTMLElement>("#dion-portfolio-review h2")?.focus();
     document.getElementById("dion-portfolio-review")?.scrollIntoView({block:"start"});setConsultFocus(false);
   });return()=>cancelAnimationFrame(frame);},[consultFocus,tab]);
-  const [assetReferenceSelection,setAssetReferenceSelection]=useState(INITIAL_ASSET_REFERENCE);
+  const [assetSelection,setAssetSelection]=useState({source:view.sourceSignature,selection:INITIAL_ASSET_REFERENCE});
+  const assetReferenceSelection=assetSelection.source===view.sourceSignature?assetSelection.selection:INITIAL_ASSET_REFERENCE;
+  const setAssetReferenceSelection=(selection:typeof INITIAL_ASSET_REFERENCE)=>setAssetSelection({source:view.sourceSignature,selection});
   const checkinRef=useRef<HTMLDivElement>(null);
   const tasksRef=useRef<HTMLDivElement>(null);
   const focusAdoption=()=>{checkinRef.current?.scrollIntoView({block:"start"});checkinRef.current?.querySelector<HTMLElement>("button.d-primary:not(:disabled)")?.focus({preventScroll:true});};
@@ -133,7 +135,6 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
       <div className="d-columns"><article className="d-card"><h2><Landmark size={20} aria-hidden="true"/> 보유현황을 먼저 살펴봐요</h2><div className="d-metrics"><Metric title="전체 자산" value={metricValue(assets,"total_assets")} /><Metric title="전체 채무" value={metricValue(assets,"total_debt")} /><Metric title="순자산" value={metricValue(assets,"net_worth")} /></div><BalanceBars assets={metricValue(assets,"total_assets")} debt={metricValue(assets,"total_debt")} net={metricValue(assets,"net_worth")}/>{estimatedProperty&&<p className="d-note">부동산의 대략적인 시세가 포함된 자산 추정치예요.</p>}<button className="d-text-button" onClick={()=>onEdit("F06")}>자산 내역 확인·수정 →</button></article><AssetComposition assets={assets} asOf={textValue(object(result.context).evaluation_on)} onEdit={()=>onEdit("F06")}/></div>
       {assetReference()}
       <FinancialOverview flow={flow}/>
-      {!!object(result.peer_reference).version&&<PeerReference key={view.sourceSignature} value={result.peer_reference} stale={stale}/>}
     </>}
     {tab===1 && <>
       {(()=>{const goalsCard=<GoalTable goals={goals} goalLabel={displayGoal} missing={<Missing row={goals} title="목표"/>}/>;

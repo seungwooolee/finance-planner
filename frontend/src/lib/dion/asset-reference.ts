@@ -10,7 +10,7 @@ const METRICS = [
   ["proposal.net_assets", "순자산"],
 ] as const;
 export type AssetReferenceSelection = { cohort: string; net: "평균" | "중앙값" };
-export const INITIAL_ASSET_REFERENCE: AssetReferenceSelection = { cohort: "C07", net: "평균" };
+export const INITIAL_ASSET_REFERENCE: AssetReferenceSelection = { cohort: "ANSWER", net: "평균" };
 export type AssetReferenceMetric = { key: string; label: string; own: string | null; reference: string; row: Row };
 
 export function assetReferenceView(value: unknown, selection: AssetReferenceSelection) {
@@ -24,7 +24,13 @@ export function assetReferenceView(value: unknown, selection: AssetReferenceSele
   const cohorts = [...new Map(reviewed.map(r => [text(r.cohort_id), {
     id: text(r.cohort_id), label: text(r.cohort_label) || "조사 집단", definition: text(r.cohort_definition),
   }])).values()].filter(c => c.id);
-  const cohort = cohorts.find(c => c.id === selection.cohort) ?? cohorts.find(c => c.id === "C07") ?? cohorts[0];
+  // Use only the primary stage captured with this result. An overlapping stage or
+  // all-household average must not silently substitute for unavailable statistics.
+  const hint = object(Array.isArray(data.stage_hints) ? data.stage_hints[0] : undefined);
+  const ids = Array.isArray(hint.cohort_ids) ? hint.cohort_ids : [];
+  const automatic = selection.cohort === "ANSWER";
+  const cohort = automatic ? ids.map(id => cohorts.find(c => c.id === id)).find(Boolean)
+    : cohorts.find(c => c.id === selection.cohort);
   const rows = reviewed.filter(r => r.cohort_id === cohort?.id);
   const netMean = rows.find(r => r.metric_key === "proposal.net_assets" && r.statistic_type === "평균");
   const netMedian = rows.find(r => r.metric_key === "proposal.net_assets" && r.statistic_type === "중앙값" &&
@@ -37,7 +43,7 @@ export function assetReferenceView(value: unknown, selection: AssetReferenceSele
       (key === "proposal.net_assets" || BigInt(row.user_value) >= 0n) ? row.user_value : null;
     return [{ key, label, own, reference: row.value as string, row }];
   });
-  return { data, cohort, cohorts, metrics, net, canSwitchNet: !!netMean && !!netMedian };
+  return { data, cohort, cohorts, metrics, net, hint, automatic, canSwitchNet: !!netMean && !!netMedian };
 }
 
 export type AssetAxis = { min: bigint; max: bigint };

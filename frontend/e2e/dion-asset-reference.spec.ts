@@ -6,6 +6,16 @@ const row = (metric: string, value: unknown, own: unknown, extra = {}) => ({
   period_start: "2025-03-31", period_end: "2025-03-31", cohort_id: "C07", cohort_label: "전체 일반가구", source_id: "S01", statistic_type: "평균", ...extra,
 });
 
+test("answer cohort selection never substitutes general or overlapping groups and preserves explicit review", () => {
+  const records = [row("proposal.total_assets", "500", "0"), row("proposal.total_assets", "300", "0", {cohort_id:"C08"}), row("proposal.total_assets", "600", "0", {cohort_id:"C09"})];
+  const snapshot = {version:"test",scope:"household",records,stage_hints:[{label:"사회초년생",cohort_ids:["C08"]}]};
+  expect(assetReferenceView(snapshot,INITIAL_ASSET_REFERENCE).cohort?.id).toBe("C08");
+  expect(assetReferenceView({...snapshot,stage_hints:[{label:"은퇴기",cohort_ids:["C09"]}]},INITIAL_ASSET_REFERENCE).cohort?.id).toBe("C09");
+  expect(assetReferenceView({...snapshot,stage_hints:[{label:"자녀 학령기",cohort_ids:[]},{cohort_ids:["C08"]}]},INITIAL_ASSET_REFERENCE).metrics).toEqual([]);
+  expect(assetReferenceView({...snapshot,stage_hints:[]},INITIAL_ASSET_REFERENCE).metrics).toEqual([]);
+  expect(assetReferenceView(snapshot,{cohort:"C07",net:"평균"}).cohort?.id).toBe("C07");
+});
+
 test("asset display preserves zero, null, signed and large won while excluding withheld and incompatible rows", () => {
   const snapshot = { version: "test", scope: "household", records: [
     row("proposal.total_assets", "900719925474099312345", "0"),
@@ -16,13 +26,14 @@ test("asset display preserves zero, null, signed and large won while excluding w
     row("proposal.total_assets", "800000000", "1", { cohort_id: "wrong-scope", target_unit: "개인" }),
   ] };
   const before = JSON.stringify(snapshot);
-  const view = assetReferenceView(snapshot, { ...INITIAL_ASSET_REFERENCE, net: "중앙값" });
+  const explicit = { ...INITIAL_ASSET_REFERENCE, cohort: "C07" };
+  const view = assetReferenceView(snapshot, { ...explicit, net: "중앙값" });
   expect(view.metrics.map(m => m.own)).toEqual(["0", null, "-15000000"]);
   expect(view.metrics[0].reference).toBe("900719925474099312345");
   expect(view.canSwitchNet).toBe(false);
   expect(view.cohorts.map(c => c.id)).toEqual(["C07"]);
-  expect(assetReferenceView({ ...snapshot, scope: "personal" }, INITIAL_ASSET_REFERENCE).metrics.every(m => m.own === null)).toBe(true);
-  expect(assetReferenceView({ records: snapshot.records }, INITIAL_ASSET_REFERENCE).metrics).toEqual([]);
+  expect(assetReferenceView({ ...snapshot, scope: "personal" }, explicit).metrics.every(m => m.own === null)).toBe(true);
+  expect(assetReferenceView({ records: snapshot.records }, explicit).metrics).toEqual([]);
   expect(JSON.stringify(snapshot)).toBe(before);
 });
 
@@ -56,7 +67,13 @@ test("asset reference web flow uses real preview data and shares selection, snap
   await expect(chart.locator('[data-asset-series="own"][data-value]')).toHaveCount(0);
   await expect(chart).toContainText("개인·가구 범위");
   expect(result.peer_reference.scope).toBe("personal");
-  await chart.getByLabel("순자산 참고값", { exact: true }).selectOption("중앙값");
+  await expect(chart.getByLabel("살펴볼 조사 집단")).toHaveValue("ANSWER");
+  await expect(chart).toContainText("사회초년생");
+  await expect(chart.locator("[data-asset-metric]")).toHaveCount(1);
+  await expect(page.getByRole("region", {name:"생활단계 참고 통계", exact:true})).toHaveCount(0);
+  await chart.getByLabel("살펴볼 조사 집단").selectOption("C07");
+  await expect(chart.locator("polyline")).toHaveCount(1);
+  await chart.getByRole("combobox", { name: "순자산 참고값", exact: true }).selectOption("중앙값");
   const net = chart.locator('[data-asset-metric="proposal.net_assets"]');
   await expect(net).toHaveAttribute("data-statistic-id", "V005");
   await expect(net.locator('[data-asset-series="reference"]')).toHaveAttribute("data-value", "238600000");
@@ -74,7 +91,7 @@ test("asset reference web flow uses real preview data and shares selection, snap
   await page.locator(".d-tabs button").nth(4).click();
   const final = page.locator('[data-asset-reference="final"]');
   await expect(final).toBeVisible();
-  await expect(final.getByLabel("순자산 참고값", { exact: true })).toHaveValue("중앙값");
+  await expect(final.getByRole("combobox", { name: "순자산 참고값", exact: true })).toHaveValue("중앙값");
   expect(await final.locator('[data-asset-series="own"]').evaluateAll(els => els.map(el => el.getAttribute("data-value")))).toEqual(ownValues);
   await expect(final).toHaveAttribute("data-input-version", String(result.peer_reference.input_version));
   await expect(final).toContainText("월 납입안을 적용한 뒤의 자산");
