@@ -5,7 +5,7 @@ import { formatKrw } from "@/lib/dion/money-format";
 import { riskTitles } from "@/lib/dion/investment-review";
 import { InvestmentFollowup } from "./investment-followup";
 import { policyDateMessage, productEmptyCause } from "@/lib/dion/product-empty";
-import { allocationRemainder, allocationSlices, allocationTargetLabel, assetGroup, bpsLabel, cashWaitingText, investmentDisplayMonth, shareBps } from "@/lib/dion/result-visual";
+import { allocationRemainder, allocationSlices, allocationTargetLabel, assetGroup, bpsLabel, cashWaitingText, investmentDisplayMonth, isWon, shareBps } from "@/lib/dion/result-visual";
 import { PortfolioEvidence, type EvidenceAccess } from "./portfolio-evidence";
 import { sourceHref } from "./scheme-evidence";
 import { Donut, DonutLegend } from "./donut";
@@ -26,8 +26,8 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
   const defaults=products.filter(p=>p.allocation_role==="DEFAULT_SLOT").sort((a,b)=>groupOrder.indexOf(assetGroup(a).id)-groupOrder.indexOf(assetGroup(b).id)),alternatives=products.filter(p=>p.allocation_role==="COMPARISON_ALTERNATIVE");
   const screening=products.filter(p=>p.in_review_universe===true);
   const missing=[...new Set([...reasonQuestions,...(Array.isArray(review.missing_question_ids)?review.missing_question_ids:[]),...(Array.isArray(review.invalid_question_ids)?review.invalid_question_ids:[])])];
-  const evidence=(p:Record<string,Json>)=><details key={String(p.code)} data-product-code={String(p.code)} className="d-evidence">
-    <summary>{p.allocation_role==="DEFAULT_SLOT"?"이 상품을 검토하는 이유":`${textValue(p.name)} · 비교 후보인 이유`}</summary>
+  const evidence=(p:Record<string,Json>, priority=false)=><details key={String(p.code)} data-product-code={String(p.code)} className="d-evidence">
+    <summary>{priority||p.allocation_role==="DEFAULT_SLOT"?"이 상품을 검토하는 이유":`${textValue(p.name)} · 비교 후보인 이유`}</summary>
     {explanationOf(p)??<p>{Array.isArray(p.reason_codes)&&p.reason_codes.length?p.reason_codes.map(reason).join(" "):"이 저장 결과에는 검토 이유가 없어요. 다시 계산한 결과에서 확인해 주세요."}</p>}
     <PortfolioEvidence key={`${evidenceAccess?.runId}:${evidenceAccess?.inputHash}:${evidenceAccess?.token}`} access={evidenceAccess} kind="PRODUCT" targetId={String(p.code)} stale={stale}/>
     <details className="d-explanation-evidence"><summary>상품 공시 출처</summary><p>저장된 공시 기준이며 실시간 거래 조건은 별도 확인해요.</p><ul>{list(object(p.explanation).source_refs).map(ref=>{
@@ -38,7 +38,6 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
   return <section aria-label="상품 적합성·배분 검토" className="d-product-screen">
     {!review.review_version&&<p className="d-note">이전 계산에는 상품 검토 결과가 없어요. 현재 입력으로 다시 계산하면 확인할 수 있어요.</p>}
     {review.review_version&&<>
-      <p className="d-inline-note d-product-status" role="status">{catalog.eligible_for_review_count===0?"현재 배분할 수 있는 상품이 없어 투자 후보 금액을 현금 대기자금으로 남겼어요.":"조건을 통과한 상품을 비중 기준에 맞춰 배분했어요. 상품별 금액은 아래에서 확인해주세요."}</p>
       <InvestmentFollowup review={review} onEdit={onEdit}/>
       {empty?.date&&<div className="d-alert-card" data-product-empty="DATE"><strong>대표상품 0개 · 기준일 확인</strong><p>{policyDateMessage(review,evaluationOn)}</p></div>}
       {Array.isArray(review.reason_codes)&&review.reason_codes.filter(c=>c!=="POLICY_DISCLOSURE_STALE"||!empty?.date).map(code=><p className="d-note" key={String(code)}>{reason(code)}</p>)}
@@ -49,29 +48,33 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
     {candidates.map(candidate=>{
       const months=list(candidate.rows), month=investmentDisplayMonth(months);
       const allocations=list(month?.allocations);
+      const allocated=allocations.filter(row=>isWon(row.review_allocated_krw)&&BigInt(row.review_allocated_krw)>0n);
+      const priority:{product:Record<string,Json>; allocation?:Record<string,Json>}[]=allocated.length>0
+        ?allocated.map(allocation=>({product:products.find(product=>product.code===allocation.code)??{code:allocation.code},allocation}))
+        :defaults.map(product=>({product}));
+      const priorityTitle=allocated.length>0?"우선 검토 상품":"기본 배분 후보";
       const slices=allocationSlices(allocations,products,month);
       const target=allocationTargetLabel(month);
       return <div key={String(candidate.strategy_id)}>
         {month&&month!==months[0]&&<p className="d-inline-note">{textValue(month.period)} 신규 투자 후보금을 기준으로 상품을 확인해요. 첫 계획 월 {textValue(months[0]?.period)}의 후보금은 0원이에요.</p>}
-        <ProductCandidates review={review} month={month}/>
-        {months.map((m,i)=><div className="d-summary-band" key={i} data-allocation-month={String(m.period)} data-budget={textValue(m.scenario_budget_krw)} data-allocated={textValue(m.allocated_total_krw)} data-unallocated={textValue(m.unallocated_krw)}>
-          <div><span>{String(m.period)} 신규 투자 후보금</span><strong>{formatKrw(m.scenario_budget_krw)}</strong></div>
-          <div><span>상품 배분액</span><strong className="d-accent">{formatKrw(m.allocated_total_krw)}</strong></div>
-          {allocationRemainder(m).map(part=><div key={part.key}><span>{part.label}</span><strong>{formatKrw(part.value)}</strong></div>)}
-          {Array.isArray(m.reason_codes)&&m.reason_codes.length>0&&<p className="d-band-note">{m.reason_codes.map(code=>code==="POLICY_DISCLOSURE_STALE"?policyDateMessage(review,evaluationOn,String(m.period)):reason(code)).join(" ")}</p>}
-        </div>)}
-        {defaults.length>0&&<div className="d-product-layout">
-          <article className="d-card"><div className="d-card-head"><h2>기본 배분 상품 {defaults.length}개 · 비교 대안 {alternatives.length}개</h2><span className="d-pill d-pill-muted">비중은 상품 정책 기준 · 직접 조정은 준비 중</span></div>
-            <div className="d-product-cards">{defaults.map(p=>{
-              const group=assetGroup(p), a=allocations.find(x=>x.code===p.code), d=object(p.disclosure);
-              const bps=typeof a?.target_bps==="number"?a.target_bps:null;
+        {priority.length>0&&<div className="d-product-layout">
+          <article className="d-card d-product-priority" aria-label={priorityTitle}>
+            <div className="d-card-head"><h2>{priorityTitle}</h2></div>
+            <p className="d-inline-note">{allocated.length>0
+              ? `${textValue(month?.period)} 계획에 금액이 배정된 검토 상품이에요.`
+              : month?.allocated_total_krw==="0"?"이 달에 배분된 상품은 없어요. 기본 후보에서 검토 이유를 확인할 수 있어요."
+              :"배분 결과를 확인할 때까지 기본 후보의 정보를 볼 수 있어요."}</p>
+            <div className="d-product-cards">{priority.map(({product:p,allocation:a})=>{
+              const group=assetGroup(p), d=object(p.disclosure);
+              const budget=month?.scenario_budget_krw;
+              const bps=a&&isWon(budget)&&BigInt(budget)>0n?shareBps(a.review_allocated_krw,budget):null;
               return <div className="d-product-card" key={String(p.code)}>
-                <div className="d-product-top"><i style={{background:group.color}} aria-hidden="true"/><div><strong>{textValue(p.name)}</strong><small>{String(p.code)}</small></div><span className="d-pill">{group.role}</span></div>
-                {a?<div className="d-product-figures"><div><span>검토 비중</span><strong>{bps!==null?`${(bps/100).toLocaleString("ko-KR")}%`:"확인 필요"}</strong></div><div><span>이번 달 금액</span><strong>{formatKrw(a.review_allocated_krw)}</strong></div></div>
-                  :<p className="d-product-excluded">이번 달 배분 제외 · {Array.isArray(p.reason_codes)&&p.reason_codes.length?reason(p.reason_codes[0]):"검토 조건을 확인해주세요."} 이 몫은 현금 대기자금으로 남겨요.</p>}
-                <div className="d-bar" aria-hidden="true"><span style={{width:`${a?shareBps(a.review_allocated_krw,month?.scenario_budget_krw)/100:0}%`,background:group.color}}/></div>
+                <div className="d-product-top"><i style={{background:group.color}} aria-hidden="true"/><div><strong>{textValue(p.name)||textValue(p.code)||"상품명 확인 대기"}</strong><small>{String(p.code)}</small></div><span className="d-pill">{a?group.role:month?.allocated_total_krw==="0"?"배분 없음":"배분 확인 대기"}</span></div>
+                {a?<div className="d-product-figures"><div><span>후보금 대비</span><strong>{bps!==null?bpsLabel(bps):"확인 대기"}</strong></div><div><span>이번 달 금액</span><strong>{formatKrw(a.review_allocated_krw)}</strong></div></div>
+                  :<p className="d-product-excluded">{Array.isArray(p.reason_codes)&&p.reason_codes.length?reason(p.reason_codes[0]):month?.allocated_total_krw==="0"?"이번 달 계획에 반영된 배분액이 없어요.":"이 상품의 배분액은 확인 대기예요."}</p>}
+                <div className="d-bar" aria-hidden="true"><span style={{width:`${(bps??0)/100}%`,background:group.color}}/></div>
                 <p className="d-product-meta">위험등급 {typeof d.risk_grade==="number"?`${d.risk_grade}등급`:"미확인"} · 총보수 {textValue(d.annual_base_fee_percent)?`${textValue(d.annual_base_fee_percent)}%`:"미확인"} · {group.label}{d.fx_exposed===true?" · 환노출":""}</p>
-                {evidence(p)}
+                {evidence(p,!!a)}
               </div>;
             })}</div>
             {allocations.length>0&&<p className="d-inline-note">내부 하락 시나리오 손실액 {formatKrw(object(month?.stress_review).scenario_loss_krw_ceil)} · 실제 손실은 더 클 수 있고 최대 손실을 보장하지 않아요.</p>}
@@ -84,6 +87,13 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
             {target&&<p className="d-inline-note">배분 보류액에는 손실 한도·상품 조건과 원 단위 내림을 반영했어요.</p>}
           </aside>
         </div>}
+        {months.map((m,i)=><div className="d-summary-band" key={i} data-allocation-month={String(m.period)} data-budget={textValue(m.scenario_budget_krw)} data-allocated={textValue(m.allocated_total_krw)} data-unallocated={textValue(m.unallocated_krw)}>
+          <div><span>{String(m.period)} 신규 투자 후보금</span><strong>{formatKrw(m.scenario_budget_krw)}</strong></div>
+          <div><span>상품 배분액</span><strong className="d-accent">{formatKrw(m.allocated_total_krw)}</strong></div>
+          {allocationRemainder(m).map(part=><div key={part.key}><span>{part.label}</span><strong>{formatKrw(part.value)}</strong></div>)}
+          {Array.isArray(m.reason_codes)&&m.reason_codes.length>0&&<p className="d-band-note">{m.reason_codes.map(code=>code==="POLICY_DISCLOSURE_STALE"?policyDateMessage(review,evaluationOn,String(m.period)):reason(code)).join(" ")}</p>}
+        </div>)}
+        <ProductCandidates review={review} month={month}/>
       </div>;
     })}
     {screening.length>0&&<details className="d-card d-fold">
@@ -100,7 +110,7 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
       </table></div>
     </details>}
     <ProductComparison products={[...defaults,...alternatives]}/>
-    {alternatives.length>0&&<details className="d-card d-fold"><summary>비교 대안 상품 {alternatives.length}개 · 자동 배분 없음</summary><p>기본 상품이 제외돼도 비교 대안으로 자동 대체하거나 추가 배분하지 않아요.</p>{alternatives.map(evidence)}</details>}
+    {alternatives.length>0&&<details className="d-card d-fold"><summary>비교 대안 상품 {alternatives.length}개 · 자동 배분 없음</summary><p>기본 상품이 제외돼도 비교 대안으로 자동 대체하거나 추가 배분하지 않아요.</p>{alternatives.map(product=>evidence(product))}</details>}
     {products.length>0&&<details className="d-card d-fold"><summary>조사 상품 {products.length}개 · 검토 상태와 공식 출처</summary><p>기록된 공시값과 기준일이에요. 보류·제외 상품의 과거 값은 현재 검토 근거로 쓰지 않아요. 세금·증권사 수수료·호가 차이를 포함한 실제 총비용은 계산하지 않아요.</p><div className="d-table-wrap"><table><thead><tr><th>상품·코드</th><th>기록 위험등급</th><th>기록 연간 비용</th><th>배분 검토 결과</th><th>근거</th></tr></thead><tbody>{products.map(product=>{
       const disclosure=object(product.disclosure),dates=object(disclosure.source_as_of),urls=object(disclosure.source_urls);
       const settlementSource=sourceHref(textValue(urls.cash_conversion));

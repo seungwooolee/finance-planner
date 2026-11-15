@@ -118,7 +118,7 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
           {view.cash_only === true && <p className="d-inline-note">현재 성향의 정책에 따라 상품 배분 없이 후보금 전액을 현금 대기자금으로 표시해요. 자금 이동이나 현금 보유 확정은 아니에요.</p>}
           <details className="d-fold d-composition-fold">
             <summary>{title} 상세 보기 · 상품·금액·위험</summary>
-            <PortfolioChoiceDetail rows={rows} products={products} type={id} messages={messages}/>
+            <PortfolioChoiceDetail rows={rows} products={products} type={id} messages={messages} target={comparisonTargets[id]}/>
           </details>
           <button type="button" data-portfolio-apply={id} className={displayed === id ? 'd-primary' : 'd-secondary'}
             aria-pressed={displayed === id} aria-describedby={`portfolio-state-${id}`}
@@ -132,11 +132,9 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
       })}</div>
       {displayed && selected && <section id="dion-selected-composition" className="d-selected-composition" tabIndex={-1} aria-labelledby="dion-selected-composition-title">
         <h3 id="dion-selected-composition-title">{selected[0]} 구성 상세</h3>
-        {selectedTarget && <p>목표 비중 {selectedTarget}{targetPreview && " · 상품 배분 확인 대기"}</p>}
+        {targetPreview && <p role="status">상품 배분 확인 대기</p>}
         {preview && !targetPreview && <p role="status">{blocked ? "구성 미리보기 · 현재 결과와 저장 상태를 확인해 주세요." : "구성 미리보기 · 현재 조건에서 배분은 보류돼요."}</p>}
-        <dl className="d-ledger"><div><dt>기대수익률</dt><dd>산정 대기</dd></div></dl>
-        <p className="d-inline-note">이 구성에 적용할 승인된 수익률 가정이 준비되면 표시해요.</p>
-        <PortfolioChoiceDetail rows={month ? [month] : []} products={products} type={displayed} messages={messages} showExplanation/>
+        <PortfolioChoiceDetail rows={month ? [month] : []} products={products} type={displayed} messages={messages} target={comparisonTargets[displayed]}/>
         <button className="d-secondary" type="button" onClick={onProducts}>상품 정보 자세히 보기 →</button>
       </section>}
     </article>

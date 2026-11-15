@@ -156,6 +156,13 @@ test("asset reference web flow uses real preview data and shares selection, snap
   await expect(asset).toHaveAttribute("data-value","43740000");
   await expect(debt).toHaveAttribute("data-value","13390000");
   await expect(chart.locator("[data-asset-metric]")).toHaveCount(3);
+  const pair = chart.locator('[data-asset-metric="proposal.total_assets"] [data-asset-bar-pair]');
+  await expect(pair.locator('[data-bar-series]')).toHaveCount(2);
+  const [ownWidth, averageWidth] = await pair.locator('[data-bar-series]').evaluateAll(bars =>
+    bars.map(bar => Number(bar.getAttribute('width'))));
+  expect(averageWidth).toBeGreaterThan(ownWidth);
+  await expect(net).toContainText("별도 참고 · 만 18세 이상 개인");
+  await expect(chart.locator('[data-statistic-id="V053"] [data-bar-series="reference"]')).toHaveCount(1);
   await expect(page.getByRole("region", {name:"생활단계 참고 통계", exact:true})).toHaveCount(0);
   const ownValues = await chart.locator('[data-asset-series="own"]').evaluateAll(els => els.map(el => el.getAttribute("data-value")));
   const expectedOwn = ["proposal.total_assets", "proposal.total_liabilities", "proposal.net_assets"].map(key => result.peer_reference.personal_asset_values[key] ?? null);

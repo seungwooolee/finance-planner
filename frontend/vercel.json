@@ -2,6 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "git": {
     "deploymentEnabled": {
+      "codex/asset-investment-comparison-20261116": false,
       "codex/dion-asset-return-projection": false,
       "codex/result-questions-investment-ui-20261116": false,
       "codex/consultation-portfolio-chat-20261116": false,

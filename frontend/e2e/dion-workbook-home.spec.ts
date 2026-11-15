@@ -132,7 +132,9 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   await rendered.getByRole("button",{name:"위험추구형 목표 비중 비교",exact:true}).click();
   await expect(rendered.getByRole("region",{name:"위험추구형 구성 상세"})).toContainText("상품 배분 확인 대기");
   const detail = rendered.getByRole("region",{name:"위험추구형 구성 상세"});
-  await expect(detail.getByRole("region",{name:"2027-01 구성 상세"})).toContainText(/55만\s*원/);
+  const monthlyDetail = detail.getByRole("region",{name:"2027-01 구성 상세"});
+  await expect(monthlyDetail).toContainText(/55만\s*원/);
+  await expect(monthlyDetail.getByRole("list", {name:"목표 비중 범례"})).toContainText("80%");
   await detail.getByRole("button",{name:"상품 정보 자세히 보기 →"}).click();
   const productInfo = rendered.getByRole("region",{name:"상품 적합성·배분 검토"});
   await expect(productInfo).toContainText("2027-01 신규 투자 후보금을 기준으로 상품을 확인해요");
@@ -142,7 +144,10 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   await expect(reference).toContainText("현재 배분 보류");
   const shortBond = reference.locator('[data-candidate-code="153130"]');
   await expect(shortBond).toContainText("KODEX 단기채권");
-  await expect(shortBond).toContainText("연간 보수·비용");
+  const comparedBonds = reference.getByRole("table", {name:"채권 상품 비교",exact:true});
+  await expect(comparedBonds.getByRole("columnheader", {name:"연 보수·비용"})).toBeVisible();
+  await expect(shortBond.getByRole("rowheader", {name:/KODEX 단기채권/})).toBeVisible();
+  await expect(productInfo.getByRole("article", {name:"기본 배분 후보"})).toContainText("이 달에 배분된 상품은 없어요");
   await expect(shortBond.getByText("비용 기준일", {exact:true})).toBeHidden();
   await shortBond.getByText("공시 정보 더 보기", {exact:true}).press("Enter");
   await expect(shortBond.getByText("비용 기준일", {exact:true})).toBeVisible();

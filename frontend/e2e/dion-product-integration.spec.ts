@@ -17,7 +17,7 @@ async function thirdScreen(page: Page, result: any) {
   await page.locator('.d-tabs button').nth(3).click();
   const screen = page.getByRole('region', { name: '상품 적합성·배분 검토' });
   await expect(screen).toBeVisible();
-  await expect(screen.getByRole('heading', { name: '기본 배분 상품 3개 · 비교 대안 3개' })).toBeVisible();
+  await expect(screen.getByRole('heading', { name: /^(우선 검토 상품|기본 배분 후보)$/ })).toBeVisible();
   await expect(page.getByText('현재 입력 기준 결과', { exact: true })).toHaveCount(0);
   const review = result.results['OUT-06'];
   expect(review.review_version).toBe('DION-PRODUCT-REVIEW-0.2');
