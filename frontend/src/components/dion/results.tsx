@@ -23,6 +23,7 @@ import { fieldKrw, formatKrw } from "@/lib/dion/money-format";
 import { allocationTargetLabel, investmentDisplayMonth } from "@/lib/dion/result-visual";
 import { type EvidenceAccess } from "./portfolio-evidence";
 import { TaxBenefits } from "./tax-benefits";
+import type { TaxSelection } from "./tax-scenario";
 import { TaxReview } from "@/lib/dion/tax-benefits";
 import displayCatalog from "@/lib/dion/result-display-catalog.json";
 import { comparisonReview, portfolioNames, type AppliedPortfolioRef } from "@/lib/dion/portfolio-comparison";
@@ -81,6 +82,8 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
   const setTab=(n:number)=>{setVisited(values=>values.includes(n)?values:[...values,n]);changeTab(n);};
   const saved=!!token&&view.storage==="SAVED"&&!!view.runId&&caseId===textValue(object(object(view.source).context).case_id)&&!actionFlow?.fictional;
   const reviewFlow=usePortfolioReview(caseId,token,view.runId,saved);
+  const [taxSelection,setTaxSelection]=useState<TaxSelection>();
+  const currentTax = !stale && taxSelection?.run_id === view.runId && taxSelection?.input_hash === view.inputHash ? taxSelection : undefined;
   const productReview=object(object(view.result.results)["OUT-06"]);
   const basis:ReviewBasis|null=saved&&comparison.revision>0&&selectedPortfolio&&view.serverVersion!==undefined&&view.inputHash?{
     run_id:view.runId!,input_version:view.serverVersion,input_hash:view.inputHash,strategy_id:selectedPlan,portfolio_type:selectedPortfolio,
@@ -193,7 +196,7 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
     
     {tab===3 && <><div className="d-plan-row"><div><strong>{planName(selectedPlan)} · 상품 정보</strong><button className="d-text-button" onClick={()=>setTab(2)}>투자구성 비교로 돌아가기</button>{selectedPortfolio&&<button className="d-secondary" disabled={comparison.blocked} onClick={()=>setTab(4)}>반영한 포트폴리오 확인 →</button>}</div><PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/></div><ProductAllocation evidenceAccess={evidenceAccess} stale={stale} review={productScreenReview} selectedPlan={selectedPlan} evaluationOn={textValue(object(result.context).evaluation_on)} onEdit={onEdit}/></>}
     {tab===3&&<div className="d-result-cta"><button type="button" className="d-primary" onClick={openConsultation}>DION과 상담하기</button><p>1~4 확인 후 상담과 변경 검토를 거쳐 최종 생성을 요청해요.</p></div>}
-    <div hidden={tab!==4}><PortfolioReviewFlow chatHandoff={chatHandoff} visited={visited} selectionBlocked={comparison.blocked} flow={reviewFlow} basis={basis} view={view} token={token} caseId={caseId} stale={stale} doc={sourceDoc} onTab={setTab} onOpenRun={onOpenRun??(async()=>{})} onReadRun={onReadRun??onOpenRun??(async()=>{})} onPrepared={r=>onReviewResume?.(r)} onAdopt={focusAdoption}/></div>
+    <div hidden={tab!==4}><PortfolioReviewFlow taxSelection={currentTax} clearTaxSelection={()=>setTaxSelection(undefined)} chatHandoff={chatHandoff} visited={visited} selectionBlocked={comparison.blocked} flow={reviewFlow} basis={basis} view={view} token={token} caseId={caseId} stale={stale} doc={sourceDoc} onTab={setTab} onOpenRun={onOpenRun??(async()=>{})} onReadRun={onReadRun??onOpenRun??(async()=>{})} onPrepared={r=>onReviewResume?.(r)} onAdopt={focusAdoption}/></div>
     {tab===4 && <><ChoiceStatus plan={selectedPlan} portfolio={selectedPortfolio} draft={comparison.draft}
       stored={comparison.saved} adoption={adoption} runId={view.runId} evaluationOn={textValue(object(result.context).evaluation_on)}
       planMonth={textValue(selectedRow?.period)} recordMonth={recordMonth??thisMonth()} onJump={()=>tasksRef.current?.scrollIntoView({behavior:"smooth",block:"start"})}/><ResultTiles row={selectedRow} month={selectedMonth} totalAssets={totalAssets}/>
@@ -208,7 +211,7 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
     {tab===4&&checkin&&<div ref={checkinRef}>{checkin(selectedPlan,monthTasks(selectedRow).map(t=>({key:t.key,label:`${t.text} (계획 ${textValue(selectedRow?.period)} · ${formatKrw(selectedRow?.[t.key])})`})),selectedPortfolio ? {portfolio_type:selectedPortfolio,comparison_revision:comparison.revision} : null,comparison.blocked||!generated,setAdoption)}</div>}
     {tab===4&&<div className="d-result-cta"><button className="d-secondary" onClick={()=>window.print()}>이 버전 PDF 리포트 받기</button><button className="d-primary" disabled={!generated} onClick={focusAdoption}>최종안의 계획 채택 검토 →</button></div>}
     {tab===4&&<TaxBenefits evidenceAccess={evidenceAccess} key={view.sourceSignature} doc={sourceDoc} stale={stale} review={view.taxReview}
-      guidance={result.tax_guidance} sourceHash={textValue(object(result.adapter).source_sha256)}/>}
+      guidance={result.tax_guidance} onScenario={setTaxSelection} onEditHoldings={()=>onEdit("F06")} sourceHash={textValue(object(result.adapter).source_sha256)}/>}
     {tab===4&&<ProposalAssumptions key={`proposal-assumptions:${view.sourceSignature}`} value={result.proposal_reference} firstPeriod={textValue(selectedRow?.period)}/>}
     {tab<3&&!(tab===2&&selectedPortfolio)&&<nav className="d-result-next" aria-label="다음 결과 단계"><button type="button" className="d-primary" onClick={()=>setTab(tab+1)}>{`다음 · ${tabs[tab+1]}`}<ArrowRight size={18} aria-hidden="true"/></button></nav>}
   </section>;

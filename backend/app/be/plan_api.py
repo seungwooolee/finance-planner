@@ -24,10 +24,12 @@ from .checkin_followup_contract import (
 )
 from .portfolio_review_api import router as portfolio_review_router
 from .raw_store import PocError
+from .tax_scenario import router as tax_scenario_router
 
 router = APIRouter(prefix="/api/be/v1", tags=["Plan adoption and monthly check-in"],
                    dependencies=[Depends(private_read)])
 router.include_router(portfolio_review_router)
+router.include_router(tax_scenario_router)
 
 
 class ContractModel(BaseModel):

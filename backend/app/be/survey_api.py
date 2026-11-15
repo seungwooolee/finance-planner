@@ -11,6 +11,7 @@ from ..consultation.assistant import assistant_context
 from ..consultation.chat import ChatProvider, ChatRequest, ChatService
 from ..consultation.chat_context import add_public_evidence, add_result_claims
 from ..consultation.survey import SurveyProvider, SurveyRequest, SurveyService
+from ..consultation.tax_chat import tax_chat
 from ..explanation.oneport_config import ConfigurationError, OnePortConfig
 from ..explanation.preview_action import captured_preview
 from .api import body, call, get_store
@@ -71,6 +72,9 @@ async def dialogue(value=Depends(body), actor=Depends(get_actor), store=Depends(
             await run_in_threadpool(add_public_evidence, context, run, request.message, get_scheme_evidence_service().registry)
         except (KeyError, ValueError):
             raise HTTPException(409, detail={"code": "CHAT_BASIS_UNAVAILABLE"}) from None
+    tax_answer = await run_in_threadpool(tax_chat, run, request.message, get_scheme_evidence_service().registry)
+    if tax_answer:
+        context["tax_answer"] = tax_answer
     context_ms = round((monotonic() - started) * 1000)
     answer = await service.answer(actor, request, context)
     timing = answer.pop("_timing")

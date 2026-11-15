@@ -4,6 +4,7 @@ from typing import Annotated, Literal
 from pydantic import Field, JsonValue, model_validator
 
 from ..explanation.contract import ExactModel
+from ..planning.tax_scenarios import SelectTax
 
 VERSION = "DION-PORTFOLIO-REVIEW-1.0"
 SCHEMA = """
@@ -101,6 +102,7 @@ class ConfirmRecalculation(Mutation):
 
 class GenerateFinal(Mutation):
     confirmed: Literal[True]
+    tax_scenario: SelectTax | None = None
 
 
 class SessionRef(ExactModel):

@@ -7,6 +7,7 @@ import { formatKrw } from "@/lib/dion/money-format";
 import { TaxCard, type TaxFollowup, TaxReview, taxCards, taxFollowups, taxStatusLabels } from "@/lib/dion/tax-benefits";
 import { PortfolioEvidence, type EvidenceAccess } from "./portfolio-evidence";
 import { sourceHref } from "./scheme-evidence";
+import { TaxScenario, scenarioKinds, type TaxSelection } from "./tax-scenario";
 
 function BenefitCard({card, followup, onOpen}: {card: TaxCard; followup?: TaxFollowup; onOpen: (card: TaxCard) => void}) {
   const heading = useId();
@@ -23,10 +24,11 @@ function BenefitCard({card, followup, onOpen}: {card: TaxCard; followup?: TaxFol
   </article>;
 }
 
-function Guide({card, followup, access, stale, onClose}: {card: TaxCard; followup?: TaxFollowup; access?: EvidenceAccess; stale: boolean; onClose: () => void}) {
+function Guide({card, followup, access, stale, onClose, onScenario}: {card: TaxCard; followup?: TaxFollowup; access?: EvidenceAccess; stale: boolean; onClose: () => void; onScenario?: (selection:TaxSelection)=>void}) {
   const dialog = useRef<HTMLDialogElement>(null), heading = useId();
   useEffect(() => {const element = dialog.current; element?.showModal(); return () => element?.close();}, []);
   const close = () => {dialog.current?.close(); onClose();};
+  const kind = scenarioKinds[card.benefit.id as keyof typeof scenarioKinds];
   const citation = followup?.evidence;
   const href = sourceHref(textValue(citation?.official_url));
   return <dialog ref={dialog} className="d-scenario-dialog d-tax-dialog" aria-labelledby={heading} onCancel={event => {event.preventDefault(); close();}}>
@@ -45,12 +47,13 @@ function Guide({card, followup, access, stale, onClose}: {card: TaxCard; followu
       {followup ? <ol>{followup.steps.map(step => <li key={step}>{step}</li>)}</ol> : <p>{card.benefit.check}</p>}
       <p>{card.benefit.apply}</p>
     </div>
+    {kind && <TaxScenario kind={kind} access={access} stale={stale} onSelect={onScenario && (choice=>{onScenario(choice);close();})}/>}
     <button type="button" className="d-secondary" onClick={close}>결과로 돌아가기</button>
   </dialog>;
 }
 
-export function TaxBenefits({doc, stale = false, review, evidenceAccess, guidance, sourceHash = ""}: {
-  doc: Document | null; stale?: boolean; review?: TaxReview; evidenceAccess?: EvidenceAccess; guidance?: Json; sourceHash?: string;
+export function TaxBenefits({doc, stale = false, review, evidenceAccess, guidance, onScenario, onEditHoldings, sourceHash = ""}: {
+  doc: Document | null; stale?: boolean; review?: TaxReview; evidenceAccess?: EvidenceAccess; guidance?: Json; sourceHash?: string; onScenario?: (selection:TaxSelection)=>void; onEditHoldings?:()=>void;
 }) {
   const [selection, setSelection] = useState<string | null>(null);
   const opener = useRef<HTMLElement | null>(null);
@@ -68,6 +71,7 @@ export function TaxBenefits({doc, stale = false, review, evidenceAccess, guidanc
       <div className="d-tax-grid">{rows.slice(3).map(card => <BenefitCard key={card.benefit.id} card={card} followup={byBenefit.get(card.benefit.id)} onOpen={open}/>)}</div>
     </details>
     <p className="d-help">공제 대상 금액·세금 감소액·환급액은 달라요. 미확인 절세액은 투자 가능금액에 더하지 않아요.</p>
-    {selected && <Guide card={selected} followup={byBenefit.get(selected.benefit.id)} access={evidenceAccess} stale={stale} onClose={close}/>}
+    {onEditHoldings && <button type="button" className="d-text-button" onClick={onEditHoldings}>받은 환급금이 포함된 현재 금융자산 확인하기</button>}
+    {selected && <Guide card={selected} followup={byBenefit.get(selected.benefit.id)} access={evidenceAccess} stale={stale} onClose={close} onScenario={onScenario}/>}
   </section>;
 }
