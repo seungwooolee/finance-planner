@@ -13,11 +13,12 @@ export function AssetReference({ value, stale, selection, onSelect, compact = fa
   onSelect: (value: AssetReferenceSelection) => void; compact?: boolean; savedResult?: boolean; onEdit: () => void; onRecalculate?: () => void;
 }) {
   const id = useId();
-  const { data, cohort, cohorts, metrics, availability, net, canSwitchNet, netFallback, hint, automatic, comparisonState, membershipState, selectionOrigin } = assetReferenceView(value, selection);
+  const { data, cohort, cohorts, metrics, availability, net, canSwitchNet, netFallback, hint, automatic, comparisonState, membershipState, selectionOrigin,
+    canConfirm, singleHousehold, relatedRows } = assetReferenceView(value, selection);
   const periods = [...new Set(metrics.map(m => textValue(m.row.period_start)))];
   const hasOwn = metrics.some(m => m.own !== null);
   const title = compact ? "현재 자산과 참고 통계" : "보유자산 · 참고 통계와 함께 보기";
-  const scope = data.scope === "household" ? "가구" : data.scope === "personal" ? "개인" : "범위 확인 필요";
+  const scope = data.scope === "household" ? "가구" : singleHousehold ? "1인 가구 · 범위 확인" : data.scope === "personal" ? "개인" : "범위 확인 필요";
   return <section className={`d-asset-ref ${compact ? "d-asset-ref-compact" : "d-card"}`} aria-labelledby={id}
     data-asset-reference={compact ? "final" : "assets"} data-input-version={String(data.input_version ?? "")} data-data-version={textValue(data.data_version)}
     data-view-version={ASSET_REFERENCE_VIEW_VERSION} data-selected-cohort={cohort?.id ?? selection.cohort} data-comparison-state={comparisonState} data-membership-state={membershipState} data-selection-origin={selectionOrigin}>
@@ -29,9 +30,15 @@ export function AssetReference({ value, stale, selection, onSelect, compact = fa
         {cohorts.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
         {!automatic && !cohorts.some(c => c.id === selection.cohort) && <option value={selection.cohort}>선택한 집단 · 이 결과에 자료 없음</option>}
       </select></label>
-      {canSwitchNet && <label htmlFor={`${id}-net`}>순자산 참고값<select id={`${id}-net`} value={net} onChange={e => onSelect({ ...selection, net: e.target.value as AssetReferenceSelection["net"] })}><option value="평균">평균</option><option value="중앙값">중앙값</option></select></label>}
+      {canSwitchNet && <label htmlFor={`${id}-net`}>{Object.hasOwn(data, "personal_asset_values") ? "참고값 기준" : "순자산 참고값"}<select id={`${id}-net`} value={net} onChange={e => onSelect({ ...selection, net: e.target.value as AssetReferenceSelection["net"] })}><option value="평균">평균</option><option value="중앙값">중앙값</option></select></label>}
     </div>}
     {stale && <p className="d-warning" role="status">이전 입력 기준의 자산·통계예요. 수정 중인 답변과 섞지 않았어요.</p>}
+    {canConfirm && !!metrics.length && <fieldset className="d-asset-household">
+      <legend>이 결과에 포함한 내 자산·부채가 1인 가구 전체의 자산·부채인가요?</legend>
+      {([["YES", "예, 제 가구 전체와 같아요"], ["NO", "아니요 또는 잘 모르겠어요"]] as const).map(([answer, label]) =>
+        <label key={answer} className="d-check"><input type="radio" name={`${id}-household`}
+          checked={selection.household === answer} onChange={() => onSelect({...selection, household: answer})}/>{label}</label>)}
+    </fieldset>}
     {!!data.version && <div className="d-asset-availability" aria-live="polite" aria-label="선택 집단의 제공 지표">
       <strong>{cohort?.label || (automatic ? `${textValue(hint.label) || '질문 답변'} 관련 집단` : '선택한 집단')}</strong>
       <ul>{availability.map(m => <li key={m.key} data-availability={m.state}><b>{m.label}</b> · {m.state === 'REFERENCE_ONLY' ? m.reason : m.state === 'WITHHELD' ? '표시 보류' : m.state === 'NEEDS_REVIEW' ? '자료 확인 필요' : '자료 없음'}{m.state !== 'REFERENCE_ONLY' && <small>{m.reason}</small>}</li>)}</ul>
@@ -43,6 +50,8 @@ export function AssetReference({ value, stale, selection, onSelect, compact = fa
       <p className="d-inline-note">선택한 집단은 비교할 참고 대상이에요. 고객이 이 집단에 해당한다고 판정한 것은 아니에요.</p>
       {netFallback && <p className="d-note">이 집단에는 같은 출처·기준일의 순자산 중앙값이 없어 평균을 표시해요.</p>}
       {!hasOwn && <p className="d-note">{data.scope === "household" ? "내 자산의 전체 범위가 확인되지 않아 통계만 표시해요." : "개인·가구 범위가 일치하지 않거나 확인되지 않아 내 금액은 연결하지 않았어요."} 미확인 금액은 0원으로 표시하지 않아요.</p>}
+      {!hasOwn && savedResult && data.scope === "personal" && !Object.hasOwn(data, "personal_asset_values") && onRecalculate &&
+        <button type="button" className="d-text-button" onClick={onRecalculate}>현재 입력으로 1인 가구 비교 준비하기</button>}
       <AssetReferenceChart metrics={metrics} cohort={cohort!.label}/>
       <div className="d-table-wrap"><table><caption>항목별 금액 · 조사 통계유형 구분</caption><thead><tr><th scope="col">항목</th><th scope="col">내 현재값</th><th scope="col">조사 참고값</th></tr></thead><tbody>
         {metrics.map(m=><tr key={m.key} data-asset-metric={m.key} data-statistic-id={textValue(m.row.statistic_id)}><th scope="row">{m.label}</th><td data-asset-series="own" data-value={m.own??undefined}>{formatKrw(m.own)}</td><td data-asset-series="reference" data-value={m.reference}>{formatKrw(m.reference)} · {textValue(m.row.statistic_type)}<small>{textValue(m.row.period_start)} · {textValue(m.row.target_unit)}</small></td></tr>)}
@@ -52,11 +61,17 @@ export function AssetReference({ value, stale, selection, onSelect, compact = fa
       <details className="d-asset-ref-source"><summary>출처·정의·자료 기준 확인</summary>
         <p>중앙값은 조사 집단의 순자산을 순서대로 놓았을 때 가운데 값이에요. 평균과 중앙값을 섞어 자산−부채로 맞추지 않아요.</p>
         {metrics.map(m => { const row=m.row, url=textValue(row.source_url); return <div key={m.key}>
-          <h4>{m.label} · {textValue(row.statistic_type)}</h4><p>{textValue(row.definition)}</p><p>{textValue(row.user_value_reason)}</p>
+          <h4>{m.label} · {textValue(row.statistic_type)}</h4><p>{textValue(row.definition)}</p><p>{m.ownReason}</p>
           <p>{textValue(row.publisher)} · {url.startsWith("https://") ? <a href={url} target="_blank" rel="noopener noreferrer">{textValue(row.source_title)} ↗</a> : textValue(row.source_title)}</p>
           <p>통계 기준일 {textValue(row.period_start)} · 공표일 {textValue(row.published_on) || "확인 필요"} · {textValue(row.source_position)}</p><p>{textValue(row.limitations)}</p><p>{textValue(row.quality)}</p>
         </div>; })}
       </details>
     </>}
+    {!!relatedRows.length && <div className="d-note"><strong>{textValue(hint.label)}에서 볼 수 있는 부부 기준 통계</strong>
+      <ul>{relatedRows.map(row => <li key={textValue(row.statistic_id)}>
+        {textValue(row.cohort_label)} · {textValue(row.label)} {textValue(row.statistic_type)} {formatKrw(row.value)} · {textValue(row.period_start)}{" "}
+        {textValue(row.source_url).startsWith("https://") && <a href={textValue(row.source_url)} target="_blank" rel="noopener noreferrer">공식 출처</a>}
+      </li>)}</ul>
+    </div>}
   </section>;
 }

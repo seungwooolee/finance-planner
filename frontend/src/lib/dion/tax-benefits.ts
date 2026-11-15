@@ -1,4 +1,4 @@
-import { Document, Field, Json, list, question, record } from "./model";
+import { Document, Field, Json, list, object, question, record, textValue } from "./model";
 import { TaxBenefit, TaxBenefitId, taxBenefits, TAX_GUIDANCE_VERSION } from "./tax-benefit-catalog";
 
 export type TaxStatus = "GENERAL" | "NEEDS_CHECK" | "ELIGIBLE" | "INELIGIBLE";
@@ -28,6 +28,25 @@ export type TaxCard = {
   benefit: TaxBenefit; status: TaxStatus; recommended: boolean; reason: string;
   facts: TaxFact[]; unconfirmed: readonly string[]; assessment: TaxReview["items"][number] | null;
 };
+
+export function taxFollowups(value: Json | undefined, doc: Document | null, sourceHash: string) {
+  const payload = object(value);
+  if (!doc || !sourceHash || payload.version !== "DION-TAX-FOLLOWUP-1.0"
+      || payload.input_hash !== sourceHash || payload.input_version !== doc.raw_bundle.input_version) return [];
+  return list(payload.items).flatMap(row => {
+    const {benefit_id, reason, next_steps, monthly_pension_krw, tax_savings_krw} = row;
+    if (!taxBenefits.some(benefit => benefit.id === benefit_id) || typeof reason !== "string" ||
+        !Array.isArray(next_steps) || !next_steps.length || !next_steps.every(step => typeof step === "string") ||
+        tax_savings_krw !== null) return [];
+    return [{
+      id: benefit_id, reason, steps: next_steps as string[], year: typeof payload.reference_year === "number" ? payload.reference_year : null,
+      monthlyPension: typeof monthly_pension_krw === "string" && /^\d{1,18}$/.test(monthly_pension_krw) ? monthly_pension_krw : null,
+      evidence: object(row.evidence), corpusVersion: textValue(payload.corpus_version),
+    }];
+  });
+}
+
+export type TaxFollowup = ReturnType<typeof taxFollowups>[number];
 const factFields: Record<TaxBenefitId, [string, string][]> = {
   "pension-contribution": [["F06", "accounts"], ["NEW-03", "existing_contributions"], ["TAX-03", "accounts"]],
   "isa-account": [["F06", "accounts"], ["D20-1", "tax_account_presence"], ["D20-1", "accounts"]],
