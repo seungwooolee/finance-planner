@@ -57,13 +57,13 @@ export function ReportedAmounts({ doc, needsCashflow, needsAssets, actions, onEd
   </article>;
 }
 
-export function FinancialOverview({ flow }: { flow: Record<string, Json> }) {
+export function FinancialOverview({ flow, basis }: { flow: Record<string, Json>; basis?: string }) {
   const rows = list(object(flow.presentation).rows);
   const validAmount = (value: Json | undefined): value is string => typeof value === 'string' && /^-?\d+$/.test(value);
   const hasAmounts = rows.some(row => validAmount(row.amount_krw));
   const income = rows[0]?.amount_krw;
   const complete = hasAmounts && rows.every(row => validAmount(row.amount_krw));
-  return <article className="d-card d-cashflow-card" aria-label="월 현금흐름 차감표"><h2>한 달 돈의 흐름</h2>
+  return <article className="d-card d-cashflow-card" aria-label="월 현금흐름 차감표"><div className="d-card-head"><h2>한 달 돈의 흐름</h2>{basis && <small>{basis}</small>}</div>
     {hasAmounts ? <>
       <p>{complete ? '생활비와 대출 상환액, 현금으로 납입한 저축·투자 금액을 각각 한 번 반영했어요.' : '확인된 금액부터 표시했어요. 남은 금액은 필요한 답변을 확인한 뒤 계산해요.'}</p>
       <div className="d-cashflow-layout"><dl className="d-ledger">{rows.map(r => <div key={textValue(r.key)}><dt>{r.direction === 'DEDUCT' ? '− ' : ''}{textValue(r.label)}</dt><dd>{formatKrw(r.amount_krw)}</dd></div>)}</dl>

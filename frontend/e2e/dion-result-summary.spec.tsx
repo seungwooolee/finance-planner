@@ -72,7 +72,9 @@ test('actual engine asset snapshot and cash waiting budget reach the result scre
   const flow = page.getByRole('article', { name: '월 현금흐름 차감표' });
   const after = object(outputs['OUT-03']).after_existing_contributions_krw;
   await expect(summary).toContainText(formatKrw(typeof after === 'string' ? after : object(after).value));
-  expect(await summary.evaluate(el => !!(document.querySelector('.d-cashflow-card')!.compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING))).toBe(true);
+  // The month flow now sits beside the goal inside the overview, under the key numbers.
+  await expect(summary.getByRole('article', { name: '월 현금흐름 차감표' })).toHaveCount(1);
+  await expect(flow).toHaveCount(1);
   await expect(summary).not.toContainText('번째 버전');
   await expect(page.getByText('월 현금흐름 숫자의 근거', { exact: true })).toHaveCount(0);
   await expect(page.getByText('자산·채무 숫자의 근거', { exact: true })).toHaveCount(0);

@@ -1,8 +1,10 @@
 "use client";
 import { type ReactNode } from "react";
-import { Compass, Flag, MapPin, Target } from "lucide-react";
+import { ArrowRight, Compass, Flag, HandCoins, Landmark, MapPin, Scale, Target, Wallet } from "lucide-react";
 import { type Json, list, object, textValue } from "@/lib/dion/model";
 import { formatKrw } from "@/lib/dion/money-format";
+import { bpsLabel, shareBps } from "@/lib/dion/result-visual";
+import { MoneyAmount } from "./money-amount";
 
 // Engine integer-won strings only; comparisons are sign/equality checks, never new amounts.
 const isWon = (v: unknown): v is string => typeof v === "string" && /^-?\d+$/.test(v);
@@ -90,4 +92,72 @@ export function GoalTable({ goals, goalLabel, missing }: { goals: Record<string,
     </table></div> : missing}
     <p>확인한 기간 안의 무수익 시나리오예요. 미래소득·장기수익을 임의로 채우지 않고, 달성확률도 계산하지 않아요.</p>
   </article>;
+}
+
+function friendlyDate(value: Json | undefined): string {
+  const date = textValue(value);
+  const match = /^(\d{4})-(\d{2})(?:-(\d{2}))?$/.exec(date);
+  if (!match) return date;
+  return `${match[1]}년 ${Number(match[2])}월${match[3] ? ` ${Number(match[3])}일` : ""}`;
+}
+
+type OverviewNext = { tone: "ok" | "info" | "warn" | "error"; text: string; detail?: string; label?: string; run?: () => void };
+
+/** Presentation rows from the engine (income → living → debt → contributions → remaining). */
+const flowRow = (flow: Record<string, Json>, key: string) => list(object(flow.presentation).rows).find(r => r.key === key)?.amount_krw;
+
+function Kpi({ icon: Icon, label, value, basis, children, lead }: { icon: typeof Wallet; label: string; value: unknown; basis: string; children?: ReactNode; lead?: boolean }) {
+  const shortage = isWon(value) && BigInt(value) < 0n;
+  return <article className={`d-ov-kpi d-metric${lead ? " d-ov-kpi-lead" : ""}`}>
+    <span className="d-ov-kpi-label"><i aria-hidden="true"><Icon size={18}/></i>{shortage ? label.replace("남는", "부족한") : label}</span>
+    <strong className={isWon(value) ? undefined : "d-ov-pending"}><MoneyAmount value={shortage ? (value as string).slice(1) : value}/></strong>
+    <small>{basis}</small>{children}
+  </article>;
+}
+
+function GoalCard({ goals, label, exampleGoal, onGoals }: { goals: Record<string, Json>; label: (id: Json) => string; exampleGoal?: string; onGoals?: () => void }) {
+  const rows = list(goals.rows);
+  const open = rows.find(r => r.calc_state === "INFEASIBLE" || positive(r.gap_krw)) ?? rows[0];
+  const ready = !!open && isWon(open.target_krw) && isWon(open.prepared_krw) && BigInt(open.target_krw) > 0n;
+  const share = ready ? shareBps(open.prepared_krw, open.target_krw) : 0;
+  return <article className="d-card d-ov-goal" aria-labelledby="d-ov-goal-title">
+    <div className="d-card-head"><h2 id="d-ov-goal-title"><Flag size={20} aria-hidden="true"/> 현재 가장 중요한 목표</h2>
+      {onGoals && rows.length > 1 && <button type="button" className="d-text-button" onClick={onGoals}>목표 {rows.length}개 전체 보기</button>}</div>
+    {exampleGoal ? <p className="d-summary-goal">{exampleGoal}</p> : !open ? <p>{goals.calc_state === "NOT_APPLICABLE" ? "입력한 목표가 없어요." : "목표 금액과 사용할 날을 확인하면 여기에 보여드려요."}</p> : <>
+      <p className="d-summary-goal">{label(open.goal_id)}</p>
+      {ready && <div className="d-ov-progress">
+        <div className="d-ov-track" role="img" aria-label={`목표 ${formatKrw(open.target_krw)} 중 ${formatKrw(open.prepared_krw)} 준비 · ${bpsLabel(share)}`}><i style={{ width: `${share / 100}%` }}/></div>
+        <small>목표 {formatKrw(open.target_krw)} 중 {bpsLabel(share)} 준비</small></div>}
+      <dl className="d-summary-facts">
+        <div><dt>목표일</dt><dd>{friendlyDate(open.due_on) || "날짜 확인 필요"}</dd></div>
+        <div><dt>이미 모은 돈</dt><dd>{formatKrw(open.prepared_krw)}</dd></div>
+        <div><dt>더 모을 돈</dt><dd className="d-goal-remaining">{formatKrw(open.gap_krw)}</dd></div>
+        <div><dt>모으는 방법</dt><dd><GoalPlan row={open}/></dd></div>
+      </dl></>}
+  </article>;
+}
+
+/** 재무현황 첫 화면: 핵심 숫자 → 목표 | 한 달 흐름 → 다음 행동 하나. Every figure is an engine string. */
+export function OverviewDashboard({ flow, after, baseSurplus, assets, goals, goalLabel, exampleGoal, evaluationOn, cashflow, next, onGoals }: {
+  flow: Record<string, Json>; after: unknown; baseSurplus: unknown; assets: { total: unknown; debt: unknown; net: unknown }; goals: Record<string, Json>; goalLabel: (id: Json) => string;
+  exampleGoal?: string; evaluationOn: string; cashflow: ReactNode; next?: OverviewNext; onGoals?: () => void;
+}) {
+  const debtPay = flowRow(flow, "debt"), saving = flowRow(flow, "contributions");
+  const balanceBasis = evaluationOn ? `${friendlyDate(evaluationOn)} 기준 잔액` : "기준일 확인 필요";
+  return <section className="d-overview" aria-label="내 상황 한눈에">
+    <div className="d-ov-kpis">
+      <Kpi lead icon={HandCoins} label="한 달에 남는 돈" value={after} basis="저축·투자까지 반영하고 남는 돈 · 목표·비상금 나누기 전">
+        <dl className="d-ov-applied" aria-label="반영한 금액"><div><dt>대출 상환 반영</dt><dd>{formatKrw(debtPay)}</dd></div><div><dt>대출 상환 후 남는 돈</dt><dd>{formatKrw(baseSurplus)}</dd></div><div><dt>기존 저축·투자 반영</dt><dd>{formatKrw(saving)}</dd></div></dl>
+      </Kpi>
+      <Kpi icon={Wallet} label="전체 자산" value={assets.total} basis={balanceBasis}/>
+      <Kpi icon={Landmark} label="전체 채무" value={assets.debt} basis={balanceBasis}/>
+      <Kpi icon={Scale} label="순자산" value={assets.net} basis="자산에서 채무를 뺀 값"/>
+    </div>
+    <div className="d-ov-row"><GoalCard goals={goals} label={goalLabel} exampleGoal={exampleGoal} onGoals={onGoals}/>{cashflow}</div>
+    {next && <div className={`d-ov-next d-ov-next-${next.tone}`} role={next.tone === "error" ? "alert" : next.tone === "ok" ? undefined : "status"}>
+      <span className="d-ov-next-icon" aria-hidden="true"><Compass size={22}/></span>
+      <div><h3>다음 행동</h3><p>{next.text}</p>{next.detail && <p className="d-ov-next-detail">{next.detail}</p>}</div>
+      {next.run && next.label && <button type="button" className="d-primary" onClick={next.run}>{next.label}<ArrowRight size={18} aria-hidden="true"/></button>}
+    </div>}
+  </section>;
 }
