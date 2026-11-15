@@ -31,6 +31,14 @@ type Summary = { entered_count: number; amount_count: number; partial: boolean; 
   transfers_entered_krw: string; spending_entered_count?: number | null; transfers_entered_count?: number | null; allocation_check: string; tasks_done: number; tasks_total: number; review_suggested: boolean };
 type PastMonth = { record_month: string; status?: string | null; revision: number; summary?: Summary | null; adoption?: Adoption };
 type Adoption = { adoption_id: string; run_id: string; strategy_id: string; input_version: number; adopted_at: string; portfolio?: AppliedPortfolioRef | null } | null;
+export type AdoptionView =
+  | { state: "NONE" | "ERROR" }
+  | { state: "ADOPTED"; adoption: NonNullable<Adoption>; isCurrent?: boolean };
+type PlanResponse = { adoption: Adoption; history: NonNullable<Adoption>[]; adoption_is_current?: boolean };
+const adoptionView = (p: PlanResponse): AdoptionView => p.adoption
+  ? { state: "ADOPTED", adoption: p.adoption, isCurrent: p.adoption_is_current }
+  : { state: "NONE" };
+
 // DION-PLAN-CHECKIN-1.1 binding fields (BE CONTRACT.md). Legacy responses lack contract_version.
 type Binding = { contract: string | null; revision: number; adoptionId: string | null; record: Adoption; current: Adoption;
   state: string | null; kind: string | null; comparison: { state: string; reason: string } | null; review: { action: string; base_run_id: string | null } | null };
@@ -78,20 +86,52 @@ function wonToManwon(value: string | null): string {
   const n = BigInt(value), whole = n / 10000n, rest = (n % 10000n).toString().padStart(4, "0").replace(/0+$/, "");
   return rest ? `${whole}.${rest}` : whole.toString();
 }
-const thisMonth = () => new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 7);
+export const thisMonth = () => new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 7);
 const key = () => `ui-${crypto.randomUUID()}`;
 
 type Props = { view: ViewResult; token: string; caseId: string; plan: string; tasks: CheckinTask[]; onEdit?: (id: string) => void;
   portfolioSelection?: AppliedPortfolioRef | null; portfolioBlocked?: boolean; recordMonth?: string; onMonthChange?: (month: string) => void;
-  onDraftCreated?: (runId: string, version: number) => void; onOpenDraft?: (runId: string) => Promise<void> };
+  onDraftCreated?: (runId: string, version: number) => void; onOpenDraft?: (runId: string) => Promise<void>;
+  onAdoption: (value: AdoptionView) => void };
 export function PlanCheckin(props: Props) {
   const [month, setMonth] = useState(() => props.recordMonth ?? thisMonth());
-  return <div><label className="d-field"><span>기록할 월</span><input type="month" aria-label="기록할 월" value={month} max={thisMonth()}
-    onChange={e => { if (/^\d{4}-(0[1-9]|1[0-2])$/.test(e.target.value)) { setMonth(e.target.value); props.onMonthChange?.(e.target.value); } }} /></label>
-    <PlanCheckinMonth key={`${props.token}:${props.caseId}:${month}`} {...props} month={month} /></div>;
+  return <PlanCheckinMonth key={`${props.token}:${props.caseId}:${month}`} {...props} month={month}
+    selectMonth={value => { setMonth(value); props.onMonthChange?.(value); }} />;
 }
 
-function PlanCheckinMonth({ view, token, caseId, plan, tasks, onEdit, onDraftCreated, onOpenDraft, month, portfolioSelection = null, portfolioBlocked = false }: Props & { month: string }) {
+export function monthLabel(month: string) {
+  const [year, number] = month.split("-");
+  return `${year}년 ${Number(number)}월`;
+}
+
+function MonthPicker({ month, disabled, onChange }: { month: string; disabled: boolean; onChange: (value: string) => void }) {
+  const [selectedYear, selectedMonth] = month.split("-");
+  const [year, setYear] = useState(selectedYear);
+  const [number, setNumber] = useState(selectedMonth);
+  const [maxYear, maxMonth] = thisMonth().split("-");
+  const next = `${year.padStart(4, "0")}-${number}`;
+  const validYear = /^\d{1,4}$/.test(year) && Number(year) > 0 && Number(year) <= Number(maxYear);
+  const valid = validYear && next <= `${maxYear}-${maxMonth}`;
+  return <form className="d-checkin-month" aria-label="기록 월 선택" onSubmit={event => {
+    event.preventDefault();
+    if (!disabled && valid && next !== month) onChange(next);
+  }}>
+    <label className="d-field"><span>기록할 연도</span>
+      <input aria-label="기록할 연도" type="number" inputMode="numeric" min="1" max={maxYear} required disabled={disabled} value={year} onChange={event => setYear(event.target.value)} />
+    </label>
+    <label className="d-field"><span>기록할 월</span>
+      <select aria-label="기록할 월" disabled={disabled} value={number} onChange={event => setNumber(event.target.value)}>
+        {Array.from({ length: 12 }, (_, i) => {
+          const value = String(i + 1).padStart(2, "0");
+          return <option key={value} value={value} disabled={Number(year) === Number(maxYear) && value > maxMonth}>{i + 1}월</option>;
+        })}
+      </select>
+    </label>
+    <button className="d-secondary" type="submit" disabled={disabled || !valid || next === month}>이 월 기록 보기</button>
+  </form>;
+}
+
+function PlanCheckinMonth({ view, token, caseId, plan, tasks, onEdit, onDraftCreated, onOpenDraft, onAdoption, month, selectMonth, portfolioSelection = null, portfolioBlocked = false }: Props & { month: string; selectMonth: (month: string) => void }) {
   const base = `/api/be/v1/cases/${encodeURIComponent(caseId)}`;
   const [adoption, setAdoption] = useState<Adoption>(null);
   const [revision, setRevision] = useState(0);
@@ -135,7 +175,14 @@ function PlanCheckinMonth({ view, token, caseId, plan, tasks, onEdit, onDraftCre
     let live = true;
     (async () => {
       try {
-        const [p, c, r] = await Promise.all([call("/plan"), call(`/checkins/${month}`), call(`/checkins/${month}/review`)]);
+        const planRequest: Promise<PlanResponse> = call("/plan").then(p => {
+          if (live) onAdoption(adoptionView(p));
+          return p;
+        }, error => {
+          if (live) onAdoption({ state: "ERROR" });
+          throw error;
+        });
+        const [p, c, r] = await Promise.all([planRequest, call(`/checkins/${month}`), call(`/checkins/${month}/review`)]);
         if (!live) return;
         if (r.revision !== c.revision) throw new Error("VERSION_CONFLICT");
         setAdoption(p.adoption);
@@ -150,10 +197,12 @@ function PlanCheckinMonth({ view, token, caseId, plan, tasks, onEdit, onDraftCre
           setChanges(c.record.changes); setSummary(c.summary); setStatus(c.status);
         }
         setLoaded(true);
-      } catch (e) { if (live) setError(`저장된 계획·기록을 불러오지 못했어요 (${(e as Error).message}).`); }
+      } catch (e) { if (live) {
+        setError(`저장된 계획·기록을 불러오지 못했어요 (${(e as Error).message}).`);
+      } }
     })();
     return () => { live = false; };
-  }, [call, month, loadAttempt]);
+  }, [call, month, loadAttempt, onAdoption]);
 
   // Offer this plan's review items as tasks unless a saved record already has its own list.
   // A saved record keeps its own task list; otherwise offer the selected plan's review items.
@@ -166,8 +215,18 @@ function PlanCheckinMonth({ view, token, caseId, plan, tasks, onEdit, onDraftCre
     setBusy(true); setError("");
     try {
       const r = await call("/plan/adoptions", "POST", { request_key: key(), run_id: view.runId, strategy_id: plan, ...(portfolioSelection ? {portfolio_selection: portfolioSelection} : {}) });
-      setAdoption({ adoption_id: r.adoption_id, run_id: r.run_id, strategy_id: r.strategy_id, input_version: r.input_version, portfolio: r.portfolio, adopted_at: new Date().toISOString() });
-      const latest = await call("/plan"); setPlanHistory(latest.history);
+      const receipt = { adoption_id: r.adoption_id, run_id: r.run_id, strategy_id: r.strategy_id,
+        input_version: r.input_version, portfolio: r.portfolio, adopted_at: new Date().toISOString() };
+      setAdoption(receipt);
+      onAdoption({ state: "ADOPTED", adoption: receipt });
+      try {
+        const latest: PlanResponse = await call("/plan");
+        setAdoption(latest.adoption);
+        setPlanHistory(latest.history);
+        onAdoption(adoptionView(latest));
+      } catch {
+        setError("계획을 채택했지만 최신 채택 목록을 다시 읽지 못했어요. 결과를 다시 열어 확인해 주세요.");
+      }
     } catch (e) {
       const code = (e as Error).message;
       setError(["PORTFOLIO_SELECTION_CHANGED", "COMPARISON_POLICY_CHANGED", "COMPARISON_UNAVAILABLE"].includes(code) ? "반영한 투자구성이 달라졌거나 선택 조건을 확인할 수 없어요. 구성과 결과를 다시 불러온 뒤 채택해주세요. 기존 채택은 유지했어요."
@@ -216,13 +275,14 @@ function PlanCheckinMonth({ view, token, caseId, plan, tasks, onEdit, onDraftCre
     {!loaded && <p role="status">{error ? "저장된 기준을 확인할 수 없어 입력·저장을 멈췄어요." : "저장된 채택과 월 기록을 확인 중이에요."}
       {error && <button type="button" className="d-secondary" onClick={() => { setError(""); setLoadAttempt(n => n + 1); }}>저장 기준 다시 불러오기</button>}</p>}
     <p>선택은 이 계산 결과 중 어떤 계획으로 진행할지 기록하는 거예요. 실제 송금·매매·자동이체는 실행되지 않아요.</p>
-    {adoption ? <p className="d-notice">현재 선택한 계획: <strong>{planName(adoption.strategy_id)}{adoption.portfolio ? ` · ${portfolioNames[adoption.portfolio.portfolio_type]} 구성` : ''}</strong> · 입력버전 {adoption.input_version}{adoption.run_id !== view.runId && " · 다른 계산 결과에서 선택함"}</p>
-      : <p className="d-note">아직 선택한 계획이 없어요. 계획 없이도 이번 달 기록은 할 수 있어요.</p>}
+    {loaded && (adoption ? <p className="d-notice">현재 선택한 계획: <strong>{planName(adoption.strategy_id)}{adoption.portfolio ? ` · ${portfolioNames[adoption.portfolio.portfolio_type]} 구성` : ''}</strong> · 입력버전 {adoption.input_version}{adoption.run_id !== view.runId && " · 다른 계산 결과에서 선택함"}</p>
+      : <p className="d-note">아직 선택한 계획이 없어요. 계획 없이도 월 기록을 남길 수 있어요.</p>)}
     {!adoptedHere && <button className="d-primary" disabled={!loaded || busy || portfolioBlocked || view.isCurrent === false || sourceChanged} onClick={() => void adopt()}>{planName(plan)}으로 진행할게요</button>}
     {sourceChanged && <p className="d-warning">새 입력·계산 초안을 저장했어요. 아래에서 새 초안과 답변을 열어 최신 버전을 확인해 주세요. 기존 채택은 유지돼요.</p>}
     {view.isCurrent === false && <p className="d-warning">이 결과 이후 답변이 바뀌었어요. 최신 입력으로 다시 계산·저장한 결과에서 선택할 수 있어요.</p>}
 
-    <h3 id={`${focusPrefix}-record`} tabIndex={-1}>{month} 실제 기록</h3>
+    <h3 id={`${focusPrefix}-record`} tabIndex={-1}>{monthLabel(month)} 실제 기록</h3>
+    <MonthPicker month={month} disabled={busy} onChange={selectMonth} />
     <div id={`${focusPrefix}-basis`} tabIndex={-1}>{binding && <BindingNote binding={binding} month={month}/>}</div>
     {revision === 0 && <label className="d-field"><span>이 월 기록에 연결할 계획</span><select disabled={!loaded || busy} aria-label="이 월 기록에 연결할 계획" value={bindingChoice} onChange={e => { setDirty(true); setBindingChoice(e.target.value); }}>
       <option value="">채택 없이 일반 기록으로 저장</option>{planHistory.map(a => <option key={a.adoption_id} value={a.adoption_id}>{planName(a.strategy_id)} · 입력버전 {a.input_version} · {a.adopted_at.slice(0, 10)}</option>)}
@@ -264,7 +324,7 @@ function PlanCheckinMonth({ view, token, caseId, plan, tasks, onEdit, onDraftCre
       onCreated={(runId, version) => { setSourceChanged(true); onDraftCreated?.(runId, version); }} onOpen={onOpenDraft} />
     {error && <p className="d-warning" role="alert">{error}</p>}
     {summary && <div className="d-note" role="status">
-      <strong>{month} · {status === "CLOSED" ? "점검 완료" : "중간 기록"} · 저장 {revision}회차</strong>
+      <strong>{monthLabel(month)} · {status === "CLOSED" ? "점검 완료" : "중간 기록"} · 저장 {revision}회차</strong>
       <p>입력한 항목 {summary.entered_count}/{summary.amount_count}{summary.partial && " · 부분 기록이라 한 달 전체 성과로 판단하지 않아요"}</p>
       <p>입력한 생활비·상환 {summary.spending_entered_count === 0 ? "입력 없음" : formatKrw(summary.spending_entered_krw)} · 적립·투자 등 자산 이동 {summary.transfers_entered_count === 0 ? "입력 없음" : formatKrw(summary.transfers_entered_krw)}</p>
       {CHECK[summary.allocation_check] && <p>{CHECK[summary.allocation_check]}</p>}
@@ -292,13 +352,13 @@ function BindingNote({ binding, month }: { binding: Binding; month: string }) {
     return <p className="d-note" data-binding="LEGACY">{binding.adoptionId ? "이 달 기록은 저장 당시의 채택에 연결돼 있어요. 계획 금액과의 차이는 표시하지 않아요." : "이 달 기록은 채택 없이 저장됐어요. 계획 실적이 아니에요."}</p>;
   }
   const { state, kind, record, current, comparison, review } = binding;
-  return <div className={state === "CONFLICT" ? "d-warning" : "d-note"} data-binding={state ?? ""} data-record-kind={kind ?? ""} role={state === "CONFLICT" ? "alert" : undefined}>
+  return <div className={state === "CONFLICT" ? "d-warning" : "d-note"} data-binding={state ?? ""} data-record-kind={kind ?? ""} data-comparison={comparison?.state} role={state === "CONFLICT" ? "alert" : undefined}>
     {state === "UNRECORDED" && <p>{month}은 아직 기록이 없어요. 위 선택 화면에서 이 월의 연결을 명시하고 저장해 주세요.</p>}
     {state === "CONFLICT" && <p><strong>이 달 기록의 채택 연결이 서로 달라 비교와 추가 저장을 멈췄어요.</strong> 이력 검토가 필요해요.</p>}
     {kind === "GENERAL_RECORD" && <p>채택 없이 저장한 일반 기록이에요. 나중에 채택해도 이 달은 계획 실적으로 바뀌지 않아요.</p>}
     {kind === "ADOPTED_PLAN" && record && <p>이 달 기록 기준: <strong>{planName(record.strategy_id)}{record.portfolio ? ` · ${portfolioNames[record.portfolio.portfolio_type]} 구성` : ''}</strong> · 입력버전 {record.input_version} 채택에 고정돼 있어요.</p>}
     {kind === "ADOPTED_PLAN" && record && current && current.adoption_id !== record.adoption_id && <p>지금 채택한 계획은 {planName(current.strategy_id)} · 입력버전 {current.input_version}이에요. 이 달 기록의 기준은 바뀌지 않아요.</p>}
-    {comparison && comparison.state !== "POLICY_REQUIRED" && <p data-comparison={comparison.state}>{COMPARISON[comparison.state] ?? `계획 대비 비교를 하지 않아요 (${comparison.state}).`}</p>}
+    {comparison && comparison.state !== "POLICY_REQUIRED" && <p>{COMPARISON[comparison.state] ?? `계획 대비 비교를 하지 않아요 (${comparison.state}).`}</p>}
     {review?.action === "CREATE_NEW_DRAFT" && <p>상황이 바뀌었다면 답변을 고쳐 새 초안을 계산해 보세요. 기존 채택은 직접 다시 고르기 전까지 그대로예요.</p>}
   </div>;
 }

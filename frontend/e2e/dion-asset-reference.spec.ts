@@ -90,6 +90,8 @@ test("asset reference web flow uses real preview data and shares selection, snap
   await chart.screenshot({ path: info.outputPath("assets-web.png") });
   await page.locator(".d-tabs button").nth(4).click();
   const final = page.locator('[data-asset-reference="final"]');
+  await expect(final).toBeHidden();
+  await page.getByText("보유자산 참고 통계 다시 보기", {exact:true}).click();
   await expect(final).toBeVisible();
   await expect(final.getByRole("combobox", { name: "순자산 참고값", exact: true })).toHaveValue("중앙값");
   expect(await final.locator('[data-asset-series="own"]').evaluateAll(els => els.map(el => el.getAttribute("data-value")))).toEqual(ownValues);
@@ -106,6 +108,7 @@ test("asset reference web flow uses real preview data and shares selection, snap
   await page.getByRole("textbox", { name: "한 달 평균 세후 소득은 얼마인가요?", exact: true }).fill("777");
   await page.getByRole("button", { name: "이전 결과 보기", exact: true }).click();
   await page.locator(".d-tabs button").nth(4).click();
+  await page.getByText("보유자산 참고 통계 다시 보기", {exact:true}).click();
   await expect(final).toContainText("이전 입력 기준의 자산·통계");
   expect(await final.locator('[data-asset-series="own"]').evaluateAll(els => els.map(el => el.getAttribute("data-value")))).toEqual(ownValues);
   await expect(final).toHaveAttribute("data-data-version", result.peer_reference.data_version);

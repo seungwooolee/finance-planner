@@ -683,3 +683,45 @@
   .d-scenario-launch{left:12px;bottom:12px;min-height:40px;padding:8px 12px;font-size:12px}
   .d-main{padding-bottom:96px}
 }
+
+/* Shared controls stay compact until a result question or its details are opened. */
+.dion-app .d-results-tools {
+  display: flex;
+  align-items: start;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin: 0 0 24px;
+}
+.dion-app .d-results-tools > details {
+  min-width: 0;
+  margin: 0;
+}
+.dion-app .d-results-tools > details > summary {
+  padding: 7px 0;
+  cursor: pointer;
+}
+.dion-app .d-results-tools > details[open],
+.dion-app .d-results-tools > .d-explanation:has(.d-explanation-panel) {
+  flex-basis: 100%;
+  min-width: 0;
+}
+.dion-app .d-results-tools .d-result-action { margin: 8px 0 0; }
+.dion-app .d-choice-status > p { grid-column: 1 / -1; margin: 0; }
+
+.dion-app .d-kpi > strong,
+.dion-app .d-metric > strong { word-break: keep-all; overflow-wrap: normal; }
+.dion-app .d-money-tail { white-space: nowrap; font: inherit; color: inherit; }
+
+.dion-app .d-checkin-month {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: end;
+  margin: 0 0 16px;
+}
+.dion-app .d-checkin-month > .d-field { flex: 0 1 9rem; min-width: 0; margin: 0; }
+.dion-app .d-checkin-month > .d-field :is(input, select) { min-width: 0; }
+@media (max-width: 480px) {
+  .dion-app .d-checkin-month > .d-field { flex: 1 1 6rem; }
+  .dion-app .d-checkin-month > button { flex: 1 1 100%; }
+}

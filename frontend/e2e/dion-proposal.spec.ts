@@ -17,10 +17,10 @@ test('step 4 proposal shows choices, compared alternatives, assumptions and risk
   await page.getByRole('button',{name:'검토 도구'}).click();
   await page.getByRole('button',{name:'빠른진단 저장·계산'}).click();
   await expect(page.getByText(/검증 사례 저장 · 사회초년생/)).toBeVisible({timeout:30_000});
-  await page.getByRole('button',{name:/결과·이번 달 행동/}).click();
+  await page.getByRole('button',{name:/결과·다음 행동/}).click();
   const p=page.getByRole('article',{name:'재무설계 제안서'});
   await expect(p).toBeVisible();
-  for (const title of ['내가 선택한 내용','이번 달 실행안 · 자금 배정과 상품 배분','다른 방법과 비교하기','이 제안의 가정','위험과 확인할 점','이해가 어렵거나 바꾸고 싶다면'])
+  for (const title of ['내가 선택한 내용','첫 계획 월 실행안 · 자금 배정과 상품 배분','다른 방법과 비교하기','이 제안의 가정','위험과 확인할 점','이해가 어렵거나 바꾸고 싶다면'])
     await expect(p.getByRole('heading',{name:title})).toBeVisible();
   for (const row of ['지금 고른 안','투자 방식 변경','재무안 바꾸기','지출 조정']) await expect(p.getByRole('rowheader',{name:new RegExp(row)})).toBeVisible();
   await expect(p).toContainText('물가상승률');await expect(p).toContainText('연 2%');
@@ -54,7 +54,7 @@ test('proposal shows goal_omissions reasons and keeps the original goal result',
   await page.getByRole('button',{name:'가상 사례 불러오기',exact:true}).click();
   await page.getByRole('button',{name:'상품 배분 검토 불러오기',exact:true}).click();
   await page.getByRole('region',{name:'계산 결과'}).waitFor();
-  await page.getByRole('button',{name:/결과·이번 달 행동/}).click();
+  await page.getByRole('button',{name:/결과·다음 행동/}).click();
   const box=page.getByRole('article',{name:'재무설계 제안서'}).locator('[data-goal-omissions]');
   await expect(box).toHaveAttribute('data-goal-omissions','2');
   const known=box.locator('[data-omission-reason="MONTHLY_REFERENCE_CALENDAR_UNSUPPORTED"]');

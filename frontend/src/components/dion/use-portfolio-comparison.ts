@@ -8,6 +8,7 @@ export function usePortfolioComparison(view: ViewResult, token: string | null, c
   const [plan, setPlan] = useState(initial?.strategy_id ?? 'STABILITY_FIRST');
   const [portfolio, setPortfolio] = useState<string | null>(initial?.portfolio_type ?? null);
   const [revision, setRevision] = useState(0);
+  const [draft, setDraft] = useState<{ strategy: string; portfolio: string; current: boolean; revision: number } | null>(null);
   const [busy, setBusy] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState('');
@@ -34,8 +35,10 @@ export function usePortfolioComparison(view: ViewResult, token: string | null, c
         setRevision(value.revision);
         if (value.selection && value.selection.run_id === view.runId && value.selection.case_id === caseId) {
           setPlan(value.selection.strategy_id); setPortfolio(value.selection.portfolio_type);
+          setDraft({ strategy: value.selection.strategy_id, portfolio: value.selection.portfolio_type, current: value.is_current, revision: value.revision });
           setStatus(value.is_current ? '상담용 검토안에 반영한 구성을 불러왔어요.' : '이전 입력의 구성이에요. 다시 계산해주세요.');
         }
+        else setDraft(null);
         setLoaded(true);
       }).catch(() => { if (!controller.signal.aborted) setError('비교 초안을 불러오지 못했어요. 다시 불러온 뒤 선택해주세요.'); });
     return () => controller.abort();
@@ -62,13 +65,15 @@ export function usePortfolioComparison(view: ViewResult, token: string | null, c
       const value = await r.json() as ComparisonResponse;
       if (!alive.current) return false;
       if (value.selection?.strategy_id !== plan || value.selection?.portfolio_type !== type || value.is_current !== true) throw new Error('BINDING');
-      setRevision(value.revision); setPortfolio(type); setStatus('상담용 검토안과 구성을 저장했어요. 최종 생성과 계획 채택은 각각 별도로 진행해요.');
+      setRevision(value.revision); setPortfolio(type);
+      setDraft({ strategy: value.selection.strategy_id, portfolio: value.selection.portfolio_type, current: true, revision: value.revision });
+      setStatus('상담용 검토안과 구성을 저장했어요. 최종 생성과 계획 채택은 각각 별도로 진행해요.');
       return true;
     } catch {
       if (alive.current) setError('투자구성을 반영하지 못했어요. 이전 반영 구성은 유지했어요. 현재 입력·결과를 다시 불러온 뒤 선택해주세요.');
       return false;
     } finally { inFlight.current = false; if (alive.current) setBusy(false); }
   };
-  return { plan, portfolio, revision, choose, busy, error, status, retry: () => { setError(''); setLoaded(false); setReload(n=>n+1); }, blocked: stale || busy || (saved && !loaded),
+  return { plan, portfolio, revision, draft, saved, choose, busy, error, status, retry: () => { setError(''); setLoaded(false); setReload(n=>n+1); }, blocked: stale || busy || (saved && !loaded),
     selectPlan: (id: string) => { if (id !== plan && !inFlight.current && (!saved || loaded)) { setPlan(id); setPortfolio(null); setStatus('재무안을 비교 중이에요. 투자구성을 선택하면 비교 초안을 저장해요.'); } } };
 }

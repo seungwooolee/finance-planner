@@ -72,16 +72,17 @@ export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabe
       </dl>
     </Section>
 
-    <Section n={2} title="이번 달 실행안 · 자금 배정과 상품 배분">{allocation}</Section>
+    <Section n={2} title="첫 계획 월 실행안 · 자금 배정과 상품 배분">{allocation}</Section>
 
     <Section n={3} title="다른 방법과 비교하기">
       {!available ? <p className="d-note">비교에 필요한 월별 재무안·목표 계산이 아직 없어요. 입력을 보완해 다시 계산하면 대안 비교가 나와요.</p> : <>
         <p>같은 소득·지출 조건에서 한 가지씩만 바꿨을 때의 차이예요. 모든 숫자는 아래 ‘가정’ 기준의 참고값이에요.</p>
-        <div className="d-table-wrap"><table className="d-proposal-compare"><thead><tr><th>방법</th><th>무엇이 바뀌나</th><th>예상 결과 ({horizon || "기간"} 뒤)</th><th>장점</th><th>주의할 점</th></tr></thead><tbody>
-          {chosen && <tr className="d-proposal-current"><th>지금 고른 안<small>{planName(plan)}</small></th><td>매달 {formatKrw(chosen.monthly_new_investment_krw)} 투자 후보</td><td>수익 0%면 {formatKrw(last(chosen)?.zero_return_krw)}</td><td>원금이 그대로 남는 기준이라 가장 보수적이에요.</td><td>물가가 오르면 실제 구매력은 줄어요.</td></tr>}
-          {chosen && <tr><th>투자 방식 변경<small>연 {pct(assumed)} 가정</small></th><td>같은 금액을 분산 투자로 운용</td><td>{formatKrw(last(chosen)?.assumed_return_krw)}<small>물가 반영 시 오늘 가치 {formatKrw(last(chosen)?.assumed_return_real_krw)}</small></td><td>오래 둘수록 차이가 커져요. (+{formatKrw(diff(last(chosen)?.assumed_return_krw, last(chosen)?.zero_return_krw))})</td><td>수익률은 보장되지 않고 손실이 날 수 있어요.</td></tr>}
-          {other && <tr><th>재무안 바꾸기<small>{planName(other.strategy_id)}</small></th><td>매달 {formatKrw(other.monthly_new_investment_krw)} 투자 후보</td><td>수익 0%면 {formatKrw(last(other)?.zero_return_krw)} · 연 {pct(assumed)}면 {formatKrw(last(other)?.assumed_return_krw)}</td><td>{BigInt(textValue(other.monthly_new_investment_krw) || "0") > BigInt(textValue(chosen?.monthly_new_investment_krw) || "0") ? "투자 여력을 더 써요." : "현금 여유를 더 남겨요."}</td><td>{BigInt(textValue(other.monthly_new_investment_krw) || "0") > BigInt(textValue(chosen?.monthly_new_investment_krw) || "0") ? "남기는 현금이 줄어 비상 대응력이 낮아져요." : "투자로 늘어날 몫이 줄어요."}</td></tr>}
-          {isWon(expense.monthly_extra_krw) && <tr><th>지출 조정<small>생활비 {pct(expense.cut_rate)} 절감</small></th><td>매달 {formatKrw(expense.monthly_extra_krw)} 추가 저축</td><td>수익 0%면 {formatKrw(list(expense.points).at(-1)?.zero_return_krw)} · 연 {pct(assumed)}면 {formatKrw(list(expense.points).at(-1)?.assumed_return_krw)}</td><td>수익률과 상관없이 확실하게 쌓여요.</td><td>필수 지출까지 줄이면 생활이 불편해져요. 줄일 항목을 직접 정해야 해요.</td></tr>}
+        <p className="d-inline-note d-proposal-scope">포함 범위: 첫 계획 월{firstPeriod ? `(${firstPeriod})` : ""}의 신규 적립금만 매달 같은 금액으로 쌓는다고 본 장기 비교예요. 이미 가진 금융자산·기존 납입·목표 인출은 넣지 않아요. 기존 자산을 포함한 잔액 흐름은 아래 ‘보유 금융자산 잔액 전망’에서 따로 봐요.</p>
+        <div className="d-table-wrap"><table className="d-proposal-compare"><thead><tr><th>방법</th><th>무엇이 바뀌나</th><th>신규 적립금만 쌓인 금액 ({horizon || "기간"} 뒤)</th><th>장점</th><th>주의할 점</th></tr></thead><tbody>
+          {chosen && <tr className="d-proposal-current"><th>지금 고른 안<small>{planName(plan)}</small></th><td>매달 {formatKrw(chosen.monthly_new_investment_krw)} 투자 후보</td><td>수익 미반영(0%)이면 {formatKrw(last(chosen)?.zero_return_krw)}</td><td>납입한 금액만 더한 기준이라 수익 가정에 흔들리지 않아요. 손실 하한은 아니에요.</td><td>물가가 오르면 실제 구매력은 줄어요.</td></tr>}
+          {chosen && <tr><th>투자 방식 변경<small>연 {pct(assumed)} 비교용 가정 · 상품 기대수익률 아님</small></th><td>같은 금액에 비교용 수익률을 적용</td><td>{formatKrw(last(chosen)?.assumed_return_krw)}<small>물가 반영 시 오늘 가치 {formatKrw(last(chosen)?.assumed_return_real_krw)}</small></td><td>오래 둘수록 차이가 커져요. (+{formatKrw(diff(last(chosen)?.assumed_return_krw, last(chosen)?.zero_return_krw))})</td><td>수익률은 보장되지 않고 손실이 날 수 있어요.</td></tr>}
+          {other && <tr><th>재무안 바꾸기<small>{planName(other.strategy_id)}</small></th><td>매달 {formatKrw(other.monthly_new_investment_krw)} 투자 후보</td><td>수익 미반영이면 {formatKrw(last(other)?.zero_return_krw)} · 연 {pct(assumed)} 가정이면 {formatKrw(last(other)?.assumed_return_krw)}</td><td>매달 신규 투자 후보금이 지금 고른 안과 달라요.</td><td>남기는 현금·목표 적립의 실제 차이는 2번 화면 비교표의 차이 열에서 확인해요.</td></tr>}
+          {isWon(expense.monthly_extra_krw) && <tr><th>지출 조정<small>생활비 {pct(expense.cut_rate)} 절감</small></th><td>매달 {formatKrw(expense.monthly_extra_krw)} 추가 저축</td><td>수익 미반영이면 {formatKrw(list(expense.points).at(-1)?.zero_return_krw)} · 연 {pct(assumed)} 가정이면 {formatKrw(list(expense.points).at(-1)?.assumed_return_krw)}</td><td>수익률과 상관없이 확실하게 쌓여요.</td><td>필수 지출까지 줄이면 생활이 불편해져요. 줄일 항목을 직접 정해야 해요.</td></tr>}
         </tbody></table></div>
         {omissions.length > 0 && <div className="d-alert-card d-goal-omissions" data-goal-omissions={omissions.length}>
           <strong>일부 목표는 월 납입 참고 비교를 보류했어요</strong>
@@ -93,7 +94,7 @@ export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabe
         </div>}
         {goals.length > 0 && <>
           <h4>목표별 · 매달 필요한 금액 비교</h4>
-          <div className="d-table-wrap"><table><thead><tr><th>목표</th><th>지금 계획 (수익 0%)</th><th>투자 방식 변경 (연 {pct(assumed)})</th><th>목표 시기 1년 늦추기</th></tr></thead><tbody>
+          <div className="d-table-wrap"><table><thead><tr><th>목표</th><th>지금 계획 (수익 미반영)</th><th>비교용 수익률 적용 (연 {pct(assumed)} 가정)</th><th>목표 시기 1년 늦추기</th></tr></thead><tbody>
             {goals.map(g => <tr key={textValue(g.goal_id)}><th>{goalLabel(g.goal_id)}<small>{textValue(g.due_on)} · 남은 {years(g.months)} · 목표 {formatKrw(g.target_krw)}</small></th>
               <td>{formatKrw(g.current_monthly_krw)}</td>
               <td>{isWon(g.assumed_return_monthly_krw) ? <>{formatKrw(g.assumed_return_monthly_krw)}<small>{change(g.current_monthly_krw, g.assumed_return_monthly_krw)}</small></> : <small>3년 미만 목표라 수익률을 가정하지 않아요</small>}</td>
@@ -105,7 +106,8 @@ export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabe
 
     <Section n={4} title="이 제안의 가정">
       <dl className="d-ledger">
-        <div><dt>연 수익률</dt><dd>{rates.length ? rates.map(pct).join(" / ") : "확인 필요"} (비교용 두 가지)</dd></div>
+        <div><dt>포함 범위</dt><dd>첫 계획 월 신규 적립금의 매달 납입만 · 기존 금융자산·기존 납입·목표 인출 제외</dd></div>
+        <div><dt>비교용 연 수익률</dt><dd>{rates.length ? rates.map(pct).join(" / ") : "확인 필요"} · 0%는 수익 미반영 기준, 그 외는 비교용 가정이며 선택 상품의 기대수익률이 아니에요</dd></div>
         <div><dt>물가상승률</dt><dd>연 {pct(assumptions.inflation_annual)}</dd></div>
         <div><dt>계산 방식</dt><dd>월 복리(연 수익률÷12), 매달 말 같은 금액 납입</dd></div>
         <div><dt>월 금액 가정</dt><dd>첫 계획 월{firstPeriod ? `(${firstPeriod})` : ""} 금액을 비교 기간 내내 같게 둬요 · 소득 변화·세금·수수료 미반영</dd></div>
@@ -113,7 +115,7 @@ export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabe
         <div><dt>수익률을 가정하지 않는 목표</dt><dd>{years(assumptions.min_months_for_return)} 미만 목표</dd></div>
       </dl>
       {limitations.length > 0 && <ul className="d-proposal-limits" aria-label="참고 비교의 한계">{limitations.map(l => <li key={l}>{l}</li>)}</ul>}
-      <p className="d-help">이번 달 배정·상품 배분은 수익률 0% 엔진 결과 그대로예요. 위 가정은 대안 비교에만 써요. 세금·수수료·소득 변화는 반영하지 않았어요.</p>
+      <p className="d-help">첫 계획 월 배정·상품 배분은 수익을 반영하지 않은 엔진 결과 그대로예요. 위 가정은 대안 비교에만 써요. 세금·수수료·소득 변화는 반영하지 않았어요.</p>
     </Section>
 
     <Section n={5} title="위험과 확인할 점">
