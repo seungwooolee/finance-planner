@@ -29,9 +29,9 @@ function Section({ n, title, children }: { n: number; title: string; children: R
   return <section className="d-proposal-section" aria-labelledby={`proposal-s${n}`}><h3 id={`proposal-s${n}`}><span className="d-proposal-num">{n}</span>{title}</h3>{children}</section>;
 }
 
-export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabel, onEdit, allocation }: {
+export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabel, onEdit, onAsk, allocation }: {
   result: Record<string, Json>; doc: Document | null; plan: string; portfolio: string | null; deep: boolean;
-  goalLabel: (id: Json) => string; onEdit: (id: string) => void; onTab?: (n: number) => void; allocation: ReactNode;
+  goalLabel: (id: Json) => string; onEdit: (id: string) => void; onAsk?: () => void; allocation: ReactNode;
 }) {
   const ref = object(result.proposal_reference);
   const assumptions = object(ref.assumptions);
@@ -130,7 +130,7 @@ export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabe
     <Section n={6} title="이해가 어렵거나 바꾸고 싶다면">
       <p>궁금한 점은 결과 해설과 상담에서 물어볼 수 있어요. 답변을 고치면 다시 계산해 새 제안서를 만들어요.</p>
       <div className="d-toolbar">
-        <a className="d-secondary" href="#dion-agent-consultation">AI에게 질문하기</a>
+        {onAsk&&<button type="button" className="d-secondary" aria-haspopup="dialog" onClick={onAsk}>AI에게 질문하기</button>}
         <button className="d-secondary" onClick={() => onEdit("F03")}>입력 내용 수정</button>
         <button className="d-secondary" onClick={() => window.print()}>제안서 인쇄·PDF 저장</button>
       </div>
