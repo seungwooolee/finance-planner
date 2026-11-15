@@ -1,8 +1,76 @@
 import {expect, test, type Page} from "@playwright/test";
 import {prepare} from "./consultation-helpers";
 import scenario from "../src/lib/dion/product-review-scenario.json";
+import {REVIEW_CONTRACT, type PortfolioReview} from "../src/lib/dion/portfolio-review";
 const headers = {Authorization: "Bearer MOCK-FE-ONLY"};
 const panel = (page: Page) => page.getByRole("region", {name: "DION 상담과 최종 포트폴리오", exact: true});
+
+test("execution and disclosure evidence use the saved final and adopted plan", async ({page,request}) => {
+  test.setTimeout(180_000);
+  const {base,first} = await prepare(page,request,false,false,false,scenario.document);
+  const analysis = await request.get(base + "/analyses/" + first.run_id,{headers});
+  expect(analysis.ok()).toBeTruthy();
+  const run = await analysis.json();
+  const product = run.result.results["OUT-06"];
+  const reviewBasis = {
+    run_id:first.run_id, input_version:run.input_version, input_hash:run.input_hash, strategy_id:"STABILITY_FIRST",
+    portfolio_type:"RETURN", policy_version:product.product_policy.version,
+    types_version:product.portfolio_types.version, catalog_version:product.catalog.version,
+  };
+  const selected = await request.put(base + "/analyses/" + first.run_id + "/portfolio-comparison",{headers,data:{
+    ...reviewBasis, run_id:undefined, expected_revision:0, request_key:"execution-choice",
+  }});
+  expect(selected.ok(), await selected.text()).toBeTruthy();
+  async function post<T>(path:string, data:Record<string, unknown>):Promise<T> {
+    const response = await request.post(base + path,{headers,data:{...data,request_key:crypto.randomUUID()}});
+    expect(response.ok(), await response.text()).toBeTruthy();
+    return response.json() as Promise<T>;
+  }
+  let review = await post<PortfolioReview>("/portfolio-reviews",{
+    contract_version:REVIEW_CONTRACT, basis:{...reviewBasis, comparison_revision:1},
+  });
+  const reviewPath = "/portfolio-reviews/" + review.review_id;
+  async function advance(step:string, data:Record<string, unknown>) {
+    review = await post<PortfolioReview>(reviewPath + "/" + step,{...data,expected_revision:review.revision});
+  }
+  await advance("confirm-steps",{steps:[1,2,3,4],confirmed:true});
+  const session = await post<{session_id:string}>("/agent-sessions",{
+    contract_version:"DION-AGENT-SESSION-1.0", base_run_id:first.run_id, output_id:"OUT-05",
+    subject_ref:run.engine_input.context.included_owner_ids[0], persistence_mode:"SAVED",
+    notice_version:"DION-AGENT-MEMORY-1.0",
+  });
+  await advance("consultation",{session_id:session.session_id,expected_session_version:0});
+  const turn = await post<{session_version:number}>("/agent-sessions/" + session.session_id + "/turns",{
+    contract_version:"DION-AGENT-TURN-1.0", expected_session_version:0, message:"왜 이런 결과인가요",
+  });
+  await advance("consultation-confirmation",{expected_session_version:turn.session_version,confirmed:true});
+  await advance("finalizations",{confirmed:true});
+  expect(review.final?.state).toBe("GENERATED_NOT_ADOPTED");
+  await page.getByRole("button",{name:new RegExp(first.run_id)}).click();
+  await page.locator(".d-tabs button").nth(4).click();
+  await expect(panel(page).getByRole("heading",{name:"최종 생성 완료 · 채택은 별도"})).toBeVisible();
+  const tasks = page.getByRole("article",{name:"첫 계획 월 할 일",exact:true});
+  await tasks.getByText("실행 전 확인",{exact:true}).press("Enter");
+  await expect(tasks.getByText(/첫 계획 월 상품 배정/).first()).toBeVisible();
+  await tasks.getByText("이 상품의 공시 조건",{exact:true}).first().press("Enter");
+  await expect(tasks.getByText("연 총보수",{exact:true}).first()).toBeVisible();
+  const account = tasks.getByRole("combobox",{name:"어떤 계좌에서 실행할 예정인가요?"});
+  if (await account.isVisible()) {
+    await account.selectOption("PENSION_SAVINGS");
+    await expect(tasks.getByText("연금저축 거래 조건",{exact:true})).toBeVisible();
+  } else {
+    await expect(tasks.getByText(/저장된 보유 계좌 유형/)).toBeVisible();
+  }
+  await tasks.getByText("매도 후 결제·현금화",{exact:true}).press("Enter");
+  await expect(tasks.locator("a[href*='krx.co.kr']").first()).toBeVisible();
+
+  await panel(page).getByRole("button",{name:"이 최종안의 계획 채택 검토하기"}).press("Enter");
+  const checkin = page.getByRole("region",{name:"계획 선택과 이번 달 기록",exact:true});
+  await checkin.getByRole("button",{name:/으로 진행할게요/}).click();
+  await expect(checkin.getByRole("button",{name:/으로 진행할게요/})).toHaveCount(0);
+  await checkin.getByText("채택 이후 공시 변경 확인",{exact:true}).press("Enter");
+  await expect(checkin.getByText(/현재 채택 참고.*채택일/)).toBeVisible();
+});
 async function select(page: Page) {
   await page.locator(".d-tabs button").nth(2).click();
   await page.locator('[data-portfolio-type="BALANCED"] > button').click();

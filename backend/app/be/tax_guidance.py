@@ -31,13 +31,19 @@ def _rows(value):
     return [row for row in value if isinstance(row, dict)] if isinstance(value, list) else []
 
 
+def personal_accounts(document):
+    context = document["context"]
+    if context.get("scope") not in ("personal", "household") or PERSON not in context.get("included_owner_ids", []):
+        return []
+    return [row for row in _rows(_known(document, "F06", "accounts")) if row.get("owner_ref") == PERSON]
+
+
 def _personal_facts(document):
     context = document["context"]
     if (context.get("scope") not in ("personal", "household")
             or PERSON not in context.get("included_owner_ids", [])):
         return False, False, False, None, False
-    accounts = [row for row in _rows(_known(document, "F06", "accounts"))
-                if row.get("owner_ref") == PERSON]
+    accounts = personal_accounts(document)
     pension = any(row.get("type") in ("IRP", "PENSION") for row in accounts)
     isa = any(row.get("type") == "ISA" for row in accounts)
     # Use one unambiguous, confirmed recurring personal contribution. Do not total

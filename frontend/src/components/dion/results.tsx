@@ -34,6 +34,7 @@ import { GoalTable, PersonalSummary } from "./personal-summary";
 import { createPortal } from "react-dom";
 import { usePortfolioReview } from "./use-portfolio-review";
 import { PortfolioReviewFlow, sameReviewBasis } from "./portfolio-review-flow";
+import { FirstExecution } from "./portfolio-execution";
 import type { ChatReviewHandoff } from "./chat-survey";
 import { type AdoptionView, thisMonth } from "./plan-checkin";
 import type { ReviewBasis, PortfolioReview } from "@/lib/dion/portfolio-review";
@@ -206,7 +207,9 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
       planMonth={textValue(selectedRow?.period)} recordMonth={recordMonth??thisMonth()} onJump={()=>tasksRef.current?.scrollIntoView({behavior:"smooth",block:"start"})}/><ResultTiles row={selectedRow} month={selectedMonth} totalAssets={totalAssets}/>
       <FinancialProposal result={{...result,results:{...outputs,"OUT-06":selectedReview}}} doc={sourceDoc} plan={selectedPlan} portfolio={selectedPortfolio} deep={deep} goalLabel={displayGoal} onEdit={onEdit} onAsk={onAskResult}
         allocation={<><FinalPortfolio generated={generated} plan={selectedPlan} row={selectedRow} review={selectedReview} portfolio={selectedPortfolio} assetReference={assetReference(true)}/><InvestmentReturnChart key={`${selectedPlan}:${selectedPortfolio}:${comparison.revision}`} view={view} plan={selectedPlan} portfolio={selectedPortfolio} revision={comparison.revision} blocked={comparison.blocked} token={token} caseId={caseId}/><IncomeBar row={selectedRow}/></>}/>
-      <div ref={tasksRef} className="d-scroll-anchor"/><MonthTasks key={`${selectedPlan}:${view.localVersion}`} row={selectedRow} actions={actions} candidates={candidates.length>0} actionList={actionList} onProducts={()=>setTab(3)} onEdit={onEdit}/>
+      <div ref={tasksRef} className="d-scroll-anchor"/><MonthTasks key={`${selectedPlan}:${view.localVersion}`} row={selectedRow} actions={actions} candidates={candidates.length>0} actionList={actionList} onProducts={()=>setTab(3)} onEdit={onEdit}
+        execution={generated&&token&&reviewFlow.review?.final&&view.runId?<FirstExecution key={reviewFlow.review.final.final_id}
+          token={token} caseId={caseId} runId={view.runId} reviewId={reviewFlow.review.review_id} finalId={reviewFlow.review.final.final_id}/>:undefined}/>
       <FinancialProjection candidate={candidates.find(c=>c.strategy_id===selectedPlan)} plan={selectedPlan} portfolio={selectedPortfolio} stale={stale} runId={view.runId} inputVersion={view.serverVersion??view.localVersion} onEdit={()=>onEdit("ASSUMPTIONS")}/>
     </>}
     {consultationTarget&&createPortal(<ResultActionConsultation flow={actionFlow} view={view} token={token??""} caseId={caseId} stale={stale} blocked={comparison.blocked}
@@ -221,13 +224,14 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
   </section>;
 }
 
-function MonthTasks({row,actions,candidates,actionList,onProducts,onEdit}:{row?:Record<string,Json>;actions:{id:string;text:string}[];candidates:boolean;actionList:ReactNode;onProducts:()=>void;onEdit:(id:string)=>void}) {
+function MonthTasks({row,actions,candidates,actionList,onProducts,onEdit,execution}:{execution?:ReactNode;row?:Record<string,Json>;actions:{id:string;text:string}[];candidates:boolean;actionList:ReactNode;onProducts:()=>void;onEdit:(id:string)=>void}) {
   const [done,setDone]=useState<string[]>([]);
   const tasks=monthTasks(row);
   const toggle=(k:string)=>setDone(d=>d.includes(k)?d.filter(x=>x!==k):[...d,k]);
   return <article className="d-card" aria-label="첫 계획 월 할 일"><div className="d-card-head"><h2>첫 계획 월 할 일</h2>{row&&<small>{textValue(row.period)} 기준</small>}</div>
     {candidates?<ul className="d-task-list">{tasks.map(t=><li key={t.key} className={done.includes(t.key)?"done":""}><label><input type="checkbox" checked={done.includes(t.key)} onChange={()=>toggle(t.key)}/><span><strong>{t.text}</strong><small>계획 금액 {formatKrw(row?.[t.key])}</small></span></label>{t.key==="new_investment_krw"&&<button className="d-text-button" onClick={onProducts}>상품 보기 →</button>}</li>)}
       {actions.slice(0,3-tasks.length).map(a=><li key={a.id}><label><input type="checkbox" checked={done.includes(a.id)} onChange={()=>toggle(a.id)}/><span><strong>{a.text}</strong></span></label><button className="d-text-button" onClick={()=>onEdit(a.id)}>확인 →</button></li>)}</ul>:actionList}
+    {execution}
     <p className="d-inline-note">체크 표시는 이 화면에서만 보여요. 실제 기록은 아래 월 기록에서 저장해요.</p>
   </article>;
 }

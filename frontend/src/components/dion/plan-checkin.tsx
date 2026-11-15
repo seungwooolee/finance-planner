@@ -8,6 +8,7 @@ import { MonthlyCoach } from "./monthly-coach";
 import type { CheckinTask, ViewResult } from "./results";
 import { type Scope, scopeLabels } from "@/lib/dion/checkin-followup";
 import { CheckinFollowup } from "./checkin-followup";
+import { DisclosureComparison } from "./portfolio-execution";
 
 // Steps 5-6: the customer explicitly picks one saved draft, then records this month's actuals.
 // Nothing here moves money; blank means "not entered" and is never sent as 0.
@@ -269,6 +270,7 @@ function PlanCheckinMonth({ view, token, caseId, plan, tasks, onEdit, onDraftCre
   }
 
   const adoptedHere = adoption && adoption.run_id === view.runId && adoption.strategy_id === plan && (!portfolioSelection || (adoption.portfolio?.portfolio_type === portfolioSelection.portfolio_type && adoption.portfolio.comparison_revision === portfolioSelection.comparison_revision));
+  const disclosureAdoptionId = revision > 0 ? binding?.adoptionId ?? null : adoption?.adoption_id ?? null;
   return <section ref={region} tabIndex={-1} className="d-card" aria-label="계획 선택과 이번 달 기록">
     <span className="d-eyebrow">STEP 5 · 6</span>
     <h2 id={`${focusPrefix}-plan`} tabIndex={-1}>계획 선택과 이번 달 기록</h2>
@@ -332,6 +334,8 @@ function PlanCheckinMonth({ view, token, caseId, plan, tasks, onEdit, onDraftCre
       {summary.review_suggested && <p>상황이 바뀌었다면 답변을 고쳐 새 결과를 계산해 보세요. 기존에 선택한 계획은 자동으로 바뀌지 않아요.
         {onEdit && <> <button className="d-secondary" onClick={() => onEdit("F03")}>답변 고치러 가기</button></>}</p>}
     </div>}
+    {!busy && binding && <DisclosureComparison key={disclosureAdoptionId ?? "none"}
+      token={token} caseId={caseId} month={month} adoptionId={disclosureAdoptionId}/>}
     {!busy && binding && <MonthlyCoach key={`${token}-${caseId}-${month}-${revision}-${adoption?.adoption_id ?? "none"}-${dirty}`}
       base={base} token={token} month={month} dirty={dirty} onNavigate={navigate} />}
     <details onToggle={e => { if ((e.target as HTMLDetailsElement).open) void loadPast(); }}>
