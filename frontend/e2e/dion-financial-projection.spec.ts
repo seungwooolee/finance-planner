@@ -15,7 +15,7 @@ test('v0.7 real engine forecast matches chart/table and keeps old basis after ed
   await page.locator('.d-tabs button').nth(2).click();
   await page.locator('[data-portfolio-type="RETURN"] > button').click();
   await page.locator('.d-tabs button').nth(4).click();
-  const section=page.getByRole('region',{name:'보유 금융자산 전망 · 수익 미반영',exact:true});
+  const section=page.getByRole('region',{name:'보유 금융자산 잔액 전망',exact:true});
   await expect(section).toHaveAttribute('data-projection-hash',forecast.sha256);
   await expect(section).toContainText('위험 추구형');
   await expect(section).toContainText('수익 반영 전망: 계산하지 않음');

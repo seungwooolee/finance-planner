@@ -76,18 +76,13 @@ export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabe
 
     <Section n={3} title="다른 방법과 비교하기">
       {!available ? <p className="d-note">비교에 필요한 월별 재무안·목표 계산이 아직 없어요. 입력을 보완해 다시 계산하면 대안 비교가 나와요.</p> : <>
-        <p>지금 고른 안을 기준으로, 한 가지씩만 바꿨을 때 {horizon || "비교 기간"} 뒤 금액을 나란히 봐요.</p>
-        <p className="d-proposal-scope"><span><b>포함</b> 첫 계획 월{firstPeriod ? `(${firstPeriod})` : ""} 신규 적립금만 매달 같은 금액으로 납입</span><span><b>제외</b> 기존 금융자산·기존 납입·목표 인출</span></p>
-        <div className="d-table-wrap"><table className="d-proposal-compare"><caption>같은 줄의 금액은 같은 월 납입액에 서로 다른 가정을 적용한 값이에요.</caption>
-          <thead><tr><th scope="col">방법</th><th scope="col">무엇이 바뀜</th><th scope="col">월 신규 적립금</th><th scope="col">{horizon || "기간"} 뒤 금액</th><th scope="col">주의할 점</th></tr></thead><tbody>
-          {chosen && <tr className="d-proposal-current"><th scope="row">지금 고른 안<small>{planName(plan)} · 기준</small></th><td data-label="무엇이 바뀜">바꾸지 않음</td><td data-label="월 신규 적립금">{formatKrw(chosen.monthly_new_investment_krw)}</td>
-            <td data-label={`${horizon || "기간"} 뒤 금액`}><span className="d-rate-line"><em>수익 미반영 0%</em>{formatKrw(last(chosen)?.zero_return_krw)}</span></td><td data-label="주의할 점">납입액만 더한 값이에요. 손실 하한은 아니고, 물가가 오르면 구매력이 줄어요.</td></tr>}
-          {chosen && <tr><th scope="row">투자 방식만 변경<small>상품 기대수익률 아님</small></th><td data-label="무엇이 바뀜">같은 월 납입액에 연 {pct(assumed)} 비교용 가정 적용</td><td data-label="월 신규 적립금">{formatKrw(chosen.monthly_new_investment_krw)} <small>지금과 같음</small></td>
-            <td data-label={`${horizon || "기간"} 뒤 금액`}><span className="d-rate-line"><em>연 {pct(assumed)} 비교용 가정</em>{formatKrw(last(chosen)?.assumed_return_krw)}</span><span className="d-rate-line"><em>물가 반영 오늘 가치</em>{formatKrw(last(chosen)?.assumed_return_real_krw)}</span><small>수익 미반영 대비 +{formatKrw(diff(last(chosen)?.assumed_return_krw, last(chosen)?.zero_return_krw))}</small></td><td data-label="주의할 점">수익률은 보장되지 않고 손실이 날 수 있어요.</td></tr>}
-          {other && <tr><th scope="row">재무안 변경<small>{planName(other.strategy_id)}</small></th><td data-label="무엇이 바뀜">남는 돈을 나누는 방식</td><td data-label="월 신규 적립금">{formatKrw(other.monthly_new_investment_krw)}</td>
-            <td data-label={`${horizon || "기간"} 뒤 금액`}><span className="d-rate-line"><em>수익 미반영 0%</em>{formatKrw(last(other)?.zero_return_krw)}</span><span className="d-rate-line"><em>연 {pct(assumed)} 비교용 가정</em>{formatKrw(last(other)?.assumed_return_krw)}</span></td><td data-label="주의할 점">남기는 현금·목표 적립 차이는 2번 화면 비교표의 차이 열에서 확인해요.</td></tr>}
-          {isWon(expense.monthly_extra_krw) && <tr className="d-proposal-extra"><th scope="row">지출 조정<small>생활비 {pct(expense.cut_rate)} 절감</small></th><td data-label="무엇이 바뀜">줄인 생활비를 따로 저축</td><td data-label="월 신규 적립금">+{formatKrw(expense.monthly_extra_krw)} <small>추가 저축분</small></td>
-            <td data-label={`${horizon || "기간"} 뒤 금액`}><small>추가 저축분만</small><span className="d-rate-line"><em>수익 미반영 0%</em>{formatKrw(list(expense.points).at(-1)?.zero_return_krw)}</span><span className="d-rate-line"><em>연 {pct(assumed)} 비교용 가정</em>{formatKrw(list(expense.points).at(-1)?.assumed_return_krw)}</span></td><td data-label="주의할 점">위 안들의 전체 신규 적립과 순위를 매기는 값이 아니에요. 필수 지출까지 줄이면 생활이 불편해져요.</td></tr>}
+        <p>같은 소득·지출 조건에서 한 가지씩만 바꿨을 때의 차이예요. 모든 숫자는 아래 ‘가정’ 기준의 참고값이에요.</p>
+        <p className="d-inline-note d-proposal-scope">포함 범위: 첫 계획 월{firstPeriod ? `(${firstPeriod})` : ""}의 신규 적립금만 매달 같은 금액으로 쌓는다고 본 장기 비교예요. 이미 가진 금융자산·기존 납입·목표 인출은 넣지 않아요. 기존 자산을 포함한 잔액 흐름은 아래 ‘보유 금융자산 잔액 전망’에서 따로 봐요.</p>
+        <div className="d-table-wrap"><table className="d-proposal-compare"><thead><tr><th>방법</th><th>무엇이 바뀌나</th><th>신규 적립금만 쌓인 금액 ({horizon || "기간"} 뒤)</th><th>장점</th><th>주의할 점</th></tr></thead><tbody>
+          {chosen && <tr className="d-proposal-current"><th>지금 고른 안<small>{planName(plan)}</small></th><td>매달 {formatKrw(chosen.monthly_new_investment_krw)} 투자 후보</td><td>수익 미반영(0%)이면 {formatKrw(last(chosen)?.zero_return_krw)}</td><td>납입한 금액만 더한 기준이라 수익 가정에 흔들리지 않아요. 손실 하한은 아니에요.</td><td>물가가 오르면 실제 구매력은 줄어요.</td></tr>}
+          {chosen && <tr><th>투자 방식 변경<small>연 {pct(assumed)} 비교용 가정 · 상품 기대수익률 아님</small></th><td>같은 금액에 비교용 수익률을 적용</td><td>{formatKrw(last(chosen)?.assumed_return_krw)}<small>물가 반영 시 오늘 가치 {formatKrw(last(chosen)?.assumed_return_real_krw)}</small></td><td>오래 둘수록 차이가 커져요. (+{formatKrw(diff(last(chosen)?.assumed_return_krw, last(chosen)?.zero_return_krw))})</td><td>수익률은 보장되지 않고 손실이 날 수 있어요.</td></tr>}
+          {other && <tr><th>재무안 바꾸기<small>{planName(other.strategy_id)}</small></th><td>매달 {formatKrw(other.monthly_new_investment_krw)} 투자 후보</td><td>수익 미반영이면 {formatKrw(last(other)?.zero_return_krw)} · 연 {pct(assumed)} 가정이면 {formatKrw(last(other)?.assumed_return_krw)}</td><td>매달 신규 투자 후보금이 지금 고른 안과 달라요.</td><td>남기는 현금·목표 적립의 실제 차이는 2번 화면 비교표의 차이 열에서 확인해요.</td></tr>}
+          {isWon(expense.monthly_extra_krw) && <tr><th>지출 조정<small>생활비 {pct(expense.cut_rate)} 절감</small></th><td>매달 {formatKrw(expense.monthly_extra_krw)} 추가 저축</td><td>수익 미반영이면 {formatKrw(list(expense.points).at(-1)?.zero_return_krw)} · 연 {pct(assumed)} 가정이면 {formatKrw(list(expense.points).at(-1)?.assumed_return_krw)}</td><td>수익률과 상관없이 확실하게 쌓여요.</td><td>필수 지출까지 줄이면 생활이 불편해져요. 줄일 항목을 직접 정해야 해요.</td></tr>}
         </tbody></table></div>
         {omissions.length > 0 && <div className="d-alert-card d-goal-omissions" data-goal-omissions={omissions.length}>
           <strong>일부 목표는 월 납입 참고 비교를 보류했어요</strong>
@@ -110,39 +105,34 @@ export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabe
     </Section>
 
     <Section n={4} title="이 제안의 가정">
-      <dl className="d-proposal-assume">
-        <div><dt>비교용 수익률</dt><dd>{rates.length ? rates.map(pct).join(" / ") : "확인 필요"}<small>0%는 수익 미반영, 그 외는 비교용 가정</small></dd></div>
-        <div><dt>물가</dt><dd>연 {pct(assumptions.inflation_annual)}<small>오늘 가치 환산용</small></dd></div>
+      <dl className="d-ledger">
+        <div><dt>포함 범위</dt><dd>첫 계획 월 신규 적립금의 매달 납입만 · 기존 금융자산·기존 납입·목표 인출 제외</dd></div>
+        <div><dt>비교용 연 수익률</dt><dd>{rates.length ? rates.map(pct).join(" / ") : "확인 필요"} · 0%는 수익 미반영 기준, 그 외는 비교용 가정이며 선택 상품의 기대수익률이 아니에요</dd></div>
+        <div><dt>물가상승률</dt><dd>연 {pct(assumptions.inflation_annual)}</dd></div>
+        <div><dt>계산 방식</dt><dd>월 복리(연 수익률÷12), 매달 말 같은 금액 납입</dd></div>
+        <div><dt>월 금액 가정</dt><dd>첫 계획 월{firstPeriod ? `(${firstPeriod})` : ""} 금액을 비교 기간 내내 같게 둬요 · 소득 변화·세금·수수료 미반영</dd></div>
         <div><dt>기간</dt><dd>{horizons.length ? horizons.map(years).join(" · ") : "확인 필요"}</dd></div>
-        <div><dt>월 납입</dt><dd>첫 계획 월{firstPeriod ? `(${firstPeriod})` : ""}과 같은 금액</dd></div>
+        <div><dt>수익률을 가정하지 않는 목표</dt><dd>{years(assumptions.min_months_for_return)} 미만 목표</dd></div>
       </dl>
-      <p className="d-proposal-key">{years(assumptions.min_months_for_return)} 미만 목표에는 수익률을 적용하지 않아요. 비교 가정은 실제 월별 배분·상품 결과를 바꾸지 않아요.</p>
-      <details className="d-proposal-more"><summary>계산 방식 자세히</summary>
-        <dl className="d-ledger">
-          <div><dt>포함 범위</dt><dd>첫 계획 월 신규 적립금의 매달 납입만 · 기존 금융자산·기존 납입·목표 인출 제외</dd></div>
-          <div><dt>계산 방식</dt><dd>월 복리(연 수익률÷12), 매달 말 같은 금액 납입</dd></div>
-          <div><dt>반영하지 않는 것</dt><dd>세금·수수료·소득 변화</dd></div>
-          <div><dt>수익률 의미</dt><dd>비교용 가정이며 선택 상품의 기대수익률이 아니에요</dd></div>
-        </dl>
-        {limitations.length > 0 && <ul className="d-proposal-limits" aria-label="참고 비교의 한계">{limitations.map(l => <li key={l}>{l}</li>)}</ul>}
-      </details>
+      {limitations.length > 0 && <ul className="d-proposal-limits" aria-label="참고 비교의 한계">{limitations.map(l => <li key={l}>{l}</li>)}</ul>}
+      <p className="d-help">첫 계획 월 배정·상품 배분은 수익을 반영하지 않은 엔진 결과 그대로예요. 위 가정은 대안 비교에만 써요. 세금·수수료·소득 변화는 반영하지 않았어요.</p>
     </Section>
 
     <Section n={5} title="위험과 확인할 점">
       <ul className="d-proposal-risks">
-        <li><b>수익 비보장</b><span>연 {pct(assumed)}는 비교용 가정이에요. 더 낮거나 손실이 날 수 있어요.</span></li>
-        <li><b>내부 하락 시나리오 손실</b><span>{isWon(stress) ? <><strong>{formatKrw(stress)}</strong> · 실제 손실은 더 클 수 있어요.</> : "산정 대기 · 0원으로 보지 않아요."}</span></li>
-        <li><b>세제 확인</b><span>세금 혜택은 소득·가입 조건에 따라 달라요. 개인별 판정이 아니에요.</span></li>
-        <li className="d-warning"><b>판매자 확인</b><span>“수익을 보장한다”는 말은 의심하고 판매자의 자격을 확인하세요.</span></li>
+        <li><strong>수익은 보장되지 않아요.</strong> 연 {pct(assumed)}는 비교를 위한 가정이에요. 시장 상황에 따라 더 낮거나 손실이 날 수 있어요.</li>
+        {isWon(stress) && BigInt(stress) > 0n && <li>선택한 배분의 내부 하락 시나리오에서 손실액은 약 {formatKrw(stress)}로 계산됐어요. 실제 손실은 이보다 클 수 있어요.</li>}
+        <li>세금 혜택은 소득·가입 조건에 따라 달라져요. 절세 안내는 개인별 판정이 아니에요.</li>
+        <li className="d-warning">누군가 “수익을 보장합니다”라고 말한다면 반드시 의심하고, 판매자의 자격을 확인하세요.</li>
       </ul>
     </Section>
 
     <Section n={6} title="이해가 어렵거나 바꾸고 싶다면">
       <p>궁금한 점은 결과 해설과 상담에서 물어볼 수 있어요. 답변을 고치면 다시 계산해 새 제안서를 만들어요.</p>
-      <div className="d-toolbar d-no-print">
-        <a className="d-primary" href="#dion-agent-consultation">AI에게 질문하기</a>
-        <button type="button" className="d-secondary" onClick={() => onEdit("F03")}>입력 내용 수정</button>
-        <button type="button" className="d-secondary" onClick={() => window.print()}>제안서 인쇄·PDF 저장</button>
+      <div className="d-toolbar">
+        <a className="d-secondary" href="#dion-agent-consultation">AI에게 질문하기</a>
+        <button className="d-secondary" onClick={() => onEdit("F03")}>입력 내용 수정</button>
+        <button className="d-secondary" onClick={() => window.print()}>제안서 인쇄·PDF 저장</button>
       </div>
     </Section>
     <p className="d-help">검토용 초안 · 수익을 보장하지 않아요 · 계획 채택·가입·거래가 아니에요 · {textValue(ref.version) || "참고 시나리오 없음"}</p>

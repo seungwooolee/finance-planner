@@ -3,6 +3,7 @@
   "git": {
     "deploymentEnabled": {
       "codex/workbook-demo-products-20261115": false,
+      "codex/restore-pre-b11-results-20261115": false,
       "codex/restore-calculated-results-20261115": false,
       "codex/retirement-demo-results-20261115": false,
       "codex/home-entry-20261115": false,

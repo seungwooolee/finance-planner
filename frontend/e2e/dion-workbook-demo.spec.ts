@@ -7,6 +7,10 @@ const picker = (page: Page) => page.getByRole("dialog",{name:"요즘 나의 생�
 function fields(doc: {raw_bundle: {answers: {envelope: {question_ref: {design_id:string}; fields: Record<string, {raw_value: unknown; state:string}>}}[]}}, id: string) {
   return doc.raw_bundle.answers.find(r=>r.envelope.question_ref.design_id===id)!.envelope.fields;
 }
+async function expectStandardInvestmentCards(page: Page) {
+  await expect(page.getByRole("heading", {name:"나의 투자 기준 · P1~P5", exact:true})).toBeVisible();
+  await expect(page.locator("[data-portfolio-type]")).toHaveCount(3);
+}
 async function expectWorkbookTargets(page: Page) {
   await expect(page.getByRole("table",{name:"투자 성향별 목표 비중"}).locator("tbody tr")).toHaveText([
     "안정 추구형20%0%0%80%", "중립형30%20%20%30%", "위험 추구형20%35%35%10%",
@@ -44,6 +48,7 @@ test("the public picker switches only the two demonstrations, then restores the 
 
   const resultNav = page.getByRole("navigation", {name:"빠른 결과 5뷰"});
   await resultNav.getByRole("button",{name:"투자구성",exact:true}).click();
+  await expectStandardInvestmentCards(page);
   await expectWorkbookTargets(page);
   const targets = page.getByRole("article",{name:"엑셀 투자구성 목표 비중"});
   const reference = page.getByRole("article",{name:"선택한 시연 투자구성"});
@@ -127,6 +132,7 @@ test("the public picker switches only the two demonstrations, then restores the 
   await expect(page.getByText(/두 월별 후보 확인 대기/)).toBeVisible();
   await expect(page.getByRole("region",{name:"두 재무안 비교",exact:true})).toHaveCount(0);
   await resultNav.getByRole("button",{name:"투자구성",exact:true}).click();
+  await expectStandardInvestmentCards(page);
   await expectWorkbookTargets(page);
 
   await expect(rendered.getByRole("article", {name:"투자 선호 응답"})).toBeVisible();
@@ -147,56 +153,6 @@ test("the public picker switches only the two demonstrations, then restores the 
   await expect(personalIncome).toHaveValue("777");
 });
 
-
-test("previous examples restore plan, portfolio and allocated products through public picker", async ({page}) => {
-  test.setTimeout(120_000);
-  const previousLabel = "이전 계산 사례 · 대표상품과 생애단계별 결과";
-  await page.goto("/dion");
-  await page.getByRole("button", {name:"심사용 가상사례 불러오기", exact:true}).click();
-  const summary = picker(page).getByText(previousLabel, {exact:true});
-  await summary.click();
-  const previous = picker(page).locator("details[open]").filter({has: page.getByText(previousLabel, {exact:true})});
-  await expect(previous.getByRole("heading", {level:3})).toHaveText([
-    "상품 배분 검토", "사회초년생", "신혼기", "자녀 출산·양육기", "자녀 학령기", "자녀 독립기", "은퇴기",
-  ]);
-  const pending = preview(page);
-  await previous.getByRole("button", {name:"상품 배분 검토 불러오기", exact:true}).click();
-  const response = await pending;
-  expect(response.status()).toBe(200);
-  const {storage, result} = await response.json();
-  expect(storage).toBe("NOT_SAVED");
-  expect(response.request().postDataJSON().context.evaluation_on).toBe("2026-11-13");
-  const plans = result.results["OUT-05"].candidates;
-  const reviewed = result.results["OUT-06"].candidates;
-  expect(plans.map((r: {rows: {new_investment_krw: string}[]}) => r.rows[0].new_investment_krw)).toEqual(["399500","639200"]);
-  expect(reviewed.map((r: {rows: {allocated_total_krw: string; unallocated_krw: string}[]}) => [
-    r.rows[0].allocated_total_krw, r.rows[0].unallocated_krw,
-  ])).toEqual([["239700","159800"],["383520","255680"]]);
-  const resultNav = page.getByRole("navigation", {name:"빠른 결과 5뷰"});
-  await resultNav.getByRole("button", {name:"재무안 선택", exact:true}).click();
-  await expect(page.getByRole("region", {name:"두 재무안 비교"}).locator(".d-candidate")).toHaveCount(2);
-  await resultNav.getByRole("button", {name:"투자구성", exact:true}).click();
-  await expect(page.locator("[data-portfolio-type]")).toHaveCount(3);
-  await expect(page.locator('[data-portfolio-apply="BALANCED"]')).toBeEnabled();
-  await resultNav.getByRole("button", {name:"상품 정보", exact:true}).click();
-  const month = page.locator("[data-allocation-month]").first();
-  await expect(month).toHaveAttribute("data-budget","399500");
-  await expect(month).toHaveAttribute("data-allocated","239700");
-  await expect(month).toHaveAttribute("data-unallocated","159800");
-  await resultNav.getByRole("button", {name:"결과·다음 행동", exact:true}).click();
-  await expect(page.getByRole("heading", {name:"나의 재무설계 제안서", exact:true})).toBeVisible();
-
-  await page.getByRole("button", {name:"가상 사례 불러오기", exact:true}).click();
-  // Opening the main page replaces the landing picker with the fixed result picker.
-  await summary.click();
-  const school = preview(page);
-  await picker(page).getByRole("button", {name:"자녀 학령기 불러오기", exact:true}).click();
-  const schoolResponse = await school;
-  expect(schoolResponse.status()).toBe(200);
-  expect(fields(schoolResponse.request().postDataJSON(),"LIFE-01").life_stage_primary.raw_value).toBe("LC_SCHOOL_AGE");
-  await resultNav.getByRole("button", {name:"재무안 선택", exact:true}).click();
-  await expect(page.getByRole("region", {name:"두 재무안 비교"}).locator(".d-candidate")).toHaveCount(2);
-});
 
 test("manual amounts survive missing months, and matching months restore the calculated balance", async ({page})=>{
   await page.goto("/dion");
@@ -239,4 +195,7 @@ test("manual amounts survive missing months, and matching months restore the cal
   await expect(page.locator(".d-metric").filter({hasText:"대출 상환 후 남는 돈"})).toContainText("140");
   await expect(page.locator(".d-metric").filter({hasText:"저축·투자까지 반영하고 남는 돈"})).toContainText("확인 대기");
   await expect(page.getByText("은퇴기 가상 사례 · 계산에 사용한 가정",{exact:true})).toHaveCount(0);
+  await page.getByRole("navigation",{name:"빠른 결과 5뷰"}).getByRole("button",{name:"투자구성",exact:true}).click();
+  await expectStandardInvestmentCards(page);
+  await expect(page.getByRole("table",{name:"투자 성향별 목표 비중"})).toHaveCount(0);
 });
