@@ -3,6 +3,8 @@ import { todayInSeoul } from "../src/lib/dion/model";
 
 const preview = (page: Page) => page.waitForResponse(r=>r.url().endsWith("/api/fe/v1/preview")&&r.request().method()==="POST");
 const picker = (page: Page) => page.getByRole("dialog",{name:"요즘 나의 생활 · 가상 사례",exact:true});
+const workbookCases = (page: Page) => picker(page).getByRole("region",{name:"작성한 엑셀 사례",exact:true});
+const previousCases = (page: Page) => picker(page).getByRole("region",{name:"이전 시연 사례",exact:true});
 function fields(doc: {raw_bundle: {answers: {envelope: {question_ref: {design_id:string}; fields: Record<string, {raw_value: unknown; state:string}>}}[]}}, id: string) {
   return doc.raw_bundle.answers.find(r=>r.envelope.question_ref.design_id===id)!.envelope.fields;
 }
@@ -16,7 +18,7 @@ async function expectWorkbookTargets(page: Page) {
   ]);
 }
 
-test("the workbook cases preserve their inputs and show supported results through the proposal", async ({page})=>{
+test("both workbook and previous demos keep separate inputs and show their own results", async ({page})=>{
   test.setTimeout(150_000);
   await page.goto("/dion");
   await expect(page.locator('a[href="/dion/judge"]')).toHaveCount(0);
@@ -27,7 +29,8 @@ test("the workbook cases preserve their inputs and show supported results throug
   await personalIncome.fill("777");
   const launch = page.getByRole("button",{name:"가상 사례 불러오기",exact:true});
   await launch.click();
-  await expect(picker(page).getByRole("heading",{level:3})).toHaveText(["사회초년생","은퇴기"]);
+  await expect(workbookCases(page).getByRole("heading",{level:4})).toHaveText(["사회초년생","은퇴기"]);
+  await expect(previousCases(page).getByRole("heading",{level:4})).toHaveText(["사회초년생","은퇴기"]);
   await expect(picker(page).locator('a[href="/dion/judge"]')).toHaveCount(0);
   const first = preview(page);
   await picker(page).getByRole("button",{name:"사회초년생 불러오기",exact:true}).click();
@@ -90,7 +93,7 @@ test("the workbook cases preserve their inputs and show supported results throug
 
   await page.setViewportSize({width:390,height:844});
   await launch.click();
-  await expect(picker(page).getByRole("heading",{level:3})).toHaveCount(2);
+  await expect(workbookCases(page).getByRole("heading",{level:4})).toHaveCount(2);
   const second = preview(page);
   await picker(page).getByRole("button",{name:"은퇴기 불러오기",exact:true}).click();
   const retired = await second;
@@ -184,6 +187,47 @@ test("the workbook cases preserve their inputs and show supported results throug
   await expect(proposal).toContainText("진단 기준일 확인 필요.");
   await expect(reference.getByRole("heading",{name:"안정 추구형 · 시연 투자구성"})).toBeVisible();
   await expect(page.locator(".d-kpi").filter({hasText:"그중 상품 배분액"}).locator("strong")).toHaveText("확인 대기");
+
+  async function loadPrevious(title: string) {
+    await launch.click();
+    const pending = preview(page);
+    await previousCases(page).getByRole("button",{name:`${title} 이전 시연 불러오기`,exact:true}).click();
+    const response = await pending;
+    expect(response.ok()).toBe(true);
+    const payload = await response.json();
+    expect(payload.storage).toBe("NOT_SAVED");
+    await expect(rendered.getByText(`${title} · 이전 시연 사례의 입력과 가정으로 계산한 결과예요.`,{exact:true})).toBeVisible();
+    return {result:payload.result, document:response.request().postDataJSON()};
+  }
+  const earlierEarly = await loadPrevious("사회초년생");
+  expect(earlierEarly.document.context.case_id).toBe("FE-FICTIONAL-early");
+  expect(earlierEarly.result.results["OUT-04"].calc_state).toBe("CALCULATED");
+  expect(earlierEarly.result.results["OUT-05"].candidates.map(
+    (candidate: {rows:{new_investment_krw:string}[]})=>candidate.rows[0].new_investment_krw,
+  )).toEqual(["399500","639200"]);
+  await resultNav.getByRole("button",{name:"재무안 선택",exact:true}).click();
+  const plans = rendered.getByRole("region",{name:"두 재무안 비교"});
+  await expect(plans.getByRole("button",{name:"생활 안정 우선",exact:true})).toBeVisible();
+  await expect(plans.getByRole("button",{name:"투자 여력 확대",exact:true})).toBeVisible();
+  await resultNav.getByRole("button",{name:"투자구성",exact:true}).click();
+  await expectStandardInvestmentCards(page);
+  await resultNav.getByRole("button",{name:"상품 정보",exact:true}).click();
+  await expect(rendered.getByRole("region",{name:"상품 적합성·배분 검토"})).toBeVisible();
+  await resultNav.getByRole("button",{name:"결과·다음 행동",exact:true}).click();
+  await expect(proposal).toBeVisible();
+
+  const earlierRetired = await loadPrevious("은퇴기");
+  expect(earlierRetired.document.context).toMatchObject({case_id:"FE-FICTIONAL-workbook-retired-current-v1",evaluation_on:"2026-11-13"});
+  expect(earlierRetired.result.results["OUT-02"]).toMatchObject({calc_state:"CALCULATED",net_worth:{value:"1400000000"}});
+  expect(earlierRetired.result.results["OUT-03"]).toMatchObject({calc_state:"CALCULATED",after_existing_contributions_krw:"1400000"});
+  await expect(rendered.locator(".d-metric").filter({hasText:"순자산"}).locator("strong")).toHaveText("14억원");
+  await expect(rendered.locator(".d-metric").filter({hasText:"저축·투자까지 반영하고 남는 돈"}).locator("strong")).toHaveText("140만원");
+  await rendered.getByText("은퇴기 가상 사례 · 계산에 사용한 가정",{exact:true}).click();
+  await expect(rendered.getByText(/가상 가족의 진단 범위가 확인된 것으로 설정하고/)).toBeVisible();
+  await resultNav.getByRole("button",{name:"재무안 선택",exact:true}).click();
+  await expect(rendered.getByText(/두 월별 후보 확인 대기/)).toBeVisible();
+  await resultNav.getByRole("button",{name:"결과·다음 행동",exact:true}).click();
+  await expect(proposal).toBeVisible();
 
   await launch.click();
   await picker(page).getByRole("button",{name:"내 입력으로 복귀",exact:true}).click();
