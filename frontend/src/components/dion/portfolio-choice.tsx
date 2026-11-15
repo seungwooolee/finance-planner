@@ -17,7 +17,7 @@ const TYPES: Record<string, [string, string, string, string]> = {
   RETURN: ['위험추구형', '허용 범위에서 수익 추구', '현재 기준에서 수익 추구 비중을 높인 구성을 비교해요.', '손실 허용·기간·상품 조건에 따라 배분이 제한돼요.'],
 };
 
-export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPlan, chosen, onChoose, onViewPortfolio, onRecalculate, onEdit, blocked=false }: { doc: Document | null; review: Record<string, Json>; flow: Record<string, Json>; planRow?: Record<string, Json>; selectedPlan: string; onPlan: (id: string) => void; chosen: string | null; onChoose: (id: string) => void; onViewPortfolio?: (id: string) => void; onRecalculate?: () => void; onEdit: (id: string) => void; blocked?: boolean }) {
+export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPlan, chosen, onChoose, onProducts, onRecalculate, onEdit, blocked=false }: { doc: Document | null; review: Record<string, Json>; flow: Record<string, Json>; planRow?: Record<string, Json>; selectedPlan: string; onPlan: (id: string) => void; chosen: string | null; onChoose: (id: string) => void; onProducts: () => void; onRecalculate?: () => void; onEdit: (id: string) => void; blocked?: boolean }) {
   const preference = doc && fieldValue(doc, 'F17', 'risk_preference_choice_raw');
   const derived = preference === 'PREF_BALANCED' ? 'BALANCED' : ['PREF_LEAN_RETURN', 'PREF_RETURN'].includes(String(preference)) ? 'RETURN' : ['PREF_STABILITY', 'PREF_LEAN_STABILITY'].includes(String(preference)) ? 'STABLE' : null;
   const typeInfo = object(review.portfolio_types);
@@ -30,6 +30,7 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
   const products = list(review.products);
   const views = object(month?.portfolio_type_views);
   const order = Object.keys(TYPES);
+  const selected = chosen ? TYPES[chosen] : undefined;
   const footText = (id: string) => {
     const view = object(views[id]);
     if (blocked) return '현재 입력·결과와 저장 상태를 확인해주세요.';
@@ -82,15 +83,18 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
           <details className="d-fold d-composition-fold">
             <summary>{title} 상세 보기 · 상품·금액·위험</summary>
             <PortfolioChoiceDetail rows={rows} products={products} type={id} messages={object(review.reason_messages)}/>
-            {onViewPortfolio && <button type="button" className="d-primary" disabled={!enabled} aria-describedby={`portfolio-state-${id}`} onClick={() => onViewPortfolio(id)}>{chosen === id ? '반영한 포트폴리오 확인' : '이 구성으로 반영하고 포트폴리오 확인'}</button>}
           </details>
-          <button type="button" data-portfolio-apply={id} className={chosen === id ? 'd-primary' : 'd-secondary'} disabled={!enabled} aria-pressed={chosen === id} aria-describedby={`portfolio-state-${id}`} onClick={() => onChoose(id)}>{chosen === id ? `${title} 선택됨 · 상품·비중 보기` : `${title} 선택 · 포트폴리오에 반영`}</button>
+          <button type="button" data-portfolio-apply={id} className={chosen === id ? 'd-primary' : 'd-secondary'} disabled={!enabled} aria-pressed={chosen === id} aria-describedby={`portfolio-state-${id}`} onClick={() => onChoose(id)}>{chosen === id ? `${title} 선택됨 · 구성 다시 보기` : `${title} 선택`}</button>
           <small id={`portfolio-state-${id}`} className="d-type-foot">{commonFoot ? "선택할 수 없어요 · 위 안내를 확인해주세요." : footText(id)}</small>
         </div>;
       })}</div>
-      <div className="d-portfolio-apply" aria-label="반영한 투자구성">
-        <p role="status">{chosen ? `${TYPES[chosen][0]} 구성이 상담용 포트폴리오 검토안에 반영되어 있어요.` : '안정형·중립형·위험추구형 중 하나를 선택하면 해당 상품·비중을 확인할 수 있어요.'}</p>
-      </div>
+      {chosen && selected && <section id="dion-selected-composition" className="d-selected-composition" tabIndex={-1} aria-labelledby="dion-selected-composition-title">
+        <h3 id="dion-selected-composition-title">{selected[0]} 구성 상세</h3>
+        <dl className="d-ledger"><div><dt>기대수익률</dt><dd>산정 대기</dd></div></dl>
+        <p className="d-inline-note">이 구성에 적용할 승인된 수익률 가정이 준비되면 표시해요.</p>
+        <PortfolioChoiceDetail rows={rows.slice(0, 1)} products={products} type={chosen} messages={object(review.reason_messages)} showExplanation/>
+        <button className="d-secondary" type="button" onClick={onProducts}>상품 정보 자세히 보기 →</button>
+      </section>}
       <p className="d-inline-note">도넛은 실제 배분액의 비율이고 회색은 현금 대기자금이에요. 현금 대기자금 금액은 현금성 상품으로 자동 대체하지 않아요.</p>
       {relative && <p className="d-inline-note">안정·중립·위험추구는 내 P1~P5 기준 안의 상대적인 선택이에요. 상한이나 배분 보류 조건이 적용되면 두 구성의 금액이 같을 수 있어요. 선택한 구성은 상담용 검토안이에요. 상담 후 최종 생성과 계획 채택을 각각 요청해요.</p>}
     </article>

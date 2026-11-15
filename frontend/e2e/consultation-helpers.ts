@@ -54,8 +54,16 @@ export async function prepare(page:Page,request:APIRequestContext,missing=false,
   return {id,base,first,doc};
 }
 
+export async function openResultQuestionMode(page:Page) {
+  const dialog=page.getByRole('dialog',{name:'dion AI 상담',exact:true});
+  if(!await dialog.isVisible()) await page.getByRole('button',{name:'dion AI 상담 열기',exact:true}).click();
+  const mode=dialog.getByRole('button',{name:'결과에 대해 질문',exact:true});
+  if(await mode.getAttribute('aria-pressed')!=='true') await mode.click();
+  return dialog;
+}
+
 export async function saveResult(page:Page){
   await page.getByRole('button',{name:'답변 저장·계산',exact:true}).click();
   await expect(page.getByRole('status').filter({hasText:'답변과 계산 결과를 저장했어요'})).toBeVisible();
-  await expect(page.getByRole('button',{name:'이 결과 설명해 줘',exact:true})).toBeVisible();
+  await expect(page.getByRole('region',{name:'계산 결과',exact:true})).toBeVisible();
 }

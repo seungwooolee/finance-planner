@@ -20,7 +20,6 @@ test('selected composition answers use real saved amounts, reset after selection
   await expect(panel).toContainText('저장 결과의 기본 안내');
   await page.screenshot({path: info.outputPath('selected-result-desktop.png'), fullPage: true});
   await page.getByRole('button', {name: '상담창 닫기', exact: true}).click();
-  await page.getByRole('button', {name: '투자구성 비교로 돌아가기'}).click();
   await page.locator('[data-portfolio-type="STABLE"] > button').click();
   await openResultQuestions(page);
   await expect(panel.getByRole('heading', {name: '현재 결과에 대한 답변'})).toHaveCount(0);

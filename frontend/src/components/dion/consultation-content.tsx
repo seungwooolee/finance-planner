@@ -8,7 +8,7 @@ import { ChatSurvey } from "./chat-survey";
 type Props = {
   doc: Document; onCommit: (doc: Document) => void; onCalculate: () => void; busy: boolean; actionFlow: ActionFlow;
   view: ViewResult | null; token: string; selectedCaseId: string; editVersion: number;
-  stale: boolean; open: boolean; onLogin: () => void; onSave: () => void; onExplain: () => void;
+  stale: boolean; open: boolean; onLogin: () => void; onSave: () => void;
   onEdit: (id: string) => void; onResult: (tab: number) => void;
   resumeSessionId?: string; onOpenResult?: (runId: string, sessionId: string) => Promise<void>;
 };

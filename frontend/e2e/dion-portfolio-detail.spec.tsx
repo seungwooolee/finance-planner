@@ -14,6 +14,7 @@ const titles = ['안정형', '중립형', '위험추구형'];
 const review: Record<string, Json> = {
   portfolio_types: {selection_scope: 'WITHIN_CUSTOMER_PREFERENCE', customer_preference: 'PREF_BALANCED'},
   products: [{code: 'TEST', name: '검토 상품', official_source: 'https://example.com/disclosure',
+    explanation: {summary: '저장된 검토 설명'},
     disclosure: {asset_class: 'BOND', risk_grade: 3, annual_base_fee_percent: '0', fx_exposed: false}}],
   reason_messages: {TEST_WAIT: '상품 근거 확인 대기'},
   candidates: ['STABILITY_FIRST', 'GROWTH_FLEX'].map((strategy_id, plan) => ({strategy_id,
@@ -26,7 +27,7 @@ const review: Record<string, Json> = {
       }]))})),
   })),
 };
-const base = {doc: null, review, flow: {}, selectedPlan: 'STABILITY_FIRST', onPlan: () => {}, chosen: null, onChoose: () => {}, onViewPortfolio: () => {}, onEdit: () => {}};
+const base = {doc: null, review, flow: {}, selectedPlan: 'STABILITY_FIRST', onPlan: () => {}, chosen: null, onChoose: () => {}, onProducts: () => {}, onEdit: () => {}};
 function elements(node: ReactNode): ReactElement<Record<string, unknown>>[] {
   if (Array.isArray(node)) return node.flatMap(elements);
   if (!isValidElement(node)) return [];
@@ -51,7 +52,7 @@ test('each composition opens read-only monthly detail by keyboard on desktop and
       await expect(month).toContainText(`후보금 대비 ${(i + 1) * 10}%`);
       await expect(month).toContainText('연 총보수 0%');
       await expect(card.getByRole('region', {name: '2026-12 구성 상세'})).toBeVisible();
-      await expect(card.getByRole('button', {name: '이 구성으로 반영하고 포트폴리오 확인'})).toBeEnabled();
+      await expect(card.locator(':scope > button')).toBeEnabled();
       await expect(card.locator(':scope > button')).toHaveAttribute('aria-pressed', 'false');
     }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
@@ -59,16 +60,24 @@ test('each composition opens read-only monthly detail by keyboard on desktop and
   expect(JSON.stringify(review)).toBe(original);
 });
 
-test('both plans and all three detail actions use the chosen server view in the portfolio without mutation', () => {
+test('all three choices show the saved product explanation and separate explicit navigation', () => {
   const original = JSON.stringify(review);
   for (const [planIndex, plan] of ['STABILITY_FIRST', 'GROWTH_FLEX'].entries()) {
     let chosen: string | null = null;
-    const tree = PortfolioChoice({...base, selectedPlan: plan, onViewPortfolio: type => {chosen = type;}});
+    let navigated = false;
+    const tree = PortfolioChoice({...base, selectedPlan: plan, onChoose: type => {chosen = type;}, onProducts: () => {navigated = true;}});
     expect(chosen).toBeNull();
-    const buttons = elements(tree).filter(el => el.type === 'button' && el.props.children === '이 구성으로 반영하고 포트폴리오 확인');
+    const buttons = elements(tree).filter(el => el.type === 'button' && el.props['data-portfolio-apply']);
+    expect(buttons).toHaveLength(3);
     for (const [i, button] of buttons.entries()) {
       (button.props.onClick as () => void)();
       expect(chosen).toBe(types[i]);
+      expect(navigated).toBe(false);
+      const panel = renderToStaticMarkup(<PortfolioChoice {...base} selectedPlan={plan} chosen={chosen}/>);
+      expect(panel).toContain(titles[i] + ' 구성 상세');
+      expect(panel).toContain('산정 대기');
+      expect(panel).toContain('저장된 검토 설명');
+      expect(panel).toContain('상품 정보 자세히 보기');
       const selected = comparisonReview(review, plan, chosen);
       const row = list(list(selected.candidates).find(c => c.strategy_id === plan)?.rows)[0];
       expect(row.allocated_total_krw).toBe(String((i + 1 + planIndex) * 10000));
@@ -92,7 +101,7 @@ test('legacy and blocked results allow inspection but never enable application; 
     const tree = PortfolioChoice({...base, review: value, blocked, onRecalculate: () => {recalculated++;}});
     const all = elements(tree);
     expect(all.filter(el => el.type === 'summary')).toHaveLength(3);
-    expect(all.filter(el => el.type === 'button' && (el.props['data-portfolio-apply'] || String(el.props.children).includes('이 구성으로 반영'))).every(el => el.props.disabled === true)).toBeTruthy();
+    expect(all.filter(el => el.type === 'button' && el.props['data-portfolio-apply']).every(el => el.props.disabled === true)).toBeTruthy();
     if (value === legacy) {
       const recalc = all.find(el => el.type === 'button' && el.props.children === '현재 입력으로 다시 계산')!;
       expect(recalc.props.disabled).toBe(false);

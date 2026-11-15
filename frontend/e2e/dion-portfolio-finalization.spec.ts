@@ -6,6 +6,7 @@ const panel = (page: Page) => page.getByRole("region", {name: "DION 상담과 �
 async function select(page: Page) {
   await page.locator(".d-tabs button").nth(2).click();
   await page.locator('[data-portfolio-type="BALANCED"] > button').click();
+  await page.locator('#dion-selected-composition').getByRole('button',{name:'상품 정보 자세히 보기 →'}).click();
   await expect(page.locator(".d-tabs button").nth(3)).toHaveAttribute("aria-current", "page");
 }
 async function confirmSteps(page: Page) {

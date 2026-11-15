@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { prepare, saveResult } from './consultation-helpers';
+import { openResultQuestionMode, prepare, saveResult } from './consultation-helpers';
 
 const headers={Authorization:'Bearer MOCK-FE-ONLY'};
 const harness=process.env.DION_TEST_BE_URL;
@@ -134,14 +134,13 @@ test('RAG mobile keyboard flow keeps registered evidence and saved results separ
   const {base}=await prepare(page,request);
   await saveResult(page);
   const before=await (await request.get(`${base}/history`,{headers})).json();
-  await page.getByRole('button',{name:'이 결과 설명해 줘',exact:true}).press('Enter');
+  await (await openResultQuestionMode(page)).getByRole('button',{name:'계산 결과 해설 보기',exact:true}).press('Enter');
   await page.getByRole('button',{name:'자세히',exact:true}).press('Enter');
   await expect(page.getByRole('button',{name:'자세히',exact:true})).toHaveAttribute('aria-pressed','true');
   await expect(page.getByText('근거 보기',{exact:true})).toBeVisible();
   await page.getByRole('button',{name:'결과 상담으로 이동'}).press('Enter');
-  if(!await page.getByRole('dialog',{name:'dion AI 상담',exact:true}).isVisible())await page.getByRole('button',{name:'dion AI 상담 열기',exact:true}).click();
   const panel=page.getByRole('region',{name:'결과 상담',exact:true});
-  await expect(page.getByRole('button',{name:'상담창 닫기',exact:true})).toBeFocused();
+  await expect(page.getByRole('button',{name:'DION과 대화',exact:true})).toBeFocused();
   await panel.getByRole('button',{name:'임시 상담 시작',exact:true}).press('Enter');
   await panel.getByRole('button',{name:'절세 제도',exact:true}).press('Enter');
   const scheme=panel.getByRole('region',{name:'일반 제도 안내',exact:true});
@@ -222,7 +221,7 @@ test('OnePort source display contract with validated mock transport; original re
     expect(value.status).toBe('EXPLAINED');
     await route.fulfill({response:original,json:{...value,source:'ONEPORT'}});
   });
-  await page.getByRole('button',{name:'이 결과 설명해 줘',exact:true}).click();
+  await (await openResultQuestionMode(page)).getByRole('button',{name:'계산 결과 해설 보기',exact:true}).click();
   const panel=page.getByRole('complementary',{name:'결과 해설'});
   await expect(panel).toContainText('AI 해설 · 저장 결과의 근거를 확인했어요');
   await expect(panel).toContainText('월 잔여는 90만원');
@@ -241,7 +240,7 @@ test('question input -> real saved engine -> validated mock explanation, evidenc
   await saveResult(page);
   const before=await (await request.get(`${base}/history`,{headers})).json();
   const responsePromise=page.waitForResponse(r=>r.url().endsWith('/explanation'));
-  await page.getByRole('button',{name:'이 결과 설명해 줘',exact:true}).click();
+  await (await openResultQuestionMode(page)).getByRole('button',{name:'계산 결과 해설 보기',exact:true}).click();
   const response=await responsePromise;expect(response.ok()).toBeTruthy();
   const explanation=await response.json();
   expect(explanation.source).toBe('MOCK');expect(explanation.status).toBe('EXPLAINED');
@@ -259,13 +258,13 @@ test('question input -> real saved engine -> validated mock explanation, evidenc
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
   await page.screenshot({path:testInfo.outputPath('explanation-mobile.png'),fullPage:true});
   await panel.getByRole('button',{name:'해설 닫기'}).focus();await page.keyboard.press('Enter');
-  await expect(page.getByRole('button',{name:'이 결과 설명해 줘',exact:true})).toBeFocused();
+  await expect(page.getByRole('button',{name:'계산 결과 해설 보기',exact:true})).toBeFocused();
   await expect(page.locator('.d-metric').filter({hasText:'저축·투자까지 반영하고 남는 돈'})).toContainText('90');
 });
 
 test('missing input explanation keeps unknown and original result',async({page,request})=>{
   await prepare(page,request,true);await saveResult(page);
-  await page.getByRole('button',{name:'이 결과 설명해 줘',exact:true}).click();
+  await (await openResultQuestionMode(page)).getByRole('button',{name:'계산 결과 해설 보기',exact:true}).click();
   const panel=page.getByRole('complementary',{name:'결과 해설'});
   await expect(panel).toContainText('월 현황 해설은 보류');
   await expect(panel).toContainText('소득 금액·기준 기간');
@@ -277,7 +276,7 @@ test('API failure and cross-run response cannot replace existing results',async(
   test.setTimeout(75_000);
   await prepare(page,request);await saveResult(page);
   await page.route(explanationPath,r=>r.fulfill({status:503,json:{detail:{code:'SYNTHETIC_FAILURE'}}}));
-  await page.getByRole('button',{name:'이 결과 설명해 줘',exact:true}).click();
+  await (await openResultQuestionMode(page)).getByRole('button',{name:'계산 결과 해설 보기',exact:true}).click();
   const panel=page.getByRole('complementary',{name:'결과 해설'});
   await expect(panel.getByRole('alert')).toContainText('해설을 불러오지 못했어요');
   await expect(panel).toContainText('결과를 읽는 방법');
@@ -306,7 +305,7 @@ test('API failure and cross-run response cannot replace existing results',async(
   await panel.getByRole('button',{name:'해설 다시 확인'}).click();
   await expect(panel).toContainText('월 잔여는 90만원');
   await panel.getByRole('button',{name:'해설 닫기'}).click();
-  await page.getByRole('button',{name:'이 결과 설명해 줘',exact:true}).click();
+  await (await openResultQuestionMode(page)).getByRole('button',{name:'계산 결과 해설 보기',exact:true}).click();
   await expect(panel).toContainText('월 잔여는 90만원');
   expect(calls).toBe(1);
 
@@ -322,10 +321,11 @@ test('delayed response is discarded after logout and current result remains',asy
     const response=await route.fetch({url:`${harness}${new URL(route.request().url()).pathname}`});
     received();await gate;await route.fulfill({response}).catch(()=>{});
   });
-  await page.getByRole('button',{name:'이 결과 설명해 줘',exact:true}).click();
+  await (await openResultQuestionMode(page)).getByRole('button',{name:'계산 결과 해설 보기',exact:true}).click();
   await waiting;
   await page.getByRole('button',{name:'상담창 닫기',exact:true}).click();
   await page.getByRole('button',{name:'로그아웃',exact:true}).click();release();
+  await (await openResultQuestionMode(page)).getByRole('button',{name:'계산 결과 해설 보기',exact:true}).click();
   const panel=page.getByRole('complementary',{name:'결과 해설'});
   await expect(panel).toContainText('로그인이 필요');
   await expect(panel).not.toContainText('모의 해설');
@@ -336,7 +336,7 @@ test('browser deadline restores basic guidance, never hides result',async({page,
   test.setTimeout(90_000);
   await prepare(page,request);await saveResult(page);
   await page.route(explanationPath,async route=>{await new Promise(resolve=>setTimeout(resolve,21_000));await route.abort().catch(()=>{});});
-  await page.getByRole('button',{name:'이 결과 설명해 줘',exact:true}).click();
+  await (await openResultQuestionMode(page)).getByRole('button',{name:'계산 결과 해설 보기',exact:true}).click();
   const panel=page.getByRole('complementary',{name:'결과 해설'});
   await expect(panel).toContainText('결과를 읽는 방법');
   await expect(panel.getByRole('alert')).toContainText('응답이 늦어',{timeout:25_000});
