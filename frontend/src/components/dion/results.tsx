@@ -133,14 +133,20 @@ export function Results({view,demoScenario,deep,tab,setTab:changeTab,stale,onEdi
   const candidates=["CALCULATED","PARTIAL"].includes(textValue(plans.calc_state))?list(plans.candidates):[];
   const selectedRow=list(candidates.find(c=>c.strategy_id===selectedPlan)?.rows)[0];
   const selectedReview=comparisonReview(visible("OUT-06"),selectedPlan,selectedPortfolio);
-  const productScreenReview=previewType ? comparisonReview(visible("OUT-06"),selectedPlan,previewType) : selectedReview;
-  const previewMonth=list(list(productScreenReview.candidates).find(c=>c.strategy_id===selectedPlan)?.rows)[0];
+  const previewReview=previewType ? comparisonReview(visible("OUT-06"),selectedPlan,previewType) : null;
+  const previewMonth=list(list(previewReview?.candidates).find(c=>c.strategy_id===selectedPlan)?.rows)[0];
+  const targetPreview=!!previewReview&&previewMonth?.comparison_only===true&&!comparison.blocked;
+  const productScreenReview=targetPreview?previewReview:selectedReview;
   const selectedMonth=list(list(selectedReview.candidates).find(c=>c.strategy_id===selectedPlan)?.rows)[0];
   const next=nextStep({view,result,stale,source:sourceDoc,firstAction:actions[0],onEdit,onRecalculate});
   const inputVersion=view.serverVersion??view.localVersion;
   const firstRows=["STABILITY_FIRST","INVESTMENT_CAPACITY"].map(id=>list(candidates.find(c=>c.strategy_id===id)?.rows)[0]).filter((r):r is Record<string,Json>=>!!r);
   const summaryNext=next.tone!=="ok"?undefined:candidates.length?{text:"두 재무안이 남는 돈을 어떻게 다르게 나누는지 비교해 보세요.",label:"재무안 비교 보기",run:()=>setTab(1)}:actions[0]?{text:"재무안을 만들려면 아래 정보를 먼저 확인해야 해요.",label:actions[0].text,run:()=>onEdit(actions[0].id)}:undefined;
-  const assetReference=(compact=false)=><AssetReference value={result.peer_reference} savedResult={view.storage==="SAVED"} stale={stale} selection={assetReferenceSelection} onSelect={setAssetReferenceSelection} compact={compact} onEdit={()=>onEdit("F06")} onRecalculate={onRecalculate}/>;
+  const assetReference=(compact=false)=><AssetReference value={result.peer_reference}
+    ownValues={{"proposal.total_assets":metricValue(assets,"total_assets"),"proposal.total_liabilities":metricValue(assets,"total_debt"),
+      "proposal.net_assets":metricValue(assets,"net_worth")}}
+    ownScope={textValue(object(result.context).scope)||sourceDoc?.context.scope} savedResult={view.storage==="SAVED"} stale={stale}
+    selection={assetReferenceSelection} onSelect={setAssetReferenceSelection} compact={compact} onRecalculate={onRecalculate}/>;
   const tabs=deep?["자산·목표","재무안 비교","투자선호·구성","상품·비중","요약·다음 확인"]:["재무현황","재무안 선택","투자구성","상품 정보","결과·다음 행동"];
   return <section className="d-results" aria-label="계산 결과">
     <div className="d-result-heading"><div>{actionFlow?.fictional&&<span className="d-example-tag">예시 결과</span>}<span className="d-eyebrow">{deep?"정밀 진단 결과":"빠른 진단 결과"}</span><h1 ref={heading} tabIndex={-1} style={{scrollMarginTop:"var(--d-results-scroll-offset, 96px)"}}>{(()=>{const Icon=TAB_ICONS[tab];return Icon?<i className="d-title-icon" aria-hidden="true"><Icon size={26}/></i>:null;})()}{tabs[tab]}</h1><p>{["현재 재무 상태를 먼저 확인해요","두 재무안 중 하나를 골라 남는 돈의 배정을 비교해요","투자 선호와 신규 납입금의 구성을 확인해요","신규 납입금을 담을 상품과 현금 대기자금을 확인해요","첫 계획 월의 납입안과 할 일, 채택·기록 상태를 확인해요"][tab]}</p></div><button className="d-secondary" onClick={()=>onEdit("F03")}>입력 내용 수정 ↗</button></div>
@@ -166,7 +172,8 @@ export function Results({view,demoScenario,deep,tab,setTab:changeTab,stale,onEdi
     </section>}
     {tab>=2&&<p className="d-draft-chip">검토용 초안 · 실제 가입·매수·이체 없음</p>}
     {tab>=2&&productReview.diagnosis_scope==="household"&&<p className="d-note">가구의 월 신규 투자 후보금을 기준으로 구성을 검토해요.</p>}
-    {tab>=3&&previewType&&<p className="d-note">{portfolioNames[previewType]} 목표 비중 비교 · {allocationTargetLabel(previewMonth)} · 상품 배분 확인 대기</p>}
+    {tab>=3&&previewType&&targetPreview&&<p className="d-note">{portfolioNames[previewType]} 목표 비중 비교 · {allocationTargetLabel(previewMonth)} · 상품 배분 확인 대기</p>}
+    {tab===3&&previewType&&!targetPreview&&<p className="d-note">{portfolioNames[previewType]} 구성 미리보기 · 상품은 공시 기준으로 확인할 수 있어요.</p>}
     {tab>=2&&<div aria-label="투자구성 비교 상태"><p role="status">{selectedPortfolio?`${portfolioNames[selectedPortfolio]} 비교 초안 · `:""}{comparison.busy?"비교 초안을 저장하고 있어요…":comparison.status||"구성을 선택해 비교할 수 있어요. 계획 채택과 월 기록은 별도로 유지돼요."}</p>{comparison.error&&<div role="alert"><p>{comparison.error}</p><button type="button" className="d-secondary" onClick={comparison.retry}>비교 초안 다시 불러오기</button></div>}</div>}
     {tab===0 && <>
       <h2>현재 재무 상태</h2>
@@ -185,7 +192,11 @@ export function Results({view,demoScenario,deep,tab,setTab:changeTab,stale,onEdi
     </>}
     {tab===1 && <ResultBasis id="OUT-05" result={result} source={sourceDoc} inputVersion={view.serverVersion??view.localVersion} stale={stale} onEdit={onEdit}/>}
     {tab===2 && <InvestmentFollowup review={visible("OUT-06")} onEdit={onEdit}/>}
-    {tab===2 && <PortfolioChoice key={selectedPlan} doc={sourceDoc} review={visible("OUT-06")} flow={flow} planRow={selectedRow} selectedPlan={selectedPlan} onPlan={setSelectedPlan} chosen={selectedPortfolio} preview={previewType} onPreview={id=>{setPortfolioPreview({plan:selectedPlan,type:id});setCompositionFocus(n=>n+1);}} onChoose={id=>{void comparison.choose(id).then(ok=>{if(ok){setPortfolioPreview(null);setCompositionFocus(n=>n+1);}});}} onProducts={()=>setTab(3)} onRecalculate={onRecalculate} blocked={comparison.blocked} onEdit={onEdit}/>}
+    {tab===2 && <PortfolioChoice key={selectedPlan} doc={sourceDoc} review={visible("OUT-06")} flow={flow} planRow={selectedRow}
+      selectedPlan={selectedPlan} onPlan={setSelectedPlan} chosen={selectedPortfolio} preview={previewType}
+      onChoose={id=>{void comparison.choose(id).then(ok=>{if(ok){setPortfolioPreview(null);setCompositionFocus(n=>n+1);}});}}
+      onPreview={id=>{setPortfolioPreview({plan:selectedPlan,type:id});setCompositionFocus(n=>n+1);}}
+      onProducts={()=>setTab(3)} onRecalculate={onRecalculate} blocked={comparison.blocked} onEdit={onEdit}/>}
     
     {tab===3 && <><div className="d-plan-row"><div><strong>{planName(selectedPlan)} · 상품 정보</strong><button className="d-text-button" onClick={()=>setTab(2)}>투자구성 비교로 돌아가기</button>{selectedPortfolio&&<button className="d-secondary" disabled={comparison.blocked} onClick={()=>setTab(4)}>반영한 포트폴리오 확인 →</button>}</div><PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/></div><ProductAllocation evidenceAccess={evidenceAccess} stale={stale} review={productScreenReview} selectedPlan={selectedPlan} evaluationOn={textValue(object(result.context).evaluation_on)} onEdit={onEdit}/></>}
     {tab===3&&<div className="d-result-cta"><button type="button" className="d-primary" onClick={openConsultation}>DION과 상담하기</button><p>1~4 확인 후 상담과 변경 검토를 거쳐 최종 생성을 요청해요.</p></div>}

@@ -27,7 +27,8 @@ const review: Record<string, Json> = {
       }]))})),
   })),
 };
-const base = {doc: null, review, flow: {}, selectedPlan: 'STABILITY_FIRST', onPlan: () => {}, chosen: null, onChoose: () => {}, onProducts: () => {}, onEdit: () => {}};
+const base = {doc: null, review, flow: {}, selectedPlan: 'STABILITY_FIRST', onPlan: () => {}, chosen: null,
+  preview: null, onChoose: () => {}, onPreview: () => {}, onProducts: () => {}, onEdit: () => {}};
 function elements(node: ReactNode): ReactElement<Record<string, unknown>>[] {
   if (Array.isArray(node)) return node.flatMap(elements);
   if (!isValidElement(node)) return [];
@@ -98,10 +99,16 @@ test('legacy and blocked results allow inspection but never enable application; 
   }
   let recalculated = 0;
   for (const [value, blocked] of [[legacy, false], [review, true], [legacy, true]] as const) {
-    const tree = PortfolioChoice({...base, review: value, blocked, onRecalculate: () => {recalculated++;}});
+    const inspected: string[] = [];
+    const tree = PortfolioChoice({...base, review: value, blocked, onRecalculate: () => {recalculated++;},
+      onChoose: () => {throw new Error('blocked composition must not be applied');},
+      onPreview: type => {inspected.push(type);}});
     const all = elements(tree);
     expect(all.filter(el => el.type === 'summary')).toHaveLength(3);
-    expect(all.filter(el => el.type === 'button' && el.props['data-portfolio-apply']).every(el => el.props.disabled === true)).toBeTruthy();
+    const buttons = all.filter(el => el.type === 'button' && el.props['data-portfolio-apply']);
+    expect(buttons).toHaveLength(3);
+    for (const button of buttons) (button.props.onClick as () => void)();
+    expect(inspected).toEqual(types);
     if (value === legacy) {
       const recalc = all.find(el => el.type === 'button' && el.props.children === '현재 입력으로 다시 계산')!;
       expect(recalc.props.disabled).toBe(false);

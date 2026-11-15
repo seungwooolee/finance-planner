@@ -43,6 +43,7 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
       {missing.length>0&&<div className="d-alert-card"><strong>투자 답변 보완이 필요해요</strong><p>아래 답변을 확인하면 상품 배분을 다시 검토할 수 있어요.</p><div className="d-toolbar">{missing.filter(id=>titles[String(id)]).map(id=><button className="d-secondary" key={String(id)} onClick={()=>onEdit(String(id))}>{titles[String(id)]} 확인 →</button>)}</div></div>}
     </>}
     {!candidates.length&&review.review_version&&<article className="d-card"><h2>월 투자예산 확인 필요</h2><p>배분할 월 투자예산이 아직 계산되지 않았어요. 미확인 금액을 0원으로 표시하지 않아요.</p><button className="d-secondary" onClick={()=>onEdit("ASSUMPTIONS")}>월 후보에 필요한 확인 →</button></article>}
+    {!candidates.length&&review.review_version&&<ProductCandidates review={review}/>}
     {candidates.map(candidate=>{
       const months=list(candidate.rows), month=months[0];
       const allocations=list(month?.allocations);

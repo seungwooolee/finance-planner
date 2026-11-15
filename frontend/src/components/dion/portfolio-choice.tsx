@@ -17,7 +17,13 @@ const TYPES: Record<string, [string, string, string, string]> = {
   RETURN: ['위험추구형', '허용 범위에서 수익 추구', '현재 기준에서 수익 추구 비중을 높인 구성을 비교해요.', '손실 허용·기간·상품 조건에 따라 배분이 제한돼요.'],
 };
 
-export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPlan, chosen, onChoose, preview, onPreview, onProducts, onRecalculate, onEdit, blocked=false }: { doc: Document | null; review: Record<string, Json>; flow: Record<string, Json>; planRow?: Record<string, Json>; selectedPlan: string; onPlan: (id: string) => void; chosen: string | null; onChoose: (id: string) => void; preview?: string | null; onPreview?: (id: string) => void; onProducts: () => void; onRecalculate?: () => void; onEdit: (id: string) => void; blocked?: boolean }) {
+export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPlan, chosen, preview, onChoose, onPreview, onProducts, onRecalculate, onEdit, blocked=false }: {
+  doc: Document | null; review: Record<string, Json>; flow: Record<string, Json>; planRow?: Record<string, Json>;
+  selectedPlan: string; onPlan: (id: string) => void; chosen: string | null; preview: string | null;
+  onChoose: (id: string) => void; onPreview: (id: string) => void; onProducts: () => void;
+  onRecalculate?: () => void; onEdit: (id: string) => void; blocked?: boolean;
+}) {
+  const displayed = preview ?? chosen;
   const preference = doc && fieldValue(doc, 'F17', 'risk_preference_choice_raw');
   const derived = preference === 'PREF_BALANCED' ? 'BALANCED' : ['PREF_LEAN_RETURN', 'PREF_RETURN'].includes(String(preference)) ? 'RETURN' : ['PREF_STABILITY', 'PREF_LEAN_STABILITY'].includes(String(preference)) ? 'STABLE' : null;
   const typeInfo = object(review.portfolio_types);
@@ -30,8 +36,8 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
   const products = list(review.products);
   const views = object(month?.portfolio_type_views);
   const order = Object.keys(TYPES);
-  const displayed = preview ?? chosen;
   const selected = displayed ? TYPES[displayed] : undefined;
+  const targetPreview = !!preview && object(views[preview]).comparison_only === true && !blocked;
   const footText = (id: string) => {
     const view = object(views[id]);
     if (blocked) return '현재 입력·결과와 저장 상태를 확인해주세요.';
@@ -43,7 +49,6 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
   // When all three types are unavailable for the same reason, say it once instead of three times.
   const foots = order.map(footText);
   const commonFoot = order.length > 1 && order.every(id => object(views[id]).selectable !== true) && foots.every(f => f === foots[0]) && !blocked ? foots[0] : "";
-  const commonUnavailable = commonFoot && !order.some(id => object(views[id]).comparison_only === true);
   const surplus = object(flow.base_surplus).calc_state === 'CALCULATED' ? object(flow.base_surplus).value : null;
   return <>
     <article className="d-card" aria-label="투자 선호 응답">
@@ -69,7 +74,7 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
         const ready = isWon(view.allocated_total_krw) && (list(view.allocations).length > 0 || view.cash_only === true);
         const mine = customerType === id;
         const enabled = view.selectable === true && !blocked;
-        const canPreview = view.comparison_only === true && !!onPreview;
+        const canCompareTarget = view.comparison_only === true && !blocked;
         const slices = ready ? allocationSlices(list(view.allocations), products, view) : [];
         const target = allocationTargetLabel(view);
         const total = month?.scenario_budget_krw;
@@ -91,19 +96,21 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
             <PortfolioChoiceDetail rows={rows} products={products} type={id} messages={object(review.reason_messages)}/>
           </details>
           <button type="button" data-portfolio-apply={id} className={displayed === id ? 'd-primary' : 'd-secondary'}
-            disabled={!(enabled || (canPreview && !blocked))} aria-pressed={displayed === id}
-            aria-describedby={`portfolio-state-${id}`} onClick={() => canPreview ? onPreview?.(id) : onChoose(id)}>
-            {canPreview ? `${title} 목표 비중 비교` : chosen === id ? `${title} 선택됨 · 구성 다시 보기` : `${title} 선택`}
+            aria-pressed={displayed === id} aria-describedby={`portfolio-state-${id}`}
+            onClick={() => enabled ? onChoose(id) : onPreview(id)}>
+            {enabled ? (chosen === id ? `${title} 선택됨 · 구성 다시 보기` : `${title} 선택`)
+              : canCompareTarget ? `${title} 목표 비중 비교` : `${title} 미리보기`}
           </button>
-          <small id={`portfolio-state-${id}`} className="d-type-foot">{commonUnavailable ? "선택할 수 없어요 · 위 안내를 확인해주세요." : footText(id)}</small>
+          <small id={`portfolio-state-${id}`} className="d-type-foot">{commonFoot ? "배분 조건은 위 안내에서 확인할 수 있어요." : footText(id)}</small>
         </div>;
       })}</div>
       {displayed && selected && <section id="dion-selected-composition" className="d-selected-composition" tabIndex={-1} aria-labelledby="dion-selected-composition-title">
         <h3 id="dion-selected-composition-title">{selected[0]} 구성 상세</h3>
-        {preview && <p>목표 비중 {allocationTargetLabel(object(views[preview]))} · 상품 배분 확인 대기</p>}
+        {targetPreview && <p>목표 비중 {allocationTargetLabel(object(views[displayed]))} · 상품 배분 확인 대기</p>}
+        {preview && !targetPreview && <p role="status">{blocked ? "구성 미리보기 · 현재 결과와 저장 상태를 확인해 주세요." : "구성 미리보기 · 현재 조건에서 배분은 보류돼요."}</p>}
         <dl className="d-ledger"><div><dt>기대수익률</dt><dd>산정 대기</dd></div></dl>
         <p className="d-inline-note">이 구성에 적용할 승인된 수익률 가정이 준비되면 표시해요.</p>
-        <PortfolioChoiceDetail rows={preview ? rows : rows.slice(0, 1)} products={products} type={displayed} messages={object(review.reason_messages)} showExplanation/>
+        <PortfolioChoiceDetail rows={targetPreview ? rows : rows.slice(0, 1)} products={products} type={displayed} messages={object(review.reason_messages)} showExplanation/>
         <button className="d-secondary" type="button" onClick={onProducts}>상품 정보 자세히 보기 →</button>
       </section>}
       <p className="d-inline-note">도넛은 검토 조건을 적용한 금액 비율이에요. 위험추구형의 배분 보류액은 손실 한도·상품 조건과 원 단위 내림을 반영한 금액이에요.</p>

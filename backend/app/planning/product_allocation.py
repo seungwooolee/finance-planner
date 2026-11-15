@@ -432,6 +432,16 @@ def review_products(document, result, *, catalog=None, policy=None):
     on = _day(document["context"]["evaluation_on"])
     screened, eligible = [], set()
     default_codes = {slot["code"] for slots in policy["target_slots_by_preference"].values() for slot in slots}
+    # These registered disclosures are independent of a user's dated allocation.
+    # Only listed policy slots and reviewed alternatives can enter the reference list.
+    reference_on = _day(policy["reviewed_on"])
+    reference_codes = default_codes.union(policy.get("selection", {}).get("reference_alternative_codes", []))
+    reference_products = {
+        product["code"] for product in products
+        if policy.get("state") == "REVIEWED_FOR_PREVIEW" and product["code"] in reference_codes
+        and product.get("recommendation_eligible") is True
+        and not _facts_complete(product, reference_on, policy)
+    }
     for product in products:
         reasons = filter_product(product, profile, missing, invalid, policy, on)
         if not reasons:
@@ -599,6 +609,8 @@ def review_products(document, result, *, catalog=None, policy=None):
                                  "basis": "SERVICE_ASSUMPTIONS_FOR_PREVIEW", "backtested": False,
                                  "regulatory_certification": False},
                  products=screened, candidates=candidates, reason_messages=MESSAGES,
+                 catalog_comparison={"reviewed_on": reference_on.isoformat(),
+                                     "groups": comparison_groups(products, reference_products, default_codes)},
                  comparison_scores=comparison_scores,
                  comparison_version=COMPARISON_VERSION,
                  portfolio_types={"version": portfolio_types.VERSION, "state": portfolio_types.STATE,
