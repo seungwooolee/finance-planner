@@ -165,14 +165,12 @@ test('DION new goal binds amount and date without borrowing example facts',async
 test('DION one-month income and expense period mapping preserves raw money and historical date',async({page},info)=>{
   await sample(page);await questionNav(page).getByRole('button',{name:/한 달 소득/}).click();
   await expect(page.locator('.d-question input[type=date]')).toHaveCount(0);
-  await page.getByText('계산 기준기간 확인 · 필요할 때만',{exact:true}).click();
   await expect(page.getByLabel('소득 기준월',{exact:true})).toHaveValue('2026-10');
   await page.getByLabel('소득 기준월',{exact:true}).fill('2026-09');
   await page.getByRole('button',{name:'평소 받는 돈만 적었어요',exact:true}).click();
   await page.evaluate(()=>window.scrollTo(0,0));
   await page.screenshot({path:info.outputPath('dion-feedback-income.png'),fullPage:true});
   await questionNav(page).getByRole('button',{name:/한 달 지출/}).click();
-  await page.getByText('계산 기준기간 확인 · 필요할 때만',{exact:true}).click();
   await page.getByRole('checkbox',{name:/소득과 같은 2026년 09월/}).check();
   const r=await calculate(page);expect(r.posted.context.evaluation_on).toBe('2026-10-31');
   const fields=(id:string)=>r.posted.raw_bundle.answers.find((v:any)=>v.envelope.question_ref.design_id===id).envelope.fields;

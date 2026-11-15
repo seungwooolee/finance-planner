@@ -6,7 +6,7 @@ import { type ReactNode, useEffect, useRef, useState } from "react";
 import { type LucideIcon, ArrowRight, CalendarCheck, ChartPie, Coins, HandCoins, Landmark, Package, PiggyBank, Scale, Wallet } from "lucide-react";
 import { Document, Json, list, object, question, textValue } from "@/lib/dion/model";
 import { copy, customerStep, goalName } from "@/lib/dion/customer-flow";
-import { AssetComposition, FinancialOverview } from "./financial-overview";
+import { AssetComposition, FinancialOverview, ReportedAmounts } from "./financial-overview";
 import { AssetReference } from "./asset-reference";
 import { assetAxis, assetBar } from "@/lib/dion/asset-reference";
 import { PlanComparison, PlanSelector, planName } from "./plan-comparison";
@@ -107,10 +107,15 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
   },[view,tab]);
   const result=view.result, outputs=object(result.results);
   const gates=list(object(result.frontend_integration).presentation_gates);
-  const visible=(id:string)=>gates.some(g=>Array.isArray(g.affected_outputs)&&g.affected_outputs.includes(id))?{calc_state:"NEEDS_INPUT"} as Record<string,Json>:object(outputs[id]);
+  const visible=(id:string):Record<string,Json>=>{
+    const row=object(outputs[id]);
+    if(!gates.some(g=>Array.isArray(g.affected_outputs)&&g.affected_outputs.includes(id))) return row;
+    // Property and deposit presentation gates affect asset totals, independently of confirmed debt.
+    return id==="OUT-02"?{calc_state:"NEEDS_INPUT",total_debt:object(row.total_debt)}:{calc_state:"NEEDS_INPUT"};
+  };
   const flow=visible("OUT-03"),assets=visible("OUT-02"),goals=visible("OUT-04"),plans=visible("OUT-05");
   const issues=list(object(result.adapter).issues).filter(i=>Array.isArray(i.affected_outputs)&&i.affected_outputs.length>0);
-  const sourceDoc=object(view.source).schema_version==="DION-QUESTION12-ADAPTER-1.0"?view.source as unknown as Document:null;
+  const sourceDoc=["DION-QUESTION12-ADAPTER-1.0","DION-QUESTION12-ADAPTER-1.1"].includes(textValue(object(view.source).schema_version))?view.source as unknown as Document:null;
   const actions=resultHints(result,sourceDoc).slice(0,3);
   const actionList=actions.length?<ol className="d-actions">{actions.map(a=><li key={a.id}><button onClick={()=>onEdit(a.id)}>{a.text}</button></li>)}</ol>:<p>확인된 현황에서 추가 입력이 필요한 항목은 없어요. 상황이 달라지면 답변을 수정하고 다시 계산해주세요.</p>;
   const sourceAnswers=list(object(object(view.source).raw_bundle).answers);
@@ -147,6 +152,7 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
     {tab>=2&&<div aria-label="투자구성 비교 상태"><p role="status">{selectedPortfolio?`${portfolioNames[selectedPortfolio]} 비교 초안 · `:""}{comparison.busy?"비교 초안을 저장하고 있어요…":comparison.status||"구성을 선택해 비교할 수 있어요. 계획 채택과 월 기록은 별도로 유지돼요."}</p>{comparison.error&&<div role="alert"><p>{comparison.error}</p><button type="button" className="d-secondary" onClick={comparison.retry}>비교 초안 다시 불러오기</button></div>}</div>}
     {tab===0 && <>
       <h2>현재 재무 상태</h2>
+      {sourceDoc&&<ReportedAmounts doc={sourceDoc} needsCashflow={metricValue(flow,"after_existing_contributions_krw")==null} needsAssets={metricValue(assets,"net_worth")==null} actions={actions} onEdit={onEdit}/>}
       <PersonalSummary after={metricValue(flow,"after_existing_contributions_krw")} debt={metricValue(assets,"total_debt")} goals={goals} firstRows={firstRows} goalLabel={displayGoal} next={summaryNext}/>
       <div className="d-metrics"><Metric icon={Wallet} title="월 생활비 (대출 상환 제외)" value={metricValue(flow,"normalized_living")} /><Metric icon={HandCoins} title="대출 상환 후 남는 돈" value={metricValue(flow,"base_surplus")} /><Metric icon={PiggyBank} title="매월 저축·투자 금액" value={metricValue(flow,"existing_cash_contributions_krw")} /><Metric icon={Coins} title="저축·투자까지 반영하고 남는 돈" value={metricValue(flow,"after_existing_contributions_krw")} note="목표·보호자금 배정 전 / 투자 권장액 아님" /></div>
       <div className="d-columns"><article className="d-card"><h2><Landmark size={20} aria-hidden="true"/> 보유현황을 먼저 살펴봐요</h2><div className="d-metrics"><Metric title="전체 자산" value={metricValue(assets,"total_assets")} /><Metric title="전체 채무" value={metricValue(assets,"total_debt")} /><Metric title="순자산" value={metricValue(assets,"net_worth")} /></div><BalanceBars assets={metricValue(assets,"total_assets")} debt={metricValue(assets,"total_debt")} net={metricValue(assets,"net_worth")}/>{estimatedProperty&&<p className="d-note">부동산의 대략적인 시세가 포함된 자산 추정치예요.</p>}<button className="d-text-button" onClick={()=>onEdit("F06")}>자산 내역 확인·수정 →</button></article><AssetComposition assets={assets} asOf={textValue(object(result.context).evaluation_on)} onEdit={()=>onEdit("F06")}/></div>
