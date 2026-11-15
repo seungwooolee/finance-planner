@@ -93,7 +93,7 @@ test("asset reference web flow uses real preview data and shares selection, snap
   const chart = page.locator('[data-asset-reference="assets"]');
   await expect(chart).toBeVisible();
   await expect(chart.locator('[data-asset-series="own"][data-value]')).toHaveCount(0);
-  await expect(chart).toContainText("개인·가구 범위");
+  await expect(chart).toContainText("내 결과는 개인 기준이고, 이 조사는 가구 기준이에요");
   expect(result.peer_reference.scope).toBe("personal");
   await expect(chart.getByLabel("비교할 참고 집단")).toHaveValue("ANSWER");
   await expect(chart).toContainText("사회초년생");
@@ -128,7 +128,7 @@ test("asset reference web flow uses real preview data and shares selection, snap
   await expect(final.getByRole("combobox", { name: "순자산 참고값", exact: true })).toHaveValue("중앙값");
   expect(await final.locator('[data-asset-series="own"]').evaluateAll(els => els.map(el => el.getAttribute("data-value")))).toEqual(ownValues);
   await expect(final).toHaveAttribute("data-input-version", String(result.peer_reference.input_version));
-  await expect(final).toContainText("월 납입안을 적용한 뒤의 자산");
+  await expect(final).toContainText("지금의 보유 잔액");
   await final.getByRole("combobox", {name:"비교할 참고 집단",exact:true}).selectOption("C09");
   const selectedValues=await final.locator('[data-asset-series="reference"]').evaluateAll(els=>els.map(el=>el.getAttribute('data-value')));
   expect(selectedValues).toEqual(["600950000","65040000","250000000"]);
