@@ -26,7 +26,7 @@ def inputs(scope="household", amount="0", state="CALCULATED", gates=()):
     return document, result
 
 
-def test_registry_reproducible_original_28_plus_six_official_asset_rows():
+def test_registry_reproducible_existing_and_under30_rows():
     script = Path(__file__).resolve().parents[3] / "scripts/import_peer_research.py"
     importer = runpy.run_path(str(script))
     assert importer["build"]() == json.loads(DATA_PATH.read_text(encoding="utf-8"))
@@ -42,14 +42,19 @@ def test_registry_reproducible_original_28_plus_six_official_asset_rows():
     assert len(original["records"]) == 28
     assert registry["records"][:28] == original["records"]
     assert registry["research_sha256"] == original["research_sha256"]
-    assert len(registry["records"]) == 34
+    assert len(registry["records"]) == 39
+    previous = importer["build"](include_under30=False)
+    assert registry["records"][:34] == previous["records"]
     assert registry["data_version"] != original["data_version"]
     # Independent published table values, not calculated as assets minus debt.
-    assert [r["value"] for r in registry["records"][28:]] == [
+    assert [r["value"] for r in registry["records"][28:34]] == [
         "95480000", "219500000", "126400000", "65040000", "535910000", "250000000"]
-    assert [r["statistic_type"] for r in registry["records"][28:]] == ["평균", "평균", "중앙값"] * 2
+    assert [r["statistic_type"] for r in registry["records"][28:34]] == ["평균", "평균", "중앙값"] * 2
+    assert [(r["cohort_id"], r["statistic_type"], r["value"]) for r in registry["records"][34:]] == [
+        ("C20", "중앙값", "72600000"), ("C20", "중앙값", "50000000"),
+        ("C07", "중앙값", "302700000"), ("C08", "중앙값", "204200000"), ("C09", "중앙값", "280600000")]
     published = [r for r in registry["records"] if r["review_status"] == "REFERENCE_ONLY"]
-    assert len(published) == 21
+    assert len(published) == 26
     assert {r["source_id"] for r in published} == {"S01", "S03"}
     assert all(r["license"] == "KOGL_TYPE_1" for r in published)
 
@@ -78,6 +83,19 @@ def test_scope_missing_and_presentation_gates_block_user_value(scope, state, gat
     document, result = inputs(scope=scope, state=state, gates=gates)
     rows = attach_peer_reference(document, result)["peer_reference"]["records"]
     assert all(r["user_value"] is None and r["difference"] is None for r in rows)
+
+
+def test_personal_assets_available_for_explicit_household_confirmation_only():
+    doc, result = inputs(scope="personal", amount="0")
+    doc["context"]["included_owner_ids"] = ["person_self"]
+    doc["raw_bundle"]["answers"][0]["envelope"]["fields"]["life_stage_primary"]["raw_value"] = "LC_EARLY_CAREER"
+    peer = attach_peer_reference(doc, result)["peer_reference"]
+    assert peer["primary_stage"] == "LC_EARLY_CAREER"
+    assert peer["stage_hints"][0]["cohort_ids"][0] == "C20"
+    assert peer["personal_asset_values"] == {"proposal.net_assets": "0"}
+    assert all(row["user_value"] is None for row in peer["records"])
+    result["frontend_integration"]["presentation_gates"] = [{"affected_outputs": ["OUT-02"]}]
+    assert attach_peer_reference(doc, result)["peer_reference"]["personal_asset_values"] == {}
 
 
 def test_withheld_values_are_not_returned_as_original_values_or_free_text():

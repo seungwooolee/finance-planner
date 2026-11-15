@@ -4,6 +4,9 @@
 .dion-app .d-asset-ref-controls{display:flex;align-items:end;gap:20px;flex-wrap:wrap;margin:20px 0 14px}
 .dion-app .d-asset-ref-controls label{display:grid;gap:6px;font-size:13px;font-weight:500;min-width:160px}
 .dion-app .d-asset-ref-controls select{max-width:100%;min-height:40px;border:1px solid #dce2ef;background:#fff;color:inherit;border-radius:8px;padding:8px 12px;font:inherit}
+.dion-app .d-asset-household{min-width:0;margin:12px 0;padding:8px 12px;border:1px solid #dce2ef;border-radius:8px}
+.dion-app .d-asset-household legend{font-size:13px;font-weight:600}
+.dion-app .d-asset-household label{min-height:40px}
 .dion-app .d-asset-ref-context,.dion-app .d-asset-ref-scope{font-size:13px;color:#526078;line-height:1.7}
 .dion-app .d-asset-ref-scope{max-width:85ch}
 .dion-app .d-asset-ref-chart{margin:22px 0 12px;min-width:0}

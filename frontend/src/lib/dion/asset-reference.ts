@@ -9,8 +9,8 @@ const METRICS = [
   ["proposal.total_liabilities", "부채"],
   ["proposal.net_assets", "순자산"],
 ] as const;
-export type AssetReferenceSelection = { cohort: string; net: "평균" | "중앙값" };
-export const INITIAL_ASSET_REFERENCE: AssetReferenceSelection = { cohort: "ANSWER", net: "평균" };
+export type AssetReferenceSelection = { cohort: string; net: "평균" | "중앙값"; household?: "YES" | "NO" };
+export const INITIAL_ASSET_REFERENCE: AssetReferenceSelection = { cohort: "ANSWER", net: "중앙값" };
 // Shared display contract for the results and portfolio consumers. These states never
 // authorize arithmetic comparison or claim that the customer belongs to the cohort.
 export const ASSET_REFERENCE_VIEW_VERSION = "DION-ASSET-REFERENCE-VIEW-1.1";
@@ -31,7 +31,8 @@ export function assetReferenceView(value: unknown, selection: AssetReferenceSele
   const cohorts = [...new Map(reviewed.map(r => [text(r.cohort_id), {
     id: text(r.cohort_id), label: text(r.cohort_label) || "조사 집단", definition: text(r.cohort_definition),
   }])).values()].filter(c => c.id);
-  const hint = object(Array.isArray(data.stage_hints) ? data.stage_hints[0] : undefined);
+  const hints = Array.isArray(data.stage_hints) ? data.stage_hints.map(object) : [];
+  const hint = object(Object.hasOwn(data, "primary_stage") ? hints.find(h => h.code === data.primary_stage) : hints[0]);
   const ids = Array.isArray(hint.cohort_ids) ? hint.cohort_ids : [];
   const automatic = selection.cohort === "ANSWER";
   // No fallback to all households or an overlapping life stage.
@@ -48,27 +49,36 @@ export function assetReferenceView(value: unknown, selection: AssetReferenceSele
   const median = unique("proposal.net_assets", "중앙값");
   const netMedian = median && (!netMean || (median.source_id === netMean.source_id && median.period_start === netMean.period_start)) ? median : undefined;
   const net = selection.net === "중앙값" && netMedian ? "중앙값" : netMean ? "평균" : "중앙값";
+  const useOneStatistic = Object.hasOwn(data, "personal_asset_values");
+  const canConfirm = data.scope === "personal" && Object.keys(object(data.personal_asset_values)).length > 0;
+  const singleHousehold = canConfirm && selection.household === "YES";
+  const ownScopeMatches = data.scope === "household" || singleHousehold;
   const availability: AssetReferenceAvailability[] = [];
   const metrics: AssetReferenceMetric[] = METRICS.flatMap(([key, label]) => {
-    const row = key === "proposal.net_assets" ? (net === "중앙값" ? netMedian : netMean) : unique(key, "평균");
+    const row = key === "proposal.net_assets" ? (net === "중앙값" ? netMedian : netMean)
+      : unique(key, useOneStatistic ? net : "평균");
     if (!row) {
       const candidates = relevant.filter(r => r.cohort_id === cohortId && r.metric_key === key);
-      const state = candidates.length === 0 ? "UNAVAILABLE" : candidates.every(r => r.review_status === "WITHHELD") ? "WITHHELD" : "NEEDS_REVIEW";
-      availability.push({key, label, state, reason: state === "UNAVAILABLE" ? "이 집단의 해당 지표는 이번 자료에 없어요."
+      const differentStatistic = useOneStatistic && rows.some(r => r.metric_key === key && r.statistic_type !== net);
+      const state = candidates.length === 0 || differentStatistic ? "UNAVAILABLE" : candidates.every(r => r.review_status === "WITHHELD") ? "WITHHELD" : "NEEDS_REVIEW";
+      availability.push({key, label, state, reason: differentStatistic ? `이 집단의 ${label} ${net}은 이번 자료에 없어요.` : state === "UNAVAILABLE" ? "이 집단의 해당 지표는 이번 자료에 없어요."
         : state === "WITHHELD" ? "이용조건·자료 검토가 끝나지 않아 수치 표시를 보류했어요."
         : "단위·범위·기간 또는 중복 자료를 확인해야 해요."});
       return [];
     }
-    const own = data.scope === "household" && signedWon(row.user_value) &&
-      (key === "proposal.net_assets" || BigInt(row.user_value) >= 0n) ? row.user_value : null;
-    const ownState = own !== null ? "AVAILABLE" : data.scope !== "household" ? "SCOPE_MISMATCH" : "UNCONFIRMED";
+    const ownValue = singleHousehold ? object(data.personal_asset_values)[key] : row.user_value;
+    const own = ownScopeMatches && signedWon(ownValue) &&
+      (key === "proposal.net_assets" || BigInt(ownValue) >= 0n) ? ownValue : null;
+    const ownState = own !== null ? "AVAILABLE" : !ownScopeMatches ? "SCOPE_MISMATCH" : "UNCONFIRMED";
     availability.push({key, label, state: "REFERENCE_ONLY", reason: `${text(row.statistic_type)} · ${text(row.period_start)}`});
     return [{key, label, own, reference: row.value as string, row, ownState,
-      ownReason: ownState === "SCOPE_MISMATCH" ? "개인·가구 범위가 일치하지 않거나 확인되지 않아 내 금액은 연결하지 않았어요."
+      ownReason: ownState === "SCOPE_MISMATCH" ? "가구 전체가 이 결과의 범위와 일치하는지 확인해 주세요."
         : ownState === "UNCONFIRMED" ? "이 항목의 내 금액·포함범위가 확인되지 않았어요."
         : "집단·정의·기준일 차이가 있어 참고용으로 나란히 표시해요."}];
   });
-  return {data, cohort, cohorts, cohortId, metrics, availability, net, hint, automatic,
+  const relatedRows = automatic ? records.filter(r => ids.includes(r.cohort_id) && r.review_status === "REFERENCE_ONLY"
+    && r.unit === "KRW" && r.target_unit === "부부" && signedWon(r.value)) : [];
+  return {data, cohort, cohorts, cohortId, metrics, availability, net, hint, automatic, canConfirm, singleHousehold, relatedRows,
     canSwitchNet: !!netMean && !!netMedian, netFallback: selection.net === "중앙값" && net === "평균",
     comparisonState: "REFERENCE_ONLY" as const, membershipState: "UNCONFIRMED" as const,
     selectionOrigin: automatic ? "ANSWER_HINT" as const : "EXPLICIT" as const};
