@@ -7,6 +7,7 @@ import {resolve} from 'node:path';
 // assertion that Next HTTP routing, real authentication or remote storage works.
 let html='';
 test.beforeAll(async({},info)=>{
+  test.setTimeout(120000); // Allow compilation on the shared Windows validation host.
   const load=createRequire(resolve('package.json'));
   const {webpack}=load('next/dist/compiled/webpack/webpack');
   const output=info.outputPath('client');mkdirSync(output,{recursive:true});
