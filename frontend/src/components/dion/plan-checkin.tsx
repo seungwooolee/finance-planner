@@ -235,9 +235,9 @@ function PlanCheckinMonth({ view, token, caseId, plan, tasks, onEdit, onDraftCre
           onChange={e => { setDirty(true); setAmounts(v => ({ ...v, [a.key]: e.target.value })); setScope(s => ({ ...s, complete_fields: s.complete_fields.filter(k => k !== a.key) })); }} /></label>)}
     </div>
     <fieldset disabled={!loaded || busy}><legend>계획 대비 비교에 사용할 기록 범위</legend>
-      <label><input type="checkbox" checked={scope.same_scope_confirmed} onChange={e => { setDirty(true); setScope({ same_scope_confirmed: e.target.checked, complete_fields: [] }); }} />채택 계획과 같은 대상·범위의 기록이에요. 아래에서 기록월 전체와 금액 의미를 확인할게요.</label>
-      {Object.entries(scopeLabels).map(([k, label]) => <label key={k} className="d-field"><span><input type="checkbox" disabled={!scope.same_scope_confirmed} checked={scope.complete_fields.includes(k)}
-        onChange={e => { setDirty(true); setScope(s => ({ ...s, complete_fields: e.target.checked ? [...s.complete_fields, k] : s.complete_fields.filter(v => v !== k) })); }} />{label} · 기록월 전체 금액 확인</span></label>)}
+      <label className="d-check"><input type="checkbox" checked={scope.same_scope_confirmed} onChange={e => { setDirty(true); setScope({ same_scope_confirmed: e.target.checked, complete_fields: [] }); }} />채택 계획과 같은 대상·범위의 기록이에요. 아래에서 기록월 전체와 금액 의미를 확인할게요.</label>
+      {Object.entries(scopeLabels).map(([k, label]) => <label key={k} className="d-check d-check-sub"><input type="checkbox" disabled={!scope.same_scope_confirmed} checked={scope.complete_fields.includes(k)}
+        onChange={e => { setDirty(true); setScope(s => ({ ...s, complete_fields: e.target.checked ? [...s.complete_fields, k] : s.complete_fields.filter(v => v !== k) })); }} /><span>{label} · 기록월 전체 금액 확인</span></label>)}
       <p>월이 끝나기 전에는 중간 기록으로 저장해요. 미입력·잔액·평가손익·일시금을 월 납입으로 채우지 않아요. 다른 항목은 이유를 표시하고 비교하지 않아요.</p>
     </fieldset>
 

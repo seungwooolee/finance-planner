@@ -37,7 +37,7 @@ export function CalcBasisStrip({ view, result, label, stateLabel, next, detail }
       <div><dt>금액 기준</dt><dd>자산은 기준일 잔액 · 소득·지출·납입은 해당 월 · 목표는 목표일·기간 기준</dd></div>
       <div><dt>입력 버전</dt><dd>{version}</dd></div>
     </dl>
-    {detail && <small className="d-basis-detail">{detail}</small>}
+    {detail && <details className="d-basis-detail"><summary>계산 기록 번호</summary><small>{detail}</small></details>}
     <div className="d-basis-next"><p>{next.text}</p>{next.action && <button className={next.tone === "ok" ? "d-secondary" : "d-primary"} onClick={next.action.run}>{next.action.label}</button>}</div>
   </div>;
 }

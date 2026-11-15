@@ -33,6 +33,8 @@ export function PeerReference({ value, stale, preference = false }: { value: Jso
   const groups = [...new Map(rows.map(r => [textValue(r.cohort_id), textValue(r.cohort_label)])).entries()]
     .sort((a, b) => Number(preferred.includes(b[0])) - Number(preferred.includes(a[0])));
   const current = rows.filter(r => r.cohort_id === selected);
+  // Same sentence on every card (e.g. scope not comparable) is shown once above the cards.
+  const commonReason = current.length > 1 && current.every(r => textValue(r.user_value_reason) === textValue(current[0].user_value_reason)) ? textValue(current[0].user_value_reason) : "";
   const title = preference ? "투자선호 조사와의 비교" : "생활단계 참고 통계";
 
   return <section className="d-card" aria-labelledby={id} data-peer-reference={preference ? "preference" : "finance"}>
@@ -54,6 +56,7 @@ export function PeerReference({ value, stale, preference = false }: { value: Jso
         </select>
         <p className="d-note">내 결과 기준일 {textValue(data.evaluation_on)} · {data.scope === "household" ? "가구" : data.scope === "personal" ? "개인" : "범위 확인 필요"} · 통계는 각 항목에 적힌 과거 기준이에요. 차이·순위·적정 수준은 산출하지 않아요.</p>
         {current.length > 0 && <div aria-live="polite"><p><strong>{textValue(current[0].cohort_label)}</strong><br/>{textValue(current[0].cohort_definition)}</p>
+          {commonReason && <p className="d-inline-note" data-common-reason>{commonReason}</p>}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,260px),1fr))", gap: 16 }}>
             {current.map(row => <article className="d-metric" key={textValue(row.id)} data-statistic-id={textValue(row.statistic_id)}>
               <h3>{textValue(row.label)}</h3>
@@ -62,7 +65,7 @@ export function PeerReference({ value, stale, preference = false }: { value: Jso
               <MetricChart row={row} household={data.scope==="household"}/>
               <p>통계 기준: {textValue(row.period_start) || "확인 필요"}{row.period_end !== row.period_start && row.period_end ? ` ~ ${textValue(row.period_end)}` : ""}</p>
               {row.user_value !== null && row.user_value !== undefined && <p>내 결과 · DION 기준 <b>{formatKrw(row.user_value)}</b></p>}
-              <p>{textValue(row.user_value_reason)}</p>
+              {!commonReason && <p>{textValue(row.user_value_reason)}</p>}
               <details><summary>출처·정의·비교 한계</summary><Source row={row}/>
                 <p>공표일: {textValue(row.published_on) || "확인 필요"}</p>
                 <p>{textValue(row.definition)}</p><p>{textValue(row.limitations)}</p>
