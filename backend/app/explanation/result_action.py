@@ -180,9 +180,17 @@ def render(run, ctx, request, topic, detail):
             path = f"/results/OUT-06/candidates/{index}/rows/0"
             if request.portfolio_type:
                 path += "/portfolio_type_views/" + request.portfolio_type
-            for key, label in (("allocated_total_krw", "상품 배분액"), ("unallocated_krw", "현금 대기자금")):
-                selected.append({"text": f"{row['period']} {label}은 {wan(view[key])}만원이에요.",
-                                 "source": "STORED_RESULT", "refs": [path + "/" + key], "code": key})
+            selected.append({"text": f"{row['period']} 상품 배분액은 {wan(view['allocated_total_krw'])}만원이에요.",
+                             "source": "STORED_RESULT", "refs": [path + "/allocated_total_krw"],
+                             "code": "allocated_total_krw"})
+            cash, held = view.get("target_cash_krw"), view.get("held_krw")
+            if money(cash) and money(held) and int(cash) + int(held) == int(view["unallocated_krw"]):
+                text = f"{row['period']} 목표 현금은 {wan(cash)}만원, 배분 보류액은 {wan(held)}만원이에요."
+                refs = [path + "/target_cash_krw", path + "/held_krw"]
+            else:
+                text = f"{row['period']} 현금 대기자금은 {wan(view['unallocated_krw'])}만원이에요."
+                refs = [path + "/unallocated_krw"]
+            selected.append({"text": text, "source": "STORED_RESULT", "refs": refs, "code": "unallocated_krw"})
         codes = list(dict.fromkeys([*review.get("reason_codes", []), *view.get("reason_codes", []),
                                    *view.get("adjustment_codes", [])]))
         # Only default-slot exclusions can explain a missing allocation; unrelated alternatives cannot.
@@ -196,7 +204,7 @@ def render(run, ctx, request, topic, detail):
                 reasons.append({"text": messages[code].replace("미배분", "현금 대기자금"),
                                 "source": "STORED_RESULT", "refs": ["/results/OUT-06/reason_messages/" + code], "code": code})
         if ready and view.get("weight_renormalized") is False:
-            reasons.append({"text": "선택 구성의 배분되지 않은 몫은 다른 상품에 자동 재배분하지 않아요. 현금 대기자금은 보유 현금 잔고나 추가 현금 유지액과 별개예요.",
+            reasons.append({"text": "선택 구성의 배분되지 않은 몫은 다른 상품에 자동 재배분하지 않아요. 이 금액은 보유 현금 잔고나 추가 현금 유지액과 별개예요.",
                             "source": "STORED_RESULT", "refs": [path + "/weight_renormalized"], "code": "NO_REDISTRIBUTION"})
         action = {"kind": "RESULT", "target": "3", "label": "상품별 선정·제외 이유 확인"}
         qid = next((CHANGE_QUESTION[c] for c in codes if c in CHANGE_QUESTION), None)

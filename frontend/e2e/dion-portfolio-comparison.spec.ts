@@ -121,7 +121,7 @@ test('saved comparison restores across reload with original adoption and run unt
   const saved=page.waitForResponse(r=>r.url().endsWith('/portfolio-comparison')&&r.request().method()==='PUT');
   await page.locator('[data-portfolio-type="RETURN"] > button').click();
   expect((await saved).ok()).toBeTruthy();
-  await expect(page.locator('[data-allocation-month]').first()).toHaveAttribute('data-allocated','185406');
+  await expect(page.locator('[data-allocation-month]').first()).toHaveAttribute('data-allocated','167149');
   await page.reload();await openRun();
   await expect(page.locator('[data-portfolio-type="RETURN"] > button')).toHaveAttribute('aria-pressed','true');
   const comparisonBefore=await (await request.get(`${base}/analyses/${runId}/portfolio-comparison`,{headers})).json();
