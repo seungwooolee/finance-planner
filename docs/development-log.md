@@ -1010,3 +1010,10 @@ GitHub main 2baa2be의44개 파일을 내보내 blob 지문을 확인했다. 실
 - 제안서 3–6: 기준 안 대비 비교표(무엇이 바뀜·월 신규 적립금·10년 뒤 금액·주의), 금액마다 ‘수익 미반영 0%’·‘연 4% 비교용 가정’·‘물가 반영 오늘 가치’ 라벨, 지출 조정은 ‘추가 저축분’. 가정 4칸 요약+‘계산 방식 자세히’, 위험 4항목(손실값 없으면 ‘산정 대기’), AI 질문 주 행동. 인쇄 시 상세 가정 펼침·웹 버튼 숨김.
 - 검증: tsc·변경 파일 ESLint·production build 통과. 1440/1024/720(200% 확대 상당)/390px 다섯 탭 가로 넘침 0, 비교 행 키보드 열기·닫기, 요약 버튼 탭 이동 확인. 관련 E2E 통과: result-personal-diff, portfolio-detail, result-review-polish, proposal(goal_omissions), result-summary 외 기존 실패 7건은 기준 `d60ee22` 빌드에서도 동일 실패(portfolio-evidence 2, product-integration 2(기준 3), portfolio-comparison 1, result-summary 1, proposal step4는 검토 도구 빌드 플래그 필요).
 - 전후 캡처: `docs/reviews/2026-11-15/result-readability/shots/`, 시안: `docs/reviews/2026-11-15/result-readability/mockup.html`.
+
+
+## 2026-11-15 — B1.1 심사용 증거 여정
+
+`/dion/judge`에서 가상 진단 → 두 안/엔진 설명 → 명시 채택 기록 → 12월 가상 월말 → 소득 변경 초안을 연결했다. 원본 응답·SHA/입력/정책/월과 정확한 원 문자열을 추출해 웹·원고 JSON이 같은 자료를 사용한다. 별도 A 감사의 효력일 불일치 보류 응답을 출처와 재생 상태로 표시한다. 실제 제품에는 생성 완료/미채택 문구와 영수증 이후 채택 갱신, 별도 월 기록 버튼을 연결했다.
+
+관련 pytest 40 passed/39 PostgreSQL skipped, TypeScript/변경 ESLint/Ruff 통과. 서버 없는 실제 React·Edge 여정 2 passed. 최신 #87 통합 후 공통 CSS 영향 경로 1 passed, 타입/관련 린트 통과. 번들 publicPath 초기 오류와 통합 후 준비시간 오류는 각각 1회 수정·재검증했고 원본 판정/금액은 유지했다. 승인 후에도 자동 승인 검토가 로컬 서버 시작을 차단해 실제 Next HTTP/실인증 여정은 미실행이다. 유료 호출·운영 DB·migration·배포·병합 없음. [계약·확정 금액·검사·남은 조건](integration/2026-11-15-judge-journey-HANDOFF.md).

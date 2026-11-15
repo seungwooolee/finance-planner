@@ -100,7 +100,8 @@ export function InvestmentReturnChart({view, plan, portfolio, revision, blocked,
   }
 
   return <section className="d-card d-financial-projection d-investment-return" aria-labelledby={id}>
-    <div className="d-card-head"><h2 id={id}>선택한 투자안의 자산 전망</h2><span className="d-pill">직접 입력한 가정</span></div>
+    <div className="d-card-head"><h2 id={id}>새 투자 납입 전망 · 내가 입력한 수익률 가정</h2><span className="d-pill">직접 입력한 가정</span></div>
+    <p>시작 잔액 0원 · 상품에 배정된 새 투자 납입만 포함, 기존 보유자산·미배정 금액·인출 제외.</p>
     <p>{planName(plan)}{portfolio ? ` · ${portfolioNames[portfolio]}` : ""}</p>
     <p className="d-inline-note">선택한 구성에서 상품에 배정된 신규 납입만 계산해요. 기존 보유자산, 미배정 금액, 인출은 포함하지 않아요. 입력한 수익률 가정은 상품 배정액 전체에 적용해요. 상품의 예상 수익률을 제공하는 기능은 아니에요.</p>
     {!ready ? <p className="d-note">{!portfolio ? "투자구성을 선택해 포트폴리오에 반영하면 전망을 계산할 수 있어요."
