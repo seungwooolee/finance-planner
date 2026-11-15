@@ -22,7 +22,7 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
     const risk = rendered.locator('[data-portfolio-apply="RETURN"]');
     await expect(risk).toHaveAccessibleName("위험추구형 목표 비중 비교");
     await risk.click();
-    await expect(rendered.getByRole("region", {name:"위험추구형 구성 상세"})).toContainText("위험 노출도 더 크지 않아요");
+    await expect(rendered.getByRole("region", {name:"위험추구형 구성 상세"})).toContainText("위험 노출이 크지 않아요");
     await rendered.getByRole("button",{name:"상품 정보 자세히 보기 →"}).click();
     await expect(rendered.getByRole("article",{name:"선택 보류 · 배분 검토 내역"})).toBeVisible();
     await expect(rendered.getByRole("article",{name:"추천 검토 상품"})).toHaveCount(0);
@@ -88,7 +88,15 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   expect(earlyProducts.reason_codes).not.toContain("POLICY_DISCLOSURE_STALE");
   const earlyMonth = earlyProducts.candidates[0].rows[0];
   expect(earlyMonth.period).toBe("2026-12");
-  expect(BigInt(earlyMonth.allocated_total_krw)).toBeGreaterThan(0n);
+  expect(earlyMonth.allocated_total_krw).toBe("119850");
+  const earlyTypes = earlyMonth.portfolio_type_views;
+  expect(earlyTypes.STABLE).toMatchObject({allocated_total_krw:"119850", selectable:true});
+  expect(earlyTypes.BALANCED).toMatchObject({allocated_total_krw:"119850", selectable:false});
+  expect(earlyTypes.RETURN).toMatchObject({
+    allocated_total_krw:"79900", target_cash_krw:"39950", held_krw:"279650", selectable:false,
+    held_breakdown_krw:{risk_limits:"0", review_conditions:"279650", rounding:"0"},
+  });
+  expect(earlyTypes.RETURN.allocations.map((item: {code:string}) => item.code)).toEqual(["153130"]);
   expect(BigInt(earlyMonth.allocated_total_krw) + BigInt(earlyMonth.unallocated_krw)).toBe(399500n);
   await expect(rendered.getByText(/109만 9천\s*원/).first()).toBeVisible();
   await expect(assumptions).toHaveCount(0);
@@ -144,7 +152,14 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   expect(retiredProducts.missing_question_ids).not.toContain("F15");
   expect(retiredProducts.products.find((product: {code:string}) => product.code === "153130").reason_codes)
     .toEqual(expect.arrayContaining(["FUND_USE_UNDECIDED","LOSS_BUDGET_UNRESOLVED"]));
-  expect(retiredProducts.candidates[0].rows[1]).toMatchObject({allocated_total_krw:"0",unallocated_krw:"550000"});
+  expect(retiredProducts.candidates[0].rows[1]).toMatchObject({
+    allocated_total_krw:"0", unallocated_krw:"550000",
+    portfolio_type_views:{
+      STABLE:{allocated_total_krw:"0", selectable:false},
+      BALANCED:{allocated_total_krw:"0", selectable:false},
+      RETURN:{allocated_total_krw:"0", target_cash_krw:"440000", held_krw:"110000", selectable:false},
+    },
+  });
   await expect(rendered.locator(".d-metric").filter({hasText:"순자산"}).locator("strong")).toHaveText("14억원");
   await expect(assumptions).toHaveCount(0);
   await resultTabs.getByRole("button", {name:"재무안 선택",exact:true}).click();

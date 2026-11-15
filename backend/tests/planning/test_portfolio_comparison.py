@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pytest
 
+from app.planning.portfolio_types import selection_available
 from app.planning.product_allocation import block_product_budget, review_products
 from app.planning.product_candidates import comparison_groups
 from tests.planning.test_product_allocation import change, current_product_document, current_review, field
@@ -49,7 +50,11 @@ def test_restrictions_unknown_and_host_gate_apply_to_every_comparison():
     fx = current_review(doc)['candidates'][0]['rows'][0]
     assert fx['comparison_groups'][-1]['product_codes'] == []
     assert all(a['code'] != '360200' for v in fx['portfolio_type_views'].values() for a in v['allocations'])
-    assert fx['portfolio_type_views']['RETURN']['held_breakdown_krw']['review_conditions'] == '48810'
+    fx_risk = fx['portfolio_type_views']['RETURN']
+    # 20% bond + 35% domestic stock would stress 22%; cap the surviving slots at 20/22.
+    # The 35% foreign-stock share is fully held, not a source for other targets.
+    assert [a['review_allocated_krw'] for a in fx_risk['allocations']] == ['54540', '95430']
+    assert fx_risk['held_breakdown_krw'] == {'risk_limits': '15030', 'review_conditions': '105000', 'rounding': '0'}
     unknown = current_product_document()
     change(unknown, 'D19', 'product_understanding', {'state': 'UNKNOWN', 'raw_value': None, 'unit': 'TEXT'})
     blocked = current_review(unknown)
@@ -80,14 +85,30 @@ def test_bond_only_risk_inversion_keeps_money_but_blocks_selection():
     change(doc, 'F18', 'loss_response_raw', field('LOSS_RESPONSE_RAW_02'))
     month = current_review(doc)['candidates'][0]['rows'][0]
     stable, balanced, risk = (month['portfolio_type_views'][kind] for kind in ('STABLE', 'BALANCED', 'RETURN'))
-    assert stable['selectable'] and balanced['selectable']
+    assert stable['selectable'] and not balanced['selectable']
     assert balanced['allocated_total_krw'] == '90000'
-    assert risk['allocated_total_krw'] == '27900'
+    assert balanced['reason_codes'] == ['COMPOSITION_INVERSION']
+    assert risk['allocated_total_krw'] == '60000'
     assert risk['target_cash_krw'] == '30000'
-    assert risk['held_krw'] == '242100'
+    assert risk['held_krw'] == '210000'
+    assert risk['held_breakdown_krw'] == {'risk_limits': '0', 'review_conditions': '210000', 'rounding': '0'}
     assert risk['reason_codes'] == ['COMPOSITION_INVERSION']
     assert risk['selectable'] is False and risk['comparison_only'] is True
     assert risk['calc_state'] == 'REVIEW_REQUIRED'
+
+
+def test_first_zero_budget_cannot_hide_inversion_in_first_funded_month():
+    doc = current_product_document()
+    change(doc, 'F18', 'loss_response_raw', field('LOSS_RESPONSE_RAW_02'))
+    plan = {"results": {"OUT-05": {"calc_state": "CALCULATED", "candidates": [{
+        "strategy_id": "STABILITY_FIRST", "calc_state": "CALCULATED",
+        "rows": [{"period": "2026-11", "new_investment_krw": "0"},
+                 {"period": "2026-12", "new_investment_krw": "300000"}],
+    }]}}}
+    rows = review_products(doc, plan)["candidates"][0]["rows"]
+    assert rows[0]["portfolio_type_views"]["RETURN"]["selectable"] is True
+    assert not selection_available(rows, "RETURN")
+    assert selection_available(rows, "STABLE")
 
 
 def test_candidate_cap_and_unapproved_role_do_not_relax_filter():
@@ -119,7 +140,8 @@ def test_fifteen_relative_choices_preserve_source_and_customer_limits(preference
         v = views[kind]
         assert v['target_preference'] == target and v['basis_preference'] == preference
         blocked = (preference, kind) in {
-            ('PREF_LEAN_RETURN', 'RETURN'), ('PREF_RETURN', 'BALANCED'), ('PREF_RETURN', 'RETURN'),
+            ('PREF_LEAN_STABILITY', 'RETURN'), ('PREF_LEAN_RETURN', 'RETURN'),
+            ('PREF_RETURN', 'BALANCED'), ('PREF_RETURN', 'RETURN'),
         }
         assert v['selectable'] is not blocked
         assert ('COMPOSITION_INVERSION' in v['reason_codes']) is blocked

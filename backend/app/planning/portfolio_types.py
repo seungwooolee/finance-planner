@@ -5,7 +5,7 @@ Types use reviewed slot tables, with an explicit return-seeking target for P3–
 a type view only changes which reviewed slot table is laid over the products the customer is
 already eligible for. Views are comparisons; the customer's own preference stays the allocation.
 """
-VERSION = "DION-PORTFOLIO-TYPES-0.6"
+VERSION = "DION-PORTFOLIO-TYPES-0.7"
 STATE = "REVIEWED_FOR_PREVIEW"  # 2026-11-13: user delegated the decision; kept as proposed (docs/integration/2026-11-13-stage4-decisions.md).
 REPRESENTATIVE_PREFERENCE = {
     "STABLE": "PREF_LEAN_STABILITY",
@@ -38,6 +38,16 @@ def relative_preferences(preference):
         return dict.fromkeys(("STABLE", "BALANCED", "RETURN"), preference)
     return {"STABLE": PREFERENCES[index - 1], "BALANCED": preference,
             "RETURN": PREFERENCES[min(index + 1, len(PREFERENCES) - 1)]}
+
+
+def selection_available(rows, type_id):
+    """Require the first plan month's guards and the first funded month's distinct risk."""
+    if not rows or rows[0].get("portfolio_type_views", {}).get(type_id, {}).get("selectable") is not True:
+        return False
+    if rows[0].get("scenario_budget_krw") == "0":
+        funded = next((row for row in rows if row.get("scenario_budget_krw") not in (None, "0")), rows[0])
+        return funded.get("portfolio_type_views", {}).get(type_id, {}).get("selectable") is True
+    return True
 
 
 def type_of_preference(preference):

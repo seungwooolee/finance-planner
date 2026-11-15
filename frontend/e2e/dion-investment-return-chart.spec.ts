@@ -11,7 +11,7 @@ test("the final portfolio uses its selected allocation for an explicit signed re
   await expect(chart).toContainText("투자구성을 선택해 포트폴리오에 반영");
   await tabs.nth(2).click();
   await page.locator('[data-portfolio-apply="RETURN"]').click();
-  await expect(page.locator("#dion-selected-composition").getByText("손실·집중 한도로 줄인 금액").first()).toBeVisible();
+  await expect(page.locator("#dion-selected-composition").getByText("기간·상품 등 검토 조건으로 보류한 금액").first()).toBeVisible();
   await page.locator('[data-portfolio-apply="STABLE"]').click();
   await tabs.nth(4).click();
   const rate = chart.getByLabel("연 수익률 가정 (%)",{exact:true});

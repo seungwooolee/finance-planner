@@ -46,8 +46,7 @@ class PortfolioComparisonMixin:
         self._assert_current_portfolio_policy(review, run["engine_input_json"])
         candidate = next((c for c in review.get("candidates", []) if c.get("strategy_id") == strategy_id), {})
         rows = candidate.get("rows", [])
-        view = rows[0].get("portfolio_type_views", {}).get(selection["portfolio_type"], {}) if rows else {}
-        if view.get("selectable") is not True or review.get("presentation_budget_blocked"):
+        if not portfolio_types.selection_available(rows, selection["portfolio_type"]) or review.get("presentation_budget_blocked"):
             raise PocError("COMPARISON_UNAVAILABLE")
         return {"portfolio_type": selection["portfolio_type"], "comparison_revision": saved["revision"],
                 "selection_sha256": digest(selection),
@@ -110,8 +109,7 @@ class PortfolioComparisonMixin:
             self._assert_current_portfolio_policy(review, run["engine_input_json"])
             rows = next((c.get("rows", []) for c in review.get("candidates", [])
                          if c.get("strategy_id") == value["strategy_id"]), [])
-            view = rows[0].get("portfolio_type_views", {}).get(value["portfolio_type"], {}) if rows else {}
-            if view.get("selectable") is not True or review.get("presentation_budget_blocked"):
+            if not portfolio_types.selection_available(rows, value["portfolio_type"]) or review.get("presentation_budget_blocked"):
                 raise PocError("COMPARISON_UNAVAILABLE")
             replay = self._replay(conn, case_id, value["request_key"], fingerprint)
             if replay is not None:
@@ -123,6 +121,7 @@ class PortfolioComparisonMixin:
             selection.update(run_id=run_id, case_id=case_id, state="COMPARISON_DRAFT",
                              period=rows[0]["period"], recorded_at=_now())
             if types.get("selection_scope") == portfolio_types.SELECTION_SCOPE:
+                view = rows[0]["portfolio_type_views"][value["portfolio_type"]]
                 selection.update(selection_scope=types["selection_scope"],
                                  customer_preference=types["customer_preference"],
                                  preference_level=types["preference_level"],
