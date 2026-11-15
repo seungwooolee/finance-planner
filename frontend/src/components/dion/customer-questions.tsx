@@ -91,7 +91,7 @@ export function GoalsQuestion({ doc, onChange }: Props) {
       const amount = list(fieldValue(doc, "F13", "goals")).find(r => r.goal_id === gid) ?? {};
       const special = ["GOAL_TYPE_03", "GOAL_V12_INHERITANCE", "RETIREMENT"].includes(String(g.type));
       return <section className="d-goal-card" key={gid} aria-label={`${name(g)} 목표`}><div className="d-goal-card-heading"><div><span>{i === 0 ? "가장 먼저 준비할 목표" : `함께 준비할 목표 ${i + 1}`}</span><h2>{name(g)}</h2></div><button type="button" className="d-text-button" aria-label={`${name(g)} 목표 삭제`} onClick={() => remove(goals.filter(r => r.goal_id !== gid).map(r => String(r.goal_id)))}>목표 삭제</button></div>
-        {doc.context.case_id === EARLY_WORKBOOK_CASE && g.type === "WEALTH" && amount.payment_type === "" ?
+        {(doc.context.case_id === EARLY_WORKBOOK_CASE || amount.target_kind === "ASSET_BALANCE") && g.type === "WEALTH" && amount.payment_type === "" ?
           <dl className="d-ledger"><div><dt>모을 자산</dt><dd>{formatKrw(fieldKrw(amount.target_amount_krw as unknown as Field))}</dd></div>
             <div><dt>목표 기한</dt><dd>{textValue(timing.target_date)}</dd></div></dl>
         : special ? <p className="d-note">목표로 기록해 둘게요. {g.type === "GOAL_V12_INHERITANCE" ? "상속" : "은퇴"}에 필요한 별도 계산은 아직 준비 중이에요.</p> : amount.payment_type === "RECURRING" ? <section className="d-note" role="status"><p>이전에 매달 쓰는 돈으로 입력한 목표예요. 내용은 보관하지만 현재 목표 계산에는 반영하지 않아요.</p><p>저장한 월 금액: {formatKrw(fieldKrw((amount.target_amount_krw as unknown as Field) ?? field(null, "KRW_10000")))} · 기간: {textValue(amount.payment_start) || "미입력"} ~ {textValue(amount.payment_end) || "미입력"}</p><p>필요하면 ‘목표 삭제’로 이번 진단에서 제외할 수 있어요. 기존 생활비에 포함된 돈을 다시 지출로 더하지 않아요.</p></section> : <>

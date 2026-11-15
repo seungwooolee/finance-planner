@@ -69,6 +69,23 @@ def test_preview_actual_engine_oracles_and_source_preservation(client):
     assert fields(result["adapter"]["source_snapshot"], "F03")["monthly_net_income_krw"]["raw_value"] == "00300.0000"
 
 
+def test_preview_missing_evaluation_date_preserves_input_without_calculation(client):
+    doc = deepcopy(FIXTURE)
+    doc["context"]["evaluation_on"] = ""
+    for answer in doc["raw_bundle"]["answers"]:
+        answer["envelope"]["context"]["as_of"] = None
+
+    reply = client.post("/api/fe/v1/preview", json=doc)
+    assert reply.status_code == 200
+    assert reply.json()["storage"] == "NOT_SAVED"
+    result = reply.json()["result"]
+    assert result["calc_state"] == "NEEDS_INPUT"
+    assert result["reason_code"] == "EVALUATION_DATE_REQUIRED"
+    assert result["missing"] == ["evaluation_on"]
+    assert result["source_snapshot"] == doc
+    assert not result.get("results")
+
+
 def test_product_review_preview_saved_restore_and_replay_use_same_engine(client):
     doc = deepcopy(FIXTURE)
     doc["requested_outputs"].append("OUT-06")

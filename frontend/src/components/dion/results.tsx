@@ -111,6 +111,7 @@ export function Results({view,demoScenario,deep,tab,setTab:changeTab,stale,onEdi
   },[view,tab]);
   const result=view.result, outputs=object(result.results);
   const workbookGoal=demoScenario?.workbookGoal;
+  const needsEvaluationDate=result.reason_code==="EVALUATION_DATE_REQUIRED";
   const demoAssumptions=demoScenario?.calculationAssumptions;
   const gates=list(object(result.frontend_integration).presentation_gates);
   const visible=(id:string):Record<string,Json>=>{
@@ -158,6 +159,10 @@ export function Results({view,demoScenario,deep,tab,setTab:changeTab,stale,onEdi
       {calcBar}
     </section>}
     {tab>=2&&<p className="d-draft-chip">검토용 초안 · 실제 가입·매수·이체 없음</p>}
+    {tab<=1&&demoScenario?.inputGaps?.length&&<details className="d-card" open={tab===1}>
+      <summary>{demoScenario.title} 가상 사례 · 확인할 입력</summary>
+      <ul>{demoScenario.inputGaps.map(gap=><li key={gap}>{gap}</li>)}</ul>
+    </details>}
     {tab>=2&&<div aria-label="투자구성 비교 상태"><p role="status">{selectedPortfolio?`${portfolioNames[selectedPortfolio]} 비교 초안 · `:""}{comparison.busy?"비교 초안을 저장하고 있어요…":comparison.status||"구성을 선택해 비교할 수 있어요. 계획 채택과 월 기록은 별도로 유지돼요."}</p>{comparison.error&&<div role="alert"><p>{comparison.error}</p><button type="button" className="d-secondary" onClick={comparison.retry}>비교 초안 다시 불러오기</button></div>}</div>}
     {tab===0 && <>
       <h2>현재 재무 상태</h2>
@@ -175,7 +180,9 @@ export function Results({view,demoScenario,deep,tab,setTab:changeTab,stale,onEdi
     </>}
     {tab===1 && <>
       {(()=>{const goalsCard=<GoalTable goals={goals} goalLabel={displayGoal} missing={workbookGoal?<><p>{workbookGoal}</p><p>월별 계획에 사용할 적립 일정은 확인 대기예요.</p></>:<Missing row={goals} title="목표"/>}/>;
-        return candidates.length ? <PlanComparison candidates={candidates} selected={selectedPlan} onSelect={setSelectedPlan} goals={goalsCard} basis={{runId:view.runId,inputVersion}}/> : <>{goalsCard}<Missing row={plans} title="두 월별 후보 확인 대기"/><button className="d-secondary" onClick={()=>onEdit("ASSUMPTIONS")}>필요한 가정 확인 →</button></>;})()}
+        return candidates.length ? <PlanComparison candidates={candidates} selected={selectedPlan} onSelect={setSelectedPlan} goals={goalsCard} basis={{runId:view.runId,inputVersion}}/> : <>{goalsCard}{needsEvaluationDate
+          ? <p className="d-note">두 월별 후보 확인 대기 · 진단 기준일과 계획 기간이 필요해요.</p>
+          : <Missing row={plans} title="두 월별 후보 확인 대기"/>}<button className="d-secondary" onClick={()=>onEdit("ASSUMPTIONS")}>필요한 가정 확인 →</button></>;})()}
     </>}
     {tab===1 && <ResultBasis id="OUT-05" result={result} source={sourceDoc} inputVersion={view.serverVersion??view.localVersion} stale={stale} onEdit={onEdit}/>}
     {tab===2 && workbookGoal && <WorkbookPortfolioChoices selected={workbookTarget} onSelect={setWorkbookTarget} onProducts={()=>setTab(3)}/>}
@@ -184,7 +191,9 @@ export function Results({view,demoScenario,deep,tab,setTab:changeTab,stale,onEdi
     
     {workbookGoal && (tab===3 || (tab===4 && workbookTarget)) && <WorkbookPortfolioProducts
       selected={workbookTarget} products={list(productReview.products)} onChoose={()=>setTab(2)}/>}
-    {tab===3 && <><div className="d-plan-row"><div><strong>{planName(selectedPlan)} · 상품 정보</strong><button className="d-text-button" onClick={()=>setTab(2)}>투자구성 비교로 돌아가기</button>{selectedPortfolio&&<button className="d-secondary" disabled={comparison.blocked} onClick={()=>setTab(4)}>반영한 포트폴리오 확인 →</button>}</div><PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/></div><ProductAllocation evidenceAccess={evidenceAccess} stale={stale} review={selectedReview} selectedPlan={selectedPlan} evaluationOn={textValue(object(result.context).evaluation_on)} onEdit={onEdit}/></>}
+    {tab===3 && <><div className="d-plan-row"><div><strong>{planName(selectedPlan)} · 상품 정보</strong><button className="d-text-button" onClick={()=>setTab(2)}>투자구성 비교로 돌아가기</button>{selectedPortfolio&&<button className="d-secondary" disabled={comparison.blocked} onClick={()=>setTab(4)}>반영한 포트폴리오 확인 →</button>}</div><PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/></div>{needsEvaluationDate
+      ? <p className="d-note">상품 배분을 검토하려면 진단 기준일과 월 투자예산이 필요해요.</p>
+      : <ProductAllocation evidenceAccess={evidenceAccess} stale={stale} review={selectedReview} selectedPlan={selectedPlan} evaluationOn={textValue(object(result.context).evaluation_on)} onEdit={onEdit}/>}</>}
     {tab===3&&<div className="d-result-cta"><button type="button" className="d-primary" onClick={openConsultation}>DION과 상담하기</button><p>1~4 확인 후 상담과 변경 검토를 거쳐 최종 생성을 요청해요.</p></div>}
     {tab===4 && <><ChoiceStatus generated={generated} plan={selectedPlan} portfolio={selectedPortfolio} draft={comparison.draft}
       stored={comparison.saved} adoption={adoption} runId={view.runId} evaluationOn={textValue(object(result.context).evaluation_on)}
