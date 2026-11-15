@@ -3,8 +3,7 @@ import { todayInSeoul } from "../src/lib/dion/model";
 
 const preview = (page: Page) => page.waitForResponse(r=>r.url().endsWith("/api/fe/v1/preview")&&r.request().method()==="POST");
 const picker = (page: Page) => page.getByRole("dialog",{name:"요즘 나의 생활 · 가상 사례",exact:true});
-const workbookCases = (page: Page) => picker(page).getByRole("region",{name:"작성한 엑셀 사례",exact:true});
-const previousCases = (page: Page) => picker(page).getByRole("region",{name:"이전 시연 사례",exact:true});
+const caseCard = (page: Page, title: string) => picker(page).getByRole("article",{name:title,exact:true});
 function fields(doc: {raw_bundle: {answers: {envelope: {question_ref: {design_id:string}; fields: Record<string, {raw_value: unknown; state:string}>}}[]}}, id: string) {
   return doc.raw_bundle.answers.find(r=>r.envelope.question_ref.design_id===id)!.envelope.fields;
 }
@@ -18,7 +17,7 @@ async function expectWorkbookTargets(page: Page) {
   ]);
 }
 
-test("both workbook and previous demos keep separate inputs and show their own results", async ({page})=>{
+test("life-stage cards open the matching workbook and previous demo results", async ({page})=>{
   test.setTimeout(150_000);
   await page.goto("/dion");
   await expect(page.locator('a[href="/dion/judge"]')).toHaveCount(0);
@@ -29,11 +28,14 @@ test("both workbook and previous demos keep separate inputs and show their own r
   await personalIncome.fill("777");
   const launch = page.getByRole("button",{name:"가상 사례 불러오기",exact:true});
   await launch.click();
-  await expect(workbookCases(page).getByRole("heading",{level:4})).toHaveText(["사회초년생","은퇴기"]);
-  await expect(previousCases(page).getByRole("heading",{level:4})).toHaveText(["사회초년생","은퇴기"]);
+  await expect(picker(page).getByRole("heading",{level:3})).toHaveText(["사회초년생","은퇴기"]);
+  for (const title of ["사회초년생", "은퇴기"]) {
+    await expect(caseCard(page,title).getByRole("button",{name:`${title} 엑셀 사례 불러오기`,exact:true})).toBeVisible();
+    await expect(caseCard(page,title).getByRole("button",{name:`${title} 이전 시연 불러오기`,exact:true})).toBeVisible();
+  }
   await expect(picker(page).locator('a[href="/dion/judge"]')).toHaveCount(0);
   const first = preview(page);
-  await picker(page).getByRole("button",{name:"사회초년생 불러오기",exact:true}).click();
+  await caseCard(page,"사회초년생").getByRole("button",{name:"사회초년생 엑셀 사례 불러오기",exact:true}).click();
   const early = await first;
   expect(early.ok()).toBe(true);
   const earlyInput = early.request().postDataJSON();
@@ -93,9 +95,13 @@ test("both workbook and previous demos keep separate inputs and show their own r
 
   await page.setViewportSize({width:390,height:844});
   await launch.click();
-  await expect(workbookCases(page).getByRole("heading",{level:4})).toHaveCount(2);
+  const retirementCard = caseCard(page,"은퇴기");
+  await retirementCard.getByText("엑셀 입력과 가정",{exact:true}).click();
+  await expect(retirementCard.getByText("기준일 미확인",{exact:true})).toBeVisible();
+  await retirementCard.getByText("이전 시연 가정",{exact:true}).click();
+  await expect(retirementCard.getByText("기준일 2026-11-13",{exact:true})).toBeVisible();
   const second = preview(page);
-  await picker(page).getByRole("button",{name:"은퇴기 불러오기",exact:true}).click();
+  await retirementCard.getByRole("button",{name:"은퇴기 엑셀 사례 불러오기",exact:true}).click();
   const retired = await second;
   expect(retired.ok()).toBe(true);
   const posted = retired.request().postDataJSON();
@@ -191,7 +197,7 @@ test("both workbook and previous demos keep separate inputs and show their own r
   async function loadPrevious(title: string) {
     await launch.click();
     const pending = preview(page);
-    await previousCases(page).getByRole("button",{name:`${title} 이전 시연 불러오기`,exact:true}).click();
+    await caseCard(page,title).getByRole("button",{name:`${title} 이전 시연 불러오기`,exact:true}).click();
     const response = await pending;
     expect(response.ok()).toBe(true);
     const payload = await response.json();
