@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { readFileSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
 import { GoalTable, PersonalSummary } from '../src/components/dion/personal-summary';
+import { Results, type ViewResult } from '../src/components/dion/results';
 import { PlanComparison } from '../src/components/dion/plan-comparison';
 import type { Json } from '../src/lib/dion/model';
 
@@ -62,7 +63,7 @@ test('plan diff shows exact same-month differences and never infers cash from in
   const candidates = plans(row('2026-12', '300000', '500000', '5000000'), row('2026-12', '700000', '100000', '4600000'));
   for (const [name, size] of [['desktop', { width: 1280, height: 900 }], ['mobile', { width: 390, height: 844 }]] as const) {
     await page.setViewportSize(size);
-    await show(page, <PlanComparison candidates={candidates} selected="STABILITY_FIRST" onSelect={() => {}} basis={{ runId: 'run-1', inputVersion: 3 }} liquidity={<details><summary>현금을 따로 남기는 이유 · 등록 근거</summary></details>}/>);
+    await show(page, <PlanComparison candidates={candidates} selected="STABILITY_FIRST" onSelect={() => {}} basis={{ runId: 'run-1', inputVersion: 3 }}/>);
     const section = page.getByRole('region', { name: '두 재무안 비교' });
     await expect(section).toHaveAttribute('data-input-version', '3');
     const table = page.getByRole('table');
@@ -70,13 +71,10 @@ test('plan diff shows exact same-month differences and never infers cash from in
     await expect(table.getByRole('row', { name: /추가로 남긴 현금/ })).toContainText('−40만원');
     await expect(table.getByRole('row', { name: /목표 적립/ })).toContainText('같음');
     await expect(table.getByRole('row', { name: /월말 현금 합계/ })).toContainText('−40만원');
-    const reason = page.getByLabel('두 안의 같은 점과 다른 점');
-    await expect(reason).toContainText('같은 점 목표 적립 20만원 · 보호자금 보충 10만원 · 생활 운영자금 보충 0원');
-    await expect(reason).toContainText('신규 투자 후보금 +40만원 · 추가로 남긴 현금 −40만원');
-    await expect(reason).toContainText('더 좋은 안이라는 뜻은 아니에요');
+    await expect(section.getByLabel('두 안의 같은 점과 다른 점')).toHaveCount(0);
     await expect(section).toContainText('재무계획 2안');
     await expect(section).toContainText('투자구성 3유형(안정형·중립형·위험 추구형)');
-    await expect(page.getByText('현금을 따로 남기는 이유 · 등록 근거')).toBeVisible();
+    await expect(page.getByText('현금을 따로 남기는 이유 · 등록 근거')).toHaveCount(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     await page.screenshot({ path: info.outputPath(`plan-diff-${name}.png`), fullPage: true });
   }
@@ -86,6 +84,22 @@ test('plan diff shows exact same-month differences and never infers cash from in
   await expect(page.getByRole('table').getByRole('row', { name: /추가로 남긴 현금/ })).toContainText('같음');
   // Different plan months are never compared.
   await show(page, <PlanComparison candidates={plans(row('2026-12', '300000', '500000', '5000000'), row('2027-01', '700000', '100000', '4600000'))} selected="STABILITY_FIRST" onSelect={() => {}}/>);
-  await expect(page.getByLabel('두 안의 같은 점과 다른 점')).toContainText('계획 월이 달라');
+  await expect(page.getByText(/두 안의 비교 월이 같지 않거나/)).toBeVisible();
   await expect(page.locator('.d-diff-diff')).toHaveCount(0);
+});
+
+test('standard results omit repeated metadata and consultation, while old results retain the warning and next button', async ({page}) => {
+  const view: ViewResult = {result:{calc_state:'CALCULATED'}, source:{}, storage:'NOT_SAVED', localVersion:22, sourceSignature:'fixture'};
+  const draw = (stale: boolean) => <div className="dion-app"><Results view={view} deep tab={0} setTab={()=>{}} stale={stale} onEdit={()=>{}} onRecalculate={()=>{}}/></div>;
+  await page.setContent(renderToStaticMarkup(draw(false)));
+  const main=page.getByRole('region',{name:'계산 결과',exact:true});
+  await expect(main.getByText(/현재 입력 기준 결과|금액 표시|저장 전 편집 22번째 버전|모든 화면 결과를 계산/)).toHaveCount(0);
+  await expect(main.getByRole('region',{name:'현재 결과 다음 행동 상담'})).toHaveCount(0);
+  const next=main.getByRole('navigation',{name:'다음 결과 단계',exact:true});
+  await expect(next).not.toContainText('다음 단계');
+  await expect(next.getByRole('button',{name:'다음 · 재무안 비교',exact:true})).toBeVisible();
+  await page.setContent(renderToStaticMarkup(draw(true)));
+  await expect(main.getByRole('status').filter({hasText:'이전 입력 기준이에요'})).toBeVisible();
+  await expect(main.getByRole('button',{name:'현재 입력으로 다시 계산',exact:true})).toHaveCount(1);
+  await expect(main.getByRole('button',{name:'현재 입력으로 다시 계산',exact:true})).toBeVisible();
 });

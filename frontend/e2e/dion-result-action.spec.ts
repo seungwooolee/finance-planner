@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { prepare } from './consultation-helpers';
 import scenario from '../src/lib/dion/product-review-scenario.json';
 
@@ -11,7 +11,7 @@ test('selected composition answers use real saved amounts, reset after selection
   const before = await (await request.get(`${base}/analyses/${first.run_id}`, {headers})).json();
   await page.locator('.d-tabs button').nth(2).click();
   await page.locator('[data-portfolio-type="RETURN"] > button').click();
-  const panel = page.locator('.d-results').getByRole('region', {name: '현재 결과 다음 행동 상담'});
+  const panel = await openResultQuestions(page);
   await panel.getByRole('button', {name: '왜 현금 대기자금이 있나요?', exact: true}).click();
   await panel.getByRole('button', {name: '내 결과로 답변 보기'}).press('Enter');
   await expect(panel.getByRole('heading', {name: '현재 결과에 대한 답변'})).toBeFocused();
@@ -19,8 +19,10 @@ test('selected composition answers use real saved amounts, reset after selection
   await expect(panel).toContainText('21.4094만원');
   await expect(panel).toContainText('저장 결과의 기본 안내');
   await page.screenshot({path: info.outputPath('selected-result-desktop.png'), fullPage: true});
+  await page.getByRole('button', {name: '상담창 닫기', exact: true}).click();
   await page.getByRole('button', {name: '투자구성 비교로 돌아가기'}).click();
   await page.locator('[data-portfolio-type="STABLE"] > button').click();
+  await openResultQuestions(page);
   await expect(panel.getByRole('heading', {name: '현재 결과에 대한 답변'})).toHaveCount(0);
   await panel.getByRole('button', {name: '이 상품의 환율 영향은 어떻게 확인해요?', exact: true}).click();
   await panel.getByRole('button', {name: '내 결과로 답변 보기'}).click();
@@ -40,7 +42,7 @@ test('outage retry reuses request key and a mismatched response never displays',
   test.setTimeout(90_000);
   const {first} = await prepare(page, request, false, false, false, scenario.document);
   await page.getByRole('button', {name: new RegExp(first.run_id)}).click();
-  const panel = page.locator('.d-results').getByRole('region', {name: '현재 결과 다음 행동 상담'});
+  const panel = await openResultQuestions(page);
   const keys: string[] = [];
   await page.route('**/result-action', async route => {
     keys.push(route.request().postDataJSON().request_key);
@@ -70,9 +72,8 @@ test('cat consultation reads latest saved composition and missing result preserv
   test.setTimeout(90_000);
   const {first} = await prepare(page, request, true);
   await page.getByRole('button', {name: new RegExp(first.run_id)}).click();
-  await page.getByRole('button', {name: 'dion AI 상담 열기', exact: true}).click();
+  const panel = await openResultQuestions(page);
   const dialog = page.getByRole('dialog', {name: 'dion AI 상담', exact: true});
-  const panel = dialog.getByRole('region', {name: '현재 결과 다음 행동 상담'});
   await panel.getByRole('button', {name: '돈이 남는데 왜 투자 배정이 적어요?', exact: true}).click();
   await panel.getByRole('button', {name: '내 결과로 답변 보기'}).click();
   await expect(panel).toContainText('수치 설명을 보류');
@@ -81,3 +82,10 @@ test('cat consultation reads latest saved composition and missing result preserv
   await expect(dialog).not.toBeVisible();
   await expect(page.getByRole('heading', {name: '한 달 평균 세후 소득은 얼마인가요?', exact: true})).toBeVisible();
 });
+
+async function openResultQuestions(page: Page) {
+  await page.getByRole('button', {name: 'dion AI 상담 열기', exact: true}).click();
+  const dialog = page.getByRole('dialog', {name: 'dion AI 상담', exact: true});
+  await dialog.getByRole('button', {name: '결과에 대해 질문', exact: true}).click();
+  return dialog.getByRole('region', {name: '현재 결과 다음 행동 상담'});
+}

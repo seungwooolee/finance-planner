@@ -28,19 +28,6 @@ function diffOf(a: Record<string, Json> | undefined, b: Record<string, Json> | u
   return d === 0n ? { state: 'SAME', value: x } : { state: 'DIFF', value: d.toString() };
 }
 const signed = (v: string) => `${v.startsWith('-') ? '' : '+'}${formatKrw(v)}`;
-const DIFF_KEYS: [string, string][] = [['new_investment_krw', '신규 투자 후보금'], ['additional_cash_krw', '추가로 남긴 현금'], ['goal_deposits_krw', '목표 적립'], ['protection_topup_krw', '보호자금 보충'], ['operating_refill_krw', '생활 운영자금 보충']];
-function DiffSummary({ a, b, samePeriod }: { a?: Record<string, Json>; b?: Record<string, Json>; samePeriod: boolean }) {
-  if (!a || !b) return <p>두 안의 첫 달 배정을 모두 확인하면 같은 점과 다른 점을 정리해 드려요.</p>;
-  if (!samePeriod) return <p>두 안의 계획 월이 달라 금액 차이를 비교하지 않았어요.</p>;
-  const rows = DIFF_KEYS.map(([k, label]) => ({ k, label, d: diffOf(a, b, k, samePeriod) }));
-  const same = rows.filter(r => r.d.state === 'SAME'), diff = rows.filter(r => r.d.state === 'DIFF'), hold = rows.filter(r => r.d.state === 'HOLD');
-  return <>
-    <p><strong>같은 점</strong> {same.length ? same.map(r => `${r.label} ${formatKrw(r.d.value)}`).join(' · ') : '이번 달 배정 항목 중 금액이 같은 항목은 없어요.'}</p>
-    <p><strong>다른 점</strong> {diff.length ? `투자 여력 확대는 생활 안정 우선보다 ${diff.map(r => `${r.label} ${signed(r.d.value!)}`).join(' · ')}이에요.` : '이번 달 배정 금액은 두 안이 모두 같아요.'}</p>
-    {!!hold.length && <p className="d-inline-note">{hold.map(r => r.label).join(' · ')}은 금액이 확인되지 않아 비교를 보류했어요.</p>}
-    <p className="d-inline-note">금액이 큰 쪽이 더 좋은 안이라는 뜻은 아니에요. 비상금 여유와 목표 일정에 맞는 쪽을 골라주세요.</p>
-  </>;
-}
 const PLAN_COPY: Record<string, { icon: typeof ShieldCheck; line: string; fit: string; care: string }> = {
   STABILITY_FIRST: { icon: ShieldCheck, line: '남는 돈의 일부를 현금으로 남겨 갑작스러운 지출에 대비해요.', fit: '비상금·생활자금 여유를 먼저 두고 싶을 때, 소득이나 지출이 자주 바뀔 때', care: '신규 투자 후보금과 남기는 현금이 각각 얼마인지 위 표의 차이 열에서 확인해 주세요.' },
   INVESTMENT_CAPACITY: { icon: TrendingUp, line: '남는 돈을 투자 후보로 더 돌려 자산을 키우는 쪽에 무게를 둬요.', fit: '비상금이 이미 충분하고 남는 돈을 투자 후보로 더 쓰고 싶을 때', care: '투자 후보금이 늘어난 만큼 다른 항목이 어떻게 달라지는지 위 표의 차이 열에서 확인해 주세요.' },
@@ -54,7 +41,7 @@ function AllocationBar({ row }: { row?: Record<string, Json> }) {
   return <div className="d-stack-bar" aria-hidden="true">{parts.map(([k, label]) => <span key={k} title={`${label} ${formatKrw(row[k])}`} style={{ width: `${Number(BigInt(row[k] as string) * 10000n / sum) / 100}%`, background: SEG_COLORS[k] }}/>)}</div>;
 }
 
-export function PlanComparison({ candidates, selected, onSelect, goals, basis, liquidity }: { candidates: Record<string, Json>[]; selected: string; onSelect: (id: string) => void; goals?: ReactNode; basis?: { runId?: string; inputVersion: number }; liquidity?: ReactNode }) {
+export function PlanComparison({ candidates, selected, onSelect, goals, basis }: { candidates: Record<string, Json>[]; selected: string; onSelect: (id: string) => void; goals?: ReactNode; basis?: { runId?: string; inputVersion: number } }) {
   const ordered = ['STABILITY_FIRST', 'INVESTMENT_CAPACITY'].map(id => candidates.find(c => c.strategy_id === id)).filter((c): c is Record<string, Json> => !!c);
   const first = ordered.map(c => list(c.rows)[0]);
   const period = textValue(first.find(Boolean)?.period);
@@ -91,8 +78,7 @@ export function PlanComparison({ candidates, selected, onSelect, goals, basis, l
           <tr><th scope="row">그중 목적 미배정</th>{first.map((r, i) => <td key={i}>{formatKrw(object(r?.closing_earmarks_krw).free)}</td>)}{pair && <td className="d-diff-cell">—</td>}</tr>
         </tbody>
       </table></div>
-      <div className="d-plan-reason" aria-label="두 안의 같은 점과 다른 점"><DiffSummary a={first[0]} b={first[1]} samePeriod={samePeriod}/></div>
-      {liquidity}
+      {pair && !samePeriod && <p className="d-inline-note">두 안의 비교 월이 같지 않거나 확인되지 않아 금액 차이를 표시하지 않았어요.</p>}
       <div className="d-plan-fits">{ordered.map(c => { const copy = PLAN_COPY[textValue(c.strategy_id)]; return <div key={textValue(c.strategy_id)}><strong>{planName(c.strategy_id)}이 맞는 경우</strong><p>{copy?.fit}</p><p className="d-plan-care"><TriangleAlert size={14} aria-hidden="true"/> {copy?.care}</p></div>; })}</div>
     </article>}
     {goals}

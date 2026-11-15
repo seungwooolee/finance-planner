@@ -41,12 +41,12 @@ function protectionText(first: Record<string, Json>[]): string {
 /** 현재 상태 → 중요한 목표·제약 → 다음 행동. No score, grade or investable amount is created. */
 export function PersonalSummary({ after, debt, goals, firstRows, goalLabel, next }: {
   after: unknown; debt: unknown; goals: Record<string, Json>; firstRows: Record<string, Json>[];
-  goalLabel: (id: Json) => string; next: Next;
+  goalLabel: (id: Json) => string; next?: Next;
 }) {
   const steps: { icon: typeof MapPin; title: string; body: ReactNode }[] = [
     { icon: MapPin, title: "지금 상태", body: <p>{nowText(after, debt)}</p> },
     { icon: Flag, title: "중요한 목표·제약", body: <p>{goalText(goals, goalLabel)}{protectionText(firstRows)}</p> },
-    { icon: Compass, title: "다음 행동", body: <><p>{next.text}</p>{next.run && <button type="button" className="d-secondary" onClick={next.run}>{next.label}</button>}</> },
+    ...(next ? [{ icon: Compass, title: "다음 행동", body: <><p>{next.text}</p>{next.run && <button type="button" className="d-secondary" onClick={next.run}>{next.label}</button>}</> }] : []),
   ];
   return <section className="d-card d-personal-summary" aria-labelledby="d-personal-summary-title">
     <div className="d-card-head"><h2 id="d-personal-summary-title"><Target size={20} aria-hidden="true"/> 내 상황 한눈에</h2></div>
