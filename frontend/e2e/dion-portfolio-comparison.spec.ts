@@ -33,7 +33,7 @@ test('P1-P5 each keep their own basis while three relative choices drive real pr
       await page.locator(`[data-portfolio-type="${type}"] > button`).click();
       const selected=page.locator('#dion-selected-composition');
       await expect(page.locator('.d-tabs button').nth(2)).toHaveAttribute('aria-current','page');
-      await expect(selected).toBeFocused();
+      await expect(page.locator(`[data-portfolio-apply="${type}"]`)).toBeFocused();
       await expect(selected).toContainText('기대수익률산정 대기');
       await selected.getByRole('button',{name:'상품 정보 자세히 보기 →'}).click();
       await expect(page.locator('[data-allocation-month]').first()).toHaveAttribute('data-allocated', view.allocated_total_krw);
@@ -61,7 +61,7 @@ test('three real comparison views drive product and final screens on desktop/mob
   await page.keyboard.press('Enter');
   const selected=page.locator('#dion-selected-composition');
   await expect(page.locator('.d-tabs button').nth(2)).toHaveAttribute('aria-current', 'page');
-  await expect(selected).toBeFocused();
+  await expect(page.locator('[data-portfolio-apply="STABLE"]')).toBeFocused();
   await expect(selected).toContainText('안정형 구성 상세');
   await selected.getByRole('button',{name:'상품 정보 자세히 보기 →'}).click();
   await expect(page.locator('[data-allocation-month]').first()).toHaveAttribute('data-allocated', '119850');

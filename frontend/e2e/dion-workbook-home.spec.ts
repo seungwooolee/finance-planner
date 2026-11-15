@@ -19,6 +19,14 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
     await resultTabs.getByRole("button", {name:"투자구성", exact:true}).click();
     await expect(rendered.locator("[data-portfolio-type]")).toHaveCount(3);
     await expect(rendered.locator("[data-portfolio-type] .d-donut")).toHaveCount(3);
+    const choice = rendered.locator('[data-portfolio-apply="RETURN"]');
+    await choice.scrollIntoViewIfNeeded();
+    await choice.focus();
+    const position = await page.evaluate(() => scrollY);
+    await choice.press("Enter");
+    await expect(choice).toHaveAttribute("aria-pressed", "true");
+    await expect(choice).toBeFocused();
+    expect(Math.abs(await page.evaluate(() => scrollY) - position)).toBeLessThanOrEqual(1);
     await expect(rendered.locator("[data-portfolio-type] .d-pending-box")).toHaveCount(0);
     await expect(rendered.getByRole("button",{name:"재계산",exact:true})).toHaveCount(0);
     await expect(rendered.getByText(/검토용 초안 · 실제 가입|구성을 선택해 비교할 수 있어요|검토 조건을 모두 통과한 상품이 없어|배분 정책의 검토 기준일|도넛 가운데 표시/)).toHaveCount(0);
@@ -112,9 +120,14 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   await compositions.getByRole("button",{name:"투자 여력 확대",exact:true}).click();
   await expect(budget.locator("strong")).toHaveText(/88만\s*원/);
   await compositions.getByRole("button",{name:"생활 안정 우선",exact:true}).click();
-  await expect(rendered.locator('[data-portfolio-type="STABLE"]')).toContainText("현금 100%");
-  await expect(rendered.locator('[data-portfolio-type="BALANCED"]')).toContainText("현금 90%");
-  await expect(rendered.locator('[data-portfolio-type="RETURN"]')).toContainText("현금 80%");
+  for (const [type, percent] of [["STABLE", "100%"], ["BALANCED", "90%"], ["RETURN", "80%"]]) {
+    const card = rendered.locator(`[data-portfolio-type="${type}"]`);
+    const legend = card.getByRole("list", {name:"목표 비중 범례"});
+    await expect(legend.getByRole("listitem").filter({hasText:"현금"})).toContainText(percent);
+    const swatches = await legend.locator("i").evaluateAll(nodes => nodes.map(node => getComputedStyle(node).backgroundColor));
+    const slices = await card.locator(".d-donut circle[stroke-dasharray]").evaluateAll(nodes => nodes.map(node => getComputedStyle(node).stroke));
+    expect(swatches).toEqual(slices);
+  }
   await expect(compositions.locator("[data-portfolio-type] .d-donut")).toHaveCount(3);
   await rendered.getByRole("button",{name:"위험추구형 목표 비중 비교",exact:true}).click();
   await expect(rendered.getByRole("region",{name:"위험추구형 구성 상세"})).toContainText("상품 배분 확인 대기");
@@ -127,7 +140,14 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   await expect(productInfo.locator('[data-allocation-month="2027-01"]')).toHaveAttribute("data-allocated","0");
   const reference = productInfo.getByRole("region",{name:"채권 비교 후보",exact:true});
   await expect(reference).toContainText("현재 배분 보류");
-  await expect(reference.locator('[data-candidate-code="153130"]')).toContainText("KODEX 단기채권");
+  const shortBond = reference.locator('[data-candidate-code="153130"]');
+  await expect(shortBond).toContainText("KODEX 단기채권");
+  await expect(shortBond).toContainText("연간 보수·비용");
+  await expect(shortBond.getByText("비용 기준일", {exact:true})).toBeHidden();
+  await shortBond.getByText("공시 정보 더 보기", {exact:true}).press("Enter");
+  await expect(shortBond.getByText("비용 기준일", {exact:true})).toBeVisible();
+  await expect(shortBond.getByRole("link", {name:"공식 상품 자료 ↗"})).toHaveAttribute("href", /^https:\/\//);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
   await resultTabs.getByRole("button",{name:"결과·다음 행동",exact:true}).click();
   await expect(rendered.getByText(/위험 추구형 목표 비중 비교/)).toBeVisible();
   await expect(rendered.getByText("아직 고르지 않음",{exact:true})).toBeVisible();

@@ -96,6 +96,13 @@ test('public proposal opens result questions, edits the input and invokes print'
   const question = dialog.getByRole('textbox', {name:'현재 결과에 대한 질문'});
   await expect(question).toBeFocused();
   await expect(page).not.toHaveURL(/#dion-agent-consultation/);
+  await page.setViewportSize({width:390,height:844});
+  const panel = dialog.getByRole('region', {name:'현재 결과 다음 행동 상담'});
+  await expect(panel.getByText('미리보기 결과', {exact:false}).first()).toBeVisible();
+  await expect(panel.getByText(/내 결과, 다음에는|입력 버전 저장 전/)).toHaveCount(0);
+  await expect(panel.getByRole('button', {name:'로그인하고 결과 저장'})).toBeHidden();
+  await expect(panel.getByRole('group', {name:'예시 질문'})).toBeVisible();
+  expect(await panel.evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true);
   expect(sent).toEqual([]);
   await question.fill('돈이 남는데 왜 투자 배정이 적어요?');
   const answer = page.waitForResponse(response => response.url().endsWith('/api/fe/v1/preview/result-action'));

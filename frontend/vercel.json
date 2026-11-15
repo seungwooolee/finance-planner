@@ -2,6 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "git": {
     "deploymentEnabled": {
+      "codex/result-questions-investment-ui-20261116": false,
       "codex/consultation-portfolio-chat-20261116": false,
       "codex/results-copy-cleanup-20261116": false,
       "codex/proposal-question-action-20261116": false,
