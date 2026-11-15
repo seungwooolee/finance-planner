@@ -86,7 +86,7 @@ test("confirmed income change creates a new engine run and requires selection/st
   await panel(page).getByRole("button",{name:"변경안 보기 · 아직 답변에 적용하지 않음",exact:true}).click();
   await expect(panel(page).getByRole("region",{name:"원응답 변경 확인"})).toContainText("→");
   expect((await (await request.get(base,{headers})).json()).input_version).toBe(first.input_version);
-  await panel(page).getByLabel("표시된 미래 가정을 새 계산에 재사용하는 데 동의해요.").check();
+  await panel(page).getByRole("checkbox", {name:/바뀐 월 소득이 다음 달에도 이어지고/}).check();
   await panel(page).getByRole("button",{name:"변경 확인·새 초안 재계산",exact:true}).click();
   await expect(page.getByRole("status").filter({hasText:"선택한 새 초안과 같은 버전"})).toBeVisible();
   const saved = await (await request.get(`${base}/portfolio-reviews`,{headers})).json();
@@ -121,4 +121,58 @@ test("late review response cannot overwrite edited inputs or mark the old result
   await expect(amount).toHaveValue("0");
   await expect(page.getByRole("heading",{name:"최종 생성 완료 · 채택은 별도"})).toHaveCount(0);
   await expect(page.locator('.dion-app')).toHaveAttribute("data-view","quick");
+});
+
+
+test("saved chat leads directly to change review and locks the applied change in the final artifact", async ({page,request}) => {
+  test.setTimeout(240_000);
+  const {base,first} = await prepare(page,request,false,false,false,scenario.document);
+  await page.getByRole("button",{name:new RegExp(first.run_id)}).click();
+  await select(page);
+  for(let i=0;i<4;i++) await page.locator(".d-tabs button").nth(i).click();
+  const old = await (await request.get(base,{headers})).json();
+  await page.getByRole("button",{name:"dion AI 상담 열기",exact:true}).click();
+  const dialog = page.getByRole("dialog",{name:"dion AI 상담",exact:true});
+  await dialog.getByRole("button",{name:"동의하고 대화 시작",exact:true}).click();
+  const send = async (message: string) => {
+    const response = page.waitForResponse(r=>r.url().endsWith("/api/be/v1/dialogue")&&r.request().method()==="POST");
+    const input = dialog.getByRole("textbox",{name:"DION에게 메시지",exact:true});
+    await input.fill(message);
+    await input.press("Enter");
+    const reply = await response;
+    expect(reply.ok()).toBeTruthy();
+    await expect(dialog.getByRole("status",{name:"DION 답변 준비 중"})).toHaveCount(0);
+    return reply;
+  };
+  const fast = await send("월 잔여액 알려줘");
+  expect((await fast.json()).source).toBe("DETERMINISTIC");
+  expect(fast.headers()["server-timing"]).toContain("provider;dur=0");
+  await send("현금을 더 남기고 싶어요");
+  await expect(dialog.getByText(/매달 추가로 남기려는 현금인가요/)).toBeVisible();
+  await send("월 세후 소득 320만원");
+  await expect(dialog.getByText(/→ 320만원/)).toBeVisible();
+  await dialog.getByRole("button",{name:"이 상담 내용으로 최종안 검토",exact:true}).click();
+  await expect(dialog).not.toBeVisible();
+  const p = panel(page);
+  const handoff = p.getByRole("region",{name:"채팅에서 이어온 상담"});
+  await expect(handoff).toContainText("320만원");
+  await expect(p.getByRole("heading",{name:"DION과 함께 검토안을 완성해요"})).toBeFocused();
+  await p.getByRole("button",{name:"검토 내용 확인하고 상담 준비",exact:true}).click();
+  await p.getByRole("button",{name:"상담한 내용을 확인했어요",exact:true}).click();
+  const proposal = p.getByRole("region",{name:"원응답 변경 확인"});
+  await expect(proposal).toContainText("320만원");
+  expect((await (await request.get(base,{headers})).json()).input_version).toBe(old.input_version);
+  await expect(p.getByRole("button",{name:"변경 확인·새 초안 재계산",exact:true})).toBeDisabled();
+  await proposal.getByRole("checkbox",{name:/바뀐 월 소득이 다음 달에도 이어지고/}).check();
+  await p.getByRole("button",{name:"변경 확인·새 초안 재계산",exact:true}).click();
+  await expect(page.getByRole("status").filter({hasText:"선택한 새 초안과 같은 버전"})).toBeVisible();
+  await select(page); await confirmSteps(page);
+  await expect(p.getByText(/기존 납입 후 월 잔여액/).first()).toBeVisible();
+  await p.getByRole("button",{name:"기존안과 새 초안의 차이를 확인했어요",exact:true}).click();
+  await p.getByRole("button",{name:"최종 포트폴리오 생성",exact:true}).click();
+  const artifact = p.getByLabel("서버 최종 생성 기록");
+  await expect(artifact).toContainText("상담에서 반영한 변경");
+  await expect(artifact).toContainText("320만원");
+  await expect(artifact).toContainText("확인이 남은 사항");
+  expect((await (await request.get(base+"/plan",{headers})).json()).adoption).toBeNull();
 });

@@ -2,8 +2,15 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "git": {
     "deploymentEnabled": {
-      "codex/retirement-estate-result-20261116": false,
+      "codex/consultation-portfolio-chat-20261116": false,
+      "codex/results-copy-cleanup-20261116": false,
+      "codex/proposal-question-action-20261116": false,
+      "codex/portfolio-review-universe-20261116": false,
+      "codex/results-compact-review-20261116": false,
+      "codex/results-reference-cleanup-20261116": false,
+      "codex/peer-tax-guidance-20261116": false,
       "codex/inheritance-rag-20261115": false,
+      "codex/retirement-estate-result-20261116": false,
       "codex/workbook-demo-products-20261115": false,
       "codex/restore-pre-b11-results-20261115": false,
       "codex/restore-calculated-results-20261115": false,
@@ -79,7 +86,13 @@
       "codex/dion-parallel-pr-policy-20261115": false,
       "codex/dion-filled-workbook-cases-20261115": false,
       "codex/restore-dion-demo-versions-20261116": false,
-      "codex/group-dion-lifecycle-demos-20261116": false
+      "codex/group-dion-lifecycle-demos-20261116": false,
+      "codex/rollback-dion-to-pr85-20261116": false,
+      "codex/dion-workbook-home-cases-20261116": false,
+      "codex/dion-complete-workbook-demos-20261116": false,
+      "codex/dion-p1-household-portfolio-20261116": false,
+      "codex/dion-retirement-investment-month-20261116": false,
+      "codex/dion-asset-reference-scope-20261116": false
     }
   }
 }

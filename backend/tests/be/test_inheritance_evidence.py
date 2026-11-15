@@ -55,3 +55,18 @@ def test_public_lookup_only_exposes_inheritance_topics():
     client = TestClient(app)
     assert client.get(f"{BASE}/TAX-01").status_code == 404
     assert client.post(f"{BASE}/INH-RAG-01", json={"income": "5000000"}).status_code == 405
+
+
+def test_filing_and_debt_document_guide_uses_dated_nts_source(monkeypatch):
+    client = TestClient(app)
+    url = f"{BASE}/INH-RAG-07"
+    monkeypatch.setattr(guide, "reference_day", lambda: date(2026, 11, 15))
+    assert client.get(url).json()["citations"] == []
+    monkeypatch.setattr(guide, "reference_day", lambda: date(2026, 11, 16))
+    response = client.get(url)
+    assert response.status_code == 200, response.text
+    answer = response.json()
+    assert answer["status"] == "ANSWERED" and answer["source"] == "REGISTERED"
+    assert answer["item_id"] == "INH-RAG-07"
+    assert "채무" in answer["blocks"][0]["conditions"][0]["text"]
+    assert {urlsplit(c["official_url"]).hostname for c in answer["citations"]} == {"www.nts.go.kr"}

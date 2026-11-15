@@ -24,9 +24,10 @@ COHORTS = {
     "C17": "2023년 취업자 응답 가구",
     "C18": "2025년 19~34세 청년 설문 참여자",
     "C19": "2026년 투자 관심 앱 참여자",
+    "C20": "가구주 29세 이하 가구",
 }
 STAGES = {
-    "LC_EARLY_CAREER": ("사회초년생", ["C08", "C18", "C16"], "연령별 집단은 초기 근로경력 집단과 다릅니다."),
+    "LC_EARLY_CAREER": ("사회초년생", ["C20", "C18", "C16"], "가구주 연령별 통계예요. 사회초년생 전체나 1인 가구만의 통계는 별도로 제공되지 않아요."),
     "LC_NEWLYWED": ("신혼기", ["C10", "C11", "C12"], "혼인기간·초혼 여부·부부 합산 범위 확인이 필요합니다."),
     "LC_CHILDCARE": ("자녀 출산·양육기", ["C13"], "유자녀 초혼 신혼부부는 전체 양육 가구와 다릅니다."),
     "LC_SCHOOL_AGE": ("자녀 학령기", [], "학령기 조건에 맞는 통계값이 확보되지 않았습니다."),
@@ -57,6 +58,13 @@ def attach_peer_reference(document, result):
     asset_blocked = asset_result.get("calc_state") != "CALCULATED" or any(
         "OUT-02" in g.get("affected_outputs", [])
         for g in result.get("frontend_integration", {}).get("presentation_gates", []))
+    owners = context.get("included_owner_ids", [])
+    personal_values = {}
+    if context.get("scope") == "personal" and len(owners) == 1 and not asset_blocked:
+        for key, output in METRICS.items():
+            metric = asset_result.get(output, {})
+            if isinstance(metric, dict) and metric.get("calc_state") == "CALCULATED":
+                personal_values[key] = metric.get("value")
     rows = []
     for original in registry["records"]:
         row = copy.deepcopy(original)
@@ -85,7 +93,9 @@ def attach_peer_reference(document, result):
         "version": RULE_VERSION, "data_version": registry["data_version"], "data_sha256": digest(registry),
         "research_sha256": registry["research_sha256"], "input_sha256": result["adapter"]["source_sha256"],
         "input_version": document["raw_bundle"]["input_version"], "evaluation_on": context.get("evaluation_on"),
-        "scope": context.get("scope"), "stage_hints": hints, "records": rows,
+        "scope": context.get("scope"), "stage_hints": hints,
+        "primary_stage": primary if isinstance(primary, str) and primary in STAGES else None,
+        "personal_asset_values": personal_values, "records": rows,
         "comparison_state": "REFERENCE_ONLY", "direct_comparison_count": 0,
         "preference_reason": "외부 투자성향 조사의 원 질문·분류 절차와 이용조건이 확인되지 않아 DION 5단계 선호에 연결하지 않았습니다.",
     }

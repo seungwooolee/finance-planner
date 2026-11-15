@@ -813,11 +813,6 @@ def normalize_question_v12(document):
                     "raw_answer_preserved": True,
                 }
             )
-    # The question interface asks about overall coverage separately from confirming the financial inventory.
-    mapped = {answer["question_id"]: answer["raw_response"] for answer in answers}
-    scope = mapped.get("NEW-01", {})
-    if scope.get("asset_coverage") == "complete" and mapped.get("F06", {}).get("coverage") != "complete":
-        scope["asset_coverage"] = "partial"
     normalized = {
         "schema_version": "DION-ENGINE-1.0",
         "context": copy.deepcopy(context),
@@ -835,22 +830,6 @@ def normalize_question_v12(document):
         "issues": issues,
         "income_projection_assumption": copy.deepcopy(confirmations.get("NEW-02")),
     }
-
-
-def independent_overview_metrics(row, issues):
-    blocked = {issue["question_id"] for issue in issues}
-    # The pre-adapter overview can include a false zero when a whole answer was dropped.
-    # Publish only a calculated metric whose own inputs were unaffected.
-    independent = {}
-    if blocked <= {"F06", "F08", "NEW-09"}:
-        value = row.get("total_debt", {})
-        if value.get("calc_state") == "CALCULATED":
-            independent["total_debt"] = value
-    if blocked <= {"NEW-04", "F09+F10+D08"}:
-        value = row.get("total_assets", {})
-        if value.get("calc_state") == "CALCULATED":
-            independent["total_assets"] = value
-    return independent
 
 
 def run_question_v12(document):
@@ -884,7 +863,7 @@ def run_question_v12(document):
                     "issues": issues,
                     "partial_result": row,
                     "recommendation": False,
-                    **(independent_overview_metrics(row, issues) if oid == "OUT-02" else independent_flow),
+                    **independent_flow,
                 }
                 result["results"][oid] = row
             if oid == "OUT-05":

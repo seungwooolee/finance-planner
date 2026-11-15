@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Check, LayoutDashboard, PieChart, Scale, ShieldCheck, Wallet } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, LayoutDashboard, ShieldCheck } from "lucide-react";
 import { Document, Envelope, Json, Revision, blankDocument, catalog, clone, download, object, question, textValue } from "@/lib/dion/model";
 import { copy, customerStep, customerSteps, stepComplete } from "@/lib/dion/customer-flow";
 import { responseProgress } from "@/lib/dion/question-progress";
@@ -12,9 +12,10 @@ import { Cat, ConsultationWidget, HeaderCat, LoginDialog } from "./companions";
 import { Results, ViewResult } from "./results";
 import { ConsultationJourney } from "./consultation-journey";
 import { ResultExplanation } from "./result-explanation";
-import { InheritanceConsultation, type InheritanceDirection } from "./inheritance-consultation";
 import { ConsultationContent } from "./consultation-content";
-import { Scenario, ScenarioPicker, loadReviewScenarios } from "./scenario-picker";
+import { InheritanceConsultation, type InheritanceDirection, type InheritanceTopic } from "./inheritance-consultation";
+import type { ChatReviewHandoff } from "./chat-survey";
+import { Scenario, ScenarioPicker } from "./scenario-picker";
 import { PlanCheckin } from "./plan-checkin";
 import { ApiError, requestJson } from "@/lib/dion/wake-retry";
 import { reviewToolsEnabled } from "@/lib/dion/beta-config";
@@ -47,15 +48,22 @@ export function DionPlanner() {
   const [doc,setDoc]=useState<Document>(blankDocument), docRef=useRef(doc);
   const [mode,setMode]=useState<"welcome"|"quick"|"deep">("welcome");
   const [assumptionsOpen,setAssumptionsOpen]=useState(false);
-  const [openAssetOwners,setOpenAssetOwners]=useState(false);
   const [current,setCurrent]=useState("NEW-01"),[showResults,setShowResults]=useState(false),[tab,setTab]=useState(0);
   const [consultationOpen,setConsultationOpen]=useState(false);
+  const [estateTopic,setEstateTopic]=useState<InheritanceTopic|null>(null);
+  const [estateDirection,setEstateDirection]=useState<InheritanceDirection>("leave");
+  const [openAssetOwners,setOpenAssetOwners]=useState(false);
+  function openEstate(topic:InheritanceTopic) {
+    setEstateTopic(topic);
+    setEstateDirection(topic==="INH-RAG-02"?"leave":"receive");
+    setConsultationOpen(true);
+  }
   const [resultQuestionMode,setResultQuestionMode]=useState(false);
-  const [inheritanceDirection,setInheritanceDirection]=useState<InheritanceDirection|null>(null);
   const chatModeButton=useRef<HTMLButtonElement>(null);
   const [consultationTarget,setConsultationTarget]=useState<HTMLDivElement|null>(null);
   const [conversationResume,setConversationResume]=useState<{token:string;caseId:string;runId:string;sessionId:string}|null>(null);
   const [reviewResume,setReviewResume]=useState<ReviewResume|null>(null);
+  const [chatReview,setChatReview]=useState<{token:string;value:ChatReviewHandoff}|null>(null);
   const [checkinMonth,setCheckinMonth]=useState<string>();
   const [view,setView]=useState<ViewResult|null>(null),[history,setHistory]=useState<ViewResult[]>([]);
   const [busy,setBusy]=useState(false),[message,setMessage]=useState(""),[error,setError]=useState("");
@@ -76,6 +84,11 @@ export function DionPlanner() {
   const [actionSelection, setActionSelection] = useState<ActionBasis>();
   const sessionGeneration = useRef(0);
   const [actionFocus, setActionFocus] = useState(false);
+  function askAboutResult() {
+    setResultQuestionMode(true);
+    setConsultationOpen(true);
+    setActionFocus(true);
+  }
   const [actionSource, setActionSource] = useState("");
   const saveIntent = useRef<ReturnType<typeof previewSaveIntent> | null>(null);
   const loginSave = useRef(false);
@@ -134,8 +147,8 @@ export function DionPlanner() {
   },[busy]);
   useEffect(()=>{
     if(mode==="welcome"||showResults)return;
-    if (active === "F06" && openAssetOwners) {
-      const owners = document.getElementById("d-financial-asset-owners");
+    if (active==="F06"&&openAssetOwners) {
+      const owners=document.getElementById("d-financial-asset-owners");
       owners?.focus({preventScroll:true});
       owners?.scrollIntoView({block:"start"});
       return;
@@ -331,7 +344,10 @@ export function DionPlanner() {
   }
   async function verifyEarly(deep:boolean) {
     let early:Scenario|undefined;
-    try{early=(await loadReviewScenarios()).find(s=>s.id==="early");}catch{early=undefined;}
+    try{
+      const {default:cases}=await import("@/lib/dion/review-scenarios.json");
+      early=(cases as unknown as Scenario[]).find(s=>s.id==="early");
+    }catch{early=undefined;}
     if(!early){setError("검증용 가상 사례를 불러오지 못했어요. 네트워크를 확인한 뒤 다시 눌러 주세요.");return;}
     await verifyScenario(early,deep);
   }
@@ -421,23 +437,13 @@ export function DionPlanner() {
       <ServerWakeNotice waiting={waking} exhausted={wakeFailed} onRetry={()=>retryAction.current?.()}/>
       {message&&<div className="d-notice" role="status">{message}</div>}{error&&<div ref={errorRef} tabIndex={-1} style={{scrollMarginTop:"var(--d-question-scroll-offset, 96px)"}} className="d-warning" role="alert">{error}{view&&<p>마지막 결과는 이전 계산 기록으로 유지됩니다. 새 계산 성공을 뜻하지 않아요.</p>}</div>}
       {undoDraft&&<div className="d-undo" role="status">작성 화면을 바꿨어요.<button type="button" onClick={()=>{const previous=undoDraft;change(previous.doc);setFictional(previous.fictional);setServerVersion(null);connectedCase.current=null;pending.current=null;pendingAnalysis.current=null;saved.current={};setRuns([]);setShowResults(false);}}>이전 작성값으로 되돌리기</button></div>}
-      {reviewOpen&&<section className="d-review-tools" aria-label="검증용 사례 도구"><ScenarioPicker review disabled={busy||saveBusy} onLoad={loadScenario}/></section>}
       {reviewOpen&&mode==="welcome"&&<section className="d-review-tools" aria-label="저장 검증 도구">{verifyTools}</section>}
-      {mode==="welcome"?<section className="d-welcome"><div className="d-welcome-hero"><div><span className="d-eyebrow">MY FINANCIAL NEXT STEP</span><h1>내 재무를 한눈에</h1><p className="d-welcome-intro">소득·지출·자산을 정리하고, 내 목표에 맞는 두 가지 재무안을 비교해 보세요. 궁금한 점은 dion과 대화하며 확인할 수 있어요.</p></div>
-        <aside className="d-welcome-preview" aria-labelledby="d-welcome-preview-title"><h2 id="d-welcome-preview-title">진단 후 볼 수 있는 결과</h2><ol>
-          <li><span className="d-preview-icon" aria-hidden="true"><Wallet size={20}/></span><div><strong>내 재무현황</strong><small>소득·지출·자산 정리</small></div></li>
-          <li><span className="d-preview-icon" aria-hidden="true"><Scale size={20}/></span><div><strong>두 재무안 비교</strong><small>남는 돈을 나누는 두 방법</small></div></li>
-          <li><span className="d-preview-icon" aria-hidden="true"><PieChart size={20}/></span><div><strong>월 포트폴리오</strong><small>첫 계획 월 배정과 상품 구성</small></div></li>
-        </ol></aside></div>
-        <div className="d-columns"><button className="d-start" onClick={()=>setMode("quick")}><LayoutDashboard/><strong>빠른 진단</strong><em className="d-start-time">예상 약 3~5분</em><span>8개 화면 · 꼭 필요한 질문만</span><b>빠른진단 시작 →</b></button>
-          <button className="d-start light" onClick={()=>setMode("deep")}><ShieldCheck/><strong>정밀진단</strong><em className="d-start-time">예상 약 8~12분</em><span>목표·가정·투자 성향까지 점검</span><b>정밀진단 바로 시작 →</b></button></div>
-        <div className="d-sample"><ScenarioPicker inline disabled={busy||saveBusy} onLoad={loadScenario} onRestore={original.current?restoreOriginal:undefined}/></div>
-      </section>:<>
+      {mode==="welcome"?<section className="d-welcome"><div className="d-welcome-hero"><div><span className="d-eyebrow">MY FINANCIAL NEXT STEP</span><h1>내 재무를 한눈에,<br/><em>앞으로의 계획을 함께.</em></h1><p className="d-welcome-intro"><strong>나를 이해하는 AI 재무설계, dion</strong><span>내 재무상황을 정리하고<br/>앞으로의 계획을 살펴보세요. dion과 대화하며 함께 미래를 설계해요.</span></p></div><div className="d-welcome-cat"><div className="d-cat-bubble">좋은 삶은 작은 선택에서 시작된대.<br/>dion과 함께 원하는 내일을 그려볼까?</div><Cat kind="guide" size={300} eager/><span className="d-cat-label">돈 이야기, dion과 함께</span></div></div><div className="d-columns"><button className="d-start" onClick={()=>setMode("quick")}><LayoutDashboard/><strong>빠르게 현재 확인</strong><span>8개 화면 + 필요한 상세 질문</span><b>빠른진단 시작 →</b></button><button className="d-start light" onClick={()=>setMode("deep")}><ShieldCheck/><strong>목표와 가정까지 점검</strong><span>확인한 답변을 재사용하는 정밀 경로</span><b>정밀진단 바로 시작 →</b></button></div></section>:<>
         <ConsultationJourney active={showResults?(tab===4?3:2):1} canNavigate={!!view} onNavigate={next=>{setShowResults(true);setTab(next);}}/>
         {fictional&&!showResults&&<div className="d-fictional">가상 사례{scenario?` · ${scenario.title}`:""} · 실제 고객·계좌 자료 아님 · 기준일 {doc.context.evaluation_on}{scenario&&<><button className="d-secondary" onClick={restoreOriginal}>원래 입력으로 돌아가기</button><details><summary>현재 사례의 가정</summary><ul>{scenario.assumptions.map(a=><li key={a}>{a}</li>)}</ul></details></>}</div>}
 
         {busy&&<div ref={loadingRef} tabIndex={-1} style={{scrollMarginTop:"var(--d-question-scroll-offset, 96px)"}} className="d-loading" role="status"><span className="d-spinner"/><span>입력한 정보로 계산 중이에요. 처음 연결할 때는 약 1분 걸릴 수 있어요. 작성값은 그대로 유지돼요.</span></div>}
-        {showResults&&view?<Results onEditAssetOwners={()=>edit("F06",true)} onInheritance={direction=>{setInheritanceDirection(direction);setConsultationOpen(true);}} demoScenario={fictional&&scenario&&view.sourceSignature===signature(scenario.document)?scenario:undefined} consultationTarget={consultationTarget} closeConsultation={()=>setConsultationOpen(false)} recordMonth={checkinMonth} calcBar={<button type="button" className="d-secondary" disabled={busy} onClick={()=>void calculate()}>{busy?"계산 중…":"재계산"}</button>} onReadRun={openRun} onOpenRun={id=>restore(caseId,id)} onReviewResume={r=>{const pointer={caseId:r.case_id,runId:r.current_run_id,reviewId:r.review_id};rememberReviewResume(pointer);setReviewResume(pointer);}} actionFlow={{draft:actionSource===view.sourceSignature?actionDraft:{question:"",share:false},onDraft:draft=>{setActionSource(view.sourceSignature);setActionDraft(draft);},onSave:startConsultationSave,selection:actionSource===view.sourceSignature?actionSelection:undefined,onFocused:()=>setActionFocus(false),onLogin:basis=>{if(actionSource!==view.sourceSignature)setActionDraft({question:"",share:false});setActionSource(view.sourceSignature);setActionSelection(basis);loginSave.current=false;setActionFocus(true);setLoginOpen(true);},saving:saveBusy,focus:actionFocus,fictional}} evidenceAccess={token&&view.storage==="SAVED"&&view.runId&&view.serverVersion!==undefined&&view.inputHash&&textValue(object(object(view.source).context).case_id)===caseId?{token,caseId,runId:view.runId,version:view.serverVersion,inputHash:view.inputHash,evaluationOn:textValue(object(object(view.source).context).evaluation_on)}:undefined} key={`${view.runId ?? view.localVersion}-${view.sourceSignature}-${token}-${caseId}-${stale}`} token={token} caseId={caseId} technical={showReviewTools} view={view} deep={mode==="deep"} tab={tab} setTab={setTab} stale={stale} onEdit={edit} onRecalculate={busy?undefined:()=>void calculate()} checkin={(plan,tasks,portfolioSelection,portfolioBlocked,onAdoption)=>{const savedCase=textValue(object(object(view.source).context).case_id);return token&&view.storage==="SAVED"&&view.runId&&savedCase===caseId?<PlanCheckin key={`${view.runId}-${caseId}`} view={view} token={token} caseId={caseId} plan={plan} tasks={tasks} portfolioSelection={portfolioSelection} portfolioBlocked={portfolioBlocked} onEdit={edit} recordMonth={checkinMonth} onAdoption={onAdoption} onMonthChange={setCheckinMonth} onDraftCreated={(_id,version)=>{setView(v=>v?{...v,isCurrent:false,currentInputVersion:version}:v);setMessage("새 초안이 저장됐어요. 기존 채택은 유지되며 새 초안과 답변을 열어 최신 버전을 확인할 수 있어요.");}} onOpenDraft={(id)=>restore(caseId,id)}/>:<section className="d-note" aria-label="계획 선택과 이번 달 기록"><strong>계획 선택과 이번 달 기록</strong><p>로그인 후 저장한 계산 결과에서 계획을 선택하고 이번 달 실제 기록을 남길 수 있어요. 미리보기 결과는 저장되지 않아요.</p></section>;}}/>:<div className="d-input-layout"><aside className="d-sidebar"><span className="d-eyebrow">{mode==="deep"?"DEEP CHECK":"QUICK CHECK"}</span><h2>나의 재무정보</h2><p>확인한 값부터 한 걸음씩</p><div className="d-sidebar-coach"><Cat kind="coach" size={102}/><p>천천히 적어도 괜찮아요.<br/><strong>함께 살펴볼게요.</strong></p></div><nav aria-label="질문 이동">{ids.map((id,i)=><button key={id} aria-current={active===id?"step":undefined} onClick={()=>setCurrent(id)}><span>{stepComplete(doc,id)?<Check size={15}/>:String(i+1).padStart(2,"0")}</span>{copy[id]?.nav??question(id).source["항목"]}</button>)}</nav></aside>
+        {showResults&&view?<Results onAskResult={askAboutResult} onEstate={openEstate} onEditAssetOwners={()=>edit("F06",true)} chatHandoff={chatReview?.token===token&&chatReview.value.session.case_id===caseId&&chatReview.value.session.base_run_id===view.runId&&chatReview.value.session.base_input_hash===view.inputHash&&!stale?chatReview.value:undefined} consultationTarget={consultationTarget} closeConsultation={()=>setConsultationOpen(false)} recordMonth={checkinMonth} calcBar={<button type="button" className="d-secondary" disabled={busy} onClick={()=>void calculate()}>{busy?"계산 중…":"재계산"}</button>} onReadRun={openRun} onOpenRun={id=>restore(caseId,id)} onReviewResume={r=>{const pointer={caseId:r.case_id,runId:r.current_run_id,reviewId:r.review_id};rememberReviewResume(pointer);setReviewResume(pointer);}} actionFlow={{draft:actionSource===view.sourceSignature?actionDraft:{question:"",share:false},onDraft:draft=>{setActionSource(view.sourceSignature);setActionDraft(draft);},onSave:startConsultationSave,selection:actionSource===view.sourceSignature?actionSelection:undefined,onFocused:()=>setActionFocus(false),onLogin:basis=>{if(actionSource!==view.sourceSignature)setActionDraft({question:"",share:false});setActionSource(view.sourceSignature);setActionSelection(basis);loginSave.current=false;setActionFocus(true);setLoginOpen(true);},saving:saveBusy,focus:actionFocus,fictional}} evidenceAccess={token&&view.storage==="SAVED"&&view.runId&&view.serverVersion!==undefined&&view.inputHash&&textValue(object(object(view.source).context).case_id)===caseId?{token,caseId,runId:view.runId,version:view.serverVersion,inputHash:view.inputHash,evaluationOn:textValue(object(object(view.source).context).evaluation_on)}:undefined} key={`${view.runId ?? view.localVersion}-${view.sourceSignature}-${token}-${caseId}-${stale}`} token={token} caseId={caseId} technical={showReviewTools} view={view} deep={mode==="deep"} tab={tab} setTab={setTab} stale={stale} onEdit={edit} onRecalculate={busy?undefined:()=>void calculate()} checkin={(plan,tasks,portfolioSelection,portfolioBlocked,onAdoption)=>{const savedCase=textValue(object(object(view.source).context).case_id);return token&&view.storage==="SAVED"&&view.runId&&savedCase===caseId?<PlanCheckin key={`${view.runId}-${caseId}`} view={view} token={token} caseId={caseId} plan={plan} tasks={tasks} portfolioSelection={portfolioSelection} portfolioBlocked={portfolioBlocked} onEdit={edit} recordMonth={checkinMonth} onAdoption={onAdoption} onMonthChange={setCheckinMonth} onDraftCreated={(_id,version)=>{setView(v=>v?{...v,isCurrent:false,currentInputVersion:version}:v);setMessage("새 초안이 저장됐어요. 기존 채택은 유지되며 새 초안과 답변을 열어 최신 버전을 확인할 수 있어요.");}} onOpenDraft={(id)=>restore(caseId,id)}/>:<section className="d-note" aria-label="계획 선택과 이번 달 기록"><strong>계획 선택과 이번 달 기록</strong><p>로그인 후 저장한 계산 결과에서 계획을 선택하고 이번 달 실제 기록을 남길 수 있어요. 미리보기 결과는 저장되지 않아요.</p></section>;}}/>:<div className="d-input-layout"><aside className="d-sidebar"><span className="d-eyebrow">{mode==="deep"?"DEEP CHECK":"QUICK CHECK"}</span><h2>나의 재무정보</h2><p>확인한 값부터 한 걸음씩</p><div className="d-sidebar-coach"><Cat kind="coach" size={102}/><p>천천히 적어도 괜찮아요.<br/><strong>함께 살펴볼게요.</strong></p></div><nav aria-label="질문 이동">{ids.map((id,i)=><button key={id} aria-current={active===id?"step":undefined} onClick={()=>setCurrent(id)}><span>{stepComplete(doc,id)?<Check size={15}/>:String(i+1).padStart(2,"0")}</span>{copy[id]?.nav??question(id).source["항목"]}</button>)}</nav></aside>
           <section className="d-question"><div ref={questionStart} className="d-question-progress" style={{scrollMarginTop:"var(--d-question-scroll-offset, 96px)"}}><div className="d-progress-caption" aria-live="polite"><div><span className="d-progress-eyebrow">질문 응답 현황</span><strong>{progress.answered}<span> / {progress.total}개 응답</span></strong></div><div className="d-progress-percent"><strong>{progress.percent}</strong><span>%</span></div></div><div className="d-progress-cat-track" aria-hidden="true"><div style={{transform:`translateX(${progress.percent}%)`}}><Cat kind="guide" size={36}/></div></div><progress max={100} value={progress.percent} aria-label="질문 응답 진행률" aria-describedby="d-progress-help" aria-valuetext={`${progress.total}개 중 ${progress.answered}개 응답, ${progress.percent}%`}/><div className="d-progress-footer"><span>현재 {index+1} / {ids.length} 화면</span><p id="d-progress-help" className="d-progress-help">‘모름’도 응답에 포함돼요. 계산에 필요한 정보는 결과에서 따로 안내해요.</p></div></div>
             <div className="d-question-title"><span className="d-badge">{currentCopy?.nav}</span><h1 ref={questionHeading} tabIndex={-1} style={{scrollMarginTop:"var(--d-question-scroll-offset, 96px)"}}>{currentCopy?.title}</h1><p>{currentCopy?.help}</p></div>
             <QuestionForm key={active} id={active} doc={doc} onChange={change} openAssetOwners={openAssetOwners}/>
@@ -461,9 +467,9 @@ export function DionPlanner() {
           {runs.map(r=><div key={String(r.run_id)}><button className="d-run" disabled={saveBusy} onClick={()=>openRun(String(r.run_id))}>입력버전 {String(r.input_version)} · {({SUCCEEDED:"계산 완료",FAILED:"계산 실패",PARTIAL:"일부 계산"} as Record<string,string>)[String(r.status)]??String(r.status)} · {r.is_current?"최신 입력":"과거 입력"}<small>계산 기록 {String(r.run_id)} · {String(r.adapter_version??"이전 계약")}</small></button>
             <button type="button" className="d-text-button" disabled={saveBusy} onClick={()=>void openRun(String(r.run_id),'')}>입력버전 {String(r.input_version)} 결과·상담 내역 확인</button></div>)}
         </details>}
-    </main>{mode!=="welcome"&&<ScenarioPicker disabled={busy||saveBusy} onLoad={loadScenario} onRestore={original.current?restoreOriginal:undefined}/>}{loginOpen&&<LoginDialog onClose={()=>{loginSave.current=false;setLoginOpen(false);}} onLogin={(value,seconds)=>handleLogin(value,seconds)}/>}<ConsultationWidget compact={mode!=="welcome"} open={consultationOpen} onOpen={()=>{setInheritanceDirection(null);setConsultationOpen(true);}} onClose={()=>{setConsultationOpen(false);setInheritanceDirection(null);}}>
-      <div className="d-ai-content">{inheritanceDirection?
-        <InheritanceConsultation direction={inheritanceDirection} onDirection={setInheritanceDirection}/>:<>
+    </main><ScenarioPicker disabled={busy||saveBusy} onLoad={loadScenario} onRestore={original.current?restoreOriginal:undefined}/>{loginOpen&&<LoginDialog onClose={()=>{loginSave.current=false;setLoginOpen(false);}} onLogin={(value,seconds)=>handleLogin(value,seconds)}/>}<ConsultationWidget compact={mode!=="welcome"} open={consultationOpen} onOpen={()=>{setEstateTopic(null);setConsultationOpen(true);}} onClose={()=>{setConsultationOpen(false);setEstateTopic(null);}}>
+      <div className="d-ai-content">
+        {estateTopic ? <InheritanceConsultation key={estateTopic} direction={estateDirection} initialTopic={estateTopic} onDirection={setEstateDirection}/> : <>
         {showResults&&view&&<div className="d-ai-modes" role="group" aria-label="상담 방식">
           <button ref={chatModeButton} type="button" aria-pressed={!resultQuestionMode} onClick={()=>setResultQuestionMode(false)}>DION과 대화</button>
           <button type="button" aria-pressed={resultQuestionMode} onClick={()=>setResultQuestionMode(true)}>결과에 대해 질문</button>
@@ -472,6 +478,7 @@ export function DionPlanner() {
           <ConsultationContent doc={doc} onCommit={next=>{if(!saveLock.current)change(next);}} onCalculate={()=>{if(mode==="welcome")setMode("quick");void calculate();}} busy={busy||saveBusy}
             actionFlow={{draft:actionDraft,onDraft:setActionDraft,onSave:basis=>{if(token&&connectedCase.current===caseId&&serverVersion!==null)void saveAndCalculate();else startConsultationSave(basis);},onLogin:basis=>{setActionSelection(basis);setLoginOpen(true);},onFocused:()=>setActionFocus(false),saving:saveBusy,focus:false,fictional}}
             view={view} token={token} selectedCaseId={caseId} editVersion={doc.raw_bundle.input_version} stale={stale} open={consultationOpen}
+            onReview={value=>{setChatReview({token,value});setConsultationOpen(false);if(mode==="welcome")setMode("quick");setShowResults(true);setTab(4);}}
             onOpenResult={openRun} resumeSessionId={conversationResume?.token===token&&conversationResume.caseId===caseId&&conversationResume.runId===view?.runId?conversationResume.sessionId:undefined}
             onEdit={id=>{setConsultationOpen(false);edit(id);}} onResult={n=>{setConsultationOpen(false);if(mode==="welcome")setMode("quick");setShowResults(true);setTab(n);}}
             onLogin={()=>{setConsultationOpen(false);setLoginOpen(true);}} onSave={()=>{setConsultationOpen(false);setAccountOpen(true);accountPanel.current?.scrollIntoView({block:"center"});}}
@@ -484,7 +491,8 @@ export function DionPlanner() {
             onEdit={id=>{setConsultationOpen(false);edit(id);}} onSave={()=>{setConsultationOpen(false);if(!token)setLoginOpen(true);else if(fictional&&scenario)void verifyScenario(scenario,mode==="deep");else setAccountOpen(true);}}/>}
           <div ref={setConsultationTarget}/>
         </div>
-      </>}</div>
-    </ConsultationWidget><footer className="d-footer"><strong>dion.</strong><span>확인한 정보로, 나에게 맞는 다음 단계.</span>{mode!=="welcome"&&<small>계산 미리보기 · 상품 추천과 금융거래는 준비 중</small>}</footer>
+        </>}
+      </div>
+    </ConsultationWidget><footer className="d-footer"><strong>dion.</strong><span>확인한 정보로, 나에게 맞는 다음 단계.</span><small>계산 미리보기 · 상품 추천과 금융거래는 준비 중</small></footer>
   </div>;
 }

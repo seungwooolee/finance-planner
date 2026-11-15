@@ -18,11 +18,12 @@ from app.be.auth import get_actor
 from app.be.consultation_api import get_consultation_service, get_scheme_evidence_service
 from app.be.consultation_api import router as consultation_router
 from app.be.explanation_api import router as explanation_router
-from app.be.inheritance_evidence import router as inheritance_router
 from app.be.plan_api import router as plan_router
 from app.be.question_api import router as question_router
 from app.be.store import BackendStore
+from app.be.survey_api import get_chat_service
 from app.be.survey_api import router as survey_router
+from app.consultation.chat import ChatService, validate_chat
 from app.consultation.model_proposal import mock_proposal
 from app.consultation.rag import SchemeEvidenceService
 from app.consultation.rag_registry import EMPTY
@@ -40,11 +41,20 @@ def portfolio_corpus():
     return corpus(data)
 
 
+class ReviewChatProvider:
+    async def answer(self, request, identity, context):
+        draft = {"reply_template": "말씀하신 월 소득이 다음 달에도 이어지나요?", "action": "NONE",
+                 "candidates": [{"field_ref": "F03/monthly_net_income_krw", "source_text": "월 세후 소득 320만원",
+                                 "value_text": "320만원"}]}
+        return validate_chat(draft, request, context["claims"]), {}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=8002)
     parser.add_argument("--scheme-fixture", action="store_true", help="Enable test-only synthetic scheme evidence")
     parser.add_argument("--portfolio-fixture", action="store_true", help="Enable test-only product/tax evidence mappings")
+    parser.add_argument("--chat-review-fixture", action="store_true", help="Use a synthetic income-change reply for chat review")
     parser.add_argument("--conversation-fixture", action="store_true", help="Enable synthetic conversational replies, no model calls")
     parser.add_argument("--test-clock", help="TEST ONLY: timezone-aware ISO time for the month guard; store timestamps remain actual")
     args = parser.parse_args()
@@ -62,7 +72,6 @@ def main():
     app.include_router(question_router)
     app.include_router(explanation_router)
     app.include_router(consultation_router)
-    app.include_router(inheritance_router)
     app.include_router(plan_router)
     app.include_router(survey_router)
 
@@ -82,6 +91,9 @@ def main():
             consultation = ConsultationService(clock=lambda: datetime(2026, 11, 12, 5, tzinfo=timezone.utc),
                                                proposal_provider=mock_proposal)
             app.dependency_overrides[get_consultation_service] = lambda: consultation
+        if args.chat_review_fixture:
+            chat = ChatService(ReviewChatProvider())
+            app.dependency_overrides[get_chat_service] = lambda: chat
         if args.conversation_fixture:
             from tests.be.test_conversation_storage import Provider
             conversation = ConsultationService(assistant_provider=Provider())

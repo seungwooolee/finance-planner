@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- inspect the actual versioned engine response */
-import { openReviewCasePicker } from "./review-scenario-helpers";
 import { expect, test, type Page } from '@playwright/test';
 
 const preview = (page: Page) => page.waitForResponse(r => r.url().endsWith('/api/fe/v1/preview') && r.request().method() === 'POST');
 async function load(page: Page) {
   await page.goto('/dion');
-  await openReviewCasePicker(page);
+  await page.getByRole('button', { name: '가상 사례 불러오기', exact: true }).click();
   const pending = preview(page);
   await page.getByRole('button', { name: '상품 배분 검토 불러오기', exact: true }).click();
   const response = await pending;

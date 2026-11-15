@@ -17,6 +17,7 @@ from .portfolio_review_contract import (
     SessionBinding,
     StartReview,
 )
+from .survey_api import get_chat_service
 
 router = APIRouter(prefix="/cases/{case_id}/portfolio-reviews",
                    tags=["Consultation portfolio finalization"], dependencies=[Depends(private_read)])
@@ -56,8 +57,10 @@ def read(case_id: str, review_id: str, actor=Depends(get_actor), store=Depends(g
 
 def operation(name, model):
     def endpoint(case_id: str, review_id: str, value: model, checked=Depends(body),
-                 actor=Depends(get_actor), store=Depends(get_store)):
-        return invoke(service.mutate, store, actor, case_id, review_id, name, value.model_dump())
+                 actor=Depends(get_actor), store=Depends(get_store), chat=Depends(get_chat_service)):
+        key = value.chat_request_key if isinstance(value, SessionBinding) else None
+        basis = chat.review_basis(actor, key) if key else None
+        return invoke(service.mutate, store, actor, case_id, review_id, name, value.model_dump(), basis)
     endpoint.__name__ = "portfolio_review_" + name.replace("-", "_")
     return endpoint
 

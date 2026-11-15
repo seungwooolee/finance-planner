@@ -1,9 +1,11 @@
 """Independent amount expectations for the existing reviewed representative slots."""
+import json
 from copy import deepcopy
+from pathlib import Path
 
 import pytest
 
-from app.planning.product_allocation import block_product_budget
+from app.planning.product_allocation import block_product_budget, review_products
 from app.planning.product_candidates import comparison_groups
 from tests.planning.test_product_allocation import change, current_product_document, current_review, field
 
@@ -44,6 +46,10 @@ def test_restrictions_unknown_and_host_gate_apply_to_every_comparison():
     unknown = current_product_document()
     change(unknown, 'D19', 'product_understanding', {'state': 'UNKNOWN', 'raw_value': None, 'unit': 'TEXT'})
     blocked = current_review(unknown)
+    assert blocked["catalog_comparison"]["reviewed_on"] == "2026-11-13"
+    groups = {row["asset_group"]: row["product_codes"] for row in blocked["catalog_comparison"]["groups"]}
+    assert groups == {"CASH": [], "BOND": ["153130", "214980"], "KR_EQUITY": ["069500"],
+                      "US_EQUITY": ["360200", "360750", "379800"]}
     assert all(not v['selectable'] for c in blocked['candidates'] for r in c['rows']
                for v in r['portfolio_type_views'].values())
     result = {'results': {'OUT-06': deepcopy(current_review())}, 'calc_state': 'CALCULATED'}
@@ -67,7 +73,7 @@ def test_candidate_cap_and_unapproved_role_do_not_relax_filter():
 
 
 @pytest.mark.parametrize(('preference', 'targets', 'allocated'), [
-    ('PREF_STABILITY', ('PREF_STABILITY',) * 3, (0, 0, 0)),
+    ('PREF_STABILITY', ('PREF_STABILITY',) * 3, (0, 30000, 60000)),
     ('PREF_LEAN_STABILITY', ('PREF_STABILITY', 'PREF_LEAN_STABILITY', 'PREF_BALANCED'), (0, 90000, 90000)),
     ('PREF_BALANCED', ('PREF_LEAN_STABILITY', 'PREF_BALANCED', 'PREF_LEAN_RETURN'), (90000, 180000, 125520)),
     ('PREF_LEAN_RETURN', ('PREF_BALANCED', 'PREF_LEAN_RETURN', 'PREF_RETURN'), (180000, 139230, 125520)),
@@ -95,6 +101,28 @@ def test_fifteen_relative_choices_preserve_source_and_customer_limits(preference
             assert all(a['code'] == '153130' for a in v['allocations'])
 
 
+def test_p1_household_with_unknown_horizon_can_compare_distinct_targets():
+    doc = current_product_document()
+    doc["context"]["scope"] = "household"
+    change(doc, "F17", "risk_preference_choice_raw", field("PREF_STABILITY"))
+    change(doc, "NEW-10", "loss_tolerance_band_raw", field("LOSS_UNDER_5"))
+    funds = [{"fund_id": "monthly-one", "earliest_use_status": {"state": "UNKNOWN", "raw_value": None, "unit": "TEXT"}}]
+    change(doc, "F15", "investment_funds", field(funds, "JSON"))
+    doc["confirmations"] = [c for c in doc["confirmations"] if c["question_id"] != "F15"]
+    before = deepcopy(doc)
+    result = current_review(doc)
+    assert doc == before
+    assert result["portfolio_types"]["customer_preference"] == "PREF_STABILITY"
+    assert result["missing_question_ids"] == []
+    assert "FUND_USE_UNDECIDED" in result["reason_codes"]
+    views = result["candidates"][0]["rows"][0]["portfolio_type_views"]
+    for name, bonds in (("STABLE", 0), ("BALANCED", 1000), ("RETURN", 2000)):
+        v = views[name]
+        assert v["target_mix_bps"] == {"BOND": bonds, "CASH": 10000-bonds, "KR_EQUITY": 0, "US_EQUITY": 0}
+        assert v["comparison_only"] and not v["selectable"]
+        assert v["allocated_total_krw"] == "0" and v["unallocated_krw"] == "300000"
+
+
 @pytest.mark.parametrize('missing_id,key', [('D19', 'product_understanding'), ('F17', 'risk_preference_choice_raw')])
 def test_cash_only_choice_never_bypasses_unknown_inputs(missing_id, key):
     doc = current_product_document()
@@ -104,3 +132,37 @@ def test_cash_only_choice_never_bypasses_unknown_inputs(missing_id, key):
     assert review['calc_state'] == ('REVIEW_REQUIRED' if missing_id == 'D19' else 'NEEDS_INPUT')
     assert all(not v['selectable'] for c in review['candidates'] for r in c['rows']
                for v in r['portfolio_type_views'].values())
+
+
+
+def test_all_approved_product_rows_enter_screening_with_evidence_gates():
+    root = Path(__file__).resolve().parents[3]
+    registry = json.loads((root / "data/rag/registry/corpus-products-20261115.json").read_text(encoding="utf-8"))
+    expected = {source["source_id"].removeprefix("SRC-PRD-") for source in registry["sources"]
+                if source["source_id"].startswith("SRC-PRD-") and source["review_status"] == "APPROVED"}
+    review = current_review()
+    screened = {p["code"]: p for p in review["products"] if p["in_review_universe"]}
+    assert len(expected) == review["catalog"]["screening_candidate_count"] == 29
+    assert set(screened) == expected
+    assert "0091C0" not in screened
+    held = [p for p in screened.values() if p["state"] == "EXCLUDED_FROM_ALLOCATION"]
+    assert len(held) == 23
+    assert all("PRODUCT_FACTS_UNVERIFIED" in p["reason_codes"] for p in held)
+    assert all("PRODUCT_NOT_ENABLED" not in p["reason_codes"] for p in screened.values())
+    assert review["catalog"]["eligible_for_review_count"] == 6
+
+
+@pytest.mark.parametrize("pref_known", [True, False])
+def test_three_visible_targets_without_monthly_budget(pref_known):
+    doc = current_product_document()
+    if not pref_known:
+        doc["raw_bundle"]["answers"] = [a for a in doc["raw_bundle"]["answers"]
+                                         if a["envelope"]["question_ref"]["design_id"] != "F17"]
+    review = review_products(doc, {"results": {"OUT-05": {"calc_state": "NEEDS_INPUT"}}})
+    types = review["portfolio_types"]
+    assert types["comparison_basis"] == ("CUSTOMER_PREFERENCE" if pref_known else "GENERAL_COMPARISON")
+    assert set(types["comparison_targets"]) == {"STABLE", "BALANCED", "RETURN"}
+    assert all(sum(mix.values()) == 10_000 for mix in types["comparison_targets"].values())
+    assert len({tuple(mix.values()) for mix in types["comparison_targets"].values()}) == 3
+    assert review["candidates"] == []
+    assert review["recommended_new_investment_krw"] is None

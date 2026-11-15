@@ -1,6 +1,13 @@
 // Consumer of backend/app/be/portfolio_review_contract.py. No FE financial policy.
 import { type Envelope, type Field, type Json, object, list } from "./model";
 
+export const followupLabels = {
+  CASH_TARGET: "현금을 매달 더 남길 금액과 보유 현금 목표 중 어느 쪽인지 확인",
+  UNSUPPORTED_INPUT: "지원 범위를 벗어난 변경은 해당 입력에서 확인",
+};
+export type ReviewFollowup = keyof typeof followupLabels;
+export type ConsultationChange = {question_id: string; field_id: string; before: Field | null; after: Field};
+
 export const REVIEW_CONTRACT = "DION-PORTFOLIO-REVIEW-1.0";
 export type ReviewBasis = {
   run_id: string; input_version: number; input_hash: string; strategy_id: string;
@@ -10,14 +17,16 @@ export type PortfolioReview = {
   contract_version: typeof REVIEW_CONTRACT; review_id: string; case_id: string; revision: number;
   state: string; source_basis: ReviewBasis; basis: ReviewBasis | null; current_run_id: string;
   confirmed_steps: number[]; consultation: {session_id: string; start_session_version: number; start_turn_count: number;
-    completed_session_version: number | null; base_run_id: string; base_input_hash: string; completion: string | null} | null;
+    completed_session_version: number | null; base_run_id: string; base_input_hash: string; completion: string | null;
+    chat_verified?: boolean; followups?: ReviewFollowup[]} | null;
   proposal: {changes: {answer_revision_id: string; before: Envelope; after: Envelope}[];
     proposal_hash: string; state: string; projection_assumption: Record<string, Json>} | null;
   recalculation: {source_run_id: string; run_id: string; input_version: number; raw_snapshot_id: string;
     reviewed: boolean; comparison: Record<string, Json> | null; comparison_hash: string | null} | null;
   final: {final_id: string; sha256: string; generated_at: string; state: "GENERATED_NOT_ADOPTED";
     basis: ReviewBasis; plan: Record<string, Json>; product_rows: Record<string, Json>[]; raw_snapshot_id: string;
-    result_hash: string; adoption_at_generation: Json; scope: string} | null;
+    result_hash: string; adoption_at_generation: Json; scope: string;
+    consultation_changes?: ConsultationChange[]; consultation_followups?: ReviewFollowup[]} | null;
   incomplete_reasons: string[]; is_current: boolean; adoption_changed: false; transaction_executed: false;
   opening_text: string; summary_text: string; explanation_mode: "DETERMINISTIC_SAVED_RESULT";
 };
@@ -34,6 +43,13 @@ function basis(v: unknown): v is ReviewBasis {
     && integer(b.comparison_revision) && Number(b.comparison_revision) > 0
     && [b.policy_version, b.types_version, b.catalog_version].every(v => typeof v === "string" && v.length > 0);
 }
+function reviewField(v: unknown) {
+  const f = object(v);
+  return typeof f.state === "string" && typeof f.unit === "string" && Object.hasOwn(f, "raw_value");
+}
+function validFollowups(v: unknown) {
+  return v === undefined || (Array.isArray(v) && v.every(code => typeof code === "string" && Object.hasOwn(followupLabels, code)));
+}
 function envelope(v: unknown) {
   const e = object(v);
   return typeof object(e.question_ref).design_id === "string" && typeof object(e.context).scope_ref === "string"
@@ -46,7 +62,8 @@ export function validReview(value: unknown, caseId: string): value is PortfolioR
     && states.includes(String(r.state)) && basis(r.source_basis) && (r.basis === null || basis(r.basis)) && id(r.current_run_id)
     && Array.isArray(r.confirmed_steps) && r.confirmed_steps.every(s => [1, 2, 3, 4].includes(Number(s)) && typeof s === "number")
     && (r.consultation === null || (id(c.session_id) && integer(c.start_session_version) && integer(c.start_turn_count)
-      && (c.completed_session_version === null || integer(c.completed_session_version)) && id(c.base_run_id) && hash(c.base_input_hash)))
+      && (c.completed_session_version === null || integer(c.completed_session_version)) && id(c.base_run_id) && hash(c.base_input_hash)
+      && (c.chat_verified === undefined || typeof c.chat_verified === "boolean") && validFollowups(c.followups)))
     && (r.proposal === null || (hash(p.proposal_hash) && ["PROPOSED", "APPLIED", "REJECTED"].includes(String(p.state))
       && Array.isArray(p.changes) && p.changes.every(v => id(object(v).answer_revision_id) && envelope(object(v).before) && envelope(object(v).after))))
     && (r.recalculation === null || (id(rec.run_id) && id(rec.source_run_id) && integer(rec.input_version)
@@ -55,7 +72,12 @@ export function validReview(value: unknown, caseId: string): value is PortfolioR
         && list(object(rec.comparison).metrics).every(m => typeof m.key === "string" && typeof m.period === "string"
           && [m.before_krw, m.after_krw, m.difference_krw].every(v => v === null || (typeof v === "string" && /^-?\d+$/.test(v))))))))
     && (r.final === null || (id(f.final_id) && hash(f.sha256) && hash(f.result_hash) && basis(f.basis)
-      && f.state === "GENERATED_NOT_ADOPTED" && typeof f.generated_at === "string" && Array.isArray(f.product_rows)))
+      && f.state === "GENERATED_NOT_ADOPTED" && typeof f.generated_at === "string" && Array.isArray(f.product_rows)
+      && validFollowups(f.consultation_followups)
+      && (f.consultation_changes === undefined || (Array.isArray(f.consultation_changes)
+        && list(f.consultation_changes).length === f.consultation_changes.length
+        && list(f.consultation_changes).every(v => typeof v.question_id === "string" && typeof v.field_id === "string"
+          && (v.before === null || reviewField(v.before)) && reviewField(v.after))))))
     && (r.state !== "GENERATED" || r.final !== null) && typeof r.is_current === "boolean"
     && Array.isArray(r.incomplete_reasons) && r.incomplete_reasons.every(v => typeof v === "string")
     && typeof r.opening_text === "string" && typeof r.summary_text === "string" && r.explanation_mode === "DETERMINISTIC_SAVED_RESULT"

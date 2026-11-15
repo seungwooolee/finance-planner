@@ -1,5 +1,4 @@
 import { blankDocument, emptyEnvelope, field, record, type Field, type Json } from "./model";
-import { FILLED_EARLY_WORKBOOK_CASE, RETIREMENT_WORKBOOK_GOAL } from "./workbook-scenario-targets";
 import type { Scenario } from "@/components/dion/scenario-picker";
 
 // Submitted input workbook, revision 2026-11-15 23:50 KST. References are cell coordinates in each case tab.
@@ -77,7 +76,7 @@ function investmentAnswers(caseDraft: ReturnType<typeof workbookCase>, early: bo
 const earlyTitle = "5년 안에 자산 1억 원 모으기";
 
 async function earlyScenario(): Promise<Scenario> {
-  const draft = workbookCase(FILLED_EARLY_WORKBOOK_CASE, "2026-10-31", "personal", ["person_self"]);
+  const draft = workbookCase("FE-FICTIONAL-early-filled-workbook-v2", "2026-10-31", "personal", ["person_self"]);
   const {doc, add, confirm, ref} = draft;
   const period = {start: "2026-10-01", end: "2026-10-31"};
   doc.context.projection_start = "2026-11-01";
@@ -148,7 +147,7 @@ async function earlyScenario(): Promise<Scenario> {
   }])});
   investmentAnswers(draft,true);
 
-  return {id:"early",title:"사회초년생",group:"basic",purpose:earlyTitle,workbookGoal:earlyTitle,document:doc,
+  return {id:"early",title:"사회초년생",purpose:earlyTitle,document:doc,
     assumptions:["작성한 시트의 2026년 10월 실제 범위와 2026년 11월 시연 가정을 사용해요.",
       "자산 1억 원은 2031-10-31 목표 잔액이에요. 기존 자산과 구분해 기록해요."],
     inputGaps:[
@@ -213,7 +212,7 @@ function retiredScenario(): Scenario {
   ])});
   investmentAnswers(draft,false);
 
-  return {id:"retired",title:"은퇴기",group:"basic",purpose:RETIREMENT_WORKBOOK_GOAL,workbookGoal:RETIREMENT_WORKBOOK_GOAL,
+  return {id:"retired",title:"은퇴기",purpose:"은퇴 및 상속",
     document:doc, assumptions:["작성한 은퇴기 탭에 확인된 금액을 옮겼어요. 금융자산 6건은 보유 여부·명의·평가일 확인 전이에요.",
       "비상자금과 운영자금의 총목표는 시트에 명시한 1,000만원과 0원이에요. 이미 남겨둔 비상자금의 원래 자산은 미확인이에요.",
       "이자·분배금의 소득 포함 여부가 미확인이어서 월 소득에 별도 가산하지 않았어요."],

@@ -4,8 +4,9 @@ import {execFileSync} from "node:child_process";
 import {readFileSync} from "node:fs";
 import {expect,test,type Page} from "@playwright/test";
 import {AssetReference} from "../src/components/dion/asset-reference";
+import {PeerReference} from "../src/components/dion/peer-reference";
 import {INITIAL_ASSET_REFERENCE} from "../src/lib/dion/asset-reference";
-import {object, type Json} from "../src/lib/dion/model";
+import type {Json} from "../src/lib/dion/model";
 
 test.setTimeout(60_000);
 
@@ -16,47 +17,34 @@ test.beforeAll(()=>{
 import json
 from pathlib import Path
 from app.be.question_bridge import run_frontend_questions
-samples=json.loads(Path('../frontend/src/lib/dion/review-scenarios.json').read_text(encoding='utf-8'))
-result=run_frontend_questions(next(s['document'] for s in samples if s['id']=='early'))
-assert result['results']['OUT-02']['calc_state']=='CALCULATED'
-peer=result['peer_reference']
+doc=json.loads(Path('../frontend/src/lib/dion/product-review-scenario.json').read_text(encoding='utf-8'))['document']
+peer=run_frontend_questions(doc)['peer_reference']
 assert peer['version']=='DION-PEER-REFERENCE-1.0'
-assert len(peer['records'])==34
-assert peer['scope']=='personal'
+assert len(peer['records'])==42
 print(json.dumps(peer,ensure_ascii=True))
 `],{cwd:"../backend",encoding:"utf8",timeout:45000,maxBuffer:2_000_000}));
 });
-const css=["planner.css","asset-reference.css"].map(name=>readFileSync(`src/components/dion/${name}`,"utf8")).join("\n");
+const css=["planner.css","asset-reference.css","peer-reference.css"].map(name=>readFileSync(`src/components/dion/${name}`,"utf8")).join("\n");
 async function show(page:Page,element:React.ReactNode){
   await page.setContent(`<!doctype html><html lang="ko"><meta charset="utf-8"><style>body{margin:0} ${css}</style><body><div class="dion-app"><main class="d-main">${renderToStaticMarkup(element)}</main></div></body></html>`);
 }
-const assets=(value:Json|undefined,savedResult=false)=>React.createElement(AssetReference,{value,savedResult,stale:false,selection:INITIAL_ASSET_REFERENCE,onSelect:()=>{},onEdit:()=>{},onRecalculate:()=>{}});
+const assets=(value:Json|undefined,savedResult=false)=>React.createElement(AssetReference,{value,savedResult,stale:false,selection:INITIAL_ASSET_REFERENCE,onSelect:()=>{},onRecalculate:()=>{}});
 
-test("early-career preview shows three age-cohort figures without comparing personal balances",async({page},info)=>{
+test("preview engine snapshot renders asset and life-stage graphs immediately on desktop and mobile",async({page},info)=>{
   const original=JSON.stringify(reference);
   for(const [name,size] of [["desktop",{width:1440,height:1000}],["mobile",{width:390,height:844}]] as const){
     await page.setViewportSize(size);
-    await show(page,assets(reference));
-    const chart=page.getByRole("figure",{name:"현재 자산과 과거 조사 통계의 금액 그래프"});
-    await expect(chart).toBeVisible();
-    await expect(chart.getByRole("heading",{level:3})).toHaveText(["총자산","부채","순자산"]);
-    await expect(page.locator(".d-note").filter({hasText: /개인·가구 범위가 일치하지 않거나/})).toBeVisible();
-    await expect(page.getByRole("table")).toBeVisible();
-    expect(await page.locator('[data-asset-series="reference"]').evaluateAll(cells=>cells.map(cell=>cell.getAttribute('data-value')))).toEqual(["314980000","95480000","219500000"]);
-    await expect(page.locator('[data-asset-series="own"][data-value]')).toHaveCount(0);
-    await expect(page.getByRole("table").getByText("확인 대기",{exact:true})).toHaveCount(3);
+    await show(page,React.createElement(React.Fragment,null,assets(reference),React.createElement(PeerReference,{value:reference,stale:false})));
+    await expect(page.getByRole("figure",{name:"현재 자산 금액 그래프"})).toBeVisible();
+    const life=page.getByRole("region",{name:"생활단계 참고 통계",exact:true});
+    await expect(life.getByRole("combobox")).toHaveValue("C07");
+    await expect(life.getByRole("figure",{name:"총자산 참고 그래프",exact:true}).filter({hasText:"조사 평균"})).toBeVisible();
+    await expect(life.locator('[data-peer-series="own"]')).toHaveCount(0);
+    await expect(life.locator('[data-peer-series="reference"]')).not.toHaveCount(0);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
     await page.screenshot({path:info.outputPath(`reference-${name}.png`),fullPage:true});
   }
   expect(JSON.stringify(reference)).toBe(original);
-  const rows=object(reference).records;
-  expect(Array.isArray(rows)).toBeTruthy();
-  const old={...object(reference),data_version:"dion-peer-reviewed-20261114-v1",records:Array.isArray(rows)?rows.slice(0,28):[]};
-  await show(page,assets(old,true));
-  await expect(page.getByRole("figure").getByRole("heading",{level:3})).toHaveText(["총자산"]);
-  await expect(page.getByText(/이전 통계로 저장된 결과예요/)).toBeVisible();
-  await show(page,assets(old));
-  await expect(page.getByText(/현재 계산 서버가 이전 통계를 사용하고 있어요/)).toBeVisible();
 });
 
 test("fresh unsupported response never promises recalculation will supply data; saved result stays explicit",async({page})=>{
@@ -65,6 +53,6 @@ test("fresh unsupported response never promises recalculation will supply data; 
   await expect(page.getByRole("button",{name:/새 결과|다시 계산/})).toHaveCount(0);
   await expect(page.getByRole("figure")).toHaveCount(0);
   await show(page,assets(undefined,true));
-  await expect(page.getByRole("status")).toContainText("저장 원본은 그대로 보존해요");
+  await expect(page.getByRole("status")).toContainText("저장 결과에는 참고 통계가 포함되어 있지 않아요");
   await expect(page.getByRole("button",{name:"현재 입력으로 새 결과 만들기",exact:true})).toBeVisible();
 });

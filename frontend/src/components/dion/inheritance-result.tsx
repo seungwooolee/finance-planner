@@ -2,6 +2,7 @@
 
 import { type Document, fieldValue, list, object, record, states, textValue } from "@/lib/dion/model";
 import { fieldKrw, formatKrw } from "@/lib/dion/money-format";
+import type { InheritanceTopic } from "./inheritance-consultation";
 
 type Row = { id: string; label: string; amount: string; checks: string[] };
 
@@ -56,10 +57,11 @@ function debtRows(doc: Document): Row[] {
   });
 }
 
-export function InheritanceResult({doc, onEditOwners, onExplain}: {
+export function InheritanceResult({doc, onEditOwners, onEditInput, onExplain}: {
   doc: Document;
   onEditOwners: () => void;
-  onExplain: () => void;
+  onEditInput: (id: string) => void;
+  onExplain: (topic: InheritanceTopic) => void;
 }) {
   const assets = list(fieldValue(doc, "F06", "financial_assets"));
   const total = record(doc, "F06")?.envelope.fields.financial_assets_total_reported_krw;
@@ -84,6 +86,16 @@ export function InheritanceResult({doc, onEditOwners, onExplain}: {
     debts.push({id: "debt", label: "대출 잔액", amount: "미입력", checks: ["채무자·잔액 확인 필요"]});
   }
 
+  const preparation = [
+    {key:"ownership", title:"금융자산 명의", pending:financialChecks.some(check=>check.includes("명의")),
+      note:"계좌·자산별 명의와 최근 잔액 자료를 모아 두세요.", action:onEditOwners, actionLabel:"금융자산 명의 확인하기"},
+    {key:"property", title:"부동산 명의·지분", pending:properties.some(row=>row.checks.some(check=>check.includes("명의"))),
+      note:"등기사항증명서에서 소유자와 지분을 확인해 두세요.", action:()=>onEditInput("F08"), actionLabel:"부동산 입력 확인하기"},
+    {key:"debt", title:"채무 잔액과 증빙", pending:debts.length>0,
+      note:"채무자와 잔액 기준일을 확인할 수 있는 자료를 정리해 두세요.", action:()=>onEditInput("F09+F10+D08"), actionLabel:"채무 입력 확인하기"},
+  ];
+  const next = preparation.find(item=>item.pending);
+
   return <section className="d-card d-inheritance-result" aria-labelledby="d-inheritance-result-title">
     <div className="d-card-head">
       <h2 id="d-inheritance-result-title">유산·상속 준비 결과</h2>
@@ -100,9 +112,23 @@ export function InheritanceResult({doc, onEditOwners, onExplain}: {
         </tr>)}</tbody>
       </table>
     </div>
-    <div className="d-toolbar">
-      <button type="button" className="d-primary" onClick={onEditOwners}>금융자산 명의 확인하기</button>
-      <button type="button" className="d-secondary" aria-haspopup="dialog" onClick={onExplain}>왜 명의부터 확인하나요?</button>
-    </div>
+    <section aria-label="생전에 준비할 서류">
+      <h3>생전에 준비할 서류</h3>
+      {next && <p>다음 확인 · <strong>{next.title}</strong></p>}
+      <ul className="d-task-list">{preparation.filter(item => item.key==="ownership"
+        || (item.key==="property" ? properties.length>0 : debts.length>0)).map(item=><li key={item.key}>
+        <div><strong>{item.title}{item.pending ? " · 확인 필요" : ""}</strong><p>{item.note}</p>
+          <button type="button" className={item===next?"d-primary":"d-secondary"} onClick={item.action}>{item.actionLabel}</button>
+          {item.key==="ownership"&&<button type="button" className="d-text-button" aria-haspopup="dialog"
+            onClick={()=>onExplain("INH-RAG-02")}>왜 명의부터 확인하나요?</button>}</div>
+      </li>)}</ul>
+    </section>
+    <section aria-label="상속 개시 후 조회·신고">
+      <h3>상속 개시 후 조회·신고</h3>
+      <div className="d-toolbar">
+        <button type="button" className="d-secondary" aria-haspopup="dialog" onClick={()=>onExplain("INH-RAG-04")}>재산 조회 절차 보기</button>
+        <button type="button" className="d-secondary" aria-haspopup="dialog" onClick={()=>onExplain("INH-RAG-07")}>신고 서류와 채무 증빙 보기</button>
+      </div>
+    </section>
   </section>;
 }

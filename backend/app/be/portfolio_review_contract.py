@@ -65,11 +65,13 @@ class ConfirmSteps(Mutation):
 class SessionBinding(Mutation):
     session_id: Id
     expected_session_version: int = Field(ge=0)
+    chat_request_key: Id | None = None
 
 
 class CompleteConsultation(Mutation):
     expected_session_version: int = Field(ge=1)
     confirmed: Literal[True]
+    followups: list[Literal["CASH_TARGET", "UNSUPPORTED_INPUT"]] = Field(default_factory=list, max_length=2)
 
 
 class AnswerChange(ExactModel):
@@ -109,6 +111,8 @@ class SessionRef(ExactModel):
     base_run_id: Id
     base_input_hash: Hash
     completion: Literal["USER_REVIEWED_SAVED_CONSULTATION"] | None
+    chat_verified: bool = False
+    followups: list[Literal["CASH_TARGET", "UNSUPPORTED_INPUT"]] = Field(default_factory=list)
 
 
 class ReviewView(ExactModel):

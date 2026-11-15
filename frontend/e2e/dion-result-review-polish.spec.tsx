@@ -34,12 +34,13 @@ test("six stages and candidate reasons retain eligible/excluded/unknown distinct
     await expect(journey.getByRole("button",{name:"6. 실적·사후점검",exact:true})).toBeVisible();
     const eligible=page.locator('[data-comparison-product="TEST01"]');
     await expect(eligible).toContainText("0%");
+    await expect(eligible.locator("dt")).toHaveText(["연간 총보수·비용","매도 후 현금화","환율 영향","공시 위험등급"]);
     await expect(eligible.getByRole("region",{name:"원화 검토 후보 검토 이유"})).toContainText("서버가 확인한 답변");
     await expect(eligible.getByRole("region",{name:"원화 검토 후보 위험 이유"})).toContainText("원금 손실");
     const excluded=page.locator('[data-comparison-product="TEST02"]');
     await expect(excluded).toContainText("제외·보류");await expect(excluded).toContainText("환율 변동 수용 여부");
-    await expect(excluded.getByRole("heading",{name:"추천 후보로 검토하는 이유"})).toHaveCount(0);
-    await expect(page.locator('[data-comparison-product="TEST03"]')).toContainText("위험이 없다는 뜻은 아니며");
+    await expect(excluded.getByRole("heading",{name:"검토 이유",exact:true})).toHaveCount(0);
+    await expect(page.locator('[data-comparison-product="TEST03"]')).toContainText("저장된 위험 설명이 부족해요.");
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
     await page.screenshot({path:info.outputPath(`comparison-${name}.png`),fullPage:true});
   }

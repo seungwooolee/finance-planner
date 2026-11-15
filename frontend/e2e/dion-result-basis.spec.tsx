@@ -1,4 +1,3 @@
-import { openReviewCasePicker } from "./review-scenario-helpers";
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { expect, test } from '@playwright/test';
@@ -52,7 +51,7 @@ test('question branches and restored calculation evidence keep zero, unknown and
 
 test('result evidence is accessible beside the real financial results', async ({ page }, info) => {
   await page.goto('/dion');
-  await openReviewCasePicker(page);
+  await page.getByRole('button', { name: '가상 사례 불러오기', exact: true }).click();
   const pending = page.waitForResponse(r => r.url().endsWith('/api/fe/v1/preview') && r.request().method() === 'POST');
   await page.getByRole('button', { name: '사회초년생 불러오기', exact: true }).click();
   const response = await pending;

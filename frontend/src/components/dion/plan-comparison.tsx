@@ -4,7 +4,6 @@ import { type ReactNode } from 'react';
 import { Check, Scale, ShieldCheck, TrendingUp, TriangleAlert } from 'lucide-react';
 import { MoneyAmount } from "./money-amount";
 import { formatKrw } from '@/lib/dion/money-format';
-import { portfolioNames } from '@/lib/dion/portfolio-comparison';
 
 export const planName = (id: unknown) => id === 'STABILITY_FIRST' ? '생활 안정 우선' : '투자 여력 확대';
 export function PlanSelector({ selected, onSelect }: { selected: string; onSelect: (id: string) => void }) {
@@ -42,7 +41,7 @@ function AllocationBar({ row }: { row?: Record<string, Json> }) {
   return <div className="d-stack-bar" aria-hidden="true">{parts.map(([k, label]) => <span key={k} title={`${label} ${formatKrw(row[k])}`} style={{ width: `${Number(BigInt(row[k] as string) * 10000n / sum) / 100}%`, background: SEG_COLORS[k] }}/>)}</div>;
 }
 
-export function PlanComparison({ candidates, selected, onSelect, goals, basis, replay=false }: { candidates: Record<string, Json>[]; selected: string; onSelect: (id: string) => void; goals?: ReactNode; basis?: { runId?: string; inputVersion: number }; replay?:boolean }) {
+export function PlanComparison({ candidates, selected, onSelect, goals, basis }: { candidates: Record<string, Json>[]; selected: string; onSelect: (id: string) => void; goals?: ReactNode; basis?: { runId?: string; inputVersion: number } }) {
   const ordered = ['STABILITY_FIRST', 'INVESTMENT_CAPACITY'].map(id => candidates.find(c => c.strategy_id === id)).filter((c): c is Record<string, Json> => !!c);
   const first = ordered.map(c => list(c.rows)[0]);
   const period = textValue(first.find(Boolean)?.period);
@@ -62,10 +61,8 @@ export function PlanComparison({ candidates, selected, onSelect, goals, basis, r
         </span>
       </button>;
     })}</div>
-    <p className="d-inline-note d-flow-note">{replay?"화면 비교용 선택이에요. 기존 채택 기록은 바뀌지 않아요.":"화면 비교용 선택이에요. 계획 채택은 5번 화면의 ‘계획 선택과 이번 달 기록’에서 따로 저장해요."}</p>
-    {!replay&&<p className="d-inline-note d-plan-kinds">여기서는 남는 돈을 나누는 <strong>재무계획 2안</strong>을 비교해요. 투자 후보금을 어떤 비중으로 담을지는 3번 화면의 <strong>투자구성 3유형</strong>({Object.values(portfolioNames).join('·')})에서 따로 골라요.</p>}
     {first.length > 0 && <article className="d-card d-plan-diff" aria-label="첫 달 납입안 비교">
-      <div className="d-card-head"><h2><Scale size={20} aria-hidden="true"/> 남는 돈을 이렇게 나눠요</h2><small>{period ? `${period} 한 달` : '첫 달'} · 같은 계산 결과{basis ? `(입력 ${basis.inputVersion}번째 버전)` : ''}</small></div>
+      <div className="d-card-head"><h2><Scale size={20} aria-hidden="true"/> 남는 돈을 이렇게 나눠요</h2></div>
       <div className="d-plan-bars">{ordered.map((c, i) => <div key={textValue(c.strategy_id)} className={c.strategy_id === selected ? 'on' : undefined}><span>{planName(c.strategy_id)}</span><AllocationBar row={first[i]}/></div>)}</div>
       <ul className="d-legend-row">{FLOW_ROWS.map(([k, label]) => <li key={k}><i style={{ background: SEG_COLORS[k] }} aria-hidden="true"/>{label}</li>)}</ul>
       <div className="d-table-wrap"><table>
@@ -95,6 +92,5 @@ export function PlanComparison({ candidates, selected, onSelect, goals, basis, r
       </section>; })}
       {c.failure && <div className="d-warning">{textValue(object(c.failure).period).replace('-', '년 ')}월 · {typeof (object(c.failure).minimum_shortfall_krw ?? object(c.failure).shortfall_krw)==="string"?`최소 ${formatKrw(object(c.failure).minimum_shortfall_krw ?? object(c.failure).shortfall_krw)} 부족`:"부족액 확인 대기"}<p>{object(c.failure).on && <>지급일 {textValue(object(c.failure).on)} · </>}필수 지출·상환·목표 또는 보호자금 충족 조건을 확인해주세요. 부족액이 아직 계산되지 않았으면 확인 대기로 표시해요.</p></div>}
     </article>)}</div>
-    <p className="d-help">장기 수익·세금·비용을 임의로 추정하지 않아요. 월 납입안은 수익을 반영하지 않은 기준이에요.</p>
   </section>;
 }

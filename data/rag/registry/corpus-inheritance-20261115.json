@@ -1,13 +1,14 @@
 {
   "schema_version": "DION-RAG-CORPUS-1.0",
-  "corpus_version": "dion-inheritance-20261115-1.0",
+  "corpus_version": "dion-rag-inheritance-20261116-1.1",
   "item_ids": [
     "INH-RAG-01",
     "INH-RAG-02",
     "INH-RAG-03",
     "INH-RAG-04",
     "INH-RAG-05",
-    "INH-RAG-06"
+    "INH-RAG-06",
+    "INH-RAG-07"
   ],
   "item_labels": {
     "INH-RAG-01": "상속재산 평가 기준일",
@@ -15,7 +16,8 @@
     "INH-RAG-03": "사전증여 확인",
     "INH-RAG-04": "받을 상속의 재산 조회",
     "INH-RAG-05": "가구원과 법적 상속인",
-    "INH-RAG-06": "상속세·비용을 낼 현금"
+    "INH-RAG-06": "상속세·비용을 낼 현금",
+    "INH-RAG-07": "상속 개시 후 신고와 채무 자료"
   },
   "sources": [
     {
@@ -149,6 +151,28 @@
       "reviewed_on": "2026-11-15",
       "review_through": "2026-12-31",
       "review_ref": "ChatGPT 공모전용 설명 검토완료 · 사용자 자료 검증 2026-11-15 · https://docs.google.com/document/d/1BuNqlNmU6U9FW8CnGX8mte3hWOwOC8Eevbd5Tbc_ENk/edit?usp=drivesdk"
+    },
+    {
+      "source_id": "SRC-INH-RAG-07",
+      "source_version": "2026-11-16",
+      "source_kind": "REVIEWED_SUMMARY",
+      "access_scope": "PUBLIC",
+      "official_url": "https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=7722&mi=2328",
+      "title": "국세청 상속세 신고시 유의사항 · DION 검토 요약",
+      "issuer": "DION 내부 내용 검토",
+      "jurisdiction": "KR",
+      "original_text": "상속세 신고를 검토할 때 상속재산과 평가 내역, 채무·공과금의 명세를 정리해요.\n채무가 있다면 채무자 명의와 당시 잔액을 확인할 수 있는 자료를 확보해 두세요.\n제출 서류와 채무 인정 여부는 상속이 시작된 뒤 실제 사실관계에 따라 확인해요.",
+      "content_sha256": "17383b18c0a22e6a88120dcd629f31893a63d10eca8238bccaf0b7b94e484aef",
+      "collected_on": "2026-11-16",
+      "effective_from": "2026-11-16",
+      "effective_to": null,
+      "applicable_tax_years": [
+        2026
+      ],
+      "review_status": "APPROVED",
+      "reviewed_on": "2026-11-16",
+      "review_through": "2026-12-31",
+      "review_ref": "DION 내부 내용 검토 2026-11-16 · 국세청 신고서 작성 순서 및 제출서류"
     }
   ],
   "chunks": [
@@ -331,6 +355,36 @@
       "end": 199,
       "text": "부동산 시세를 즉시 쓸 수 있는 현금으로 보지 않아요. 개별 세액이나 연부연납 허가를 가정하지 않아요.",
       "chunk_sha256": "3ac681bf601408aab15367b80bd751d698185fb306258d3ded08e7bda92bcecf"
+    },
+    {
+      "chunk_id": "CHUNK-INH-RAG-07-1",
+      "source_id": "SRC-INH-RAG-07",
+      "source_version": "2026-11-16",
+      "section_ref": "국세청 신고서 작성 · 제출서류 / DION 요약",
+      "start": 0,
+      "end": 44,
+      "text": "상속세 신고를 검토할 때 상속재산과 평가 내역, 채무·공과금의 명세를 정리해요.",
+      "chunk_sha256": "a0b8385ec126cb9ea67d74d291721215d47656f309841da8344d90d4a1ecd2c1"
+    },
+    {
+      "chunk_id": "CHUNK-INH-RAG-07-2",
+      "source_id": "SRC-INH-RAG-07",
+      "source_version": "2026-11-16",
+      "section_ref": "국세청 신고서 작성 · 제출서류 / DION 요약",
+      "start": 45,
+      "end": 89,
+      "text": "채무가 있다면 채무자 명의와 당시 잔액을 확인할 수 있는 자료를 확보해 두세요.",
+      "chunk_sha256": "b6e2ccea70fd459543aa4575f1e3d9eb840b37e9cea606bb7a87c8715699ecd3"
+    },
+    {
+      "chunk_id": "CHUNK-INH-RAG-07-3",
+      "source_id": "SRC-INH-RAG-07",
+      "source_version": "2026-11-16",
+      "section_ref": "국세청 신고서 작성 · 제출서류 / DION 요약",
+      "start": 90,
+      "end": 134,
+      "text": "제출 서류와 채무 인정 여부는 상속이 시작된 뒤 실제 사실관계에 따라 확인해요.",
+      "chunk_sha256": "6bef567d0c7a5c33fafa76b89bd63ab07828b30f144efaa04e71045edf9d1800"
     }
   ],
   "citations": [
@@ -441,6 +495,24 @@
       "chunk_id": "CHUNK-INH-RAG-06-3",
       "start": 0,
       "end": 57
+    },
+    {
+      "citation_id": "CITE-INH-RAG-07-1",
+      "chunk_id": "CHUNK-INH-RAG-07-1",
+      "start": 0,
+      "end": 44
+    },
+    {
+      "citation_id": "CITE-INH-RAG-07-2",
+      "chunk_id": "CHUNK-INH-RAG-07-2",
+      "start": 0,
+      "end": 44
+    },
+    {
+      "citation_id": "CITE-INH-RAG-07-3",
+      "chunk_id": "CHUNK-INH-RAG-07-3",
+      "start": 0,
+      "end": 44
     }
   ],
   "claims": [
@@ -520,6 +592,19 @@
       ],
       "exception_ids": [
         "CITE-INH-RAG-06-3"
+      ]
+    },
+    {
+      "claim_id": "CLAIM-INH-RAG-07",
+      "item_id": "INH-RAG-07",
+      "condition_id": "RULE-INH-RAG-07",
+      "tax_year": 2026,
+      "statement_id": "CITE-INH-RAG-07-1",
+      "condition_ids": [
+        "CITE-INH-RAG-07-2"
+      ],
+      "exception_ids": [
+        "CITE-INH-RAG-07-3"
       ]
     }
   ]

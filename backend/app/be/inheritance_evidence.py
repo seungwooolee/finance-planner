@@ -13,7 +13,7 @@ from ..consultation.rag_registry import RegisteredCorpus
 router = APIRouter(prefix="/api/fe/v1/inheritance-evidence", tags=["Inheritance preparation"])
 
 CORPUS_PATH = Path(__file__).resolve().parents[3] / "data/rag/registry/corpus-inheritance-20261115.json"
-TOPICS = frozenset(f"INH-RAG-{number:02}" for number in range(1, 7))
+TOPICS = frozenset(f"INH-RAG-{number:02}" for number in range(1, 8))
 # This question is visible so users can see that an unresolved topic has no published answer.
 HELD_TOPIC = "INH-RAG-FILING"
 PUBLIC_BASIS = "public-inheritance-guide"

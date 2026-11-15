@@ -18,21 +18,27 @@ const topics = {
   receive: [
     {id: "INH-RAG-04", label: "남겨진 재산을 어디서 조회하나요?"},
     {id: "INH-RAG-05", label: "설문에 있는 가족이 모두 상속인인가요?"},
+    {id: "INH-RAG-07", label: "신고와 채무 증빙에는 무엇이 필요하나요?"},
     {id: "INH-RAG-FILING", label: "해외 거주 가족이 있으면 신고기한이 달라지나요?"},
   ],
 } as const;
 
 type Topic = (typeof topics)[InheritanceDirection][number];
+export type InheritanceTopic = Topic["id"];
 type Selection = {question: Topic};
 type Lookup = {selection: Selection; answer?: Answer; day?: string; error?: string};
 const directions = ["leave", "receive"] as const;
 const basis = "public-inheritance-guide";
 
-export function InheritanceConsultation({direction, onDirection}: {
+export function InheritanceConsultation({direction, initialTopic, onDirection}: {
   direction: InheritanceDirection;
+  initialTopic: InheritanceTopic;
   onDirection: (direction: InheritanceDirection) => void;
 }) {
-  const [selection, setSelection] = useState<Selection | null>(() => direction === "leave" ? {question: topics.leave[0]} : null);
+  const [selection, setSelection] = useState<Selection | null>(() => {
+    const question = topics[direction].find(item => item.id === initialTopic);
+    return question ? {question} : null;
+  });
   const [reply, setReply] = useState<Lookup | null>(null);
 
   useEffect(() => {

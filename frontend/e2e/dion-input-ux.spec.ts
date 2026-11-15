@@ -1,4 +1,3 @@
-import { loadProductReviewCase } from "./review-scenario-helpers";
 import { expect, test } from '@playwright/test';
 import { blankDocument, clone, field, fieldValue, record, revise, type Document } from '../src/lib/dion/model';
 import { selectLifeStage, stepComplete } from '../src/lib/dion/customer-flow';
@@ -98,19 +97,10 @@ for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 
     test.setTimeout(120_000);
     await page.setViewportSize(viewport);
     await page.goto('/dion');
-    await expect(page.getByRole('heading', { level: 1, name: '내 재무를 한눈에' })).toBeVisible();
-    const preview = page.getByRole('complementary', { name: '진단 후 볼 수 있는 결과' });
-    await expect(preview.getByRole('listitem')).toHaveCount(3);
-    await expect(preview.getByRole('button')).toHaveCount(0);
-    await expect(preview).not.toContainText(/\d/);
-    await expect(page.locator('.d-welcome-hero img')).toHaveCount(0);
-    for (const text of ['가상 데이터만 입력해 주세요', '계산 미리보기 · 상품 추천과 금융거래는 준비 중', '사회초년생 · 은퇴기', '예시로 결과 보기']) await expect(page.getByText(text)).toBeHidden();
-    await expect(page.getByRole('button', { name: /빠른 진단.*예상 약 3~5분/ })).toBeVisible();
-    await expect(page.getByRole('button', { name: /정밀진단.*예상 약 8~12분/ })).toBeVisible();
-    await expect(page.getByRole('button', { name: '심사용 가상사례 불러오기', exact: true })).toBeVisible();
-    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    await expect(page.locator('.d-welcome-hero')).toContainText('나를 이해하는 AI 재무설계, dion');
+    await expect(page.locator('.d-welcome-cat img')).toHaveAttribute('src', /cat-guide/);
     await page.screenshot({ path: info.outputPath('welcome.png'), fullPage: true });
-    await page.getByRole('button', { name: /빠른진단 시작/ }).click();
+    await page.getByRole('button', { name: /빠르게 현재 확인/ }).click();
     const progress = page.getByRole('progressbar', { name: '질문 응답 진행률' });
     await expect(progress).toHaveAttribute('value', '0');
     const initial = await progress.getAttribute('value');
@@ -181,7 +171,7 @@ for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 
     expect(Number.parseFloat(geometry.transition)).toBeLessThanOrEqual(0.001);
     // Load a current case through the existing engine path, then edit its amount with split units.
     await page.locator('.d-logo').click();
-    await loadProductReviewCase(page);
+    await page.getByRole('button', { name: '예시로 결과 보기 · 대표상품 포함', exact: true }).click();
     await expect(page.getByRole('region', { name: '계산 결과' })).toBeVisible();
     await page.getByRole('button', { name: '입력 내용 수정 ↗', exact: true }).click();
     const loaded = productExample.document as unknown as Document;

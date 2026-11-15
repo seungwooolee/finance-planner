@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "docs/research/peer-reference/research-snapshot.csv"
 DESTINATION = ROOT / "backend/app/planning/peer_reference_data.json"
 SUPPLEMENT = ROOT / "docs/research/peer-reference/asset-supplement-20261115.json"
+UNDER30 = ROOT / "docs/research/peer-reference/asset-under30-20261116.json"
 
 
 def normalize(value, unit):
@@ -27,7 +28,7 @@ def normalize(value, unit):
         return format(converted, "f") if unit == "%" else str(int(converted))
 
 
-def build(include_supplement=True):
+def build(include_supplement=True, *, include_under30=True):
     # Hash the canonical UTF-8/LF snapshot, independent of Windows checkout endings.
     raw = (SOURCE.read_text(encoding="utf-8-sig").rstrip() + "\n").encode("utf-8")
     tabs = [list(csv.DictReader(io.StringIO(part.strip())))
@@ -100,6 +101,31 @@ def build(include_supplement=True):
             records.append(template)
         registry.update({"data_version": supplement["data_version"], "reviewed_on": supplement["reviewed_on"],
                          "supplement_sha256": hashlib.sha256(supplement_text.encode("utf-8")).hexdigest()})
+        if include_under30:
+            text = UNDER30.read_text(encoding="utf-8").rstrip() + "\n"
+            appendix = json.loads(text)
+            for row in appendix["records"]:
+                template = base[row["template_id"]]
+                is_under30 = row["cohort_id"] == "C20"
+                statistic_type = row.get("statistic_type", "중앙값")
+                if appendix["source_id"] != template["source_id"] or row["statistic_id"] in seen:
+                    raise ValueError("unrecognized source or duplicate statistic")
+                seen.add(row["statistic_id"])
+                records.append({
+                    **template, "id": f"D{row['statistic_id'][1:]}", "statistic_id": row["statistic_id"],
+                    "cohort_id": row["cohort_id"],
+                    "cohort_definition": appendix["cohort_definition"] if is_under30 else template["cohort_definition"],
+                    "source_url": appendix["source_url"], "source_position": row["position"],
+                    "source_file_sha256": appendix["source_file_sha256"], "statistic_type": statistic_type,
+                    "source_value": row["value"], "value": normalize(row["value"], "만원"),
+                    "quality": f"공식 부록의 정수 만원 표시 {statistic_type}. 세부 표본수·표본오차는 확인되지 않았습니다.",
+                    "limitations": "가구주 연령 집단 전체이며 1인 가구 또는 사회초년생 전용 집단이 아닙니다."
+                    if is_under30 else template["limitations"],
+                    "definition": f"{template['label']}의 조사 집단 {statistic_type}",
+                    **({"source_raw_decimal": row["raw_value"]} if "raw_value" in row else {}),
+                })
+            registry.update({"data_version": appendix["data_version"], "reviewed_on": appendix["reviewed_on"],
+                             "under30_sha256": hashlib.sha256(text.encode("utf-8")).hexdigest()})
     return registry
 
 

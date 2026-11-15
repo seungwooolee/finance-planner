@@ -144,3 +144,57 @@ def test_unknown_execution_is_not_retryable_as_new_paid_request():
     with pytest.raises(HTTPException) as error:
         asyncio.run(ChatService(Provider()).answer("A", request(), {}))
     assert error.value.detail == {"code": "CHAT_REQUEST_UNCERTAIN", "retryable": False}
+
+
+def test_exact_lookup_and_cash_clarification_skip_model_but_complex_query_does_not():
+    claim = {"text": "기존 납입 후 월 잔여액 0원", "source_kind": "STORED_RESULT", "refs": ["/results/OUT-03"]}
+    claims = {"claims": {"MONTHLY_REMAINDER_AFTER_EXISTING": claim}}
+    class Provider:
+        calls = 0
+
+        async def answer(self, *args):
+            self.calls += 1
+            return validate_chat(draft(), request(), {}), {}
+
+    async def check():
+        provider = Provider()
+        service = ChatService(provider)
+        answer = await service.answer("A", request(message="월 잔여액 알려줘?"), claims)
+        assert answer["source"] == "DETERMINISTIC" and answer["reply"].endswith("0원")
+        assert answer["citations"][0]["refs"] == claim["refs"] and provider.calls == 0
+        clarification = await service.answer("A", request(message="현금을 더 남기고 싶어요", request_key="cash"), claims)
+        assert clarification["followup"] == "CASH_TARGET" and not clarification["candidates"] and provider.calls == 0
+        answer = await service.answer("A", request(message="월 잔여액이 줄어든 이유와 두 안 차이를 알려줘", request_key="compare"), claims)
+        assert answer["source"] == "ONEPORT" and provider.calls == 1
+
+    asyncio.run(check())
+
+
+def test_chat_evidence_only_includes_scoped_registered_spans(monkeypatch):
+    from datetime import datetime
+
+    from app.consultation import chat_context
+    from tests.rag_fixture import INJECTION, STATEMENT, corpus, manifest
+
+    class Clock(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return cls(2026, 11, 16, tzinfo=tz)
+
+    monkeypatch.setattr(chat_context, "datetime", Clock)
+    payload = manifest()
+    payload["item_ids"].append("CON-05")
+    payload["claims"][0]["item_id"] = "CON-05"
+    run = {"run_id": "chat", "input_hash": "a" * 64,
+           "engine_input": {"context": {"evaluation_on": "2026-11-01"}}}
+    context = {"claims": {}}
+    chat_context.add_public_evidence(context, run, "두 재무안 차이를 설명해 주세요", lambda: pytest.fail("unneeded lookup"))
+    assert not context["claims"]
+    chat_context.add_public_evidence(context, run, "환헤지 개념을 설명해 주세요", lambda: corpus(payload))
+    claim = context["claims"]["CHAT_PUBLIC_0"]
+    assert STATEMENT in claim["text"] and INJECTION not in claim["text"]
+    assert claim["sources"][0]["url"] == payload["sources"][0]["official_url"]
+    run["engine_input"]["context"]["evaluation_on"] = "2025-12-31"
+    context = {"claims": {}}
+    chat_context.add_public_evidence(context, run, "환헤지 개념을 설명해 주세요", lambda: corpus(payload))
+    assert not context["claims"]
