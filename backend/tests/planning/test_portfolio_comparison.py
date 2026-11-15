@@ -44,6 +44,10 @@ def test_restrictions_unknown_and_host_gate_apply_to_every_comparison():
     unknown = current_product_document()
     change(unknown, 'D19', 'product_understanding', {'state': 'UNKNOWN', 'raw_value': None, 'unit': 'TEXT'})
     blocked = current_review(unknown)
+    assert blocked["catalog_comparison"]["reviewed_on"] == "2026-11-13"
+    groups = {row["asset_group"]: row["product_codes"] for row in blocked["catalog_comparison"]["groups"]}
+    assert groups == {"CASH": [], "BOND": ["153130", "214980"], "KR_EQUITY": ["069500"],
+                      "US_EQUITY": ["360200", "360750", "379800"]}
     assert all(not v['selectable'] for c in blocked['candidates'] for r in c['rows']
                for v in r['portfolio_type_views'].values())
     result = {'results': {'OUT-06': deepcopy(current_review())}, 'calc_state': 'CALCULATED'}

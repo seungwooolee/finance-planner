@@ -6,7 +6,7 @@ import {resolve} from 'node:path';
 
 // Hydrate the real component and the same selection hook used by Results.
 // Uses installed Next webpack/TypeScript, with no app server or new dependency.
-test('selected cohort updates chart, table, sources and shared portfolio at desktop/mobile', async ({page}, info) => {
+test('selected cohort updates averages, sources and shared portfolio at desktop/mobile', async ({page}, info) => {
   test.setTimeout(120_000);
   const load = createRequire(resolve('package.json'));
   const {webpack} = load('next/dist/compiled/webpack/webpack');
@@ -45,27 +45,23 @@ print(json.dumps(attach_peer_reference(document,result)['peer_reference']))
       ['C09',['600950000','65040000','535910000']],
     ] as const) {
       await group.focus(); await group.selectOption(cohort);
-      await panel.getByRole('combobox',{name:'순자산 참고값',exact:true}).selectOption('평균');
       await expect(panel).toHaveAttribute('data-selected-cohort',cohort);
       expect(await panel.locator('[data-asset-series="reference"]').evaluateAll(els=>els.map(el=>el.getAttribute('data-value')))).toEqual([...values]);
       await expect(panel.locator('.d-asset-compare-metric')).toHaveCount(3);
-      await expect(panel.getByRole('figure')).toContainText(cohort==='C07'?'전체 일반가구':cohort==='C08'?'39세 이하':'60세 이상');
+      await expect(panel.getByRole('figure')).toContainText('조사 평균 · 가구');
     }
-    await panel.getByRole('combobox',{name:'순자산 참고값',exact:true}).selectOption('중앙값');
-    await expect(panel.locator('[data-statistic-id="V034"]')).toContainText('2억 5,000만원');
-    await panel.locator('summary').click();
-    await expect(panel.getByRole('link',{name:'2025년 가계금융복지조사 부록 통계표 ↗'}).first()).toHaveAttribute('href',/seq=8/);
-    await panel.locator('summary').click();
+    await expect(panel.locator('[data-statistic-id="V033"]')).toHaveCount(1);
+    await expect(panel.getByRole('link',{name:/가계금융복지조사/}).first()).toHaveAttribute('href',/list_no=439535/);
     await page.getByRole('button',{name:'포트폴리오로',exact:true}).click();
     await expect(panel).toHaveAttribute('data-asset-reference','final');
     await expect(group).toHaveValue('C09');
-    await expect(panel.locator('[data-statistic-id="V034"]')).toHaveCount(1);
+    await expect(panel.locator('[data-statistic-id="V033"]')).toHaveCount(1);
     expect(await panel.locator('[data-asset-series="own"]').evaluateAll(els=>els.map(el=>el.getAttribute('data-value')))).toEqual(['0','10000000','-10000000']);
     await expect(panel).toHaveAttribute('data-input-version','7');
     await group.selectOption('C08');
     await page.getByRole('button',{name:'재무현황으로',exact:true}).click();
     await expect(group).toHaveValue('C08');
-    await expect(panel.locator('[data-statistic-id="V031"]')).toHaveCount(1);
+    await expect(panel.locator('[data-statistic-id="V030"]')).toHaveCount(1);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
     await page.screenshot({path:info.outputPath(`cohort-${width}.png`),fullPage:true});
   }

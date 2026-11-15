@@ -42,7 +42,7 @@ def test_registry_reproducible_existing_and_under30_rows():
     assert len(original["records"]) == 28
     assert registry["records"][:28] == original["records"]
     assert registry["research_sha256"] == original["research_sha256"]
-    assert len(registry["records"]) == 39
+    assert len(registry["records"]) == 42
     previous = importer["build"](include_under30=False)
     assert registry["records"][:34] == previous["records"]
     assert registry["data_version"] != original["data_version"]
@@ -50,11 +50,13 @@ def test_registry_reproducible_existing_and_under30_rows():
     assert [r["value"] for r in registry["records"][28:34]] == [
         "95480000", "219500000", "126400000", "65040000", "535910000", "250000000"]
     assert [r["statistic_type"] for r in registry["records"][28:34]] == ["평균", "평균", "중앙값"] * 2
-    assert [(r["cohort_id"], r["statistic_type"], r["value"]) for r in registry["records"][34:]] == [
+    assert [(r["cohort_id"], r["statistic_type"], r["value"]) for r in registry["records"][34:39]] == [
         ("C20", "중앙값", "72600000"), ("C20", "중앙값", "50000000"),
         ("C07", "중앙값", "302700000"), ("C08", "중앙값", "204200000"), ("C09", "중앙값", "280600000")]
     published = [r for r in registry["records"] if r["review_status"] == "REFERENCE_ONLY"]
-    assert len(published) == 26
+    assert len(published) == 29
+    assert [(r["cohort_id"], r["statistic_type"], r["value"]) for r in registry["records"][39:]] == [
+        ("C20", "평균", "155000000"), ("C20", "평균", "47030000"), ("C20", "평균", "107960000")]
     assert {r["source_id"] for r in published} == {"S01", "S03"}
     assert all(r["license"] == "KOGL_TYPE_1" for r in published)
 
