@@ -1,0 +1,329 @@
+{
+  "schema_version": "DION-OVERNIGHT-JUDGE-1.0",
+  "audit_base_sha": "1fad08138bc28c1363de0a1cee0a7302925b0dcc",
+  "audit_base_git_tree": "68e9f7bfaf9b898566d561c3e4443a33a33d6956",
+  "package_version": "0.11.0",
+  "started_at": "2026-11-15T09:37:01+09:00",
+  "evidence_finalized_at": "2026-11-15T10:16:42.018101+09:00",
+  "time_budget_minutes": 120,
+  "branch": "codex/overnight-judge-20261115",
+  "checkout": "C:\\Users\\LG\\Projects\\DION-overnight-judge-20261115",
+  "execution_environment": {
+    "http": "FastAPI TestClient / actual production routers in-process",
+    "local_listener_started": false,
+    "engine": "Pinned production Decimal engine",
+    "auth": "MOCK SYNTHETIC TWO IDENTITIES",
+    "database": "Separate local SQLite files, never operating PostgreSQL writes",
+    "llm": "LIVE ONEPORT production adapters with independent authorized audit grant",
+    "provider_credentials": "Existing configuration read-only; memory only; no secret retained",
+    "browser": "Existing shared previews 3386/3338; full journey UNVERIFIED",
+    "python": "C:/Users/LG/Projects/DION-git/backend/.venv/Scripts/python.exe"
+  },
+  "cases": {
+    "A": {
+      "case_id": "overnight-a-0613ca028b",
+      "run_id": "run_abb7b7f8e88542c9908d91450425d75b",
+      "input_version": 25,
+      "input_hash": "f312c7c8ac665eb6a4ea9df7a203e199b0718e6161b036e4104219a9fdec3d4c",
+      "status": "SUCCEEDED",
+      "context": {
+        "evaluation_on": "2026-11-13",
+        "scope": "personal",
+        "included_owner_ids": [
+          "person_self"
+        ],
+        "currency": "KRW",
+        "timezone": "Asia/Seoul",
+        "projection_start": "2026-12-01",
+        "projection_end": "2026-12-31",
+        "case_id": "overnight-a-0613ca028b",
+        "snapshot_id": "raw_7a9ba3434f8b46108ca55a34227f0436",
+        "profile_version": "25"
+      },
+      "review_id": "prv_261ed3a65ef1483db938d0d618880d60",
+      "session_id": "agent_7b6a0e10a5e7842418f08e609546157cc2f1aea5441916a19e24a4b685fb17fc",
+      "adoption_id": "adp_98d5425abbe94b81980fe2d331750fc3"
+    },
+    "B-isolated-recheck": {
+      "case_id": "overnight-b-isolated-recheck-fd47f61e2a",
+      "run_id": "run_d5d82fa9d4f344cabe65880236ecd49e",
+      "input_version": 13,
+      "input_hash": "3130725820e67e03a78978600b8f4cd016e0c84b2b84123b556dd0afd67ba7f9",
+      "status": "SUCCEEDED",
+      "context": {
+        "evaluation_on": "2026-11-30",
+        "scope": "household",
+        "included_owner_ids": [
+          "adult-1",
+          "adult-2"
+        ],
+        "currency": "KRW",
+        "timezone": "Asia/Seoul",
+        "projection_start": "2026-12-01",
+        "projection_end": "2027-02-28",
+        "case_id": "overnight-b-isolated-recheck-fd47f61e2a",
+        "snapshot_id": "raw_d1f1d3cf94a2428fa6e14f2203a8d814",
+        "profile_version": "13"
+      }
+    },
+    "C-retired": {
+      "case_id": "overnight-c-retired-a22a154b59",
+      "run_id": "run_745b361ba3b64d21ac291b6ef28562cb",
+      "input_version": 22,
+      "input_hash": "a5676fb9aa31ded33cee443000057b2ab618aae51ff8e47f31b26c703a332770",
+      "status": "SUCCEEDED",
+      "context": {
+        "evaluation_on": "2026-10-31",
+        "scope": "personal",
+        "included_owner_ids": [
+          "person_self"
+        ],
+        "currency": "KRW",
+        "timezone": "Asia/Seoul",
+        "projection_start": "2026-11-01",
+        "projection_end": "2026-11-30",
+        "case_id": "overnight-c-retired-a22a154b59",
+        "snapshot_id": "raw_b350a89c5b1f40cca1e9e79bc754d503",
+        "profile_version": "22"
+      }
+    },
+    "D-Past-Month": {
+      "case_id": "overnight-d-past-month-88dae02ed4",
+      "run_id": "run_5b5c7cdf01194661b99550bcb5c78a73",
+      "input_version": 13,
+      "input_hash": "419b00110a6029d077762448d94ea8dfd80308b397025425a1d95c4afdf74a0e",
+      "status": "SUCCEEDED",
+      "context": {
+        "evaluation_on": "2026-09-30",
+        "scope": "personal",
+        "included_owner_ids": [
+          "person_self"
+        ],
+        "currency": "KRW",
+        "timezone": "Asia/Seoul",
+        "projection_start": "2026-10-01",
+        "projection_end": "2026-10-31",
+        "case_id": "overnight-d-past-month-88dae02ed4",
+        "snapshot_id": "raw_9aa2bd1318704a2fa248bd65ca2d39b2",
+        "profile_version": "13"
+      },
+      "adoption_id": "adp_606d7b4293724180a9e0bcb13b6ccdeb",
+      "checkin_id": "chk_49c0ea23466f4722a8f639e49e3819f6",
+      "draft_id": null,
+      "draft_run_id": "run_7786af0ebd11457090837cb1e0e54609"
+    },
+    "E-R3-synthetic-user": {
+      "case_id": "overnight-e-r3-synthetic-user-885f672680",
+      "run_id": "run_ff7b8b1cb18e48d798cfc06dbd6e8bf3",
+      "input_version": 14,
+      "input_hash": "1d0260b13661ef24001b12777f10944baa90e054e2bed02c8615a36684ed8789",
+      "status": "SUCCEEDED",
+      "context": {
+        "evaluation_on": "2026-10-31",
+        "scope": "personal",
+        "included_owner_ids": [
+          "person_self"
+        ],
+        "currency": "KRW",
+        "timezone": "Asia/Seoul",
+        "projection_start": "2026-11-01",
+        "projection_end": "2026-11-30",
+        "case_id": "overnight-e-r3-synthetic-user-885f672680",
+        "snapshot_id": "raw_a235d96f16f84a65a6be47d49c63b858",
+        "profile_version": "14"
+      },
+      "session_id": "agent_c360d31dd8562a0b155dc28e25e596a59799cd55bdef73c1d0897bed1484156f",
+      "scenario_id": "scenario_a7e8c5658c4f4cbaa622cbf457ddc9c3"
+    }
+  },
+  "case_provenance": {
+    "A": {
+      "source": "frontend/src/lib/dion/product-review-scenario.json",
+      "version": "Existing pinned product-review example",
+      "same_case_scope": "Input/analysis/comparison/final generation/adoption and saved-run explanations"
+    },
+    "B-isolated-recheck": {
+      "source": "docs/contest/2026-11-14/lead/cases/b1.1/browser-input.json",
+      "case_version": "DION-CONTEST-B-20261114-1.1",
+      "note": "Original A-shared registry attempt failed NEW-01 definition conflict. One separate-registry recheck; source unchanged; PARTIAL is not full success."
+    },
+    "C-retired": {
+      "source": "frontend/src/lib/dion/review-scenarios.json#retired",
+      "note": "Reused existing retirement case rather than creating initially contemplated unknown-pension variant. Unknown pension conversation tested separately in L7; not a complete server-side pension variant test."
+    },
+    "D-Past-Month": {
+      "source": "backend/examples/planning-v1.1/question_v121_input.json",
+      "derivation": "Existing test_checkin_followup.october helper and explicit zero-return/unchanged-living assumption; separate synthetic October case",
+      "same_case_scope": "Adoption/partial actuals/exact comparison/new income draft/old adoption retained"
+    },
+    "E-R3-synthetic-user": {
+      "source": "tests.be.test_explanation.document()",
+      "derivation": "Existing R3 test setup; fictional user-reported facts, remove future-income assumption, no source file edits",
+      "expected_before_generation": "3000000→3500000 income; 900000→1400000 remaining; difference 500000; NOT_APPLIED",
+      "same_case_scope": "Live extraction/two explicit confirmations/hypothetical comparison/original run unchanged"
+    }
+  },
+  "fixed_expectations": "evidence/expectations.json; supplemental R3/RAG expectations codified in local methods before their individual calls",
+  "local_method_fingerprints": {
+    "api_audit.py": {
+      "local_path": "C:\\Users\\LG\\Projects\\DION-overnight-judge-20261115\\artifacts\\overnight\\api_audit.py",
+      "sha256": "ddb8222ebed69dd5233b86440c4a3ee5977e9968ca16830337d105e2ef5d468a"
+    },
+    "continue_audit.py": {
+      "local_path": "C:\\Users\\LG\\Projects\\DION-overnight-judge-20261115\\artifacts\\overnight\\continue_audit.py",
+      "sha256": "0126debc07f9d35138f8c0affc0c5b1146dc054aa79ed2bcc8b731a7362318d5"
+    },
+    "boundary_audit.py": {
+      "local_path": "C:\\Users\\LG\\Projects\\DION-overnight-judge-20261115\\artifacts\\overnight\\boundary_audit.py",
+      "sha256": "fc6775f13d65507ce00ad5747f3c8bbec831619f5dd60911d05d643090844e09"
+    },
+    "r3_live.py": {
+      "local_path": "C:\\Users\\LG\\Projects\\DION-overnight-judge-20261115\\artifacts\\overnight\\r3_live.py",
+      "sha256": "b9aff431067ce3113555c3aeb467e3ad3f857a11645bd87eac7e137de9d554b5"
+    },
+    "rag_live.py": {
+      "local_path": "C:\\Users\\LG\\Projects\\DION-overnight-judge-20261115\\artifacts\\overnight\\rag_live.py",
+      "sha256": "05d7ca4d51de086d5a6888e9f6a9e1f7abccf2fedc4d2643c7a6013fc834d8ca"
+    },
+    "grade.py": {
+      "local_path": "C:\\Users\\LG\\Projects\\DION-overnight-judge-20261115\\artifacts\\overnight\\grade.py",
+      "sha256": "d6ab871540a16c049e8d2c899f9caec9623fefcb2c587641012d2fb3fc95726e"
+    }
+  },
+  "source_hashes": {
+    "frontend/src/lib/dion/product-review-scenario.json": "f4b334c543181d1ebafd4dc035e53e0be91bc1b02eaf8a8731e78e354f968c9f",
+    "frontend/src/lib/dion/review-scenarios.json": "8b34558b7350ab70f13d260aeb08d0b40c285780dae39bf499b3b4901e4100d0",
+    "docs/contest/2026-11-14/lead/cases/b1.1/browser-input.json": "9a87a8c585ce73379264dd4b2364d784d6d6898469448408e563ff57cca51eb6",
+    "backend/examples/planning-v1.1/question_v121_input.json": "68147a8c2dbbe8d6b33a813664e5f66c593e5734e3c39c42b0cbbbedca28ce75",
+    "data/rag/registry/corpus-products-20261115.json": "3eb74b812535d18f73ab7adfd172361a53a56465a74a308fb7f01c19df280e84",
+    "AGENTS.md": "ebb1c9c073012dce22f0b0dcb8e5e005b20e9fbb9231726da3e101997e7242d3"
+  },
+  "commands": [
+    {
+      "command": "python -m pytest tests/planning/test_engine_v12.py tests/test_financial_contract.py tests/be/test_portfolio_review.py tests/be/test_checkin_followup.py tests/be/test_chat_only.py tests/be/test_financial_projection.py tests/be/test_consultation_history_units.py tests/be/test_oneport_ledger_guard.py -q --junitxml=../artifacts/overnight/core-boundaries.xml",
+      "result": {
+        "name": "core-boundaries",
+        "tests": 236,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": 226.938
+      }
+    },
+    {
+      "command": "python -m pytest tests/be/test_scenario.py -q --junitxml=../artifacts/overnight/r3-boundaries.xml",
+      "result": {
+        "name": "r3-boundaries",
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0,
+        "seconds": 10.153
+      }
+    }
+  ],
+  "verification": {
+    "existing_tests_passed": 241,
+    "custom_api_conditions": 27,
+    "custom_boundary_conditions": 6,
+    "custom_assertions_are_not_additional_unique_regression_tests": true,
+    "full_core": "NOT_RUN_LOCALLY",
+    "build": "NOT_RUN",
+    "full_e2e": "NOT_RUN",
+    "baseline_ci": {
+      "sha": "12d65787a6025d0400eb1efb89894eb502cf0b99",
+      "same_git_tree_as_audit_base": true,
+      "url": "https://github.com/seungwooolee/finance-planner/actions/runs/43657744717",
+      "conclusion": "success"
+    },
+    "original_faults": [
+      {
+        "type": "RuntimeError",
+        "message": "PUT /api/be/v1/cases/overnight-b-1cc65444d3/answers: 409 {'detail': {'code': 'DEFINITION_VERSION_CONFLICT'}}"
+      }
+    ],
+    "browser": {
+      "dedicated_server_start": {
+        "status": "BLOCKED",
+        "error": "Automatic approval review rejected Start-Process FE/BE command: blocked by policy",
+        "explicit_reason_provided": false,
+        "repeated_or_bypassed": false
+      },
+      "devtools": {
+        "status": "UNAVAILABLE",
+        "error": "Browser profile already running; no user browser stopped"
+      },
+      "cua_browser": {
+        "status": "UNAVAILABLE",
+        "error": "getState timed out; kernel reset; not retried"
+      },
+      "existing_3386": {
+        "status": "PARTIAL_OBSERVATION",
+        "welcome_observed": true,
+        "baseline_sha_attested": false,
+        "subsequent_navigation": "ERR_CONNECTION_REFUSED"
+      },
+      "existing_3338": {
+        "status": "FAILED_EXISTING_RUNTIME",
+        "body": "Internal Server Error",
+        "baseline_sha_attested": false,
+        "quick_start_not_found": true
+      },
+      "full_browser_journey": "UNVERIFIED",
+      "mobile_and_keyboard_journey": "UNVERIFIED",
+      "real_login_and_restore": "UNVERIFIED",
+      "statement": "Shared-preview failures are environment observations, not attributed to frozen audit source as proven product defects."
+    }
+  },
+  "models": {
+    "calls": 15,
+    "states": {
+      "VALIDATED": 14,
+      "FAILED": 1
+    },
+    "reported_cost_credits": "73.5776",
+    "unknown_cost_calls": 0,
+    "reported_tokens": 55670,
+    "reserved_credits": "37500",
+    "product_calls": 12,
+    "product_http_statuses": {
+      "200": 11,
+      "503": 1
+    },
+    "evaluator_calls": 3,
+    "model": "gpt-6.1-terra"
+  },
+  "grading_scope": "Three separate contexts using the same configured model; graded before supplemental E-R3/L13-RAG calls; advisory, reconciled against raw API and durable receipts",
+  "not_performed": [
+    "Product code changes",
+    "Other branch integration",
+    "Real customer/operating DB writes",
+    "Migration application",
+    "Remote merge",
+    "Deployment",
+    "Real-account round trip",
+    "Full browser journey"
+  ],
+  "delivery": {
+    "intended_changes": [
+      "New audit report, findings and sanitized evidence",
+      "frontend/vercel.json: only this audit branch automatic deployment=false"
+    ],
+    "pull_request": "See GitHub branch PR and final completion message; no guessed PR number or self-referential commit SHA stored."
+  },
+  "evidence_files": [
+    "evidence/api-checks.json",
+    "evidence/browser-limitations.json",
+    "evidence/case-summaries.json",
+    "evidence/existing-preview-500.png",
+    "evidence/expectations.json",
+    "evidence/independent-model-review.json",
+    "evidence/model-responses.json",
+    "evidence/model-usage.json",
+    "evidence/operational-get.json",
+    "evidence/product-rag-metadata.json",
+    "evidence/source-hashes.json",
+    "evidence/source-observations.json",
+    "evidence/test-summary.json"
+  ]
+}
