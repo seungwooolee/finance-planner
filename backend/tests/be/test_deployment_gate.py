@@ -12,7 +12,7 @@ gate = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(gate)
 
 
-@pytest.mark.parametrize("change", [None, "commit", "corpus", "paths", "empty"])
+@pytest.mark.parametrize("change", [None, "commit", "corpus", "paths", "empty", "dialogue"])
 def test_gate_requires_all_rollout_identities(monkeypatch, change):
     report = {"contract_version": "DION-DEPLOYMENT-1.0", "commit_sha": "a" * 40,
               "rag": {"status": "READY", "source_count": 1, "corpus_version": "reviewed"},
@@ -25,6 +25,8 @@ def test_gate_requires_all_rollout_identities(monkeypatch, change):
         report["api_paths"] = ["/api/fe/v1/preview"]
     elif change == "empty":
         report["rag"]["source_count"] = 0
+    elif change == "dialogue":
+        report["api_paths"].remove("/api/be/v1/dialogue")
     calls = []
 
     def read(url, timeout):

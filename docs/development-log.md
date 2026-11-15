@@ -1,3 +1,7 @@
+# 운영 AI 채팅 장애 복구 — 2026-11-15
+
+구버전 Render API404를 최신 integration 배포로 해소했다. 추가형 migration006~008과 승인된 OnePort 운영 설정/예산을 적용하고 과거 데이터·비용 이력을 보존했다. 실제 운영 화면 대화2건 연속 HTTP200, 배포 gate 및 관련9검사/Ruff 통과. [상세 원인·조치·실행 근거](integration/2026-11-15-chat-deployment-repair.md).
+
 # 참고 통계 HTTP→화면 연결 — 2026-11-15
 
 PR #71의 기존 통과 컴포넌트 검사를 반복하지 않고 실제 Next rewrite/FastAPI 런타임을 통한 Edge 검사1건을 추가·실행해 통과했다.
