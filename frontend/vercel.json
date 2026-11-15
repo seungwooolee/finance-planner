@@ -3,6 +3,7 @@
   "git": {
     "deploymentEnabled": {
       "codex/result-reference-scope-20261115": false,
+      "codex/financial-partial-results-20261115": false,
       "codex/judge-journey-20261115": false,
       "codex/workbook-demo-cases-20261115": false,
       "codex/result-readability-20261115": false,

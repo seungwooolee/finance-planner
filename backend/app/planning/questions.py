@@ -105,6 +105,9 @@ def normalize_assets(answers):
     records = []
     # A complete financial-account list alone does not establish total asset coverage.
     coverage = (answers.get("NEW-01") or {}).get("asset_coverage", "unknown")
+    financial = answers.get("F06")
+    if coverage == "complete" and (financial is None or financial.get("coverage") != "complete"):
+        coverage = "partial"
     for qid, kind in (("F06", None), ("F08", "REAL_ESTATE"), ("NEW-09", "RENTAL_DEPOSIT")):
         raw = answers.get(qid)
         if raw is None:
@@ -260,6 +263,12 @@ def normalize_snapshot(answers):
     context = answers.context
     income, costs = answers.get("F03") or {}, answers.get("F04") or {}
     expense_basis = costs.get("expense_basis")
+    debt_period_mismatch = bool(income.get("period_start") and income.get("period_end")) and any(
+        row.get("payment_on") and not income["period_start"] <= row["payment_on"] <= income["period_end"]
+        for row in (answers.get("F09+F10+D08") or {}).get("items", [])
+    )
+    if debt_period_mismatch:
+        payment = None
     if expense_basis == "LIVING_ONLY":
         inc_debt, inc_contrib = (0, 0) if costs.get("exclusions_confirmed") is True else (None, None)
     else:
@@ -309,4 +318,9 @@ def normalize_snapshot(answers):
         }
     elif expense_basis not in {"LIVING_ONLY", "TOTAL_OUTFLOW"}:
         result["cashflow"] = {"calc_state": "NEEDS_INPUT", "missing": ["F04: explicit expense basis"]}
+    elif debt_period_mismatch and "base_surplus" in result.get("cashflow", {}):
+        result["cashflow"].update(
+            calc_state="NEEDS_INPUT",
+            missing=["F09+F10+D08: payment date must be within the income and expense reference period"],
+        )
     return {"normalized": snap, "result": result}
