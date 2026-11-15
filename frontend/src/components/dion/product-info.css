@@ -38,3 +38,7 @@
 .d-candidate-badge{color:var(--d-primary);font-weight:700}
 .d-candidate-muted{color:#8a8f9e}
 @media(max-width:700px){.dion-app .d-product-screen .d-summary-band{padding:16px}.dion-app .d-product-screen .d-band-title{font-size:16px}}
+
+.dion-app .d-add-product{display:block;margin-top:8px;min-height:38px;white-space:normal}
+.dion-app .d-product-comment p{margin:2px 0 6px;color:#4d4260;text-wrap:pretty}
+.dion-app .d-product-comment a{display:inline-block;color:#604481;text-decoration:underline}

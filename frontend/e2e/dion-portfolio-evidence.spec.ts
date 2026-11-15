@@ -25,7 +25,7 @@ test('saved products and final tax cards show traceable evidence only on request
   await expect(evidence).toContainText('SRC-TEST');
   await expect(evidence).toContainText('효력 2026-01-01');
   await expect(evidence.getByRole('link').first()).toHaveAttribute('href', 'https://synthetic.example.test/guide#section-1');
-  await expect(page.getByRole('heading', {name: '추천 검토 상품'})).toBeVisible();
+  await expect(page.getByRole('heading', {name: '추천 상품'})).toBeVisible();
   await page.screenshot({path: info.outputPath('product-evidence-desktop.png')});
   await page.getByRole('button', {name: /결과·다음 행동/}).click();
   await expect(tax).toHaveCount(1);

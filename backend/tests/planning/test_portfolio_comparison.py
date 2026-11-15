@@ -241,7 +241,7 @@ def test_dated_disclosures_feed_variants_and_keep_review_gates():
     assert outlook["annual_rate_percent"] == "4.40" and outlook["horizon_years"] == 10
     assert "market_return_assumption" not in screened["469830"]
     assert {risk["label"] for risk in screened["360200"]["explanation"]["risk_notes"]} >= {
-        "시장 하락과 쏠림", "원·달러 환율", "매매 가격과 출금 시점",
+        "시장 하락과 쏠림", "원·달러 환율", "거래가격 차이",
     }
     assert {risk["label"] for risk in screened["469830"]["explanation"]["risk_notes"]} >= {
         "금리와 채권 가격", "발행사 신용",

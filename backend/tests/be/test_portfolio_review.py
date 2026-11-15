@@ -372,3 +372,61 @@ def test_difference_never_fills_null_or_compares_different_policy(same_policy):
     assert next(r for r in differences if r["key"] == "living_krw")["difference_krw"] is None
     investment = next(r for r in differences if r["key"] == "new_investment_krw")
     assert investment["difference_krw"] == ("0" if same_policy else None)
+
+
+@pytest.mark.parametrize("ctx", ["2026-11-16"], indirect=True)
+def test_product_choice_is_authoritative_in_the_new_saved_run(ctx):
+    client, _, _, base, original, payload = ctx
+    doc = original["engine_input"]
+    context = {k: v for k, v in doc["context"].items() if k not in {"case_id", "snapshot_id", "profile_version"}}
+    selection = {"strategy_id": "STABILITY_FIRST", "portfolio_type": "BALANCED", "codes": ["214980", "360750"]}
+    confirmation = {"question_id": "PRODUCT-SELECTION", "definition_version": "DION-PRODUCT-SELECTION-1.0",
+                    "source_ref": "user:product-selection", "values": selection}
+    request = {"expected_version": original["input_version"], "request_key": "products",
+               "context": context, "scope_ref": doc["scope_ref"], "requested_outputs": doc["requested_outputs"],
+               "confirmations": [*doc["confirmations"], confirmation]}
+    receipt = client.post(base + "/question-analyses", json=request)
+    assert receipt.status_code == 200, receipt.text
+    again = client.get(base + "/analyses/" + receipt.json()["run_id"]).json()
+    old = original["result"]["results"]["OUT-06"]["candidates"][0]["rows"][0]["portfolio_type_views"]["BALANCED"]
+    out = again["result"]["results"]["OUT-06"]
+    view = out["candidates"][0]["rows"][0]["portfolio_type_views"]["BALANCED"]
+    assert again["engine_input"]["confirmations"][-1] == confirmation
+    assert out["product_selection"] == {**selection, "state": "APPLIED"}
+    assert {a["code"] for a in view["allocations"]} >= set(selection["codes"])
+    assert (view["allocated_total_krw"], view["unallocated_krw"]) == (old["allocated_total_krw"], old["unallocated_krw"])
+    assert "214980" not in {a["code"] for a in old["allocations"]}
+    assert client.get(base + "/analyses/" + original["run_id"]).json() == original
+
+    saved = client.put(helpers.endpoint(base, again), json={
+        **payload, "input_hash": again["input_hash"], "portfolio_type": "BALANCED",
+    })
+    assert saved.status_code == 200, saved.text
+    assert saved.json()["transaction_executed"] is False
+
+    new_payload = {**payload, "input_hash": again["input_hash"], "portfolio_type": "BALANCED"}
+    new_ctx = (client, ctx[1], ctx[2], base, again, new_payload)
+    basis = {key: new_payload[key] for key in (
+        "input_version", "input_hash", "strategy_id", "portfolio_type",
+        "policy_version", "types_version", "catalog_version",
+    )}
+    basis.update(run_id=again["run_id"], comparison_revision=saved.json()["revision"])
+    review = client.post(base + "/portfolio-reviews", json={
+        "contract_version": portfolio_review.VERSION, "request_key": "product-review", "basis": basis,
+    })
+    assert review.status_code == 200, review.text
+    state, _, _ = consulting(new_ctx, review.json())
+    final = ok(new_ctx, state, "finalizations", confirmed=True)["final"]
+    assert final["state"] == "GENERATED_NOT_ADOPTED"
+    assert {row["code"] for row in final["product_rows"][0]["allocations"]} >= set(selection["codes"])
+    assert client.get(base + "/plan").json()["adoption"] is None
+
+    rejected = {**selection, "codes": ["325020"]}
+    request.update(request_key="unapproved-products", confirmations=[
+        *doc["confirmations"], {**confirmation, "values": rejected},
+    ])
+    preview = client.post("/api/fe/v1/preview", json={
+        **doc, "confirmations": request["confirmations"],
+    }).json()["result"]["results"]["OUT-06"]
+    assert preview["product_selection"] == {**rejected, "state": "UNAVAILABLE"}
+    assert preview["candidates"][0]["rows"][0]["portfolio_type_views"]["BALANCED"] == old

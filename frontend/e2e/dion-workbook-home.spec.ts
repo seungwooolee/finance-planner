@@ -25,7 +25,7 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
     await expect(rendered.getByRole("region", {name:"위험추구형 구성 상세"})).toContainText("위험 노출이 크지 않아요");
     await rendered.getByRole("button",{name:"상품 정보 자세히 보기 →"}).click();
     await expect(rendered.getByRole("article",{name:"선택 보류 · 배분 검토 내역"})).toBeVisible();
-    await expect(rendered.getByRole("article",{name:"추천 검토 상품"})).toHaveCount(0);
+    await expect(rendered.getByRole("article",{name:"추천 상품"}).getByRole("button",{name:/최종안에 추가/})).toHaveCount(0);
     await resultTabs.getByRole("button", {name:"투자구성", exact:true}).click();
     await expect(rendered.locator('[data-portfolio-apply="BALANCED"]')).toHaveAccessibleName("중립형 목표 비중 비교");
     const choice = rendered.locator('[data-portfolio-apply="STABLE"]');
@@ -41,16 +41,13 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
     await expect(rendered.getByText(/검토용 초안 · 실제 가입|구성을 선택해 비교할 수 있어요|검토 조건을 모두 통과한 상품이 없어|배분 정책의 검토 기준일|도넛 가운데 표시/)).toHaveCount(0);
     await resultTabs.getByRole("button", {name:"상품 정보", exact:true}).click();
     await expect(rendered.getByRole("region", {name:"상품 적합성·배분 검토"})).toBeVisible();
-    await rendered.getByText("개인별 검토 대상 29종", {exact:true}).click();
-    const screening = rendered.getByRole("table", {name:"개인별 상품 검토 결과"});
-    await expect(screening.locator("tbody tr")).toHaveCount(29);
-    await expect(screening.getByRole("row").filter({hasText:"273130"})).not.toContainText("투자구성 편입 조건 통과");
+    await expect(rendered.getByText(/개인별 검토 대상|비교 대안 상품|조사 상품|검토 기준 자세히 보기/)).toHaveCount(0);
     await expect(rendered.locator("[data-candidate-code]")).toHaveCount(29);
     const candidates = rendered.getByRole("region",{name:"자산군별 상품 비교 후보"});
     await expect(candidates.getByRole("columnheader",{name:"예상 1년 수익률"}).first()).toBeVisible();
     await expect(candidates.locator('[data-candidate-code="360200"]').first()).toContainText("12.06%");
     await expect(candidates.locator('[data-candidate-code="325020"]').first().locator("tr").first()).toContainText("전망 없음");
-    await expect(screening.getByText("0091C0", {exact:true})).toHaveCount(0);
+    await expect(candidates.locator('[data-candidate-code="0091C0"]')).toHaveCount(0);
     await resultTabs.getByRole("button", {name:"결과·다음 행동", exact:true}).click();
     await expect(rendered.getByRole("heading", {name:"나의 재무설계 제안서"})).toBeVisible();
     const goalPlan=rendered.getByRole("region",{name:"내가 선택한 투자안"}).getByRole("table",{name:"수익을 반영하지 않은 목표 적립 계획"});
@@ -113,13 +110,26 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   const bonds = rendered.getByRole("region", {name:"채권 비교 후보", exact:true});
   await expect(bonds.locator("[data-candidate-code]").first()).toHaveAttribute("data-candidate-code", "214980");
   await expect(bonds.locator("[data-candidate-code]").nth(1)).toHaveAttribute("data-candidate-code", "153130");
-  const recommended = rendered.getByRole("article",{name:"추천 검토 상품"});
+  const recommended = rendered.getByRole("article",{name:"추천 상품"});
+  await expect(recommended.locator("[data-comparison-product]")).toHaveCount(3);
   await expect(recommended).toContainText("금리와 채권 가격");
-  await expect(recommended).toContainText("매매 가격과 출금 시점");
-  const eligible = earlyMonth.portfolio_type_views.STABLE.allocations
-    .filter((item: { code:string; review_allocated_krw:string })=>BigInt(item.review_allocated_krw)>0n);
-  await expect(recommended.locator("[data-comparison-product]")).toHaveCount(eligible.length);
-  for (const item of eligible) await expect(recommended.locator(`[data-comparison-product="${item.code}"]`)).toBeVisible();
+  await expect(rendered.getByText(/매도 후 현금화|2영업일 결제/)).toHaveCount(0);
+  await expect(recommended.locator('[data-comparison-product="153130"]').getByRole("link",{name:"등록 자료 ↗"})).toBeVisible();
+  const representativePending=preview();
+  await recommended.getByRole("button",{name:"KODEX 단기채권 최종안에 추가",exact:true}).click();
+  const representative=(await (await representativePending).json()).result.results["OUT-06"];
+  expect(representative.product_selection).toMatchObject({state:"APPLIED",codes:["153130"]});
+  const portfolio=rendered.getByRole("region",{name:"내가 선택한 투자안"});
+  await expect(portfolio.getByText("KODEX 단기채권",{exact:false}).first()).toBeVisible();
+  await expect(rendered.getByRole("button",{name:"예시 검토안 저장"})).toBeVisible();
+  await resultTabs.getByRole("button",{name:"상품 정보",exact:true}).click();
+  const alternatePending=preview();
+  await bonds.getByRole("button",{name:"KODEX 단기채권PLUS 최종안에 추가",exact:true}).click();
+  const alternate=(await (await alternatePending).json()).result.results["OUT-06"];
+  expect(alternate.product_selection).toMatchObject({state:"APPLIED",codes:["214980"]});
+  expect(alternate.candidates[0].rows[0].portfolio_type_views.STABLE.allocated_total_krw)
+    .toBe(earlyTypes.STABLE.allocated_total_krw);
+  await expect(portfolio.getByText("KODEX 단기채권PLUS",{exact:false}).first()).toBeVisible();
   await expect(rendered.getByText(/내부 하락 시나리오 손실액|내부 손실 시나리오 기준/)).toHaveCount(0);
 
   await page.setViewportSize({width:390,height:844});
@@ -196,14 +206,14 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   await expect(productInfo.locator('[data-allocation-month="2026-12"]')).toHaveAttribute("data-budget","0");
   await expect(productInfo.locator('[data-allocation-month="2027-01"]')).toHaveAttribute("data-allocated","0");
   const reference = productInfo.getByRole("region",{name:"채권 비교 후보",exact:true});
-  await expect(reference).toContainText("현재 배분 보류");
+  await expect(reference.getByText("공시 참고",{exact:true})).toBeVisible();
   const shortBond = reference.locator('[data-candidate-code="153130"]');
   await expect(shortBond).toContainText("KODEX 단기채권");
   const comparedBonds = reference.getByRole("table", {name:"채권 상품 비교",exact:true});
   await expect(comparedBonds.getByRole("columnheader", {name:"연 보수·비용"})).toBeVisible();
   await expect(shortBond.getByRole("rowheader", {name:/KODEX 단기채권/})).toBeVisible();
   await expect(productInfo.getByRole("article", {name:"기본 배분 후보"})).toContainText("이 달에 배분된 상품은 없어요");
-  await expect(productInfo.getByRole("article", {name:"추천 검토 상품"})).toContainText("배정된 상품이 없어요");
+  await expect(productInfo.getByRole("article", {name:"추천 상품"}).getByRole("button",{name:/최종안에 추가/})).toHaveCount(0);
   await expect(shortBond.getByText("비용 기준일", {exact:true})).toBeHidden();
   await shortBond.getByText("공시 정보 더 보기", {exact:true}).press("Enter");
   await expect(shortBond.getByText("비용 기준일", {exact:true})).toBeVisible();

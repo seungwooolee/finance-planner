@@ -1,7 +1,8 @@
 import { Json, list, object, textValue } from '@/lib/dion/model';
 import { sourceHref } from './scheme-evidence';
+import { AddProduct, RecommendationComment, type ProductActions } from './product-comparison';
 
-export function ProductCandidates({ review, month }: { review: Record<string, Json>; month?: Record<string, Json> }) {
+export function ProductCandidates({ review, month, actions }: { review: Record<string, Json>; month?: Record<string, Json>; actions?: ProductActions }) {
   const catalog = object(review.catalog_comparison);
   const references = list(catalog.groups);
   const eligible = list(month?.comparison_groups);
@@ -19,7 +20,7 @@ export function ProductCandidates({ review, month }: { review: Record<string, Js
   return <section aria-label="자산군별 상품 비교 후보" className="d-card d-candidate-panel">
     <div className="d-candidate-panel-head">
       <h2>자산군별 상품 비교 후보</h2>
-      <p>이번 달 검토를 통과한 상품은 강조해서 보여줘요. 나머지는 공시를 참고로 비교만 해요.</p>
+      <p>현재 조건에 맞는 상품의 추천 이유와 공식 자료를 확인할 수 있어요.</p>
     </div>
     <nav className="d-candidate-nav" aria-label="자산군 바로가기">{groups.map(group => {
       const count = Array.isArray(group.product_codes) ? group.product_codes.length : 0;
@@ -32,7 +33,9 @@ export function ProductCandidates({ review, month }: { review: Record<string, Js
         const referenceCodes = references.find(row => row.asset_group === group.asset_group)?.product_codes;
         const referenceOnly = !Array.isArray(eligibleCodes) || eligibleCodes.length === 0;
         const codes = allCandidates ? group.product_codes : referenceOnly ? referenceCodes : eligibleCodes;
-        const eligibleCount = Array.isArray(codes) ? codes.filter(code => monthCodes.has(code)).length : 0;
+        const eligibleCount = Array.isArray(codes)
+          ? codes.filter(code => actions ? actions.canAdd(String(code)) || actions.included(String(code)) : monthCodes.has(code)).length
+          : 0;
         const matches = Array.isArray(codes) ? codes.map(code => products.get(code)).filter(product => product !== undefined) : [];
         matches.sort((a, b) => Number(!!textValue(object(b.market_return_one_year).price_return_percent)) -
           Number(!!textValue(object(a.market_return_one_year).price_return_percent)));
@@ -42,8 +45,8 @@ export function ProductCandidates({ review, month }: { review: Record<string, Js
           <div className="d-candidate-group-head">
             <h3>{label}</h3>
             {matches.length > 0 && <span className={referenceOnly ? "d-candidate-status d-candidate-held" : "d-candidate-status"}>
-              {allCandidates && eligibleCount > 0 ? `이 달 검토 통과 ${eligibleCount}종`
-                : referenceOnly || allCandidates ? "공시 참고 · 현재 배분 보류" : "검토 조건 통과"}
+              {allCandidates && eligibleCount > 0 ? `추천 ${eligibleCount}종`
+                : referenceOnly || allCandidates ? "공시 참고" : "추천"}
             </span>}
           </div>
           {matches.length === 0 ? <p className="d-candidate-empty">{group.asset_group === "CASH"
@@ -71,19 +74,21 @@ export function ProductCandidates({ review, month }: { review: Record<string, Js
                 const yearSource = sourceHref(textValue(oneYear.source_url));
                 const outlookHref = sourceHref(textValue(outlook.source_url));
                 const performanceHref = sourceHref(textValue(historical.url));
-                const passes = monthCodes.has(code);
+                const passes = actions ? actions.canAdd(code) || actions.included(code) : monthCodes.has(code);
                 const reasons = Array.isArray(product.reason_codes)
                   ? product.reason_codes.map(reason => textValue(messages[String(reason)])).filter(Boolean)
                   : [];
                 return <tbody key={code} data-candidate-code={code} className={allCandidates && passes ? "d-candidate-pass" : undefined}>
                   <tr className="d-candidate-comparison-row">
-                    <th scope="row"><strong>{textValue(product.name)}</strong><small>{code}{allCandidates && (passes ? <span className="d-candidate-badge"> · 검토 통과</span> : " · 배분 보류")}</small></th>
+                    <th scope="row"><strong>{textValue(product.name)}</strong><small>{code}{passes && <span className="d-candidate-badge"> · 추천</span>}</small>
+                      <AddProduct product={product} actions={actions}/></th>
                     {allCandidates && <td>{yearRate ? <><strong>{yearRate}%</strong><small>달러 · 지수 가격</small></> : <span className="d-candidate-muted">전망 없음</span>}</td>}
                     <td>{typeof disclosure.risk_grade === "number" ? `${disclosure.risk_grade}등급` : "미확인"}</td>
                     <td>{expense ? `${expense}%` : "미확인"}</td>
                     <td>{disclosure.fx_exposed === true ? "환노출" : disclosure.fx_exposed === false ? "직접 환노출 없음" : "미확인"}</td>
                   </tr>
                   <tr className="d-candidate-disclosure-row"><td colSpan={allCandidates ? 5 : 4}>
+                    {passes && <RecommendationComment product={product}/>}
                     <details className="d-fold d-candidate-detail">
                       <summary aria-label={`공시 정보 더 보기 · ${textValue(product.name)}`}>공시 정보 더 보기</summary>
                       {allCandidates && !passes && <p className="d-note">{reasons.length

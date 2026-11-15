@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { Json, list, object, textValue } from "@/lib/dion/model";
 import { MoneyAmount } from "./money-amount";
 import { formatKrw } from "@/lib/dion/money-format";
-import { allocationRemainder, allocationSlices, allocationTargetLabel, bpsLabel, isWon, shareBps } from "@/lib/dion/result-visual";
+import { allocationRemainder, allocationSlices, allocationTargetLabel, bpsLabel, investmentDisplayMonth, isWon, shareBps } from "@/lib/dion/result-visual";
 import { Landmark, Package, PackageOpen, PiggyBank } from "lucide-react";
 import { planName } from "./plan-comparison";
 import { portfolioNames } from "@/lib/dion/portfolio-comparison";
@@ -80,8 +80,10 @@ export function IncomeBar({ row }: { row?: Record<string, Json> }) {
 
 export function FinalPortfolio({ plan, row, review, assetReference, portfolio=null, generated=false }: { plan: string; row?: Record<string, Json>; review: Record<string, Json>; assetReference?: ReactNode; portfolio?: string | null; generated?: boolean }) {
   const period = textValue(row?.period);
-  const month = list(object(list(review.candidates).find(c => c.strategy_id === plan)).rows)[0];
-  const allocations = list(month?.allocations);
+  const months = list(object(list(review.candidates).find(c => c.strategy_id === plan)).rows);
+  const firstMonth = months[0];
+  const month = investmentDisplayMonth(months);
+  const allocations = list(month?.allocations).filter(a => isWon(a.review_allocated_krw) && BigInt(a.review_allocated_krw) > 0n);
   const products = list(review.products);
   const budget = month?.scenario_budget_krw;
   if (!row) return null;
@@ -91,7 +93,7 @@ export function FinalPortfolio({ plan, row, review, assetReference, portfolio=nu
     <div className="d-card-head"><div><span className="d-pill">{generated ? '서버 생성 완료 · 계획 채택은 별도' : portfolio ? '상담에 가져갈 투자구성 검토안' : '기본 계산 결과 · 투자구성 선택 전'}</span><h2>{generated ? '최종 포트폴리오' : '포트폴리오 검토안'} · {planName(plan)}{portfolio ? ` · ${portfolioNames[portfolio]}` : ''}</h2></div><small>{period ? `${period} 기준` : ""}</small></div>
     <div className="d-final-grid">
       <div>
-        <h3>투자 후보금의 상품별 배분</h3>
+        <h3>{month && month !== firstMonth ? textValue(month.period) + " " : ""}투자 후보금의 상품별 배분</h3>
         {target && <p className="d-inline-note">목표 비중 · {target}</p>}
         {allocations.length > 0 ? <div className="d-final-chart">
           <Donut slices={slices} total={budget} size={150} center={<><small>후보금</small><strong>{formatKrw(budget)}</strong></>} />
@@ -101,7 +103,7 @@ export function FinalPortfolio({ plan, row, review, assetReference, portfolio=nu
       <div>
         <h3>이번 달 자금 배정</h3>
         <dl className="d-ledger">{ITEMS.map(([key, label]) => <div key={key}><dt>{label}</dt><dd>{formatKrw(row[key])}</dd></div>)}
-          {(allocations.length > 0 || target) && <><div><dt>상품에 배분한 금액</dt><dd>{formatKrw(month?.allocated_total_krw)}</dd></div>{allocationRemainder(month).map(part => <div key={part.key}><dt>{part.label}</dt><dd>{formatKrw(part.value)}</dd></div>)}</>}</dl>
+          {isWon(firstMonth?.allocated_total_krw) && <><div><dt>상품에 배분한 금액</dt><dd>{formatKrw(firstMonth.allocated_total_krw)}</dd></div>{allocationRemainder(firstMonth).map(part => <div key={part.key}><dt>{part.label}</dt><dd>{formatKrw(part.value)}</dd></div>)}</>}</dl>
       </div>
     </div>
     {assetReference && <details className="d-fold"><summary>보유자산 참고 통계 다시 보기</summary>{assetReference}</details>}

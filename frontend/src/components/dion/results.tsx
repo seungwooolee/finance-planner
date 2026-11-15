@@ -27,7 +27,7 @@ import { TaxBenefits } from "./tax-benefits";
 import type { TaxSelection } from "./tax-scenario";
 import { TaxReview } from "@/lib/dion/tax-benefits";
 import displayCatalog from "@/lib/dion/result-display-catalog.json";
-import { comparisonReview, portfolioNames, type AppliedPortfolioRef } from "@/lib/dion/portfolio-comparison";
+import { appliedProducts, comparisonReview, portfolioNames, type AppliedPortfolioRef, type ProductSelection } from "@/lib/dion/portfolio-comparison";
 import { usePortfolioComparison } from "./use-portfolio-comparison";
 import { FinancialProjection } from "./financial-projection";
 import { InvestmentReturnChart } from "./investment-return-chart";
@@ -72,9 +72,11 @@ function metricValue(out:Record<string,Json>,key:string) {
 function Metric({title,value,note,icon:Icon}:{title:string;value:unknown;note?:string;icon?:LucideIcon}) {return <article className="d-metric">{Icon&&<i className="d-metric-icon" aria-hidden="true"><Icon size={18}/></i>}<span>{title}</span><strong><MoneyAmount value={value}/></strong>{note&&<small>{note}</small>}</article>;}
 function Missing({row,title}:{row:Record<string,Json>;title:string}) {return <div className="d-note"><strong>{title} · {stateLabels[textValue(row.calc_state)]??"확인 필요"}</strong><p>{row.calc_state==="NOT_SUPPORTED"?"이 결과의 계산은 아직 지원하지 않아요. 입력은 보관하고 다른 재무 결과를 유지해요.":row.calc_state==="NOT_IMPLEMENTED"?"이 계산은 준비 중이에요. 추가 입력으로 완료되는 단계가 아니에요.":row.calc_state==="NOT_APPLICABLE"?"현재 확인한 답변에는 해당하는 항목이 없어요.":row.calc_state==="INVALID_INPUT"?"금액·기간·소유 관계가 맞지 않아 계산을 보류했어요. 관련 답변을 확인해주세요.":"추가 확인 필요 · 관련 답변과 계산에 필요한 가정을 확인해주세요."}</p></div>;}
 
-export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalculate,checkin,technical=false,token=null,caseId="",evidenceAccess,actionFlow,consultationTarget,closeConsultation,onOpenRun,onReadRun,onReviewResume,calcBar,recordMonth,onAskResult,chatHandoff}:{onAskResult?:()=>void;chatHandoff?:ChatReviewHandoff;calcBar?:ReactNode;recordMonth?:string;onReadRun?:(id:string)=>Promise<void>;onOpenRun?:(id:string)=>Promise<void>;onReviewResume?:(review:PortfolioReview)=>void;actionFlow?: ActionFlow;consultationTarget?: HTMLDivElement|null;closeConsultation?: ()=>void;evidenceAccess?: EvidenceAccess;technical?:boolean;onRecalculate?:()=>void;view:ViewResult;deep:boolean;tab:number;setTab:(n:number)=>void;stale:boolean;onEdit:(id:string)=>void;checkin?:(plan:string,tasks:CheckinTask[],portfolioSelection:AppliedPortfolioRef|null,portfolioBlocked:boolean,onAdoption:(value:AdoptionView)=>void)=>ReactNode;token?:string|null;caseId?:string}) {
+export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalculate,checkin,technical=false,token=null,caseId="",evidenceAccess,actionFlow,consultationTarget,closeConsultation,onOpenRun,onReadRun,onReviewResume,calcBar,recordMonth,onAskResult,chatHandoff,onApplyProducts,applyingProducts,onSaveProducts}:{onApplyProducts?:(selection:ProductSelection)=>void;applyingProducts?:boolean;onSaveProducts?:(selection:ProductSelection)=>void;onAskResult?:()=>void;chatHandoff?:ChatReviewHandoff;calcBar?:ReactNode;recordMonth?:string;onReadRun?:(id:string)=>Promise<void>;onOpenRun?:(id:string)=>Promise<void>;onReviewResume?:(review:PortfolioReview)=>void;actionFlow?: ActionFlow;consultationTarget?: HTMLDivElement|null;closeConsultation?: ()=>void;evidenceAccess?: EvidenceAccess;technical?:boolean;onRecalculate?:()=>void;view:ViewResult;deep:boolean;tab:number;setTab:(n:number)=>void;stale:boolean;onEdit:(id:string)=>void;checkin?:(plan:string,tasks:CheckinTask[],portfolioSelection:AppliedPortfolioRef|null,portfolioBlocked:boolean,onAdoption:(value:AdoptionView)=>void)=>ReactNode;token?:string|null;caseId?:string}) {
   const heading=useRef<HTMLHeadingElement>(null);
-  const comparison=usePortfolioComparison(view,token,caseId,stale,actionFlow?.selection);
+  const productReview=object(object(view.result.results)["OUT-06"]);
+  const productSelection=appliedProducts(productReview);
+  const comparison=usePortfolioComparison(view,token,caseId,stale,productSelection??actionFlow?.selection);
   const selectedPlan=comparison.plan, selectedPortfolio=comparison.portfolio, setSelectedPlan=comparison.selectPlan;
   const [portfolioPreview,setPortfolioPreview]=useState<{plan:string;type:string}|null>(null);
   const previewType=portfolioPreview?.plan===selectedPlan ? portfolioPreview.type : null;
@@ -85,7 +87,6 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
   const reviewFlow=usePortfolioReview(caseId,token,view.runId,saved);
   const [taxSelection,setTaxSelection]=useState<TaxSelection>();
   const currentTax = !stale && taxSelection?.run_id === view.runId && taxSelection?.input_hash === view.inputHash ? taxSelection : undefined;
-  const productReview=object(object(view.result.results)["OUT-06"]);
   const basis:ReviewBasis|null=saved&&comparison.revision>0&&selectedPortfolio&&view.serverVersion!==undefined&&view.inputHash?{
     run_id:view.runId!,input_version:view.serverVersion,input_hash:view.inputHash,strategy_id:selectedPlan,portfolio_type:selectedPortfolio,
     comparison_revision:comparison.revision,policy_version:textValue(object(productReview.product_policy).version),
@@ -150,8 +151,11 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
   const comparisonMessage=comparison.busy?"비교 초안을 저장하고 있어요…":comparison.status||
     (tab>=3?"구성을 선택해 비교할 수 있어요. 계획 채택과 월 기록은 별도로 유지돼요.":"");
   const tabs=deep?["자산·목표","재무안 비교","투자선호·구성","상품·비중","요약·다음 확인"]:["재무현황","재무안 선택","투자구성","상품 정보","결과·다음 행동"];
+  const productDraftNeedsSave=saved&&!!productSelection&&comparison.revision===0&&selectedPortfolio===productSelection.portfolio_type&&selectedPlan===productSelection.strategy_id;
   const comparisonStatus=(selectedPortfolio||comparisonMessage||comparison.error)&&<div aria-label="투자구성 비교 상태">
       {(selectedPortfolio||comparisonMessage)&&<p role="status">{[selectedPortfolio?`${portfolioNames[selectedPortfolio]} 비교 초안`:"",comparisonMessage].filter(Boolean).join(" · ")}</p>}
+      {productDraftNeedsSave&&selectedPortfolio&&<button type="button" className="d-secondary" disabled={comparison.blocked}
+        onClick={()=>void comparison.choose(selectedPortfolio)}>상품을 반영한 검토안 저장</button>}
       {comparison.error&&<div role="alert"><p>{comparison.error}</p><button type="button" className="d-secondary" onClick={comparison.retry}>비교 초안 다시 불러오기</button></div>}
     </div>;
   const goalPlan=<GoalTable goals={goals} goalLabel={displayGoal} missing={assetGoal
@@ -197,10 +201,15 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
       onProducts={()=>setTab(3)} onRecalculate={onRecalculate} blocked={comparison.blocked} onEdit={onEdit}/>}
     {tab===2&&comparisonStatus}
     
-    {tab===3 && <><div className="d-plan-row"><div><strong>{planName(selectedPlan)} · 상품 정보</strong><button className="d-text-button" onClick={()=>setTab(2)}>투자구성 비교로 돌아가기</button>{selectedPortfolio&&<button className="d-secondary" disabled={comparison.blocked} onClick={()=>setTab(4)}>반영한 포트폴리오 확인 →</button>}</div><PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/></div><ProductAllocation evidenceAccess={evidenceAccess} stale={stale} review={productScreenReview} selectedPlan={selectedPlan} evaluationOn={textValue(object(result.context).evaluation_on)} onEdit={onEdit}/></>}
+    {tab===3 && <><div className="d-plan-row"><div><strong>{planName(selectedPlan)} · 상품 정보</strong><button className="d-text-button" onClick={()=>setTab(2)}>투자구성 비교로 돌아가기</button>{selectedPortfolio&&<button className="d-secondary" disabled={comparison.blocked} onClick={()=>setTab(4)}>반영한 포트폴리오 확인 →</button>}</div><PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/></div><ProductAllocation evidenceAccess={evidenceAccess} stale={stale} review={productScreenReview} selectedPlan={selectedPlan} evaluationOn={textValue(object(result.context).evaluation_on)} onEdit={onEdit}
+        portfolio={targetPreview?null:selectedPortfolio} choosing={applyingProducts||comparison.blocked}
+        onApplyProducts={onApplyProducts}/></>}
     {tab===3&&<div className="d-result-cta"><button type="button" className="d-primary" onClick={openConsultation}>DION과 상담하기</button><p>1~4 확인 후 상담과 변경 검토를 거쳐 최종 생성을 요청해요.</p></div>}
     <div hidden={tab!==4}><PortfolioReviewFlow taxSelection={currentTax} clearTaxSelection={()=>setTaxSelection(undefined)} chatHandoff={chatHandoff} visited={visited} selectionBlocked={comparison.blocked} flow={reviewFlow} basis={basis} view={view} token={token} caseId={caseId} stale={stale} doc={sourceDoc} onTab={setTab} onOpenRun={onOpenRun??(async()=>{})} onReadRun={onReadRun??onOpenRun??(async()=>{})} onPrepared={r=>onReviewResume?.(r)} onAdopt={focusAdoption}/></div>
-    {tab===4 && <><ResultDashboard after={metricValue(flow,"after_existing_contributions_krw")} row={selectedRow} month={selectedMonth} review={selectedReview}
+    {tab===4 && <>{!stale&&view.storage==="NOT_SAVED"&&productSelection&&onSaveProducts&&
+      <div className="d-result-cta"><button type="button" className="d-secondary" disabled={applyingProducts}
+        onClick={()=>onSaveProducts(productSelection)}>{actionFlow?.fictional?"예시 검토안 저장":"상품을 반영한 결과 저장"}</button></div>}
+      <ResultDashboard after={metricValue(flow,"after_existing_contributions_krw")} row={selectedRow} month={selectedMonth} review={selectedReview}
       plan={selectedPlan} portfolio={selectedPortfolio} generated={generated} evaluationOn={textValue(object(result.context).evaluation_on)} goalPlan={goalPlan}
       portfolioSummary={<FinalPortfolio generated={generated} plan={selectedPlan} row={selectedRow} review={selectedReview} portfolio={selectedPortfolio} assetReference={assetReference(true)}/>} returnChart={<InvestmentReturnChart key={`${view.inputHash}:${view.runId}:${selectedPlan}:${selectedPortfolio}:${comparison.revision}`} view={view} plan={selectedPlan} portfolio={selectedPortfolio} revision={comparison.revision} blocked={stale||comparison.blocked} token={token} caseId={caseId}/>}
       status={<ChoiceStatus plan={selectedPlan} portfolio={selectedPortfolio} draft={comparison.draft}

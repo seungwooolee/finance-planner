@@ -14,6 +14,8 @@ from .common import ContractError, Missing, Unsupported, digest, money, output, 
 from .engine import OUTPUTS, run_engine
 from .product_allocation import CONFIRMATION_VERSION as PRODUCT_CONFIRMATION_VERSION
 from .product_allocation import PRODUCT_QUESTION_IDS, attach_product_review
+from .product_preference import IDENTITY as PRODUCT_SELECTION_ID
+from .product_preference import product_preference
 from .proposal_reference import attach as attach_proposal_reference
 from .questions import QUESTION_IDS
 from .result_presentation import attach_presentation
@@ -654,6 +656,9 @@ def normalize_question_v12(document):
         raise ContractError("raw_snapshot_id and context snapshot_id differ")
     confirmations = index(document.get("confirmations", []), "question_id")
     for q, c in confirmations.items():
+        if q == PRODUCT_SELECTION_ID:
+            product_preference(document)
+            continue
         if q == "F15" and c["definition_version"] == PRODUCT_CONFIRMATION_VERSION and c["source_ref"]:
             continue  # Versioned fund-to-monthly-budget link, consumed only by the product layer.
         if q not in SUPPORTED or c["definition_version"] != CONFIRMATION_VERSION or not c["source_ref"]:
