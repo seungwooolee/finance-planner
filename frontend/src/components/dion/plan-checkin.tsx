@@ -90,7 +90,7 @@ export const thisMonth = () => new Date(Date.now() + 9 * 3600_000).toISOString()
 const key = () => `ui-${crypto.randomUUID()}`;
 
 type Props = { view: ViewResult; token: string; caseId: string; plan: string; tasks: CheckinTask[]; onEdit?: (id: string) => void;
-  portfolioSelection?: AppliedPortfolioRef | null; portfolioBlocked?: boolean; recordMonth?: string; onMonthChange?: (month: string) => void;
+  portfolioSelection?: AppliedPortfolioRef | null; portfolioBlocked?: boolean; finalGenerated?:boolean; recordMonth?: string; onMonthChange?: (month: string) => void;
   onDraftCreated?: (runId: string, version: number) => void; onOpenDraft?: (runId: string) => Promise<void>;
   onAdoption: (value: AdoptionView) => void };
 export function PlanCheckin(props: Props) {
@@ -131,7 +131,7 @@ function MonthPicker({ month, disabled, onChange }: { month: string; disabled: b
   </form>;
 }
 
-function PlanCheckinMonth({ view, token, caseId, plan, tasks, onEdit, onDraftCreated, onOpenDraft, onAdoption, month, selectMonth, portfolioSelection = null, portfolioBlocked = false }: Props & { month: string; selectMonth: (month: string) => void }) {
+function PlanCheckinMonth({ view, token, caseId, plan, tasks, onEdit, onDraftCreated, onOpenDraft, onAdoption, month, selectMonth, portfolioSelection = null, portfolioBlocked = false, finalGenerated=false }: Props & { month: string; selectMonth: (month: string) => void }) {
   const base = `/api/be/v1/cases/${encodeURIComponent(caseId)}`;
   const [adoption, setAdoption] = useState<Adoption>(null);
   const [revision, setRevision] = useState(0);
@@ -149,6 +149,7 @@ function PlanCheckinMonth({ view, token, caseId, plan, tasks, onEdit, onDraftCre
   const [past, setPast] = useState<PastMonth[] | null>(null);
   const [pastError, setPastError] = useState("");
   const [dirty, setDirty] = useState(false);
+  const [recordOpen, setRecordOpen] = useState(false);
   const region = useRef<HTMLElement>(null);
   const focusPrefix = useId();
 
@@ -277,10 +278,14 @@ function PlanCheckinMonth({ view, token, caseId, plan, tasks, onEdit, onDraftCre
     <p>선택은 이 계산 결과 중 어떤 계획으로 진행할지 기록하는 거예요. 실제 송금·매매·자동이체는 실행되지 않아요.</p>
     {loaded && (adoption ? <p className="d-notice">현재 선택한 계획: <strong>{planName(adoption.strategy_id)}{adoption.portfolio ? ` · ${portfolioNames[adoption.portfolio.portfolio_type]} 구성` : ''}</strong> · 입력버전 {adoption.input_version}{adoption.run_id !== view.runId && " · 다른 계산 결과에서 선택함"}</p>
       : <p className="d-note">아직 선택한 계획이 없어요. 계획 없이도 월 기록을 남길 수 있어요.</p>)}
-    {!adoptedHere && <button className="d-primary" disabled={!loaded || busy || portfolioBlocked || view.isCurrent === false || sourceChanged} onClick={() => void adopt()}>{planName(plan)}으로 진행할게요</button>}
+    {finalGenerated&&loaded&&<p role="status">{adoptedHere?"이 최종안의 계획을 채택했어요. 실제 금융 실행은 별도예요.":"최종안 생성 완료 · 아직 채택하지 않았어요"}</p>}
+    {!adoptedHere && <button className="d-primary" disabled={!loaded || busy || portfolioBlocked || view.isCurrent === false || sourceChanged} onClick={() => void adopt()}>{finalGenerated?"이 계획 채택하기":`${planName(plan)}으로 진행할게요`}</button>}
+    {error && <p className="d-warning" role="alert">{error}</p>}
     {sourceChanged && <p className="d-warning">새 입력·계산 초안을 저장했어요. 아래에서 새 초안과 답변을 열어 최신 버전을 확인해 주세요. 기존 채택은 유지돼요.</p>}
     {view.isCurrent === false && <p className="d-warning">이 결과 이후 답변이 바뀌었어요. 최신 입력으로 다시 계산·저장한 결과에서 선택할 수 있어요.</p>}
 
+    {finalGenerated&&<button type="button" className="d-secondary" aria-expanded={recordOpen} aria-controls={`${focusPrefix}-record-panel`} onClick={()=>{setRecordOpen(value=>!value);}}>월 기록 {recordOpen?"닫기":"열기"}</button>}
+    <div id={`${focusPrefix}-record-panel`} hidden={finalGenerated&&!recordOpen}>
     <h3 id={`${focusPrefix}-record`} tabIndex={-1}>{monthLabel(month)} 실제 기록</h3>
     <MonthPicker month={month} disabled={busy} onChange={selectMonth} />
     <div id={`${focusPrefix}-basis`} tabIndex={-1}>{binding && <BindingNote binding={binding} month={month}/>}</div>
@@ -322,7 +327,6 @@ function PlanCheckinMonth({ view, token, caseId, plan, tasks, onEdit, onDraftCre
     </div>
     <CheckinFollowup key={`${month}:${revision}`} token={token} caseId={caseId} month={month} revision={revision} dirty={dirty} toWon={manwonToWon}
       onCreated={(runId, version) => { setSourceChanged(true); onDraftCreated?.(runId, version); }} onOpen={onOpenDraft} />
-    {error && <p className="d-warning" role="alert">{error}</p>}
     {summary && <div className="d-note" role="status">
       <strong>{monthLabel(month)} · {status === "CLOSED" ? "점검 완료" : "중간 기록"} · 저장 {revision}회차</strong>
       <p>입력한 항목 {summary.entered_count}/{summary.amount_count}{summary.partial && " · 부분 기록이라 한 달 전체 성과로 판단하지 않아요"}</p>
@@ -341,6 +345,7 @@ function PlanCheckinMonth({ view, token, caseId, plan, tasks, onEdit, onDraftCre
         : <ul aria-label="지난 달 기록">{past.map(m => <li key={m.record_month}>{m.record_month} · {m.status === "CLOSED" ? "점검 완료" : "중간 기록"}
           {m.summary && <> · 입력 {m.summary.entered_count}/{m.summary.amount_count}</>} · {m.adoption ? `${planName(m.adoption.strategy_id)} 기준 기록` : "계획 없이 남긴 기록"}</li>)}</ul>)}
     </details>
+    </div>
   </section>;
 }
 
