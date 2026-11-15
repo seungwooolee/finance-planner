@@ -17,6 +17,7 @@ from . import portfolio_types
 from .common import ContractError, Missing, digest, integer, output
 from .product_candidates import GROUPS, comparison_groups
 from .product_candidates import VERSION as COMPARISON_VERSION
+from .product_disclosures import REVIEWED_ON, apply_disclosures
 from .product_explanation import explain
 from .product_scoring import score_role
 from .statuses import axes
@@ -229,7 +230,8 @@ def _facts_complete(product, on, policy):
 
 
 def filter_product(product, profile, missing, invalid, policy, on, *, in_review_universe=False):
-    reasons = _facts_complete(product, on, policy)
+    reasons = (["PRODUCT_ROLE_POLICY_REQUIRED"] if product.get("audit_state") == "DISCLOSURE_VERIFIED_POLICY_HOLD"
+               else _facts_complete(product, on, policy))
     if not in_review_universe and product.get("recommendation_eligible") is not True:
         reasons.append("PRODUCT_NOT_ENABLED")
         reasons.extend(product.get("audit_reason_codes", []))
@@ -417,19 +419,48 @@ def _comparison_mix(slots, products):
     return mix
 
 
+def _portfolio_slots(slots, candidates, eligible, products, policy, loss_band):
+    # One product per existing asset slot. Keep the slot limit; recheck risk and concentration
+    # for each substitution, including changes to bond duration, issuer and benchmark.
+    selected = slots
+    for index, slot in enumerate(slots):
+        first_valid = None
+        for code in candidates.get(slot["code"], []):
+            if code not in eligible or slot["target_bps"] == 0:
+                continue
+            proposed = list(selected)
+            proposed[index] = {**proposed[index], "code": code}
+            guarded, _ = guarded_targets(proposed, products, policy, loss_band, reduce_concentration=True)
+            if guarded[index]["target_bps"] == 0:
+                continue
+            if guarded == proposed:
+                first_valid = guarded
+                break
+            if first_valid is None:
+                first_valid = guarded
+        if first_valid is not None:
+            selected = first_valid
+    return selected
+
+
 def review_products(document, result, *, catalog=None, policy=None):
     root = Path(__file__).parent
+    use_current_disclosures = catalog is None and policy is None
     catalog = json.loads((root / "product_catalog.json").read_text(encoding="utf-8")) if catalog is None else catalog
     policy = json.loads((root / "product_policy.json").read_text(encoding="utf-8")) if policy is None else policy
     if (catalog.get("schema_version") != "DION-PRODUCT-CATALOG-0.2"
             or policy.get("schema_version") != "DION-PRODUCT-POLICY-0.2"):
         raise ContractError("product configuration schema")
     _validate_policy(policy)
+    on = _day(document["context"]["evaluation_on"])
+    variant_candidates = apply_disclosures(catalog, policy) if use_current_disclosures and on >= REVIEWED_ON else {}
+    messages = MESSAGES if not variant_candidates else {
+        **MESSAGES, "PRODUCT_ROLE_POLICY_REQUIRED": "공시를 확인했어요. 이 상품 유형의 보유기간과 손실 한도 기준이 필요해요.",
+    }
     products = catalog["products"]
     if len({p["code"] for p in products}) != len(products):
         raise ContractError("duplicate catalog ticker")
     profile, missing, invalid, sources = profile_from_raw(document)
-    on = _day(document["context"]["evaluation_on"])
     screened, eligible = [], set()
     review_codes = set(catalog.get("personal_review_codes", []))
     default_codes = {slot["code"] for slots in policy["target_slots_by_preference"].values() for slot in slots}
@@ -451,6 +482,7 @@ def review_products(document, result, *, catalog=None, policy=None):
         screened.append({"code": product["code"], "name": product["name"],
                          "in_review_universe": in_review or product.get("recommendation_eligible") is True,
                          "allocation_role": "DEFAULT_SLOT" if product["code"] in default_codes else
+                         "PORTFOLIO_CANDIDATE" if product.get("audit_state") == "VERIFIED_FOR_PORTFOLIO_TYPE" else
                          "COMPARISON_ALTERNATIVE" if product.get("recommendation_eligible") or not reasons
                          else "REFERENCE_ONLY",
                          "official_source": product["official_source"],
@@ -467,7 +499,7 @@ def review_products(document, result, *, catalog=None, policy=None):
                              "valid_until": product.get("review", {}).get("valid_until")},
                          "state": "ELIGIBLE_FOR_REVIEW" if not reasons else "EXCLUDED_FROM_ALLOCATION",
                          "reason_codes": reasons})
-        screened[-1]["explanation"] = explain(screened[-1], product, MESSAGES)
+        screened[-1]["explanation"] = explain(screened[-1], product, messages)
     by_role = {}
     for product in products:
         if product["code"] in eligible:
@@ -566,6 +598,9 @@ def review_products(document, result, *, catalog=None, policy=None):
                 # A reviewed all-unallocated alternative is still a selectable comparison.
                 # It must not bypass missing customer facts, dates, or budget guards.
                 cash_only = relative[type_id] == "PREF_STABILITY" and not type_slots
+                if not general and type_id in variant_candidates:
+                    type_slots = _portfolio_slots(type_slots, variant_candidates[type_id], month_eligible,
+                                                  products, policy, profile.get("loss_tolerance_band_raw"))
                 view = allocate_budget(month["new_investment_krw"], type_slots, set() if general else month_eligible)
                 mix = comparison_mixes[type_id]
                 if mix is not None and (
@@ -619,7 +654,7 @@ def review_products(document, result, *, catalog=None, policy=None):
                                  "reviewed_on": policy["reviewed_on"], "valid_until": policy["valid_until"],
                                  "basis": "SERVICE_ASSUMPTIONS_FOR_PREVIEW", "backtested": False,
                                  "regulatory_certification": False},
-                 products=screened, candidates=candidates, reason_messages=MESSAGES,
+                 products=screened, candidates=candidates, reason_messages=messages,
                  catalog_comparison={"reviewed_on": reference_on.isoformat(),
                                      "groups": comparison_groups(products, reference_products, default_codes)},
                  comparison_scores=comparison_scores,

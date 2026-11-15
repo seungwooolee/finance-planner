@@ -98,7 +98,7 @@ def test_unapplied_mismatched_plan_foreign_actor_and_changed_policy_rejected(ctx
     actor["id"] = "FOREIGN"
     assert client.post(base + "/plan/adoptions", json=adoption(run)).status_code == 404
     actor["id"] = "SYNTHETIC-OWNER"
-    def changed(_review):
+    def changed(*_):
         raise PocError("COMPARISON_POLICY_CHANGED")
     monkeypatch.setattr(store, "_assert_current_portfolio_policy", changed)
     assert client.post(base + "/plan/adoptions", json=adoption(run)).status_code == 409
