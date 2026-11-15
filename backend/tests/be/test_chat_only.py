@@ -144,3 +144,27 @@ def test_unknown_execution_is_not_retryable_as_new_paid_request():
     with pytest.raises(HTTPException) as error:
         asyncio.run(ChatService(Provider()).answer("A", request(), {}))
     assert error.value.detail == {"code": "CHAT_REQUEST_UNCERTAIN", "retryable": False}
+
+
+def test_exact_lookup_and_cash_clarification_skip_model_but_complex_query_does_not():
+    claim = {"text": "기존 납입 후 월 잔여액 0원", "source_kind": "STORED_RESULT", "refs": ["/results/OUT-03"]}
+    claims = {"claims": {"MONTHLY_REMAINDER_AFTER_EXISTING": claim}}
+    class Provider:
+        calls = 0
+
+        async def answer(self, *args):
+            self.calls += 1
+            return validate_chat(draft(), request(), {}), {}
+
+    async def check():
+        provider = Provider()
+        service = ChatService(provider)
+        answer = await service.answer("A", request(message="월 잔여액 알려줘?"), claims)
+        assert answer["source"] == "DETERMINISTIC" and answer["reply"].endswith("0원")
+        assert answer["citations"][0]["refs"] == claim["refs"] and provider.calls == 0
+        clarification = await service.answer("A", request(message="현금을 더 남기고 싶어요", request_key="cash"), claims)
+        assert clarification["followup"] == "CASH_TARGET" and not clarification["candidates"] and provider.calls == 0
+        answer = await service.answer("A", request(message="월 잔여액이 줄어든 이유와 두 안 차이를 알려줘", request_key="compare"), claims)
+        assert answer["source"] == "ONEPORT" and provider.calls == 1
+
+    asyncio.run(check())

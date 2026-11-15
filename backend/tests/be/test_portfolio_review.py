@@ -9,7 +9,10 @@ from fastapi import HTTPException
 
 from app.be import portfolio_review
 from app.be.raw_store import PocError
-from app.consultation.contract import CreateSession, Turn
+from app.be.survey_api import get_chat_service
+from app.be.survey_api import router as dialogue_router
+from app.consultation.chat import ChatService, validate_chat
+from app.consultation.contract import CONVERSATION_NOTICE, ConversationConsent, CreateSession, SurveyHandoff, Turn
 from app.consultation.service import ConsultationService
 
 from . import test_portfolio_comparison as helpers
@@ -99,13 +102,61 @@ def test_no_change_final_is_explicit_immutable_resumable_and_separate_from_adopt
         conn.execute("DELETE FROM portfolio_review_revisions")
 
 
-def test_confirmed_change_recalculates_then_requires_selection_steps_and_comparison(ctx):
+def reviewed_chat(ctx):
+    client, store, actor, _, run, _ = ctx
+    state = start(ctx)
+    state = ok(ctx, state, "confirm-steps", steps=[1, 2, 3, 4], confirmed=True)
+    case_id, message = "comparison", "월 세후 소득 310만원"
+    class Provider:
+        async def answer(self, req, identity, context):
+            proof = context["claims"]["CHAT_PLAN_COMPARISON"]
+            assert "생활 안정 우선" in proof["text"] and "투자 여력 확대" in proof["text"]
+            assert len(proof["refs"]) == 10
+            draft = {"reply_template": "다음 달에도 이어지나요?", "action": "NONE",
+                     "candidates": [{"field_ref": "F03/monthly_net_income_krw", "source_text": message,
+                                     "value_text": "310만원"}]}
+            return validate_chat(draft, req, context["claims"]), {"provider_ms": 101, "validation_ms": 2}
+
+    chat = ChatService(Provider())
+    client.app.include_router(dialogue_router)
+    client.app.dependency_overrides[get_chat_service] = lambda: chat
+    payload = {"contract_version": "DION-CHAT-2.0", "request_key": "verified-chat", "draft_id": "draft", "input_version": 1,
+               "message": message, "allow_model_message": True, "history": [], "answers": [],
+               "saved": {"case_id": case_id, "run_id": run["run_id"], "input_hash": run["input_hash"]}}
+    response = client.post("/api/be/v1/dialogue", json=payload)
+    assert response.status_code == 200, response.text
+    assert response.json()["reviewable"] and "provider;dur=101" in response.headers["server-timing"]
+    assert chat.review_basis("another-owner", "verified-chat") is None
+
+    service = ConsultationService()
+    session = service.create(store, actor["id"], case_id, CreateSession(
+        contract_version="DION-AGENT-SESSION-1.0", request_key="saved-chat", base_run_id=run["run_id"],
+        output_id="OUT-03", subject_ref=run["engine_input"]["context"]["included_owner_ids"][0],
+        persistence_mode="SAVED", notice_version="DION-AGENT-MEMORY-1.0"))
+    sid = session["session_id"]
+    session = service.mutate(store, actor["id"], case_id, sid, ConversationConsent(
+        contract_version=CONVERSATION_NOTICE, notice_version=CONVERSATION_NOTICE,
+        request_key="consent-chat", expected_session_version=session["session_version"], enabled=True), "conversation_consent")
+    session = service.mutate(store, actor["id"], case_id, sid, SurveyHandoff(
+        contract_version="DION-SURVEY-HANDOFF-1.0", notice_version=CONVERSATION_NOTICE,
+        request_key="history-chat", expected_session_version=session["session_version"], input_hash=run["input_hash"],
+        history=[{"role": "user", "content": message}]), "survey_history")
+    state = ok(ctx, state, "consultation", session_id=sid, expected_session_version=session["session_version"],
+               chat_request_key="verified-chat")
+    assert state["consultation"]["chat_verified"] and state["state"] == "CONSULTING"
+    assert post(ctx, state, "finalizations", confirmed=True).status_code == 422
+    return ok(ctx, state, "consultation-confirmation", expected_session_version=session["session_version"],
+              confirmed=True, followups=["CASH_TARGET"])
+
+
+@pytest.mark.parametrize("from_chat", [False, True])
+def test_confirmed_change_recalculates_then_requires_selection_steps_and_comparison(ctx, from_chat):
     client, store, actor, base, run, _ = ctx
     assert client.post(base + "/plan/adoptions", json={"run_id": run["run_id"],
         "strategy_id": "STABILITY_FIRST", "request_key": "old-adoption"}).status_code == 200
     old_plan = client.get(base + "/plan").json()
     old_answers = store.restore(actor["id"], "comparison")
-    state, _, _ = consulting(ctx)
+    state = reviewed_chat(ctx) if from_chat else consulting(ctx)[0]
     state = change_income(ctx, state)
     assert state["state"] == "CHANGES_PENDING"
     assert store.restore(actor["id"], "comparison") == old_answers
@@ -132,6 +183,9 @@ def test_confirmed_change_recalculates_then_requires_selection_steps_and_compari
     state = ok(ctx, state, "selection", basis=basis)
     metrics = state["recalculation"]["comparison"]["metrics"]
     assert any(m["difference_krw"] is not None for m in metrics)
+    observed = next(m for m in metrics if m["key"] == "observed_remainder_krw")
+    assert observed["before_krw"] == run["result"]["results"]["OUT-03"]["after_existing_contributions_krw"]
+    assert observed["after_krw"] == new_run["result"]["results"]["OUT-03"]["after_existing_contributions_krw"]
     assert all(m["difference_krw"] is None for m in metrics if m["before_krw"] is None or m["after_krw"] is None)
     differences = state["recalculation"]["comparison"]["allocation_differences"]
     assert differences and any(d["share_difference"] is not None for d in differences)
@@ -142,6 +196,9 @@ def test_confirmed_change_recalculates_then_requires_selection_steps_and_compari
     state = ok(ctx, state, "recalculation-confirmation", comparison_hash=state["recalculation"]["comparison_hash"], confirmed=True)
     state = ok(ctx, state, "finalizations", confirmed=True)
     assert state["final"]["basis"]["run_id"] == new_run["run_id"]
+    change, = state["final"]["consultation_changes"]
+    assert change["field_id"] == "monthly_net_income_krw" and change["after"]["raw_value"] == "310"
+    assert state["final"]["consultation_followups"] == (["CASH_TARGET"] if from_chat else [])
     current_plan = client.get(base + "/plan").json()
     assert current_plan["adoption"] == old_plan["adoption"]
     assert current_plan["history"] == old_plan["history"]
@@ -301,7 +358,7 @@ def test_difference_never_fills_null_or_compares_different_policy(same_policy):
     basis = {"strategy_id": "STABILITY_FIRST", "portfolio_type": "STABLE", "policy_version": "p1",
              "types_version": "t1", "catalog_version": "c1", "run_id": "old"}
     def result(value):
-        return {"result_json": json.dumps({"results": {"OUT-05": {"candidates": [{"strategy_id": "STABILITY_FIRST",
+        return {"engine_input_json": "{}", "result_json": json.dumps({"results": {"OUT-05": {"candidates": [{"strategy_id": "STABILITY_FIRST",
             "rows": [{"period": "2026-12", "living_krw": value, "new_investment_krw": "0"}]}]}}})}
     class Connection:
         def execute(self, _sql, params):
