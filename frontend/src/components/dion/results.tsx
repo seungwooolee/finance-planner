@@ -1,12 +1,14 @@
 "use client";
 
+import { useAssetReferenceSelection } from "./use-asset-reference-selection";
+
 import { type ReactNode, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { type LucideIcon, ArrowRight, CalendarCheck, ChartPie, Coins, HandCoins, Landmark, Package, PiggyBank, Scale, Wallet } from "lucide-react";
 import { Document, Json, list, object, question, textValue } from "@/lib/dion/model";
 import { copy, customerStep, goalName } from "@/lib/dion/customer-flow";
 import { AssetComposition, FinancialOverview } from "./financial-overview";
 import { AssetReference } from "./asset-reference";
-import { assetAxis, assetBar, INITIAL_ASSET_REFERENCE } from "@/lib/dion/asset-reference";
+import { assetAxis, assetBar } from "@/lib/dion/asset-reference";
 import { PlanComparison, PlanSelector, planName } from "./plan-comparison";
 import { PortfolioChoice } from "./portfolio-choice";
 import { InvestmentFollowup } from "./investment-followup";
@@ -88,9 +90,7 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
     document.querySelector<HTMLElement>("#dion-portfolio-review h2")?.focus();
     document.getElementById("dion-portfolio-review")?.scrollIntoView({block:"start"});setConsultFocus(false);
   });return()=>cancelAnimationFrame(frame);},[consultFocus,tab]);
-  const [assetSelection,setAssetSelection]=useState({source:view.sourceSignature,selection:INITIAL_ASSET_REFERENCE});
-  const assetReferenceSelection=assetSelection.source===view.sourceSignature?assetSelection.selection:INITIAL_ASSET_REFERENCE;
-  const setAssetReferenceSelection=(selection:typeof INITIAL_ASSET_REFERENCE)=>setAssetSelection({source:view.sourceSignature,selection});
+  const [assetReferenceSelection,setAssetReferenceSelection]=useAssetReferenceSelection(view.sourceSignature);
   const checkinRef=useRef<HTMLDivElement>(null);
   const [adoption, setAdoption] = useState<AdoptionView | null>(null);
   const questionPanel = useRef<HTMLDetailsElement>(null);

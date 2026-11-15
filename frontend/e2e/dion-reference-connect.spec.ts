@@ -20,7 +20,7 @@ from app.be.question_bridge import run_frontend_questions
 doc=json.loads(Path('../frontend/src/lib/dion/product-review-scenario.json').read_text(encoding='utf-8'))['document']
 peer=run_frontend_questions(doc)['peer_reference']
 assert peer['version']=='DION-PEER-REFERENCE-1.0'
-assert len(peer['records'])==28
+assert len(peer['records'])==34
 print(json.dumps(peer,ensure_ascii=True))
 `],{cwd:"../backend",encoding:"utf8",timeout:45000,maxBuffer:2_000_000}));
 });
