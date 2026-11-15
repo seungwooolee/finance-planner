@@ -1,17 +1,16 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { Bot, Compass, Flag, MessagesSquare, Package, PiggyBank, Target, Wallet } from "lucide-react";
+import { Bot, Compass, MessagesSquare, Package, PiggyBank, Target, Wallet } from "lucide-react";
 import { type Json, list, object, textValue } from "@/lib/dion/model";
 import { formatKrw } from "@/lib/dion/money-format";
-import { assetGroup, bpsLabel, isWon, shareBps } from "@/lib/dion/result-visual";
+import { assetGroup, isWon } from "@/lib/dion/result-visual";
 import { RISK_LABEL, productRole } from "@/lib/dion/product-role";
 import { portfolioNames } from "@/lib/dion/portfolio-comparison";
 import { planName } from "./plan-comparison";
 import "./result-dashboard.css";
 
-// 결과·다음 행동 첫 화면. Every amount is an engine integer-won string shown as is; the only
-// arithmetic is integer share geometry (shareBps) for the goal ring. No new financial values.
+// Result dashboard displays the captured won amounts directly.
 type Row = Record<string, Json>;
 
 const positive = (v: unknown) => isWon(v) && BigInt(v) > 0n;
@@ -33,38 +32,6 @@ function Kpi({ icon: Icon, label, value, note, tone }: { icon: typeof Wallet; la
     <span><Icon size={16} aria-hidden="true"/>{label}</span>
     <strong>{formatKrw(value)}</strong>
     <small>{note}</small>
-  </article>;
-}
-
-function GoalCard({ goals, goalLabel, onEdit }: { goals: Row; goalLabel: (id: Json) => string; onEdit: (id: string) => void }) {
-  const rows = list(goals.rows);
-  const goal = rows.find(r => r.calc_state === "INFEASIBLE" || positive(r.gap_krw)) ?? rows[0];
-  if (!goal) return <article className="d-card d-dash-card" aria-label="가장 중요한 목표">
-    <div className="d-card-head"><h2><Flag size={18} aria-hidden="true"/> 가장 중요한 목표</h2></div>
-    <p>{textValue(goals.calc_state) === "NOT_APPLICABLE" ? "입력한 목표가 없어요. 비상금과 생활 운영자금을 먼저 지키는 흐름으로 계산했어요." : "목표 금액·사용일을 확인하면 준비 상황을 보여드려요."}</p>
-    <button type="button" className="d-secondary" onClick={() => onEdit("F11")}>목표 입력하기</button>
-  </article>;
-  const bps = shareBps(goal.prepared_krw, goal.target_krw);
-  const circumference = 238.76;
-  const count = typeof goal.contribution_count === "number" ? `${goal.contribution_count}회` : "";
-  return <article className="d-card d-dash-card" aria-label="가장 중요한 목표">
-    <div className="d-card-head"><h2><Flag size={18} aria-hidden="true"/> 가장 중요한 목표</h2>{textValue(goal.due_on) && <small>사용일 {textValue(goal.due_on)}</small>}</div>
-    <div className="d-dash-goal">
-      <svg width="96" height="96" viewBox="0 0 96 96" role="img" aria-label={`목표 금액 중 준비된 비율 ${isWon(goal.target_krw) ? bpsLabel(bps) : "확인 대기"}`}>
-        <circle cx="48" cy="48" r="38" fill="none" stroke="#eceef8" strokeWidth="10"/>
-        <circle cx="48" cy="48" r="38" fill="none" stroke="var(--d-primary)" strokeWidth="10" strokeLinecap="round"
-          strokeDasharray={`${(circumference * bps) / 10000} ${circumference}`} transform="rotate(-90 48 48)"/>
-        <text x="48" y="53" textAnchor="middle" fontSize="16" fontWeight="700" fill="#161b29">{isWon(goal.target_krw) ? bpsLabel(bps) : "-"}</text>
-      </svg>
-      <div>
-        <strong>{goalLabel(goal.goal_id)}</strong>
-        <p>목표 {formatKrw(goal.target_krw)} · 준비 {formatKrw(goal.prepared_krw)}</p>
-        <p>{goal.calc_state === "INFEASIBLE" ? "사용일 전에 모을 회차가 없어 일정 확인이 필요해요."
-          : positive(goal.gap_krw) ? `남은 ${formatKrw(goal.gap_krw)} · ${count ? `${count} ` : ""}회차당 ${formatKrw(goal.level_contribution_krw)}`
-          : "이미 준비한 돈으로 채워져 있어요."}</p>
-      </div>
-    </div>
-    <p className="d-inline-note">준비 비율은 목표 금액 대비 이미 준비한 돈이에요. 수익은 반영하지 않았어요.</p>
   </article>;
 }
 
@@ -94,11 +61,11 @@ function ProductCards({ review, plan }: { review: Row; plan: string }) {
   </div>;
 }
 
-export function ResultDashboard({ after, row, month, review, plan, portfolio, generated, evaluationOn, goals, goalLabel,
-  portfolioSummary, returnChart, status, onEdit, onPortfolio, onProducts, onConsult, onAsk, onAdopt }: {
+export function ResultDashboard({ after, row, month, review, plan, portfolio, generated, evaluationOn,
+  goalPlan, portfolioSummary, returnChart, status, onPortfolio, onProducts, onConsult, onAdopt }: {
   after: unknown; row?: Row; month?: Row; review: Row; plan: string; portfolio: string | null; generated: boolean; evaluationOn: string;
-  goals: Row; goalLabel: (id: Json) => string; portfolioSummary: ReactNode; returnChart: ReactNode; status: ReactNode;
-  onEdit: (id: string) => void; onPortfolio: () => void; onProducts: () => void; onConsult: () => void; onAsk?: () => void; onAdopt: () => void;
+  goalPlan: ReactNode; portfolioSummary: ReactNode; returnChart: ReactNode; status: ReactNode;
+  onPortfolio: () => void; onProducts: () => void; onConsult: () => void; onAdopt: () => void;
 }) {
   const period = textValue(row?.period);
   const allocated = month?.allocated_total_krw;
@@ -124,24 +91,6 @@ export function ResultDashboard({ after, row, month, review, plan, portfolio, ge
       <button type="button" className="d-primary" onClick={next.run}>{next.label}</button>
     </div>
 
-    <div className="d-dash-grid">
-      <GoalCard goals={goals} goalLabel={goalLabel} onEdit={onEdit}/>
-      <article className="d-card d-dash-card d-dash-ai" aria-label="DION AI 상담">
-        <div className="d-card-head"><h2><Bot size={18} aria-hidden="true"/> DION AI 상담</h2><small>이 결과를 근거로 답해요</small></div>
-        <p>숫자가 왜 이렇게 나왔는지, 조건을 바꾸면 어떻게 되는지 물어볼 수 있어요.</p>
-        <ul className="d-dash-examples" aria-label="질문 예시">
-          <li>{portfolioName ? `왜 ${portfolioName}이에요?` : "투자구성은 어떻게 골라요?"}</li>
-          <li>이번 달 돈이 어디에 들어가요?</li>
-          <li>목표를 1년 늦추면 어떻게 돼요?</li>
-        </ul>
-        <div className="d-dash-actions">
-          {onAsk && <button type="button" className="d-primary" onClick={onAsk}><MessagesSquare size={16} aria-hidden="true"/>결과에 대해 질문하기</button>}
-          <button type="button" className="d-secondary" onClick={onConsult}>변경 상담 시작</button>
-        </div>
-        <p className="d-inline-note">AI 답변은 계산 결과를 바꾸지 않아요. 상담에서 바꾼 조건은 새 초안으로 다시 계산해요.</p>
-      </article>
-    </div>
-
     <section className="d-dash-portfolio" aria-label="내가 선택한 투자안">
       <div className="d-dash-section-head">
         <div><small>내가 선택한 투자안</small><h2>{planName(plan)}{portfolioName ? ` · ${portfolioName}` : " · 투자구성 선택 전"}</h2></div>
@@ -149,8 +98,15 @@ export function ResultDashboard({ after, row, month, review, plan, portfolio, ge
       </div>
       {portfolioSummary}
       <ProductCards review={review} plan={plan}/>
+      {goalPlan}
       {productCount > 0 && <p className="d-inline-note">상품은 검토 후보예요. 매수 지시가 아니며, 위험등급·총보수는 공시 기준이에요. 근거는 상품 정보에서 확인해요.</p>}
     </section>
+
+    <article className="d-card d-dash-card d-dash-ai" aria-labelledby="d-dash-ai-title">
+      <div className="d-card-head"><h2 id="d-dash-ai-title"><Bot size={18} aria-hidden="true"/> DION AI 상담</h2></div>
+      <p>내 재무 결과나 투자구성이 궁금하면 DION에게 물어보세요. 바꾸고 싶은 조건도 함께 확인할 수 있어요.</p>
+      <button type="button" className="d-primary" onClick={onConsult}><MessagesSquare size={16} aria-hidden="true"/>AI 상담 시작</button>
+    </article>
 
     <div className="d-dash-grid">
       <div className="d-dash-slot">{returnChart}</div>

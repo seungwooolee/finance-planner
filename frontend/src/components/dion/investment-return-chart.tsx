@@ -163,7 +163,7 @@ export function InvestmentReturnChart({view, plan, portfolio, revision, blocked,
   return <section className="d-card d-financial-projection d-investment-return" aria-labelledby={id}>
     <div className="d-card-head"><h2 id={id}>투자 기대수익률</h2></div>
     <p>{planName(plan)}{portfolio ? ` · ${portfolioNames[portfolio]}` : ""}</p>
-    <p className="d-inline-note">상품에 배정된 신규 납입액으로 원금과 가정에 따른 평가액을 비교해요. 기존 보유자산·현금 대기자금·인출은 계산에서 제외해요.</p>
+    <p className="d-inline-note">선택한 투자안의 월 배정액과 입력한 원화 수익률 가정을 바탕으로 전망을 계산해요. 기존 보유자산·현금 대기자금·인출은 계산에서 제외해요.</p>
     {!canForecast ? <p className="d-note">{!portfolio ? "투자구성을 선택해 포트폴리오에 반영하면 전망을 계산할 수 있어요."
       : blocked ? "최신 결과와 투자구성을 확인한 뒤 전망을 계산할 수 있어요."
       : !linked ? "현재 계산과 연결된 투자구성 정보가 없어요. 최신 결과를 다시 열어주세요."

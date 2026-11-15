@@ -75,6 +75,21 @@ def test_restrictions_unknown_and_host_gate_apply_to_every_comparison():
             assert int(risk['held_krw']) + int(risk['target_cash_krw']) == budget
 
 
+def test_bond_only_risk_inversion_keeps_money_but_blocks_selection():
+    doc = current_product_document()
+    change(doc, 'F18', 'loss_response_raw', field('LOSS_RESPONSE_RAW_02'))
+    month = current_review(doc)['candidates'][0]['rows'][0]
+    stable, balanced, risk = (month['portfolio_type_views'][kind] for kind in ('STABLE', 'BALANCED', 'RETURN'))
+    assert stable['selectable'] and balanced['selectable']
+    assert balanced['allocated_total_krw'] == '90000'
+    assert risk['allocated_total_krw'] == '27900'
+    assert risk['target_cash_krw'] == '30000'
+    assert risk['held_krw'] == '242100'
+    assert risk['reason_codes'] == ['COMPOSITION_INVERSION']
+    assert risk['selectable'] is False and risk['comparison_only'] is True
+    assert risk['calc_state'] == 'REVIEW_REQUIRED'
+
+
 def test_candidate_cap_and_unapproved_role_do_not_relax_filter():
     products = [{'code': str(n), 'service_constraints': {'role': 'US_BROAD_EQUITY'}} for n in range(8)]
     result = comparison_groups(products, {'1', '2', '3', '4'}, {'4'})
@@ -103,7 +118,11 @@ def test_fifteen_relative_choices_preserve_source_and_customer_limits(preference
     for kind, target, amount in zip(('STABLE', 'BALANCED', 'RETURN'), targets, allocated, strict=True):
         v = views[kind]
         assert v['target_preference'] == target and v['basis_preference'] == preference
-        assert v['selectable'] is True
+        blocked = (preference, kind) in {
+            ('PREF_LEAN_RETURN', 'RETURN'), ('PREF_RETURN', 'BALANCED'), ('PREF_RETURN', 'RETURN'),
+        }
+        assert v['selectable'] is not blocked
+        assert ('COMPOSITION_INVERSION' in v['reason_codes']) is blocked
         assert v['allocated_total_krw'] == str(amount)
         assert int(v['unallocated_krw']) + amount == 300000
         assert int(v['stress_review']['scenario_loss_krw_ceil']) <= 60000
@@ -191,6 +210,11 @@ def test_dated_disclosures_feed_variants_and_keep_review_gates():
     assert bonds[:2] == ["214980", "153130"]
     assert screened["214980"]["historical_return"]["percent"] == "2.46"
     assert "historical_return" not in screened["469830"]
+    market = screened["360200"]["market_return_one_year"]
+    assert market["price_return_percent"] == "12.06" and market["currency"] == "USD"
+    assert market["start_on"] == "2026-09-21" and market["end_on"] == "2027-09-21"
+    assert screened["379800"]["market_return_one_year"] == market
+    assert "market_return_one_year" not in screened["469830"]
     outlook = screened["360200"]["market_return_assumption"]
     assert outlook["annual_rate_percent"] == "4.40" and outlook["horizon_years"] == 10
     assert "market_return_assumption" not in screened["469830"]

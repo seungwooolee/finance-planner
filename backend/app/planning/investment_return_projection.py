@@ -69,6 +69,28 @@ def _us_reference_annual_growth():
     return Decimal("1.075") * (Decimal("1000") / Decimal("1340.40")) ** (Decimal(1) / 10)
 
 
+def market_return_one_year(product, on):
+    """Published 12-month index price outlook, separate from any fund or KRW scenario."""
+    disclosure = product.get("disclosure", {})
+    if (not date(2026, 9, 23) <= on < date(2027, 9, 21)
+            or product.get("code") not in {"360200", "360750", "379800"}
+            or disclosure.get("asset_class") != "EQUITY"
+            or disclosure.get("foreign_underlying") is not True
+            or disclosure.get("fx_exposed") is not True
+            or disclosure.get("benchmark") not in {"S&P 500", "S&P 500 지수"}):
+        return None
+    with localcontext() as ctx:
+        ctx.prec = 28
+        percent = ((Decimal("8700") / Decimal("7764") - 1) * 100).quantize(Decimal("0.01"))
+    return {
+        "version": "DION-MARKET-OUTLOOK-12M-1.0", "price_return_percent": str(percent), "currency": "USD",
+        "benchmark": "S&P 500", "start_on": "2026-09-21", "end_on": "2027-09-21",
+        "published_on": "2026-09-23", "base_index": "7764", "target_index": "8700",
+        "source_url": ("https://www.goldmansachs.com/insights/articles/"
+                       "can-ai-investment-drive-s-and-p-500-earnings-even-higher"),
+    }
+
+
 def market_return_assumption(product, on):
     """Display the same market assumption the projection can apply to a matching product."""
     if on < date(2026, 10, 19) or not _matches_us_reference(product):

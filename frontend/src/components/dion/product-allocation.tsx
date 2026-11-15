@@ -53,13 +53,14 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
       const priority:{product:Record<string,Json>; allocation?:Record<string,Json>}[]=allocated.length>0
         ?allocated.map(allocation=>({product:products.find(product=>product.code===allocation.code)??{code:allocation.code},allocation}))
         :defaults.map(product=>({product}));
-      const priorityTitle=allocated.length>0?"우선 검토 상품":"기본 배분 후보";
+      const inverted=Array.isArray(month?.reason_codes)&&month.reason_codes.includes("COMPOSITION_INVERSION");
+      const priorityTitle=inverted?"선택 보류 · 배분 검토 내역":allocated.length>0?"우선 검토 상품":"기본 배분 후보";
       const band=(m:Record<string,Json>,i:number)=>{
         const bandSlices=allocationSlices(list(m.allocations),products,m).filter(x=>isWon(x.value)&&BigInt(x.value)>0n);
         const count=list(m.allocations).filter(row=>isWon(row.review_allocated_krw)&&BigInt(row.review_allocated_krw)>0n).length;
         const bandTarget=allocationTargetLabel(m);
         return <div className="d-summary-band" key={i} data-allocation-month={String(m.period)} data-budget={textValue(m.scenario_budget_krw)} data-allocated={textValue(m.allocated_total_krw)} data-unallocated={textValue(m.unallocated_krw)}>
-          <p className="d-band-title">{count>0?`${String(m.period)} 신규 투자 후보금 중 ${formatKrw(m.allocated_total_krw)}을 ${count}개 상품에 담아요`:`${String(m.period)} 신규 투자 후보금을 아직 상품에 담지 않았어요`}</p>
+          <p className="d-band-title">{inverted?`${String(m.period)} · 조건 적용 후 상품 금액 ${formatKrw(m.allocated_total_krw)}`:count>0?`${String(m.period)} 신규 투자 후보금 중 ${formatKrw(m.allocated_total_krw)}을 ${count}개 상품에 담아요`:`${String(m.period)} 신규 투자 후보금을 아직 상품에 담지 않았어요`}</p>
           {isWon(m.scenario_budget_krw)&&BigInt(m.scenario_budget_krw)>0n&&<div className="d-band-bar" aria-hidden="true">{bandSlices.map(x=><span key={x.key} title={x.detail??x.label} style={{width:`${shareBps(x.value,m.scenario_budget_krw)/100}%`,background:x.color}}/>)}</div>}
           <div><span>{String(m.period)} 신규 투자 후보금</span><strong>{formatKrw(m.scenario_budget_krw)}</strong></div>
           <div><span>상품 배분액</span><strong className="d-accent">{formatKrw(m.allocated_total_krw)}</strong></div>
@@ -72,7 +73,7 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
         {month&&month!==months[0]&&<p className="d-inline-note">{textValue(month.period)} 신규 투자 후보금을 기준으로 상품을 확인해요. 첫 계획 월 {textValue(months[0]?.period)}의 후보금은 0원이에요.</p>}
         {months.map(band)}
         {priority.length>0&&<article className="d-card d-product-priority" aria-label={priorityTitle}>
-          <div className="d-card-head"><h2>{priorityTitle}</h2><small>{allocated.length>0
+          <div className="d-card-head"><h2>{priorityTitle}</h2><small>{inverted?reason("COMPOSITION_INVERSION"):allocated.length>0
             ? `${textValue(month?.period)} 계획에 금액이 배정된 검토 상품이에요.`
             : month?.allocated_total_krw==="0"?"이 달에 배분된 상품은 없어요. 기본 후보에서 검토 이유를 확인할 수 있어요."
             :"배분 결과를 확인할 때까지 기본 후보의 정보를 볼 수 있어요."}</small></div>
@@ -97,7 +98,7 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
             </div>;
           })}</div>
         </article>}
-        <ProductComparison products={priority.flatMap(({product,allocation})=>allocation?[product]:[])}/>
+        {!inverted&&<ProductComparison products={priority.flatMap(({product,allocation})=>allocation?[product]:[])}/>}
         <ProductCandidates review={review} month={month}/>
       </div>;
     })}

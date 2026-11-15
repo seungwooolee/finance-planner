@@ -43,7 +43,7 @@ test('reviewed research reaches real results with source, cohort, withholding an
   const composition = page.locator('#dion-selected-composition');
   for (const [type, label] of [['STABLE', '안정형'], ['BALANCED', '중립형'], ['RETURN', '위험추구형']]) {
     const button = page.locator(`[data-portfolio-apply="${type}"]`);
-    await expect(button).toHaveAccessibleName(`${label} 선택`);
+    await expect(button).toHaveAccessibleName(type === "STABLE" ? `${label} 선택` : `${label} 목표 비중 비교`);
     await button.press('Enter');
     await expect(button).toHaveAttribute('aria-pressed', 'true');
     await expect(button).toBeFocused();
@@ -56,8 +56,8 @@ test('reviewed research reaches real results with source, cohort, withholding an
   await expect(products.getByText('현재 배분 보류', {exact: false}).first()).toBeVisible();
   const month = result.results['OUT-06'].candidates[0].rows[0].portfolio_type_views.RETURN;
   await expect(page.locator('[data-allocation-month]').first()).toHaveAttribute('data-allocated', month.allocated_total_krw);
-  const comparison = page.getByRole('article', { name: '추천 검토 상품' });
-  await expect(comparison.locator('.d-comparison-card').first()).toContainText('매도 후 현금화');
+  await expect(page.getByRole('article', { name: '선택 보류 · 배분 검토 내역' })).toBeVisible();
+  await expect(page.getByRole('article', { name: '추천 검토 상품' })).toHaveCount(0);
   await page.getByRole('button', {name:'투자구성 비교로 돌아가기'}).click();
   await expect(page.locator('[data-portfolio-apply="RETURN"]')).toHaveAttribute('aria-pressed','true');
   await page.locator('.d-tabs button').nth(4).click();

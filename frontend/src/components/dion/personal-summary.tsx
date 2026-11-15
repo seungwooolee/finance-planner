@@ -79,11 +79,11 @@ function ReadyBar({ row }: { row: Record<string, Json> }) {
 export function GoalTable({ goals, goalLabel, missing }: { goals: Record<string, Json>; goalLabel: (id: Json) => string; missing: ReactNode }) {
   const rows = list(goals.rows);
   return <article className="d-card d-goals-card" aria-labelledby="d-goals-title">
-    <h2 id="d-goals-title"><Target size={20} aria-hidden="true"/> 목표별 준비 상황</h2>
-    <p className="d-inline-note d-flow-note">목표 금액 중 이미 준비한 돈과 남은 금액을 나누고, 남은 금액을 사용일 전 적립일마다 얼마씩 모으는지 보여줘요.</p>
+    <h2 id="d-goals-title" tabIndex={-1}><Target size={20} aria-hidden="true"/> 목표별 준비 상황</h2>
+    <p className="d-inline-note d-flow-note">얼마를 더 모아야 하는지, 적립할 날짜와 회차당 금액을 확인하세요.</p>
     {rows.length ? <div className="d-table-wrap"><table className="d-goal-table">
-      <caption>금액은 계산 결과 그대로 · 수익 미반영 기준</caption>
-      <thead><tr><th scope="col">목표·사용일</th><th scope="col">목표 금액</th><th scope="col">준비된 금액</th><th scope="col">남은 금액</th><th scope="col">적립 계획</th></tr></thead>
+      <caption>수익을 반영하지 않은 목표 적립 계획</caption>
+      <thead><tr><th scope="col">목표·사용일</th><th scope="col">목표 금액</th><th scope="col">준비된 금액</th><th scope="col">남은 금액</th><th scope="col">회차당 금액 · 적립 기간</th></tr></thead>
       <tbody>{rows.map(r => <tr key={textValue(r.goal_id)} data-goal-state={textValue(r.calc_state)}>
         <th scope="row">{goalLabel(r.goal_id)}<small>{textValue(r.due_on) ? `사용일 ${textValue(r.due_on)}` : "사용일 확인 대기"}</small><ReadyBar row={r}/></th>
         <td data-label="목표 금액">{formatKrw(r.target_krw)}</td>

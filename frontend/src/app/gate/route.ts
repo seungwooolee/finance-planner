@@ -11,7 +11,7 @@ input{padding:12px;border:1px solid #cfc6ba;border-radius:10px;font-size:16px}
 button{padding:12px;border:0;border-radius:10px;background:#2a2622;color:#fff;font-size:16px;cursor:pointer}
 .e{color:#b3261e;font-size:14px}</style></head><body>
 <form method="post" action="/gate"><h1>DION 심사용 접근</h1>
-<p>수상 발표 전 비공개 시연이에요. 전달받은 접근 비밀번호를 입력해주세요.</p>
+<p>비공개 시연이에요. 전달받은 접근 비밀번호를 입력해주세요.</p>
 <input type="hidden" name="next" value="${next.replace(/[&"<>]/g, c => `&#${c.charCodeAt(0)};`)}">
 <label>접근 비밀번호<input name="password" type="password" autocomplete="current-password" autofocus required></label>
 ${failed ? '<div class="e" role="alert">비밀번호가 맞지 않아요.</div>' : ""}
