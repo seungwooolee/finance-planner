@@ -32,8 +32,6 @@ test("six stages and candidate reasons retain eligible/excluded/unknown distinct
     await expect(journey.getByRole("listitem")).toHaveCount(6);
     await expect(journey.locator('[aria-current="step"]')).toHaveCount(1);
     await expect(journey.getByRole("button",{name:"6. 실적·사후점검",exact:true})).toBeVisible();
-    // Reasons and risks now sit in each row's disclosure; open them before reading.
-    for (const summary of await page.locator('.d-comparison-reasons summary').all()) await summary.click();
     const eligible=page.locator('[data-comparison-product="TEST01"]');
     await expect(eligible).toContainText("0%");
     await expect(eligible.getByRole("region",{name:"원화 검토 후보 검토 이유"})).toContainText("서버가 확인한 답변");

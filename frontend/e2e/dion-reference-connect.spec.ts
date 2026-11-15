@@ -40,13 +40,11 @@ test("early-career preview shows three age-cohort figures without comparing pers
     const chart=page.getByRole("figure",{name:"현재 자산과 과거 조사 통계의 금액 그래프"});
     await expect(chart).toBeVisible();
     await expect(chart.getByRole("heading",{level:3})).toHaveText(["총자산","부채","순자산"]);
-    await expect(chart).not.toContainText(/내 자산|확인 대기/);
-    await expect(page.getByText(/내 결과는 개인 기준이고, 이 조사는 가구 기준이에요/)).toBeVisible();
-    await expect(page.getByRole("table")).toBeHidden();
-    await page.getByText("출처·정의·자료 기준 확인",{exact:true}).click();
+    await expect(page.locator(".d-note").filter({hasText: /개인·가구 범위가 일치하지 않거나/})).toBeVisible();
+    await expect(page.getByRole("table")).toBeVisible();
     expect(await page.locator('[data-asset-series="reference"]').evaluateAll(cells=>cells.map(cell=>cell.getAttribute('data-value')))).toEqual(["314980000","95480000","219500000"]);
-    await expect(page.getByRole("table").getByText("범위 다름",{exact:true})).toHaveCount(3);
-    await page.getByText("출처·정의·자료 기준 확인",{exact:true}).click();
+    await expect(page.locator('[data-asset-series="own"][data-value]')).toHaveCount(0);
+    await expect(page.getByRole("table").getByText("확인 대기",{exact:true})).toHaveCount(3);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
     await page.screenshot({path:info.outputPath(`reference-${name}.png`),fullPage:true});
   }

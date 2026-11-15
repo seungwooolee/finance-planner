@@ -2,6 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "git": {
     "deploymentEnabled": {
+      "codex/restore-pre-b11-results-20261115": false,
       "codex/restore-calculated-results-20261115": false,
       "codex/retirement-demo-results-20261115": false,
       "codex/home-entry-20261115": false,
