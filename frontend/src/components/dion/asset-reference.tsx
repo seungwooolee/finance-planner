@@ -16,6 +16,7 @@ export function AssetReference({ value, ownValues, ownScope, stale, selection, o
   const id = useId();
   const { data, cohort, cohorts, metrics, hint, relatedRows, comparisonState, membershipState, selectionOrigin } =
     assetReferenceView(value, selection, ownValues);
+  const stageLabel = textValue(hint.label);
   const scope = ownScope || textValue(data.scope);
   const scopeLabel = scope === "personal" ? "개인" : scope === "household" ? "가구" : "입력 범위";
   const sources = [...new Map(metrics.filter(metric => metric.reference !== null).map(({ row }) =>
@@ -32,7 +33,7 @@ export function AssetReference({ value, ownValues, ownScope, stale, selection, o
     {!!cohorts.length && <div className="d-asset-ref-controls">
       <label htmlFor={`${id}-cohort`}>비교할 참고 집단
         <select id={`${id}-cohort`} value={selection.cohort} onChange={e => onSelect({cohort: e.target.value})}>
-          <option value="ANSWER">{[textValue(hint.label) || "질문 답변 관련", cohort && selection.cohort === "ANSWER" ? cohort.label : null].filter(Boolean).join(" · ")}</option>
+          <option value="ANSWER">{stageLabel ? `${stageLabel} 평균` : "질문 답변 기준"}</option>
           {cohorts.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
         </select>
       </label>
@@ -43,7 +44,7 @@ export function AssetReference({ value, ownValues, ownScope, stale, selection, o
       savedResult ? "이 저장 결과에는 참고 통계가 포함되어 있지 않아요." : "계산 서버가 자산 참고 통계를 보내지 않았어요."}</p>}
     {!data.version && savedResult && onRecalculate &&
       <button type="button" className="d-text-button" onClick={onRecalculate}>현재 입력으로 새 결과 만들기</button>}
-    {!!sources.length && <p className="d-asset-ref-context">{sources.map(([url, source]) => {
+    {!!sources.length && <p className="d-asset-ref-context">{cohort?.label && <span>{cohort.label}</span>}{sources.map(([url, source]) => {
       const href = sourceHref(url);
       return <span key={url}>{href ? <a href={href} target="_blank" rel="noopener noreferrer">{source.title}</a> : source.title}
         {source.date && ` · ${source.date} 기준`}</span>;

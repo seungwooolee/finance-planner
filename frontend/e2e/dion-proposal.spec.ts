@@ -20,10 +20,13 @@ test('step 4 proposal shows choices, compared alternatives, assumptions and risk
   await page.getByRole('button',{name:/결과·다음 행동/}).click();
   const p=page.getByRole('article',{name:'재무설계 제안서'});
   await expect(p).toBeVisible();
-  for (const title of ['내가 선택한 내용','첫 계획 월 실행안 · 자금 배정과 상품 배분','다른 방법과 비교하기','이 제안의 가정','위험과 확인할 점','이해가 어렵거나 바꾸고 싶다면'])
+  for (const title of ['내가 선택한 내용','첫 계획 월 실행안 · 자금 배정과 상품 배분','다른 방법과 비교하기','위험과 확인할 점','이해가 어렵거나 바꾸고 싶다면'])
     await expect(p.getByRole('heading',{name:title})).toBeVisible();
   for (const row of ['지금 고른 안','투자 방식 변경','재무안 바꾸기','지출 조정']) await expect(p.getByRole('rowheader',{name:new RegExp(row)})).toBeVisible();
-  await expect(p).toContainText('물가상승률');await expect(p).toContainText('연 2%');
+  const assumptions=page.locator('#dion-proposal-assumptions');
+  await expect(assumptions.getByText('물가상승률')).toBeHidden();
+  await assumptions.locator('summary').click();
+  await expect(assumptions.getByText('연 2%', {exact:true})).toBeVisible();
   // Engine amounts are copied, not recomputed: 10-year 0% equals 120 × monthly candidate.
   await expect(p.getByRole('row',{name:/^지금 고른 안/})).toContainText('4,794만원');
   await expect(p.getByRole('row',{name:/^투자 방식 변경 연/})).toContainText('5,882만 6,296원');
@@ -62,6 +65,7 @@ test('proposal shows goal_omissions reasons and keeps the original goal result',
   await expect(known).toContainText('원래 목표 결과: 목표 30만원');
   await expect(box.locator('[data-omission-reason="FUTURE_ENGINE_CODE"]')).toContainText('사유 코드 FUTURE_ENGINE_CODE');
   await expect(box).toContainText('목표가 삭제되거나 투자 불가로 판정된 것이 아니에요');
+  await page.locator('#dion-proposal-assumptions summary').click();
   await expect(page.getByRole('list',{name:'참고 비교의 한계'})).toContainText('첫 계획 월의 금액이 매달 같다고 가정');
 });
 
