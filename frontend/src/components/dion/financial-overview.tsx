@@ -1,7 +1,7 @@
 "use client";
-import { Json, list, object, textValue } from '@/lib/dion/model';
+import { type Document, Json, fieldValue, list, object, record, textValue } from '@/lib/dion/model';
 import { Layers } from 'lucide-react';
-import { formatKrw } from '@/lib/dion/money-format';
+import { fieldKrw, formatKrw } from '@/lib/dion/money-format';
 import { Donut, DonutLegend } from './donut';
 import { assetComposition } from '@/lib/dion/result-visual';
 
@@ -15,6 +15,33 @@ export function AssetComposition({ assets, asOf, onEdit }: { assets: Record<stri
       <details className="d-fold"><summary>분류 기준 확인</summary><p>확인된 자산과 소유 지분을 반영한 같은 계산 결과예요. 현금성 자산은 금융자산에 포함되며, 나머지 금융자산과 나누어 표시해요. 부동산·보증금은 서버에서 받은 비금융자산 분류 그대로 묶고, 투자·연금 잔액의 주식·채권 구분이 없으면 상세 분류 미확인으로 남겨요.</p></details>
     </> : <><p className="d-asset-empty">보유자산을 나눠 보여줄 자료가 부족해요. 확인된 분류와 전체 자산의 합계·기준일이 맞을 때 표시해요.</p><p className="d-inline-note">미확인 값을 0원으로 채우거나 전체 합계를 임의로 나누지 않아요.</p><button className="d-text-button" onClick={onEdit}>자산 내역 확인하기</button></>}
   </article>;
+}
+
+export function ReportedAmounts({ doc }: { doc: Document }) {
+  const rows: { label: string; won: string }[] = [];
+  function add(label: string, value: unknown) {
+    const money = object(value);
+    const won = fieldKrw({state: textValue(money.state), raw_value: money.raw_value, unit: textValue(money.unit)});
+    if (won !== null) rows.push({label, won});
+  }
+  function addItems(id: string, key: string, amountKey: string, label: string) {
+    const items = list(fieldValue(doc, id, key));
+    items.forEach((item, index) => add(items.length > 1 ? `${label} ${index + 1}` : label, item[amountKey]));
+  }
+  add("월평균 세후 소득", record(doc, "F03")?.envelope.fields.monthly_net_income_krw);
+  const expense = record(doc, "F04")?.envelope.fields;
+  const expenseBasis = fieldValue(doc, "F04", "expense_basis");
+  const expenseLabel = expenseBasis === "LIVING_ONLY" ? "월 생활비" : expenseBasis === "TOTAL_OUTFLOW" ? "월 전체 출금액" : "월 지출 입력액";
+  add(expenseLabel, expense?.living ?? expense?.monthly_living_cost_krw);
+  addItems("F09+F10+D08", "debts", "payment_total", "월 대출 납부액");
+  addItems("NEW-03", "existing_contributions", "amount", "월 저축·투자 입력액");
+  add("금융자산 입력 총액", record(doc, "F06")?.envelope.fields.financial_assets_total_reported_krw);
+  addItems("F08", "real_estate_assets", "market_value_krw", "부동산 전체 시세");
+  addItems("F09+F10+D08", "debts", "balance", "남은 대출 원금");
+  return rows.length ? <article className="d-card" aria-label="입력한 금액">
+    <h2>입력한 금액</h2>
+    <dl className="d-ledger">{rows.map(({label, won}) => <div key={label}><dt>{label}</dt><dd>{formatKrw(won)}</dd></div>)}</dl>
+  </article> : null;
 }
 
 export function FinancialOverview({ flow }: { flow: Record<string, Json> }) {

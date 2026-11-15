@@ -836,6 +836,11 @@ def run_question_v12(document):
     """Pure boundary. Partial results survive blocked dependencies; original input never mutates."""
     try:
         adapted = normalize_question_v12(copy.deepcopy(document))
+        if adapted["normalized_input"]["context"]["evaluation_on"] in ("", None):
+            return attach_statuses(output(
+                "NEEDS_INPUT", reason_code="EVALUATION_DATE_REQUIRED",
+                missing=["evaluation_on"], source_snapshot=adapted["source_snapshot"],
+            ))
         result = run_engine(adapted["normalized_input"])
         result["adapter"] = adapted
         dependencies = question_dependencies(document)
