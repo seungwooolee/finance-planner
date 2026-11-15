@@ -8,6 +8,16 @@ export const WORKBOOK_PORTFOLIO_TARGETS = [
   { label: "위험 추구형", weights: [20, 35, 35, 10] },
 ] as const;
 
+export type WorkbookPortfolioTarget = (typeof WORKBOOK_PORTFOLIO_TARGETS)[number];
+
+// 금융상품 조사본.xlsx. Match the research rows against the reviewed catalog by code.
+export const WORKBOOK_PRODUCT_REFERENCES = [
+  { asset: "채권", code: "153130", sourceRow: "02_채권형:2" },
+  { asset: "국내주식", code: "069500", sourceRow: "01_주식형:2" },
+  { asset: "미국주식", code: "360200", sourceRow: "01_주식형:5" },
+  { asset: "현금성 자산", code: "488770", sourceRow: "03_현금성:10" },
+] as const;
+
 export const EARLY_WORKBOOK_CASE = "FE-FICTIONAL-early-workbook-goal-v1";
 const EARLY_GOAL = "5년 안에 자산 1억 원 모으기";
 export const RETIREMENT_WORKBOOK_GOAL = "은퇴 및 상속";

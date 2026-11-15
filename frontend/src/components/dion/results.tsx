@@ -1,6 +1,7 @@
 "use client";
 
-import { WORKBOOK_PORTFOLIO_TARGETS } from "@/lib/dion/workbook-scenario-targets";
+import type { WorkbookPortfolioTarget } from "@/lib/dion/workbook-scenario-targets";
+import { WorkbookPortfolioChoices, WorkbookPortfolioProducts } from "./workbook-portfolio";
 import type { Scenario } from "./scenario-picker";
 
 import { useAssetReferenceSelection } from "./use-asset-reference-selection";
@@ -78,6 +79,7 @@ export function Results({view,demoScenario,deep,tab,setTab:changeTab,stale,onEdi
   const [visited,setVisited]=useState<number[]>([tab]);
   const [consultFocus,setConsultFocus]=useState(false);
   const [compositionFocus,setCompositionFocus]=useState(0);
+  const [workbookTarget,setWorkbookTarget]=useState<WorkbookPortfolioTarget|null>(null);
   useEffect(()=>{
     if(!compositionFocus) return;
     const detail=document.getElementById("dion-selected-composition");
@@ -173,19 +175,12 @@ export function Results({view,demoScenario,deep,tab,setTab:changeTab,stale,onEdi
         return candidates.length ? <PlanComparison candidates={candidates} selected={selectedPlan} onSelect={setSelectedPlan} goals={goalsCard} basis={{runId:view.runId,inputVersion}}/> : <>{goalsCard}<Missing row={plans} title="두 월별 후보 확인 대기"/><button className="d-secondary" onClick={()=>onEdit("ASSUMPTIONS")}>필요한 가정 확인 →</button></>;})()}
     </>}
     {tab===1 && <ResultBasis id="OUT-05" result={result} source={sourceDoc} inputVersion={view.serverVersion??view.localVersion} stale={stale} onEdit={onEdit}/>}
-    {tab===2 && workbookGoal && <article className="d-card" aria-label="엑셀 투자구성 목표 비중">
-      <h2>엑셀 투자구성 목표 비중</h2>
-      <div className="d-table-wrap"><table aria-label="투자 성향별 목표 비중">
-        <thead><tr>{["투자 성향","채권","국내주식","미국주식","현금성 자산"].map(label=><th key={label} scope="col">{label}</th>)}</tr></thead>
-        <tbody>{WORKBOOK_PORTFOLIO_TARGETS.map(({label,weights})=><tr key={label}>
-          <th scope="row">{label}</th>{weights.map((weight, i)=><td key={i}>{weight}%</td>)}
-        </tr>)}</tbody>
-      </table></div>
-      <p className="d-inline-note">실제 상품 배분은 손실 한도와 투자 여력 등 검토 조건을 확인한 뒤 계산해요.</p>
-    </article>}
+    {tab===2 && workbookGoal && <WorkbookPortfolioChoices selected={workbookTarget} onSelect={setWorkbookTarget} onProducts={()=>setTab(3)}/>}
     {tab===2 && <InvestmentFollowup review={visible("OUT-06")} onEdit={onEdit}/>}
     {tab===2 && <PortfolioChoice key={selectedPlan} doc={sourceDoc} review={visible("OUT-06")} flow={flow} planRow={selectedRow} selectedPlan={selectedPlan} onPlan={setSelectedPlan} chosen={selectedPortfolio} onChoose={id=>{void comparison.choose(id).then(ok=>{if(ok)setCompositionFocus(n=>n+1);});}} onProducts={()=>setTab(3)} onRecalculate={onRecalculate} blocked={comparison.blocked} onEdit={onEdit}/>}
     
+    {workbookGoal && (tab===3 || (tab===4 && workbookTarget)) && <WorkbookPortfolioProducts
+      selected={workbookTarget} products={list(productReview.products)} onChoose={()=>setTab(2)}/>}
     {tab===3 && <><div className="d-plan-row"><div><strong>{planName(selectedPlan)} · 상품 정보</strong><button className="d-text-button" onClick={()=>setTab(2)}>투자구성 비교로 돌아가기</button>{selectedPortfolio&&<button className="d-secondary" disabled={comparison.blocked} onClick={()=>setTab(4)}>반영한 포트폴리오 확인 →</button>}</div><PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/></div><ProductAllocation evidenceAccess={evidenceAccess} stale={stale} review={selectedReview} selectedPlan={selectedPlan} evaluationOn={textValue(object(result.context).evaluation_on)} onEdit={onEdit}/></>}
     {tab===3&&<div className="d-result-cta"><button type="button" className="d-primary" onClick={openConsultation}>DION과 상담하기</button><p>1~4 확인 후 상담과 변경 검토를 거쳐 최종 생성을 요청해요.</p></div>}
     <div hidden={tab!==4}><PortfolioReviewFlow visited={visited} selectionBlocked={comparison.blocked} flow={reviewFlow} basis={basis} view={view} token={token} caseId={caseId} stale={stale} doc={sourceDoc} onTab={setTab} onOpenRun={onOpenRun??(async()=>{})} onReadRun={onReadRun??onOpenRun??(async()=>{})} onPrepared={r=>onReviewResume?.(r)} onAdopt={focusAdoption}/></div>

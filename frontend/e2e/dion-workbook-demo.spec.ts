@@ -45,6 +45,22 @@ test("the public picker switches only the two demonstrations, then restores the 
   const resultNav = page.getByRole("navigation", {name:"빠른 결과 5뷰"});
   await resultNav.getByRole("button",{name:"투자구성",exact:true}).click();
   await expectWorkbookTargets(page);
+  const targets = page.getByRole("article",{name:"엑셀 투자구성 목표 비중"});
+  const reference = page.getByRole("article",{name:"선택한 시연 투자구성"});
+  const risk = targets.getByRole("button",{name:"위험 추구형",exact:true});
+  await risk.click();
+  await expect(risk).toHaveAttribute("aria-pressed","true");
+  await targets.getByRole("button",{name:/선택한 시연 구성의 상품 보기/}).click();
+  await expect(reference.getByRole("rowheader")).toHaveText(["채권","국내주식","미국주식","현금성 자산"]);
+  const riskRows = reference.locator("tbody tr");
+  await expect(riskRows.nth(0)).toContainText(/20%.*KODEX 단기채권.*153130/);
+  await expect(riskRows.nth(1)).toContainText(/35%.*KODEX 200.*069500/);
+  await expect(riskRows.nth(2)).toContainText(/35%.*ACE 미국S&P500.*360200/);
+  await expect(riskRows.nth(3)).toContainText(/10%.*KODEX 머니마켓액티브.*488770/);
+  await expect(reference.getByRole("link",{name:/공식 상품 자료/})).toHaveCount(4);
+  await resultNav.getByRole("button",{name:"결과·다음 행동",exact:true}).click();
+  await expect(reference.getByRole("heading",{name:"위험 추구형 · 시연 투자구성"})).toBeVisible();
+  await expect(reference.locator("tbody tr")).toHaveCount(4);
 
   await page.setViewportSize({width:390,height:844});
   await launch.click();
@@ -116,7 +132,12 @@ test("the public picker switches only the two demonstrations, then restores the 
   await expect(rendered.getByRole("article", {name:"투자 선호 응답"})).toBeVisible();
   await expect(rendered.locator("[data-portfolio-type]")).toHaveCount(3);
   await expect(rendered.locator('[data-portfolio-apply="BALANCED"]')).toBeDisabled();
+  await expect(targets.getByRole("button",{name:"위험 추구형",exact:true})).toHaveAttribute("aria-pressed","false");
+  await targets.getByRole("button",{name:"안정 추구형",exact:true}).click();
   await resultNav.getByRole("button", {name:"상품 정보", exact:true}).click();
+  await expect(reference.getByRole("heading",{name:"안정 추구형 · 시연 투자구성"})).toBeVisible();
+  await expect(reference.getByRole("rowheader")).toHaveText(["채권","현금성 자산"]);
+  await expect(reference.locator("tbody tr").nth(1)).toContainText(/80%.*488770/);
   const products = rendered.getByRole("region", {name:"상품 적합성·배분 검토"});
   await expect(products.getByRole("heading", {name:"월 투자예산 확인 필요"})).toBeVisible();
   await expect(products.getByText(/전액.*(?:미배분|현금 대기자금)|투자 후보 금액을 현금 대기자금/)).toHaveCount(0);
