@@ -22,7 +22,7 @@
 .dion-app .d-asset-ref-compact .d-asset-ref-heading h2{font-size:18px}
 @media(max-width:640px){
   .dion-app .d-asset-ref-controls{display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
-  .dion-app .d-asset-ref-controls label{min-width:0}
+  .dion-app .d-asset-ref-controls label{grid-template-columns:minmax(0,1fr);min-width:0}
   .dion-app .d-asset-ref-controls select{font-size:16px;min-height:44px}
   .dion-app .d-asset-ref-heading h2{font-size:18px}
   .dion-app .d-asset-ref-source summary{min-height:44px}

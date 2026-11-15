@@ -69,3 +69,9 @@
   기대값/금융 정책/원 잠금/채점 코드는 그대로다. [기준 변경 기록](../contest/2026-11-14/ai/INTEGRATION-BASELINE.md).
 - 1회 수정 후 관련 baseline/contest eval/RAG integrity 검사: **46 passed / 6 skipped**, Ruff/diff check 통과.
   보류 6건은 기존 opt-in 평가이며 이번 실제 모델 3회와 별개다. 같은 PR의 CI 재실행 결과는 PR Checks에서 확인한다.
+
+## 후속: 즉시 메시지·대기 표시·검증 실패 재시도
+
+integration 1fad081 기반 `codex/chat-response-feedback-20261115`. 전송 즉시 내 말풍선과 DION 점 세 개를 표시하고 다음 작성 내용을 보존한다. 확정 검증 실패는 새 request_key로 명시 재시도하며 불확실 실행은 같은 key를 유지한다. 서버 성공 DTO·금융 계산·확인 전 불변 경계는 유지했다.
+
+[변경 계약·기대/금지 행동·실제 검사·릴리스 조건](2026-11-15-chat-response-feedback.md). 관련 pytest 17개, Ruff·TypeScript·변경 ESLint 통과. 합성 실제 모델 3회 모두 검증 통과, 4.8~6.6초/3.0175 credits. 새 코드의 운영 UI 배포·전체 E2E·production build는 미실행이다.

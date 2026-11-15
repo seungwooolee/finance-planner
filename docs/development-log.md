@@ -956,4 +956,6 @@ GitHub main 2baa2be의44개 파일을 내보내 blob 지문을 확인했다. 실
 
 # 2026-11-14 — v0.5.0 RAG 상품·절세 설명 (draft)
 
+후속 2026-11-15: [채팅 응답·재시도 개선](integration/2026-11-15-chat-response-feedback.md). 사용자 메시지 즉시 표시, DION 대기 점, 다음 작성 내용 보존, 실패 재시도 key 분리. 관련 pytest 17개와 Ruff·TypeScript·변경 ESLint 통과. 실제 합성 모델 3회 4.8~6.6초, 3.0175 credits. 상세 브라우저 환경 실패와 배포 상태는 연결 문서에 분리 기록했다.
+
 저장 run 소유권/버전/hash와 연결한 등록 근거 조회, 상품 검토 이유·비교 표·공시 추적, 최종 화면 전용 절세 카드와 TAX-01~08 설명을 연결했다. 상품·배분·세법·개인 자격·절세액을 새로 결정하지 않는다. 관련 pytest82통과, TypeScript/ESLint/Ruff 통과. Edge3통과, 수정 후 재검증2개는 테스트 Next 서버 layout.js 읽기 HTTP500으로 미확인이다. 서버 재시작 명령은 자동 승인 검토의 blocked by policy로 실행되지 않았다. 해당 검사와 서버 정상화가 남아 draft로 관리한다. [계약·검사·서버 상태](integration/2026-11-14-v0.5.0-rag.md). 배포/유료 호출/운영 DB 없음. #37 첫 열기 추가진단과 Core 성공은 완료 상태로 보존한다.

@@ -26,7 +26,7 @@ export const labels: Record<string, string> = { income: "들어온 소득", livi
 export const scopeLabels: Record<string, string> = {
   living: "대출·저축/투자 이체를 제외한 생활 지출",
   loan: "원금+이자 상환 · 대출받은 돈 제외",
-  invest_existing: "채택 계획의 기존 INVESTMENT/NONCASH 납입 목록만 · 연금·급여공제 제외",
+  invest_existing: "채택 계획에 있던 기존 투자·비현금 납입만 · 연금·급여공제 제외",
   invest_new: "순수 신규 월 투자 납입 · 기존 납입·일시금·평가손익 제외",
   extra_cash: "목적 미배정 현금의 월 추가 보유분 · 기존 잔액·평가손익 제외",
 };
