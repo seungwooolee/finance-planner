@@ -5,10 +5,12 @@ from fastapi.responses import JSONResponse
 
 from .api import body, call, get_store, shape
 from .auth import get_actor
+from .investment_projection_api import router as projection_router
 from .question_bridge import run_frontend_questions
 from .raw_store import _digest
 
 router = APIRouter(tags=["Question frontend integration 1.0"])
+router.include_router(projection_router)
 
 
 @router.post("/api/fe/v1/preview")
