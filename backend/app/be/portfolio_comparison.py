@@ -70,6 +70,18 @@ class PortfolioComparisonMixin:
             return {**self._portfolio_saved(conn, case_id, run_id),
                     "is_current": run["input_version"] == case["input_version"]}
 
+    def projection_selection_basis(self, actor, case_id, run_id, request):
+        with self._transaction() as conn:
+            case = self._authorize(conn, actor, case_id)
+            run = self._comparison_run(conn, case_id, run_id)
+            if (run["status"] != "SUCCEEDED" or run["input_version"] != case["input_version"]
+                    or run["input_version"] != request["input_version"] or run["input_hash"] != request["input_hash"]):
+                raise PocError("RUN_NOT_CURRENT")
+            self._portfolio_for_adoption(conn, case_id, run, request["strategy_id"], {
+                "portfolio_type": request["portfolio_type"], "comparison_revision": request["comparison_revision"],
+            })
+            return json.loads(run["result_json"])
+
     def save_portfolio_comparison(self, actor, case_id, run_id, value):
         fingerprint = _digest({"operation": "portfolio_comparison", "run_id": run_id, **value})
         with self._transaction(write=True) as conn:
