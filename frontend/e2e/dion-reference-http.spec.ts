@@ -15,8 +15,8 @@ test('actual HTTP preview connects its reference snapshot to the selected cohort
   expect(payload.storage).toBe('NOT_SAVED');
   const peer = payload.result.peer_reference;
   expect(peer?.version, 'The deployed preview must provide statistics; UI-only data is insufficient').toBe('DION-PEER-REFERENCE-1.0');
-  expect(peer.records).toHaveLength(28);
-  expect(peer.records.filter((r: { review_status: string }) => r.review_status === 'REFERENCE_ONLY')).toHaveLength(15);
+  expect(peer.records).toHaveLength(34);
+  expect(peer.records.filter((r: { review_status: string }) => r.review_status === 'REFERENCE_ONLY')).toHaveLength(21);
   expect(peer.input_version).toBe(response.request().postDataJSON().raw_bundle.input_version);
   expect(peer.input_sha256).toBe(payload.result.adapter.source_sha256);
   const total = peer.records.find((r: { cohort_id: string; metric_key: string }) => r.cohort_id === 'C08' && r.metric_key === 'proposal.total_assets');
@@ -28,9 +28,9 @@ test('actual HTTP preview connects its reference snapshot to the selected cohort
     await expect(assets).toHaveAttribute('data-data-version', peer.data_version);
     await expect(assets.getByRole('figure')).toBeVisible();
     await expect(page.getByRole('region', { name: '생활단계 참고 통계', exact: true })).toHaveCount(0);
-    await expect(assets.getByLabel('살펴볼 조사 집단')).toHaveValue('ANSWER');
+    await expect(assets.getByLabel('비교할 참고 집단')).toHaveValue('ANSWER');
     await expect(assets).toContainText('사회초년생');
-    await expect(assets.locator('[data-asset-series="reference"]')).toHaveAttribute('data-value', total.value);
+    await expect(assets.locator('[data-asset-metric="proposal.total_assets"] [data-asset-series="reference"]')).toHaveAttribute('data-value', total.value);
     expect(peer.scope).toBe('personal');
     await expect(assets.locator('[data-asset-series="own"][data-value]')).toHaveCount(0);
     await assets.scrollIntoViewIfNeeded();

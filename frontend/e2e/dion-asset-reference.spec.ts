@@ -53,6 +53,33 @@ test("chart coordinates retain negative values and distinguish absent from actua
   expect(assetBar(large, assetAxis([large]))!.width).toBe(1000);
 });
 
+test("partial, withheld and conflicting records report per-metric availability without fallback", () => {
+  const explicit = {cohort:"C08", net:"평균" as const};
+  const total = row("proposal.total_assets", "314980000", "0", {cohort_id:"C08"});
+  const snapshot = {version:"old",scope:"household",records:[total]};
+  const partial = assetReferenceView(snapshot, explicit);
+  expect(partial.metrics).toHaveLength(1);
+  expect(partial.availability.map(m=>m.state)).toEqual(["REFERENCE_ONLY","UNAVAILABLE","UNAVAILABLE"]);
+  expect(partial.membershipState).toBe("UNCONFIRMED");
+  const held = assetReferenceView({...snapshot,records:[total,row("proposal.total_liabilities",null,null,{cohort_id:"C08",review_status:"WITHHELD"})]},explicit);
+  expect(held.availability[1].state).toBe("WITHHELD");
+  const conflicting = assetReferenceView({...snapshot,records:[total,{...total,period_start:"2024-03-31",period_end:"2024-03-31"}]},explicit);
+  expect(conflicting.metrics).toHaveLength(0);
+  expect(conflicting.availability[0].state).toBe("NEEDS_REVIEW");
+  expect(assetReferenceView(snapshot,{...explicit,cohort:"not-in-this-run"}).metrics).toHaveLength(0);
+});
+
+test("median switches only within its source and period; personal values never become household values", () => {
+  const mean = row("proposal.net_assets","471440000","-100");
+  const median = row("proposal.net_assets","238600000","-100",{statistic_type:"중앙값",source_id:"OTHER"});
+  const selection = {cohort:"C07",net:"중앙값" as const};
+  const snapshot = {version:"test",scope:"personal",records:[mean,median]};
+  const before = JSON.stringify(snapshot), view = assetReferenceView(snapshot,selection);
+  expect(view.canSwitchNet).toBe(false); expect(view.netFallback).toBe(true);
+  expect(view.metrics[0]).toMatchObject({reference:"471440000",own:null,ownState:"SCOPE_MISMATCH"});
+  expect(JSON.stringify(snapshot)).toBe(before);
+});
+
 test("asset reference web flow uses real preview data and shares selection, snapshot and stale status with final portfolio", async ({ page }, info) => {
   test.setTimeout(180000);
   await page.setViewportSize({ width: 1440, height: 1000 });
@@ -67,12 +94,12 @@ test("asset reference web flow uses real preview data and shares selection, snap
   await expect(chart.locator('[data-asset-series="own"][data-value]')).toHaveCount(0);
   await expect(chart).toContainText("개인·가구 범위");
   expect(result.peer_reference.scope).toBe("personal");
-  await expect(chart.getByLabel("살펴볼 조사 집단")).toHaveValue("ANSWER");
+  await expect(chart.getByLabel("비교할 참고 집단")).toHaveValue("ANSWER");
   await expect(chart).toContainText("사회초년생");
-  await expect(chart.locator("[data-asset-metric]")).toHaveCount(1);
+  await expect(chart.locator("[data-asset-metric]")).toHaveCount(3);
   await expect(page.getByRole("region", {name:"생활단계 참고 통계", exact:true})).toHaveCount(0);
-  await chart.getByLabel("살펴볼 조사 집단").selectOption("C07");
-  await expect(chart.locator("polyline")).toHaveCount(1);
+  await chart.getByLabel("비교할 참고 집단").selectOption("C07");
+  await expect(chart.locator(".d-asset-compare-metric")).toHaveCount(3);
   await chart.getByRole("combobox", { name: "순자산 참고값", exact: true }).selectOption("중앙값");
   const net = chart.locator('[data-asset-metric="proposal.net_assets"]');
   await expect(net).toHaveAttribute("data-statistic-id", "V005");
@@ -80,10 +107,14 @@ test("asset reference web flow uses real preview data and shares selection, snap
   const ownValues = await chart.locator('[data-asset-series="own"]').evaluateAll(els => els.map(el => el.getAttribute("data-value")));
   const expectedOwn = ["proposal.total_assets", "proposal.total_liabilities", "proposal.net_assets"].map(key => result.peer_reference.records.find((r: {metric_key: string}) => r.metric_key === key).user_value);
   expect(ownValues).toEqual(expectedOwn);
-  await chart.getByLabel("살펴볼 조사 집단").selectOption("C08");
-  await expect(chart.locator("[data-asset-metric]")).toHaveCount(1);
+  await chart.getByLabel("비교할 참고 집단").selectOption("C08");
+  await expect(chart.locator("[data-asset-metric]")).toHaveCount(3);
   await expect(chart).toContainText("39세 이하");
-  await chart.getByLabel("살펴볼 조사 집단").selectOption("C07");
+  expect(await chart.locator('[data-asset-series="reference"]').evaluateAll(els=>els.map(el=>el.getAttribute('data-value')))).toEqual(["314980000","95480000","126400000"]);
+  await chart.getByLabel("비교할 참고 집단").selectOption("C09");
+  await expect(chart).toContainText("60세 이상");
+  expect(await chart.locator('[data-asset-series="reference"]').evaluateAll(els=>els.map(el=>el.getAttribute('data-value')))).toEqual(["600950000","65040000","250000000"]);
+  await chart.getByLabel("비교할 참고 집단").selectOption("C07");
   await chart.getByText("출처·정의·자료 기준 확인", { exact: true }).click();
   await expect(chart.getByRole("link").first()).toHaveAttribute("href", /list_no=439535/);
   await chart.getByText("출처·정의·자료 기준 확인", { exact: true }).click();
@@ -97,6 +128,14 @@ test("asset reference web flow uses real preview data and shares selection, snap
   expect(await final.locator('[data-asset-series="own"]').evaluateAll(els => els.map(el => el.getAttribute("data-value")))).toEqual(ownValues);
   await expect(final).toHaveAttribute("data-input-version", String(result.peer_reference.input_version));
   await expect(final).toContainText("월 납입안을 적용한 뒤의 자산");
+  await final.getByRole("combobox", {name:"비교할 참고 집단",exact:true}).selectOption("C09");
+  const selectedValues=await final.locator('[data-asset-series="reference"]').evaluateAll(els=>els.map(el=>el.getAttribute('data-value')));
+  expect(selectedValues).toEqual(["600950000","65040000","250000000"]);
+  await page.locator(".d-tabs button").nth(0).click();
+  await expect(chart.getByRole("combobox",{name:"비교할 참고 집단",exact:true})).toHaveValue("C09");
+  expect(await chart.locator('[data-asset-series="reference"]').evaluateAll(els=>els.map(el=>el.getAttribute('data-value')))).toEqual(selectedValues);
+  await page.locator(".d-tabs button").nth(4).click();
+  await page.getByText("보유자산 참고 통계 다시 보기", {exact:true}).click();
   await final.screenshot({ path: info.outputPath("final-web.png") });
   for (const width of [1024, 390]) {
     await page.setViewportSize({ width, height: 900 });

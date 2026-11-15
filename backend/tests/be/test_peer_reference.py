@@ -26,7 +26,7 @@ def inputs(scope="household", amount="0", state="CALCULATED", gates=()):
     return document, result
 
 
-def test_registry_reproducible_28_rows_and_exact_conversion():
+def test_registry_reproducible_original_28_plus_six_official_asset_rows():
     script = Path(__file__).resolve().parents[3] / "scripts/import_peer_research.py"
     importer = runpy.run_path(str(script))
     assert importer["build"]() == json.loads(DATA_PATH.read_text(encoding="utf-8"))
@@ -38,9 +38,18 @@ def test_registry_reproducible_28_rows_and_exact_conversion():
     with pytest.raises(ValueError):
         normalize("0.00001", "만원")
     registry = importer["build"]()
-    assert len(registry["records"]) == 28
+    original = importer["build"](include_supplement=False)
+    assert len(original["records"]) == 28
+    assert registry["records"][:28] == original["records"]
+    assert registry["research_sha256"] == original["research_sha256"]
+    assert len(registry["records"]) == 34
+    assert registry["data_version"] != original["data_version"]
+    # Independent published table values, not calculated as assets minus debt.
+    assert [r["value"] for r in registry["records"][28:]] == [
+        "95480000", "219500000", "126400000", "65040000", "535910000", "250000000"]
+    assert [r["statistic_type"] for r in registry["records"][28:]] == ["평균", "평균", "중앙값"] * 2
     published = [r for r in registry["records"] if r["review_status"] == "REFERENCE_ONLY"]
-    assert len(published) == 15
+    assert len(published) == 21
     assert {r["source_id"] for r in published} == {"S01", "S03"}
     assert all(r["license"] == "KOGL_TYPE_1" for r in published)
 

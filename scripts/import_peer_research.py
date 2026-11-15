@@ -1,4 +1,5 @@
 """Reproduce the reviewed registry from the preserved Drive sheet; no network/API keys."""
+import copy
 import csv
 import hashlib
 import io
@@ -9,6 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "docs/research/peer-reference/research-snapshot.csv"
 DESTINATION = ROOT / "backend/app/planning/peer_reference_data.json"
+SUPPLEMENT = ROOT / "docs/research/peer-reference/asset-supplement-20261115.json"
 
 
 def normalize(value, unit):
@@ -25,7 +27,7 @@ def normalize(value, unit):
         return format(converted, "f") if unit == "%" else str(int(converted))
 
 
-def build():
+def build(include_supplement=True):
     # Hash the canonical UTF-8/LF snapshot, independent of Windows checkout endings.
     raw = (SOURCE.read_text(encoding="utf-8-sig").rstrip() + "\n").encode("utf-8")
     tabs = [list(csv.DictReader(io.StringIO(part.strip())))
@@ -66,11 +68,39 @@ def build():
             "review_status": "REFERENCE_ONLY" if approved else "WITHHELD",
             "reason": reason,
         })
-    return {"schema_version": "DION-PEER-REGISTRY-1.0", "data_version": "dion-peer-reviewed-20261114-v1",
+    registry = {"schema_version": "DION-PEER-REGISTRY-1.0", "data_version": "dion-peer-reviewed-20261114-v1",
             "reviewed_on": "2026-11-14", "reviewer": "Codex: official source and definition review",
             "research_url": "https://docs.google.com/spreadsheets/d/1FHi-t3DtWuGOFZmPyeUdABYMIQu2-s9TARCuPqhJjn8/edit",
             "research_sha256": hashlib.sha256(raw).hexdigest(),
             "research_hash_format": "UTF8_LF_SINGLE_FINAL_NEWLINE", "records": records}
+    if include_supplement:
+        supplement_text = SUPPLEMENT.read_text(encoding="utf-8").rstrip() + "\n"
+        supplement = json.loads(supplement_text)
+        base = {r["statistic_id"]: r for r in records}
+        seen = set(base)
+        if supplement["source_id"] != "S01" or supplement["license"] != "KOGL_TYPE_1":
+            raise ValueError("supplement requires reviewed S01 source")
+        for item in supplement["records"]:
+            template = copy.deepcopy(base[item["template_statistic_id"]])
+            cohort = base[{"C08": "V009", "C09": "V010"}[item["cohort_id"]]]
+            if item["statistic_id"] in seen or item["statistic_type"] != template["statistic_type"]:
+                raise ValueError("supplement ID or statistic type mismatch")
+            seen.add(item["statistic_id"])
+            template.update({
+                "id": item["id"], "statistic_id": item["statistic_id"], "cohort_id": item["cohort_id"],
+                "cohort_definition": cohort["cohort_definition"], "limitations": cohort["limitations"],
+                "value": normalize(item["source_value"], "만원"), "source_value": item["source_value"],
+                "source_raw_decimal": item["source_raw_decimal"],
+                "source_url": supplement["source_url"], "source_title": supplement["source_title"],
+                "source_position": f"{supplement['sheet']}!{item['source_cell']} · "
+                                   f"{supplement['headers'][item['source_cell'].rstrip('0123456789')]}",
+                "source_file_sha256": supplement["source_sha256"],
+                "quality": template["quality"] + " 부록의 정수 만원 표시값이며 원문 소수값은 별도 보존합니다.",
+            })
+            records.append(template)
+        registry.update({"data_version": supplement["data_version"], "reviewed_on": supplement["reviewed_on"],
+                         "supplement_sha256": hashlib.sha256(supplement_text.encode("utf-8")).hexdigest()})
+    return registry
 
 
 if __name__ == "__main__":
