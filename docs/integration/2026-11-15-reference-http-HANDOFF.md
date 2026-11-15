@@ -2,12 +2,13 @@
 
 ## 기준과 이번 변경
 
-- 기준 integration: `e29cbbf5ca4decd39c37e7fc62f0420e31f34e00` (PR #71 병합).
+- 최초 기준 integration: `e29cbbf5ca4decd39c37e7fc62f0420e31f34e00` (PR #71 병합).
+- PR 후보: `31c1cf4f6fcfa28efc540c177ef8a9017415e6ea` (검사/문서). 최초 후보 `dfb815f`를 최신 integration `5e515f8fc66714b56f3ab7fe1ffaebbdbe0d31dd` 위로 rebase했다. HANDOFF/개발 로그/Vercel JSON의 동시 추가 충돌은 양측 내용을 보존해 해결했다. API/그래프/검사 코드는 바뀌지 않았다. 이 문서의 운영 증거 갱신은 후속 커밋이다.
 - 작업 브랜치: `codex/reference-deployment-check-20261115`.
 - PR #71의 그래프 구현을 중복 수정하지 않았다. 기존 컴포넌트 검사를 실제 페이지 → Next rewrite → FastAPI 공개 preview → 엔진 → 결과 그래프 검사로 보완했다.
 - 변경은 `frontend/e2e/dion-reference-http.spec.ts`, 작업 브랜치 배포 차단과 인계 문서뿐이다. 금융 계산/통계 원장/BE API/저장 계약/원응답/과거 결과/채택은 변경하지 않았다. migration 추가·적용 없음.
 
-## 이번에 직접 확인한 운영 상태 (2026-11-15 KST)
+## 초기 운영 문제 재현 (2026-11-15 KST, 배포 전)
 
 | 경로 | 실행 | 관찰 |
 | --- | --- | --- |
@@ -16,7 +17,7 @@
 | Render 목록/선택 workspace 도구 | 읽기 전용 | Unknown tool 오류, 현재 실행 SHA/배포 설정 조회 불가 |
 | 연결 브라우저 | 기존 세션 조회 | CUA 초기화 오류, Chrome 연결은 기존 프로필 사용 중 오류. 기존 사용자 브라우저/서버 종료 없음 |
 
-기존 인계의 Render 서비스는 `dion-api-review` / `srv-dbprq83rjlhs73asv91g`이나 이번에 관리 API로 재확인하지 못했다. 과거 `1854518` 실행 기록을 이번 확인된 실행 SHA로 재사용하지 않는다.
+아래 후속 단계에서 기존 로컬 인증으로 관리 REST API 접근을 복구했다. Render의 당시 실행 커밋 `1854518525d51aac9a8f7280f9ad1bc4793b91b6`을 직접 재확인했다. Vercel은 기존 CLI OAuth 자격 증명을 갱신했다. 비밀값을 저장소/증거/채팅에 기록하지 않았다.
 
 ## 새 검증 (기존 통과 검사 반복 없음)
 
@@ -26,13 +27,35 @@
 - 검사항목: HTTP200/no-store/NOT_SAVED, `DION-PEER-REFERENCE-1.0`, 28행/표시허용15행, 요청 입력버전·source hash 연결, API의 정확한 원 문자열과 그래프 data-value 일치, 개인/가구 불일치 시 내 막대 없음, 1440/390px의 자산·생활단계 그래프 표시와 가로 넘침 없음.
 - 변경 테스트 ESLint 통과. 전체 로컬 타입/BE/Build/기존 컴포넌트 E2E는 반복하지 않았다. PR의 기존 필수 CI 결과는 PR 설명에서 후보 SHA와 함께 기록한다.
 
-## 운영 반영 시 완료 기준
+## 승인 후 운영 반영과 실제 UI 검증
 
-배포 후보 코드는 이미 병합된 `e29cbbf5ca4decd39c37e7fc62f0420e31f34e00`에 있다. 이번 후속 변경은 검사/문서뿐이므로 그래프 제공을 위해 후속 PR까지 배포할 필요는 없다.
+사용자는 위 검증 후보의 Render BE/Vercel FE 배포를 승인했다. DB migration·유료 호출은 제외했다. 이번 후속 PR은 검사/문서뿐이므로 그래프 제공에 이 PR의 배포는 필요하지 않다.
 
-1. Render 연결을 복구하여 대상 서비스와 실행 SHA/시작 명령을 확인한다. FE의 실제 BACKEND_URL도 확인한다. 기존 비밀 설정/운영 DB는 바꾸지 않는다.
-2. 별도 배포 승인 후 위 통합 후보를 BE와 FE에 적용한다. 운영 migration·유료 호출·권한/게이트 해제는 포함하지 않는다. 운영 DB/신기능의 migration 준비 여부를 확인하지 않고 전체 기능이 배포 준비됐다고 주장하지 않는다.
-3. BE 직접/접근 게이트를 통과한 FE 프록시의 새 preview에서 같은 peer_reference 버전·입력 식별자·자료 hash를 확인한다. `/api/deployment-info`의 BE SHA와 FE 빌드 SHA는 별도로 확인한다.
-4. 배포 화면에서 새 결과의 자산·생활단계 그래프와 출처를 데스크톱/모바일에서 확인한다. 과거 저장 결과에 통계를 주입하거나 덮어쓰지 않는다.
+| 항목 | 직접 확인한 결과 |
+| --- | --- |
+| Render 대상 | `dion-api-review` / `srv-dbprq83rjlhs73asv91g`, 자동 배포 `no` 유지 |
+| 시작 명령 | `python -m uvicorn app.be_server:app --app-dir backend --host 0.0.0.0 --port $PORT --workers 1` |
+| 이번 실행한 배포 | `dep-dbsff367bikc73feqi8g`, 명시 commitId `e29cbbf5ca4decd39c37e7fc62f0420e31f34e00`, 00:07:52 UTC 완료 후 후속 배포로 deactivated |
+| 현재 Render 배포 | 다른 작업이 진행한 `dep-dbsffss9v7es73cioafg`, `5e515f8fc66714b56f3ab7fe1ffaebbdbe0d31dd`, live. `/api/deployment-info`의 실행 SHA도 일치 |
+| 현재 Vercel 배포 | `dion-review` / `prj_E6erzhUDS9CzJtHkLNh0QA82bIGq`, `dpl_ACFWyuNFeDefi8mJXvF69dmjo6ey`, 같은 `5e515f8`, READY, production alias 할당 확인 |
+| 운영 FE | `https://dion-review.vercel.app/dion` |
+| FE 연결 | production/preview `BACKEND_URL=https://dion-api-review.onrender.com`, root `frontend` |
 
-현재 결론: **통합 코드의 실제 HTTP→화면 연결 검증 완료 / 운영 BE 통계 누락 재현 / 운영 반영 및 인증된 배포 UI 미검증**. 로컬 통과를 운영 해결로 표시하지 않는다.
+`e29cbbf`가 `5e515f8`의 조상임을 git merge-base로 확인했다. 참고 통계 BE/그래프 경로는 그 사이 변경되지 않았다. 이미 최신 Vercel과 후속 Render가 배포되어 있어 추가 재배포나 과거 커밋으로의 롤백을 실행하지 않았다.
+
+### 실제 배포 화면 검사 1건 통과
+
+- 기존 합성 `product-review-scenario`만 사용. 운영 DB 저장·실계정 변경·AI 호출 없음.
+- 최초 준비 단계에서 Vercel sensitive `SITE_PASSWORD`는 조회할 수 없어 빈 인증 요청이 401이었다. 제품 검사 성공으로 간주하지 않았다. 게이트/비밀번호 설정을 바꾸지 않고 사용자가 새 Edge 검증 창에서 직접 입장한 뒤 검사했다.
+- 실제 페이지의 `예시로 결과 보기 · 대표상품 포함` → FE 프록시 preview HTTP200/no-store/NOT_SAVED → 자산·생활단계 그래프까지 연결했다. 같은 요청을 BE에도 전달해 입력/자료 hash를 대조했다.
+- `DION-PEER-REFERENCE-1.0`, 통계28행/REFERENCE_ONLY 15행, input_version22, API 원 문자열과 그래프 값 일치. 개인/가구 범위 불일치에서 내 값은 생성하지 않았다.
+- 1440px/390px 모두 두 그래프 표시·가로 넘침 없음. 운영 캡처 `life-390.png`와 `assets-1440.png`도 시각 검토했다.
+- 입력 hash: `6be578409c6cb29daa1b46da98f80beee0d3617bd600073b7d1897f60e26d81c`.
+- 자료 버전: `dion-peer-reviewed-20261114-v1`; 자료 hash: `642763d9f9737229abfadeeba46bf64fbe9fa1286984212903e8e20184c43d78`.
+- 로컬 증거(커밋 제외): `frontend/test-results/production-reference/evidence.json`, `direct-evidence.json`, `life-{1440,390}.png`, `assets-{1440,390}.png`. 인증 토큰/쿠키/비밀번호/trace 파일은 저장하지 않았다.
+
+## 미실행·남은 조건
+
+실계정 저장·기존 run 재계산·전체 제품/모든 통계 조합·운영 DB migration 준비 검사는 이번 범위 밖이다. 과거 저장 결과는 덮어쓰지 않으므로 당시 응답에 통계가 없으면 기존 누락 안내를 유지한다. 통계 등록/그래프 표시 성공은 독립 전문가 검증이나 개인별 적합성 승인이 아니다.
+
+현재 결론: **새 계산 응답의 통계 누락 해결 확인 / 운영 FE·BE 동일 SHA 확인 / 실제 배포 자산·생활단계 그래프 연결 검증 완료**. 이번 기능의 추가 운영 변경은 필요하지 않다.
