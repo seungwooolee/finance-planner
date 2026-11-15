@@ -2,6 +2,7 @@
 
 import { Baby, BookOpen, BriefcaseBusiness, Check, CircleHelp, Compass, Heart, Home, Landmark, Sprout, Sun, Users, Wallet, type LucideIcon } from "lucide-react";
 import { Document, Field, Json, catalog, field, fieldValue, list, object, question, record, revise, textValue } from "@/lib/dion/model";
+import { EARLY_WORKBOOK_CASE } from "@/lib/dion/workbook-scenario-targets";
 import { goalName, patchGoal, reactivateGoal, retainGoals, selectLifeStage, selectedMonth, setMonth, updateIncome } from "@/lib/dion/customer-flow";
 import { fieldKrw, formatKrw } from "@/lib/dion/money-format";
 import { MoneyField } from "./fields";
@@ -90,7 +91,10 @@ export function GoalsQuestion({ doc, onChange }: Props) {
       const amount = list(fieldValue(doc, "F13", "goals")).find(r => r.goal_id === gid) ?? {};
       const special = ["GOAL_TYPE_03", "GOAL_V12_INHERITANCE", "RETIREMENT"].includes(String(g.type));
       return <section className="d-goal-card" key={gid} aria-label={`${name(g)} 목표`}><div className="d-goal-card-heading"><div><span>{i === 0 ? "가장 먼저 준비할 목표" : `함께 준비할 목표 ${i + 1}`}</span><h2>{name(g)}</h2></div><button type="button" className="d-text-button" aria-label={`${name(g)} 목표 삭제`} onClick={() => remove(goals.filter(r => r.goal_id !== gid).map(r => String(r.goal_id)))}>목표 삭제</button></div>
-        {special ? <p className="d-note">목표로 기록해 둘게요. {g.type === "GOAL_V12_INHERITANCE" ? "상속" : "은퇴"}에 필요한 별도 계산은 아직 준비 중이에요.</p> : amount.payment_type === "RECURRING" ? <section className="d-note" role="status"><p>이전에 매달 쓰는 돈으로 입력한 목표예요. 내용은 보관하지만 현재 목표 계산에는 반영하지 않아요.</p><p>저장한 월 금액: {formatKrw(fieldKrw((amount.target_amount_krw as unknown as Field) ?? field(null, "KRW_10000")))} · 기간: {textValue(amount.payment_start) || "미입력"} ~ {textValue(amount.payment_end) || "미입력"}</p><p>필요하면 ‘목표 삭제’로 이번 진단에서 제외할 수 있어요. 기존 생활비에 포함된 돈을 다시 지출로 더하지 않아요.</p></section> : <>
+        {doc.context.case_id === EARLY_WORKBOOK_CASE && g.type === "WEALTH" && amount.payment_type === "" ?
+          <dl className="d-ledger"><div><dt>모을 자산</dt><dd>{formatKrw(fieldKrw(amount.target_amount_krw as unknown as Field))}</dd></div>
+            <div><dt>목표 기한</dt><dd>{textValue(timing.target_date)}</dd></div></dl>
+        : special ? <p className="d-note">목표로 기록해 둘게요. {g.type === "GOAL_V12_INHERITANCE" ? "상속" : "은퇴"}에 필요한 별도 계산은 아직 준비 중이에요.</p> : amount.payment_type === "RECURRING" ? <section className="d-note" role="status"><p>이전에 매달 쓰는 돈으로 입력한 목표예요. 내용은 보관하지만 현재 목표 계산에는 반영하지 않아요.</p><p>저장한 월 금액: {formatKrw(fieldKrw((amount.target_amount_krw as unknown as Field) ?? field(null, "KRW_10000")))} · 기간: {textValue(amount.payment_start) || "미입력"} ~ {textValue(amount.payment_end) || "미입력"}</p><p>필요하면 ‘목표 삭제’로 이번 진단에서 제외할 수 있어요. 기존 생활비에 포함된 돈을 다시 지출로 더하지 않아요.</p></section> : <>
           <div className="d-goal-plan-fields"><div className="d-goal-amount"><MoneyField label="한 번에 필요한 목표 금액" value={(amount.target_amount_krw as unknown as Field) ?? field(null, "KRW_10000")} onChange={v => onChange(patchGoal(doc, "F13", gid, { target_amount_krw: v as unknown as Json, amount_status: v.state }))} /><p>한 번에 쓸 목돈을 준비하는 목표예요. 매달 나가는 생활비는 ‘한 달 지출’에서 적어주세요.</p></div>
           <div className="d-goal-timing"><label className="d-field">언제쯤 필요해요?<input type="month" value={textValue(timing.target_date).slice(0,7)} onChange={e => {
             const date=e.target.value ? `${e.target.value}-01` : "";

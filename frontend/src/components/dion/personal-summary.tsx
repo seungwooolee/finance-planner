@@ -49,13 +49,13 @@ function GoalState({ goals, label, first }: { goals: Record<string, Json>; label
 }
 
 /** 현재 상태 → 중요한 목표·제약 → 다음 행동. No score, grade or investable amount is created. */
-export function PersonalSummary({ after, goals, firstRows, goalLabel, next }: {
+export function PersonalSummary({ after, goals, firstRows, goalLabel, exampleGoal, next }: {
   after: unknown; goals: Record<string, Json>; firstRows: Record<string, Json>[];
-  goalLabel: (id: Json) => string; next?: Next;
+  goalLabel: (id: Json) => string; exampleGoal?: string; next?: Next;
 }) {
   const steps: { icon: typeof MapPin; title: string; body: ReactNode }[] = [
     { icon: MapPin, title: "한 달 살림", body: <NowState after={after}/> },
-    { icon: Flag, title: "챙길 목표", body: <GoalState goals={goals} label={goalLabel} first={firstRows}/> },
+    { icon: Flag, title: "챙길 목표", body: exampleGoal ? <p className="d-summary-goal">{exampleGoal}</p> : <GoalState goals={goals} label={goalLabel} first={firstRows}/> },
     ...(next ? [{ icon: Compass, title: "다음 행동", body: <><p>{next.text}</p>{next.run && <button type="button" className="d-primary" onClick={next.run}>{next.label}</button>}</> }] : []),
   ];
   return <section className="d-card d-personal-summary" aria-labelledby="d-personal-summary-title">

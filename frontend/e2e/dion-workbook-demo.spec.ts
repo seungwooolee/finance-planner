@@ -7,6 +7,11 @@ const picker = (page: Page) => page.getByRole("dialog",{name:"요즘 나의 생�
 function fields(doc: {raw_bundle: {answers: {envelope: {question_ref: {design_id:string}; fields: Record<string, {raw_value: unknown; state:string}>}}[]}}, id: string) {
   return doc.raw_bundle.answers.find(r=>r.envelope.question_ref.design_id===id)!.envelope.fields;
 }
+async function expectWorkbookTargets(page: Page) {
+  await expect(page.getByRole("table",{name:"투자 성향별 목표 비중"}).locator("tbody tr")).toHaveText([
+    "안정 추구형20%0%0%80%", "중립형30%20%20%30%", "위험 추구형20%35%35%10%",
+  ]);
+}
 
 test("the public picker switches only the two demonstrations, then restores the draft", async ({page})=>{
   test.setTimeout(150_000);
@@ -25,19 +30,21 @@ test("the public picker switches only the two demonstrations, then restores the 
   await picker(page).getByRole("button",{name:"사회초년생 불러오기",exact:true}).click();
   const early = await first;
   expect(early.ok()).toBe(true);
-  expect(fields(early.request().postDataJSON(),"LIFE-01").life_stage_primary.raw_value).toBe("LC_EARLY_CAREER");
+  const earlyInput = early.request().postDataJSON();
+  expect(fields(earlyInput,"LIFE-01").life_stage_primary.raw_value).toBe("LC_EARLY_CAREER");
+  expect(fields(earlyInput,"F12").goals.raw_value).toEqual([expect.objectContaining({target_date:"2031-10-31"})]);
+  expect(fields(earlyInput,"F13").goals.raw_value).toEqual([expect.objectContaining({
+    target_amount_krw:{state:"KNOWN",raw_value:"10000",unit:"KRW_10000"}, payment_type:"", payment_start:"",
+  })]);
+  const earlyResult = (await early.json()).result;
+  expect(earlyResult.results["OUT-03"]).toMatchObject({calc_state:"CALCULATED", after_existing_contributions_krw:"1099000"});
+  expect(earlyResult.results["OUT-05"].candidates).toBeUndefined();
   await expect(page.getByRole("region",{name:"계산 결과",exact:true})).toBeVisible();
+  await expect(page.getByRole("region",{name:"내 상황 한눈에",exact:true}).getByText("5년 안에 자산 1억 원 모으기")).toBeVisible();
 
   const resultNav = page.getByRole("navigation", {name:"빠른 결과 5뷰"});
-  await resultNav.getByRole("button", {name:"재무안 선택", exact:true}).click();
-  const comparison = page.getByRole("region", {name:"두 재무안 비교", exact:true});
-  const stability = comparison.getByRole("button", {name:/생활 안정 우선/});
-  const capacity = comparison.getByRole("button", {name:/투자 여력 확대/});
-  await expect(stability).toBeVisible();
-  await capacity.click();
-  await expect(capacity).toHaveAttribute("aria-pressed", "true");
-  await stability.click();
-  await expect(stability).toHaveAttribute("aria-pressed", "true");
+  await resultNav.getByRole("button",{name:"투자구성",exact:true}).click();
+  await expectWorkbookTargets(page);
 
   await page.setViewportSize({width:390,height:844});
   await launch.click();
@@ -55,6 +62,9 @@ test("the public picker switches only the two demonstrations, then restores the 
   expect(fields(posted,"F03").income_period_start.raw_value).toBe("2026-10-01");
   expect(fields(posted,"F04").period_end.raw_value).toBe("2026-10-31");
   expect(fields(posted,"LIFE-01").life_stage_primary.raw_value).toBe("LC_RETIRED");
+  expect(fields(posted,"F11").goals.raw_value).toEqual([
+    expect.objectContaining({type:"GOAL_TYPE_03"}), expect.objectContaining({type:"GOAL_V12_INHERITANCE"}),
+  ]);
   expect(fields(posted,"F03").monthly_net_income_krw.raw_value).toBe("500");
   expect(fields(posted,"F04").living.raw_value).toBe("300");
   expect(fields(posted,"F06").financial_assets_total_reported_krw.raw_value).toBe("50000");
@@ -83,6 +93,7 @@ test("the public picker switches only the two demonstrations, then restores the 
   expect(result.results["OUT-05"].calc_state).not.toBe("CALCULATED");
   const rendered = page.getByRole("region",{name:"계산 결과",exact:true});
   await expect(rendered).toBeVisible();
+  await expect(rendered.getByRole("region",{name:"내 상황 한눈에",exact:true}).getByText("은퇴 및 상속")).toBeVisible();
   const assumptions = rendered.getByText("은퇴기 가상 사례 · 계산에 사용한 가정",{exact:true});
   await assumptions.click();
   await expect(rendered.getByText(/진단 범위가 확인된 것으로 설정하고/)).toBeVisible();
@@ -98,7 +109,9 @@ test("the public picker switches only the two demonstrations, then restores the 
   await resultNav.getByRole("button", {name:"재무안 선택", exact:true}).click();
   await expect(page.getByRole("heading", {name:"재무안 선택", exact:true})).toBeVisible();
   await expect(page.getByText(/두 월별 후보 확인 대기/)).toBeVisible();
-  await expect(comparison).toHaveCount(0);
+  await expect(page.getByRole("region",{name:"두 재무안 비교",exact:true})).toHaveCount(0);
+  await resultNav.getByRole("button",{name:"투자구성",exact:true}).click();
+  await expectWorkbookTargets(page);
 
   await launch.click();
   await picker(page).getByRole("button",{name:"내 입력으로 복귀",exact:true}).click();
