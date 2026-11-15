@@ -39,7 +39,7 @@ def evidence_query(run, request, now):
         products = run["result"].get("results", {}).get("OUT-06", {}).get("products", [])
         product = next((p for p in products if p["code"] == request.target_id
                         and (request.topic == "product" or p.get("allocation_role")
-                             in {"DEFAULT_SLOT", "COMPARISON_ALTERNATIVE"})), None)
+                             in {"DEFAULT_SLOT", "COMPARISON_ALTERNATIVE", "PORTFOLIO_CANDIDATE"})), None)
         if (product is None or request.topic not in {*PRODUCT_TOPICS, "product"}
                 or request.tax_year is not None):
             raise ValueError("PORTFOLIO_EVIDENCE_TARGET_INVALID")

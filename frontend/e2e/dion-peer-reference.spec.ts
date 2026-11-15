@@ -46,7 +46,7 @@ test('reviewed research reaches real results with source, cohort, withholding an
     await expect(button).toHaveAccessibleName(`${label} 목표 비중 비교`);
     await button.press('Enter');
     await expect(button).toHaveAttribute('aria-pressed', 'true');
-    await expect(composition).toBeFocused();
+    await expect(button).toBeFocused();
     await expect(composition.getByRole('heading', {name: `${label} 구성 상세`})).toBeVisible();
     await expect(composition).toContainText('상품 배분 확인 대기');
   }

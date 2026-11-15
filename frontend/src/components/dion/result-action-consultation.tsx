@@ -22,7 +22,11 @@ type Answer = {
 };
 type Props = { view: ViewResult; token: string; caseId: string; stale: boolean; blocked?: boolean;
   basis?: ActionBasis; flow?: ActionFlow; onEdit: (id: string) => void; onResult: (tab: number) => void };
-const examples = ["돈이 남는데 왜 투자 배정이 적어요?", "왜 현금 대기자금이 있나요?", "이 상품의 환율 영향은 어떻게 확인해요?"];
+const examples = [
+  {label: "투자 배정", question: "돈이 남는데 왜 투자 배정이 적어요?"},
+  {label: "현금 대기자금", question: "왜 현금 대기자금이 있나요?"},
+  {label: "환율 영향", question: "이 상품의 환율 영향은 어떻게 확인해요?"},
+];
 
 function valid(value: Answer, props: Props, basis: ActionBasis, key: string) {
   const preview = props.view.storage !== "SAVED";
@@ -128,27 +132,30 @@ function ActionForm(props: Props) {
     } finally { clearTimeout(timer); if (active.current === controller) {active.current = null; setBusy(false);} }
   }
   const action = answer?.next_action;
-  return <section className="d-card d-result-action" aria-label="현재 결과 다음 행동 상담" aria-busy={busy || flow?.saving}>
-    <h2>내 결과, 다음에는 무엇을 확인할까요?</h2>
-    <p className="d-inline-note">{basis ? `${planName(basis.strategy_id)} · ${basis.portfolio_type ? portfolioNames[basis.portfolio_type] : "기본 구성"}`
-      : "저장된 비교 초안 기준 · 선택 전에는 안정 우선안 기본 구성"} · 입력 버전 {view.serverVersion ?? "저장 전"}</p>
-    {preview && <p>저장 전 미리보기 결과로 질문할 수 있어요. {token ? "AI 질문 해석도 선택할 수 있어요." : "로그인 전에는 결과 근거의 기본 안내를 제공해요."}</p>}
-    {flow && view.storage !== "SAVED" && <div className="d-toolbar"><button type="button" className="d-secondary"
-      disabled={busy || flow.saving || stale || blocked} onClick={() => flow.onSave(basis ?? {strategy_id: "STABILITY_FIRST", portfolio_type: null, revision: 0})}>
-      {flow.saving ? "결과 저장 중…" : token ? "결과 저장하고 상담 시작" : "로그인 → 결과 저장 → 상담 시작"}</button>
-      <small>{flow.fictional ? "예시는 별도 테스트 상담으로 저장해요." : "현재 입력과 결과를 새 상담에 저장해요."}</small></div>}
+  const actionBasis = basis ?? {strategy_id: "STABILITY_FIRST", portfolio_type: null, revision: 0};
+  const inactive = busy || blocked || flow?.saving;
+  return <section className="d-result-action" aria-label="현재 결과 다음 행동 상담" aria-busy={inactive}>
+    <p className="d-action-basis">{view.storage === "SAVED" ? "저장 결과" : "미리보기 결과"}
+      {basis && ` · ${planName(basis.strategy_id)}`}
+      {basis?.portfolio_type && ` · ${portfolioNames[basis.portfolio_type]}`}</p>
     {!available && !preview ? <p>이 결과의 상담 근거를 확인할 수 없어요. 현재 입력으로 다시 계산해 주세요.</p>
       : stale ? <p role="status">입력이 바뀐 이전 결과예요. 다시 계산한 뒤 질문해 주세요.</p>
       : <form onSubmit={event => {event.preventDefault(); void ask();}}>
-        <fieldset disabled={busy || blocked || flow?.saving} style={{border: 0, padding: 0, margin: 0, minWidth: 0}}><legend className="sr-only">결과 상담 질문</legend>
-        <div className="d-toolbar" aria-label="결과 상담 예시 질문">{examples.map(example => <button type="button" className="d-text-button" key={example} disabled={busy || blocked}
-          onClick={() => {setQuestion(example); setAnswer(null); setEvidence(false);}}>{example}</button>)}</div>
-        <label className="d-field" htmlFor={id}>현재 결과에 대한 질문<textarea ref={input} onFocus={() => flow?.onFocused()} id={id} maxLength={600} rows={3} value={question} disabled={busy || blocked}
-          onChange={event => {setQuestion(event.target.value); setAnswer(null); setEvidence(false);}} placeholder="예: 남는 돈과 투자 배정은 왜 다른가요?"/></label>
-        <label className="d-check"><input type="checkbox" checked={!!token && share} disabled={busy || blocked || !token} onChange={event => setShare(event.target.checked)}/>
-          질문을 AI에 보내 뜻에 맞는 설명 찾기</label><p className="d-help">질문 문장만 전송해요. 계좌번호 등 개인정보는 적지 마세요. 선택하지 않으면 기본 안내를 이용해요.</p>
-        <button type="submit" className="d-primary" disabled={busy || blocked || !question.trim()}>{busy ? "결과 근거 확인 중…" : error ? "같은 질문 다시 확인" : "내 결과로 답변 보기"}</button>
-        {!token && flow && <button type="button" className="d-text-button" onClick={() => flow.onLogin(basis ?? {strategy_id: "STABILITY_FIRST", portfolio_type: null, revision: 0})}>저장 없이 로그인하고 AI 질문 해석 이용</button>}
+        <fieldset className="d-action-fields" disabled={inactive}>
+          <legend className="sr-only">결과 상담 질문</legend>
+          <label className="d-field" htmlFor={id}>현재 결과에 대한 질문
+            <textarea ref={input} onFocus={() => flow?.onFocused()} id={id} maxLength={600} rows={2} value={question}
+              onChange={event => {setQuestion(event.target.value); setAnswer(null); setError(""); setEvidence(false);}}/>
+          </label>
+          <div className="d-action-prompts" role="group" aria-label="예시 질문">{examples.map(example =>
+            <button type="button" className="d-secondary" key={example.label} aria-label={example.question}
+              onClick={() => {setQuestion(example.question); setAnswer(null); setError(""); setEvidence(false);}}>{example.label}</button>)}</div>
+          {token && <div className="d-action-consent">
+            <label className="d-check"><input type="checkbox" checked={share} aria-describedby={`${id}-privacy`} onChange={event => setShare(event.target.checked)}/>
+              질문 해석에 AI 사용</label>
+            <small id={`${id}-privacy`}>선택하면 질문 문장만 AI에 보내요. 개인정보는 적지 마세요.</small>
+          </div>}
+          <button type="submit" className="d-primary" disabled={!question.trim()}>{busy ? "답변 확인 중…" : error ? "다시 답변 보기" : "내 결과로 답변 보기"}</button>
         </fieldset>
       </form>}
     {error && <p role="alert" className="d-warning">{error}</p>}
@@ -156,22 +163,33 @@ function ActionForm(props: Props) {
       <h3 ref={heading} tabIndex={-1}>현재 결과에 대한 답변</h3>
       <p role="status">{answer.source === "ONEPORT" ? "AI가 질문의 뜻에 맞춰 고른 설명" : answer.status === "FALLBACK"
         ? `AI 응답을 확인하지 못해 ${preview ? "미리보기" : "저장"} 결과의 기본 안내를 표시해요` : `${preview ? "미리보기" : "저장"} 결과의 기본 안내`}</p>
-      <p className="d-note">{answer.basis_label} · {preview ? "화면 비교" : `비교 기록 ${answer.comparison.revision}`} · 기준일 {answer.evaluation_on}</p>
       {!!answer.facts.length && <><h4>확인된 사실</h4><ul>{answer.facts.map((item, i) => <li key={`${item.code}-${i}`}>{item.text}</li>)}</ul></>}
       <h4>{answer.answer_state === "UNSUPPORTED" ? "상담 가능한 범위" : "이유와 확인할 점"}</h4>
       {answer.reasons.map((item, i) => <p key={`${item.code}-${i}`}>{item.text}</p>)}
-      {action && <div><h4>다음 확인 한 가지</h4><button type="button" className="d-secondary" onClick={() => {
+      {action && <div><button type="button" className="d-secondary" onClick={() => {
         if (action.kind === "QUESTION") onEdit(action.target);
         else if (action.kind === "RESULT") onResult(Number(action.target));
         else setEvidence(true);
       }}>{action.label} →</button></div>}
       {evidence && action?.kind === "EVIDENCE" && <PortfolioEvidence key={`${answer.context_sha256}-${action.target}-${action.topic}`} access={access}
         kind="PRODUCT" targetId={action.target} stale={stale} initialTopic={action.topic}/>}
-      <details><summary>이 답변의 결과 근거</summary><p>{answer.limitation}</p>
+      <details><summary>이 답변의 결과 근거</summary>
+        <p>{answer.basis_label} · {preview ? "미리보기" : `저장 입력 ${answer.input_version}`} · {answer.evaluation_on}</p>
+        <p>{answer.limitation}</p>
         <ul>{[...answer.facts, ...answer.reasons].map((item, i) => <li key={`${item.code}-${i}`}>
           {item.source === "STORED_RESULT" ? "저장 결과" : item.source === "PREVIEW_RESULT" ? "미리보기 결과" : "공통 안내"} · {item.code}
           {item.refs.map(ref => <small key={ref} style={{display: "block", overflowWrap: "anywhere"}}>{ref}</small>)}</li>)}</ul>
       </details>
     </div>}
+    {flow && view.storage !== "SAVED" && <details className="d-action-account">
+      <summary>로그인·저장</summary>
+      <div>
+        {!token && preview && <button type="button" className="d-secondary" disabled={inactive || stale}
+          onClick={() => flow.onLogin(actionBasis)}>로그인하고 AI 이용</button>}
+        <button type="button" className="d-secondary" disabled={inactive || stale} onClick={() => flow.onSave(actionBasis)}>
+          {flow.saving ? "결과 저장 중…" : token ? "결과 저장" : "로그인하고 결과 저장"}</button>
+        {flow.fictional && <small>가상 사례는 테스트 상담에 저장해요.</small>}
+      </div>
+    </details>}
   </section>;
 }

@@ -1,9 +1,11 @@
 """Append-only comparison choices. Never update raw answers, runs, adoptions or check-ins."""
 import json
+from datetime import date
 from pathlib import Path
 
 from ..planning import portfolio_types
 from ..planning.common import digest
+from ..planning.product_disclosures import REVIEWED_ON, apply_disclosures
 from .raw_store import PocError, _digest, _json, _now
 
 CONTRACT_VERSION = "DION-PORTFOLIO-COMPARISON-1.0"
@@ -17,10 +19,13 @@ CREATE TABLE IF NOT EXISTS portfolio_comparisons(
 
 class PortfolioComparisonMixin:
     @staticmethod
-    def _assert_current_portfolio_policy(review):
+    def _assert_current_portfolio_policy(review, engine_input_json):
         root = Path(__file__).resolve().parents[1] / "planning"
         policy = json.loads((root / "product_policy.json").read_text(encoding="utf-8"))
         catalog = json.loads((root / "product_catalog.json").read_text(encoding="utf-8"))
+        on = date.fromisoformat(json.loads(engine_input_json)["context"]["evaluation_on"])
+        if on >= REVIEWED_ON:
+            apply_disclosures(catalog, policy)
         if (review.get("product_policy", {}).get("sha256") != digest(policy)
                 or review.get("catalog", {}).get("sha256") != digest(catalog)
                 or review.get("portfolio_types", {}).get("version") != portfolio_types.VERSION):
@@ -38,7 +43,7 @@ class PortfolioComparisonMixin:
                 or selection.get("input_hash") != run["input_hash"]):
             raise PocError("PORTFOLIO_SELECTION_CHANGED")
         review = json.loads(run["result_json"]).get("results", {}).get("OUT-06", {})
-        self._assert_current_portfolio_policy(review)
+        self._assert_current_portfolio_policy(review, run["engine_input_json"])
         candidate = next((c for c in review.get("candidates", []) if c.get("strategy_id") == strategy_id), {})
         rows = candidate.get("rows", [])
         view = rows[0].get("portfolio_type_views", {}).get(selection["portfolio_type"], {}) if rows else {}
@@ -102,7 +107,7 @@ class PortfolioComparisonMixin:
                     or value["catalog_version"] != catalog.get("version")):
                 raise PocError("COMPARISON_BINDING_MISMATCH")
             # Old runs remain readable but cannot be selected under replaced policy/catalog files.
-            self._assert_current_portfolio_policy(review)
+            self._assert_current_portfolio_policy(review, run["engine_input_json"])
             rows = next((c.get("rows", []) for c in review.get("candidates", [])
                          if c.get("strategy_id") == value["strategy_id"]), [])
             view = rows[0].get("portfolio_type_views", {}).get(value["portfolio_type"], {}) if rows else {}
