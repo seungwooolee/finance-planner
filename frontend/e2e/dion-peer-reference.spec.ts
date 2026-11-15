@@ -36,6 +36,6 @@ test('reviewed research reaches real results with source, cohort, withholding an
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBeTruthy();
   await page.locator('.d-tabs button').nth(2).click();
   const preference = page.getByRole('region', { name: '투자선호 조사와의 비교', exact: true });
-  await expect(preference).toContainText('원 질문·분류 절차와 이용조건');
+  await expect(preference).toHaveCount(0);
   await expect(preference).not.toContainText('14.4%');
 });

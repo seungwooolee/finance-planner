@@ -731,3 +731,11 @@
   .dion-app .d-checkin-month > .d-field { flex: 1 1 6rem; }
   .dion-app .d-checkin-month > button { flex: 1 1 100%; }
 }
+
+.dion-app .d-selected-composition {
+  padding-top: 20px;
+  margin-top: 24px;
+  border-top: 1px solid var(--d-line);
+  scroll-margin-top: var(--d-results-scroll-offset, 96px);
+}
+.dion-app .d-selected-composition > button { margin-top: 12px; }

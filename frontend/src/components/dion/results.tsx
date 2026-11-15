@@ -20,14 +20,12 @@ import { ResultNotice, nextStep } from "./calc-basis-strip";
 import { resultHints } from "@/lib/dion/result-guidance";
 import { MoneyAmount } from "./money-amount";
 import { formatKrw } from "@/lib/dion/money-format";
-import { InvestmentSummary } from "./investment-review";
 import { type EvidenceAccess } from "./portfolio-evidence";
 import { TaxBenefits } from "./tax-benefits";
 import { TaxReview } from "@/lib/dion/tax-benefits";
 import displayCatalog from "@/lib/dion/result-display-catalog.json";
 import { comparisonReview, portfolioNames, type AppliedPortfolioRef } from "@/lib/dion/portfolio-comparison";
 import { usePortfolioComparison } from "./use-portfolio-comparison";
-import { PeerReference } from "./peer-reference";
 import { FinancialProjection } from "./financial-projection";
 import { InvestmentReturnChart } from "./investment-return-chart";
 import { ResultActionConsultation, type ActionFlow } from "./result-action-consultation";
@@ -70,12 +68,19 @@ function metricValue(out:Record<string,Json>,key:string) {
 function Metric({title,value,note,icon:Icon}:{title:string;value:unknown;note?:string;icon?:LucideIcon}) {return <article className="d-metric">{Icon&&<i className="d-metric-icon" aria-hidden="true"><Icon size={18}/></i>}<span>{title}</span><strong><MoneyAmount value={value}/></strong>{note&&<small>{note}</small>}</article>;}
 function Missing({row,title}:{row:Record<string,Json>;title:string}) {return <div className="d-note"><strong>{title} · {stateLabels[textValue(row.calc_state)]??"확인 필요"}</strong><p>{row.calc_state==="NOT_SUPPORTED"?"이 결과의 계산은 아직 지원하지 않아요. 입력은 보관하고 다른 재무 결과를 유지해요.":row.calc_state==="NOT_IMPLEMENTED"?"이 계산은 준비 중이에요. 추가 입력으로 완료되는 단계가 아니에요.":row.calc_state==="NOT_APPLICABLE"?"현재 확인한 답변에는 해당하는 항목이 없어요.":row.calc_state==="INVALID_INPUT"?"금액·기간·소유 관계가 맞지 않아 계산을 보류했어요. 관련 답변을 확인해주세요.":"추가 확인 필요 · 관련 답변과 계산에 필요한 가정을 확인해주세요."}</p></div>;}
 
-export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalculate,explanation,checkin,technical=false,token=null,caseId="",evidenceAccess,actionFlow,consultationTarget,closeConsultation,onOpenRun,onReadRun,onReviewResume,calcBar,recordMonth}:{calcBar?:ReactNode;recordMonth?:string;onReadRun?:(id:string)=>Promise<void>;onOpenRun?:(id:string)=>Promise<void>;onReviewResume?:(review:PortfolioReview)=>void;actionFlow?: ActionFlow;consultationTarget?: HTMLDivElement|null;closeConsultation?: ()=>void;evidenceAccess?: EvidenceAccess;technical?:boolean;onRecalculate?:()=>void;view:ViewResult;deep:boolean;tab:number;setTab:(n:number)=>void;stale:boolean;onEdit:(id:string)=>void;explanation?:ReactNode;checkin?:(plan:string,tasks:CheckinTask[],portfolioSelection:AppliedPortfolioRef|null,portfolioBlocked:boolean,onAdoption:(value:AdoptionView)=>void)=>ReactNode;token?:string|null;caseId?:string}) {
+export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalculate,checkin,technical=false,token=null,caseId="",evidenceAccess,actionFlow,consultationTarget,closeConsultation,onOpenRun,onReadRun,onReviewResume,calcBar,recordMonth}:{calcBar?:ReactNode;recordMonth?:string;onReadRun?:(id:string)=>Promise<void>;onOpenRun?:(id:string)=>Promise<void>;onReviewResume?:(review:PortfolioReview)=>void;actionFlow?: ActionFlow;consultationTarget?: HTMLDivElement|null;closeConsultation?: ()=>void;evidenceAccess?: EvidenceAccess;technical?:boolean;onRecalculate?:()=>void;view:ViewResult;deep:boolean;tab:number;setTab:(n:number)=>void;stale:boolean;onEdit:(id:string)=>void;checkin?:(plan:string,tasks:CheckinTask[],portfolioSelection:AppliedPortfolioRef|null,portfolioBlocked:boolean,onAdoption:(value:AdoptionView)=>void)=>ReactNode;token?:string|null;caseId?:string}) {
   const heading=useRef<HTMLHeadingElement>(null);
   const comparison=usePortfolioComparison(view,token,caseId,stale,actionFlow?.selection);
   const selectedPlan=comparison.plan, selectedPortfolio=comparison.portfolio, setSelectedPlan=comparison.selectPlan;
   const [visited,setVisited]=useState<number[]>([tab]);
   const [consultFocus,setConsultFocus]=useState(false);
+  const [compositionFocus,setCompositionFocus]=useState(0);
+  useEffect(()=>{
+    if(!compositionFocus) return;
+    const detail=document.getElementById("dion-selected-composition");
+    detail?.focus({preventScroll:true});
+    detail?.scrollIntoView({block:"start"});
+  },[compositionFocus]);
   const setTab=(n:number)=>{setVisited(values=>values.includes(n)?values:[...values,n]);changeTab(n);};
   const saved=!!token&&view.storage==="SAVED"&&!!view.runId&&caseId===textValue(object(object(view.source).context).case_id)&&!actionFlow?.fictional;
   const reviewFlow=usePortfolioReview(caseId,token,view.runId,saved);
@@ -129,8 +134,7 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
     <ResultNotice next={next}/>
     {gates.map((g,i)=><div className="d-warning" key={i}><strong>연결 범위 확인 필요</strong><p>{String(g.reason)}</p><p>영향받는 결과만 보류했어요. 다른 결과와 엔진 원문은 유지해요.</p>{g.question_id!=="NEW-09"?<button className="d-text-button" onClick={()=>onEdit(String(g.question_id))}>관련 답변 확인 →</button>:<p>보증금 상세 입력·계산 연결은 준비 중이에요.</p>}</div>)}
     <nav className="d-tabs" aria-label={`${deep?"정밀":"빠른"} 결과 5뷰`}>{tabs.map((name,i)=><button aria-current={tab===i?"page":undefined} className={reviewFlow.review?.confirmed_steps.includes(i+1)&&sameReviewBasis(reviewFlow.review.basis,basis)?"done":undefined} onClick={()=>setTab(i)} key={name}><small aria-hidden="true">{i+1}</small>{name}</button>)}</nav>
-    {(explanation||technical||calcBar)&&<section className="d-results-tools" aria-label="결과 공통 도구">
-      {explanation}
+    {(technical||calcBar)&&<section className="d-results-tools" aria-label="결과 공통 도구">
     {technical&&<details className="d-fold d-output-status"><summary>결과 14개 · 연결 상태와 필요한 정보</summary><p>현재 어댑터의 계산 결과와 FE 연결 상태를 구분해요. 결과를 계산할 정보가 부족해도 다른 계산은 유지해요.</p><div className="d-table-wrap"><table><thead><tr><th>결과</th><th>현재 상태</th><th>근거·다음 확인</th></tr></thead><tbody>{displayCatalog.map(entry=>{
       const row=visible(entry.id), connected=["OUT-01","OUT-02","OUT-03","OUT-04","OUT-05","OUT-06"].includes(entry.id);
       const related=issues.filter(i=>Array.isArray(i.affected_outputs)&&i.affected_outputs.includes(entry.id));
@@ -155,9 +159,7 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
     </>}
     {tab===1 && <ResultBasis id="OUT-05" result={result} source={sourceDoc} inputVersion={view.serverVersion??view.localVersion} stale={stale} onEdit={onEdit}/>}
     {tab===2 && <InvestmentFollowup review={visible("OUT-06")} onEdit={onEdit}/>}
-    {tab===2 && <PortfolioChoice key={`${selectedPlan}:${selectedPortfolio ?? "none"}`} doc={sourceDoc} review={visible("OUT-06")} flow={flow} planRow={selectedRow} selectedPlan={selectedPlan} onPlan={setSelectedPlan} chosen={selectedPortfolio} onChoose={id=>{void comparison.choose(id).then(ok=>{if(ok)setTab(3);});}} onViewPortfolio={id=>{void comparison.choose(id).then(ok=>{if(ok)setTab(4);});}} onRecalculate={onRecalculate} blocked={comparison.blocked} onEdit={onEdit}/>}
-    {tab===2 && (sourceDoc?<InvestmentSummary doc={sourceDoc} onEdit={onEdit}/>:<Missing row={{calc_state:"NOT_SUPPORTED"}} title="이전 입력 형식의 투자 응답"/>)}
-    {tab===2 && <PeerReference value={result.peer_reference} stale={stale} preference/>}
+    {tab===2 && <PortfolioChoice key={selectedPlan} doc={sourceDoc} review={visible("OUT-06")} flow={flow} planRow={selectedRow} selectedPlan={selectedPlan} onPlan={setSelectedPlan} chosen={selectedPortfolio} onChoose={id=>{void comparison.choose(id).then(ok=>{if(ok)setCompositionFocus(n=>n+1);});}} onProducts={()=>setTab(3)} onRecalculate={onRecalculate} blocked={comparison.blocked} onEdit={onEdit}/>}
     
     {tab===3 && <><div className="d-plan-row"><div><strong>{planName(selectedPlan)} · 상품 정보</strong><button className="d-text-button" onClick={()=>setTab(2)}>투자구성 비교로 돌아가기</button>{selectedPortfolio&&<button className="d-secondary" disabled={comparison.blocked} onClick={()=>setTab(4)}>반영한 포트폴리오 확인 →</button>}</div><PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/></div><ProductAllocation evidenceAccess={evidenceAccess} stale={stale} review={selectedReview} selectedPlan={selectedPlan} evaluationOn={textValue(object(result.context).evaluation_on)} onEdit={onEdit}/></>}
     {tab===3&&<div className="d-result-cta"><button type="button" className="d-primary" onClick={openConsultation}>DION과 상담하기</button><p>1~4 확인 후 상담과 변경 검토를 거쳐 최종 생성을 요청해요.</p></div>}
@@ -176,7 +178,7 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
     {tab===4&&checkin&&<div ref={checkinRef}>{checkin(selectedPlan,monthTasks(selectedRow).map(t=>({key:t.key,label:`${t.text} (계획 ${textValue(selectedRow?.period)} · ${formatKrw(selectedRow?.[t.key])})`})),selectedPortfolio ? {portfolio_type:selectedPortfolio,comparison_revision:comparison.revision} : null,comparison.blocked||!generated,setAdoption)}</div>}
     {tab===4&&<div className="d-result-cta"><button className="d-secondary" onClick={()=>window.print()}>이 버전 PDF 리포트 받기</button><button className="d-primary" disabled={!generated} onClick={focusAdoption}>최종안의 계획 채택 검토 →</button></div>}
     {tab===4&&<TaxBenefits evidenceAccess={evidenceAccess} key={`${sourceDoc?.context.case_id}:${view.localVersion}`} doc={sourceDoc} stale={stale} review={view.taxReview}/>}
-    {tab<3&&<nav className="d-result-next" aria-label="다음 결과 단계"><button type="button" className="d-primary" onClick={()=>setTab(tab+1)}>{`다음 · ${tabs[tab+1]}`}<ArrowRight size={18} aria-hidden="true"/></button></nav>}
+    {tab<3&&!(tab===2&&selectedPortfolio)&&<nav className="d-result-next" aria-label="다음 결과 단계"><button type="button" className="d-primary" onClick={()=>setTab(tab+1)}>{`다음 · ${tabs[tab+1]}`}<ArrowRight size={18} aria-hidden="true"/></button></nav>}
   </section>;
 }
 

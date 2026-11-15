@@ -30,10 +30,8 @@ test('basic: real calculation, six risk answers, edit/reuse, product boundary an
   expect(first.posted.schema_version).toBe('DION-QUESTION12-ADAPTER-1.0');
   expect(first.result.results['OUT-03'].after_existing_contributions_krw).toBe('1099000');
   await page.getByRole('button',{name:/투자구성/}).click();
-  await expect(page.getByText('6개 항목의 답변이 있어요.',{exact:false})).toBeVisible();
-  await expect(page.getByText('투자 검토 답변 · 상품 필터 연결',{exact:true})).toBeVisible();
-  if(!(await page.getByRole('button',{name:'돈을 사용할 시점 수정 →',exact:true}).isVisible()))await page.getByText('투자 답변 확인 완료 · 답변 보기 ▾',{exact:true}).click();
-  await page.getByRole('button',{name:'돈을 사용할 시점 수정 →',exact:true}).click();
+  await expect(page.getByText('투자 검토 답변 · 상품 필터 연결',{exact:true})).toHaveCount(0);
+  await page.getByRole('button',{name:'투자 선호 수정 →',exact:true}).click();
   await expect(page.locator('.d-risk-question')).toHaveCount(6);
   await page.locator('.d-risk-question').filter({hasText:'감수할 손실'}).locator('summary').click();
   await page.getByRole('button',{name:'5% 이상~10% 미만',exact:true}).click();

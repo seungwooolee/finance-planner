@@ -95,7 +95,7 @@ export function ResultExplanation({view,token,editVersion,selectedCaseId,stale,o
   const response=current?.response;
   const evidence=response?[...new Map(response.facts.flatMap(f=>f.input_evidence_refs).map(e=>[e.answer_revision_id,e])).values()]:[];
   return <div className="d-explanation">
-    <button id="dion-explain-trigger" ref={trigger} className="d-primary" aria-expanded={open} aria-controls={titleId+"-panel"} onClick={()=>{setOpen(true);void explain(detail);}}>이 결과 설명해 줘</button>
+    <button ref={trigger} className="d-primary" aria-expanded={open} aria-controls={titleId+"-panel"} onClick={()=>{setOpen(true);void explain(detail);}}>계산 결과 해설 보기</button>
     {open&&<aside id={titleId+"-panel"} className="d-card d-explanation-panel" aria-labelledby={titleId} aria-busy={current?.loading??false}>
       <div className="d-toolbar"><h2 ref={heading} tabIndex={-1} id={titleId}>결과 해설</h2><button className="d-text-button" onClick={close}>해설 닫기</button></div>
       <div className="d-toolbar" role="group" aria-label="해설 길이"><button className="d-secondary" aria-pressed={detail==="SHORT"} onClick={()=>choose("SHORT")}>짧게</button><button className="d-secondary" aria-pressed={detail==="DETAILED"} onClick={()=>choose("DETAILED")}>자세히</button></div>
@@ -104,7 +104,7 @@ export function ResultExplanation({view,token,editVersion,selectedCaseId,stale,o
       {!available&&<button className="d-secondary" onClick={onSave}>{token?"계산 기록 저장·내 상담 열기":"로그인하고 계산 기록 저장"}</button>}
       {current?.loading&&<p role="status">저장된 결과와 근거를 확인하고 있어요. 아래 기본 안내와 기존 결과를 먼저 볼 수 있어요.</p>}
       {current?.error&&<p role="alert" className="d-warning">{current.error}</p>}
-      {!response&&<div className="d-explanation-basic"><h3>결과를 읽는 방법</h3><p className="d-help">아래는 모든 결과에 공통인 안내예요. 내 결과에 맞춘 해설은 저장된 결과에서 ‘이 결과 설명해 줘’를 누르면 이 아래에 나와요.</p><ul><li><strong>월 현황의 ‘남는 돈’</strong>은 대출 상환·기존 저축을 빼고 남은 금액이에요. 목표·비상금으로 나누기 전이라 이 금액을 다 투자하라는 뜻은 아니에요.</li><li><strong>안정 우선·투자 확대 두 안</strong>은 입력한 미래 계획을 바탕으로 만든 비교 자료예요. 모르는 값은 0원으로 채우지 않고 ‘확인 필요’로 남겨요.</li><li><strong>상품·이번 달 행동</strong>의 이유는 각 화면의 ‘선정 이유’에서 확인할 수 있어요. AI 해설은 아직 월 현황과 두 재무안만 설명해요.</li></ul></div>}
+      {!response&&<div className="d-explanation-basic"><h3>결과를 읽는 방법</h3><p className="d-help">아래는 모든 결과에 공통인 안내예요. 내 결과에 맞춘 해설은 저장된 결과에서 ‘계산 결과 해설 보기’를 누르면 이 아래에 나와요.</p><ul><li><strong>월 현황의 ‘남는 돈’</strong>은 대출 상환·기존 저축을 빼고 남은 금액이에요. 목표·비상금으로 나누기 전이라 이 금액을 다 투자하라는 뜻은 아니에요.</li><li><strong>안정 우선·투자 확대 두 안</strong>은 입력한 미래 계획을 바탕으로 만든 비교 자료예요. 모르는 값은 0원으로 채우지 않고 ‘확인 필요’로 남겨요.</li><li><strong>상품·이번 달 행동</strong>의 이유는 각 화면의 ‘선정 이유’에서 확인할 수 있어요. AI 해설은 아직 월 현황과 두 재무안만 설명해요.</li></ul></div>}
       {response&&<>
         <p role="status" className="d-explanation-source">{response.status==="FALLBACK"?"해설 생성·검증을 완료하지 못해 저장 결과의 기본 설명을 표시했어요.":response.source==="MOCK"?"모의 해설 · 유료 AI 호출 없음":response.source==="ONEPORT"?"AI 해설 · 저장 결과의 근거를 확인했어요":"기본 설명"} · 저장 결과와 설명의 일치만 확인하며 금융정책 검증 완료를 뜻하지 않아요.</p>
         <p>계산 기준일 {response.evaluation_on??"확인 필요"} · 저장 입력버전 {response.input_version}</p>
