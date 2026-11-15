@@ -46,11 +46,15 @@ export function PersonalSummary({ after, debt, goals, firstRows, goalLabel, next
   const steps: { icon: typeof MapPin; title: string; body: ReactNode }[] = [
     { icon: MapPin, title: "지금 상태", body: <p>{nowText(after, debt)}</p> },
     { icon: Flag, title: "중요한 목표·제약", body: <p>{goalText(goals, goalLabel)}{protectionText(firstRows)}</p> },
-    ...(next ? [{ icon: Compass, title: "다음 행동", body: <><p>{next.text}</p>{next.run && <button type="button" className="d-secondary" onClick={next.run}>{next.label}</button>}</> }] : []),
   ];
   return <section className="d-card d-personal-summary" aria-labelledby="d-personal-summary-title">
     <div className="d-card-head"><h2 id="d-personal-summary-title"><Target size={20} aria-hidden="true"/> 내 상황 한눈에</h2></div>
     <ol className="d-personal-flow">{steps.map(({ icon: Icon, title, body }) => <li key={title}><span className="d-personal-icon" aria-hidden="true"><Icon size={18}/></span><div><h3>{title}</h3>{body}</div></li>)}</ol>
+    {next && <div className="d-personal-next">
+      <span className="d-personal-icon" aria-hidden="true"><Compass size={18}/></span>
+      <div><h3>다음 행동</h3><p>{next.text}</p></div>
+      {next.run && <button type="button" className="d-secondary" onClick={next.run}>{next.label}</button>}
+    </div>}
   </section>;
 }
 

@@ -13,7 +13,7 @@ export type AssetReferenceSelection = { cohort: string };
 export const INITIAL_ASSET_REFERENCE: AssetReferenceSelection = { cohort: "ANSWER" };
 // Shared display contract for the results and portfolio consumers. These states never
 // authorize arithmetic comparison or claim that the customer belongs to the cohort.
-export const ASSET_REFERENCE_VIEW_VERSION = "DION-ASSET-REFERENCE-VIEW-1.2";
+export const ASSET_REFERENCE_VIEW_VERSION = "DION-ASSET-REFERENCE-VIEW-1.3";
 export type AssetReferenceMetric = { key: string; label: string; own: string | null; reference: string | null; row: Row };
 
 export function assetReferenceView(value: unknown, selection: AssetReferenceSelection, ownValues?: Row) {
