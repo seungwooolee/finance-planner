@@ -27,6 +27,7 @@
 .dion-app .d-asset-ref-chart tbody th{font-size:14px}
 .dion-app .d-asset-compare-series svg{display:block;width:100%;height:24px;overflow:visible}
 .dion-app .d-asset-compare-series strong{font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.dion-app .d-asset-compare-series small{display:block;color:#526078;font-size:12px;line-height:1.4}
 .dion-app .d-asset-compare-series[data-asset-series="own"] strong{color:var(--d-primary,#3848ce)}
 .dion-app .d-asset-ref-controls select:focus-visible{outline:2px solid #3848ce;outline-offset:3px}
 @media(max-width:640px){.dion-app .d-asset-ref-chart th,.dion-app .d-asset-ref-chart td{padding:8px 5px}.dion-app .d-asset-compare-series strong{font-size:13px}}

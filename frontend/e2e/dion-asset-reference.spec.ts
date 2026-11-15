@@ -38,6 +38,37 @@ test("asset display preserves zero, null, signed and large won while excluding w
   expect(JSON.stringify(snapshot)).toBe(before);
 });
 
+test("a captured fallback fills missing metrics with an attributed mean only in the same scope", () => {
+  const metricKeys = ["proposal.total_assets", "proposal.total_liabilities", "proposal.net_assets"];
+  const adult = {target_unit:"개인", cohort_id:"C25", cohort_label:"만 18세 이상 개인 · 명의 기준 연구"};
+  const youth = {target_unit:"개인", cohort_id:"C21", cohort_label:"만 19~34세 청년 개인"};
+  const records = [
+    ...metricKeys.map((key, index) => row(key, String(index + 1), "0")),
+    ...metricKeys.map((key, index) => row(key, String(10 + index), null, adult)),
+    row(metricKeys[0], "5", null, youth),
+    row(metricKeys[1], "6", null, youth),
+  ];
+  const snapshot = {version:"test", scope:"personal", records, asset_fallback_cohort_id:"C25",
+    personal_asset_values:{"proposal.net_assets":"-1"}, primary_stage:"LC_EARLY_CAREER",
+    stage_hints:[{code:"LC_EARLY_CAREER", cohort_ids:["C21"]}, {code:"LC_RETIRED", cohort_ids:["C09"]}]};
+  const selected = assetReferenceView(snapshot, INITIAL_ASSET_REFERENCE);
+  expect(selected.cohort?.id).toBe("C21");
+  expect(selected.metrics.map(m => [m.reference, m.row.cohort_id])).toEqual([["5", "C21"], ["6", "C21"], ["12", "C25"]]);
+  expect(selected.metrics[2]).toMatchObject({own:"-1", fallbackLabel:adult.cohort_label});
+  expect(assetReferenceView(snapshot, {cohort:"C21"}).metrics[2].fallbackLabel).toBe(adult.cohort_label);
+
+  for (const stage of ["LC_NEWLYWED", "LC_CHILDCARE", "LC_SCHOOL_AGE", "LC_CHILD_INDEPENDENCE", "LC_RETIRED", null]) {
+    const personal = assetReferenceView({...snapshot, primary_stage:stage}, INITIAL_ASSET_REFERENCE);
+    expect(personal.selectionOrigin).toBe("SCOPE_FALLBACK");
+    expect(personal.metrics.map(m => m.reference)).toEqual(["10", "11", "12"]);
+    const household = assetReferenceView({...snapshot, primary_stage:stage, scope:"household", asset_fallback_cohort_id:"C07"}, INITIAL_ASSET_REFERENCE);
+    expect(household.cohort?.id).toBe("C07");
+    expect(household.metrics.map(m => m.reference)).toEqual(["1", "2", "3"]);
+  }
+  expect(assetReferenceView({...snapshot, asset_fallback_cohort_id:"C07"}, INITIAL_ASSET_REFERENCE).metrics[2].reference).toBeNull();
+  expect(assetReferenceView({...snapshot, scope:null}, INITIAL_ASSET_REFERENCE).metrics).toEqual([]);
+});
+
 test("chart coordinates retain negative values and distinguish absent from actual zero", () => {
   const axis = assetAxis(["-15000000", "30000000", null]);
   expect(axis).toEqual({ min: -15000000n, max: 30000000n });
@@ -109,10 +140,18 @@ test("asset reference web flow uses real preview data and shares selection, snap
   const debt = chart.locator('[data-asset-metric="proposal.total_liabilities"] [data-asset-series="reference"]');
   await expect(asset).toHaveAttribute("data-value","50120000");
   await expect(debt).toHaveAttribute("data-value","16370000");
-  await expect(chart.locator('[data-asset-metric="proposal.net_assets"] [data-asset-series="reference"]')).toHaveText("자료 없음");
+  const net = chart.locator('[data-statistic-id="V053"] [data-asset-series="reference"]');
+  await expect(net).toHaveAttribute("data-value","100496000");
+  await expect(net).toContainText("별도 참고 · 만 18세 이상 개인");
   await chart.getByText("통계 출처와 기준일",{exact:true}).click();
   await expect(chart.getByRole("link",{name:/2024년 청년 삶 실태조사/})).toHaveAttribute("href",/paper-collections\/2063/);
   await expect(chart.locator("details[open]")).toContainText("2023-12-31");
+  await expect(chart.getByRole("link",{name:/자산 격차 요인 분석과 정책 과제/})).toHaveAttribute("href",/seq=32448/);
+  await expect(chart.locator("details[open]")).toContainText("2024-03-31");
+  await cohortControl.selectOption("C25");
+  await expect(asset).toHaveAttribute("data-value","134427000");
+  await expect(debt).toHaveAttribute("data-value","33931000");
+  await expect(net).toHaveAttribute("data-value","100496000");
   await cohortControl.selectOption("C23");
   await expect(asset).toHaveAttribute("data-value","43740000");
   await expect(debt).toHaveAttribute("data-value","13390000");
@@ -130,6 +169,7 @@ test("asset reference web flow uses real preview data and shares selection, snap
   await expect(final).toBeVisible();
   await expect(final.getByRole("combobox")).toHaveValue("C23");
   await expect(final.locator('[data-statistic-id="V047"] [data-asset-series="reference"]')).toHaveAttribute("data-value","43740000");
+  await expect(final.locator('[data-statistic-id="V053"] [data-asset-series="reference"]')).toHaveAttribute("data-value","100496000");
   expect(await final.locator('[data-asset-series="own"]').evaluateAll(els => els.map(el => el.getAttribute("data-value")))).toEqual(ownValues);
   await expect(final).toHaveAttribute("data-input-version", String(result.peer_reference.input_version));
   await final.screenshot({ path: info.outputPath("final-web.png") });
@@ -157,6 +197,8 @@ test("asset reference web flow uses real preview data and shares selection, snap
   const values = chart.locator('[data-asset-series="reference"]');
   expect(await values.evaluateAll(els=>els.map(el=>el.getAttribute("data-value"))))
     .toEqual(["600950000","65040000","535910000"]);
+  await chart.getByLabel("비교할 참고 집단").selectOption("C27");
+  await expect(chart.locator('[data-statistic-id="V059"] [data-asset-series="reference"]')).toHaveAttribute("data-value","483890000");
   await chart.getByLabel("비교할 참고 집단").selectOption("C07");
   const table = chart.getByRole("table", {name:"내 자산과 조사 평균", exact:true});
   await expect(table.getByRole("columnheader", {name:"조사 평균 · 가구"})).toBeVisible();
