@@ -92,8 +92,6 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
       })}</div>
       {chosen && selected && <section id="dion-selected-composition" className="d-selected-composition" tabIndex={-1} aria-labelledby="dion-selected-composition-title">
         <h3 id="dion-selected-composition-title">{selected[0]} 구성 상세</h3>
-        <dl className="d-ledger"><div><dt>기대수익률</dt><dd>산정 대기</dd></div></dl>
-        <p className="d-inline-note">이 구성에 적용할 승인된 수익률 가정이 준비되면 표시해요.</p>
         <PortfolioChoiceDetail rows={rows.slice(0, 1)} products={products} type={chosen} messages={object(review.reason_messages)} showExplanation/>
         <button className="d-secondary" type="button" onClick={onProducts}>상품 정보 자세히 보기 →</button>
       </section>}

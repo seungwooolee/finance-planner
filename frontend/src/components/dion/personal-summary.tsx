@@ -10,14 +10,6 @@ const positive = (v: unknown) => isWon(v) && BigInt(v) > 0n;
 
 type Next = { text: string; label?: string; run?: () => void };
 
-function nowText(after: unknown, debt: unknown): string {
-  const debtNote = positive(debt) ? " 대출 상환액은 이미 이 흐름에 반영돼 있어요." : "";
-  if (!isWon(after)) return "한 달 흐름을 계산할 정보가 아직 부족해요. 남는 돈을 0원으로 가정하지 않고 보류했어요.";
-  const n = BigInt(after);
-  if (n > 0n) return `기존 저축·상환을 하고도 매달 ${formatKrw(after)}이 남아요. 아직 목표·비상금으로 나누기 전 금액이라, 전부 투자해도 된다는 뜻은 아니에요.${debtNote}`;
-  if (n === 0n) return `기존 저축·상환을 하고 나면 매달 새로 나눌 돈이 남지 않아요. 지금 흐름을 지키는 것이 먼저예요.${debtNote}`;
-  return `기존 저축·상환까지 하면 매달 ${formatKrw(after.slice(1))}이 모자라요. 지출이나 저축 금액부터 다시 확인해야 해요.${debtNote}`;
-}
 
 function goalText(goals: Record<string, Json>, label: (id: Json) => string): string {
   const rows = list(goals.rows);
@@ -31,11 +23,35 @@ function goalText(goals: Record<string, Json>, label: (id: Json) => string): str
   return `가장 먼저 챙길 목표는 ${name}이에요. ${formatKrw(open.gap_krw)}이 남아 ${count}회차당 ${formatKrw(open.level_contribution_krw)}씩 모으는 계획이에요.`;
 }
 
-function protectionText(first: Record<string, Json>[]): string {
+
+function NowState({ after, debt }: { after: unknown; debt: unknown }) {
+  if (!isWon(after)) return <><p className="d-summary-label">기존 저축·상환 후 월 잔여</p><p className="d-summary-figure d-summary-pending">확인 대기</p>
+    <ul className="d-summary-tags"><li>0원으로 가정하지 않음</li></ul><p className="d-summary-note">한 달 흐름을 계산할 정보가 아직 부족해요.</p></>;
+  const n = BigInt(after);
+  const tags = n > 0n ? ["목표·비상금 배정 전", positive(debt) ? "대출 상환 반영 완료" : ""] : n === 0n ? ["새로 나눌 돈 없음", positive(debt) ? "대출 상환 반영 완료" : ""] : ["매달 부족", positive(debt) ? "대출 상환 반영 완료" : ""];
+  const note = n > 0n ? "전부 투자 가능한 금액이라는 뜻은 아니에요." : n === 0n ? "지금 흐름을 지키는 것이 먼저예요." : "지출이나 저축 금액부터 다시 확인해야 해요.";
+  return <><p className="d-summary-label">기존 저축·상환 후 월 잔여</p><p className="d-summary-figure">{formatKrw(after)}</p>
+    <ul className="d-summary-tags">{tags.filter(Boolean).map(t => <li key={t}>{t}</li>)}</ul><p className="d-summary-note">{note}</p></>;
+}
+
+function protectionLine(first: Record<string, Json>[]): string {
   if (first.length !== 2) return "";
-  if (first.every(r => positive(r.protection_topup_krw))) return ` 두 재무안 모두 첫 계획 월(${textValue(first[0].period)})에 비상금(보호자금)을 먼저 보충해요.`;
-  if (first.every(r => r.protection_topup_krw === "0")) return ` 첫 계획 월(${textValue(first[0].period)}) 비상금(보호자금) 보충은 두 재무안 모두 없어요.`;
-  return "";
+  const p = textValue(first[0].period) || "확인 대기";
+  const [a, b] = [first[0].protection_topup_krw, first[1].protection_topup_krw];
+  if (!isWon(a) || !isWon(b)) return `첫 계획 월(${p}) 비상금 보충 · 확인 대기`;
+  if (a === "0" && b === "0") return `첫 계획 월(${p}) 비상금 보충 없음 · 두 안 동일`;
+  return a === b ? `첫 계획 월(${p}) 비상금 보충 ${formatKrw(a)} · 두 안 동일` : `첫 계획 월(${p}) 비상금 보충 · 안별로 달라요`;
+}
+
+function GoalState({ goals, label, first }: { goals: Record<string, Json>; label: (id: Json) => string; first: Record<string, Json>[] }) {
+  const open = list(goals.rows).find(r => r.calc_state === "INFEASIBLE" || positive(r.gap_krw));
+  const extra = protectionLine(first);
+  if (!open) return <><p>{goalText(goals, label)}</p>{extra && <p className="d-summary-note">{extra}</p>}</>;
+  const count = typeof open.contribution_count === "number" ? `${open.contribution_count}회` : "회차 확인 대기";
+  const plan = open.calc_state === "INFEASIBLE" ? "사용일 전 회차 없음 · 계산 불가" : isWon(open.level_contribution_krw) ? `${count} · 회차당 ${formatKrw(open.level_contribution_krw)}` : "확인 대기";
+  return <><p className="d-summary-goal">{label(open.goal_id)}</p>
+    <dl className="d-summary-facts"><div><dt>목표일</dt><dd>{textValue(open.due_on) || "확인 대기"}</dd></div><div><dt>남은 목표액</dt><dd>{formatKrw(open.gap_krw)}</dd></div><div><dt>납입</dt><dd>{plan}</dd></div></dl>
+    {extra && <p className="d-summary-note">{extra}</p>}</>;
 }
 
 /** 현재 상태 → 중요한 목표·제약 → 다음 행동. No score, grade or investable amount is created. */
@@ -44,9 +60,9 @@ export function PersonalSummary({ after, debt, goals, firstRows, goalLabel, next
   goalLabel: (id: Json) => string; next?: Next;
 }) {
   const steps: { icon: typeof MapPin; title: string; body: ReactNode }[] = [
-    { icon: MapPin, title: "지금 상태", body: <p>{nowText(after, debt)}</p> },
-    { icon: Flag, title: "중요한 목표·제약", body: <p>{goalText(goals, goalLabel)}{protectionText(firstRows)}</p> },
-    ...(next ? [{ icon: Compass, title: "다음 행동", body: <><p>{next.text}</p>{next.run && <button type="button" className="d-secondary" onClick={next.run}>{next.label}</button>}</> }] : []),
+    { icon: MapPin, title: "지금 상태", body: <NowState after={after} debt={debt}/> },
+    { icon: Flag, title: "중요한 목표·제약", body: <GoalState goals={goals} label={goalLabel} first={firstRows}/> },
+    ...(next ? [{ icon: Compass, title: "다음 행동", body: <><p>{next.text}</p>{next.run && <button type="button" className="d-primary" onClick={next.run}>{next.label}</button>}</> }] : []),
   ];
   return <section className="d-card d-personal-summary" aria-labelledby="d-personal-summary-title">
     <div className="d-card-head"><h2 id="d-personal-summary-title"><Target size={20} aria-hidden="true"/> 내 상황 한눈에</h2></div>
