@@ -1,3 +1,4 @@
+import { openReviewCasePicker } from "./review-scenario-helpers";
 import { expect, test, type Page } from '@playwright/test';
 import productScenario from '../src/lib/dion/product-review-scenario.json';
 import { formatKrw } from '../src/lib/dion/money-format';
@@ -7,7 +8,7 @@ import source from '../src/lib/dion/review-scenarios.json';
 import type { Document } from '../src/lib/dion/model';
 
 async function load(page: Page, title: string) {
-  await page.getByRole('button', { name: '가상 사례 불러오기', exact: true }).click();
+  await openReviewCasePicker(page);
   const pending = page.waitForResponse(r => r.url().endsWith('/api/fe/v1/preview'));
   await page.getByRole('button', { name: `${title} 불러오기`, exact: true }).click();
   expect((await pending).ok()).toBeTruthy();

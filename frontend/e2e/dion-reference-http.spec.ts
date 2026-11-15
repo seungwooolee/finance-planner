@@ -1,3 +1,4 @@
+import { loadProductReviewCase } from "./review-scenario-helpers";
 import { expect, test } from '@playwright/test';
 
 // Real page -> Next rewrite -> BE preview -> engine -> graphs. No API mocks,
@@ -6,7 +7,7 @@ test('actual HTTP preview connects its reference snapshot to the selected cohort
   test.setTimeout(90_000);
   await page.goto('/dion');
   const pending = page.waitForResponse(r => r.url().endsWith('/api/fe/v1/preview') && r.request().method() === 'POST');
-  await page.getByRole('button', { name: '예시로 결과 보기 · 대표상품 포함' }).click();
+  await loadProductReviewCase(page);
   const response = await pending;
   expect(response.status()).toBe(200);
   expect(response.headers()['cache-control']).toContain('no-store');

@@ -1,3 +1,4 @@
+import { openReviewCasePicker } from "./review-scenario-helpers";
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { readFileSync } from 'node:fs';
@@ -52,7 +53,7 @@ test('actual engine asset snapshot and cash waiting budget reach the result scre
   test.setTimeout(120_000);
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto('/dion');
-  await page.getByRole('button', { name: '가상 사례 불러오기', exact: true }).click();
+  await openReviewCasePicker(page);
   const pending = page.waitForResponse(response => response.url().endsWith('/api/fe/v1/preview') && response.request().method() === 'POST');
   await page.getByRole('button', { name: '상품 배분 검토 불러오기', exact: true }).click();
   const response = await pending;

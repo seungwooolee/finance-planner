@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- inspect exact real engine/store contracts */
+import { loadProductReviewCase } from "./review-scenario-helpers";
 import { expect, test } from '@playwright/test';
 import scenario from '../src/lib/dion/product-review-scenario.json';
 import { question } from '../src/lib/dion/model';
@@ -8,7 +9,7 @@ test('P1-P5 each keep their own basis while three relative choices drive real pr
   await page.clock.setFixedTime(new Date(`${scenario.document.context.evaluation_on}T03:00:00+09:00`));
   await page.goto('/dion');
   const first = page.waitForResponse(r => r.url().endsWith('/api/fe/v1/preview') && r.request().method() === 'POST');
-  await page.getByRole('button', { name: '예시로 결과 보기 · 대표상품 포함', exact: true }).click();
+  await loadProductReviewCase(page);
   expect((await first).ok()).toBeTruthy();
   const profiles = ['PREF_STABILITY', 'PREF_LEAN_STABILITY', 'PREF_BALANCED', 'PREF_LEAN_RETURN', 'PREF_RETURN'];
   for (const [index, preference] of profiles.entries()) {
@@ -52,7 +53,7 @@ test('three real comparison views drive product and final screens on desktop/mob
   test.setTimeout(180000);
   await page.goto('/dion');
   const preview = page.waitForResponse(r => r.url().endsWith('/api/fe/v1/preview') && r.request().method()==='POST');
-  await page.getByRole('button', { name: '예시로 결과 보기 · 대표상품 포함', exact: true }).click();
+  await loadProductReviewCase(page);
   expect((await preview).ok()).toBeTruthy();
   await page.locator('.d-tabs button').nth(2).click();
   await expect(page.getByText('자기보고 선호이며 위험한도나 확정 점수가 아니에요. 나이로 비중을 정하지 않아요.')).toHaveCount(0);

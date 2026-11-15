@@ -1,9 +1,10 @@
+import { loadProductReviewCase } from "./review-scenario-helpers";
 import { expect, test } from "@playwright/test";
 
 test("the final portfolio uses its selected allocation for an explicit signed return scenario", async ({page})=>{
   test.setTimeout(120000);
   await page.goto("/dion");
-  await page.getByRole("button",{name:"예시로 결과 보기 · 대표상품 포함",exact:true}).click();
+  await loadProductReviewCase(page);
   const tabs = page.locator(".d-tabs button");
   await tabs.nth(4).click();
   const chart = page.getByRole("region",{name:"선택한 투자안의 자산 전망",exact:true});
