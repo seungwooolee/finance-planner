@@ -38,17 +38,26 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
   const monthLabel = textValue(month?.period);
   const products = list(review.products);
   const views = object(month?.portfolio_type_views);
+  const comparisonTargets = object(typeInfo.comparison_targets);
+  const commonTargets = typeInfo.comparison_basis === 'GENERAL_COMPARISON';
+  const viewWithTarget = (id: string): Record<string, Json> => {
+    const view = object(views[id]);
+    return {...view, target_mix_bps: view.target_mix_bps ?? comparisonTargets[id]};
+  };
   const order = Object.keys(TYPES);
   const selected = displayed ? TYPES[displayed] : undefined;
-  const targetPreview = !!preview && object(views[preview]).comparison_only === true && !blocked;
+  const selectedTarget = displayed ? allocationTargetLabel(viewWithTarget(displayed)) : null;
+  const targetPreview = !!preview && !!selectedTarget && !blocked;
   const footText = (id: string) => {
     const view = object(views[id]);
     if (blocked) return '현재 입력·결과와 저장 상태를 확인해주세요.';
     if (view.selectable === true && object(firstViews[id]).selectable !== true) return '이 달의 구성은 미리 볼 수 있어요. 검토안 적용은 첫 계획 월 조건을 확인해요.';
     if (view.selectable === true) return chosen === id ? '현재 상담용 포트폴리오 검토안에 반영한 구성이에요.' : '선택하면 이 구성의 상품·비중을 검토안에 반영해요.';
-    if (view.comparison_only === true) return '목표 비중을 선택해 비교할 수 있어요. 상품 배분은 확인 대기예요.';
+    const hasTarget = allocationTargetLabel(viewWithTarget(id)) !== null;
     const codes = Array.isArray(view.reason_codes) ? view.reason_codes : [];
-    return codes.length ? codes.map(code => textValue(object(review.reason_messages)[String(code)]) || '상품 검토 조건을 확인해주세요.').join(' ') : '이전 결과에는 선택 가능 여부가 없어요. 다시 계산해주세요.';
+    if (codes.length) return codes.map(code => textValue(object(review.reason_messages)[String(code)]) || '상품 검토 조건을 확인해주세요.').join(' ');
+    if (hasTarget) return '목표 비중을 비교할 수 있어요. 월 투자예산이 확인되면 배분 금액을 검토해요.';
+    return '이전 결과에는 선택 가능 여부가 없어요. 다시 계산해주세요.';
   };
   // When all three types are unavailable for the same reason, say it once instead of three times.
   const foots = order.map(footText);
@@ -69,30 +78,32 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
       <article className="d-kpi d-kpi-soft"><span>기존 저축·투자 납입</span><strong><MoneyAmount value={flow.existing_cash_contributions_krw}/></strong><small>바꾸지 않고 별도로 유지해요</small></article>
     </div>
     <article className="d-card d-portfolio-section" aria-label="포트폴리오 검토 유형">
-      <div className="d-card-head"><div><h2>{relative ? `${profileName} 안에서 투자구성 선택` : '저장 당시의 투자구성 비교'}</h2><p>{relative ? '내 기준을 유지하면서 안정·중립·위험추구 중 운용 방향을 골라보세요.' : '이전 방식으로 계산된 결과예요. 내 기준 안의 세 가지 구성을 보려면 다시 계산해주세요.'}</p></div><PlanSelector selected={selectedPlan} onSelect={onPlan} /></div>
+      <div className="d-card-head"><div><h2>{commonTargets ? '공통 기준으로 투자구성 비교' : relative ? `${profileName} 안에서 투자구성 선택` : '저장 당시의 투자구성 비교'}</h2><p>{commonTargets ? '투자 선호를 확인하기 전에는 공통 목표 비중을 볼 수 있어요.' : relative ? '내 기준을 유지하면서 안정·중립·위험추구 중 운용 방향을 골라보세요.' : '이전 방식으로 계산된 결과예요. 내 기준 안의 세 가지 구성을 보려면 다시 계산해주세요.'}</p></div><PlanSelector selected={selectedPlan} onSelect={onPlan} /></div>
       {laterMonth && <p className="d-inline-note">첫 계획 월({textValue(rows[0]?.period)})의 신규 투자 후보금은 0원이에요. {monthLabel} 후보금으로 구성을 비교해요.</p>}
-      {(!relative || order.some(id => typeof object(views[id]).selectable !== 'boolean')) && <div className="d-note"><p>저장된 각 안의 상세 내역은 아래에서 확인할 수 있어요. 현재 입력으로 다시 계산하면 최신 조건으로 선택 가능 여부를 확인해요.</p><button type="button" className="d-secondary" disabled={!onRecalculate} onClick={onRecalculate}>현재 입력으로 다시 계산</button></div>}
+      {(!relative || order.some(id => typeof object(views[id]).selectable !== 'boolean' && !comparisonTargets[id])) && <div className="d-note"><p>저장된 각 안의 상세 내역은 아래에서 확인할 수 있어요. 현재 입력으로 다시 계산하면 최신 조건으로 선택 가능 여부를 확인해요.</p><button type="button" className="d-secondary" disabled={!onRecalculate} onClick={onRecalculate}>현재 입력으로 다시 계산</button></div>}
       {commonFoot && <p className="d-inline-note d-portfolio-common" role="note">{commonFoot}</p>}
       <div className="d-portfolio-grid">{order.map((id, i) => {
         const [title, subtitle, purpose, risk] = TYPES[id];
-        const view = object(views[id]);
+        const view = viewWithTarget(id);
         const ready = isWon(view.allocated_total_krw) && (list(view.allocations).length > 0 || view.cash_only === true);
         const mine = customerType === id;
         const enabled = view.selectable === true && object(firstViews[id]).selectable === true && !blocked;
-        const canCompareTarget = view.comparison_only === true && !blocked;
         const slices = ready ? allocationSlices(list(view.allocations), products, view) : [];
         const target = allocationTargetLabel(view);
+        const canCompareTarget = !!target && !blocked;
         const total = month?.scenario_budget_krw;
-        const targetSlices = view.allocated_total_krw === "0" ? allocationTargetSlices(view) : [];
+        const targetSlices = !isWon(view.allocated_total_krw) || view.allocated_total_krw === "0" ? allocationTargetSlices(view) : [];
+        const waiting = isWon(view.unallocated_krw) && BigInt(view.unallocated_krw) > 0n && view.allocated_total_krw === "0";
         return <div key={id} data-portfolio-type={id} className={`d-portfolio-card ${mine ? 'mine' : ''} ${displayed === id ? 'selected' : ''}`}>
           {mine && <span className="d-mine-badge">{relative ? '내 기준의 기본 구성' : '저장 당시 성향 기준'}</span>}
           <div className="d-card-head"><span className="d-pill">안 {String(i + 1).padStart(2, '0')}</span></div>
           <h3>{title}</h3><p className="d-type-sub">{subtitle}</p>
-          {relative && <p className="d-type-line">{profileName} 기준의 {title} 구성</p>}
+          {relative && !commonTargets && <p className="d-type-line">{profileName} 기준의 {title} 구성</p>}
           {target && <p className="d-type-line"><b>목표 비중</b> {target}</p>}
           {targetSlices.length > 0 ? <>
             <Donut slices={targetSlices} total="10000" center={<small>목표 비중</small>} />
-            <p className="d-inline-note">상품 검토 배분액 0원</p>
+            <p className="d-inline-note">{waiting ? '현금 대기자금 ' + formatKrw(view.unallocated_krw)
+              : isWon(view.allocated_total_krw) ? '상품 검토 배분액 0원' : '상품 검토 배분액 확인 대기'}</p>
           </> : ready ? <>
             <Donut slices={slices} total={total} center={<><small>배분</small><strong>{formatKrw(view.allocated_total_krw)}</strong></>} />
             <DonutLegend slices={slices} total={total} />
@@ -115,7 +126,7 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
       })}</div>
       {displayed && selected && <section id="dion-selected-composition" className="d-selected-composition" tabIndex={-1} aria-labelledby="dion-selected-composition-title">
         <h3 id="dion-selected-composition-title">{selected[0]} 구성 상세</h3>
-        {targetPreview && <p>목표 비중 {allocationTargetLabel(object(views[displayed]))} · 상품 배분 확인 대기</p>}
+        {selectedTarget && <p>목표 비중 {selectedTarget}{targetPreview && " · 상품 배분 확인 대기"}</p>}
         {preview && !targetPreview && <p role="status">{blocked ? "구성 미리보기 · 현재 결과와 저장 상태를 확인해 주세요." : "구성 미리보기 · 현재 조건에서 배분은 보류돼요."}</p>}
         <dl className="d-ledger"><div><dt>기대수익률</dt><dd>산정 대기</dd></div></dl>
         <p className="d-inline-note">이 구성에 적용할 승인된 수익률 가정이 준비되면 표시해요.</p>

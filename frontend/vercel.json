@@ -3,6 +3,7 @@
   "git": {
     "deploymentEnabled": {
       "codex/proposal-question-action-20261116": false,
+      "codex/portfolio-review-universe-20261116": false,
       "codex/results-compact-review-20261116": false,
       "codex/results-reference-cleanup-20261116": false,
       "codex/peer-tax-guidance-20261116": false,

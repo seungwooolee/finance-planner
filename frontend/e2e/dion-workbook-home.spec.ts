@@ -18,8 +18,15 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   const checkPortfolioViews = async () => {
     await resultTabs.getByRole("button", {name:"투자구성", exact:true}).click();
     await expect(rendered.locator("[data-portfolio-type]")).toHaveCount(3);
+    await expect(rendered.locator("[data-portfolio-type] .d-donut")).toHaveCount(3);
+    await expect(rendered.locator("[data-portfolio-type] .d-pending-box")).toHaveCount(0);
     await resultTabs.getByRole("button", {name:"상품 정보", exact:true}).click();
     await expect(rendered.getByRole("region", {name:"상품 적합성·배분 검토"})).toBeVisible();
+    await rendered.getByText("개인별 검토 대상 29종", {exact:true}).click();
+    const screening = rendered.getByRole("table", {name:"개인별 상품 검토 결과"});
+    await expect(screening.locator("tbody tr")).toHaveCount(29);
+    await expect(screening.getByRole("row").filter({hasText:"273130"})).toContainText("확인이 필요해요");
+    await expect(screening.getByText("0091C0", {exact:true})).toHaveCount(0);
     await resultTabs.getByRole("button", {name:"결과·다음 행동", exact:true}).click();
     await expect(rendered.getByRole("heading", {name:"나의 재무설계 제안서"})).toBeVisible();
   };
