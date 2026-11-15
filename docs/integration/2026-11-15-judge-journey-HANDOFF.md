@@ -40,3 +40,5 @@
 - #87 병합은 충돌 없이 완료. 변경된 공통 CSS 영향 확인을 위해 대표 B1.1 브라우저 경로만 추가 검사했다. 최초 준비 번들이 45초 제한을 초과했으며 브라우저 판정 단계에는 도달하지 않았다. 해당 새 환경 오류에 대해 준비 단계 한도를 120초로 1회 조정하고 동시 타입 검사 종료 후 재검증 **1 passed (19.6s)**. 제품 로직·판정 항목·재시도 횟수는 완화하지 않았다.
 - 통합 후 TypeScript 및 새 테스트 fixture/공통 Results/심사 화면 ESLint 통과. 기존 채택 응답 검사와 BE 통과 항목은 변경이 없어 반복하지 않았다.
 - 기능 후보 `0b5e57e`, 통합 후보 `ab063dd`. 최신 PR head와 CI는 PR 링크에서 확인한다.
+
+- PR: https://github.com/seungwooolee/finance-planner/pull/88 (integration 대상, 사용자 병합). 제출 후보 `e9fd636a9e3f0f2a5a0318549ceceeb5171fb235`. 원격 Core checks는 PR에서 실행되며 최종 CI/충돌 상태는 완료 보고와 PR Checks를 따른다.
