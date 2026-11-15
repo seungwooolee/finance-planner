@@ -16,11 +16,11 @@ test('actual HTTP preview connects its reference snapshot to the selected cohort
   expect(payload.storage).toBe('NOT_SAVED');
   const peer = payload.result.peer_reference;
   expect(peer?.version, 'The deployed preview must provide statistics; UI-only data is insufficient').toBe('DION-PEER-REFERENCE-1.0');
-  expect(peer.records).toHaveLength(42);
-  expect(peer.records.filter((r: { review_status: string }) => r.review_status === 'REFERENCE_ONLY')).toHaveLength(29);
+  expect(peer.records).toHaveLength(50);
+  expect(peer.records.filter((r: { review_status: string }) => r.review_status === 'REFERENCE_ONLY')).toHaveLength(37);
   expect(peer.input_version).toBe(response.request().postDataJSON().raw_bundle.input_version);
   expect(peer.input_sha256).toBe(payload.result.adapter.source_sha256);
-  const total = peer.records.find((r: { statistic_id: string }) => r.statistic_id === 'V040');
+  const total = peer.records.find((r: { statistic_id: string }) => r.statistic_id === 'V043');
   expect(total.value).toMatch(/^\d+$/);
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 1000 });
@@ -29,9 +29,9 @@ test('actual HTTP preview connects its reference snapshot to the selected cohort
     await expect(assets).toHaveAttribute('data-data-version', peer.data_version);
     await expect(assets.getByRole('figure')).toBeVisible();
     await expect(page.getByRole('region', { name: '생활단계 참고 통계', exact: true })).toHaveCount(0);
-    await expect(assets.getByLabel('비교할 참고 집단')).toHaveCount(0);
-    await expect(assets).toContainText('개인 단위로 비교할 수 있는 평균 자료를 아직 확보하지 못했어요');
-    await expect(assets.locator('[data-asset-series="reference"]')).toHaveCount(0);
+    await expect(assets.getByLabel('비교할 참고 집단')).toHaveValue('ANSWER');
+    await expect(assets).toHaveAttribute('data-selected-cohort','C21');
+    await expect(assets.locator('[data-statistic-id="V043"] [data-asset-series="reference"]')).toHaveAttribute('data-value', total.value);
     expect(peer.scope).toBe('personal');
     await expect(assets.locator('[data-asset-series="own"][data-value="12000000"]')).toHaveCount(1);
     await assets.scrollIntoViewIfNeeded();
