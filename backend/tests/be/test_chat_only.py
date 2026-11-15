@@ -1,14 +1,18 @@
 """Local synthetic chat checks. No paid network calls."""
 import asyncio
+import json
+from dataclasses import replace
 
+import httpx
 import pytest
 from fastapi import HTTPException
 
-from app.consultation.chat import ChatRequest, ChatService, validate_chat
+from app.consultation.chat import ChatProvider, ChatRequest, ChatService, validate_chat
 from app.oneport_transport import ProviderFailure
-from tests.be import test_consultation
+from tests.be import test_consultation, test_oneport
 
 setup = test_consultation.setup
+config = test_oneport.config
 
 
 def request(**changes):
@@ -104,3 +108,39 @@ def test_http_result_ownership_hash_and_no_result_mutation(setup):
     assert client.post("/api/be/v1/dialogue", json=payload, headers={"Authorization": "Bearer test-B"}).status_code == 404
     payload["saved"]["input_hash"] = "0" * 64
     assert client.post("/api/be/v1/dialogue", json=payload, headers=test_consultation.HEADERS).status_code == 409
+
+
+def test_confirmed_rejection_can_retry_without_replaying_failed_operation(config):
+    config = replace(config, model="gpt-6.1-terra")
+    posts = []
+    def gateway(req):
+        if req.url.path.endswith("/models"):
+            return httpx.Response(200, json={"data": [{"id": config.model, "kind": "chat", "endpoint": "POST /v1/chat/completions",
+                "context_window": 1000, "pricing": {"input_credits_per_mtok": 100, "output_credits_per_mtok": 100}}]})
+        if req.url.path.endswith("/key"):
+            return httpx.Response(200, json={"day": {"limit_credits": 10}})
+        body = json.loads(req.content)
+        assert body["reasoning_effort"] == "low"
+        posts.append(body)
+        value = draft(reply_template="수익률 10%예요") if len(posts) == 1 else draft()
+        return httpx.Response(200, json={"model": config.model, "choices": [{"finish_reason": "stop",
+            "message": {"role": "assistant", "content": json.dumps(value)}}]})
+    async def check():
+        service = ChatService(ChatProvider(config, transport=httpx.MockTransport(gateway)))
+        for _ in range(2):
+            with pytest.raises(HTTPException) as error:
+                await service.answer("A", request(), {})
+            assert error.value.detail == {"code": "CHAT_REPLY_REJECTED", "retryable": True}
+        assert len(posts) == 1
+        result = await service.answer("A", request(request_key="explicit-retry"), {})
+        assert result["source"] == "ONEPORT" and len(posts) == 2
+    asyncio.run(check())
+
+
+def test_unknown_execution_is_not_retryable_as_new_paid_request():
+    class Provider:
+        async def answer(self, *args):
+            raise ProviderFailure("ONEPORT_TIMEOUT", {"execution": "UNKNOWN"})
+    with pytest.raises(HTTPException) as error:
+        asyncio.run(ChatService(Provider()).answer("A", request(), {}))
+    assert error.value.detail == {"code": "CHAT_REQUEST_UNCERTAIN", "retryable": False}
