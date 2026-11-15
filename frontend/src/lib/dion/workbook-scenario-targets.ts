@@ -19,6 +19,7 @@ export const WORKBOOK_PRODUCT_REFERENCES = [
 ] as const;
 
 export const EARLY_WORKBOOK_CASE = "FE-FICTIONAL-early-workbook-goal-v1";
+export const FILLED_EARLY_WORKBOOK_CASE = "FE-FICTIONAL-early-filled-workbook-v2";
 const EARLY_GOAL = "5년 안에 자산 1억 원 모으기";
 export const RETIREMENT_WORKBOOK_GOAL = "은퇴 및 상속";
 

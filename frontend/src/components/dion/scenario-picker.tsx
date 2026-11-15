@@ -2,21 +2,15 @@
 
 import { useId, useRef, useState } from "react";
 import { Document, states } from "@/lib/dion/model";
-import { earlyCareerWorkbookScenario, RETIREMENT_WORKBOOK_GOAL } from "@/lib/dion/workbook-scenario-targets";
 
-export type Scenario = {id:string;title:string;group:string;purpose:string;assumptions:string[];calculationAssumptions?:string[];workbookGoal?:string;document:Document};
+export type Scenario = {id:string;title:string;group:string;purpose:string;assumptions:string[];calculationAssumptions?:string[];inputGaps?:string[];workbookGoal?:string;document:Document};
 
 let publicCases: Promise<Scenario[]> | null = null;
 let reviewCases: Promise<Scenario[]> | null = null;
 export function loadScenarios(): Promise<Scenario[]> {
-  publicCases ??= Promise.all([import("@/lib/dion/review-scenarios.json"), import("@/lib/dion/workbook-retirement-scenario")])
-    .then(([source, workbook]) => {
-      const early = (source.default as unknown as Scenario[]).find(s=>s.id==="early");
-      if (!early) throw new Error("Early-career scenario missing");
-      const retired = workbook.retirementCalculationScenario();
-      return [earlyCareerWorkbookScenario(early), {...retired, workbookGoal: RETIREMENT_WORKBOOK_GOAL,
-        purpose: RETIREMENT_WORKBOOK_GOAL}];
-    }).catch(error=>{ publicCases = null; throw error; });
+  publicCases ??= import("@/lib/dion/filled-workbook-scenarios")
+    .then(workbook => workbook.filledWorkbookScenarios())
+    .catch(error=>{ publicCases = null; throw error; });
   return publicCases;
 }
 
@@ -52,7 +46,7 @@ export function ScenarioPicker({disabled,onLoad,onRestore,review=false,inline=fa
       {scenarios&&<div className="d-scenario-grid">{scenarios.map(s=><article className="d-card" key={s.id}>
         <h3>{s.title}</h3><p>{s.purpose}</p>
         <details><summary>불러올 답변과 가정</summary><ul>{s.assumptions.map(a=><li key={a}>{a}</li>)}</ul>
-          <p>기준일 {s.document.context.evaluation_on}</p>
+          <p>기준일 {s.document.context.evaluation_on || "미확인"}</p>
           {review&&<dl>{s.document.raw_bundle.answers.map(r=><div key={r.answer_revision_id}>
             <dt>{r.envelope.question_ref.design_id} · {r.envelope.question_ref.definition_text}</dt>
             <dd>{Object.entries(r.envelope.fields).map(([k,f])=><p key={k}><strong>{k}</strong> · {states[f.state]} · {f.unit}<code>{JSON.stringify(f.raw_value)}</code></p>)}</dd>

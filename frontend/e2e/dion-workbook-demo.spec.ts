@@ -1,6 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
 import { todayInSeoul } from "../src/lib/dion/model";
-import { retirementScenario } from "../src/lib/dion/workbook-retirement-scenario";
 
 const preview = (page: Page) => page.waitForResponse(r=>r.url().endsWith("/api/fe/v1/preview")&&r.request().method()==="POST");
 const picker = (page: Page) => page.getByRole("dialog",{name:"요즘 나의 생활 · 가상 사례",exact:true});
@@ -17,7 +16,7 @@ async function expectWorkbookTargets(page: Page) {
   ]);
 }
 
-test("the public picker switches only the two demonstrations, then restores the draft", async ({page})=>{
+test("the workbook cases preserve their inputs and show supported results through the proposal", async ({page})=>{
   test.setTimeout(150_000);
   await page.goto("/dion");
   await expect(page.locator('a[href="/dion/judge"]')).toHaveCount(0);
@@ -40,13 +39,31 @@ test("the public picker switches only the two demonstrations, then restores the 
   expect(fields(earlyInput,"F13").goals.raw_value).toEqual([expect.objectContaining({
     target_amount_krw:{state:"KNOWN",raw_value:"10000",unit:"KRW_10000"}, payment_type:"", payment_start:"",
   })]);
-  const earlyResult = (await early.json()).result;
-  expect(earlyResult.results["OUT-03"]).toMatchObject({calc_state:"CALCULATED", after_existing_contributions_krw:"1099000"});
+  expect(fields(earlyInput,"F03").one_off_income_krw).toMatchObject({state:"NOT_ENTERED",raw_value:null});
+  expect(fields(earlyInput,"F09+F10+D08").debts.raw_value).toEqual([expect.objectContaining({
+    schedule:[expect.objectContaining({period:"2026-11", payment_total:expect.objectContaining({raw_value:"10.1"})})],
+  })]);
+  const {result:earlyResult,storage:earlyStorage} = await early.json();
+  expect(earlyStorage).toBe("NOT_SAVED");
+  expect(earlyResult.calc_state).toBe("PARTIAL");
+  expect(earlyResult.results["OUT-02"]).toMatchObject({
+    calc_state:"CALCULATED", total_assets:{value:"12000000"}, total_debt:{value:"5000000"}, net_worth:{value:"7000000"},
+  });
+  expect(earlyResult.results["OUT-03"]).toMatchObject({
+    calc_state:"CALCULATED", normalized_living:{value:"1600000"}, base_surplus:{value:"1299000"}, after_existing_contributions_krw:"1099000",
+  });
+  expect(earlyResult.results["OUT-04"].calc_state).toBe("NOT_SUPPORTED");
+  expect(earlyResult.results["OUT-05"].calc_state).toBe("NOT_SUPPORTED");
   expect(earlyResult.results["OUT-05"].candidates).toBeUndefined();
+  expect(earlyResult.results["OUT-06"].calc_state).toBe("NEEDS_INPUT");
   await expect(page.getByRole("region",{name:"계산 결과",exact:true})).toBeVisible();
   await expect(page.getByRole("region",{name:"내 상황 한눈에",exact:true}).getByText("5년 안에 자산 1억 원 모으기")).toBeVisible();
 
   const resultNav = page.getByRole("navigation", {name:"빠른 결과 5뷰"});
+  await resultNav.getByRole("button",{name:"재무안 선택",exact:true}).click();
+  await expect(page.getByRole("heading",{name:"목표별 준비 상황"})).toBeVisible();
+  await expect(page.getByText(/2031-10-31 자산 잔액 1억원/)).toBeVisible();
+  await expect(page.getByText(/두 월별 후보 확인 대기/)).toBeVisible();
   await resultNav.getByRole("button",{name:"투자구성",exact:true}).click();
   await expectStandardInvestmentCards(page);
   await expectWorkbookTargets(page);
@@ -63,9 +80,13 @@ test("the public picker switches only the two demonstrations, then restores the 
   await expect(riskRows.nth(2)).toContainText(/35%.*ACE 미국S&P500.*360200/);
   await expect(riskRows.nth(3)).toContainText(/10%.*KODEX 머니마켓액티브.*488770/);
   await expect(reference.getByRole("link",{name:/공식 상품 자료/})).toHaveCount(4);
+  await expect(page.getByRole("heading",{name:"월 투자예산 확인 필요"})).toBeVisible();
+  await expect(page.locator("[data-allocation-month]")).toHaveCount(0);
   await resultNav.getByRole("button",{name:"결과·다음 행동",exact:true}).click();
   await expect(reference.getByRole("heading",{name:"위험 추구형 · 시연 투자구성"})).toBeVisible();
   await expect(reference.locator("tbody tr")).toHaveCount(4);
+  await expect(page.getByRole("heading",{name:"나의 재무설계 제안서"})).toBeVisible();
+  await expect(page.locator(".d-kpi").filter({hasText:"그중 상품 배분액"}).locator("strong")).toHaveText("확인 대기");
 
   await page.setViewportSize({width:390,height:844});
   await launch.click();
@@ -76,12 +97,13 @@ test("the public picker switches only the two demonstrations, then restores the 
   expect(retired.ok()).toBe(true);
   const posted = retired.request().postDataJSON();
   expect(fields(posted,"NEW-01").included_owner_ids.raw_value).toEqual(["person_self","person_spouse","person_child"]);
-  const workbook = retirementScenario().document;
-  expect(fields(workbook,"NEW-01").scope_acknowledged).toMatchObject({state:"NOT_ENTERED",raw_value:null});
-  expect(fields(workbook,"F06").financial_assets).toMatchObject({state:"NOT_ENTERED",raw_value:null});
-  expect(fields(posted,"NEW-01").scope_acknowledged).toMatchObject({state:"KNOWN",raw_value:true});
-  expect(fields(posted,"F03").income_period_start.raw_value).toBe("2026-10-01");
-  expect(fields(posted,"F04").period_end.raw_value).toBe("2026-10-31");
+  expect(fields(posted,"NEW-01").scope_acknowledged).toMatchObject({state:"UNKNOWN",raw_value:null});
+  expect(posted.context.evaluation_on).toBe("");
+  expect(posted.context.projection_start).toBeUndefined();
+  expect(posted.context.projection_end).toBeUndefined();
+  expect(fields(posted,"F03").income_period_start.raw_value).toBeNull();
+  expect(fields(posted,"F03").one_off_income_krw).toMatchObject({state:"KNOWN",raw_value:"0"});
+  expect(fields(posted,"F04").period_end.raw_value).toBeNull();
   expect(fields(posted,"LIFE-01").life_stage_primary.raw_value).toBe("LC_RETIRED");
   expect(fields(posted,"F11").goals.raw_value).toEqual([
     expect.objectContaining({type:"GOAL_TYPE_03"}), expect.objectContaining({type:"GOAL_V12_INHERITANCE"}),
@@ -89,49 +111,34 @@ test("the public picker switches only the two demonstrations, then restores the 
   expect(fields(posted,"F03").monthly_net_income_krw.raw_value).toBe("500");
   expect(fields(posted,"F04").living.raw_value).toBe("300");
   expect(fields(posted,"F06").financial_assets_total_reported_krw.raw_value).toBe("50000");
-  expect(fields(posted,"F06").financial_assets).toMatchObject({state:"KNOWN",raw_value:[{
-    asset_class:"OTHER", market_value_krw:{raw_value:"50000"}, withdrawal_constraint:"UNKNOWN", available_date:null,
-  }]});
+  const financial = fields(posted,"F06").financial_assets.raw_value;
+  expect(financial).toEqual(["2000","18000","20000","4000","3000","3000"].map(value=>expect.objectContaining({
+    market_value_krw:expect.objectContaining({raw_value:value}), owner_refs:[], valuation_on:null, available_date:null,
+  })));
   expect(fields(posted,"F08").real_estate_assets.raw_value).toEqual([expect.objectContaining({
-    market_value_krw:expect.objectContaining({raw_value:"100000"}),ownership_share:{percent:"100"},
+    market_value_krw:expect.objectContaining({raw_value:"100000"}),ownership_share:{percent:"100"}, valuation_on:null,
   })]);
   expect(fields(posted,"F09+F10+D08").debts.raw_value).toEqual([expect.objectContaining({
     balance:expect.objectContaining({raw_value:"10000"}),principal_payment:expect.objectContaining({raw_value:"0"}),
-    interest_payment:expect.objectContaining({raw_value:"50"}),
+    interest_payment:expect.objectContaining({raw_value:"50"}), balance_as_of:null, pay_on:null, schedule:[],
   })]);
-  expect(fields(posted,"NEW-05").planned_expenses).toMatchObject({state:"NOT_ENTERED",raw_value:null});
-  expect(JSON.stringify(posted)).not.toContain("early-debt");
-  const result = (await retired.json()).result;
-  expect(result.calc_state).toBe("PARTIAL");
-  expect(result.results["OUT-02"]).toMatchObject({
-    calc_state:"CALCULATED", total_assets:{value:"1500000000"}, total_debt:{value:"100000000"},
-    net_worth:{value:"1400000000"}, asset_breakdown:{groups_krw:{OTHER:"500000000",NONFINANCIAL:"1000000000"}},
-  });
-  expect(result.results["OUT-03"]).toMatchObject({
-    calc_state:"CALCULATED", normalized_living:{value:"3000000"}, base_surplus:{value:"1500000"},
-    existing_cash_contributions_krw:"100000", after_existing_contributions_krw:"1400000",
-  });
-  expect(result.results["OUT-05"].calc_state).not.toBe("CALCULATED");
+  expect(fields(posted,"NEW-05").planned_expenses).toMatchObject({state:"UNKNOWN",raw_value:null});
+  expect(fields(posted,"NEW-06").customer_operating_total).toMatchObject({state:"KNOWN",raw_value:"0"});
+  expect(posted.confirmations).toEqual([]);
+  const {result,storage} = await retired.json();
+  expect(storage).toBe("NOT_SAVED");
+  expect(result).toMatchObject({calc_state:"NEEDS_INPUT",reason_code:"EVALUATION_DATE_REQUIRED",source_snapshot:posted});
+  expect(result.results).toBeUndefined();
   const rendered = page.getByRole("region",{name:"계산 결과",exact:true});
   await expect(rendered).toBeVisible();
   await expect(rendered.getByRole("region",{name:"내 상황 한눈에",exact:true}).getByText("은퇴 및 상속")).toBeVisible();
-  const assumptions = rendered.getByText("은퇴기 가상 사례 · 계산에 사용한 가정",{exact:true});
-  await assumptions.click();
-  await expect(rendered.getByText(/진단 범위가 확인된 것으로 설정하고/)).toBeVisible();
-  for (const [label, value] of [
-    ["저축·투자까지 반영하고 남는 돈", "140만원"], ["전체 자산", "15억원"], ["전체 채무", "1억원"], ["순자산", "14억원"],
-  ]) {
-    await expect(rendered.locator(".d-metric").filter({hasText:label}).locator("strong")).toHaveText(value);
-  }
-  await expect(rendered.locator(".d-ov-applied > div").filter({hasText:"대출 상환 후 남는 돈"})).toContainText("150만원");
-  await expect(rendered.locator(".d-ov-applied > div").filter({hasText:"기존 저축·투자 반영"})).toContainText("10만원");
-  await expect(rendered.getByRole("article",{name:"월 현금흐름 차감표"}).locator("dl > div").filter({hasText:"월 생활비 (대출 상환 제외)"})).toContainText("300만원");
-  await expect(rendered.getByRole("article",{name:"자산 분류"})).toHaveAttribute("data-asset-total","1500000000");
-  await expect(rendered.getByRole("article",{name:"월 현금흐름 차감표"}).getByRole("figure")).toBeVisible();
+  await expect(rendered.getByRole("article",{name:"입력한 금액"}).locator("dl > div")).toHaveText([
+    "월평균 세후 소득500만원","월 생활비300만원","월 대출 납부액50만원","월 저축·투자 입력액10만원",
+    "금융자산 총액5억원","부동산 전체 시세10억원","남은 대출 원금1억원",
+  ]);
+  await expect(rendered.locator(".d-metric").filter({hasText:"순자산"}).locator("strong")).toHaveText("확인 대기");
   const inheritance = page.getByRole("region", {name:"유산·상속 준비"});
   const leave = inheritance.getByRole("button", {name:"남길 재산 알아보기"});
-  const before = await page.getByRole("region",{name:"계산 결과"}).getByText("140만원",{exact:true}).count();
-  expect(before).toBeGreaterThan(0);
   await leave.click();
   const consultation = page.getByRole("dialog",{name:"dion AI 상담"});
   await consultation.getByRole("button",{name:"집값은 언제 기준으로 보나요?"}).click();
@@ -149,10 +156,11 @@ test("the public picker switches only the two demonstrations, then restores the 
   await expect(consultation.getByText("근거 보기",{exact:true})).toHaveCount(0);
   await page.keyboard.press("Escape");
   await expect(leave).toBeFocused();
-  await expect(page.getByRole("region",{name:"계산 결과"}).getByText("140만원",{exact:true})).toHaveCount(before);
 
   await resultNav.getByRole("button", {name:"재무안 선택", exact:true}).click();
   await expect(page.getByRole("heading", {name:"재무안 선택", exact:true})).toBeVisible();
+  await expect(page.getByRole("heading",{name:"목표별 준비 상황"})).toBeVisible();
+  await expect(page.getByText(/은퇴·상속 목표의 소유 범위와 금액·기한·적립일/)).toBeVisible();
   await expect(page.getByText(/두 월별 후보 확인 대기/)).toBeVisible();
   await expect(page.getByRole("region",{name:"두 재무안 비교",exact:true})).toHaveCount(0);
   await resultNav.getByRole("button",{name:"투자구성",exact:true}).click();
@@ -167,10 +175,15 @@ test("the public picker switches only the two demonstrations, then restores the 
   await resultNav.getByRole("button", {name:"상품 정보", exact:true}).click();
   await expect(reference.getByRole("heading",{name:"안정 추구형 · 시연 투자구성"})).toBeVisible();
   await expect(reference.getByRole("rowheader")).toHaveText(["채권","현금성 자산"]);
-  await expect(reference.locator("tbody tr").nth(1)).toContainText(/80%.*488770/);
-  const products = rendered.getByRole("region", {name:"상품 적합성·배분 검토"});
-  await expect(products.getByRole("heading", {name:"월 투자예산 확인 필요"})).toBeVisible();
-  await expect(products.getByText(/전액.*(?:미배분|현금 대기자금)|투자 후보 금액을 현금 대기자금/)).toHaveCount(0);
+  await expect(reference.locator("tbody tr").nth(1)).toContainText(/80%.*상품 근거 확인 대기/);
+  await expect(page.getByText("상품 배분을 검토하려면 진단 기준일과 월 투자예산이 필요해요.")).toBeVisible();
+  await expect(page.locator("[data-allocation-month]")).toHaveCount(0);
+  await resultNav.getByRole("button", {name:"결과·다음 행동", exact:true}).click();
+  const proposal = page.getByRole("article",{name:"재무설계 제안서"});
+  await expect(proposal.getByRole("heading",{name:"나의 재무설계 제안서"})).toBeVisible();
+  await expect(proposal).toContainText("진단 기준일 확인 필요.");
+  await expect(reference.getByRole("heading",{name:"안정 추구형 · 시연 투자구성"})).toBeVisible();
+  await expect(page.locator(".d-kpi").filter({hasText:"그중 상품 배분액"}).locator("strong")).toHaveText("확인 대기");
 
   await launch.click();
   await picker(page).getByRole("button",{name:"내 입력으로 복귀",exact:true}).click();

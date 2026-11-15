@@ -52,7 +52,7 @@ export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabe
   const horizon = years(last(chosen)?.months);
   const preferenceCode = doc ? fieldValue(doc, "F17", "risk_preference_choice_raw") : null;
   const preference = preferenceCode ? question("F17").options.find(o => o.code === preferenceCode)?.label ?? "확인 필요" : "미응답";
-  const evaluationOn = textValue(object(result.context).evaluation_on) || "기준일 확인 필요";
+  const evaluationOn = textValue(object(result.context).evaluation_on);
   const available = ref.state === "CALCULATED";
   const firstPeriod = textValue(list(list(object(object(result.results)["OUT-05"]).candidates).find(c => c.strategy_id === plan)?.rows)[0]?.period);
   const stress = object(object(list(object(list(object(object(result.results)["OUT-06"]).candidates).find(c => c.strategy_id === plan)).rows)[0]).stress_review).scenario_loss_krw_ceil;
@@ -60,7 +60,7 @@ export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabe
   return <article className="d-card d-proposal" aria-label="재무설계 제안서">
     <span className="d-badge">4단계 · 재무설계 제안서 · 검토용</span>
     <h2>나의 재무설계 제안서</h2>
-    <p>지금까지 고른 내용을 한 장에 모으고, 다른 방법과 비교한 결과를 숫자와 가정으로 보여드려요. {evaluationOn} 기준이며 실제 가입·매수·이체는 하지 않아요.</p>
+    <p>지금까지 고른 내용을 한 장에 모으고, 다른 방법과 비교한 결과를 숫자와 가정으로 보여드려요. {evaluationOn ? `계산 기준일 ${evaluationOn}.` : "진단 기준일 확인 필요."} 실제 가입·매수·이체는 하지 않아요.</p>
 
     <Section n={1} title="내가 선택한 내용">
       <dl className="d-ledger d-proposal-summary">
