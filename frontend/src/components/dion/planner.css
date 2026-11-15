@@ -301,6 +301,12 @@
 .dion-app .d-financial-projection summary{cursor:pointer;font-weight:600;padding:8px 0}
 .dion-app .d-financial-projection caption{text-align:left;font-size:12px;padding:8px 0}
 .dion-app .d-financial-projection dd{overflow-wrap:anywhere}
+.dion-app .d-investment-return .d-card-head{flex-wrap:wrap}
+.dion-app .d-investment-return-form{display:grid;grid-template-columns:minmax(100px,.7fr) minmax(145px,1.25fr) auto;align-items:end;gap:12px;margin:16px 0}
+.dion-app .d-investment-return-form label{display:grid;gap:7px;min-width:0;color:#454654;font-size:13px}
+.dion-app .d-investment-return-form input,.dion-app .d-investment-return-form select{width:100%;min-width:0;min-height:46px;padding:8px 12px;border:1px solid #dfe2f1;border-radius:10px;background:#fff;color:#161b29}
+.dion-app .d-investment-return .d-metric strong{overflow-wrap:anywhere}
+@media(max-width:740px){.dion-app .d-investment-return-form{grid-template-columns:minmax(0,1fr)}.dion-app .d-results .d-card.d-investment-return .d-metrics{grid-template-columns:minmax(0,1fr)}}
 
 /* Results: quiet surfaces, one clear numeric priority, readable evidence. */
 .dion-app{--d-question-scroll-offset:144px}

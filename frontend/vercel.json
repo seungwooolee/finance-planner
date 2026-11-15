@@ -2,6 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "git": {
     "deploymentEnabled": {
+      "codex/investment-return-chart-20261115": false,
       "codex/return-allocation-20261115": false,
       "codex/results-cleanup-20261115": false,
       "codex/ui-review-20261115": false,
