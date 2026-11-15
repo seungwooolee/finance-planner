@@ -31,7 +31,7 @@ test('summary links state, goal constraint and next action without scores', asyn
   await expect(card).toContainText('매달 120만원이 남아요');
   await expect(card).toContainText('대출 상환액은 이미 이 흐름에 반영');
   await expect(card).toContainText('가장 먼저 챙길 목표는 전세 보증금(2027-06-30)이에요. 900만원이 남아 7회에 걸쳐 회차당 128만 5,715 원씩');
-  await expect(card).toContainText('두 재무안 모두 이번 달에 비상금(보호자금)을 먼저 보충해요');
+  await expect(card).toContainText('두 재무안 모두 첫 계획 월(2026-12)에 비상금(보호자금)을 먼저 보충해요');
   await expect(card.getByRole('button', { name: '재무안 비교 보기' })).toBeVisible();
   await show(page, <PersonalSummary after={null} debt="0" goals={{ calc_state: 'NOT_APPLICABLE', rows: [] }} firstRows={[]} goalLabel={label} next={{ text: '정보를 확인해 주세요.' }}/>);
   await expect(page.getByRole('region', { name: '내 상황 한눈에' })).toContainText('0원으로 가정하지 않고 보류');

@@ -65,6 +65,12 @@ test("no-change consultation, failed save/retry, final server artifact, resume a
   const adoption = page.getByRole("region",{name:"계획 선택과 이번 달 기록",exact:true});
   await expect(adoption.getByRole("button",{name:/으로 진행할게요/})).toBeFocused();
   expect((await (await request.get(`${base}/plan`,{headers})).json()).adoption.adoption_id).toBe(before.adoption.adoption_id);
+  await adoption.getByRole("button",{name:/으로 진행할게요/}).click();
+  const status = page.getByRole("region", {name:"선택·저장·채택·실행 상태", exact:true});
+  await expect(status).toContainText("채택한 계획생활 안정 우선 · 중립형");
+  const adopted = (await (await request.get(`${base}/plan`,{headers})).json()).adoption;
+  expect(adopted.adoption_id).not.toBe(before.adoption.adoption_id);
+  expect(adopted.portfolio.portfolio_type).toBe("BALANCED");
 });
 
 test("confirmed income change creates a new engine run and requires selection/step/comparison review", async ({page,request}) => {

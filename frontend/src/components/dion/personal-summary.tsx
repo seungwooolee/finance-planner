@@ -33,8 +33,8 @@ function goalText(goals: Record<string, Json>, label: (id: Json) => string): str
 
 function protectionText(first: Record<string, Json>[]): string {
   if (first.length !== 2) return "";
-  if (first.every(r => positive(r.protection_topup_krw))) return " 두 재무안 모두 이번 달에 비상금(보호자금)을 먼저 보충해요.";
-  if (first.every(r => r.protection_topup_krw === "0")) return " 이번 달 비상금(보호자금) 보충은 두 재무안 모두 없어요.";
+  if (first.every(r => positive(r.protection_topup_krw))) return ` 두 재무안 모두 첫 계획 월(${textValue(first[0].period)})에 비상금(보호자금)을 먼저 보충해요.`;
+  if (first.every(r => r.protection_topup_krw === "0")) return ` 첫 계획 월(${textValue(first[0].period)}) 비상금(보호자금) 보충은 두 재무안 모두 없어요.`;
   return "";
 }
 
@@ -78,7 +78,7 @@ export function GoalTable({ goals, goalLabel, missing }: { goals: Record<string,
     <h2 id="d-goals-title"><Target size={20} aria-hidden="true"/> 목표별 준비 상황</h2>
     <p className="d-inline-note d-flow-note">목표 금액 중 이미 준비한 돈과 남은 금액을 나누고, 남은 금액을 사용일 전 적립일마다 얼마씩 모으는지 보여줘요.</p>
     {rows.length ? <div className="d-table-wrap"><table className="d-goal-table">
-      <caption>금액은 계산 결과 그대로 · 수익 0% 기준</caption>
+      <caption>금액은 계산 결과 그대로 · 수익 미반영 기준</caption>
       <thead><tr><th scope="col">목표·사용일</th><th scope="col">목표 금액</th><th scope="col">준비된 금액</th><th scope="col">남은 금액</th><th scope="col">적립 계획</th></tr></thead>
       <tbody>{rows.map(r => <tr key={textValue(r.goal_id)} data-goal-state={textValue(r.calc_state)}>
         <th scope="row">{goalLabel(r.goal_id)}<small>{textValue(r.due_on) ? `사용일 ${textValue(r.due_on)}` : "사용일 확인 대기"}</small><ReadyBar row={r}/></th>

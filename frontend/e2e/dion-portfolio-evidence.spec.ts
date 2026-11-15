@@ -27,7 +27,7 @@ test('saved products and final tax cards show traceable evidence only on request
   await expect(evidence.getByRole('link').first()).toHaveAttribute('href', 'https://synthetic.example.test/guide#section-1');
   await expect(page.getByRole('heading', {name: '후보별 비용·유동성·환율·위험 비교'})).toBeVisible();
   await page.screenshot({path: info.outputPath('product-evidence-desktop.png')});
-  await page.getByRole('button', {name: /결과·이번 달 행동/}).click();
+  await page.getByRole('button', {name: /결과·다음 행동/}).click();
   await expect(tax).toHaveCount(1);
   await tax.locator('.d-tax-all > summary').click();
   await expect(tax.locator('[data-tax-benefit]')).toHaveCount(8);
@@ -56,7 +56,7 @@ test('outage and mismatched citations preserve the saved result and permit expli
   const {first, base} = await prepare(page, request);
   await page.getByRole('button', {name: new RegExp(first.run_id)}).click();
   const before = await (await request.get(`${base}/analyses/${first.run_id}`, {headers})).json();
-  await page.getByRole('button', {name: /결과·이번 달 행동/}).click();
+  await page.getByRole('button', {name: /결과·다음 행동/}).click();
   await page.locator('[data-tax-benefit="pension-contribution"]').getByRole('button').click();
   const dialog = page.getByRole('dialog', {name: /연금저축·IRP 추가 납입/});
   await dialog.getByLabel('확인할 귀속연도').fill('2026');

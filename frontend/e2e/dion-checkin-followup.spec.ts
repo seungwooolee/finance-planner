@@ -1,9 +1,18 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { createHash } from 'node:crypto';
 import original from '../../backend/examples/planning-v1.1/question_v121_input.json';
 import { prepare } from './consultation-helpers';
 
 const headers = { Authorization: 'Bearer MOCK-FE-ONLY' };
+
+async function selectMonth(page: Page, year: string, month: string) {
+  const picker = page.getByRole('form', {name:'기록 월 선택', exact:true});
+  await picker.getByLabel('기록할 연도', {exact:true}).fill(year);
+  await picker.getByLabel('기록할 월', {exact:true}).selectOption(month);
+  const show = picker.getByRole('button', {name:'이 월 기록 보기'});
+  if (await show.isEnabled()) await show.click();
+  await expect(page.getByRole('heading', {name:year+'년 '+Number(month)+'월 실제 기록'})).toBeVisible();
+}
 // Separate October scenario; original contest/frozen fixture is never edited or relabeled.
 function shift(value: unknown): unknown {
   if (Array.isArray(value)) return value.map(shift);
@@ -37,11 +46,15 @@ test('explicit adoption → past-month exact review → confirmed new draft → 
   test.setTimeout(150_000);
   const source = syntheticSource();
   const { first, base, id } = await prepare(page, request, false, false, false, source);
+  // This test starts from an explicitly adopted result. The finalization suite exercises UI adoption.
+  const adopted = await request.post(base + '/plan/adoptions', {headers, data:{
+    request_key:'followup-adoption', run_id:first.run_id, strategy_id:'STABILITY_FIRST',
+  }});
+  expect(adopted.ok()).toBeTruthy();
   await page.getByRole('button', {name: new RegExp(first.run_id)}).click();
   await page.locator('.d-tabs button').nth(4).click();
-  await page.getByLabel('기록할 월', {exact: true}).fill('2026-10');
+  await selectMonth(page, '2026', '10');
   const panel = page.getByRole('region', {name: '계획 선택과 이번 달 기록'});
-  await panel.getByRole('button', {name: /으로 진행할게요/}).click();
   await expect(panel).toContainText('현재 선택한 계획');
   const plan = await (await request.get(base + '/plan', {headers})).json();
   await panel.getByLabel('이 월 기록에 연결할 계획', {exact: true}).selectOption(plan.adoption.adoption_id);
@@ -70,7 +83,7 @@ test('explicit adoption → past-month exact review → confirmed new draft → 
   await review.getByRole('checkbox', {name: /확인한 새 값이며/}).check();
   await create.press('Enter');
   // The saved result becomes stale; the chosen record month survives its remount.
-  await expect(page.getByLabel('기록할 월', {exact: true})).toHaveValue('2026-10');
+  await expect(page.getByRole('heading', {name:'2026년 10월 실제 기록'})).toBeVisible();
   await expect(page.getByRole('heading', {name: /새 초안 저장됨/})).toBeVisible();
   const drafts = await (await request.get(base + '/checkins/2026-10/drafts', {headers})).json();
   expect(drafts.items).toHaveLength(1);
@@ -83,7 +96,7 @@ test('explicit adoption → past-month exact review → confirmed new draft → 
   await page.screenshot({path: info.outputPath('followup-mobile.png'), fullPage: true});
   await page.getByRole('button', {name: '이 새 초안과 답변 열기', exact: true}).press('Enter');
   await expect(page.getByRole('region', {name: '계획 선택과 이번 달 기록'})).toContainText('다른 계산 결과에서 선택함');
-  await expect(page.getByLabel('기록할 월', {exact: true})).toHaveValue('2026-10');
+  await expect(page.getByRole('heading', {name:'2026년 10월 실제 기록'})).toBeVisible();
   // A full reload and re-open uses persisted new raw heads and the same record/adoption.
   await page.reload();
   await expect(page.getByRole('button', {name: '로그아웃', exact: true})).toBeVisible();
@@ -91,7 +104,7 @@ test('explicit adoption → past-month exact review → confirmed new draft → 
   await page.getByRole('button', {name: new RegExp(`${id} .*다시 열기`)}).click();
   await page.getByRole('button', {name: new RegExp(draft.run_id)}).click();
   await page.locator('.d-tabs button').nth(4).click();
-  await page.getByLabel('기록할 월', {exact: true}).fill('2026-10');
+  await selectMonth(page, '2026', '10');
   await expect(page.getByRole('row', {name: /^신규 투자 납입/})).toContainText('-300,000원');
   await expect(page.getByRole('group', {name: '계획 대비 비교에 사용할 기록 범위'}).getByRole('checkbox').first()).toBeChecked();
   await info.attach('synthetic-followup-identifiers', {body: JSON.stringify({environment: 'LOCAL_DISPOSABLE_SQLITE_REAL_ENGINE_MOCK_AUTH',
@@ -104,7 +117,7 @@ test('current-month closure error keeps input and general partial record stays u
   const {first, base} = await prepare(page, request, false, false, false, syntheticSource());
   await page.getByRole('button', {name: new RegExp(first.run_id)}).click();
   await page.locator('.d-tabs button').nth(4).click();
-  await page.getByLabel('기록할 월', {exact: true}).fill('2026-11');
+  await selectMonth(page, '2026', '11');
   const panel = page.getByRole('region', {name: '계획 선택과 이번 달 기록'});
   await panel.getByLabel('신규 투자 납입 (만원)', {exact: true}).fill('0');
   await panel.getByRole('button', {name: '점검 완료', exact: true}).click();
