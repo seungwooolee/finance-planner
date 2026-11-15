@@ -15,7 +15,7 @@ from app.be.store import BackendStore
 
 
 @pytest.fixture
-def ctx(tmp_path):
+def ctx(tmp_path, request):
     app = FastAPI()
     for r in (router, question_router, plan_router):
         app.include_router(r)
@@ -25,6 +25,14 @@ def ctx(tmp_path):
     app.dependency_overrides[get_store] = lambda: store
     doc = json.loads((Path(__file__).resolve().parents[3] /
                       'frontend/src/lib/dion/product-review-scenario.json').read_text(encoding='utf-8'))['document']
+    if on := getattr(request, "param", None):
+        doc["context"]["evaluation_on"] = on
+        for row in doc["raw_bundle"]["answers"]:
+            envelope = row["envelope"]
+            envelope["context"]["as_of"] = on
+            for field, basis in (("financial_assets", "valuation_on"), ("debts", "balance_as_of")):
+                for item in envelope["fields"].get(field, {}).get("raw_value", []):
+                    item[basis] = on
     base = '/api/be/v1/cases/comparison'
     with TestClient(app) as client:
         assert client.post('/api/be/v1/cases', json={'case_id': 'comparison'}).status_code == 201
@@ -52,6 +60,21 @@ def ctx(tmp_path):
 
 def endpoint(base, run):
     return f"{base}/analyses/{run['run_id']}/portfolio-comparison"
+
+
+@pytest.mark.parametrize("ctx", ["2026-11-16"], indirect=True)
+def test_choose_and_restore_a_portfolio_with_new_disclosures(ctx):
+    client, _, _, base, run, payload = ctx
+    review = run["result"]["results"]["OUT-06"]
+    assert payload["catalog_version"] == "DION-PRODUCT-CATALOG-20261116-0.3.2"
+    selected = review["candidates"][0]["rows"][0]["portfolio_type_views"]["RETURN"]
+    assert selected["selectable"] and "436140" in {row["code"] for row in selected["allocations"]}
+    url = endpoint(base, run)
+    saved = client.put(url, json=payload)
+    assert saved.status_code == 200, saved.text
+    assert client.get(url).json() == saved.json()
+    assert saved.json()["selection"]["catalog_version"] == payload["catalog_version"]
+    assert not saved.json()["transaction_executed"]
 
 
 def test_save_restore_replay_and_existing_history_unchanged(ctx):

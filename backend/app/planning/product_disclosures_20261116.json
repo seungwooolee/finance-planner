@@ -1,0 +1,331 @@
+{
+  "version": "DION-PRODUCT-CATALOG-20261116-0.3.2",
+  "reviewed_on": "2026-11-16",
+  "valid_until": "2027-01-12",
+  "settlement_url": "https://regulation.krx.co.kr/contents/RGL/03/03060102/RGL03060102.jsp",
+  "products": {
+    "091160": {
+      "url": "https://www.samsungfund.com/upload/invest/2ETF07-A.pdf",
+      "sha256": "6cbc45b661bf2fe376ecd832c5deaa755bcdaaa4aa604408d98097b8a9231f9d",
+      "effective_on": "2026-09-16",
+      "risk_page": 1,
+      "fee_page": 36,
+      "risk_grade": 1,
+      "annual_base_fee_percent": "0.45",
+      "annual_total_expense_percent": "0.4625",
+      "transaction_cost_percent": "0.0479"
+    },
+    "102110": {
+      "url": "https://investments.miraeasset.com/tigeretf/upload/etf/20260416021509007653.pdf",
+      "sha256": "6beb29cbd35b9f06d477fc43f404c9b240fafcdd96b5ba4f8154d653fc2555fd",
+      "effective_on": "2026-04-16",
+      "risk_page": 1,
+      "fee_page": 31,
+      "risk_grade": 2,
+      "annual_base_fee_percent": "0.05",
+      "annual_total_expense_percent": "0.07",
+      "transaction_cost_percent": null,
+      "allocation_facts": {
+        "issuer_id": "MIRAE_ASSET",
+        "asset_class": "EQUITY",
+        "benchmark": "KOSPI 200",
+        "benchmark_group": "KOSPI200",
+        "strategy_page": 4
+      },
+      "listing_url": "https://investments.miraeasset.com/tigeretf/ko/product/search/detail/index.do?ksdFund=KR7102110004"
+    },
+    "114260": {
+      "url": "https://m.samsungfund.com/upload/invest/2ETF19-A.pdf",
+      "sha256": "1b116ecb5aa222523df050406f2b27eadb6ef42b798d08d51ef6c2b97f531d6a",
+      "effective_on": "2026-10-01",
+      "risk_page": 1,
+      "fee_page": 34,
+      "risk_grade": 5,
+      "annual_base_fee_percent": "0.15",
+      "annual_total_expense_percent": "0.1683",
+      "transaction_cost_percent": "0.0063",
+      "allocation_facts": {
+        "issuer_id": "SAMSUNG",
+        "asset_class": "BOND",
+        "benchmark": "MKF 국고채 지수",
+        "benchmark_group": "KRW_GOVT_3Y",
+        "strategy_page": 8
+      },
+      "listing_url": "https://www.samsungfund.com/etf/product/view.do?id=2ETF19"
+    },
+    "114820": {
+      "url": "https://investments.miraeasset.com/tigeretf/upload/etf/20260416082644004768.pdf",
+      "sha256": "fc6cbb77eeffd8c9dc89ab1b10e93af2d7064c305860010383cb99e64129dcb5",
+      "effective_on": "2026-04-16",
+      "risk_page": 1,
+      "fee_page": 29,
+      "risk_grade": 5,
+      "annual_base_fee_percent": "0.15",
+      "annual_total_expense_percent": "0.16",
+      "transaction_cost_percent": null,
+      "allocation_facts": {
+        "issuer_id": "MIRAE_ASSET",
+        "asset_class": "BOND",
+        "benchmark": "KTB Index(시장가격지수)",
+        "benchmark_group": "KRW_GOVT_3Y",
+        "strategy_page": 4
+      },
+      "listing_url": "https://investments.miraeasset.com/tigeretf/ko/product/search/detail/index.do?ksdFund=KR7114820004"
+    },
+    "133690": {
+      "url": "https://investments.miraeasset.com/tigeretf/upload/etf/20260528095823000271.pdf",
+      "sha256": "3bb7dc792acb85692679bf37e6ba6d0b1d437701bb111c6c562d32ba46b0555a",
+      "effective_on": "2026-05-28",
+      "risk_page": 1,
+      "fee_page": 32,
+      "risk_grade": 2,
+      "annual_base_fee_percent": "0.0068",
+      "annual_total_expense_percent": "0.1068",
+      "transaction_cost_percent": null
+    },
+    "223190": {
+      "url": "https://m.samsungfund.com/upload/invest/2ETF51-A.pdf",
+      "sha256": "538eee3a76e6982a2ddfca5083e19e4571915b79b5442bb16c814482ad26fd1e",
+      "effective_on": "2026-08-05",
+      "risk_page": 1,
+      "fee_page": 36,
+      "risk_grade": 2,
+      "annual_base_fee_percent": "0.30",
+      "annual_total_expense_percent": "0.3542",
+      "transaction_cost_percent": "0.0523"
+    },
+    "229200": {
+      "url": "https://www.samsungfund.com/upload/invest/2ETF54-A.pdf",
+      "sha256": "d170e1f92877a66c3353f01152b205a23191f49227a6ab24d4f1f71ae546d00e",
+      "effective_on": "2026-08-05",
+      "risk_page": 1,
+      "fee_page": 35,
+      "risk_grade": 1,
+      "annual_base_fee_percent": "0.25",
+      "annual_total_expense_percent": "0.2825",
+      "transaction_cost_percent": "0.0401"
+    },
+    "273130": {
+      "url": "https://www.samsungfund.com/upload/invest/2ETF88-A.pdf",
+      "sha256": "dc13961755f462f6fb4669a299092d5feacf6de0146732f399d87a5ee1894e74",
+      "effective_on": "2026-08-13",
+      "risk_page": 1,
+      "fee_page": 34,
+      "risk_grade": 5,
+      "annual_base_fee_percent": "0.045",
+      "annual_total_expense_percent": "0.0593",
+      "transaction_cost_percent": "0.0267",
+      "allocation_facts": {
+        "issuer_id": "SAMSUNG",
+        "asset_class": "BOND",
+        "benchmark": "KAP한국종합채권지수(AA-이상, 총수익)",
+        "benchmark_group": "KRW_AGG_AA",
+        "strategy_page": 8
+      },
+      "listing_url": "https://www.samsungfund.com/etf/product/view.do?id=2ETF88"
+    },
+    "279540": {
+      "url": "https://m.samsungfund.com/upload/invest/2ETF97-A.pdf",
+      "sha256": "8fbbda9ff4e4d87879fb61bd8ba2829aa23a11eaa4087c5254a62badbd952e57",
+      "effective_on": "2026-10-01",
+      "risk_page": 1,
+      "fee_page": 37,
+      "risk_grade": 2,
+      "annual_base_fee_percent": "0.30",
+      "annual_total_expense_percent": "0.3477",
+      "transaction_cost_percent": "0.0535"
+    },
+    "305720": {
+      "url": "https://m.samsungfund.com/upload/invest/2ETFB1-A.pdf",
+      "sha256": "cc63fd9d9a12d8b74b213679b6aff430d070eee3726af88c47dfc5a2571bd40a",
+      "effective_on": "2026-07-16",
+      "risk_page": 1,
+      "fee_page": 38,
+      "risk_grade": 1,
+      "annual_base_fee_percent": "0.45",
+      "annual_total_expense_percent": "0.5515",
+      "transaction_cost_percent": "0.0682"
+    },
+    "325020": {
+      "url": "https://m.samsungfund.com/upload/invest/2ETFB9-A.pdf",
+      "sha256": "1a6b22b368e4a35e9afda8134af4709fd7479d9ae5351de818bb8ab2f31b4463",
+      "effective_on": "2026-08-05",
+      "risk_page": 1,
+      "fee_page": 37,
+      "risk_grade": 2,
+      "annual_base_fee_percent": "0.30",
+      "annual_total_expense_percent": "0.358",
+      "transaction_cost_percent": "0.0736"
+    },
+    "379810": {
+      "url": "https://www.samsungfund.com/upload/invest/2ETFE3-A.pdf",
+      "sha256": "c678e85d4693df7b2529d057e31b040e7f6dbb97046d847c073f1d005856d283",
+      "effective_on": "2026-08-26",
+      "risk_page": 1,
+      "fee_page": 39,
+      "risk_grade": 2,
+      "annual_base_fee_percent": "0.0062",
+      "annual_total_expense_percent": "0.1003",
+      "transaction_cost_percent": "0.0558"
+    },
+    "423160": {
+      "url": "https://www.samsungfund.com/upload/invest/2ETFG6-A.pdf",
+      "sha256": "cfa7c378ed9e2e302d7bb909a38dff591ad8607439efe377a9e860e0d5b11565",
+      "effective_on": "2026-08-13",
+      "risk_page": 1,
+      "fee_page": 46,
+      "risk_grade": 6,
+      "annual_base_fee_percent": "0.05",
+      "annual_total_expense_percent": "0.0594",
+      "transaction_cost_percent": "0.0009"
+    },
+    "436140": {
+      "url": "https://www.shinhanfund.com/file/download/fundDocument/210932/description",
+      "sha256": "6ba80059ba4313f7d95530e2b71c109d6acac3bbafe87a353c78bd5ad5da4606",
+      "effective_on": "2026-01-13",
+      "risk_page": 1,
+      "fee_page": 33,
+      "risk_grade": 5,
+      "annual_base_fee_percent": "0.040",
+      "annual_total_expense_percent": "0.0596",
+      "transaction_cost_percent": "0.0084",
+      "allocation_facts": {
+        "issuer_id": "SHINHAN",
+        "asset_class": "BOND",
+        "benchmark": "KAP K-종합채권지수(AA-이상, 총수익)",
+        "benchmark_group": "KRW_AGG_AA",
+        "strategy_page": 5
+      },
+      "listing_url": "https://www.soletf.co.kr/ko/fund/etf/210932"
+    },
+    "439870": {
+      "url": "https://m.samsungfund.com/upload/invest/2ETFH3-A.pdf",
+      "sha256": "f2aa249325f1874c0003b5170d462bdd64bef2d5bc01293ec83d9c707b1a1438",
+      "effective_on": "2026-08-13",
+      "risk_page": 1,
+      "fee_page": 38,
+      "risk_grade": 3,
+      "annual_base_fee_percent": "0.05",
+      "annual_total_expense_percent": "0.0646",
+      "transaction_cost_percent": "0.0109"
+    },
+    "446720": {
+      "url": "https://www.shinhanfund.com/file/download/fundDocument/210942/description",
+      "sha256": "c1e631a617f8562ee28e60499b1df49d18b16f6ea717f07bf93eee2f4d8d1b2a",
+      "effective_on": "2026-01-13",
+      "risk_page": 1,
+      "fee_page": 32,
+      "risk_grade": 3,
+      "annual_base_fee_percent": "0.010",
+      "annual_total_expense_percent": "0.0772",
+      "transaction_cost_percent": "0.0779"
+    },
+    "458730": {
+      "url": "https://investments.miraeasset.com/tigeretf/upload/etf/20260528072833005612.pdf",
+      "sha256": "8578c88a0e55ffc50953d38103a1021b03a03d0518d7dca287f7be5285344528",
+      "effective_on": "2026-05-28",
+      "risk_page": 1,
+      "fee_page": 32,
+      "risk_grade": 2,
+      "annual_base_fee_percent": "0.01",
+      "annual_total_expense_percent": "0.07",
+      "transaction_cost_percent": null
+    },
+    "459580": {
+      "url": "https://m.samsungfund.com/upload/invest/2ETFJ8-A.pdf",
+      "sha256": "e6262e22221bbb39eb4f43fd2e5c38a7cbd26b9e2ea1c9862943b50a297f1440",
+      "effective_on": "2026-08-13",
+      "risk_page": 1,
+      "fee_page": 48,
+      "risk_grade": 4,
+      "annual_base_fee_percent": "0.02",
+      "annual_total_expense_percent": "0.0308",
+      "transaction_cost_percent": "0.0069"
+    },
+    "469830": {
+      "url": "https://www.shinhanfund.com/file/download/fundDocument/211038/description",
+      "sha256": "5458b677b149fa093bd794e8c6a9f0e67d34d90b6c621e6272fa88e69a1753e0",
+      "effective_on": "2026-04-22",
+      "risk_page": 1,
+      "fee_page": 34,
+      "risk_grade": 5,
+      "annual_base_fee_percent": "0.050",
+      "annual_total_expense_percent": "0.0652",
+      "transaction_cost_percent": "0.0066",
+      "allocation_facts": {
+        "issuer_id": "SHINHAN",
+        "asset_class": "BOND",
+        "benchmark": "KAP 단기자금시장지수",
+        "benchmark_group": "KRW_SHORT_GOVT",
+        "strategy_page": 5
+      },
+      "listing_url": "https://www.soletf.co.kr/ko/fund/etf/211038"
+    },
+    "471230": {
+      "url": "https://m.samsungfund.com/upload/invest/2ETFL6-A.pdf",
+      "sha256": "9a741323930d43bec0007bf08db4cdf1e147b9d1ba33126900dc2d81e6d81738",
+      "effective_on": "2026-08-13",
+      "risk_page": 1,
+      "fee_page": 38,
+      "risk_grade": 5,
+      "annual_base_fee_percent": "0.015",
+      "annual_total_expense_percent": "0.0286",
+      "transaction_cost_percent": "0.0083"
+    },
+    "481050": {
+      "url": "https://m.samsungfund.com/upload/invest/2ETFM7-A.pdf",
+      "sha256": "0bde4b51baccbb48b9b53f03af6a0cc619bb3f45da1760882c8fa6b105ed8e00",
+      "effective_on": "2026-07-22",
+      "risk_page": 1,
+      "fee_page": 53,
+      "risk_grade": 4,
+      "annual_base_fee_percent": "0.05",
+      "annual_total_expense_percent": "0.0642",
+      "transaction_cost_percent": "0.0032"
+    },
+    "488770": {
+      "url": "https://www.samsungfund.com/upload/invest/2ETFO1-A.pdf",
+      "sha256": "387b3591a76fa70b96af8f1f9149768ed69bbdd892706d32776d0c206e421921",
+      "effective_on": "2026-08-13",
+      "risk_page": 1,
+      "fee_page": 40,
+      "risk_grade": 5,
+      "annual_base_fee_percent": "0.05",
+      "annual_total_expense_percent": "0.063",
+      "transaction_cost_percent": "0.0013"
+    },
+    "489250": {
+      "url": "https://m.samsungfund.com/upload/invest/2ETFN9-A.pdf",
+      "sha256": "82896191e28df69cb3e3ebdc24e0345c5b6aec2b08939bad5b86b7548d9191cb",
+      "effective_on": "2026-08-26",
+      "risk_page": 1,
+      "fee_page": 40,
+      "risk_grade": 2,
+      "annual_base_fee_percent": "0.0099",
+      "annual_total_expense_percent": "0.0887",
+      "transaction_cost_percent": "0.0863"
+    }
+  },
+  "variant_slot_candidates": {
+    "STABLE": {
+      "153130": [
+        "469830"
+      ]
+    },
+    "BALANCED": {
+      "153130": [
+        "114260",
+        "114820"
+      ],
+      "069500": [
+        "102110"
+      ]
+    },
+    "RETURN": {
+      "153130": [
+        "436140",
+        "273130"
+      ]
+    }
+  }
+}

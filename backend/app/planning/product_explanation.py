@@ -8,6 +8,8 @@ change the outcome, so the customer sees what would move a product between state
 DECISIONS = {
     "INCLUDED": "기본 배분 후보예요. 확인한 투자 답변과 공시·내부 검토 조건을 통과했어요.",
     "ALTERNATIVE": "검토 조건은 통과한 비교 대안이에요. 기본 상품을 자동으로 대체하거나 추가 배분하지 않아요.",
+    "PORTFOLIO_CANDIDATE": "검토 조건을 통과했어요. 투자구성별 배분에 사용할 수 있어요.",
+    "ROLE_POLICY_REQUIRED": "공시 근거를 확인했어요. 이 유형의 배분 기준을 검토하는 중이에요.",
     "HELD": "필수 공시 근거(위험등급·비용 등)가 아직 부족해 검토를 보류한 상품이에요.",
     "EXCLUDED_POLICY": "이번 기본 배분 정책이 다루는 상품 범위 밖이에요.",
     "EXCLUDED_FOR_PROFILE": "이번 답변·자료 기준으로는 배분 검토에서 빠졌어요.",
@@ -28,7 +30,11 @@ EVIDENCE_DOCS = {"069500", "360200", "360750", "379800", "153130", "214980"}  # 
 
 def decision_of(row, catalog_product):
     if row["state"] == "ELIGIBLE_FOR_REVIEW":
+        if row["allocation_role"] == "PORTFOLIO_CANDIDATE":
+            return "PORTFOLIO_CANDIDATE"
         return "INCLUDED" if row["allocation_role"] == "DEFAULT_SLOT" else "ALTERNATIVE"
+    if "PRODUCT_ROLE_POLICY_REQUIRED" in row["reason_codes"]:
+        return "ROLE_POLICY_REQUIRED"
     if catalog_product.get("audit_state") == "HOLD_EVIDENCE":
         return "HELD"
     if not catalog_product.get("recommendation_eligible"):

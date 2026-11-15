@@ -152,6 +152,61 @@ def test_all_approved_product_rows_enter_screening_with_evidence_gates():
     assert review["catalog"]["eligible_for_review_count"] == 6
 
 
+def test_dated_disclosures_feed_variants_and_keep_review_gates():
+    doc = current_product_document()
+    doc["context"]["evaluation_on"] = "2026-11-16"
+    for row in doc["raw_bundle"]["answers"]:
+        row["envelope"]["context"]["as_of"] = "2026-11-16"
+    plan = {"results": {"OUT-05": {"calc_state": "CALCULATED", "candidates": [{
+        "strategy_id": "STABILITY_FIRST", "calc_state": "CALCULATED",
+        "rows": [{"period": "2026-11", "new_investment_krw": "300000"}],
+    }]}}}
+    review = review_products(doc, plan)
+    screened = {p["code"]: p for p in review["products"] if p["in_review_universe"]}
+    added = [p for p in screened.values() if p["disclosure"]["reviewed_on"] == "2026-11-16"]
+    assert len(screened) == 29 and len(added) == 23
+    assert all(p["disclosure"]["cash_conversion"] == "KRX_T_PLUS_2_BUSINESS_DAYS" for p in added)
+    assert all(p["disclosure"]["risk_grade"] and p["disclosure"]["annual_total_expense_percent"] for p in added)
+    assert sum("PRODUCT_ROLE_POLICY_REQUIRED" in p["reason_codes"] for p in added) == 17
+    assert {p["code"] for p in added if p["state"] == "ELIGIBLE_FOR_REVIEW"} == {
+        "102110", "114260", "114820", "273130", "436140", "469830",
+    }
+    sol = screened["436140"]["disclosure"]
+    assert (sol["risk_grade"], sol["annual_base_fee_percent"], sol["annual_total_expense_percent"],
+            sol["transaction_cost_percent"]) == (5, "0.040", "0.0596", "0.0084")
+    assert screened["133690"]["disclosure"]["transaction_cost_percent"] is None
+    row = review["candidates"][0]["rows"][0]
+    assert [a["code"] for a in row["allocations"]] == ["153130", "069500", "360200"]
+    expected = {
+        "STABLE": ("469830", "90000", "4500"),
+        "BALANCED": ("114260", "159930", "59967"),
+        "RETURN": ("436140", "117330", "59970"),
+    }
+    for type_id, (code, allocated, adverse_loss) in expected.items():
+        view = row["portfolio_type_views"][type_id]
+        assert view["selectable"] and view["allocations"][0]["code"] == code
+        assert view["allocated_total_krw"] == allocated
+        assert view["stress_review"]["scenario_loss_krw_ceil"] == adverse_loss
+        assert int(view["unallocated_krw"]) + int(allocated) == 300000
+    assert row["portfolio_type_views"]["BALANCED"]["allocations"][1]["code"] == "102110"
+
+    nearer = [{"fund_id": "monthly-one", "availability_date": field("2026-10-01", "DATE"),
+               "earliest_use_status": field("EARLIEST_USE_STATUS_01"),
+               "earliest_use_date": field("2027-11-20", "DATE")}]
+    change(doc, "F15", "investment_funds", field(nearer, "JSON"))
+    review = review_products(doc, plan)
+    current = {p["code"]: p for p in review["products"]}
+    for code in ("114260", "114820", "273130", "436140", "102110"):
+        assert "HORIZON_TOO_SHORT" in current[code]["reason_codes"]
+    views = review["candidates"][0]["rows"][0]["portfolio_type_views"]
+    assert [a["code"] for a in views["BALANCED"]["allocations"]] == ["153130"]
+
+    change(doc, "D19", "product_understanding", {"state": "UNKNOWN", "raw_value": None, "unit": "TEXT"})
+    review = review_products(doc, plan)
+    assert all(not view["selectable"] and not view["allocations"]
+               for view in review["candidates"][0]["rows"][0]["portfolio_type_views"].values())
+
+
 @pytest.mark.parametrize("pref_known", [True, False])
 def test_three_visible_targets_without_monthly_budget(pref_known):
     doc = current_product_document()
