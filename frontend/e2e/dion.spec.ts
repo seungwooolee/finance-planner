@@ -226,7 +226,8 @@ test('DION direct deep entry and mobile input/result remain within viewport',asy
   expect((await scenarioResponse).ok()).toBeTruthy();
   await expect(page.getByRole('region',{name:'계산 결과'})).toBeVisible();
   await page.getByRole('button',{name:'정밀진단',exact:true}).click();await calculate(page);
-  await page.getByRole('button',{name:/재무안 비교/}).click();
+  await page.getByRole('navigation',{name:'정밀 결과 5뷰',exact:true})
+    .getByRole('button',{name:'재무안 비교',exact:true}).click();
   await expect(page.locator('.d-candidate')).toHaveCount(2);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
   await page.evaluate(()=>window.scrollTo(0,0));
