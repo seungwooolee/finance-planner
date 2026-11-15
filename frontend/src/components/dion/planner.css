@@ -744,3 +744,44 @@
   scroll-margin-top: var(--d-results-scroll-offset, 96px);
 }
 .dion-app .d-selected-composition > button { margin-top: 12px; }
+
+/* Result questions in the consultation drawer */
+.dion-app .d-result-action{display:grid;gap:12px;min-width:0;overflow-wrap:anywhere}
+.dion-app .d-result-action .d-action-basis{margin:0;color:#564a69;font-size:13px;line-height:1.5}
+.dion-app .d-action-fields{display:grid;gap:10px;border:0;padding:0;margin:0;min-width:0}
+.dion-app .d-action-fields .d-field{margin:0}
+.dion-app .d-action-fields textarea{min-height:72px;resize:vertical;font-size:16px}
+.dion-app .d-action-fields>.d-primary{justify-self:stretch;min-height:44px}
+.dion-app .d-action-prompts{display:flex;flex-wrap:wrap;gap:6px}
+.dion-app .d-action-prompts button{min-height:40px;padding:6px 10px;font-size:12px;line-height:1.4}
+.dion-app .d-action-consent .d-check{min-height:40px;margin:0}
+.dion-app .d-action-consent small,.dion-app .d-action-account small{display:block;color:#564a69;font-size:12px;line-height:1.55}
+.dion-app .d-action-answer{background:#f8f6fc;border:1px solid #e5dfee;border-radius:14px;padding:14px}
+.dion-app .d-action-answer h3,.dion-app .d-action-answer h4{margin:0 0 8px;text-wrap:balance}
+.dion-app .d-action-answer h4,.dion-app .d-action-answer details{margin-top:12px}
+.dion-app .d-action-account{border-top:1px solid #e5dfee}
+.dion-app .d-action-account>summary,.dion-app .d-action-answer summary{min-height:44px;align-content:center;color:#63488a;cursor:pointer}
+.dion-app .d-action-account>div{display:flex;flex-wrap:wrap;gap:8px}
+.dion-app .d-action-account small{flex-basis:100%}
+.dion-app .d-result-action :is(button,summary,a,textarea,input):focus-visible{outline:2px solid #63488a;outline-offset:2px}
+
+/* Asset-group candidate cards */
+.dion-app .d-candidate-panel h2{margin:0}
+.dion-app .d-candidate-groups{display:grid;gap:16px;margin-top:16px}
+.dion-app .d-candidate-group{min-width:0;border-top:1px solid var(--d-line,#e5dfee);padding-top:16px}
+.dion-app .d-candidate-group-head{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin-bottom:10px}
+.dion-app .d-candidate-group-head h3{margin:0}
+.dion-app .d-candidate-status{background:#eee8f6;color:#4f386e;border-radius:8px;font-size:12px;font-weight:650;padding:4px 8px}
+.dion-app .d-candidate-held{background:#f3f1f6;color:#584d6a}
+.dion-app .d-candidate-empty{margin:0;color:#514965;text-wrap:pretty}
+.dion-app .d-candidate-grid{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px;margin:0;padding:0}
+.dion-app .d-candidate-grid>li{min-width:0}
+.dion-app .d-candidate-product{display:grid;gap:10px;align-content:start;padding:14px;border:1px solid #e5dfee;border-radius:14px;background:#faf8fd;overflow-wrap:anywhere}
+.dion-app .d-candidate-product h4{font-size:15px;margin:0 0 3px;text-wrap:balance}
+.dion-app .d-candidate-product header small,.dion-app .d-candidate-product dt{color:#564a69;font-size:12px}
+.dion-app .d-candidate-product dl{display:grid;gap:6px;margin:0}
+.dion-app .d-candidate-product dl>div{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:baseline;gap:8px}
+.dion-app .d-candidate-product dd{margin:0;font-size:13px;font-weight:650;text-align:right;font-variant-numeric:tabular-nums}
+.dion-app .d-candidate-detail{margin:0}
+.dion-app .d-candidate-detail>summary:focus-visible,.dion-app .d-candidate-detail a:focus-visible{outline:2px solid #63488a;outline-offset:2px}
+.dion-app .d-candidate-detail a{display:inline-block;margin-top:10px;color:#63488a;text-decoration:underline}

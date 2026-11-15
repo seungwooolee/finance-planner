@@ -17,10 +17,10 @@ export function Donut({ slices, total, center, size = 132 }: { slices: Slice[]; 
   </div>;
 }
 
-export function DonutLegend({ slices, total }: { slices: Slice[]; total: unknown }) {
-  return <ul className="d-legend">{slices.map(s => <li key={s.key}>
+export function DonutLegend({ slices, total, percentOnly = false }: { slices: Slice[]; total: unknown; percentOnly?: boolean }) {
+  return <ul className="d-legend" aria-label={percentOnly ? "목표 비중 범례" : undefined}>{slices.map(s => <li key={s.key}>
     <i style={{ background: s.color }} aria-hidden="true" />
     <span>{s.label}{s.detail && <small>{s.detail}</small>}</span>
-    <strong>{formatKrw(s.value)}<small>{bpsLabel(shareBps(s.value, total))}</small></strong>
+    <strong>{percentOnly ? bpsLabel(shareBps(s.value, total)) : <>{formatKrw(s.value)}<small>{bpsLabel(shareBps(s.value, total))}</small></>}</strong>
   </li>)}</ul>;
 }

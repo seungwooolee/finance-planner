@@ -103,9 +103,10 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
           <div className="d-card-head"><span className="d-pill">안 {String(i + 1).padStart(2, '0')}</span></div>
           <h3>{title}</h3><p className="d-type-sub">{subtitle}</p>
           {relative && !commonTargets && <p className="d-type-line">{profileName} 기준의 {title} 구성</p>}
-          {target && <p className="d-type-line"><b>목표 비중</b> {target}</p>}
+          {target && targetSlices.length === 0 && <p className="d-type-line"><b>목표 비중</b> {target}</p>}
           {targetSlices.length > 0 ? <>
             <Donut slices={targetSlices} total="10000" center={<small>목표 비중</small>} />
+            <DonutLegend slices={targetSlices} total="10000" percentOnly />
             <p className="d-inline-note">{waiting ? '현금 대기자금 ' + formatKrw(view.unallocated_krw)
               : isWon(view.allocated_total_krw) ? '상품 검토 배분액 0원' : '상품 검토 배분액 확인 대기'}</p>
           </> : ready ? <>
@@ -121,8 +122,9 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
           </details>
           <button type="button" data-portfolio-apply={id} className={displayed === id ? 'd-primary' : 'd-secondary'}
             aria-pressed={displayed === id} aria-describedby={`portfolio-state-${id}`}
+            aria-controls={displayed === id ? "dion-selected-composition" : undefined}
             onClick={() => enabled ? onChoose(id) : onPreview(id)}>
-            {enabled ? (chosen === id ? `${title} 선택됨 · 구성 다시 보기` : `${title} 선택`)
+            {enabled ? (chosen === id ? `${title} 선택됨` : `${title} 선택`)
               : canCompareTarget ? `${title} 목표 비중 비교` : `${title} 미리보기`}
           </button>
           <small id={`portfolio-state-${id}`} className="d-type-foot">{commonFoot ? "배분 조건은 위 안내에서 확인할 수 있어요." : footText(id)}</small>

@@ -78,13 +78,6 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
   const previewType=portfolioPreview?.plan===selectedPlan ? portfolioPreview.type : null;
   const [visited,setVisited]=useState<number[]>([tab]);
   const [consultFocus,setConsultFocus]=useState(false);
-  const [compositionFocus,setCompositionFocus]=useState(0);
-  useEffect(()=>{
-    if(!compositionFocus) return;
-    const detail=document.getElementById("dion-selected-composition");
-    detail?.focus({preventScroll:true});
-    detail?.scrollIntoView({block:"start"});
-  },[compositionFocus]);
   const setTab=(n:number)=>{setVisited(values=>values.includes(n)?values:[...values,n]);changeTab(n);};
   const saved=!!token&&view.storage==="SAVED"&&!!view.runId&&caseId===textValue(object(object(view.source).context).case_id)&&!actionFlow?.fictional;
   const reviewFlow=usePortfolioReview(caseId,token,view.runId,saved);
@@ -192,10 +185,10 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
     </>}
     {tab===1 && <ResultBasis id="OUT-05" result={result} source={sourceDoc} inputVersion={view.serverVersion??view.localVersion} stale={stale} onEdit={onEdit}/>}
     {tab===2 && <InvestmentFollowup review={visible("OUT-06")} onEdit={onEdit}/>}
-    {tab===2 && <PortfolioChoice key={selectedPlan} doc={sourceDoc} review={visible("OUT-06")} flow={flow} planRow={selectedRow}
+    {tab===2 && <PortfolioChoice doc={sourceDoc} review={visible("OUT-06")} flow={flow} planRow={selectedRow}
       selectedPlan={selectedPlan} onPlan={setSelectedPlan} chosen={selectedPortfolio} preview={previewType}
-      onChoose={id=>{void comparison.choose(id).then(ok=>{if(ok){setPortfolioPreview(null);setCompositionFocus(n=>n+1);}});}}
-      onPreview={id=>{setPortfolioPreview({plan:selectedPlan,type:id});setCompositionFocus(n=>n+1);}}
+      onChoose={id=>{void comparison.choose(id).then(ok=>{if(ok)setPortfolioPreview(null);});}}
+      onPreview={id=>setPortfolioPreview({plan:selectedPlan,type:id})}
       onProducts={()=>setTab(3)} onRecalculate={onRecalculate} blocked={comparison.blocked} onEdit={onEdit}/>}
     
     {tab===3 && <><div className="d-plan-row"><div><strong>{planName(selectedPlan)} · 상품 정보</strong><button className="d-text-button" onClick={()=>setTab(2)}>투자구성 비교로 돌아가기</button>{selectedPortfolio&&<button className="d-secondary" disabled={comparison.blocked} onClick={()=>setTab(4)}>반영한 포트폴리오 확인 →</button>}</div><PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/></div><ProductAllocation evidenceAccess={evidenceAccess} stale={stale} review={productScreenReview} selectedPlan={selectedPlan} evaluationOn={textValue(object(result.context).evaluation_on)} onEdit={onEdit}/></>}

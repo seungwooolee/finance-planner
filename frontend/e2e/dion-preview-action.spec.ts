@@ -31,7 +31,7 @@ test('anonymous preview answers with keyboard, mobile layout and captured eviden
   await card.getByRole('button', {name: '내 결과로 답변 보기'}).press('Enter');
   await expect(card.getByRole('heading', {name: '현재 결과에 대한 답변'})).toBeFocused();
   await expect(card).toContainText('미리보기 결과의 기본 안내');
-  await expect(card.getByRole('checkbox')).toBeDisabled();
+  await expect(card.getByRole('checkbox')).toHaveCount(0);
   await card.getByText('이 답변의 결과 근거', {exact: true}).click();
   await expect(card).toContainText('저장 전 미리보기 결과의 설명');
   await page.setViewportSize({width: 390, height: 844});
@@ -48,7 +48,8 @@ test('cancel preserves question, direct login saves once despite lost answer res
   const card = await openResultQuestions(page);
   const question = '왜 현금 대기자금이 있나요?';
   await card.getByLabel('현재 결과에 대한 질문').fill(question);
-  await card.getByRole('button', {name: '로그인 → 결과 저장 → 상담 시작'}).click();
+  await card.getByText('로그인·저장', {exact:true}).click();
+  await card.getByRole('button', {name: '로그인하고 결과 저장'}).click();
   await page.getByRole('button', {name: '로그인 창 닫기'}).click();
   await expect(card.getByLabel('현재 결과에 대한 질문')).toHaveValue(question);
   const creates: string[] = [], keys: string[] = [];
@@ -63,7 +64,7 @@ test('cancel preserves question, direct login saves once despite lost answer res
     if (!dropped) {dropped = true; return route.fulfill({status: 503, json: {}});}
     return route.fulfill({response});
   });
-  await card.getByRole('button', {name: '로그인 → 결과 저장 → 상담 시작'}).click();
+  await card.getByRole('button', {name: '로그인하고 결과 저장'}).click();
   await login(page);
   await expect(card.getByRole('button', {name: '결과 저장 중…'})).toHaveCount(0, {timeout: 120_000});
   await expect(card.getByLabel('현재 결과에 대한 질문')).toHaveValue(question);
@@ -94,7 +95,8 @@ test('login without saving preserves preview question and sends explicit AI cons
   await card.getByLabel('현재 결과에 대한 질문').fill('생활비 이후 남는 돈은?');
   let saves = 0;
   page.on('request', request => {if (request.method() === 'POST' && request.url().endsWith('/cases')) saves++;});
-  await card.getByRole('button', {name: '저장 없이 로그인하고 AI 질문 해석 이용'}).click();
+  await card.getByText('로그인·저장', {exact:true}).click();
+  await card.getByRole('button', {name: '로그인하고 AI 이용'}).click();
   await login(page);
   await expect(card.getByLabel('현재 결과에 대한 질문')).toHaveValue('생활비 이후 남는 돈은?');
   await card.getByRole('checkbox').check();
@@ -102,7 +104,7 @@ test('login without saving preserves preview question and sends explicit AI cons
   await card.getByRole('button', {name: '내 결과로 답변 보기'}).click();
   expect((await sent).postDataJSON().allow_model_question).toBe(true);
   await expect(card.getByRole('heading', {name: '현재 결과에 대한 답변'})).toBeVisible();
-  await expect(card).toContainText('입력 버전 저장 전');
+  await expect(card).toContainText('미리보기 결과');
   expect(saves).toBe(0);
 });
 
