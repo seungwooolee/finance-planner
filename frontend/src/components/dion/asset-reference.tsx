@@ -16,6 +16,7 @@ export function AssetReference({ value, ownValues, ownScope, stale, selection, o
   const { data, referenceUnit, cohort, cohorts, metrics, hint, comparisonState, membershipState, selectionOrigin } =
     assetReferenceView(value, selection, ownValues, ownScope);
   const hasReference = metrics.some(metric => metric.reference !== null);
+  const stageLabel = textValue(hint.label);
   const sources = [...new Map(metrics.filter(metric => metric.reference !== null).map(({ row }) =>
     [textValue(row.source_url), { title: textValue(row.source_title), date: textValue(row.period_start) }])).entries()];
   const title = compact ? "현재 자산과 참고 통계" : "보유자산 · 참고 통계와 함께 보기";
@@ -30,7 +31,7 @@ export function AssetReference({ value, ownValues, ownScope, stale, selection, o
     {!!cohorts.length && <div className="d-asset-ref-controls">
       <label htmlFor={`${id}-cohort`}>비교할 참고 집단
         <select id={`${id}-cohort`} value={selection.cohort} onChange={e => onSelect({cohort: e.target.value})}>
-          <option value="ANSWER">{[textValue(hint.label) || "질문 답변 관련", cohort && selection.cohort === "ANSWER" ? cohort.label : null].filter(Boolean).join(" · ")}</option>
+          <option value="ANSWER">{stageLabel ? `${stageLabel} 평균` : "질문 답변 기준"}</option>
           {cohorts.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
         </select>
       </label>
@@ -44,10 +45,14 @@ export function AssetReference({ value, ownValues, ownScope, stale, selection, o
     </p>}
     {!data.version && savedResult && onRecalculate &&
       <button type="button" className="d-text-button" onClick={onRecalculate}>현재 입력으로 새 결과 만들기</button>}
-    {!!sources.length && <p className="d-asset-ref-context">{sources.map(([url, source]) => {
-      const href = sourceHref(url);
-      return <span key={url}>{href ? <a href={href} target="_blank" rel="noopener noreferrer">{source.title}</a> : source.title}
-        {source.date && ` · ${source.date} 기준`}</span>;
-    })}</p>}
+    {!!sources.length && cohort?.label && <p className="d-asset-ref-context">{cohort.label}</p>}
+    {!!sources.length && <details className="d-fold d-asset-ref-context">
+      <summary>통계 출처와 기준일</summary>
+      {sources.map(([url, source]) => {
+        const href = sourceHref(url);
+        return <span key={url}>{href ? <a href={href} target="_blank" rel="noopener noreferrer">{source.title}</a> : source.title}
+          {source.date && ` · ${source.date} 기준`}</span>;
+      })}
+    </details>}
   </section>;
 }

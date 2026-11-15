@@ -1,9 +1,11 @@
 """Independent amount expectations for the existing reviewed representative slots."""
+import json
 from copy import deepcopy
+from pathlib import Path
 
 import pytest
 
-from app.planning.product_allocation import block_product_budget
+from app.planning.product_allocation import block_product_budget, review_products
 from app.planning.product_candidates import comparison_groups
 from tests.planning.test_product_allocation import change, current_product_document, current_review, field
 
@@ -130,3 +132,37 @@ def test_cash_only_choice_never_bypasses_unknown_inputs(missing_id, key):
     assert review['calc_state'] == ('REVIEW_REQUIRED' if missing_id == 'D19' else 'NEEDS_INPUT')
     assert all(not v['selectable'] for c in review['candidates'] for r in c['rows']
                for v in r['portfolio_type_views'].values())
+
+
+
+def test_all_approved_product_rows_enter_screening_with_evidence_gates():
+    root = Path(__file__).resolve().parents[3]
+    registry = json.loads((root / "data/rag/registry/corpus-products-20261115.json").read_text(encoding="utf-8"))
+    expected = {source["source_id"].removeprefix("SRC-PRD-") for source in registry["sources"]
+                if source["source_id"].startswith("SRC-PRD-") and source["review_status"] == "APPROVED"}
+    review = current_review()
+    screened = {p["code"]: p for p in review["products"] if p["in_review_universe"]}
+    assert len(expected) == review["catalog"]["screening_candidate_count"] == 29
+    assert set(screened) == expected
+    assert "0091C0" not in screened
+    held = [p for p in screened.values() if p["state"] == "EXCLUDED_FROM_ALLOCATION"]
+    assert len(held) == 23
+    assert all("PRODUCT_FACTS_UNVERIFIED" in p["reason_codes"] for p in held)
+    assert all("PRODUCT_NOT_ENABLED" not in p["reason_codes"] for p in screened.values())
+    assert review["catalog"]["eligible_for_review_count"] == 6
+
+
+@pytest.mark.parametrize("pref_known", [True, False])
+def test_three_visible_targets_without_monthly_budget(pref_known):
+    doc = current_product_document()
+    if not pref_known:
+        doc["raw_bundle"]["answers"] = [a for a in doc["raw_bundle"]["answers"]
+                                         if a["envelope"]["question_ref"]["design_id"] != "F17"]
+    review = review_products(doc, {"results": {"OUT-05": {"calc_state": "NEEDS_INPUT"}}})
+    types = review["portfolio_types"]
+    assert types["comparison_basis"] == ("CUSTOMER_PREFERENCE" if pref_known else "GENERAL_COMPARISON")
+    assert set(types["comparison_targets"]) == {"STABLE", "BALANCED", "RETURN"}
+    assert all(sum(mix.values()) == 10_000 for mix in types["comparison_targets"].values())
+    assert len({tuple(mix.values()) for mix in types["comparison_targets"].values()}) == 3
+    assert review["candidates"] == []
+    assert review["recommended_new_investment_krw"] is None

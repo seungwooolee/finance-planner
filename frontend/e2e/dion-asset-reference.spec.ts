@@ -143,6 +143,13 @@ test("asset reference web flow uses real preview data and shares selection, snap
   expect(await values.evaluateAll(els=>els.map(el=>el.getAttribute("data-value"))))
     .toEqual(["600950000","65040000","535910000"]);
   await chart.getByLabel("비교할 참고 집단").selectOption("C07");
+  const table = chart.getByRole("table", {name:"내 자산과 조사 평균", exact:true});
+  await expect(table.getByRole("columnheader", {name:"조사 평균 · 가구"})).toBeVisible();
+  const source = chart.getByRole("link", {name:/가계금융복지조사/}).first();
+  await expect(source).toBeHidden();
+  await chart.getByText("통계 출처와 기준일", {exact:true}).press("Enter");
+  await expect(source).toHaveAttribute("href", /list_no=439535/);
+  await expect(chart.locator("details[open]")).toContainText("2025-03-31");
   await expect(chart.locator('[data-statistic-id="V004"] [data-asset-series="reference"]'))
     .toHaveAttribute("data-value","471440000");
   await page.locator(".d-tabs button").nth(4).click();

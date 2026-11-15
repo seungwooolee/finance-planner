@@ -23,6 +23,7 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
   const explanationOf=(p:Record<string,Json>)=>{const e=object(p.explanation);if(!textValue(e.summary))return null;const reasons=Array.isArray(e.reasons)?e.reasons.map(object):[];return <div data-explanation={String(e.decision)}><p>{cashWaitingText(textValue(e.summary))}</p>{reasons.map(r=><p className="d-note" key={String(r.code)}>{cashWaitingText(textValue(r.message))}{r.changes_with==="QUESTION"&&textValue(r.question_id)?` · ${titles[textValue(r.question_id)]??"관련"} 답변을 바꾸면 결과가 달라질 수 있어요.`:r.changes_with==="NEW_DISCLOSURE_OR_POLICY"?" · 새 공시나 정책 갱신 후 다시 검토해요.":""}</p>)}{Array.isArray(e.facts)&&e.facts.length>0&&<ul>{e.facts.map(f=><li key={String(f)}>{textValue(f)}</li>)}</ul>}</div>;};
   const groupOrder=["BOND","KR_EQUITY","GLOBAL_EQUITY","OTHER"];
   const defaults=products.filter(p=>p.allocation_role==="DEFAULT_SLOT").sort((a,b)=>groupOrder.indexOf(assetGroup(a).id)-groupOrder.indexOf(assetGroup(b).id)),alternatives=products.filter(p=>p.allocation_role==="COMPARISON_ALTERNATIVE");
+  const screening=products.filter(p=>p.in_review_universe===true);
   const missing=[...new Set([...reasonQuestions,...(Array.isArray(review.missing_question_ids)?review.missing_question_ids:[]),...(Array.isArray(review.invalid_question_ids)?review.invalid_question_ids:[])])];
   const evidence=(p:Record<string,Json>)=><details key={String(p.code)} data-product-code={String(p.code)} className="d-evidence">
     <summary>{p.allocation_role==="DEFAULT_SLOT"?"이 상품을 검토하는 이유":`${textValue(p.name)} · 비교 후보인 이유`}</summary>
@@ -84,6 +85,18 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
         </div>}
       </div>;
     })}
+    {screening.length>0&&<details className="d-card d-fold">
+      <summary>개인별 검토 대상 {screening.length}종</summary>
+      <p>상품 근거와 개인별 조건을 확인한 결과예요. 실제 배분 금액은 월 투자예산을 기준으로 계산해요.</p>
+      <div className="d-table-wrap"><table aria-label="개인별 상품 검토 결과">
+        <thead><tr><th scope="col">상품</th><th scope="col">검토 결과</th></tr></thead>
+        <tbody>{screening.map(product=><tr key={String(product.code)}>
+          <th scope="row">{textValue(product.name)}<small>{textValue(product.code)}</small></th>
+          <td>{product.state==="ELIGIBLE_FOR_REVIEW"?"검토 조건 통과"
+            : (Array.isArray(product.reason_codes)?product.reason_codes.map(reason).join(" "):"확인 필요")}</td>
+        </tr>)}</tbody>
+      </table></div>
+    </details>}
     <ProductComparison products={[...defaults,...alternatives]}/>
     {alternatives.length>0&&<details className="d-card d-fold"><summary>비교 대안 상품 {alternatives.length}개 · 자동 배분 없음</summary><p>기본 상품이 제외돼도 비교 대안으로 자동 대체하거나 추가 배분하지 않아요.</p>{alternatives.map(evidence)}</details>}
     {products.length>0&&<details className="d-card d-fold"><summary>조사 상품 {products.length}개 · 검토 상태와 공식 출처</summary><p>기록된 공시값과 기준일이에요. 보류·제외 상품의 과거 값은 현재 검토 근거로 쓰지 않아요. 세금·증권사 수수료·호가 차이를 포함한 실제 총비용은 계산하지 않아요.</p><div className="d-table-wrap"><table><thead><tr><th>상품·코드</th><th>기록 위험등급</th><th>기록 연간 비용</th><th>배분 검토 결과</th><th>근거</th></tr></thead><tbody>{products.map(product=>{

@@ -20,10 +20,13 @@
   .dion-app .d-asset-ref-heading h2{font-size:18px}
 }
 
-.dion-app .d-asset-compare-metric{padding:14px 0;border-bottom:1px solid #e3e7f1}
-.dion-app .d-asset-compare-metric h3{margin:0 0 12px;font-size:16px}
-.dion-app .d-asset-compare-series{display:grid;grid-template-columns:126px minmax(0,1fr) minmax(120px,auto);gap:14px;align-items:center;margin:9px 0}
+.dion-app .d-asset-ref-chart table{width:100%;table-layout:fixed;border-collapse:collapse}
+.dion-app .d-asset-ref-chart th,.dion-app .d-asset-ref-chart td{padding:10px 12px;text-align:left;border-bottom:1px solid #e3e7f1;white-space:normal;overflow-wrap:anywhere}
+.dion-app .d-asset-ref-chart thead th{font-size:13px;color:#526078}
+.dion-app .d-asset-ref-chart thead th:first-child{width:22%}
+.dion-app .d-asset-ref-chart tbody th{font-size:14px}
 .dion-app .d-asset-compare-series svg{display:block;width:100%;height:24px;overflow:visible}
-.dion-app .d-asset-compare-series strong{text-align:right;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.dion-app .d-asset-compare-series strong{font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.dion-app .d-asset-compare-series[data-asset-series="own"] strong{color:var(--d-primary,#3848ce)}
 .dion-app .d-asset-ref-controls select:focus-visible{outline:2px solid #3848ce;outline-offset:3px}
-@media(max-width:640px){.dion-app .d-asset-compare-series{grid-template-columns:126px minmax(0,1fr);gap:8px}.dion-app .d-asset-compare-series svg{grid-column:1/-1;grid-row:2}.dion-app .d-asset-compare-series strong{grid-column:2;grid-row:1}}
+@media(max-width:640px){.dion-app .d-asset-ref-chart th,.dion-app .d-asset-ref-chart td{padding:8px 5px}.dion-app .d-asset-compare-series strong{font-size:13px}}
