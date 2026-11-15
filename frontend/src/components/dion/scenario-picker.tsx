@@ -1,7 +1,6 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
-import Link from "next/link";
 import { Document, states } from "@/lib/dion/model";
 
 export type Scenario = {id:string;title:string;group:string;purpose:string;assumptions:string[];document:Document};
@@ -35,7 +34,6 @@ export function ScenarioPicker({disabled,onLoad,onRestore,review=false,inline=fa
   const load = () => { setFailed(false); (review ? loadReviewScenarios() : loadScenarios()).then(setScenarios, () => setFailed(true)); };
   const open = () => { dialog.current?.showModal(); if (!scenarios) load(); };
   return <>
-    {inline&&!review&&<Link className="d-secondary" href="/dion/judge">B1.1 심사용 여정</Link>}
     <button type="button" className={review||inline?"d-secondary":"d-scenario-launch d-secondary"} disabled={disabled} onClick={open}>
       {review?"검증용 고정 사례 불러오기":"가상 사례 불러오기"}
     </button>
@@ -46,7 +44,6 @@ export function ScenarioPicker({disabled,onLoad,onRestore,review=false,inline=fa
       </div>
       {onRestore&&<button type="button" className="d-secondary" disabled={disabled} onClick={()=>{dialog.current?.close();onRestore();}}>내 입력으로 복귀</button>}
       <p>사례를 선택하면 입력을 불러와 계산해요. 원래 입력은 이 탭에 보관돼요.</p>
-      <p><Link href="/dion/judge">B1.1 심사용 여정 · 검증 기록 재생</Link></p>
       {!scenarios&&(failed?<p className="d-warning" role="alert">사례를 불러오지 못했어요. 입력한 내용은 그대로예요. <button type="button" className="d-secondary" onClick={load}>다시 불러오기</button></p>
         :<p className="d-note" role="status">가상 사례를 불러오는 중이에요…</p>)}
       {scenarios&&<div className="d-scenario-grid">{scenarios.map(s=><article className="d-card" key={s.id}>

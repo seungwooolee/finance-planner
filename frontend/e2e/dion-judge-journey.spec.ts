@@ -19,12 +19,11 @@ test.beforeAll(async({},info)=>{
 });
 test.beforeEach(async({page})=>{page.on('pageerror',error=>{throw error;});await page.route('https://judge.test/**',route=>route.request().isNavigationRequest()?route.fulfill({contentType:'text/html',body:html}):route.fulfill({status:404,body:''}));});
 
-test('B1.1 entry, diagnosis, evidence, adoption replay, zero/missing, unchanged history and new draft',async({page},info)=>{
+test('B1.1 fixture diagnosis, evidence, adoption replay, zero/missing, unchanged history and new draft',async({page},info)=>{
   test.setTimeout(120000);
   const api:string[]=[];
   page.on('request',r=>{if(r.url().includes('/api/'))api.push(r.url());});
-  await page.goto('https://judge.test/dion',{waitUntil:'domcontentloaded'});
-  await page.getByRole('link',{name:'B1.1 심사용 여정',exact:true}).click();
+  await page.goto('https://judge.test/replay-fixture',{waitUntil:'domcontentloaded'});
   await expect(page.getByText('B1.1 가상 가구 · 검증 기록 재생',{exact:true})).toBeVisible();
   const diagnosis=page.getByRole('table',{name:'B1.1 진단 · 같은 입력·계산 증거'});
   for(const [label,amount] of [['월 소득','500만원'],['생활비','200만원'],['기존 투자 납입','50만원'],['기존 납입 반영 후 잔여','250만원'],['목표 적립 필요액 · 월','100만원']]){
