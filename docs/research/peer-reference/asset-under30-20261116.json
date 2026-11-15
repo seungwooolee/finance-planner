@@ -1,5 +1,5 @@
 {
-  "data_version": "dion-peer-reviewed-20261116-v3",
+  "data_version": "dion-peer-reviewed-20261116-v4",
   "reviewed_on": "2026-11-16",
   "source_id": "S01",
   "source_file_sha256": "fe3cf0fe60d3e0b94530e3a5b75e8a51241b36e7837d7fe6c6a1a2fcc858f7e6",
@@ -11,6 +11,9 @@
     {"statistic_id": "V036", "template_id": "V005", "cohort_id": "C20", "position": "통계표1~10!DL17 · 순자산 중앙값 · 2025년", "value": "5000"},
     {"statistic_id": "V037", "template_id": "V001", "cohort_id": "C07", "position": "통계표1~10!N10 · 자산 중앙값 · 2025년", "value": "30270"},
     {"statistic_id": "V038", "template_id": "V009", "cohort_id": "C08", "position": "통계표1~10!N16 · 자산 중앙값 · 2025년", "value": "20420"},
-    {"statistic_id": "V039", "template_id": "V010", "cohort_id": "C09", "position": "통계표1~10!N21 · 자산 중앙값 · 2025년", "value": "28060"}
+    {"statistic_id": "V039", "template_id": "V010", "cohort_id": "C09", "position": "통계표1~10!N21 · 자산 중앙값 · 2025년", "value": "28060"},
+    {"statistic_id": "V040", "template_id": "V001", "cohort_id": "C20", "position": "통계표1~10!J17 · 전체가구 자산 평균 · 2025년", "value": "15500", "raw_value": "15499.683143", "statistic_type": "평균"},
+    {"statistic_id": "V041", "template_id": "V003", "cohort_id": "C20", "position": "통계표1~10!BR17 · 전체가구 부채 평균 · 2025년", "value": "4703", "raw_value": "4703.3064243999997", "statistic_type": "평균"},
+    {"statistic_id": "V042", "template_id": "V004", "cohort_id": "C20", "position": "통계표1~10!DH17 · 전체가구 순자산 평균 · 2025년", "value": "10796", "raw_value": "10796.376718", "statistic_type": "평균"}
   ]
 }

@@ -11,7 +11,7 @@ function Comparison() {
   return <div className="dion-app"><main className="d-main">
     <button onClick={() => setFinal(!final)}>{final ? '재무현황으로' : '포트폴리오로'}</button>
     <button onClick={() => setSource('run-2')}>다른 계산 결과</button>
-    <AssetReference value={snapshot} stale={false} compact={final} selection={selection} onSelect={select} onEdit={() => {}}/>
+    <AssetReference value={snapshot} stale={false} compact={final} selection={selection} onSelect={select}/>
   </main></div>;
 }
 createRoot(document.getElementById('root')!).render(<Comparison/>);
