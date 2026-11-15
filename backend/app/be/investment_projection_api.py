@@ -3,9 +3,9 @@
 from typing import Annotated, Literal
 
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from ..planning.investment_return_projection import ProjectionUnavailable, investment_return_projection
+from ..planning.investment_return_projection import US_REFERENCE, ProjectionUnavailable, investment_return_projection
 from .api import body, call, get_store, private_read
 from .auth import get_actor
 from .question_bridge import run_frontend_questions
@@ -16,6 +16,7 @@ Hash = Annotated[str, Field(pattern=r"^[a-f0-9]{64}$")]
 Strategy = Literal["STABILITY_FIRST", "INVESTMENT_CAPACITY"]
 Portfolio = Literal["STABLE", "BALANCED", "RETURN"]
 Rate = Annotated[str, Field(pattern=r"^-?(?:(?:[0-9]|[1-9][0-9])(?:\.[0-9]{1,4})?|100(?:\.0{1,4})?)$")]
+ProductCode = Annotated[str, Field(pattern=r"^[0-9A-Z]{6}$")]
 RepeatMonths = Literal[12, 36, 60, 120] | None
 
 
@@ -27,8 +28,17 @@ class ProjectionRequest(Exact):
     strategy_id: Strategy
     portfolio_type: Portfolio
     input_hash: Hash
-    annual_rate_percent: Rate
+    annual_rate_percent: Rate | None = None
+    asset_rates: Annotated[dict[ProductCode, Rate | Literal[US_REFERENCE]], Field(min_length=1, max_length=50)] | None = None
     repeat_months: RepeatMonths = None
+
+    @model_validator(mode="after")
+    def validate_assumptions(self):
+        if (self.annual_rate_percent is None) == (self.asset_rates is None):
+            raise ValueError("provide exactly one return assumption mode")
+        if self.asset_rates is not None and self.repeat_months != 120:
+            raise ValueError("asset rates require the explicit 10-year scenario")
+        return self
 
 
 class PreviewProjectionRequest(ProjectionRequest):
@@ -65,13 +75,14 @@ class ProjectionResponse(ProjectionRequest):
     policy_version: str
     types_version: str
     catalog_version: str
+    asset_assumptions_version: str | None = None
     rows: list[ProjectionRow]
 
 
 def _response(value, result, input_version, case_id=None, run_id=None, revision=None):
     try:
         forecast = investment_return_projection(result, value.strategy_id, value.portfolio_type,
-                                                value.annual_rate_percent, value.repeat_months)
+                                                value.annual_rate_percent, value.repeat_months, value.asset_rates)
     except ProjectionUnavailable as exc:
         raise HTTPException(409, detail={"code": str(exc)}) from None
     review = result["results"]["OUT-06"]
@@ -83,7 +94,8 @@ def _response(value, result, input_version, case_id=None, run_id=None, revision=
                               catalog_version=review["catalog"]["version"])
 
 
-@router.post("/api/fe/v1/preview/investment-return-projection", response_model=ProjectionResponse)
+@router.post("/api/fe/v1/preview/investment-return-projection", response_model=ProjectionResponse,
+             response_model_exclude_unset=True)
 def preview_projection(value: PreviewProjectionRequest, checked=Depends(body)):
     if _digest(value.document) != value.input_hash:
         raise HTTPException(409, detail={"code": "PREVIEW_BASIS_MISMATCH"})
@@ -97,7 +109,7 @@ def preview_projection(value: PreviewProjectionRequest, checked=Depends(body)):
 
 
 @router.post("/api/be/v1/cases/{case_id}/analyses/{run_id}/investment-return-projection",
-             response_model=ProjectionResponse)
+             response_model=ProjectionResponse, response_model_exclude_unset=True)
 def saved_projection(case_id: str, run_id: str, value: SavedProjectionRequest, checked=Depends(body),
                      actor=Depends(get_actor), store=Depends(get_store)):
     try:

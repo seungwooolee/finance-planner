@@ -2,7 +2,12 @@ from fractions import Fraction
 
 import pytest
 
-from app.planning.investment_return_projection import ProjectionUnavailable, investment_return_projection
+from app.planning.investment_return_projection import (
+    ASSET_ASSUMPTIONS_VERSION,
+    US_REFERENCE,
+    ProjectionUnavailable,
+    investment_return_projection,
+)
 
 
 def example():
@@ -74,3 +79,33 @@ def test_repeating_monthly_factor_does_not_round_down_an_exact_won():
     forecast = investment_return_projection(result, "STABILITY_FIRST", "RETURN", "4", 12)
     assert forecast["rows"][1]["value_krw"] == "601"
     assert forecast["rows"][1]["monthly_gain_krw"] == "1"
+
+
+def test_asset_rates_apply_to_selected_products_and_round_only_after_combining():
+    result = example()
+    outputs = result["results"]
+    review = outputs["OUT-06"]
+    row = review["candidates"][0]["rows"][0]["portfolio_type_views"]["RETURN"]
+    row.update(allocated_total_krw="239700", scenario_budget_krw="399500", unallocated_krw="159800",
+               allocations=[{"code": code, "review_allocated_krw": amount} for code, amount in
+                            (("153130", "119850"), ("069500", "39950"), ("360200", "79900"), ("A00001", "0"))])
+    outputs["OUT-05"]["candidates"][0]["rows"][0]["new_investment_krw"] = "399500"
+    review["products"] = [{"code": "360200", "disclosure": {
+        "asset_class": "EQUITY", "foreign_underlying": True, "fx_exposed": True, "benchmark": "S&P 500 지수",
+    }}]
+    rates = {"153130": "2", "069500": "5", "360200": "4"}
+    forecast = investment_return_projection(result, "STABILITY_FIRST", "RETURN", None, 120, rates)
+    assert forecast["asset_assumptions_version"] == ASSET_ASSUMPTIONS_VERSION
+    assert forecast["rows"][0]["value_krw"] == "239700"
+    assert forecast["rows"][-1]["cumulative_contributions_krw"] == "28764000"
+    assert forecast["rows"][-1]["unallocated_krw"] == "159800"
+    assert forecast["rows"][-1]["value_krw"] == "33779540"
+    assert forecast["rows"][-1]["cumulative_gain_krw"] == "5015540"
+    rates = {"153130": "0", "069500": "0", "360200": US_REFERENCE}
+    forecast = investment_return_projection(result, "STABILITY_FIRST", "RETURN", None, 120, rates)
+    assert forecast["rows"][-1]["value_krw"] == "31135659"
+    with pytest.raises(ProjectionUnavailable, match="ASSET_ASSUMPTIONS_INCOMPLETE"):
+        investment_return_projection(result, "STABILITY_FIRST", "RETURN", None, 120, {"360200": US_REFERENCE})
+    review["products"][0]["disclosure"]["fx_exposed"] = False
+    with pytest.raises(ProjectionUnavailable, match="ASSET_ASSUMPTION_MISMATCH"):
+        investment_return_projection(result, "STABILITY_FIRST", "RETURN", None, 120, rates)
