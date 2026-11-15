@@ -2,7 +2,7 @@
 import { Document, Json, fieldValue, list, object, textValue } from '@/lib/dion/model';
 import { MoneyAmount } from "./money-amount";
 import { formatKrw } from '@/lib/dion/money-format';
-import { allocationSlices, allocationTargetLabel, allocationTargetSlices, investmentDisplayMonth, isWon } from '@/lib/dion/result-visual';
+import { allocationRemainder, allocationSlices, allocationTargetLabel, allocationTargetSlices, investmentDisplayMonth, isWon } from '@/lib/dion/result-visual';
 import { PlanSelector } from './plan-comparison';
 import { Donut, DonutLegend } from './donut';
 import { PortfolioChoiceDetail } from './portfolio-choice-detail';
@@ -50,6 +50,10 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
     return {...view, target_mix_bps: view.target_mix_bps ?? comparisonTargets[id]};
   };
   const order = Object.keys(TYPES);
+  const hasRiskHold = order.some(id => {
+    const amount = object(object(views[id]).held_breakdown_krw).risk_limits;
+    return isWon(amount) && BigInt(amount) > 0n;
+  });
   const selected = displayed ? TYPES[displayed] : undefined;
   const selectedTarget = displayed ? allocationTargetLabel(viewWithTarget(displayed)) : null;
   const targetPreview = !!preview && !!selectedTarget && !blocked;
@@ -86,6 +90,8 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
       {laterMonth && <p className="d-inline-note">첫 계획 월({textValue(rows[0]?.period)})의 신규 투자 후보금은 0원이에요. {monthLabel} 후보금으로 구성을 비교해요.</p>}
       {(!relative || order.some(id => typeof object(views[id]).selectable !== 'boolean' && !comparisonTargets[id])) && <div className="d-note"><p>저장된 각 안의 상세 내역은 아래에서 확인할 수 있어요. 현재 입력으로 다시 계산하면 최신 조건으로 선택 가능 여부를 확인해요.</p><button type="button" className="d-secondary" disabled={!onRecalculate} onClick={onRecalculate}>현재 입력으로 다시 계산</button></div>}
       {commonFoot && <p className="d-inline-note d-portfolio-common" role="note">{commonFoot}</p>}
+      {hasRiskHold &&
+        <p className="d-inline-note">위험자산 비중이 높은 구성은 같은 손실 한도에서 상품 배정액이 더 적을 수 있어요. 안별 상세에서 줄어든 금액을 확인할 수 있어요.</p>}
       <div className="d-portfolio-grid">{order.map((id, i) => {
         const [title, subtitle, purpose, risk] = TYPES[id];
         const view = viewWithTarget(id);
@@ -97,7 +103,7 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
         const canCompareTarget = !!target && !blocked;
         const total = month?.scenario_budget_krw;
         const targetSlices = !isWon(view.allocated_total_krw) || view.allocated_total_krw === "0" ? allocationTargetSlices(view) : [];
-        const waiting = isWon(view.unallocated_krw) && BigInt(view.unallocated_krw) > 0n && view.allocated_total_krw === "0";
+        const zeroRemainder = view.allocated_total_krw === "0" ? allocationRemainder(view) : [];
         return <div key={id} data-portfolio-type={id} className={`d-portfolio-card ${mine ? 'mine' : ''} ${displayed === id ? 'selected' : ''}`}>
           {mine && <span className="d-mine-badge">{relative ? '내 기준의 기본 구성' : '저장 당시 성향 기준'}</span>}
           <div className="d-card-head"><span className="d-pill">안 {String(i + 1).padStart(2, '0')}</span></div>
@@ -107,8 +113,9 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
           {targetSlices.length > 0 ? <>
             <Donut slices={targetSlices} total="10000" center={<small>목표 비중</small>} />
             <DonutLegend slices={targetSlices} total="10000" percentOnly />
-            <p className="d-inline-note">{waiting ? '현금 대기자금 ' + formatKrw(view.unallocated_krw)
-              : isWon(view.allocated_total_krw) ? '상품 검토 배분액 0원' : '상품 검토 배분액 확인 대기'}</p>
+            <p className="d-inline-note">{isWon(view.allocated_total_krw) ? '상품 검토 배분액 0원' : '상품 검토 배분액 확인 대기'}</p>
+            {zeroRemainder.length > 0 && <ul className="d-composition-hold">{zeroRemainder.map(item =>
+              <li key={item.key}>{item.label} {formatKrw(item.value)}</li>)}</ul>}
           </> : ready ? <>
             <Donut slices={slices} total={total} center={<><small>배분</small><strong>{formatKrw(view.allocated_total_krw)}</strong></>} />
             <DonutLegend slices={slices} total={total} />

@@ -421,8 +421,8 @@ def _comparison_mix(slots, products):
 
 
 def _portfolio_slots(slots, candidates, eligible, products, policy, loss_band):
-    # One product per existing asset slot. Keep the slot limit; recheck risk and concentration
-    # for each substitution, including changes to bond duration, issuer and benchmark.
+    # Prefer reviewed alternatives that fit the slot. An optional substitution must not
+    # reduce a funded slot merely to fit a higher-shock bond or another issuer.
     selected = slots
     for index, slot in enumerate(slots):
         first_valid = None
@@ -437,7 +437,10 @@ def _portfolio_slots(slots, candidates, eligible, products, policy, loss_band):
             if guarded == proposed:
                 first_valid = guarded
                 break
-            if first_valid is None:
+            incumbent = selected[index]["code"]
+            shrinks_funded_slot = any(after["target_bps"] < before["target_bps"] and before["code"] in eligible
+                                      for before, after in zip(selected, guarded, strict=True))
+            if first_valid is None and incumbent not in eligible and not shrinks_funded_slot:
                 first_valid = guarded
         if first_valid is not None:
             selected = first_valid
@@ -535,6 +538,7 @@ def review_products(document, result, *, catalog=None, policy=None):
     use_return_mix = (policy["version"] == portfolio_types.RETURN_MIX_PRODUCT_POLICY
                       and comparison_preference in portfolio_types.PREFERENCES[2:])
     type_targets = {}
+    original_type_targets = {}
     comparison_mixes = {}
     for type_id, pref in comparison_preferences.items():
         explicit_mix = type_id == "RETURN" and use_return_mix
@@ -548,6 +552,7 @@ def review_products(document, result, *, catalog=None, policy=None):
         comparison_mixes[type_id] = (portfolio_types.RETURN_MIX_BPS if explicit_mix
                                      else _comparison_mix(targets, products))
         if type_id in relative:
+            original_type_targets[type_id] = targets
             type_targets[type_id], _ = guarded_targets(targets, products, policy,
                                                        profile.get("loss_tolerance_band_raw"),
                                                        reduce_concentration=explicit_mix)
@@ -614,9 +619,19 @@ def review_products(document, result, *, catalog=None, policy=None):
                 if mix is not None:
                     # Strategic cash is the unscaled target's cash share. Failed slots and
                     # sizing limits never increase it; those amounts remain held.
-                    target_cash = integer(view["scenario_budget_krw"]) * mix["CASH"] // 10000
+                    budget = integer(view["scenario_budget_krw"])
+                    target_cash = budget * mix["CASH"] // 10000
+                    allocated = integer(view["allocated_total_krw"])
+                    target_products = sum(budget * slot["target_bps"] // 10000
+                                          for slot in original_type_targets[type_id])
+                    capped_products = sum(budget * slot["target_bps"] // 10000 for slot in type_slots)
                     view.update(target_mix_bps=mix, target_cash_krw=str(target_cash),
-                                held_krw=str(integer(view["unallocated_krw"]) - target_cash))
+                                held_krw=str(budget - allocated - target_cash),
+                                held_breakdown_krw={
+                                    "risk_limits": str(target_products - capped_products),
+                                    "review_conditions": str(capped_products - allocated),
+                                    "rounding": str(budget - target_cash - target_products),
+                                })
                 type_loss = sum(int(a["review_allocated_krw"]) * policy["scenario_shock_bps_by_role"][
                     next(p for p in products if p["code"] == a["code"])["service_constraints"]["role"]]
                                 for a in view["allocations"])
@@ -734,6 +749,10 @@ def block_product_budget(result):
                 view["stress_review"] = {"scenario_loss_krw_ceil": "0", "full_loss_scenario_krw": "0"}
                 if "target_cash_krw" in view:
                     view["held_krw"] = str(integer(view["unallocated_krw"]) - integer(view["target_cash_krw"]))
+                    if "held_breakdown_krw" in view:
+                        view["held_breakdown_krw"] = {
+                            "risk_limits": "0", "review_conditions": view["held_krw"], "rounding": "0",
+                        }
             for group in month.get("comparison_groups", []):
                 group.update(product_codes=[], state="NO_ELIGIBLE_CANDIDATES", reason="BUDGET_UNAVAILABLE")
             month["reason_codes"] = sorted(set(month["reason_codes"] + ["BUDGET_UNAVAILABLE"]))

@@ -68,7 +68,9 @@ def test_choose_and_restore_a_portfolio_with_new_disclosures(ctx):
     review = run["result"]["results"]["OUT-06"]
     assert payload["catalog_version"] == "DION-PRODUCT-CATALOG-20261116-0.3.2"
     selected = review["candidates"][0]["rows"][0]["portfolio_type_views"]["RETURN"]
-    assert selected["selectable"] and "436140" in {row["code"] for row in selected["allocations"]}
+    assert selected["selectable"]
+    assert {row["code"] for row in selected["allocations"]} == {"153130", "069500", "360200"}
+    assert next(p for p in review["products"] if p["code"] == "436140")["state"] == "ELIGIBLE_FOR_REVIEW"
     url = endpoint(base, run)
     saved = client.put(url, json=payload)
     assert saved.status_code == 200, saved.text

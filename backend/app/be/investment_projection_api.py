@@ -62,6 +62,11 @@ class ProjectionRow(Exact):
     cumulative_gain_krw: str
 
 
+class FirstYearReturn(Exact):
+    period: str
+    rate_on_contributions_percent: str
+
+
 class ProjectionResponse(ProjectionRequest):
     version: Literal["DION-INVESTMENT-RETURN-PROJECTION-1.0"]
     state: Literal["CALCULATED", "PARTIAL"]
@@ -76,6 +81,7 @@ class ProjectionResponse(ProjectionRequest):
     types_version: str
     catalog_version: str
     asset_assumptions_version: str | None = None
+    first_year: FirstYearReturn | None = None
     rows: list[ProjectionRow]
 
 
