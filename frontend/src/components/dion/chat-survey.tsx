@@ -8,7 +8,8 @@ import type { ViewResult } from "./results";
 import type { AgentSession } from "./agent-consultation";
 
 export type SurveyLine={role:"user"|"assistant";content:string};
-type Line=SurveyLine&{source?:string};
+type Line=SurveyLine&{source?:string;id?:string;delivery?:"pending"|"failed"};
+type Retry={id:string;text:string;history:SurveyLine[]};
 type Props={doc:Document;token:string;view:ViewResult|null;stale:boolean;busy:boolean;selectedCaseId:string;resumeSessionId?:string;
  onCommit:(doc:Document)=>void;onCalculate:()=>void;onLogin:()=>void;onSave:()=>void;onResult:(tab:number)=>void};
 type Reply={contract_version:string;request_key:string;draft_id:string;input_version:number;reply:string;source:string;application_status:string;candidates:ChatCandidate[];action:"NONE"|"CALCULATE"|"SAVE"|"FINAL_REVIEW"};
@@ -18,6 +19,7 @@ export function ChatSurvey({doc,token,view,stale,busy,selectedCaseId,resumeSessi
  const [history,setHistory]=useState<Line[]>([]),[message,setMessage]=useState(""),[consent,setConsent]=useState("");
  const [pending,setPending]=useState<{doc:Document;candidates:ChatCandidate[]}|null>(null);
  const [action,setAction]=useState<Reply["action"]>("NONE"),[sending,setSending]=useState(false),[error,setError]=useState("");
+ const [failed,setFailed]=useState<Retry|null>(null),[replying,setReplying]=useState(false),[slow,setSlow]=useState(false);
  const [session,setSession]=useState<AgentSession|null>(null);
  const current=useRef({doc,view,token}),log=useRef<HTMLDivElement>(null),input=useRef<HTMLTextAreaElement>(null);
  const active=useRef(false),controller=useRef<AbortController|null>(null),receipt=useRef<{signature:string;key:string}|null>(null);
@@ -26,7 +28,7 @@ export function ChatSurvey({doc,token,view,stale,busy,selectedCaseId,resumeSessi
  const approved=!!token&&consent===token;
  const append=(lines:Line[])=>setHistory(previous=>[...previous,...lines].slice(-60));
  useLayoutEffect(()=>{current.current={doc,view,token};},[doc,view,token]);
- useEffect(()=>{log.current?.scrollTo({top:log.current.scrollHeight});},[history,pending,error,sending]);
+ useEffect(()=>{log.current?.scrollTo({top:log.current.scrollHeight});},[history,pending,error,sending,slow]);
  useEffect(()=>()=>{controller.current?.abort();},[token]);
  useEffect(()=>{
    if(previousView.current!==view&&view){setAction("NONE");append([{role:"assistant",content:"새 결과를 확인할 수 있어요. 궁금한 점을 이어서 말씀해 주세요."}]);}
@@ -48,12 +50,18 @@ export function ChatSurvey({doc,token,view,stale,busy,selectedCaseId,resumeSessi
    onCommit(next);append([{role:"user",content:"확인한 답변을 반영해 주세요."},{role:"assistant",content:"확인한 답변을 설문에 반영했어요. 더 알려주시거나, 결과를 보고 싶다고 말씀해 주세요."}]);
    setPending(null);setAction("NONE");input.current?.focus();
  }
- async function send(){
-   if(active.current||busy||!message.trim()||!approved)return;
+ async function send(retry?:Retry){
+   const text=retry?.text??message.trim();
+   if(active.current||busy||!text||!approved)return;
    active.current=true;setSending(true);setError("");
-   const captured=current.current,text=message.trim(),abort=new AbortController();controller.current=abort;
+   setReplying(true);setSlow(false);setFailed(null);setPending(null);setAction("NONE");
+   const lineId=retry?.id??crypto.randomUUID();
+   if(retry)setHistory(rows=>rows.map(row=>row.id===lineId?{...row,delivery:"pending"}:row));
+   else {append([{role:"user",content:text,id:lineId,delivery:"pending"}]);setMessage("");}
+   const captured=current.current,abort=new AbortController();controller.current=abort;
+   const slowTimer=setTimeout(()=>setSlow(true),6000);
    const timer=setTimeout(()=>abort.abort(),35000);
-   const historyRows=history.slice(-20).map(({role,content})=>({role,content:content.slice(0,2000)}));
+   const historyRows=retry?.history??history.filter(row=>!row.delivery).slice(-20).map(({role,content})=>({role,content:content.slice(0,2000)}));
    const basis=view&&!stale?(view.storage==="SAVED"&&view.runId&&view.inputHash&&savedCase(view.source)===selectedCaseId?
      {saved:{case_id:selectedCaseId,run_id:view.runId,input_hash:view.inputHash}}:
      view.storage!=="SAVED"&&view.inputHash&&view.resultHash?{preview:{contract_version:"DION-PREVIEW-ACTION-1.0",request_key:"chat-preview",document:view.source,input_hash:view.inputHash,result_sha256:view.resultHash,strategy_id:"STABILITY_FIRST",portfolio_type:null,question:text.slice(0,600),allow_model_question:true}}:{}):{};
@@ -62,17 +70,23 @@ export function ChatSurvey({doc,token,view,stale,busy,selectedCaseId,resumeSessi
    const key=receipt.current.key;
    try{
      const response=await fetch("/api/be/v1/dialogue",{method:"POST",headers:{"Content-Type":"application/json",Authorization:`Bearer ${token}`},signal:abort.signal,body:JSON.stringify({...payload,request_key:key})});
-     if(!response.ok){if(response.status===503)receipt.current=null;throw Error(String(response.status));}
+     if(!response.ok){const detail=await response.json().catch(()=>null);
+       if(detail?.detail?.retryable===true)receipt.current=null;
+       throw Error(detail?.detail?.code??String(response.status));}
      const value:Reply=await response.json();
      if(abort.signal.aborted||current.current.doc!==captured.doc||current.current.view!==captured.view||current.current.token!==captured.token)throw Error("stale");
      if(value.contract_version!=="DION-CHAT-2.0"||value.request_key!==key||value.draft_id!==draftId||value.input_version!==doc.raw_bundle.input_version||value.source!=="ONEPORT"||value.application_status!=="NOT_APPLIED"||typeof value.reply!=="string"||!Array.isArray(value.candidates)||value.candidates.length>5||!value.candidates.every(validChatCandidate)||!["NONE","CALCULATE","SAVE","FINAL_REVIEW"].includes(value.action))throw Error("invalid");
      const candidateText=value.candidates.map(c=>`${c.field.label}: ${chatValue(currentChatValue(doc,c.field_ref))} → ${chatValue(field(c.raw_value,c.unit??"단위 미확인",c.state))}`).join("\n");
-     append([{role:"user",content:text},{role:"assistant",content:value.reply+(candidateText?`\n\n${candidateText}\n이 내용으로 반영할까요?`:""),source:value.source}]);
-     setMessage("");receipt.current=null;setPending(value.candidates.length?{doc,candidates:value.candidates}:null);setAction(value.action);
+     setHistory(rows=>rows.map(row=>row.id===lineId?{...row,delivery:undefined}:row));
+     append([{role:"assistant",content:value.reply+(candidateText?`\n\n${candidateText}\n이 내용으로 반영할까요?`:""),source:value.source}]);
+     receipt.current=null;setPending(value.candidates.length?{doc,candidates:value.candidates}:null);setAction(value.action);
    }catch(failure){
      const code=failure instanceof Error?failure.message:"";
-     setError(code==="401"?"로그인이 만료됐어요. 다시 로그인해 주세요. 작성한 메시지는 그대로예요.":code==="409"||code==="stale"?"입력이나 결과가 바뀌었어요. 현재 기준으로 다시 보내 주세요.":code==="429"?"잠시 뒤 다시 보내 주세요. 작성한 메시지는 그대로예요.":"AI 응답을 받지 못했어요. 작성한 메시지는 그대로 남겨뒀어요. 잠시 후 다시 보내 주세요.");
-   }finally{clearTimeout(timer);active.current=false;setSending(false);}
+     setHistory(rows=>rows.map(row=>row.id===lineId?{...row,delivery:"failed"}:row));
+     setFailed({id:lineId,text,history:historyRows});
+     setError(code.includes("AUTH")||code==="401"?"다시 로그인한 후 요청해 주세요.":code==="409"||code==="stale"||code.startsWith("CHAT_BASIS")?"입력이나 결과가 바뀌었어요. 현재 기준으로 다시 요청해 주세요.":code.includes("RATE_LIMIT")||code==="429"?"요청이 많아요. 잠시 뒤 다시 요청해 주세요.":code==="CHAT_REPLY_REJECTED"?"답변 내용을 확인하지 못했어요. 다시 요청해 주세요.":code==="CHAT_REQUEST_UNCERTAIN"?"응답 도착을 확인하지 못했어요. 다시 확인하면 같은 요청의 상태를 확인해요.":code==="CHAT_CAPACITY_UNAVAILABLE"?"AI 사용 한도를 확인 중이에요. 잠시 뒤 다시 요청해 주세요.":"AI 응답을 받지 못했어요. 보낸 메시지는 위에 남겨뒀어요. 다시 요청해 주세요.");
+   }finally{clearTimeout(timer);clearTimeout(slowTimer);active.current=false;setSending(false);setReplying(false);setSlow(false);}
+
  }
  async function saveConversation(){
    if(!approved||!view?.runId||view.storage!=="SAVED"||stale||busy||active.current||savedCase(view.source)!==selectedCaseId)return;
@@ -80,7 +94,7 @@ export function ChatSurvey({doc,token,view,stale,busy,selectedCaseId,resumeSessi
    const base=`/api/be/v1/cases/${encodeURIComponent(selectedCaseId)}/agent-sessions`;
    async function post(path:string,payload:object):Promise<AgentSession>{const r=await fetch(base+path,{method:"POST",signal:abort.signal,headers:{"Content-Type":"application/json",Authorization:`Bearer ${token}`},body:JSON.stringify(payload)});if(!r.ok)throw Error();return r.json();}
    try{
-     const rows=history.slice(-40).map(({role,content})=>({role,content:content.slice(0,2000)}));
+     const rows=history.filter(row=>!row.delivery).slice(-40).map(({role,content})=>({role,content:content.slice(0,2000)}));
      const signature=JSON.stringify([token,selectedCaseId,view.runId,rows]);if(saveReceipt.current?.signature!==signature)saveReceipt.current={signature,key:crypto.randomUUID()};
      const key=saveReceipt.current.key;
      let s=saveReceipt.current.session??await post("",{contract_version:"DION-AGENT-SESSION-1.0",request_key:key,base_run_id:view.runId,output_id:"OUT-03",subject_ref:"person_self",persistence_mode:"SAVED",notice_version:"DION-AGENT-MEMORY-1.0"});
@@ -96,7 +110,7 @@ export function ChatSurvey({doc,token,view,stale,busy,selectedCaseId,resumeSessi
  return <section className="d-chat-only" aria-label="DION과 대화">
   <div ref={log} className="d-chat-stream" role="log" aria-label="DION 대화 내역" aria-live="polite" aria-relevant="additions" tabIndex={0}>
    {!history.length&&<article className="d-chat-message assistant"><p>안녕하세요, DION이에요. 함께 설문에 답하고 결과를 살펴볼게요. 무엇부터 이야기할까요?</p></article>}
-   {history.map((line,i)=><article key={i} className={`d-chat-message ${line.role}`} aria-label={line.role==="user"?"나":"DION"}><p>{line.content}</p></article>)}
+   {history.map((line,i)=><article key={i} className={`d-chat-message ${line.role}`} aria-label={line.role==="user"?"나":"DION"}><p>{line.content}</p>{line.delivery==="failed"&&<span className="d-chat-delivery">응답 확인 필요</span>}</article>)}
    {!token?<article className="d-chat-message assistant"><p>로그인하면 대화를 시작할 수 있어요. 작성한 메시지는 유지할게요.</p><button type="button" onClick={onLogin}>로그인</button></article>:!approved?<article className="d-chat-message assistant"><p>AI 답변을 위해 최근 대화와 확인한 답변·결과 근거를 OnePort에 전송해요. 대화는 새로고침하면 사라지고, 직접 저장하면 결과와 함께 보관돼요.</p><button type="button" onClick={()=>{setConsent(token);input.current?.focus();}}>동의하고 대화 시작</button></article>:null}
    {pending&&<article className="d-chat-message assistant">
     <button type="button" disabled={blocked||pending.doc!==doc||!canApplyChatBatch(doc,pending.candidates)} onClick={confirm}>확인하고 반영</button>
@@ -109,8 +123,8 @@ export function ChatSurvey({doc,token,view,stale,busy,selectedCaseId,resumeSessi
     {action==="FINAL_REVIEW"&&<button type="button" disabled={blocked||!view||stale} onClick={()=>onResult(4)}>최종 포트폴리오 검토</button>}
    </article>}
    {session&&<span className="sr-only">저장 상담 {session.session_id}</span>}
-   {sending&&<article className="d-chat-message assistant" role="status"><p>답변을 준비하고 있어요…</p></article>}
-   {error&&<article className="d-chat-message assistant" role="alert"><p>{error}</p></article>}
+   {sending&&<article className="d-chat-message assistant" role="status" aria-label={replying?"DION 답변 준비 중":"대화 저장 중"}>{replying?<><span className="d-chat-typing" aria-hidden="true"><span>·</span><span>·</span><span>·</span></span><span className="sr-only">DION이 답변을 준비하고 있어요.</span>{slow&&<p>답변이 조금 늦어지고 있어요…</p>}</>:<p>대화를 저장하고 있어요…</p>}</article>}
+   {error&&<article className="d-chat-message assistant" role="alert"><p>{error}</p>{failed&&!sending&&<button type="button" disabled={!approved||busy} onClick={()=>void send(failed)}>다시 요청</button>}</article>}
   </div>
   <form className="d-chat-composer" onSubmit={e=>{e.preventDefault();void send();}}>
    <label htmlFor={id} className="sr-only">DION에게 메시지</label>
