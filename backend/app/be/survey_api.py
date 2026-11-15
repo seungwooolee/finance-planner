@@ -11,7 +11,7 @@ from ..consultation.assistant import assistant_context
 from ..consultation.chat import ChatProvider, ChatRequest, ChatService
 from ..consultation.chat_context import add_public_evidence, add_result_claims
 from ..consultation.survey import SurveyProvider, SurveyRequest, SurveyService
-from ..consultation.tax_chat import tax_chat
+from ..consultation.tax_chat import general_isa_topic, tax_chat
 from ..explanation.oneport_config import ConfigurationError, OnePortConfig
 from ..explanation.preview_action import captured_preview
 from .api import body, call, get_store
@@ -56,7 +56,14 @@ async def dialogue(value=Depends(body), actor=Depends(get_actor), store=Depends(
     if request.preview and request.saved:
         raise HTTPException(422, detail={"code": "AMBIGUOUS_CHAT_BASIS"})
     context, run, comparison = {}, None, None
-    if request.preview:
+    isa_topic = general_isa_topic(request.message)
+    registry = get_scheme_evidence_service().registry
+    # A general ISA definition or eligibility question has no private result basis.
+    if isa_topic:
+        context["tax_answer"] = await run_in_threadpool(
+            tax_chat, None, request.message, registry, general_topic=isa_topic,
+        )
+    elif request.preview:
         run, comparison, _ = await run_in_threadpool(captured_preview, request.preview)
     elif request.saved:
         basis = request.saved
@@ -69,16 +76,17 @@ async def dialogue(value=Depends(body), actor=Depends(get_actor), store=Depends(
             context = assistant_context({"session_id": request.draft_id, "session_version": request.input_version,
                 "base_run_id": run["run_id"], "base_input_hash": run["input_hash"], "base_input_version": run["input_version"]}, run, comparison)
             add_result_claims(context, run, request.message)
-            await run_in_threadpool(add_public_evidence, context, run, request.message, get_scheme_evidence_service().registry)
+            await run_in_threadpool(add_public_evidence, context, run, request.message, registry)
         except (KeyError, ValueError):
             raise HTTPException(409, detail={"code": "CHAT_BASIS_UNAVAILABLE"}) from None
-    tax_answer = await run_in_threadpool(tax_chat, run, request.message, get_scheme_evidence_service().registry)
-    if tax_answer:
-        context["tax_answer"] = tax_answer
+    if not isa_topic:
+        tax_answer = await run_in_threadpool(tax_chat, run, request.message, registry)
+        if tax_answer:
+            context["tax_answer"] = tax_answer
     context_ms = round((monotonic() - started) * 1000)
     answer = await service.answer(actor, request, context)
     timing = answer.pop("_timing")
-    if request.saved:
+    if request.saved and not isa_topic:
         current = await run_in_threadpool(call, store.read_run, actor, request.saved.case_id, request.saved.run_id)
         selected = await run_in_threadpool(call, store.read_portfolio_comparison, actor, request.saved.case_id, request.saved.run_id)
         if not current.get("is_current") or current["input_hash"] != run["input_hash"] or selected != comparison:

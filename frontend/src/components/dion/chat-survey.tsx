@@ -105,7 +105,7 @@ export function ChatSurvey({doc,token,view,stale,busy,selectedCaseId,resumeSessi
      const code=failure instanceof Error?failure.message:"";
      setHistory(rows=>rows.map(row=>row.id===lineId?{...row,delivery:"failed"}:row));
      setFailed({id:lineId,text,history:historyRows});
-     setError(code.includes("AUTH")||code==="401"?"다시 로그인한 후 요청해 주세요.":code==="409"||code==="stale"||code.startsWith("CHAT_BASIS")?"입력이나 결과가 바뀌었어요. 현재 기준으로 다시 요청해 주세요.":code.includes("RATE_LIMIT")||code==="429"?"요청이 많아요. 잠시 뒤 다시 요청해 주세요.":code==="CHAT_REPLY_REJECTED"?"답변 내용을 확인하지 못했어요. 다시 요청해 주세요.":code==="CHAT_REQUEST_UNCERTAIN"?"응답 도착을 확인하지 못했어요. 다시 확인하면 같은 요청의 상태를 확인해요.":code==="CHAT_CAPACITY_UNAVAILABLE"?"AI 사용 한도를 확인 중이에요. 잠시 뒤 다시 요청해 주세요.":"AI 응답을 받지 못했어요. 보낸 메시지는 위에 남겨뒀어요. 다시 요청해 주세요.");
+     setError(code.includes("AUTH")||code==="401"?"다시 로그인한 후 요청해 주세요.":code==="409"||code==="stale"||(code.startsWith("CHAT_BASIS")||code.startsWith("PREVIEW_BASIS")||code==="PREVIEW_EVIDENCE_UNAVAILABLE")?"입력이나 결과가 바뀌었어요. 현재 기준으로 다시 요청해 주세요.":code.includes("RATE_LIMIT")||code==="429"?"요청이 많아요. 잠시 뒤 다시 요청해 주세요.":code==="CHAT_REPLY_REJECTED"?"답변 내용을 확인하지 못했어요. 다시 요청해 주세요.":code==="CHAT_REQUEST_UNCERTAIN"?"응답 도착을 확인하지 못했어요. 다시 확인하면 같은 요청의 상태를 확인해요.":code==="CHAT_CAPACITY_UNAVAILABLE"?"AI 사용 한도를 확인 중이에요. 잠시 뒤 다시 요청해 주세요.":code==="CHAT_NOT_CONFIGURED"||code==="CHAT_MODEL_UNAVAILABLE"?"AI 모델에 연결하지 못했어요. 보낸 메시지는 위에서 확인할 수 있어요.":"AI 응답을 받지 못했어요. 보낸 메시지는 위에 남겨뒀어요. 다시 요청해 주세요.");
    }finally{clearTimeout(timer);clearTimeout(slowTimer);active.current=false;setSending(false);setReplying(false);setSlow(false);}
 
  }
