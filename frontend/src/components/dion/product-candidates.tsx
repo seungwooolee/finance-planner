@@ -17,8 +17,15 @@ export function ProductCandidates({ review, month }: { review: Record<string, Js
   if (!groups.length) return <p className="d-note">이전 결과에는 자산군별 후보가 없어요. 다시 계산하면 확인할 수 있어요.</p>;
 
   return <section aria-label="자산군별 상품 비교 후보" className="d-card d-candidate-panel">
-    <h2>자산군별 상품 비교 후보</h2>
-    {allCandidates && <p className="d-note">예상 수익률은 출처가 있는 장기 시장 가정을 표시해요. 상품의 세금·비용은 반영하지 않았어요.</p>}
+    <div className="d-candidate-panel-head">
+      <h2>자산군별 상품 비교 후보</h2>
+      <p>이번 달 검토를 통과한 상품은 강조해서 보여줘요. 나머지는 공시를 참고로 비교만 해요.</p>
+    </div>
+    <nav className="d-candidate-nav" aria-label="자산군 바로가기">{groups.map(group => {
+      const count = Array.isArray(group.product_codes) ? group.product_codes.length : 0;
+      return <a key={String(group.asset_group)} href={`#candidate-${String(group.asset_group)}`}>{textValue(group.label)}{count > 0 && <small>{count}</small>}</a>;
+    })}</nav>
+    {allCandidates && <p className="d-inline-note">예상 수익률은 출처가 있는 장기 시장 가정만 표시해요. 상품의 세금·비용은 반영하지 않았어요.</p>}
     <div className="d-candidate-groups">
       {groups.map(group => {
         const eligibleCodes = eligible.find(row => row.asset_group === group.asset_group)?.product_codes;
@@ -31,7 +38,7 @@ export function ProductCandidates({ review, month }: { review: Record<string, Js
           Number(!!textValue(object(a.market_return_assumption).annual_rate_percent)));
         const label = textValue(group.label);
 
-        return <section key={String(group.asset_group)} aria-label={`${label} 비교 후보`} className="d-candidate-group">
+        return <section key={String(group.asset_group)} id={`candidate-${String(group.asset_group)}`} aria-label={`${label} 비교 후보`} className="d-candidate-group">
           <div className="d-candidate-group-head">
             <h3>{label}</h3>
             {matches.length > 0 && <span className={referenceOnly ? "d-candidate-status d-candidate-held" : "d-candidate-status"}>
@@ -65,10 +72,10 @@ export function ProductCandidates({ review, month }: { review: Record<string, Js
                 const reasons = Array.isArray(product.reason_codes)
                   ? product.reason_codes.map(reason => textValue(messages[String(reason)])).filter(Boolean)
                   : [];
-                return <tbody key={code} data-candidate-code={code}>
+                return <tbody key={code} data-candidate-code={code} className={allCandidates && passes ? "d-candidate-pass" : undefined}>
                   <tr className="d-candidate-comparison-row">
-                    <th scope="row"><strong>{textValue(product.name)}</strong><small>{code}{allCandidates && (passes ? " · 검토 통과" : " · 배분 보류")}</small></th>
-                    {allCandidates && <td>{percent ? <><strong>연 {percent}%</strong><small>장기 시장 가정</small></> : "가정 없음"}</td>}
+                    <th scope="row"><strong>{textValue(product.name)}</strong><small>{code}{allCandidates && (passes ? <span className="d-candidate-badge"> · 검토 통과</span> : " · 배분 보류")}</small></th>
+                    {allCandidates && <td>{percent ? <><strong>연 {percent}%</strong><small>장기 시장 가정</small></> : <span className="d-candidate-muted">가정 없음</span>}</td>}
                     <td>{typeof disclosure.risk_grade === "number" ? `${disclosure.risk_grade}등급` : "미확인"}</td>
                     <td>{expense ? `${expense}%` : "미확인"}</td>
                     <td>{disclosure.fx_exposed === true ? "환노출" : disclosure.fx_exposed === false ? "직접 환노출 없음" : "미확인"}</td>
