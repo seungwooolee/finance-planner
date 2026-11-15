@@ -34,10 +34,18 @@ test.describe('검토 도구 · 사회초년생 저장 검증', () => {
       const tools=page.getByRole('region',{name:'결과 공통 도구'});
       const questions=page.getByRole('region',{name:'현재 결과 다음 행동 상담'});
       await expect(questions).toBeHidden();
-      await tools.getByText('결과에 질문하기',{exact:true}).click();
+      const openQuestions=async()=>{
+        await page.getByRole('button',{name:'dion AI 상담 열기',exact:true}).click();
+        await page.getByRole('dialog',{name:'dion AI 상담',exact:true}).getByRole('button',{name:'결과에 대해 질문',exact:true}).click();
+      };
+      await openQuestions();
       await expect(questions.getByLabel('현재 결과에 대한 질문')).toBeVisible();
+      await page.getByRole('button',{name:'상담창 닫기',exact:true}).click();
       await page.locator('.d-tabs button').nth(1).click();
+      await expect(questions).toBeHidden();
+      await openQuestions();
       await expect(questions).toBeVisible();
+      await page.getByRole('button',{name:'상담창 닫기',exact:true}).click();
       await expect(tools.getByRole('button',{name:'재계산',exact:true})).toHaveCount(1);
     });
   }

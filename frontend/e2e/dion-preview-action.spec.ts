@@ -1,7 +1,6 @@
 import {expect, test, type Page} from '@playwright/test';
 
 const harness = process.env.DION_TEST_BE_URL;
-const panel = (page: Page) => page.locator('.d-results').getByRole('region', {name: '현재 결과 다음 행동 상담'});
 
 async function preview(page: Page) {
   test.skip(!harness, 'Disposable backend required; auth is synthetic.');
@@ -13,8 +12,7 @@ async function preview(page: Page) {
   await page.route('**/api/be/v1/auth/login', route => route.fulfill({json: {access_token: 'MOCK-FE-ONLY', expires_in: 3600}}));
   await page.goto('/dion');
   await page.getByRole('button', {name: '예시로 결과 보기 · 대표상품 포함'}).click();
-  await page.getByRole('region',{name:'결과 공통 도구'}).getByText('결과에 질문하기',{exact:true}).click();
-  await expect(panel(page)).toBeVisible();
+  await expect(page.getByRole('region', {name: '계산 결과'})).toBeVisible();
 }
 
 async function login(page: Page) {
@@ -28,7 +26,7 @@ async function login(page: Page) {
 test('anonymous preview answers with keyboard, mobile layout and captured evidence', async ({page}, info) => {
   test.setTimeout(120_000);
   await preview(page);
-  const card = panel(page);
+  const card = await openResultQuestions(page);
   await card.getByRole('button', {name: '돈이 남는데 왜 투자 배정이 적어요?', exact: true}).click();
   await card.getByRole('button', {name: '내 결과로 답변 보기'}).press('Enter');
   await expect(card.getByRole('heading', {name: '현재 결과에 대한 답변'})).toBeFocused();
@@ -47,7 +45,7 @@ test('cancel preserves question, direct login saves once despite lost answer res
   await preview(page);
   await page.locator('.d-tabs button').nth(2).click();
   await page.locator('[data-portfolio-type="RETURN"] > button').click();
-  const card = panel(page);
+  const card = await openResultQuestions(page);
   const question = '왜 현금 대기자금이 있나요?';
   await card.getByLabel('현재 결과에 대한 질문').fill(question);
   await card.getByRole('button', {name: '로그인 → 결과 저장 → 상담 시작'}).click();
@@ -76,6 +74,7 @@ test('cancel preserves question, direct login saves once despite lost answer res
   await card.getByRole('button', {name: '내 결과로 답변 보기'}).click();
   await expect(card).toContainText('저장 결과의 기본 안내');
   await expect(card).toContainText('위험 추구형');
+  await page.getByRole('button', {name: '상담창 닫기', exact: true}).click();
   await page.locator('.d-tabs button').nth(4).click();
   const adoption = page.getByRole('region', {name: '계획 선택과 이번 달 기록'});
   await expect(adoption.getByRole('button', {name: /으로 진행할게요/})).toBeEnabled();
@@ -91,7 +90,7 @@ test('cancel preserves question, direct login saves once despite lost answer res
 test('login without saving preserves preview question and sends explicit AI consent only to authenticated endpoint', async ({page}) => {
   test.setTimeout(120_000);
   await preview(page);
-  const card = panel(page);
+  const card = await openResultQuestions(page);
   await card.getByLabel('현재 결과에 대한 질문').fill('생활비 이후 남는 돈은?');
   let saves = 0;
   page.on('request', request => {if (request.method() === 'POST' && request.url().endsWith('/cases')) saves++;});
@@ -106,3 +105,10 @@ test('login without saving preserves preview question and sends explicit AI cons
   await expect(card).toContainText('입력 버전 저장 전');
   expect(saves).toBe(0);
 });
+
+async function openResultQuestions(page: Page) {
+  await page.getByRole('button', {name: 'dion AI 상담 열기', exact: true}).click();
+  const dialog = page.getByRole('dialog', {name: 'dion AI 상담', exact: true});
+  await dialog.getByRole('button', {name: '결과에 대해 질문', exact: true}).click();
+  return dialog.getByRole('region', {name: '현재 결과 다음 행동 상담'});
+}
