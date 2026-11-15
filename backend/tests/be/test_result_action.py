@@ -62,7 +62,7 @@ def test_read_only_two_facts_reason_action_and_replay(harness):
 
 
 @pytest.mark.parametrize(("portfolio", "allocated", "waiting"), [
-    ("STABLE", "11.985", "27.965"), ("BALANCED", "23.97", "15.98"), ("RETURN", "18.5406", "21.4094")])
+    ("STABLE", "11.985", "27.965"), ("BALANCED", "23.97", "15.98"), ("RETURN", "16.7149", "3.995")])
 def test_selected_composition_uses_its_exact_amounts(harness, portfolio, allocated, waiting):
     client, store, _, _ = harness
     run = saved_run(store, product_doc())
@@ -70,6 +70,8 @@ def test_selected_composition_uses_its_exact_amounts(harness, portfolio, allocat
     answer = post(client, run, portfolio_type=portfolio, comparison_revision=1, question="왜 현금 대기자금이 있나요?").json()
     assert allocated + "만원" in answer["facts"][0]["text"]
     assert waiting + "만원" in answer["facts"][1]["text"]
+    if portfolio == "RETURN":
+        assert "배분 보류액은 19.2401만원" in answer["facts"][1]["text"]
     assert answer["comparison"] == {"revision": 1, "strategy_id": "STABILITY_FIRST", "portfolio_type": portfolio}
     assert all("portfolio_type_views/" + portfolio in f["refs"][0] for f in answer["facts"])
     assert answer["reasons"][-1]["code"] == "NO_REDISTRIBUTION"
