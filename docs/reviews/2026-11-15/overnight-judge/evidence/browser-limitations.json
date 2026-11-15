@@ -1,0 +1,32 @@
+{
+  "dedicated_server_start": {
+    "status": "BLOCKED",
+    "error": "Automatic approval review rejected Start-Process FE/BE command: blocked by policy",
+    "explicit_reason_provided": false,
+    "repeated_or_bypassed": false
+  },
+  "devtools": {
+    "status": "UNAVAILABLE",
+    "error": "Browser profile already running; no user browser stopped"
+  },
+  "cua_browser": {
+    "status": "UNAVAILABLE",
+    "error": "getState timed out; kernel reset; not retried"
+  },
+  "existing_3386": {
+    "status": "PARTIAL_OBSERVATION",
+    "welcome_observed": true,
+    "baseline_sha_attested": false,
+    "subsequent_navigation": "ERR_CONNECTION_REFUSED"
+  },
+  "existing_3338": {
+    "status": "FAILED_EXISTING_RUNTIME",
+    "body": "Internal Server Error",
+    "baseline_sha_attested": false,
+    "quick_start_not_found": true
+  },
+  "full_browser_journey": "UNVERIFIED",
+  "mobile_and_keyboard_journey": "UNVERIFIED",
+  "real_login_and_restore": "UNVERIFIED",
+  "statement": "Shared-preview failures are environment observations, not attributed to frozen audit source as proven product defects."
+}

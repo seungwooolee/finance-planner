@@ -1,0 +1,8 @@
+{
+  "frontend/src/lib/dion/product-review-scenario.json": "f4b334c543181d1ebafd4dc035e53e0be91bc1b02eaf8a8731e78e354f968c9f",
+  "frontend/src/lib/dion/review-scenarios.json": "8b34558b7350ab70f13d260aeb08d0b40c285780dae39bf499b3b4901e4100d0",
+  "docs/contest/2026-11-14/lead/cases/b1.1/browser-input.json": "9a87a8c585ce73379264dd4b2364d784d6d6898469448408e563ff57cca51eb6",
+  "backend/examples/planning-v1.1/question_v121_input.json": "68147a8c2dbbe8d6b33a813664e5f66c593e5734e3c39c42b0cbbbedca28ce75",
+  "data/rag/registry/corpus-products-20261115.json": "3eb74b812535d18f73ab7adfd172361a53a56465a74a308fb7f01c19df280e84",
+  "AGENTS.md": "ebb1c9c073012dce22f0b0dcb8e5e005b20e9fbb9231726da3e101997e7242d3"
+}
