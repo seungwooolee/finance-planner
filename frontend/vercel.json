@@ -78,7 +78,8 @@
       "codex/dion-parallel-pr-policy-20261115": false,
       "codex/dion-filled-workbook-cases-20261115": false,
       "codex/restore-dion-demo-versions-20261116": false,
-      "codex/group-dion-lifecycle-demos-20261116": false
+      "codex/group-dion-lifecycle-demos-20261116": false,
+      "codex/rollback-dion-to-pr85-20261116": false
     }
   }
 }

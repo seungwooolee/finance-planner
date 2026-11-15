@@ -1,4 +1,3 @@
-import { loadProductReviewCase } from "./review-scenario-helpers";
 import { expect, test, type Page } from '@playwright/test';
 
 async function openLogin(page: Page) {
@@ -110,7 +109,7 @@ test('background connection does not block real engine preview or send answers',
     await page.goto('/dion');
     await expect.poll(() => started).toBe(true);
     const response = page.waitForResponse('**/api/fe/v1/preview');
-    await loadProductReviewCase(page);
+    await page.getByRole('button', { name: '예시로 결과 보기 · 대표상품 포함' }).click();
     const result = await (await response).json();
     expect(result.integration_version).toBe('DION-FE-INTEGRATION-1.0');
     expect(result.storage).toBe('NOT_SAVED');

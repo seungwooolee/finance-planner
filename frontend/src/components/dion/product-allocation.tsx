@@ -16,7 +16,6 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
   const empty=productEmptyCause(review,evaluationOn);
   const catalog=object(review.catalog),policy=object(review.product_policy),messages=object(review.reason_messages);
   const products=list(review.products),candidates=list(review.candidates).filter(c=>!selectedPlan||c.strategy_id===selectedPlan),detail=object(catalog.detail_review);
-  const hasMonthlyRows = candidates.some(candidate => list(candidate.rows).length > 0);
   const reason=(code:unknown)=>code==="POLICY_DISCLOSURE_STALE"?policyDateMessage(review,evaluationOn):cashWaitingText(textValue(messages[String(code)]))||"상품의 검토 조건을 확인해주세요.";
   const titles:Record<string,string>={...riskTitles,"NEW-01":"진단 범위",D14:"제외할 투자 조건",D18:"환율 변동 수용",D19:"상품 설명 이해","NEW-12":"제외할 산업"};
   const questionsForReason:Record<string,string>={RESTRICTIONS_UNCONFIRMED:"D14",FX_ACCEPTANCE_REQUIRED:"D18",UNDERSTANDING_REQUIRED:"D19",FUND_DATE_UNRESOLVED:"F15",FUND_NOT_AVAILABLE:"F15",EXPERIENCE_REQUIRED:"F16",INDUSTRY_EXCLUSION_UNRESOLVED:"NEW-12"};
@@ -37,15 +36,13 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
   return <section aria-label="상품 적합성·배분 검토" className="d-product-screen">
     {!review.review_version&&<p className="d-note">이전 계산에는 상품 검토 결과가 없어요. 현재 입력으로 다시 계산하면 확인할 수 있어요.</p>}
     {review.review_version&&<>
-      {hasMonthlyRows && <p className="d-inline-note d-product-status" role="status">{catalog.eligible_for_review_count===0?"현재 배분할 수 있는 상품이 없어 투자 후보 금액을 현금 대기자금으로 남겼어요.":"조건을 통과한 상품을 비중 기준에 맞춰 배분했어요. 상품별 금액은 아래에서 확인해주세요."}</p>}
+      <p className="d-inline-note d-product-status" role="status">{catalog.eligible_for_review_count===0?"현재 배분할 수 있는 상품이 없어 투자 후보 금액을 현금 대기자금으로 남겼어요.":"조건을 통과한 상품을 비중 기준에 맞춰 배분했어요. 상품별 금액은 아래에서 확인해주세요."}</p>
       <InvestmentFollowup review={review} onEdit={onEdit}/>
       {empty?.date&&<div className="d-alert-card" data-product-empty="DATE"><strong>대표상품 0개 · 기준일 확인</strong><p>{policyDateMessage(review,evaluationOn)}</p></div>}
-      {Array.isArray(review.reason_codes)&&review.reason_codes
-        .filter(code => (code !== "POLICY_DISCLOSURE_STALE" || !empty?.date) && (hasMonthlyRows || code !== "NO_ELIGIBLE_PRODUCTS"))
-        .map(code => <p className="d-note" key={String(code)}>{reason(code)}</p>)}
+      {Array.isArray(review.reason_codes)&&review.reason_codes.filter(c=>c!=="POLICY_DISCLOSURE_STALE"||!empty?.date).map(code=><p className="d-note" key={String(code)}>{reason(code)}</p>)}
       {missing.length>0&&<div className="d-alert-card"><strong>투자 답변 보완이 필요해요</strong><p>아래 답변을 확인하면 상품 배분을 다시 검토할 수 있어요.</p><div className="d-toolbar">{missing.filter(id=>titles[String(id)]).map(id=><button className="d-secondary" key={String(id)} onClick={()=>onEdit(String(id))}>{titles[String(id)]} 확인 →</button>)}</div></div>}
     </>}
-    {!hasMonthlyRows&&review.review_version&&<article className="d-card"><h2>월 투자예산 확인 필요</h2><p>배분할 월 투자예산이 아직 계산되지 않았어요. 후보금이 확인되면 검토 배분액과 미배분 잔액을 볼 수 있어요.</p><button className="d-secondary" onClick={()=>onEdit("ASSUMPTIONS")}>월 후보에 필요한 확인 →</button></article>}
+    {!candidates.length&&review.review_version&&<article className="d-card"><h2>월 투자예산 확인 필요</h2><p>배분할 월 투자예산이 아직 계산되지 않았어요. 미확인 금액을 0원으로 표시하지 않아요.</p><button className="d-secondary" onClick={()=>onEdit("ASSUMPTIONS")}>월 후보에 필요한 확인 →</button></article>}
     {candidates.map(candidate=>{
       const months=list(candidate.rows), month=months[0];
       const allocations=list(month?.allocations);

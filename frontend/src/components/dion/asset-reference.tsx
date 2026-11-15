@@ -16,9 +16,6 @@ export function AssetReference({ value, stale, selection, onSelect, compact = fa
   const { data, cohort, cohorts, metrics, availability, net, canSwitchNet, netFallback, hint, automatic, comparisonState, membershipState, selectionOrigin } = assetReferenceView(value, selection);
   const periods = [...new Set(metrics.map(m => textValue(m.row.period_start)))];
   const hasOwn = metrics.some(m => m.own !== null);
-  const olderReference = data.data_version === "dion-peer-reviewed-20261114-v1"
-    && (cohort?.id === "C08" || cohort?.id === "C09")
-    && availability.some(metric => metric.state === "UNAVAILABLE");
   const title = compact ? "현재 자산과 참고 통계" : "보유자산 · 참고 통계와 함께 보기";
   const scope = data.scope === "household" ? "가구" : data.scope === "personal" ? "개인" : "범위 확인 필요";
   return <section className={`d-asset-ref ${compact ? "d-asset-ref-compact" : "d-card"}`} aria-labelledby={id}
@@ -50,9 +47,6 @@ export function AssetReference({ value, stale, selection, onSelect, compact = fa
       <div className="d-table-wrap"><table><caption>항목별 금액 · 조사 통계유형 구분</caption><thead><tr><th scope="col">항목</th><th scope="col">내 현재값</th><th scope="col">조사 참고값</th></tr></thead><tbody>
         {metrics.map(m=><tr key={m.key} data-asset-metric={m.key} data-statistic-id={textValue(m.row.statistic_id)}><th scope="row">{m.label}</th><td data-asset-series="own" data-value={m.own??undefined}>{formatKrw(m.own)}</td><td data-asset-series="reference" data-value={m.reference}>{formatKrw(m.reference)} · {textValue(m.row.statistic_type)}<small>{textValue(m.row.period_start)} · {textValue(m.row.target_unit)}</small></td></tr>)}
       </tbody></table></div>
-      {olderReference && <p className="d-note">{savedResult
-        ? "이전 통계로 저장된 결과예요. 최신 통계를 사용하는 서버에서 새로 계산하면 부채·순자산도 볼 수 있어요."
-        : "현재 계산 서버가 이전 통계를 사용하고 있어요. 부채·순자산을 보려면 서버에 최신 통계가 반영돼야 해요."}</p>}
       <p className="d-asset-ref-limit">집단·포함 항목·기준일이 달라질 수 있는 과거 참고값이에요. 차액·순위·적정 수준은 판정하지 않아요. 평균은 목표 금액을 뜻하지 않아요.</p>
       <div className="d-asset-ref-actions"><button type="button" className="d-text-button" onClick={onEdit}>내 자산 내역 확인 →</button></div>
       <details className="d-asset-ref-source"><summary>출처·정의·자료 기준 확인</summary>

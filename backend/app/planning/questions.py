@@ -260,12 +260,6 @@ def normalize_snapshot(answers):
     context = answers.context
     income, costs = answers.get("F03") or {}, answers.get("F04") or {}
     expense_basis = costs.get("expense_basis")
-    debt_period_mismatch = bool(income.get("period_start") and income.get("period_end")) and any(
-        row.get("payment_on") and not income["period_start"] <= row["payment_on"] <= income["period_end"]
-        for row in (answers.get("F09+F10+D08") or {}).get("items", [])
-    )
-    if debt_period_mismatch:
-        payment = None
     if expense_basis == "LIVING_ONLY":
         inc_debt, inc_contrib = (0, 0) if costs.get("exclusions_confirmed") is True else (None, None)
     else:
@@ -315,9 +309,4 @@ def normalize_snapshot(answers):
         }
     elif expense_basis not in {"LIVING_ONLY", "TOTAL_OUTFLOW"}:
         result["cashflow"] = {"calc_state": "NEEDS_INPUT", "missing": ["F04: explicit expense basis"]}
-    elif debt_period_mismatch and "base_surplus" in result.get("cashflow", {}):
-        result["cashflow"].update(
-            calc_state="NEEDS_INPUT",
-            missing=["F09+F10+D08: payment date must be within the income and expense reference period"],
-        )
     return {"normalized": snap, "result": result}

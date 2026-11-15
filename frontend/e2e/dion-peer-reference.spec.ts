@@ -1,11 +1,10 @@
-import { loadProductReviewCase } from "./review-scenario-helpers";
 import { expect, test } from '@playwright/test';
 
 test('reviewed research reaches real results with source, cohort, withholding and mobile display', async ({ page }, info) => {
   test.setTimeout(180000); // Includes the first Windows/Next development compilation.
   await page.goto('/dion');
   const response = page.waitForResponse(r => r.url().endsWith('/api/fe/v1/preview') && r.request().method() === 'POST');
-  await loadProductReviewCase(page);
+  await page.getByRole('button', { name: '예시로 결과 보기 · 대표상품 포함', exact: true }).click();
   const result = (await (await response).json()).result;
   const review = result.peer_reference;
   expect(review.records).toHaveLength(34);

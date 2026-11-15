@@ -1,8 +1,7 @@
 "use client";
-import { Document, Json, fieldValue, list, object, record, textValue } from '@/lib/dion/model';
+import { Json, list, object, textValue } from '@/lib/dion/model';
 import { Layers } from 'lucide-react';
-import { fieldKrw, formatKrw } from '@/lib/dion/money-format';
-import type { InputHint } from '@/lib/dion/result-guidance';
+import { formatKrw } from '@/lib/dion/money-format';
 import { Donut, DonutLegend } from './donut';
 import { assetComposition } from '@/lib/dion/result-visual';
 
@@ -18,62 +17,14 @@ export function AssetComposition({ assets, asOf, onEdit }: { assets: Record<stri
   </article>;
 }
 
-export function ReportedAmounts({ doc, needsCashflow, needsAssets, actions, onEdit }: {
-  doc: Document; needsCashflow: boolean; needsAssets: boolean; actions: InputHint[]; onEdit: (id: string) => void;
-}) {
-  const rows: { label: string; won: string }[] = [];
-  function add(label: string, value: unknown) {
-    const money = object(value);
-    const won = fieldKrw({ state: textValue(money.state), raw_value: money.raw_value, unit: textValue(money.unit) });
-    if (won !== null) rows.push({ label, won });
-  }
-  function addItems(id: string, key: string, labels: [string, string][]) {
-    const items = list(fieldValue(doc, id, key));
-    items.forEach((item, index) => {
-      for (const [label, amount] of labels) {
-        add(items.length > 1 ? `${label} ${index + 1}` : label, item[amount]);
-      }
-    });
-  }
-  if (needsCashflow) {
-    add('월평균 세후 소득', record(doc, 'F03')?.envelope.fields.monthly_net_income_krw);
-    const basis = fieldValue(doc, 'F04', 'expense_basis');
-    const label = basis === 'LIVING_ONLY' ? '월 생활비' : basis === 'TOTAL_OUTFLOW' ? '월 전체 출금액' : '월 지출 입력액';
-    add(label, record(doc, 'F04')?.envelope.fields.living ?? record(doc, 'F04')?.envelope.fields.monthly_living_cost_krw);
-    addItems('F09+F10+D08', 'debts', [['월 대출 납부액', 'payment_total']]);
-    addItems('NEW-03', 'existing_contributions', [['월 저축·투자 입력액', 'amount']]);
-  }
-  if (needsAssets) {
-    add('금융자산 총액', record(doc, 'F06')?.envelope.fields.financial_assets_total_reported_krw);
-    addItems('F08', 'real_estate_assets', [['부동산 전체 시세', 'market_value_krw']]);
-    addItems('F09+F10+D08', 'debts', [['남은 대출 원금', 'balance']]);
-  }
-  if (!rows.length) return null;
-  return <article className="d-card" aria-label="입력한 금액">
-    <h2>입력한 금액</h2>
-    <p>이번 결과를 요청할 때 제출한 금액이에요. 범위·기준월·세부내역을 확인하면 계산 결과를 볼 수 있어요.</p>
-    <dl className="d-ledger">{rows.map(({label, won}) => <div key={label}><dt>{label}</dt><dd>{formatKrw(won)}</dd></div>)}</dl>
-    {actions.length > 0 && <ul className="d-actions">{actions.map(({id, text}) => <li key={id}><button onClick={() => onEdit(id)}>{text}</button></li>)}</ul>}
-  </article>;
-}
-
-export function FinancialOverview({ flow, basis }: { flow: Record<string, Json>; basis?: string }) {
+export function FinancialOverview({ flow }: { flow: Record<string, Json> }) {
   const rows = list(object(flow.presentation).rows);
-  const validAmount = (value: Json | undefined): value is string => typeof value === 'string' && /^-?\d+$/.test(value);
-  const hasAmounts = rows.some(row => validAmount(row.amount_krw));
   const income = rows[0]?.amount_krw;
-  const complete = hasAmounts && rows.every(row => validAmount(row.amount_krw));
-  return <article className="d-card d-cashflow-card" aria-label="월 현금흐름 차감표"><div className="d-card-head"><h2>한 달 돈의 흐름</h2>{basis && <small>{basis}</small>}</div>
-    {hasAmounts ? <>
-      <p>{complete ? '생활비와 대출 상환액, 현금으로 납입한 저축·투자 금액을 각각 한 번 반영했어요.' : '확인된 금액부터 표시했어요. 남은 금액은 필요한 답변을 확인한 뒤 계산해요.'}</p>
-      <div className="d-cashflow-layout"><dl className="d-ledger">{rows.map(r => <div key={textValue(r.key)}><dt>{r.direction === 'DEDUCT' ? '− ' : ''}{textValue(r.label)}</dt><dd>{formatKrw(r.amount_krw)}</dd></div>)}</dl>
-      {complete && validAmount(income) && BigInt(income) > 0n &&
-        <figure className="d-waterfall"><figcaption>월평균 소득 대비 비중</figcaption>{rows.map(r => {
-          const amount = BigInt(textValue(r.amount_krw));
-          const ratio = (amount < 0n ? -amount : amount) * 1000n / BigInt(income);
-          return <div key={textValue(r.key)}><span>{textValue(r.label)}</span><div className="d-waterfall-track"><i style={{width:`${Number(ratio > 1000n ? 1000n : ratio) / 10}%`}} className={r.direction === 'DEDUCT' ? 'deduct' : 'balance'}/></div><strong>{formatKrw(r.amount_krw)}</strong></div>;
-        })}</figure>}
-      </div>
-    </> : <p>{rows.length ? '범위와 소득·지출 기준월을 확인하면 차감표를 볼 수 있어요.' : '현재 입력으로 다시 계산하면 차감표를 볼 수 있어요.'}</p>}
-  </article>;
+  return <>
+    <article className="d-card d-cashflow-card" aria-label="월 현금흐름 차감표"><h2>한 달 돈의 흐름</h2>
+      <p>생활비에서 상환·저축 이체를 구분하고, 실제 상환액과 급여 공제 전이 아닌 현금 납입액을 각각 한 번 반영했어요.</p>
+      {rows.length ? <div className="d-cashflow-layout"><dl className="d-ledger">{rows.map(r => <div key={textValue(r.key)}><dt>{r.direction === 'DEDUCT' ? '− ' : ''}{textValue(r.label)}</dt><dd>{formatKrw(r.amount_krw)}</dd></div>)}</dl>
+      <figure className="d-waterfall"><figcaption>소득에서 차감되는 금액 · 정확한 금액은 위 표 참조</figcaption>{rows.map(r => <div key={textValue(r.key)}><span>{textValue(r.label)}</span><div className="d-waterfall-track"><i style={{ width: typeof income === 'string' && BigInt(income) > 0n && typeof r.amount_krw === 'string' ? `${Math.min(100, Math.abs(Number(r.amount_krw) / Number(income)) * 100)}%` : '0%' }} className={r.direction === 'DEDUCT' ? 'deduct' : 'balance'}/></div><strong>{formatKrw(r.amount_krw)}</strong></div>)}</figure></div> : <p>이번 저장 결과에는 차감표가 없어요. 현재 입력으로 다시 계산하면 볼 수 있어요.</p>}
+    </article>
+  </>;
 }
