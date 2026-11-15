@@ -36,14 +36,35 @@ const ORDER = ["BOND", "KR_EQUITY", "GLOBAL_EQUITY", "OTHER"];
 
 export type Slice = { key: string; label: string; detail?: string; value: string; color: string };
 
+export function allocationRemainder(row: Obj | undefined): Slice[] {
+  if (!row || !isWon(row.unallocated_krw)) return [];
+  const { target_cash_krw: cash, held_krw: held } = row;
+  if (isWon(cash) && isWon(held) && BigInt(cash) + BigInt(held) === BigInt(row.unallocated_krw)) {
+    return [
+      { key: "TARGET_CASH", label: "목표 현금", value: cash, color: UNALLOCATED_COLOR },
+      { key: "HELD", label: "배분 보류", value: held, color: "#94a3b8" },
+    ];
+  }
+  return [{ key: "UNALLOCATED", label: "현금 대기자금", value: row.unallocated_krw, color: UNALLOCATED_COLOR }];
+}
+
+export function allocationTargetLabel(row: Obj | undefined): string | null {
+  const mix = obj(row?.target_mix_bps);
+  const entries = [
+    ["BOND", "채권"], ["KR_EQUITY", "국내주식"], ["US_EQUITY", "미국주식"], ["CASH", "현금"],
+  ] as const;
+  if (!entries.every(([id]) => typeof mix[id] === "number")) return null;
+  return entries.map(([id, label]) => `${label} ${bpsLabel(mix[id] as number)}`).join(" · ");
+}
+
 /** One slice per engine allocation (no summing), ordered by asset group, plus the unallocated rest. */
-export function allocationSlices(allocations: Obj[], products: Obj[], unallocated: unknown, restLabel = "현금 대기자금"): Slice[] {
+export function allocationSlices(allocations: Obj[], products: Obj[], row: Obj | undefined): Slice[] {
   const slices = allocations.filter(a => isWon(a.review_allocated_krw)).map(a => {
     const product = products.find(p => p.code === a.code);
     const group = assetGroup(product);
     return { key: String(a.code), label: group.label, detail: typeof product?.name === "string" ? product.name : String(a.code), value: String(a.review_allocated_krw), color: group.color, order: ORDER.indexOf(group.id) };
   }).sort((a, b) => a.order - b.order).map((s): Slice => ({ key: s.key, label: s.label, detail: s.detail, value: s.value, color: s.color }));
-  if (isWon(unallocated) && BigInt(unallocated) > 0n) slices.push({ key: "UNALLOCATED", label: restLabel, value: unallocated, color: UNALLOCATED_COLOR });
+  slices.push(...allocationRemainder(row).filter(s => BigInt(s.value) > 0n));
   return slices;
 }
 

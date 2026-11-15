@@ -513,7 +513,7 @@ def test_portfolio_type_views_never_relax_customer_limits():
     views = row['portfolio_type_views']
     assert views['BALANCED']['allocated_total_krw'] == row['allocated_total_krw'] == '180000'
     assert [(a['code'], a['review_allocated_krw']) for a in views['STABLE']['allocations']] == [('153130', '90000')]
-    assert views['RETURN']['allocated_total_krw'] == '139230'  # LOSS_20_30 stress budget still shrinks it
+    assert views['RETURN']['allocated_total_krw'] == '125520'  # LOSS_20_30 stress budget still shrinks it
     d = current_product_document()
     change(d, 'D18', 'fx_preference_raw_v2', field('FX_REJECT'))
     blocked_fx = current_review(d)['candidates'][0]['rows'][0]['portfolio_type_views']

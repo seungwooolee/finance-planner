@@ -33,8 +33,9 @@ def test_public_preview_exact_composition_and_no_store_access(harness):
     assert answer['storage'] == 'NOT_SAVED' and answer['source'] == 'DETERMINISTIC'
     assert answer['financial_result_changed'] is False
     assert answer['result_sha256'] == value['result_sha256']
-    assert '18.5406만원' in answer['facts'][0]['text']
-    assert '21.4094만원' in answer['facts'][1]['text']
+    assert '상품 배분액은 16.7149만원' in answer['facts'][0]['text']
+    assert '목표 현금은 3.995만원' in answer['facts'][1]['text']
+    assert '배분 보류액은 19.2401만원' in answer['facts'][1]['text']
     assert all(f['source'] == 'PREVIEW_RESULT' for f in answer['facts'])
     assert response.headers['cache-control'] == 'no-store'
     assert _digest(value) == before
