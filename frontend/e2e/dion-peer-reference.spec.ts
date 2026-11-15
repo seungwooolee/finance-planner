@@ -36,7 +36,10 @@ test('reviewed research reaches real results with source, cohort, withholding an
   await expect(total).toContainText('5억 6,678만원');
   await expect(ownBalances).toHaveText(['1,200만원', '500만원', '700만원']);
   await expect(panel).toContainText('2025-03-31');
-  await expect(panel.getByRole('link', {name:/가계금융복지조사/}).first()).toHaveAttribute('href', /list_no=439535/);
+  const source = panel.getByRole('link', {name:/가계금융복지조사/}).first();
+  await expect(source).toBeHidden();
+  await panel.getByText('통계 출처와 기준일', {exact:true}).click();
+  await expect(source).toHaveAttribute('href', /list_no=439535/);
   await panel.screenshot({ path: info.outputPath('peer-reference-desktop.png') });
   await expect(panel.locator('[data-statistic-id="V004"] [data-asset-series="reference"]')).toHaveAttribute('data-value', '471440000');
   await expect(panel.locator('[data-statistic-id="V005"]')).toHaveCount(0);
@@ -58,12 +61,12 @@ test('reviewed research reaches real results with source, cohort, withholding an
   const composition = page.locator('#dion-selected-composition');
   for (const [type, label] of [['STABLE', '안정형'], ['BALANCED', '중립형'], ['RETURN', '위험추구형']]) {
     const button = page.locator(`[data-portfolio-apply="${type}"]`);
-    await expect(button).toHaveAccessibleName(`${label} 미리보기`);
+    await expect(button).toHaveAccessibleName(`${label} 목표 비중 비교`);
     await button.press('Enter');
     await expect(button).toHaveAttribute('aria-pressed', 'true');
     await expect(composition).toBeFocused();
     await expect(composition.getByRole('heading', {name: `${label} 구성 상세`})).toBeVisible();
-    await expect(composition).toContainText('현재 조건에서 배분은 보류');
+    await expect(composition).toContainText('상품 배분 확인 대기');
   }
   await composition.getByRole('button', {name: '상품 정보 자세히 보기 →'}).click();
   const products = page.getByRole('region', {name: '자산군별 상품 비교 후보'});

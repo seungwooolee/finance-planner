@@ -37,6 +37,11 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
   const laterMonth = !!month && month !== rows[0];
   const monthLabel = textValue(month?.period);
   const products = list(review.products);
+  const messages: Record<string, Json> = {
+    ...object(review.reason_messages),
+    NO_ELIGIBLE_PRODUCTS: '상품 배분 보류',
+    POLICY_DISCLOSURE_STALE: '상품 검토 기준 확인 필요',
+  };
   const views = object(month?.portfolio_type_views);
   const comparisonTargets = object(typeInfo.comparison_targets);
   const commonTargets = typeInfo.comparison_basis === 'GENERAL_COMPARISON';
@@ -55,7 +60,7 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
     if (view.selectable === true) return chosen === id ? '현재 상담용 포트폴리오 검토안에 반영한 구성이에요.' : '선택하면 이 구성의 상품·비중을 검토안에 반영해요.';
     const hasTarget = allocationTargetLabel(viewWithTarget(id)) !== null;
     const codes = Array.isArray(view.reason_codes) ? view.reason_codes : [];
-    if (codes.length) return codes.map(code => textValue(object(review.reason_messages)[String(code)]) || '상품 검토 조건을 확인해주세요.').join(' ');
+    if (codes.length) return codes.map(code => textValue(messages[String(code)]) || '상품 검토 조건을 확인해주세요.').join(' ');
     if (hasTarget) return '목표 비중을 비교할 수 있어요. 월 투자예산이 확인되면 배분 금액을 검토해요.';
     return '이전 결과에는 선택 가능 여부가 없어요. 다시 계산해주세요.';
   };
@@ -70,7 +75,6 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
         {preference === code && <span className="d-step-badge">선택 응답</span>}<small>{step}</small><strong>{label}</strong>
       </li>)}</ol>
       {!PREFS.some(([code]) => code === preference) && <p className="d-inline-note">아직 투자 선호를 답하지 않았어요. <button className="d-text-button" onClick={() => onEdit('F17')}>안정성과 수익 선호 답하기 →</button></p>}
-      <p className="d-inline-note">투자 선호와 함께 생활비·보호자금, 손실 허용 범위, 사용 시점과 상품 조건을 확인해 실제 배분을 제한해요. 아래 구성 선택으로 P1~P5 응답이 바뀌지는 않아요.</p>
     </article>
     <div className="d-kpis d-kpis-3">
       <article className="d-kpi"><span>{monthLabel ? `${monthLabel} 신규 투자 후보금` : '신규 투자 후보금'}</span><strong><MoneyAmount value={month?.scenario_budget_krw ?? planRow?.new_investment_krw}/></strong><small>목표·보호자금 배정 후</small></article>
@@ -113,7 +117,7 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
           {view.cash_only === true && <p className="d-inline-note">현재 성향의 정책에 따라 상품 배분 없이 후보금 전액을 현금 대기자금으로 표시해요. 자금 이동이나 현금 보유 확정은 아니에요.</p>}
           <details className="d-fold d-composition-fold">
             <summary>{title} 상세 보기 · 상품·금액·위험</summary>
-            <PortfolioChoiceDetail rows={rows} products={products} type={id} messages={object(review.reason_messages)}/>
+            <PortfolioChoiceDetail rows={rows} products={products} type={id} messages={messages}/>
           </details>
           <button type="button" data-portfolio-apply={id} className={displayed === id ? 'd-primary' : 'd-secondary'}
             aria-pressed={displayed === id} aria-describedby={`portfolio-state-${id}`}
@@ -130,11 +134,9 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
         {preview && !targetPreview && <p role="status">{blocked ? "구성 미리보기 · 현재 결과와 저장 상태를 확인해 주세요." : "구성 미리보기 · 현재 조건에서 배분은 보류돼요."}</p>}
         <dl className="d-ledger"><div><dt>기대수익률</dt><dd>산정 대기</dd></div></dl>
         <p className="d-inline-note">이 구성에 적용할 승인된 수익률 가정이 준비되면 표시해요.</p>
-        <PortfolioChoiceDetail rows={month ? [month] : []} products={products} type={displayed} messages={object(review.reason_messages)} showExplanation/>
+        <PortfolioChoiceDetail rows={month ? [month] : []} products={products} type={displayed} messages={messages} showExplanation/>
         <button className="d-secondary" type="button" onClick={onProducts}>상품 정보 자세히 보기 →</button>
       </section>}
-      <p className="d-inline-note">도넛 가운데 표시에서 목표 비중과 검토 배분을 구분해 확인할 수 있어요.</p>
-      {relative && <p className="d-inline-note">안정·중립·위험추구는 내 P1~P5 기준 안의 상대적인 선택이에요. 상한이나 배분 보류 조건이 적용되면 두 구성의 금액이 같을 수 있어요. 선택한 구성은 상담용 검토안이에요. 상담 후 최종 생성과 계획 채택을 각각 요청해요.</p>}
     </article>
   </>;
 }

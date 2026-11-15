@@ -92,6 +92,5 @@ export function GoalTable({ goals, goalLabel, missing }: { goals: Record<string,
         <td data-label="적립 계획" className="d-goal-plan"><GoalPlan row={r}/></td>
       </tr>)}</tbody>
     </table></div> : missing}
-    <p>확인한 기간 안의 무수익 시나리오예요. 미래소득·장기수익을 임의로 채우지 않고, 달성확률도 계산하지 않아요.</p>
   </article>;
 }
