@@ -29,6 +29,16 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
   const products = list(review.products);
   const views = object(month?.portfolio_type_views);
   const order = Object.keys(TYPES);
+  const footText = (id: string) => {
+    const view = object(views[id]);
+    if (blocked) return '현재 입력·결과와 저장 상태를 확인해주세요.';
+    if (view.selectable === true) return chosen === id ? '현재 상담용 포트폴리오 검토안에 반영한 구성이에요.' : '선택하면 이 구성의 상품·비중을 검토안에 반영해요.';
+    const codes = Array.isArray(view.reason_codes) ? view.reason_codes : [];
+    return codes.length ? codes.map(code => textValue(object(review.reason_messages)[String(code)]) || '상품 검토 조건을 확인해주세요.').join(' ') : '이전 결과에는 선택 가능 여부가 없어요. 다시 계산해주세요.';
+  };
+  // When all three types are unavailable for the same reason, say it once instead of three times.
+  const foots = order.map(footText);
+  const commonFoot = order.length > 1 && order.every(id => object(views[id]).selectable !== true) && foots.every(f => f === foots[0]) && !blocked ? foots[0] : "";
   const surplus = object(flow.base_surplus).calc_state === 'CALCULATED' ? object(flow.base_surplus).value : null;
   return <>
     <article className="d-card" aria-label="투자 선호 응답">
@@ -47,6 +57,7 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
     <article className="d-card d-portfolio-section" aria-label="포트폴리오 검토 유형">
       <div className="d-card-head"><div><h2>{relative ? `${profileName} 안에서 투자구성 선택` : '저장 당시의 투자구성 비교'}</h2><p>{relative ? '내 기준을 유지하면서 안정·중립·위험추구 중 운용 방향을 골라보세요.' : '이전 방식으로 계산된 결과예요. 내 기준 안의 세 가지 구성을 보려면 다시 계산해주세요.'} 이번 달 신규 투자 후보금에 적용돼요.</p></div><PlanSelector selected={selectedPlan} onSelect={onPlan} /></div>
       {(!relative || order.some(id => typeof object(views[id]).selectable !== 'boolean')) && <div className="d-note"><p>저장된 각 안의 상세 내역은 아래에서 확인할 수 있어요. 현재 입력으로 다시 계산하면 최신 조건으로 선택 가능 여부를 확인해요.</p><button type="button" className="d-secondary" disabled={!onRecalculate} onClick={onRecalculate}>현재 입력으로 다시 계산</button></div>}
+      {commonFoot && <p className="d-inline-note d-portfolio-common" role="note">{commonFoot}</p>}
       <div className="d-portfolio-grid">{order.map((id, i) => {
         const [title, subtitle, purpose, risk] = TYPES[id];
         const view = object(views[id]);
@@ -73,7 +84,7 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
             {onViewPortfolio && <button type="button" className="d-primary" disabled={!enabled} aria-describedby={`portfolio-state-${id}`} onClick={() => onViewPortfolio(id)}>{chosen === id ? '반영한 포트폴리오 확인' : '이 구성으로 반영하고 포트폴리오 확인'}</button>}
           </details>
           <button type="button" data-portfolio-apply={id} className={chosen === id ? 'd-primary' : 'd-secondary'} disabled={!enabled} aria-pressed={chosen === id} aria-describedby={`portfolio-state-${id}`} onClick={() => onChoose(id)}>{chosen === id ? `${title} 선택됨 · 상품·비중 보기` : `${title} 선택 · 포트폴리오에 반영`}</button>
-          <small id={`portfolio-state-${id}`} className="d-type-foot">{blocked ? '현재 입력·결과와 저장 상태를 확인해주세요.' : view.selectable === true ? chosen === id ? '현재 상담용 포트폴리오 검토안에 반영한 구성이에요.' : '선택하면 이 구성의 상품·비중을 검토안에 반영해요.' : Array.isArray(view.reason_codes) && view.reason_codes.length ? view.reason_codes.map(code => textValue(object(review.reason_messages)[String(code)]) || '상품 검토 조건을 확인해주세요.').join(' ') : '이전 결과에는 선택 가능 여부가 없어요. 다시 계산해주세요.'}</small>
+          <small id={`portfolio-state-${id}`} className="d-type-foot">{commonFoot ? "선택할 수 없어요 · 위 안내를 확인해주세요." : footText(id)}</small>
         </div>;
       })}</div>
       <div className="d-portfolio-apply" aria-label="반영한 투자구성">
