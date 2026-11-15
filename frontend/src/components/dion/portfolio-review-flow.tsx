@@ -9,6 +9,7 @@ import {AgentConsultation, type AgentSession} from "./agent-consultation";
 import type { ChatReviewHandoff } from "./chat-survey";
 import {planName} from "./plan-comparison";
 import {QuestionForm} from "./questions";
+import {FinalAssessment} from "./final-assessment";
 import {TaxScenarioSummary, validTaxScenario, type TaxSelection} from "./tax-scenario";
 import {usePortfolioReview} from "./use-portfolio-review";
 import type {ViewResult} from "./results";
@@ -256,6 +257,8 @@ export function PortfolioReviewFlow({taxSelection,clearTaxSelection,chatHandoff,
           onClick={()=>basis&&void flow.create(basis).then(r=>{if (r) onPrepared(r);})}>이 절세안으로 새 검토 시작</button>}
         {validTaxScenario(finalTax) && <details><summary>생성본에 포함한 절세 시나리오</summary><TaxScenarioSummary value={finalTax}/></details>}
         <details><summary>이 생성본에 고정한 월별 포트폴리오</summary>{review.final.product_rows.map((month,i)=><section key={i}><h4>{textValue(month.period)||"기준월 확인 필요"}</h4><p>월 투자 후보금 {formatKrw(month.scenario_budget_krw)} · 상품 배분 {formatKrw(month.allocated_total_krw)} · 미배분 {formatKrw(month.unallocated_krw)}</p><ul>{list(month.allocations).map((a,j)=><li key={j}>{textValue(a.code)} · {formatKrw(a.review_allocated_krw)}</li>)}</ul></section>)}</details>
+        {token && <FinalAssessment key={review.final.sha256 + ":" + token} token={token} caseId={caseId} reviewId={review.review_id}
+          basis={{id:review.final.final_id,sha:review.final.sha256,runId:review.final.basis.run_id,version:review.final.basis.input_version}}/>}
         <button type="button" className="d-primary" disabled={blocked} onClick={onAdopt}>이 최종안의 계획 채택 검토하기</button>
       </div>}
     </>}

@@ -69,4 +69,17 @@ test("saved result includes a confirmed tax scenario in the final portfolio",asy
   await expect(panel.getByText(/월 투자 재원에 포함되지/)).toBeVisible();
   const saved = await request.get(base+reviewPath,{headers});
   expect((await saved.json()).final.tax_scenario.estimate.nominal_credit_krw).toBe("150000");
+  const assessment = page.getByRole("region",{name:"AI 종합 평가·추천"});
+  await assessment.getByRole("button",{name:"종합 평가 보기"}).press("Enter");
+  await expect(assessment.getByRole("heading",{name:/재무현황 ·/})).toBeVisible();
+  for (const name of ["투자안","절세","연금","유산·상속"]) {
+    await expect(assessment.getByRole("heading",{name:new RegExp(name + " ·")})).toBeVisible();
+  }
+  await assessment.getByText("투자안 근거 보기",{exact:true}).press("Enter");
+  await expect(assessment.locator("a[href]").first()).toBeVisible();
+  await expect(assessment.getByRole("button",{name:"AI로 순서 검토하기"})).toBeDisabled();
+  await assessment.getByRole("checkbox",{name:/OnePort/}).check();
+  await assessment.getByRole("button",{name:"AI로 순서 검토하기"}).press("Enter");
+  await expect(assessment.getByText(/기본 순서로 보여드려요/)).toBeVisible();
+
 });
