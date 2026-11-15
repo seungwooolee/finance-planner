@@ -4,8 +4,9 @@ import {type Document, type Field, clone, list, object, question, states, textVa
 import {formatKrw} from "@/lib/dion/money-format";
 import {bpsLabel, shareBps} from "@/lib/dion/result-visual";
 import {portfolioNames} from "@/lib/dion/portfolio-comparison";
-import {reviewFields, reviewReasons, type AnswerChange, type PortfolioReview, type ReviewBasis} from "@/lib/dion/portfolio-review";
+import {followupLabels, reviewFields, reviewReasons, type AnswerChange, type ConsultationChange, type PortfolioReview, type ReviewBasis} from "@/lib/dion/portfolio-review";
 import {AgentConsultation, type AgentSession} from "./agent-consultation";
+import type { ChatReviewHandoff } from "./chat-survey";
 import {planName} from "./plan-comparison";
 import {QuestionForm} from "./questions";
 import {usePortfolioReview} from "./use-portfolio-review";
@@ -81,7 +82,14 @@ function ChangeEditor({doc, flow, disabled, session}: {doc: Document; flow: Revi
   </details>;
 }
 
-const metricLabels: Record<string, string> = {living_krw: "생활비", debt_payment_krw: "대출 상환", new_investment_krw: "신규 투자 후보금", additional_cash_krw: "추가 현금", closing_cash_krw: "월말 현금"};
+function ChangesList({items}: {items: ConsultationChange[]}) {
+  return <dl className="d-ledger">{items.map(change => <div key={change.question_id + "/" + change.field_id}>
+    <dt>{reviewFields[change.question_id]?.[change.field_id] ?? question(change.question_id)?.source["항목"] ?? change.question_id}</dt>
+    <dd>{fieldText(change.before ?? undefined)} → {fieldText(change.after)}</dd>
+  </div>)}</dl>;
+}
+
+const metricLabels: Record<string, string> = {observed_remainder_krw: "기존 납입 후 월 잔여액", living_krw: "생활비", debt_payment_krw: "대출 상환", new_investment_krw: "신규 투자 후보금", additional_cash_krw: "추가 현금", closing_cash_krw: "월말 현금"};
 function Recalculation({review}: {review: PortfolioReview}) {
   const comparison = review.recalculation?.comparison;
   if (!comparison) return <p className="d-note">새 계산의 재무안·투자구성을 선택하면 서버가 같은 기준으로 비교해요. 없는 금액은 0원으로 바꾸지 않아요.</p>;
@@ -96,14 +104,25 @@ function Recalculation({review}: {review: PortfolioReview}) {
   </details>;
 }
 
-export function PortfolioReviewFlow({visited,selectionBlocked=false,flow, basis, view, token, caseId, stale, doc, onTab, onOpenRun, onReadRun, onPrepared, onAdopt}: {
+export function PortfolioReviewFlow({chatHandoff,visited,selectionBlocked=false,flow, basis, view, token, caseId, stale, doc, onTab, onOpenRun, onReadRun, onPrepared, onAdopt}: {
+  chatHandoff?: ChatReviewHandoff;
   visited: number[]; selectionBlocked?: boolean; flow: ReviewFlow; basis: ReviewBasis | null; view: ViewResult; token: string | null; caseId: string; stale: boolean;
   doc: Document | null; onTab: (n: number) => void; onOpenRun: (id: string) => Promise<void>; onReadRun: (id: string) => Promise<void>;
   onPrepared: (r: PortfolioReview) => void; onAdopt: () => void;
 }) {
   const review = flow.review;
   const [session, setSession] = useState<AgentSession | null>(null);
-  const [assumptions, setAssumptions] = useState(false);
+  const [confirmedAssumptions, setConfirmedAssumptions] = useState("");
+  const [discardedHandoff, setDiscardedHandoff] = useState<ChatReviewHandoff>();
+  const pendingHandoff = chatHandoff && discardedHandoff !== chatHandoff && !review?.proposal && !review?.final && !review?.recalculation;
+  const pendingChanges = pendingHandoff && doc ? chatHandoff.changes.flatMap(change => {
+    const original = doc.raw_bundle.answers.find(row => row.answer_revision_id === change.answer_revision_id);
+    if (!original) return [];
+    return Object.entries(change.fields).map(([field_id, after]) => ({
+      question_id: original.envelope.question_ref.design_id, field_id,
+      before: original.envelope.fields[field_id] ?? null, after,
+    }));
+  }) : [];
   const heading = useRef<HTMLHeadingElement>(null);
   const error = useRef<HTMLDivElement>(null);
   useEffect(() => {if (flow.error) error.current?.focus({preventScroll: true});}, [flow.error]);
@@ -119,20 +138,64 @@ export function PortfolioReviewFlow({visited,selectionBlocked=false,flow, basis,
     if (updated) onPrepared(updated);
   }
   const missingVisits = reviewStepNames.map((name,i)=>({name,i})).filter(({i})=>!visited.includes(i));
-  async function confirmForConsultation() {
+  const linkedToChat = !!chatHandoff && review?.consultation?.session_id === chatHandoff.session.session_id;
+  const reviewSession = session?.session_id === review?.consultation?.session_id ? session
+    : linkedToChat ? chatHandoff.session : null;
+  const history = chatHandoff?.session.conversation?.survey_history?.items ?? [];
+
+  async function bindChat(target: PortfolioReview) {
+    if (!chatHandoff || target.consultation || !target.is_current) return;
+    const saved = chatHandoff.session;
+    const updated = await flow.mutate("consultation", {
+      session_id: saved.session_id, expected_session_version: saved.session_version,
+      chat_request_key: chatHandoff.requestKey,
+    }, target);
+    if (updated) onPrepared(updated);
+  }
+  async function confirmForConsultation(forceNew = false) {
     if (!basis || stale || selectionBlocked || flow.busy || !flow.loaded || missingVisits.length) return;
-    const current = review?.basis === null && review.current_run_id === basis.run_id
-      ? await flow.mutate("selection", {basis}) : matched && review?.is_current && !review.final ? review : await flow.create(basis);
+    const current = !forceNew && review?.basis === null && review.current_run_id === basis.run_id
+      ? await flow.mutate("selection", {basis}) : !forceNew && matched && review?.is_current && !review.final ? review : await flow.create(basis);
     if (!current) return;
     const saved = await flow.mutate("confirm-steps", {steps:[1,2,3,4],confirmed:true}, current);
-    if (saved) onPrepared(saved);
+    if (saved) {
+      onPrepared(saved);
+      await bindChat(saved);
+    }
+  }
+  async function confirmConsultation() {
+    if (!reviewSession) return;
+    const updated = await flow.mutate("consultation-confirmation", {
+      expected_session_version: reviewSession.session_version, confirmed: true,
+      followups: linkedToChat ? chatHandoff.followups : undefined,
+    });
+    if (updated && linkedToChat && pendingChanges.length)
+      await flow.mutate("proposals", {changes: chatHandoff.changes}, updated);
   }
   const proposal = review?.proposal;
+  const assumptions = !!proposal && confirmedAssumptions === proposal.proposal_hash;
+  const incomeChanged = proposal?.changes.some(change => change.after.question_ref.design_id === "F03"
+    && JSON.stringify(change.before.fields.monthly_net_income_krw) !== JSON.stringify(change.after.fields.monthly_net_income_krw));
   return <section id="dion-portfolio-review" className="d-card d-portfolio-review" aria-label="DION 상담과 최종 포트폴리오" aria-busy={flow.busy}>
     <span className="d-eyebrow">상담 → 변경 검토 → 최종 생성 → 별도 채택</span>
     <h2 tabIndex={-1} ref={heading}>DION과 함께 검토안을 완성해요</h2>
     <p>상담용 검토안: <strong>{planName(basis?.strategy_id ?? "")} · {basis ? portfolioNames[basis.portfolio_type] : "구성 선택 전"}</strong></p>
     <p>참조 결과: 입력 {view.serverVersion ?? "저장 전"}번째 버전 · {stale ? "이전 입력 기준" : "현재 화면의 계산"}. 대화와 제안만으로 답변·계획이 바뀌지 않아요.</p>
+    {chatHandoff && <section className="d-note" aria-label="채팅에서 이어온 상담">
+      <h3>채팅에서 이어온 상담</h3>
+      {!!pendingChanges.length && <><p>새 초안에 반영할 값을 확인해 주세요.</p><ChangesList items={pendingChanges}/></>}
+      {!!chatHandoff.followups.length && <ul>{chatHandoff.followups.map(code => <li key={code}>{followupLabels[code]}</li>)}</ul>}
+      {!!history.length && <details><summary>대화 내역 보기</summary>{history.map((line, index) =>
+        <p key={index}>{line.role === "user" ? "나" : "DION"} · {line.content}</p>)}</details>}
+      {stepsDone && review && !review.consultation &&
+        <button type="button" className="d-secondary" disabled={blocked} onClick={()=>void bindChat(review)}>이 상담을 현재 검토안에 연결</button>}
+      {stepsDone && review?.consultation && !linkedToChat && <button type="button" className="d-secondary"
+        disabled={blocked || selectionBlocked || !!missingVisits.length} onClick={()=>void confirmForConsultation(true)}>이 상담으로 새 검토 시작</button>}
+      {completed && linkedToChat && !!pendingChanges.length && <div className="d-toolbar">
+        <button type="button" className="d-secondary" disabled={blocked} onClick={()=>void flow.mutate("proposals", {changes: chatHandoff.changes})}>채팅의 변경안 보기</button>
+        <button type="button" className="d-text-button" disabled={blocked} onClick={()=>setDiscardedHandoff(chatHandoff)}>이번 검토에 적용하지 않기</button>
+      </div>}
+    </section>}
     {!stepsDone&&<div className="d-consultation-entry">
       {missingVisits.length>0&&<div className="d-toolbar">{missingVisits.map(({name,i})=><button type="button" className="d-text-button" key={name} onClick={()=>onTab(i)}>{name} 살펴보기 →</button>)}</div>}
       <button type="button" className="d-primary" disabled={!basis||stale||selectionBlocked||flow.busy||!flow.loaded||missingVisits.length>0} onClick={()=>void confirmForConsultation()}>검토 내용 확인하고 상담 준비</button>
@@ -147,23 +210,31 @@ export function PortfolioReviewFlow({visited,selectionBlocked=false,flow, basis,
       {stepsDone && !review.final && !review.recalculation && token && <AgentConsultation
         key={`${review.review_id}:${token}`} view={view} token={token} selectedCaseId={caseId} editVersion={view.serverVersion ?? 0} stale={stale}
         onExplain={() => onTab(0)} finalization={{sessionId: review.consultation?.session_id, blocked: blocked || completed, onSession}}/>}
-      {review.consultation && !completed && <button type="button" className="d-primary" disabled={blocked || !session || session.session_id !== review.consultation.session_id || session.session_version <= review.consultation.start_session_version || !!session.pending_proposal || session.conflicts.length > 0}
-        onClick={() => session && void flow.mutate("consultation-confirmation", {expected_session_version: session.session_version, confirmed: true})}>상담한 내용을 확인했어요</button>}
+      {review.consultation && !completed && <button type="button" className="d-primary"
+        disabled={blocked || !reviewSession || (!review.consultation.chat_verified && reviewSession.session_version <= review.consultation.start_session_version)
+          || !!reviewSession.pending_proposal || reviewSession.conflicts.length > 0}
+        onClick={() => void confirmConsultation()}>상담한 내용을 확인했어요</button>}
       {!review.consultation && session?.persistence_mode === "SAVED" && <button type="button" className="d-secondary" disabled={blocked} onClick={() => void onSession(session)}>이 저장 상담을 검토안에 다시 연결</button>}
       {completed && <><p className="d-note">{review.summary_text}</p><p className="d-inline-note">저장 상담 내용을 사용자가 확인했어요. 이 요약은 저장 결과에 따른 기본 안내이며 실제 AI 모델 호출 성공을 뜻하지 않아요.</p></>}
-      {completed && doc && !review.recalculation && !review.final && <ChangeEditor key={review.review_id} doc={doc} flow={flow} session={session} disabled={blocked || proposal?.state === "PROPOSED"}/>}
+      {completed && doc && !review.recalculation && !review.final && <ChangeEditor key={review.review_id} doc={doc} flow={flow} session={reviewSession} disabled={blocked || proposal?.state === "PROPOSED"}/>}
       {proposal?.state === "PROPOSED" && <section aria-label="원응답 변경 확인" className="d-note"><h3>기존 값 → 제안 값</h3>
         {proposal.changes.map(change => <div key={change.answer_revision_id}>{Object.keys(change.after.fields).filter(key => JSON.stringify(change.before.fields[key]) !== JSON.stringify(change.after.fields[key])).map(key => <p key={key}><strong>{reviewFields[change.after.question_ref.design_id]?.[key] ?? question(change.after.question_ref.design_id)?.source["항목"]}</strong>: {fieldText(change.before.fields[key])} → {fieldText(change.after.fields[key])}</p>)}</div>)}
         <p>적용 범위: 새 원응답·입력 버전과 엔진 재계산. 기존 결과·최종 생성본·채택·월 기록은 변경하지 않아요.</p>
         <details><summary>재사용하는 미래 가정 확인</summary><dl className="d-ledger">{Object.entries(proposal.projection_assumption).map(([key, value]) => <div key={key}><dt>{key}</dt><dd>{String(value)}</dd></div>)}</dl></details>
-        <label className="d-check"><input type="checkbox" checked={assumptions} onChange={e => setAssumptions(e.target.checked)} disabled={blocked}/>표시된 미래 가정을 새 계산에 재사용하는 데 동의해요.</label>
+        <label className="d-check"><input type="checkbox" checked={assumptions} onChange={e => setConfirmedAssumptions(e.target.checked ? proposal.proposal_hash : "")} disabled={blocked}/>
+          {incomeChanged ? "바뀐 월 소득이 다음 달에도 이어지고, 표시된 미래 가정을 새 계산에 적용하는 데 동의해요."
+            : "표시된 미래 가정을 새 계산에 재사용하는 데 동의해요."}</label>
         <div className="d-toolbar"><button type="button" className="d-primary" disabled={blocked || !assumptions} onClick={() => void flow.mutate("proposal-confirmation", {proposal_hash: proposal.proposal_hash, decision: "CONFIRM", confirm_recalculation_assumptions: true}).then(r => {if (r?.recalculation) {onPrepared(r); void onOpenRun(r.current_run_id);}})}>변경 확인·새 초안 재계산</button>
         <button type="button" className="d-secondary" disabled={blocked} onClick={() => void flow.mutate("proposal-confirmation", {proposal_hash: proposal.proposal_hash, decision: "REJECT"})}>이 변경 취소</button></div>
       </section>}
       {review.recalculation && <><button type="button" className="d-secondary" onClick={() => void onOpenRun(review.current_run_id)}>재계산한 답변·결과 다시 열기</button><Recalculation review={review}/>
         {!review.recalculation.reviewed && <button type="button" className="d-secondary" disabled={blocked || !stepsDone || !review.recalculation.comparison_hash} onClick={() => void flow.mutate("recalculation-confirmation", {comparison_hash: review.recalculation!.comparison_hash, confirmed: true})}>기존안과 새 초안의 차이를 확인했어요</button>}</>}
-      {!review.final && <button type="button" className="d-primary" disabled={blocked || review.state !== "READY_TO_GENERATE"} onClick={() => void flow.mutate("finalizations", {confirmed: true}).then(r => {if (r) onPrepared(r);})}>최종 포트폴리오 생성</button>}
+      {!review.final && <button type="button" className="d-primary" disabled={blocked || review.state !== "READY_TO_GENERATE" || (linkedToChat && pendingChanges.length > 0)} onClick={() => void flow.mutate("finalizations", {confirmed: true}).then(r => {if (r) onPrepared(r);})}>최종 포트폴리오 생성</button>}
       {review.final && <div className="d-note" aria-label="서버 최종 생성 기록"><h3>최종 생성 완료 · 채택은 별도</h3><p>{review.final.generated_at} · {planName(review.final.basis.strategy_id)} · {portfolioNames[review.final.basis.portfolio_type]}</p><p>저장한 입력 {review.final.basis.input_version}번째 버전 · 엔진이 지원하는 월 시나리오 범위 · 금융거래 미실행</p>
+        {review.final.consultation_changes && <section><h4>상담에서 반영한 변경</h4>
+          {review.final.consultation_changes.length ? <ChangesList items={review.final.consultation_changes}/> : <p>이번 생성에 반영한 입력 변경은 없어요.</p>}</section>}
+        {!!review.final.consultation_followups?.length && <section><h4>확인이 남은 사항</h4>
+          <ul>{review.final.consultation_followups.map(code => <li key={code}>{followupLabels[code]}</li>)}</ul></section>}
         <details><summary>이 생성본에 고정한 월별 포트폴리오</summary>{review.final.product_rows.map((month,i)=><section key={i}><h4>{textValue(month.period)||"기준월 확인 필요"}</h4><p>월 투자 후보금 {formatKrw(month.scenario_budget_krw)} · 상품 배분 {formatKrw(month.allocated_total_krw)} · 미배분 {formatKrw(month.unallocated_krw)}</p><ul>{list(month.allocations).map((a,j)=><li key={j}>{textValue(a.code)} · {formatKrw(a.review_allocated_krw)}</li>)}</ul></section>)}</details>
         <button type="button" className="d-primary" disabled={blocked} onClick={onAdopt}>이 최종안의 계획 채택 검토하기</button>
       </div>}

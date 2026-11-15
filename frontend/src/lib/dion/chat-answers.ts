@@ -1,4 +1,5 @@
 import { type Document, type Field, type State, type Json, field, fieldValue, list, object, record, revise, states } from "./model";
+import { reviewFields, type AnswerChange } from "./portfolio-review";
 import { patchGoal, selectLifeStage, selectedMonth, setMonth, updateIncome } from "./customer-flow";
 
 export type ChatCandidate = {field_ref:string; field:{question_id:string;field_id:string;label:string};state:State;raw_value:string|boolean|null;unit:string|null;source_text:string};
@@ -64,5 +65,16 @@ export function applyChat(doc:Document,c:ChatCandidate):Document{
   let next=q==="F03"?updateIncome(doc,f,v):revise(doc,q,e=>{e.fields[f]=v;if(q==="F04")e.fields.response_definition_version=field("1.2.1");});
   if(q==="F03"&&["income_period_start","income_period_end"].includes(f))next=revise(next,q,e=>{e.context[f.endsWith("start")?"period_start":"period_end"]=c.state==="KNOWN"?String(c.raw_value):null;});
   return next;
+}
+export function chatReviewChange(doc: Document, candidate: ChatCandidate): AnswerChange | null {
+  if (!canApplyChat(doc, candidate)) return null;
+  const q = candidate.field.question_id;
+  const key = q === "F13" ? "goals" : candidate.field.field_id;
+  const current = record(doc, q);
+  const before = current?.envelope.fields[key];
+  if (!reviewFields[q]?.[key] || !current || !before) return null;
+  const after = record(applyChat(doc, candidate), q)?.envelope.fields[key];
+  if (!after || JSON.stringify(after) === JSON.stringify(before)) return null;
+  return {answer_revision_id: current.answer_revision_id, fields: {[key]: after}};
 }
 export function savedCase(source:unknown){return String(object(object(source).context).case_id??"");}

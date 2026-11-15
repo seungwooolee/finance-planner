@@ -254,9 +254,9 @@ def _apply(store, conn, actor, case, state, request):
 
 
 def _difference(conn, state):
-    old_run = conn.execute("SELECT result_json FROM analysis_runs WHERE case_id=? AND run_id=?",
+    old_run = conn.execute("SELECT result_json, engine_input_json FROM analysis_runs WHERE case_id=? AND run_id=?",
                           (state["case_id"], state["source_basis"]["run_id"])).fetchone()
-    new_run = conn.execute("SELECT result_json FROM analysis_runs WHERE case_id=? AND run_id=?",
+    new_run = conn.execute("SELECT result_json, engine_input_json FROM analysis_runs WHERE case_id=? AND run_id=?",
                           (state["case_id"], state["current_run_id"])).fetchone()
     old, new = json.loads(old_run["result_json"])["results"], json.loads(new_run["result_json"])["results"]
     same_strategy = all(state["source_basis"][key] == state["basis"][key]
@@ -275,6 +275,20 @@ def _difference(conn, state):
             metrics.append({"period": period, "key": key, "before_krw": x, "after_krw": y,
                 "difference_krw": str(Decimal(y) - Decimal(x)) if comparable else None,
                 "reason": None if comparable else "SAME_MONTH_STRATEGY_POLICY_VALUE_REQUIRED"})
+    def observed_income_period(run):
+        answers = json.loads(run["engine_input_json"]).get("raw_bundle", {}).get("answers", [])
+        periods = [(e["context"].get("period_start"), e["context"].get("period_end"))
+                   for item in answers if (e := item["envelope"])["question_ref"]["design_id"] == "F03"]
+        return periods[0] if len(periods) == 1 and all(periods[0]) else None
+
+    period = observed_income_period(old_run)
+    if period and period == observed_income_period(new_run):
+        left = _won(old.get("OUT-03", {}).get("after_existing_contributions_krw"))
+        right = _won(new.get("OUT-03", {}).get("after_existing_contributions_krw"))
+        metrics.insert(0, {"period": f"{period[0]} ~ {period[1]}", "key": "observed_remainder_krw",
+                           "before_krw": left, "after_krw": right,
+                           "difference_krw": str(Decimal(right) - Decimal(left)) if None not in (left, right) else None,
+                           "reason": None if None not in (left, right) else "SAME_PERIOD_VALUE_REQUIRED"})
     products_before, products_after = rows(old, state["source_basis"], "OUT-06"), rows(new, state["basis"], "OUT-06")
     allocations = []
     for period in sorted({r["period"] for r in products_before + products_after}):
@@ -313,8 +327,13 @@ def _difference(conn, state):
             "before_type": state["source_basis"]["portfolio_type"], "after_type": state["basis"]["portfolio_type"]}
 
 
-def mutate(store, actor, case_id, review_id, operation, request):
-    fingerprint = _digest({"operation": operation, "review_id": review_id, **request})
+def mutate(store, actor, case_id, review_id, operation, request, chat_basis=None):
+    fingerprint_request = dict(request)
+    if operation == "consultation" and fingerprint_request.get("chat_request_key") is None:
+        fingerprint_request.pop("chat_request_key", None)
+    if operation == "consultation-confirmation" and not fingerprint_request.get("followups"):
+        fingerprint_request.pop("followups", None)
+    fingerprint = _digest({"operation": operation, "review_id": review_id, **fingerprint_request})
     with store._transaction(write=True) as conn:
         case = store._authorize(conn, actor, case_id)
         replay = store._replay(conn, case_id, request["request_key"], fingerprint)
@@ -338,7 +357,13 @@ def mutate(store, actor, case_id, review_id, operation, request):
             session = _session(conn, case_id, request["session_id"], request["expected_session_version"])
             if session["base_run_id"] != state["current_run_id"] or session["base_input_hash"] != state["basis"]["input_hash"]:
                 raise PocError("CONSULTATION_BINDING_MISMATCH")
+            current = state["basis"]
+            chat_verified = chat_basis == (case_id, current["run_id"], current["input_hash"], current["comparison_revision"])
+            if chat_verified:
+                history = session.get("conversation", {}).get("survey_history", {})
+                chat_verified = history.get("input_hash") == current["input_hash"] and bool(history.get("items"))
             state["consultation"] = {"session_id": session["session_id"], "start_session_version": session["session_version"],
+                "chat_verified": chat_verified,
                 "start_turn_count": len(session["turns"]),
                 "completed_session_version": None, "base_run_id": session["base_run_id"],
                 "base_input_hash": session["base_input_hash"], "completion": None}
@@ -348,17 +373,20 @@ def mutate(store, actor, case_id, review_id, operation, request):
                 raise PocError("CONSULTATION_REQUIRED")
             session = _session(conn, case_id, ref["session_id"], request["expected_session_version"])
             # Session versions alone also increment for persistence/control; require a supported turn.
-            if (session["session_version"] <= ref["start_session_version"] or len(session["turns"]) <= ref["start_turn_count"]
-                    or session["turns"][-1]["intent"] == "UNSUPPORTED"):
+            if len(session["turns"]) > ref["start_turn_count"]:
+                last = session["turns"][-1]
+                if last["intent"] == "UNSUPPORTED" or (
+                    last["intent"] in {"CLARIFY", "PROPOSE_CHANGE", "CHECK_CONDITIONS"} and not any(
+                        evidence["source"].get("turn_id") == last["turn_id"]
+                        and evidence["confirmation_status"] in {"USER_CONFIRMED", "REJECTED"}
+                        for evidence in session["evidence_revisions"]
+                    )
+                ):
+                    raise PocError("CONSULTATION_NOT_REVIEWED")
+            elif not ref.get("chat_verified"):
                 raise PocError("CONSULTATION_NOT_REVIEWED")
-            last = session["turns"][-1]
-            if last["intent"] in {"CLARIFY", "PROPOSE_CHANGE", "CHECK_CONDITIONS"} and not any(
-                evidence["source"].get("turn_id") == last["turn_id"]
-                and evidence["confirmation_status"] in {"USER_CONFIRMED", "REJECTED"}
-                for evidence in session["evidence_revisions"]
-            ):
-                raise PocError("CONSULTATION_NOT_REVIEWED")
-            ref.update(completed_session_version=session["session_version"], completion="USER_REVIEWED_SAVED_CONSULTATION")
+            ref.update(completed_session_version=session["session_version"], completion="USER_REVIEWED_SAVED_CONSULTATION",
+                       followups=list(dict.fromkeys(request.get("followups", []))))
         elif operation == "proposals":
             _propose(store, conn, state, request)
         elif operation == "proposal-confirmation":
@@ -392,7 +420,16 @@ def mutate(store, actor, case_id, review_id, operation, request):
                 if not selected or selected.get("selectable") is not True:
                     raise PocError("FINAL_PORTFOLIO_UNAVAILABLE")
                 rows.append({"period": row["period"], "scenario_budget_krw": row["scenario_budget_krw"], **selected})
+            proposal = state["proposal"]
+            applied = proposal["changes"] if proposal and proposal["state"] == "APPLIED" else []
+            changes = [
+                {"question_id": change["after"]["question_ref"]["design_id"], "field_id": key,
+                 "before": change["before"]["fields"].get(key), "after": value}
+                for change in applied for key, value in change["after"]["fields"].items()
+                if change["before"]["fields"].get(key) != value
+            ]
             artifact = {"basis": state["basis"], "consultation": state["consultation"], "plan": plans,
+                        "consultation_changes": changes, "consultation_followups": state["consultation"].get("followups", []),
                         "scope": "DECLARED_MONTHLY_SCENARIO",
                         "product_rows": rows, "raw_snapshot_id": run["raw_snapshot_id"],
                         "result_hash": _digest(json.loads(run["result_json"])),

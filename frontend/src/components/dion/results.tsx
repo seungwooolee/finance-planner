@@ -34,6 +34,7 @@ import { GoalTable, PersonalSummary } from "./personal-summary";
 import { createPortal } from "react-dom";
 import { usePortfolioReview } from "./use-portfolio-review";
 import { PortfolioReviewFlow, sameReviewBasis } from "./portfolio-review-flow";
+import type { ChatReviewHandoff } from "./chat-survey";
 import { type AdoptionView, thisMonth } from "./plan-checkin";
 import type { ReviewBasis, PortfolioReview } from "@/lib/dion/portfolio-review";
 
@@ -69,7 +70,7 @@ function metricValue(out:Record<string,Json>,key:string) {
 function Metric({title,value,note,icon:Icon}:{title:string;value:unknown;note?:string;icon?:LucideIcon}) {return <article className="d-metric">{Icon&&<i className="d-metric-icon" aria-hidden="true"><Icon size={18}/></i>}<span>{title}</span><strong><MoneyAmount value={value}/></strong>{note&&<small>{note}</small>}</article>;}
 function Missing({row,title}:{row:Record<string,Json>;title:string}) {return <div className="d-note"><strong>{title} · {stateLabels[textValue(row.calc_state)]??"확인 필요"}</strong><p>{row.calc_state==="NOT_SUPPORTED"?"이 결과의 계산은 아직 지원하지 않아요. 입력은 보관하고 다른 재무 결과를 유지해요.":row.calc_state==="NOT_IMPLEMENTED"?"이 계산은 준비 중이에요. 추가 입력으로 완료되는 단계가 아니에요.":row.calc_state==="NOT_APPLICABLE"?"현재 확인한 답변에는 해당하는 항목이 없어요.":row.calc_state==="INVALID_INPUT"?"금액·기간·소유 관계가 맞지 않아 계산을 보류했어요. 관련 답변을 확인해주세요.":"추가 확인 필요 · 관련 답변과 계산에 필요한 가정을 확인해주세요."}</p></div>;}
 
-export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalculate,checkin,technical=false,token=null,caseId="",evidenceAccess,actionFlow,consultationTarget,closeConsultation,onOpenRun,onReadRun,onReviewResume,calcBar,recordMonth,onAskResult}:{onAskResult?:()=>void;calcBar?:ReactNode;recordMonth?:string;onReadRun?:(id:string)=>Promise<void>;onOpenRun?:(id:string)=>Promise<void>;onReviewResume?:(review:PortfolioReview)=>void;actionFlow?: ActionFlow;consultationTarget?: HTMLDivElement|null;closeConsultation?: ()=>void;evidenceAccess?: EvidenceAccess;technical?:boolean;onRecalculate?:()=>void;view:ViewResult;deep:boolean;tab:number;setTab:(n:number)=>void;stale:boolean;onEdit:(id:string)=>void;checkin?:(plan:string,tasks:CheckinTask[],portfolioSelection:AppliedPortfolioRef|null,portfolioBlocked:boolean,onAdoption:(value:AdoptionView)=>void)=>ReactNode;token?:string|null;caseId?:string}) {
+export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalculate,checkin,technical=false,token=null,caseId="",evidenceAccess,actionFlow,consultationTarget,closeConsultation,onOpenRun,onReadRun,onReviewResume,calcBar,recordMonth,onAskResult,chatHandoff}:{onAskResult?:()=>void;chatHandoff?:ChatReviewHandoff;calcBar?:ReactNode;recordMonth?:string;onReadRun?:(id:string)=>Promise<void>;onOpenRun?:(id:string)=>Promise<void>;onReviewResume?:(review:PortfolioReview)=>void;actionFlow?: ActionFlow;consultationTarget?: HTMLDivElement|null;closeConsultation?: ()=>void;evidenceAccess?: EvidenceAccess;technical?:boolean;onRecalculate?:()=>void;view:ViewResult;deep:boolean;tab:number;setTab:(n:number)=>void;stale:boolean;onEdit:(id:string)=>void;checkin?:(plan:string,tasks:CheckinTask[],portfolioSelection:AppliedPortfolioRef|null,portfolioBlocked:boolean,onAdoption:(value:AdoptionView)=>void)=>ReactNode;token?:string|null;caseId?:string}) {
   const heading=useRef<HTMLHeadingElement>(null);
   const comparison=usePortfolioComparison(view,token,caseId,stale,actionFlow?.selection);
   const selectedPlan=comparison.plan, selectedPortfolio=comparison.portfolio, setSelectedPlan=comparison.selectPlan;
@@ -95,10 +96,10 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
   }:null;
   const generated=!!reviewFlow.review?.final&&reviewFlow.review.is_current&&sameReviewBasis(reviewFlow.review.final.basis,basis)&&!stale;
   const openConsultation=()=>{setTab(4);setConsultFocus(true);};
-  useEffect(()=>{if(!consultFocus||tab!==4)return;const frame=requestAnimationFrame(()=>{
+  useEffect(()=>{if((!consultFocus&&!chatHandoff)||tab!==4)return;const frame=requestAnimationFrame(()=>{
     document.querySelector<HTMLElement>("#dion-portfolio-review h2")?.focus();
     document.getElementById("dion-portfolio-review")?.scrollIntoView({block:"start"});setConsultFocus(false);
-  });return()=>cancelAnimationFrame(frame);},[consultFocus,tab]);
+  });return()=>cancelAnimationFrame(frame);},[consultFocus,tab,chatHandoff]);
   const [assetReferenceSelection,setAssetReferenceSelection]=useAssetReferenceSelection(view.sourceSignature);
   const checkinRef=useRef<HTMLDivElement>(null);
   const [adoption, setAdoption] = useState<AdoptionView | null>(null);
@@ -199,7 +200,7 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
     
     {tab===3 && <><div className="d-plan-row"><div><strong>{planName(selectedPlan)} · 상품 정보</strong><button className="d-text-button" onClick={()=>setTab(2)}>투자구성 비교로 돌아가기</button>{selectedPortfolio&&<button className="d-secondary" disabled={comparison.blocked} onClick={()=>setTab(4)}>반영한 포트폴리오 확인 →</button>}</div><PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/></div><ProductAllocation evidenceAccess={evidenceAccess} stale={stale} review={productScreenReview} selectedPlan={selectedPlan} evaluationOn={textValue(object(result.context).evaluation_on)} onEdit={onEdit}/></>}
     {tab===3&&<div className="d-result-cta"><button type="button" className="d-primary" onClick={openConsultation}>DION과 상담하기</button><p>1~4 확인 후 상담과 변경 검토를 거쳐 최종 생성을 요청해요.</p></div>}
-    <div hidden={tab!==4}><PortfolioReviewFlow visited={visited} selectionBlocked={comparison.blocked} flow={reviewFlow} basis={basis} view={view} token={token} caseId={caseId} stale={stale} doc={sourceDoc} onTab={setTab} onOpenRun={onOpenRun??(async()=>{})} onReadRun={onReadRun??onOpenRun??(async()=>{})} onPrepared={r=>onReviewResume?.(r)} onAdopt={focusAdoption}/></div>
+    <div hidden={tab!==4}><PortfolioReviewFlow chatHandoff={chatHandoff} visited={visited} selectionBlocked={comparison.blocked} flow={reviewFlow} basis={basis} view={view} token={token} caseId={caseId} stale={stale} doc={sourceDoc} onTab={setTab} onOpenRun={onOpenRun??(async()=>{})} onReadRun={onReadRun??onOpenRun??(async()=>{})} onPrepared={r=>onReviewResume?.(r)} onAdopt={focusAdoption}/></div>
     {tab===4 && <><ChoiceStatus plan={selectedPlan} portfolio={selectedPortfolio} draft={comparison.draft}
       stored={comparison.saved} adoption={adoption} runId={view.runId} evaluationOn={textValue(object(result.context).evaluation_on)}
       planMonth={textValue(selectedRow?.period)} recordMonth={recordMonth??thisMonth()} onJump={()=>tasksRef.current?.scrollIntoView({behavior:"smooth",block:"start"})}/><ResultTiles row={selectedRow} month={selectedMonth} totalAssets={totalAssets}/>
