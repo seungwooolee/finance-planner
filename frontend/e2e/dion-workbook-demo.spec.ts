@@ -7,10 +7,14 @@ const picker = (page: Page) => page.getByRole("dialog",{name:"요즘 나의 생�
 function fields(doc: {raw_bundle: {answers: {envelope: {question_ref: {design_id:string}; fields: Record<string, {raw_value: unknown; state:string}>}}[]}}, id: string) {
   return doc.raw_bundle.answers.find(r=>r.envelope.question_ref.design_id===id)!.envelope.fields;
 }
-async function expectPreviousInvestmentScreen(page: Page) {
+async function expectStandardInvestmentCards(page: Page) {
   await expect(page.getByRole("heading", {name:"나의 투자 기준 · P1~P5", exact:true})).toBeVisible();
   await expect(page.locator("[data-portfolio-type]")).toHaveCount(3);
-  await expect(page.getByRole("table", {name:"투자 성향별 목표 비중"})).toHaveCount(0);
+}
+async function expectWorkbookTargets(page: Page) {
+  await expect(page.getByRole("table",{name:"투자 성향별 목표 비중"}).locator("tbody tr")).toHaveText([
+    "안정 추구형20%0%0%80%", "중립형30%20%20%30%", "위험 추구형20%35%35%10%",
+  ]);
 }
 
 test("the public picker switches only the two demonstrations, then restores the draft", async ({page})=>{
@@ -44,7 +48,24 @@ test("the public picker switches only the two demonstrations, then restores the 
 
   const resultNav = page.getByRole("navigation", {name:"빠른 결과 5뷰"});
   await resultNav.getByRole("button",{name:"투자구성",exact:true}).click();
-  await expectPreviousInvestmentScreen(page);
+  await expectStandardInvestmentCards(page);
+  await expectWorkbookTargets(page);
+  const targets = page.getByRole("article",{name:"엑셀 투자구성 목표 비중"});
+  const reference = page.getByRole("article",{name:"선택한 시연 투자구성"});
+  const risk = targets.getByRole("button",{name:"위험 추구형",exact:true});
+  await risk.click();
+  await expect(risk).toHaveAttribute("aria-pressed","true");
+  await targets.getByRole("button",{name:/선택한 시연 구성의 상품 보기/}).click();
+  await expect(reference.getByRole("rowheader")).toHaveText(["채권","국내주식","미국주식","현금성 자산"]);
+  const riskRows = reference.locator("tbody tr");
+  await expect(riskRows.nth(0)).toContainText(/20%.*KODEX 단기채권.*153130/);
+  await expect(riskRows.nth(1)).toContainText(/35%.*KODEX 200.*069500/);
+  await expect(riskRows.nth(2)).toContainText(/35%.*ACE 미국S&P500.*360200/);
+  await expect(riskRows.nth(3)).toContainText(/10%.*KODEX 머니마켓액티브.*488770/);
+  await expect(reference.getByRole("link",{name:/공식 상품 자료/})).toHaveCount(4);
+  await resultNav.getByRole("button",{name:"결과·다음 행동",exact:true}).click();
+  await expect(reference.getByRole("heading",{name:"위험 추구형 · 시연 투자구성"})).toBeVisible();
+  await expect(reference.locator("tbody tr")).toHaveCount(4);
 
   await page.setViewportSize({width:390,height:844});
   await launch.click();
@@ -112,7 +133,21 @@ test("the public picker switches only the two demonstrations, then restores the 
   await expect(page.getByText(/두 월별 후보 확인 대기/)).toBeVisible();
   await expect(page.getByRole("region",{name:"두 재무안 비교",exact:true})).toHaveCount(0);
   await resultNav.getByRole("button",{name:"투자구성",exact:true}).click();
-  await expectPreviousInvestmentScreen(page);
+  await expectStandardInvestmentCards(page);
+  await expectWorkbookTargets(page);
+
+  await expect(rendered.getByRole("article", {name:"투자 선호 응답"})).toBeVisible();
+  await expect(rendered.locator("[data-portfolio-type]")).toHaveCount(3);
+  await expect(rendered.locator('[data-portfolio-apply="BALANCED"]')).toBeDisabled();
+  await expect(targets.getByRole("button",{name:"위험 추구형",exact:true})).toHaveAttribute("aria-pressed","false");
+  await targets.getByRole("button",{name:"안정 추구형",exact:true}).click();
+  await resultNav.getByRole("button", {name:"상품 정보", exact:true}).click();
+  await expect(reference.getByRole("heading",{name:"안정 추구형 · 시연 투자구성"})).toBeVisible();
+  await expect(reference.getByRole("rowheader")).toHaveText(["채권","현금성 자산"]);
+  await expect(reference.locator("tbody tr").nth(1)).toContainText(/80%.*488770/);
+  const products = rendered.getByRole("region", {name:"상품 적합성·배분 검토"});
+  await expect(products.getByRole("heading", {name:"월 투자예산 확인 필요"})).toBeVisible();
+  await expect(products.getByText(/전액.*(?:미배분|현금 대기자금)|투자 후보 금액을 현금 대기자금/)).toHaveCount(0);
 
   await launch.click();
   await picker(page).getByRole("button",{name:"내 입력으로 복귀",exact:true}).click();
@@ -161,4 +196,7 @@ test("manual amounts survive missing months, and matching months restore the cal
   await expect(page.locator(".d-metric").filter({hasText:"대출 상환 후 남는 돈"})).toContainText("140");
   await expect(page.locator(".d-metric").filter({hasText:"저축·투자까지 반영하고 남는 돈"})).toContainText("확인 대기");
   await expect(page.getByText("은퇴기 가상 사례 · 계산에 사용한 가정",{exact:true})).toHaveCount(0);
+  await page.getByRole("navigation",{name:"빠른 결과 5뷰"}).getByRole("button",{name:"투자구성",exact:true}).click();
+  await expectStandardInvestmentCards(page);
+  await expect(page.getByRole("table",{name:"투자 성향별 목표 비중"})).toHaveCount(0);
 });

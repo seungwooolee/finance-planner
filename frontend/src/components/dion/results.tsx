@@ -1,5 +1,7 @@
 "use client";
 
+import type { WorkbookPortfolioTarget } from "@/lib/dion/workbook-scenario-targets";
+import { WorkbookPortfolioChoices, WorkbookPortfolioProducts } from "./workbook-portfolio";
 import type { Scenario } from "./scenario-picker";
 
 import { useAssetReferenceSelection } from "./use-asset-reference-selection";
@@ -75,6 +77,7 @@ export function Results({view,demoScenario,deep,tab,setTab:changeTab,stale,onEdi
   const [visited,setVisited]=useState<number[]>([tab]);
   const [consultFocus,setConsultFocus]=useState(false);
   const [compositionFocus,setCompositionFocus]=useState(0);
+  const [workbookTarget,setWorkbookTarget]=useState<WorkbookPortfolioTarget|null>(null);
   useEffect(()=>{
     if(!compositionFocus) return;
     const detail=document.getElementById("dion-selected-composition");
@@ -173,9 +176,12 @@ export function Results({view,demoScenario,deep,tab,setTab:changeTab,stale,onEdi
         return candidates.length ? <PlanComparison candidates={candidates} selected={selectedPlan} onSelect={setSelectedPlan} goals={goalsCard} basis={{runId:view.runId,inputVersion}}/> : <>{goalsCard}<Missing row={plans} title="두 월별 후보 확인 대기"/><button className="d-secondary" onClick={()=>onEdit("ASSUMPTIONS")}>필요한 가정 확인 →</button></>;})()}
     </>}
     {tab===1 && <ResultBasis id="OUT-05" result={result} source={sourceDoc} inputVersion={view.serverVersion??view.localVersion} stale={stale} onEdit={onEdit}/>}
+    {tab===2 && workbookGoal && <WorkbookPortfolioChoices selected={workbookTarget} onSelect={setWorkbookTarget} onProducts={()=>setTab(3)}/>}
     {tab===2 && <InvestmentFollowup review={visible("OUT-06")} onEdit={onEdit}/>}
     {tab===2 && <PortfolioChoice key={selectedPlan} doc={sourceDoc} review={visible("OUT-06")} flow={flow} planRow={selectedRow} selectedPlan={selectedPlan} onPlan={setSelectedPlan} chosen={selectedPortfolio} onChoose={id=>{void comparison.choose(id).then(ok=>{if(ok)setCompositionFocus(n=>n+1);});}} onProducts={()=>setTab(3)} onRecalculate={onRecalculate} blocked={comparison.blocked} onEdit={onEdit}/>}
     
+    {workbookGoal && (tab===3 || (tab===4 && workbookTarget)) && <WorkbookPortfolioProducts
+      selected={workbookTarget} products={list(productReview.products)} onChoose={()=>setTab(2)}/>}
     {tab===3 && <><div className="d-plan-row"><div><strong>{planName(selectedPlan)} · 상품 정보</strong><button className="d-text-button" onClick={()=>setTab(2)}>투자구성 비교로 돌아가기</button>{selectedPortfolio&&<button className="d-secondary" disabled={comparison.blocked} onClick={()=>setTab(4)}>반영한 포트폴리오 확인 →</button>}</div><PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/></div><ProductAllocation evidenceAccess={evidenceAccess} stale={stale} review={selectedReview} selectedPlan={selectedPlan} evaluationOn={textValue(object(result.context).evaluation_on)} onEdit={onEdit}/></>}
     {tab===3&&<div className="d-result-cta"><button type="button" className="d-primary" onClick={openConsultation}>DION과 상담하기</button><p>1~4 확인 후 상담과 변경 검토를 거쳐 최종 생성을 요청해요.</p></div>}
     {tab===4 && <><ChoiceStatus generated={generated} plan={selectedPlan} portfolio={selectedPortfolio} draft={comparison.draft}
