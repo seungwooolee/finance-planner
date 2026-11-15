@@ -2,6 +2,8 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "git": {
     "deploymentEnabled": {
+      "codex/chat-only-assistant-20261115": false,
+
       "codex/reference-chart-connect-20261115": false,
       "codex/portfolio-detail-selection-20261115": false,
       "codex/login-calculation-20261115": false,
