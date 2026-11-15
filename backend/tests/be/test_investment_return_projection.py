@@ -44,9 +44,33 @@ def test_preview_hash_prevents_tampering_and_invalid_rate_is_not_calculated(ctx)
     assert response.status_code == 200, response.text
     result = response.json()
     assert result["run_id"] is None and result["comparison_revision"] is None
+    assert "asset_rates" not in result
     assert result["rows"][0]["monthly_gain_krw"] == "0"
     assert client.post(path, json={**request, "result_sha256": "0" * 64}).status_code == 409
     for invalid in ("", 0, "101", "1e2"):
         assert client.post(path, json={**request, "annual_rate_percent": invalid}).status_code == 422
     contract = client.get("/openapi.json").json()
     assert contract["paths"][path]["post"]["requestBody"]["required"]
+
+
+def test_preview_accepts_asset_assumptions_only_for_products_in_the_selected_allocation(ctx):
+    client, *_ = ctx
+    doc = json.loads((Path(__file__).resolve().parents[3] /
+                     "frontend/src/lib/dion/product-review-scenario.json").read_text(encoding="utf-8"))["document"]
+    preview = client.post("/api/fe/v1/preview", json=doc).json()
+    path = "/api/fe/v1/preview/investment-return-projection"
+    request = {"document": doc, "input_hash": preview["input_hash"], "result_sha256": preview["result_sha256"],
+               "strategy_id": "STABILITY_FIRST", "portfolio_type": "BALANCED", "repeat_months": 120}
+    rates = {"153130": "0", "069500": "0", "360200": "JPM_2027_US_LARGE_CAP_KRW"}
+    response = client.post(path, json={**request, "asset_rates": rates})
+    assert response.status_code == 200, response.text
+    forecast = response.json()
+    assert forecast["annual_rate_percent"] is None and forecast["asset_rates"] == rates
+    assert len(forecast["rows"]) == 120
+    assert int(forecast["rows"][-1]["cumulative_gain_krw"]) > 0
+    no_bonds = {code: rate for code, rate in rates.items() if code != "153130"}
+    assert client.post(path, json={**request, "asset_rates": no_bonds}).json()["detail"] == {
+        "code": "ASSET_ASSUMPTIONS_INCOMPLETE",
+    }
+    assert client.post(path, json={**request, "asset_rates": rates, "repeat_months": 12}).status_code == 422
+    assert client.post(path, json={**request, "asset_rates": rates, "annual_rate_percent": "4"}).status_code == 422
