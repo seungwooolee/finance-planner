@@ -3,6 +3,7 @@
   "git": {
     "deploymentEnabled": {
       "codex/workbook-demo-cases-20261115": false,
+      "codex/result-readability-20261115": false,
       "codex/cohort-comparison-20261115": false,
       "codex/investment-return-chart-20261115": false,
       "codex/return-allocation-20261115": false,
