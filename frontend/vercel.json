@@ -2,7 +2,6 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "git": {
     "deploymentEnabled": {
-      "codex/dion-parallel-pr-policy-20261115": false,
       "codex/results-cleanup-20261115": false,
       "codex/ui-review-20261115": false,
       "codex/selected-asset-line-20261115": false,
@@ -58,7 +57,8 @@
       "codex/release-v0.5.0": false,
       "codex/rag-dialog-grounding-20261115": false,
       "codex/adoption-followup-20261115": false,
-      "codex/result-review-followup-20261115": false
+      "codex/result-review-followup-20261115": false,
+      "codex/dion-parallel-pr-policy-20261115": false
     }
   }
 }
