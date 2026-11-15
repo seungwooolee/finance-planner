@@ -10,7 +10,8 @@ export function AssetReferenceChart({ metrics, scope }: { metrics: AssetReferenc
     {key: "own", label: `내 현재값 · ${scope}`, color: "#5b4190"},
     ...(hasReference ? [{key: "reference", label: `조사 평균 · ${scope}`, color: "#64748b"}] : []),
   ];
-  const height = series.length * 16;
+  const rowHeight = 24;
+  const height = series.length * rowHeight;
 
   return <figure className="d-asset-ref-chart" aria-label={hasReference ? "현재 자산과 과거 조사 통계의 금액 그래프" : "현재 자산 금액 그래프"}>
     <table aria-label={hasReference ? "내 자산과 조사 평균" : "내 자산"}>
@@ -34,11 +35,15 @@ export function AssetReferenceChart({ metrics, scope }: { metrics: AssetReferenc
           })}
         </tr>
         <tr className="d-asset-compare-bars" aria-hidden="true"><td colSpan={series.length + 1}>
+          <div className="d-asset-bar-layout">
+          <div>{series.map(item => <span className="d-asset-series-key" key={item.key} style={{minHeight: rowHeight}}>
+            <i style={{background: item.color}} />{item.label}
+          </span>)}</div>
           <svg viewBox={`0 0 1000 ${height}`} preserveAspectRatio="none" height={height} data-asset-bar-pair>
             {series.map((item, index) => {
               const amount = item.key === "own" ? metric.own : metric.reference;
               const mark = assetBar(amount, axis);
-              const top = index * 16 + 3;
+              const top = index * rowHeight + 7;
               return <g key={item.key}>
                 <rect x="0" y={top} width="1000" height="10" rx="4" fill="#eff0f5"/>
                 {mark && amount !== "0" && <rect x={mark.x} y={top} width={mark.width} height="10" rx="4" fill={item.color} data-bar-series={item.key}/>}
@@ -48,6 +53,7 @@ export function AssetReferenceChart({ metrics, scope }: { metrics: AssetReferenc
             })}
             {axis.min < 0n && <line x1={zero} x2={zero} y1="0" y2={height} stroke="#7b8190" vectorEffect="non-scaling-stroke"/>}
           </svg>
+          </div>
         </td></tr>
       </tbody>)}
     </table>

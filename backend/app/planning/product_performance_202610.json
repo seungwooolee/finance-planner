@@ -1,0 +1,23 @@
+{
+  "period_end": "2026-10-31",
+  "published_on": "2026-11-04",
+  "basis": "TRAILING_YEAR_PRETAX_DISTRIBUTIONS_REINVESTED",
+  "products": {
+    "069500": {
+      "percent": "59.04",
+      "url": "https://m.samsungfund.com/sheet/20261104/2ETF01_20261031.pdf"
+    },
+    "153130": {
+      "percent": "2.37",
+      "url": "https://m.samsungfund.com/sheet/20261104/2ETF35_20261031.pdf"
+    },
+    "214980": {
+      "percent": "2.46",
+      "url": "https://m.samsungfund.com/sheet/20261104/2ETF48_20261031.pdf"
+    },
+    "325020": {
+      "percent": "42.81",
+      "url": "https://m.samsungfund.com/sheet/20261104/2ETFB9_20261031.pdf"
+    }
+  }
+}

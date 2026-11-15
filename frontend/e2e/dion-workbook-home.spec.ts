@@ -35,7 +35,9 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
     await rendered.getByText("개인별 검토 대상 29종", {exact:true}).click();
     const screening = rendered.getByRole("table", {name:"개인별 상품 검토 결과"});
     await expect(screening.locator("tbody tr")).toHaveCount(29);
-    await expect(screening.getByRole("row").filter({hasText:"273130"})).toContainText("확인이 필요해요");
+    await expect(screening.getByRole("row").filter({hasText:"273130"})).not.toContainText("투자구성 편입 조건 통과");
+    await expect(rendered.locator("[data-candidate-code]")).toHaveCount(29);
+    await expect(rendered.locator('[data-candidate-code="325020"]')).toContainText("42.81%");
     await expect(screening.getByText("0091C0", {exact:true})).toHaveCount(0);
     await resultTabs.getByRole("button", {name:"결과·다음 행동", exact:true}).click();
     await expect(rendered.getByRole("heading", {name:"나의 재무설계 제안서"})).toBeVisible();
@@ -49,7 +51,7 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   await dialog.getByRole("button", {name:"사회초년생 불러오기", exact:true}).click();
   const early = await earlyPending;
   expect(early.ok()).toBe(true);
-  expect(early.request().postDataJSON().context.evaluation_on).toBe("2026-10-31");
+  expect(early.request().postDataJSON().context.evaluation_on).toBe("2026-11-30");
   const earlyPayload = await early.json();
   expect(earlyPayload.storage).toBe("NOT_SAVED");
   expect(earlyPayload.result.results["OUT-02"].net_worth.value).toBe("7000000");
@@ -62,8 +64,11 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   expect(earlyPlans.candidates[0].rows[0].new_investment_krw).toBe("399500");
   expect(earlyPlans.candidates[1].rows[0].new_investment_krw).toBe("639200");
   const earlyProducts = earlyPayload.result.results["OUT-06"];
-  expect(earlyProducts.reason_codes).toContain("POLICY_DISCLOSURE_STALE");
-  expect(earlyProducts.candidates[0].rows[0]).toMatchObject({allocated_total_krw:"0", unallocated_krw:"399500"});
+  expect(earlyProducts.reason_codes).not.toContain("POLICY_DISCLOSURE_STALE");
+  const earlyMonth = earlyProducts.candidates[0].rows[0];
+  expect(earlyMonth.period).toBe("2026-12");
+  expect(BigInt(earlyMonth.allocated_total_krw)).toBeGreaterThan(0n);
+  expect(BigInt(earlyMonth.allocated_total_krw) + BigInt(earlyMonth.unallocated_krw)).toBe(399500n);
   await expect(rendered.getByText(/109만 9천\s*원/).first()).toBeVisible();
   await expect(assumptions).toHaveCount(0);
   await expect(rendered.getByRole("button",{name:"재계산",exact:true})).toHaveCount(0);
@@ -73,6 +78,12 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   await expect(rendered.getByRole("button",{name:"재계산",exact:true})).toHaveCount(0);
   await expect(rendered.getByRole("rowheader", {name:/^시연용 목돈 준비/})).toBeVisible();
   await checkPortfolioViews();
+  await resultTabs.getByRole("button", {name:"상품 정보", exact:true}).click();
+  await expect(rendered.getByRole("article", {name:"우선 검토 상품"})).toBeVisible();
+  await expect(rendered.locator('[data-product-empty="DATE"]')).toHaveCount(0);
+  const bonds = rendered.getByRole("region", {name:"채권 비교 후보", exact:true});
+  await expect(bonds.locator("[data-candidate-code]").first()).toHaveAttribute("data-candidate-code", "214980");
+  await expect(bonds.locator("[data-candidate-code]").nth(1)).toHaveAttribute("data-candidate-code", "153130");
 
   await page.setViewportSize({width:390,height:844});
   await launch.click();

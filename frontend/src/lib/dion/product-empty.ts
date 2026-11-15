@@ -22,7 +22,7 @@ export function productEmptyCause(review: Obj, evaluationOn: string): ProductEmp
 // Only explain a backend reason; never change dates, eligibility or money.
 export function policyDateMessage(review: Obj, evaluationOn: string, period?: string): string {
   const policy = obj(review.product_policy), from = text(policy.reviewed_on), until = text(policy.valid_until);
-  if (evaluationOn && from && evaluationOn < from) return `이 사례의 기준일(${evaluationOn})이 상품 정책 검토일(${from})보다 앞이라 상품을 배분하지 않았어요. 과거 사례는 그대로 보존해요. 현재 조건의 검토는 새 진단에서 오늘 기준으로 입력해주세요.`;
+  if (evaluationOn && from && evaluationOn < from) return `이 결과의 기준일 ${evaluationOn}에 적용할 상품 배분 자료가 없어요. ${from} 이후 기준일로 새 결과를 계산하면 해당 시점의 상품을 검토할 수 있어요.`;
   if (evaluationOn && until && evaluationOn > until) return `진단 기준일(${evaluationOn})이 상품 정책 유효기한(${until}) 이후예요. 서비스에서 정책·상품 자료를 갱신한 뒤 다시 검토해야 해요. 설문을 다시 입력할 필요는 없어요.`;
   if (period && until && `${period}-01` > until) return `배분 대상 월(${period})이 상품 정책 유효기한(${until}) 이후예요. 해당 월은 서비스의 정책·상품 자료 갱신을 기다려요.`;
   return "상품 정책 날짜를 확인해야 해요. 서비스에서 정책·상품 자료를 확인한 뒤 다시 검토해요.";
