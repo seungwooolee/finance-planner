@@ -63,6 +63,5 @@ test('proposal shows goal_omissions reasons and keeps the original goal result',
   await expect(known).toContainText('원래 목표 결과: 목표 30만원');
   await expect(box.locator('[data-omission-reason="FUTURE_ENGINE_CODE"]')).toContainText('사유 코드 FUTURE_ENGINE_CODE');
   await expect(box).toContainText('목표가 삭제되거나 투자 불가로 판정된 것이 아니에요');
-  await page.getByRole('article',{name:'재무설계 제안서'}).getByText('계산 방식 자세히',{exact:true}).click();
   await expect(page.getByRole('list',{name:'참고 비교의 한계'})).toContainText('첫 계획 월의 금액이 매달 같다고 가정');
 });

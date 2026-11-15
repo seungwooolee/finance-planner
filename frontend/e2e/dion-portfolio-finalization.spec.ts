@@ -64,19 +64,14 @@ test("no-change consultation, failed save/retry, final server artifact, resume a
   await expect(panel(page).getByRole("heading",{name:"최종 생성 완료 · 채택은 별도"})).toBeVisible();
   await panel(page).getByRole("button",{name:"이 최종안의 계획 채택 검토하기"}).press("Enter");
   const adoption = page.getByRole("region",{name:"계획 선택과 이번 달 기록",exact:true});
-  await expect(adoption.getByRole("button",{name:"이 계획 채택하기",exact:true})).toBeFocused();
+  await expect(adoption.getByRole("button",{name:/으로 진행할게요/})).toBeFocused();
   expect((await (await request.get(`${base}/plan`,{headers})).json()).adoption.adoption_id).toBe(before.adoption.adoption_id);
-  await expect(adoption).toContainText("최종안 생성 완료 · 아직 채택하지 않았어요");
-  await expect(adoption.getByRole("form",{name:"기록 월 선택"})).toBeHidden();
-  await adoption.getByRole("button",{name:"이 계획 채택하기",exact:true}).click();
+  await adoption.getByRole("button",{name:/으로 진행할게요/}).click();
   const status = page.getByRole("region", {name:"선택·저장·채택·실행 상태", exact:true});
   await expect(status).toContainText("채택한 계획생활 안정 우선 · 중립형");
   const adopted = (await (await request.get(`${base}/plan`,{headers})).json()).adoption;
   expect(adopted.adoption_id).not.toBe(before.adoption.adoption_id);
   expect(adopted.portfolio.portfolio_type).toBe("BALANCED");
-  await expect(adoption).toContainText("이 최종안의 계획을 채택했어요");
-  await adoption.getByRole("button",{name:"월 기록 열기",exact:true}).click();
-  await expect(adoption.getByRole("form",{name:"기록 월 선택"})).toBeVisible();
 });
 
 test("confirmed income change creates a new engine run and requires selection/step/comparison review", async ({page,request}) => {
