@@ -4,6 +4,12 @@ import { allocationRemainder, allocationTargetSlices, assetGroup, bpsLabel, cash
 import { DonutLegend } from './donut';
 import { sourceHref } from './scheme-evidence';
 
+const holdReasons = [
+  ["risk_limits", "손실·집중 한도로 줄인 금액"],
+  ["review_conditions", "기간·상품 등 검토 조건으로 보류한 금액"],
+  ["rounding", "원 단위 내림 잔액"],
+] as const;
+
 function candidateShare(amount: Json | undefined, budget: Json | undefined) {
   return isWon(amount) && isWon(budget) && BigInt(budget) > 0n ? bpsLabel(shareBps(amount, budget)) : '확인 대기';
 }
@@ -24,6 +30,11 @@ export function PortfolioChoiceDetail({ rows, products, type, messages, target }
       const targets = allocationTargetSlices({target_mix_bps: view.target_mix_bps ?? target ?? null});
       const reasons = Array.isArray(view.reason_codes) ? view.reason_codes : [];
       const held = remainder.find(item => item.key === "HELD");
+      const breakdown = object(view.held_breakdown_krw);
+      const heldReasons = holdReasons.flatMap(([key, label]) => {
+        const amount = breakdown[key];
+        return isWon(amount) && BigInt(amount) > 0n ? [{key, label, amount}] : [];
+      });
       return <section key={`${textValue(row.period)}:${index}`} aria-label={`${textValue(row.period) || '기준월 미확인'} 구성 상세`}>
         <h4>{textValue(row.period) || '기준월 확인 대기'}</h4>
         <dl className="d-composition-totals">
@@ -60,7 +71,9 @@ export function PortfolioChoiceDetail({ rows, products, type, messages, target }
         {allocations.length === 0 && <p className="d-composition-reason">{view.cash_only === true ? '상품 배분 없이 후보금을 현금 대기자금으로 남겼어요.' : '이 구성에 표시할 상품 배분 내역이 없어요.'}</p>}
         {reasons.length > 0 && <ul className="d-composition-hold">{reasons.map((code, i) =>
           <li key={i}>{cashWaitingText(textValue(messages[String(code)])) || '상품 검토 조건을 확인해주세요.'}</li>)}</ul>}
-        {held && BigInt(held.value) > 0n && <p className="d-inline-note">배분 보류액은 투자 기간, 손실 허용 범위와 상품 조건을 적용한 뒤 배정되지 않은 돈이에요.</p>}
+        {heldReasons.length > 0 ? <dl className="d-composition-totals" aria-label="배분 보류액 내역">
+          {heldReasons.map(({key, label, amount}) => <div key={key}><dt>{label}</dt><dd>{formatKrw(amount)}</dd></div>)}
+        </dl> : held && BigInt(held.value) > 0n && <p className="d-inline-note">배분 보류액은 투자 기간, 손실 허용 범위와 상품 조건을 적용한 뒤 배정되지 않은 돈이에요.</p>}
       </section>;
     })}
   </div>;

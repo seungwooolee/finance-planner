@@ -30,6 +30,7 @@ def example():
 ])
 def test_dated_plan_compounds_prior_balance_and_excludes_unallocated(rate, value, monthly, gain):
     scenario = investment_return_projection(example(), "STABILITY_FIRST", "RETURN", rate)
+    assert scenario["first_year"] is None
     first, _, last = scenario["rows"]
     assert first["value_krw"] == "10000" and first["monthly_gain_krw"] == "0"
     assert first["unallocated_krw"] == "1000"
@@ -48,6 +49,24 @@ def test_first_month_repeat_is_explicit_and_survives_fractional_valuation():
     assert rows[-1]["cumulative_contributions_krw"] == "120000"
     assert int(rows[-1]["value_krw"]) == expected.numerator // expected.denominator
     assert sum(int(r["monthly_gain_krw"]) for r in rows) == int(rows[-1]["cumulative_gain_krw"])
+    # (123,497 - 120,000) / 120,000 = 2.91416...% with monthly end-of-month deposits.
+    assert scenario["first_year"] == {"period": "2027-11", "rate_on_contributions_percent": "2.91"}
+
+
+def test_repeat_uses_first_funded_month_after_a_verified_zero_budget():
+    result = example()
+    plan = result["results"]["OUT-05"]["candidates"][0]["rows"]
+    products = result["results"]["OUT-06"]["candidates"][0]["rows"]
+    zero = products[0]["portfolio_type_views"]["RETURN"]
+    plan[0]["new_investment_krw"] = "0"
+    zero.update(scenario_budget_krw="0", allocated_total_krw="0", unallocated_krw="0", allocations=[])
+    forecast = investment_return_projection(result, "STABILITY_FIRST", "RETURN", "0", 12)
+    assert forecast["first_allocation_period"] == "2027-01"
+    assert forecast["rows"][0]["contribution_krw"] == "20000"
+    assert forecast["first_year"] == {"period": "2027-12", "rate_on_contributions_percent": "0.00"}
+    zero["selectable"] = False
+    with pytest.raises(ProjectionUnavailable, match="ALLOCATION_UNAVAILABLE"):
+        investment_return_projection(result, "STABILITY_FIRST", "RETURN", "0", 12)
 
 
 def test_verified_zero_and_missing_allocation_are_distinct():

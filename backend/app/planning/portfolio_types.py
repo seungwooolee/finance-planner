@@ -5,7 +5,7 @@ Types use reviewed slot tables, with an explicit return-seeking target for P3–
 a type view only changes which reviewed slot table is laid over the products the customer is
 already eligible for. Views are comparisons; the customer's own preference stays the allocation.
 """
-VERSION = "DION-PORTFOLIO-TYPES-0.4"
+VERSION = "DION-PORTFOLIO-TYPES-0.5"
 STATE = "REVIEWED_FOR_PREVIEW"  # 2026-11-13: user delegated the decision; kept as proposed (docs/integration/2026-11-13-stage4-decisions.md).
 REPRESENTATIVE_PREFERENCE = {
     "STABLE": "PREF_LEAN_STABILITY",

@@ -21,6 +21,8 @@ def test_saved_scenario_uses_exact_selection_and_keeps_snapshots_unchanged(ctx):
     assert forecast["comparison_revision"] == 1 and forecast["run_id"] == run["run_id"]
     assert forecast["rows"][0]["contribution_krw"] == month["allocated_total_krw"]
     assert forecast["rows"][0]["unallocated_krw"] == month["unallocated_krw"]
+    assert forecast["first_year"]["period"] == forecast["rows"][11]["period"]
+    assert forecast["first_year"]["rate_on_contributions_percent"] == "5.69"
     assert client.get(endpoint(base, run)).json() == saved
     assert client.get(f"{base}/analyses/{run['run_id']}").json() == run
     assert client.post(path, json={**request, "portfolio_type": "STABLE"}).status_code == 409

@@ -11,13 +11,14 @@ test("the final portfolio uses its selected allocation for an explicit signed re
   await expect(chart).toContainText("투자구성을 선택해 포트폴리오에 반영");
   await tabs.nth(2).click();
   await page.locator('[data-portfolio-apply="RETURN"]').click();
+  await expect(page.locator("#dion-selected-composition").getByText("손실·집중 한도로 줄인 금액").first()).toBeVisible();
   await tabs.nth(4).click();
   const rate = chart.getByLabel("연 수익률 가정 (%)",{exact:true});
   await expect(rate).toHaveValue("");
   await chart.getByRole("button",{name:"가정으로 전망 보기",exact:true}).click();
   await expect(chart.getByRole("alert")).toContainText("연 수익률 가정");
   await rate.fill("-12");
-  await chart.getByRole("combobox",{name:"전망 기간",exact:true}).selectOption("12");
+  await expect(chart.getByRole("combobox",{name:"전망 기간",exact:true})).toHaveValue("12");
   const response = page.waitForResponse(r=>r.url().endsWith("/preview/investment-return-projection")&&r.request().method()==="POST");
   await chart.getByRole("button",{name:"가정으로 전망 보기",exact:true}).click();
   const res = await response;
@@ -27,6 +28,8 @@ test("the final portfolio uses its selected allocation for an explicit signed re
   expect(result.rows).toHaveLength(12);
   expect(BigInt(result.rows[11].cumulative_gain_krw)).toBeLessThan(0n);
   await expect(chart.getByRole("img")).toBeVisible();
+  await expect(chart.getByText("1년 예상 수익률", {exact:false})).toBeVisible();
+  await expect(chart.getByText(`${result.first_year.rate_on_contributions_percent}%`, {exact:true})).toBeVisible();
   await chart.getByText("월별 수치 표 · 정확한 원 단위",{exact:true}).click();
   await expect(chart.locator("tbody tr")).toHaveCount(12);
   await expect(chart.locator("tbody tr").last().locator("td").last()).toHaveText(

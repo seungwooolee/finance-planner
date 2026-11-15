@@ -26,6 +26,9 @@ def test_three_views_exact_money_and_bounded_candidates():
     views = month["portfolio_type_views"]
     assert [v["target_cash_krw"] for v in views.values()] == ["210000", "120000", "30000"]
     assert [v["held_krw"] for v in views.values()] == ["0", "0", "144480"]
+    assert views["RETURN"]["held_breakdown_krw"] == {
+        "risk_limits": "144480", "review_conditions": "0", "rounding": "0",
+    }
     risk = views["RETURN"]
     assert risk['target_mix_bps'] == {'BOND': 2000, 'KR_EQUITY': 3500, 'US_EQUITY': 3500, 'CASH': 1000}
     assert (risk['target_cash_krw'], risk['held_krw']) == ('30000', '144480')
@@ -46,6 +49,7 @@ def test_restrictions_unknown_and_host_gate_apply_to_every_comparison():
     fx = current_review(doc)['candidates'][0]['rows'][0]
     assert fx['comparison_groups'][-1]['product_codes'] == []
     assert all(a['code'] != '360200' for v in fx['portfolio_type_views'].values() for a in v['allocations'])
+    assert fx['portfolio_type_views']['RETURN']['held_breakdown_krw']['review_conditions'] == '48810'
     unknown = current_product_document()
     change(unknown, 'D19', 'product_understanding', {'state': 'UNKNOWN', 'raw_value': None, 'unit': 'TEXT'})
     blocked = current_review(unknown)
@@ -65,6 +69,9 @@ def test_restrictions_unknown_and_host_gate_apply_to_every_comparison():
             risk = row['portfolio_type_views']['RETURN']
             budget = int(row['scenario_budget_krw'])
             assert int(risk['target_cash_krw']) == budget // 10
+            assert risk["held_breakdown_krw"] == {
+                "risk_limits": "0", "review_conditions": risk["held_krw"], "rounding": "0",
+            }
             assert int(risk['held_krw']) + int(risk['target_cash_krw']) == budget
 
 
@@ -198,8 +205,8 @@ def test_dated_disclosures_feed_variants_and_keep_review_gates():
     assert [a["code"] for a in row["allocations"]] == ["153130", "069500", "360200"]
     expected = {
         "STABLE": ("469830", "90000", "4500"),
-        "BALANCED": ("114260", "159930", "59967"),
-        "RETURN": ("436140", "117330", "59970"),
+        "BALANCED": ("153130", "180000", "58500"),
+        "RETURN": ("153130", "125520", "59967"),
     }
     for type_id, (code, allocated, adverse_loss) in expected.items():
         view = row["portfolio_type_views"][type_id]
@@ -207,6 +214,7 @@ def test_dated_disclosures_feed_variants_and_keep_review_gates():
         assert view["allocated_total_krw"] == allocated
         assert view["stress_review"]["scenario_loss_krw_ceil"] == adverse_loss
         assert int(view["unallocated_krw"]) + int(allocated) == 300000
+        assert sum(map(int, view["held_breakdown_krw"].values())) == int(view["held_krw"])
     assert row["portfolio_type_views"]["BALANCED"]["allocations"][1]["code"] == "102110"
 
     nearer = [{"fund_id": "monthly-one", "availability_date": field("2026-10-01", "DATE"),

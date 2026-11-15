@@ -4,7 +4,7 @@ import { type FormEvent, useEffect, useId, useRef, useState } from "react";
 import { formatKrw } from "@/lib/dion/money-format";
 import { list, object, textValue, won } from "@/lib/dion/model";
 import { portfolioNames } from "@/lib/dion/portfolio-comparison";
-import { isWon } from "@/lib/dion/result-visual";
+import { investmentDisplayMonth, isWon } from "@/lib/dion/result-visual";
 import { planName } from "./plan-comparison";
 import { sourceHref } from "./scheme-evidence";
 import type { ViewResult } from "./results";
@@ -22,6 +22,7 @@ type Forecast = {
   annual_rate_percent: string | null; repeat_months: number | null; state: "CALCULATED" | "PARTIAL"; stopped_period: string | null;
   asset_rates?: Record<string,string>; asset_assumptions_version?: string;
   first_allocation_period: string; policy_version: string; types_version: string; catalog_version: string; rows: Row[];
+  first_year?: {period: string; rate_on_contributions_percent: string} | null;
 };
 const ratePattern = /^-?(?:(?:[0-9]|[1-9][0-9])(?:\.[0-9]{1,4})?|100(?:\.0{1,4})?)$/;
 const integer = (v: unknown): v is string => typeof v === "string" && /^-?[0-9]{1,64}$/.test(v);
@@ -38,7 +39,7 @@ export function InvestmentReturnChart({view, plan, portfolio, revision, blocked,
   const [rate, setRate] = useState("");
   const [assetRates, setAssetRates] = useState<Record<string,string>>({});
   const [useReference, setUseReference] = useState(false);
-  const [horizon, setHorizon] = useState("");
+  const [horizon, setHorizon] = useState("12");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [forecast, setForecast] = useState<Forecast | null>(null);
@@ -54,7 +55,7 @@ export function InvestmentReturnChart({view, plan, portfolio, revision, blocked,
   const shown = ready && forecast?.input_hash === view.inputHash ? forecast : null;
   const out = object(object(view.result.results)["OUT-06"]);
   const candidate = list(out.candidates).find(c => c.strategy_id === plan);
-  const first = list(candidate?.rows)[0];
+  const first = investmentDisplayMonth(list(candidate?.rows));
   const selection = object(object(first?.portfolio_type_views)[portfolio ?? ""]);
   const products = list(out.products);
   const allocations = list(selection.allocations).flatMap(item => {
@@ -75,8 +76,10 @@ export function InvestmentReturnChart({view, plan, portfolio, revision, blocked,
     return [{code, amount, name:textValue(product?.name) || code, group, hasResearch, research, source, fxSource, asOf: textValue(outlook.as_of)}];
   });
 
+  const canForecast = ready && allocations.length > 0 && selection.selectable === true;
+
   async function calculate(assumptions: Assumptions, months: number | null) {
-    if (!ready || active.current) return;
+    if (!canForecast || active.current) return;
     const rates = assumptions.asset_rates;
     if (rates ? !Object.values(rates).every(value=>value === usReference || ratePattern.test(value))
       : !ratePattern.test(assumptions.annual_rate_percent ?? "")) {
@@ -122,7 +125,9 @@ export function InvestmentReturnChart({view, plan, portfolio, revision, blocked,
           || (saved ? result.case_id !== caseId || result.run_id !== view.runId || result.comparison_revision !== revision || result.input_version !== view.serverVersion
             : result.case_id !== null || result.run_id !== null || result.comparison_revision !== null || result.result_sha256 !== view.resultHash || result.input_version !== view.localVersion)
           || !["CALCULATED","PARTIAL"].includes(result.state) || !Array.isArray(result.rows) || !result.rows.length
-          || !result.rows.every(r=>moneyFields.every(field=>integer(r[field])))) throw new Error("BASIS");
+          || !result.rows.every(r=>moneyFields.every(field=>integer(r[field])))
+          || (result.first_year && (result.first_year.period !== result.rows[11]?.period
+            || !/^-?\d+\.\d{2}$/.test(result.first_year.rate_on_contributions_percent)))) throw new Error("BASIS");
       if (!controller.signal.aborted) setForecast(result);
     } catch (err) {
       if (controller.signal.aborted) return;
@@ -159,21 +164,23 @@ export function InvestmentReturnChart({view, plan, portfolio, revision, blocked,
     <div className="d-card-head"><h2 id={id}>투자 기대수익률</h2></div>
     <p>{planName(plan)}{portfolio ? ` · ${portfolioNames[portfolio]}` : ""}</p>
     <p className="d-inline-note">상품에 배정된 신규 납입액으로 원금과 가정에 따른 평가액을 비교해요. 기존 보유자산·현금 대기자금·인출은 계산에서 제외해요.</p>
-    {!ready ? <p className="d-note">{!portfolio ? "투자구성을 선택해 포트폴리오에 반영하면 전망을 계산할 수 있어요."
+    {!canForecast ? <p className="d-note">{!portfolio ? "투자구성을 선택해 포트폴리오에 반영하면 전망을 계산할 수 있어요."
       : blocked ? "최신 결과와 투자구성을 확인한 뒤 전망을 계산할 수 있어요."
-      : "현재 계산과 연결된 투자구성 정보가 없어요. 최신 결과를 다시 열어주세요."}</p>
+      : !linked ? "현재 계산과 연결된 투자구성 정보가 없어요. 최신 결과를 다시 열어주세요."
+      : "계산 기준 월에 상품 배정액이 있어야 1년 수익률을 볼 수 있어요. 투자구성에서 상품 배정액과 보류 이유를 확인할 수 있어요."}</p>
       : <>
       {selection.selectable === true && isWon(selection.allocated_total_krw) && isWon(selection.unallocated_krw) &&
         <p className="d-note">{textValue(first?.period)} · 상품 배정 <strong>{formatKrw(selection.allocated_total_krw)}</strong> · 미배정 {formatKrw(selection.unallocated_krw)}</p>}
+      <p className="d-note">연 수익률 가정을 입력하면 1년 뒤 예상 평가액과 납입금 대비 손익률을 계산해요.</p>
       <form className="d-investment-return-form" onSubmit={calculateUniform}>
         <label>연 수익률 가정 (%)<input type="text" inputMode="decimal" value={rate} maxLength={9}
           onChange={e=>{setRate(e.target.value);clearForecast();}} disabled={busy} autoComplete="off" /></label>
         <label>전망 기간<select value={horizon} onChange={e=>{setHorizon(e.target.value);clearForecast();}} disabled={busy}>
           <option value="">계산된 계획 월만</option>
-          <option value="12">1년 · 첫 달 배분 유지</option>
-          <option value="36">3년 · 첫 달 배분 유지</option>
-          <option value="60">5년 · 첫 달 배분 유지</option>
-          <option value="120">10년 · 첫 달 배분 유지</option>
+          <option value="12">1년 · 기준 월 배분 유지</option>
+          <option value="36">3년 · 기준 월 배분 유지</option>
+          <option value="60">5년 · 기준 월 배분 유지</option>
+          <option value="120">10년 · 기준 월 배분 유지</option>
         </select></label>
         <div className="d-investment-return-actions">
           <button type="submit" className="d-primary" disabled={busy}>가정으로 전망 보기</button>
@@ -183,7 +190,7 @@ export function InvestmentReturnChart({view, plan, portfolio, revision, blocked,
       {selection.selectable === true && allocations.length > 0 && <details className="d-investment-return-assets">
         <summary>자산군별 수익률 가정으로 10년 보기</summary>
         <form onSubmit={calculateAssets}>
-          <p className="d-inline-note">첫 달과 같은 상품 배정액을 매달 말 납입해요. 확인된 참고값을 선택하거나 각 상품의 원화 기준 연 수익률을 입력해 주세요.</p>
+          <p className="d-inline-note">기준 월과 같은 상품 배정액을 매달 말 납입해요. 확인된 참고값을 선택하거나 각 상품의 원화 기준 연 수익률을 입력해 주세요.</p>
           <ul>{allocations.map(({code, amount, name, group, hasResearch, research, source, fxSource, asOf})=>
             <li key={code}>
               <strong>{group} · {name}</strong>
@@ -215,6 +222,7 @@ function ForecastChart({forecast,id}: {forecast:Forecast;id:string}) {
   const last = rows[rows.length - 1];
   const baseline = forecast.annual_rate_percent !== null && Number(forecast.annual_rate_percent) === 0;
   const shownSeries = baseline ? series.filter(item=>item.key==="cumulative_contributions_krw") : series;
+  const firstYearLabel = baseline ? "1년 수익 미반영" : forecast.asset_rates ? "장기 가정의 첫 12개월 손익률" : "1년 예상 수익률";
   let min = 0n, max = 0n;
   for (const row of rows) for (const item of series) {
     const v = BigInt(row[item.key]);
@@ -229,6 +237,11 @@ function ForecastChart({forecast,id}: {forecast:Forecast;id:string}) {
       : `${rows[0].period} ~ ${last.period} · ${forecast.asset_rates ? "자산군별 수익률 가정" : baseline ? "수익 미반영" : `연 ${forecast.annual_rate_percent}% 가정`}`}</p>
     {forecast.repeat_months !== null && <p className="d-note">{forecast.first_allocation_period}의 상품 배분액을 매달 동일하게 납입한다고 가정했어요. 이후 재무계획과 상품 편입 조건은 달라질 수 있어요.</p>}
     <div className="d-metrics">
+      {forecast.first_year && <article className="d-metric">
+        <span>{forecast.first_year.period} · {firstYearLabel}</span>
+        <strong>{forecast.first_year.rate_on_contributions_percent}%</strong>
+        <small>1년간의 누적 평가손익 ÷ 납입 원금</small>
+      </article>}
       {shownSeries.map(item=><article className="d-metric" key={item.key}>
         <span>{last.period} · {item.label}</span><strong>{formatKrw(last[item.key])}</strong>
       </article>)}

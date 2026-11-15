@@ -2,7 +2,7 @@
 
 import re
 from datetime import date
-from decimal import Decimal, localcontext
+from decimal import ROUND_HALF_UP, Decimal, localcontext
 from math import gcd
 
 from .common import month_end
@@ -116,7 +116,18 @@ def investment_return_projection(result, strategy_id, portfolio_type, annual_rat
     if not plan_rows or not product_rows:
         raise ProjectionUnavailable("ALLOCATION_UNAVAILABLE")
     blocked = review.get("presentation_budget_blocked") is True
-    periods = _month_sequence(plan_rows[0]["period"], repeat_months or len(plan_rows))
+    repeat_row = plan_rows[0]
+    if repeat_months is not None:
+        # Match the displayed funded month. Only skip a contiguous, verified zero budget.
+        for period, row in zip(_month_sequence(repeat_row["period"], len(plan_rows)), plan_rows, strict=True):
+            if row["period"] != period:
+                raise ProjectionUnavailable("ALLOCATION_UNAVAILABLE")
+            _amounts(row, product_rows.get(period), portfolio_type, blocked)
+            if _amount(row, "new_investment_krw") > 0:
+                repeat_row = row
+                break
+    first_period = repeat_row["period"]
+    periods = _month_sequence(first_period, repeat_months or len(plan_rows))
     rows = []
     stopped_period = None
     with localcontext() as ctx:
@@ -132,7 +143,7 @@ def investment_return_projection(result, strategy_id, portfolio_type, annual_rat
         value_denominator = Decimal(1)
         previous_display_value = Decimal(0)
         for index, period in enumerate(periods):
-            plan_row = plan_rows[0 if repeat_months is not None else index]
+            plan_row = repeat_row if repeat_months is not None else plan_rows[index]
             try:
                 if repeat_months is None and plan_row["period"] != period:
                     raise ProjectionUnavailable("ALLOCATION_UNAVAILABLE")
@@ -171,11 +182,22 @@ def investment_return_projection(result, strategy_id, portfolio_type, annual_rat
         stopped_period = (plan.get("failure") or {}).get("period")
         if not stopped_period:
             raise ProjectionUnavailable("ALLOCATION_UNAVAILABLE")
+    first_year = None
+    if len(rows) >= 12 and (contributions := Decimal(rows[11]["cumulative_contributions_krw"])) > 0:
+        with localcontext() as ctx:
+            ctx.prec = 50
+            gain = Decimal(rows[11]["cumulative_gain_krw"])
+            percent = (100 * gain / contributions).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+        first_year = {
+            "period": rows[11]["period"],
+            "rate_on_contributions_percent": format(percent if percent else Decimal("0.00"), "f"),
+        }
     return {
         "version": VERSION,
         "state": "PARTIAL" if stopped_period else "CALCULATED",
         "stopped_period": stopped_period,
-        "first_allocation_period": plan_rows[0]["period"],
+        "first_allocation_period": first_period,
+        "first_year": first_year,
         "annual_rate_percent": annual_rate_percent,
         "repeat_months": repeat_months,
         **({"asset_rates": asset_rates, "asset_assumptions_version": ASSET_ASSUMPTIONS_VERSION}
