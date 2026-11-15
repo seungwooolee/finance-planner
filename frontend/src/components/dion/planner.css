@@ -744,3 +744,12 @@
   scroll-margin-top: var(--d-results-scroll-offset, 96px);
 }
 .dion-app .d-selected-composition > button { margin-top: 12px; }
+
+.d-inheritance-result .d-table-wrap th,
+.d-inheritance-result .d-table-wrap td { vertical-align: top; }
+.d-inheritance-result .d-table-wrap td:last-child { white-space: normal; min-width: 8em; }
+.d-inheritance-result .d-task-list > li p { margin: 4px 0 7px; }
+@media (max-width: 560px) {
+  .d-inheritance-result .d-table-wrap th, .d-inheritance-result .d-table-wrap td { padding: 8px 6px; }
+  .d-inheritance-result .d-table-wrap tbody th { white-space: normal; }
+}

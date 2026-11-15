@@ -4,10 +4,11 @@ import { Document, Field, Json, clone, emptyEnvelope, example, field, fieldValue
 import { DebtQuestion } from "./debt-question";
 import { PropertyQuestion } from "./property-question";
 import { MoneyField, StructuredEditor } from "./fields";
+import { FinancialAssetOwners } from "./financial-asset-owners";
 import { AssetCompleteness, Choice, ExpenseQuestion, GoalsQuestion, IncomeQuestion, SituationQuestion } from "./customer-questions";
 import { InvestmentQuestions } from "./investment-review";
 
-export function QuestionForm({ id, doc, onChange }: { id: string; doc: Document; onChange: (d: Document) => void }) {
+export function QuestionForm({ id, doc, onChange, openAssetOwners = false }: { id: string; doc: Document; onChange: (d: Document) => void; openAssetOwners?: boolean }) {
   if (id === "NEW-01" || id === "LIFE-01") return <SituationQuestion doc={doc} onChange={onChange} />;
   if (["F11", "F12", "F13"].includes(id)) return <GoalsQuestion doc={doc} onChange={onChange} />;
   if (id === "F03") return <IncomeQuestion doc={doc} onChange={onChange} />;
@@ -25,7 +26,10 @@ export function QuestionForm({ id, doc, onChange }: { id: string; doc: Document;
     content=<><div className="d-choices">{[[true,"있어요"],[false,"없어요"]].map(([code,label])=><Choice key={String(code)} selected={fieldValue(doc,id,key)===code} onClick={()=>set(key,field(code,"BOOLEAN"))}><span>{String(label)}</span></Choice>)}</div><button className="d-text-button" onClick={()=>set(key,field(null,"BOOLEAN","UNKNOWN"))}>확인한 뒤 답할게요</button><p className="d-note">{id === "N01" ? "부동산이 있다면 아래에서 시세와 지분을 적어주세요. 전체 자산에 함께 반영해요." : "남은 빚과 매달 갚는 금액을 이어서 확인해요."}</p>{id === "N01" && fieldValue(doc,id,key) === true && <PropertyQuestion doc={doc} onChange={onChange}/>} {id === "N01" && fieldValue(doc,id,key) === false && list(fieldValue(doc,"F08","real_estate_assets")).length > 0 && <p className="d-warning">앞서 적은 부동산 내역이 남아 있어요. ‘있어요’를 눌러 내역을 확인하거나 삭제해주세요.</p>}{id === "NEW-04" && fieldValue(doc,id,key) === false && record(doc,"F09+F10+D08") && <p role="status" className="d-warning">앞서 적은 대출·할부 내역이 남아 있어요. 내용이 다르면 이 부분의 계산을 잠시 보류해요.</p>}</>;
   } else if (id === "N02") {
     content=<div className="d-choices">{q.options.map(o=><Choice key={o.code} selected={fieldValue(doc,id,"housing_type")===o.code} onClick={()=>set("housing_type",field(o.code))}><span>{o.label}</span></Choice>)}</div>;
-  } else if (id === "F06") content=<><div className="d-answer-surface"><MoneyField label="모아둔 돈의 총금액" value={env.fields.financial_assets_total_reported_krw ?? field(null,"KRW_10000")} onChange={v=>set("financial_assets_total_reported_krw",v)}/></div><details className="d-optional"><summary>자산별로 나누어 확인할게요</summary><p>각 자산을 확인한 뒤 합계를 계산해요. 총금액만 적으면 자산별 배분은 보류돼요.</p>{edit("financial_assets")}{edit("accounts")}{edit("financial_assets_detail_status")}</details><AssetCompleteness doc={doc} onChange={onChange}/></>;
+  } else if (id === "F06") content=<><div className="d-answer-surface"><MoneyField label="모아둔 돈의 총금액" value={env.fields.financial_assets_total_reported_krw ?? field(null,"KRW_10000")} onChange={v=>set("financial_assets_total_reported_krw",v)}/></div>
+    {(openAssetOwners || list(fieldValue(doc, "F11", "goals")).some(goal => goal.type === "GOAL_V12_INHERITANCE")) &&
+      <FinancialAssetOwners doc={doc} onChange={onChange} open={openAssetOwners}/>}
+    <details className="d-optional"><summary>자산별로 나누어 확인할게요</summary><p>각 자산을 확인한 뒤 합계를 계산해요. 총금액만 적으면 자산별 배분은 보류돼요.</p>{edit("financial_assets")}{edit("accounts")}{edit("financial_assets_detail_status")}</details><AssetCompleteness doc={doc} onChange={onChange}/></>;
   else if (template) content=<>{id === "NEW-06" && <p className="d-note">비상자금은 갑작스러운 지출에, 평소 쓸 돈은 생활비와 대출 상환 등에 대비해 남겨두는 돈이에요. 총금액은 이미 확보한 돈도 포함한 목표이며, 추가로 넣을 금액이 아니에요. 같은 돈을 두 용도에 겹쳐 적지 마세요. DION의 기본 기준보다 적게 입력하면 계산에는 기본 기준이 적용돼요.</p>}{Object.keys(template.fields).filter(name=>!/(version|definition|_ref|_id|fingerprint)$/.test(name)).map(edit)}</>;
   else content=<div className="d-note"><strong>이 항목의 상세 계산은 아직 준비 중이에요.</strong><p>{id==="F08" ? "부동산은 그대로 보유하는 것으로 살펴봐요. 집의 가치를 바로 쓸 수 있는 현금에 더하지 마세요." : "세금·연금·상속의 법정 계산과 투자상품 추천은 아직 제공하지 않아요."}</p><p>확인할 수 있는 소득·지출부터 먼저 살펴보세요.</p></div>;
   return <div className="d-question-content">{content}</div>;
