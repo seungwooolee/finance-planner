@@ -9,7 +9,6 @@ from .be.auth_api import router as auth_router
 from .be.consultation_api import router as consultation_router
 from .be.deployment import router as deployment_router
 from .be.explanation_api import router as explanation_router
-from .be.inheritance_evidence import router as inheritance_router
 from .be.plan_api import router as plan_router
 from .be.question_api import router as question_router
 from .be.readiness import router as readiness_router
@@ -37,6 +36,5 @@ app.include_router(question_router)
 app.include_router(auth_router)
 app.include_router(explanation_router)
 app.include_router(consultation_router)
-app.include_router(inheritance_router)
 app.include_router(plan_router)
 app.include_router(survey_router)

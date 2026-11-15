@@ -165,12 +165,14 @@ test('DION new goal binds amount and date without borrowing example facts',async
 test('DION one-month income and expense period mapping preserves raw money and historical date',async({page},info)=>{
   await sample(page);await questionNav(page).getByRole('button',{name:/한 달 소득/}).click();
   await expect(page.locator('.d-question input[type=date]')).toHaveCount(0);
+  await page.getByText('계산 기준기간 확인 · 필요할 때만',{exact:true}).click();
   await expect(page.getByLabel('소득 기준월',{exact:true})).toHaveValue('2026-10');
   await page.getByLabel('소득 기준월',{exact:true}).fill('2026-09');
   await page.getByRole('button',{name:'평소 받는 돈만 적었어요',exact:true}).click();
   await page.evaluate(()=>window.scrollTo(0,0));
   await page.screenshot({path:info.outputPath('dion-feedback-income.png'),fullPage:true});
   await questionNav(page).getByRole('button',{name:/한 달 지출/}).click();
+  await page.getByText('계산 기준기간 확인 · 필요할 때만',{exact:true}).click();
   await page.getByRole('checkbox',{name:/소득과 같은 2026년 09월/}).check();
   const r=await calculate(page);expect(r.posted.context.evaluation_on).toBe('2026-10-31');
   const fields=(id:string)=>r.posted.raw_bundle.answers.find((v:any)=>v.envelope.question_ref.design_id===id).envelope.fields;
@@ -219,15 +221,13 @@ test('DION direct deep entry and mobile input/result remain within viewport',asy
   await expect(page.getByRole('heading',{name:'나의 상황부터 알려주세요'})).toBeVisible();
   await page.evaluate(()=>window.scrollTo(0,0));
   await page.screenshot({path:info.outputPath('dion-feedback-mobile-input.png'),fullPage:true});
-  await openReviewTools(page);
-  await page.getByRole('button',{name:'검증용 고정 사례 불러오기',exact:true}).click();
+  await page.getByRole('button',{name:'가상 사례 불러오기',exact:true}).click();
   const scenarioResponse=page.waitForResponse(r=>r.url().endsWith('/api/fe/v1/preview')&&r.request().method()==='POST');
-  await page.getByRole('dialog',{name:'검증용 고정 사례',exact:true}).getByRole('button',{name:'사회초년생 불러오기',exact:true}).click();
+  await page.getByRole('dialog',{name:'요즘 나의 생활 · 가상 사례'}).getByRole('button',{name:'사회초년생 불러오기',exact:true}).click();
   expect((await scenarioResponse).ok()).toBeTruthy();
   await expect(page.getByRole('region',{name:'계산 결과'})).toBeVisible();
   await page.getByRole('button',{name:'정밀진단',exact:true}).click();await calculate(page);
-  await page.getByRole('navigation',{name:'정밀 결과 5뷰',exact:true})
-    .getByRole('button',{name:'재무안 비교',exact:true}).click();
+  await page.getByRole('button',{name:/재무안 비교/}).click();
   await expect(page.locator('.d-candidate')).toHaveCount(2);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
   await page.evaluate(()=>window.scrollTo(0,0));

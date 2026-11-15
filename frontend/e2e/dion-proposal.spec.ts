@@ -1,4 +1,3 @@
-import { openReviewCasePicker } from "./review-scenario-helpers";
 import { expect, test } from '@playwright/test';
 const harness=process.env.DION_TEST_BE_URL;
 // 4단계 제안서 + R2 everyday question routing (synthetic case, real engine harness, mock identity).
@@ -52,7 +51,7 @@ test('proposal shows goal_omissions reasons and keeps the original goal result',
     await route.fulfill({response,json});
   });
   await page.goto('/dion');
-  await openReviewCasePicker(page);
+  await page.getByRole('button',{name:'가상 사례 불러오기',exact:true}).click();
   await page.getByRole('button',{name:'상품 배분 검토 불러오기',exact:true}).click();
   await page.getByRole('region',{name:'계산 결과'}).waitFor();
   await page.getByRole('button',{name:/결과·다음 행동/}).click();

@@ -42,13 +42,12 @@ export function ResultTiles({ row, month, totalAssets }: { row?: Record<string, 
 }
 
 /** Screen choice, saved comparison and adoption can describe different versions. */
-export function ChoiceStatus({ plan, portfolio, draft, stored, adoption, runId, evaluationOn, planMonth, recordMonth, onJump, generated = false }: {
+export function ChoiceStatus({ plan, portfolio, draft, stored, adoption, runId, evaluationOn, planMonth, recordMonth, onJump }: {
   plan: string; portfolio: string | null; draft: { strategy: string; portfolio: string; revision: number; current: boolean } | null;
-  stored: boolean; adoption: AdoptionView | null; runId?: string; evaluationOn: string; planMonth: string; recordMonth: string; onJump: () => void; generated?: boolean;
+  stored: boolean; adoption: AdoptionView | null; runId?: string; evaluationOn: string; planMonth: string; recordMonth: string; onJump: () => void;
 }) {
   const adopted = adoption?.state === "ADOPTED" ? adoption.adoption : null;
   return <section className="d-choice-status" aria-label="선택·저장·채택·실행 상태">
-    <h2 className="d-final-title">{planName(plan)} · {portfolio ? portfolioNames[portfolio] : "투자구성 선택 전"}<small>첫 계획 월 {planMonth || "확인 필요"}</small></h2>
     <div><span>화면에서 보는 초안</span><strong>{planName(plan)}{portfolio && " · " + portfolioNames[portfolio]}</strong></div>
     <div><span>저장한 비교 초안</span>
       <strong>{draft ? planName(draft.strategy) + " · " + portfolioNames[draft.portfolio] : "확인된 저장 초안 없음"}</strong>
@@ -58,7 +57,6 @@ export function ChoiceStatus({ plan, portfolio, draft, stored, adoption, runId, 
       <strong>{adopted ? planName(adopted.strategy_id) + (adopted.portfolio ? " · " + portfolioNames[adopted.portfolio.portfolio_type] : "") : !stored ? "저장 후 채택 가능" : !adoption ? "확인 중" : adoption.state === "ERROR" ? "확인할 수 없음" : "채택한 계획 없음"}</strong>
       {adopted && <small>입력버전 {adopted.input_version}{adopted.run_id !== runId && " · 다른 계산 결과"}{adoption?.state === "ADOPTED" && adoption.isCurrent === false && " · 이전 입력"}</small>}
     </div>
-    <div><span>최종 생성</span><strong>{generated ? "서버 생성 완료" : "생성 전 · 검토안"}</strong><small>생성과 계획 채택은 따로 해요</small></div>
     <div><span>DION에서 실행한 금융거래</span><strong>없음</strong></div>
     <p>계산 기준일 {evaluationOn || "확인 필요"} · 첫 계획 월 {planMonth || "확인 필요"} · 기록 월 {monthLabel(recordMonth)}
       {planMonth && planMonth !== recordMonth && " · 계획 월과 기록 월이 달라 금액을 직접 비교하지 않아요."}</p>
@@ -80,7 +78,7 @@ export function IncomeBar({ row }: { row?: Record<string, Json> }) {
   </article>;
 }
 
-export function FinalPortfolio({ plan, row, review, assetReference, portfolio=null, generated=false, onProducts }: { plan: string; row?: Record<string, Json>; review: Record<string, Json>; assetReference?: ReactNode; portfolio?: string | null; generated?: boolean; onProducts?: () => void }) {
+export function FinalPortfolio({ plan, row, review, assetReference, portfolio=null, generated=false }: { plan: string; row?: Record<string, Json>; review: Record<string, Json>; assetReference?: ReactNode; portfolio?: string | null; generated?: boolean }) {
   const period = textValue(row?.period);
   const month = list(object(list(review.candidates).find(c => c.strategy_id === plan)).rows)[0];
   const allocations = list(month?.allocations);
@@ -102,12 +100,11 @@ export function FinalPortfolio({ plan, row, review, assetReference, portfolio=nu
         {allocations.length > 0 && <p className="d-inline-note">내부 하락 시나리오 손실액 {formatKrw(object(month?.stress_review).scenario_loss_krw_ceil)} · 실제 손실은 더 클 수 있어요.</p>}
       </div>
       <div>
-        <h3>{period ? `${period} 자금 배정` : "첫 계획 월 자금 배정"}</h3>
+        <h3>이번 달 자금 배정</h3>
         <dl className="d-ledger">{ITEMS.map(([key, label]) => <div key={key}><dt>{label}</dt><dd>{formatKrw(row[key])}</dd></div>)}
           {(allocations.length > 0 || target) && <><div><dt>상품에 배분한 금액</dt><dd>{formatKrw(month?.allocated_total_krw)}</dd></div>{allocationRemainder(month).map(part => <div key={part.key}><dt>{part.label}</dt><dd>{formatKrw(part.value)}</dd></div>)}</>}</dl>
       </div>
     </div>
-    {onProducts && <button type="button" className="d-text-button d-final-evidence" onClick={onProducts}>후보 포함·제외 이유와 공시 근거 보기 →</button>}
     {assetReference && <details className="d-fold"><summary>보유자산 참고 통계 다시 보기</summary>{assetReference}</details>}
   </article>;
 }

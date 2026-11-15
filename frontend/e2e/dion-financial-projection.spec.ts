@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- exact real engine wire values */
-import { loadProductReviewCase } from "./review-scenario-helpers";
 import { expect, test } from '@playwright/test';
 
 test('v0.7 real engine forecast matches chart/table and keeps old basis after editing', async ({page}, info)=>{
   test.setTimeout(120000);
   await page.goto('/dion');
   const calculated=page.waitForResponse(r=>r.url().endsWith('/api/fe/v1/preview')&&r.request().method()==='POST');
-  await loadProductReviewCase(page);
+  await page.getByRole('button',{name:'예시로 결과 보기 · 대표상품 포함',exact:true}).click();
   const response=await calculated;
   expect(response.ok()).toBeTruthy();
   const body=await response.json();

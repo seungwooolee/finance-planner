@@ -15,8 +15,8 @@ const reasons: Record<string,string> = {
 };
 
 /** Coordinates alone use ratios; displayed money and explanations always come from the captured engine result. */
-export function FinancialProjection({candidate,plan,portfolio,stale,runId,inputVersion,onEdit,recordedOpeningBalance}: {
-  candidate?:Record<string,Json>;plan:string;portfolio:string|null;stale:boolean;runId?:string;inputVersion:number;onEdit:()=>void;recordedOpeningBalance?:string;
+export function FinancialProjection({candidate,plan,portfolio,stale,runId,inputVersion,onEdit}: {
+  candidate?:Record<string,Json>;plan:string;portfolio:string|null;stale:boolean;runId?:string;inputVersion:number;onEdit:()=>void;
 }) {
   const id=useId(), p=object(candidate?.financial_projection), assumptions=object(p.assumptions);
   const rows=list(p.rows), explanation=object(p.explanation);
@@ -30,8 +30,7 @@ export function FinancialProjection({candidate,plan,portfolio,stale,runId,inputV
   const y=(v:string)=>210-Number(BigInt(v)*17000n/max)/100;
   const x=(i:number)=>60+i*490/Math.max(1,rows.length);
   return <section className="d-card d-financial-projection" aria-labelledby={id} data-projection-hash={textValue(p.sha256)}>
-    <div className="d-card-head"><h2 id={id}>{recordedOpeningBalance !== undefined ? "보유 금융자산 전망 · 수익 미반영" : "보유 금융자산 잔액 전망"}</h2><span className="d-pill">수익 미반영 기준</span></div>
-    {recordedOpeningBalance !== undefined && <p>시작 잔액 {formatKrw(p.initial_financial_assets_krw??recordedOpeningBalance)} · 보유 금융자산과 확인된 월 현금흐름·목표 인출 포함, 부동산·보증금 제외.</p>}
+    <div className="d-card-head"><h2 id={id}>보유 금융자산 잔액 전망</h2><span className="d-pill">수익 미반영 기준</span></div>
     <p>{planName(plan)} 월별 계획 기준{portfolio?` · ${portfolioNames[portfolio]} 구성은 이 잔액에 영향 없음`:""}</p>
     <p className="d-inline-note d-projection-scope">기준일에 가진 금융자산 평가잔액에서 시작해 확인된 월별 현금흐름과 목표 인출을 반영해요. 수익률 0%·물가 0%로 수익을 반영하지 않은 기준이며, 손실 하한이나 원금 보장 금액이 아니에요. 아래 제안서의 ‘신규 적립금만 쌓는 장기 비교’와는 포함 범위가 달라요.</p>
     {stale&&<p role="status" className="d-note">이전 입력의 전망과 설명이에요. 다시 계산하면 같은 새 결과 기준으로 함께 바뀌어요.</p>}
