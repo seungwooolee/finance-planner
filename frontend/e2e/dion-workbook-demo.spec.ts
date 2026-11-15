@@ -98,12 +98,13 @@ test("the public picker switches only the two demonstrations, then restores the 
   await assumptions.click();
   await expect(rendered.getByText(/진단 범위가 확인된 것으로 설정하고/)).toBeVisible();
   for (const [label, value] of [
-    ["월 생활비 (대출 상환 제외)", "300만원"], ["대출 상환 후 남는 돈", "150만원"],
-    ["매월 저축·투자 금액", "10만원"], ["저축·투자까지 반영하고 남는 돈", "140만원"],
-    ["전체 자산", "15억원"], ["전체 채무", "1억원"], ["순자산", "14억원"],
+    ["저축·투자까지 반영하고 남는 돈", "140만원"], ["전체 자산", "15억원"], ["전체 채무", "1억원"], ["순자산", "14억원"],
   ]) {
     await expect(rendered.locator(".d-metric").filter({hasText:label}).locator("strong")).toHaveText(value);
   }
+  await expect(rendered.locator(".d-ov-applied > div").filter({hasText:"대출 상환 후 남는 돈"})).toContainText("150만원");
+  await expect(rendered.locator(".d-ov-applied > div").filter({hasText:"기존 저축·투자 반영"})).toContainText("10만원");
+  await expect(rendered.getByRole("article",{name:"월 현금흐름 차감표"}).locator("dl > div").filter({hasText:"월 생활비 (대출 상환 제외)"})).toContainText("300만원");
   await expect(rendered.getByRole("article",{name:"자산 분류"})).toHaveAttribute("data-asset-total","1500000000");
   await expect(rendered.getByRole("article",{name:"월 현금흐름 차감표"}).getByRole("figure")).toBeVisible();
   await resultNav.getByRole("button", {name:"재무안 선택", exact:true}).click();
