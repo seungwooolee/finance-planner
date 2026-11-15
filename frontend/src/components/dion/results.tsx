@@ -21,6 +21,7 @@ import { ResultNotice, nextStep } from "./calc-basis-strip";
 import { resultHints } from "@/lib/dion/result-guidance";
 import { MoneyAmount } from "./money-amount";
 import { fieldKrw, formatKrw } from "@/lib/dion/money-format";
+import { allocationTargetLabel } from "@/lib/dion/result-visual";
 import { type EvidenceAccess } from "./portfolio-evidence";
 import { TaxBenefits } from "./tax-benefits";
 import { TaxReview } from "@/lib/dion/tax-benefits";
@@ -73,6 +74,8 @@ export function Results({view,demoScenario,deep,tab,setTab:changeTab,stale,onEdi
   const heading=useRef<HTMLHeadingElement>(null);
   const comparison=usePortfolioComparison(view,token,caseId,stale,actionFlow?.selection);
   const selectedPlan=comparison.plan, selectedPortfolio=comparison.portfolio, setSelectedPlan=comparison.selectPlan;
+  const [portfolioPreview,setPortfolioPreview]=useState<{plan:string;type:string}|null>(null);
+  const previewType=portfolioPreview?.plan===selectedPlan ? portfolioPreview.type : null;
   const [visited,setVisited]=useState<number[]>([tab]);
   const [consultFocus,setConsultFocus]=useState(false);
   const [compositionFocus,setCompositionFocus]=useState(0);
@@ -130,6 +133,8 @@ export function Results({view,demoScenario,deep,tab,setTab:changeTab,stale,onEdi
   const candidates=["CALCULATED","PARTIAL"].includes(textValue(plans.calc_state))?list(plans.candidates):[];
   const selectedRow=list(candidates.find(c=>c.strategy_id===selectedPlan)?.rows)[0];
   const selectedReview=comparisonReview(visible("OUT-06"),selectedPlan,selectedPortfolio);
+  const productScreenReview=previewType ? comparisonReview(visible("OUT-06"),selectedPlan,previewType) : selectedReview;
+  const previewMonth=list(list(productScreenReview.candidates).find(c=>c.strategy_id===selectedPlan)?.rows)[0];
   const selectedMonth=list(list(selectedReview.candidates).find(c=>c.strategy_id===selectedPlan)?.rows)[0];
   const next=nextStep({view,result,stale,source:sourceDoc,firstAction:actions[0],onEdit,onRecalculate});
   const inputVersion=view.serverVersion??view.localVersion;
@@ -160,6 +165,8 @@ export function Results({view,demoScenario,deep,tab,setTab:changeTab,stale,onEdi
       {calcBar}
     </section>}
     {tab>=2&&<p className="d-draft-chip">검토용 초안 · 실제 가입·매수·이체 없음</p>}
+    {tab>=2&&productReview.diagnosis_scope==="household"&&<p className="d-note">가구의 월 신규 투자 후보금을 기준으로 구성을 검토해요.</p>}
+    {tab>=3&&previewType&&<p className="d-note">{portfolioNames[previewType]} 목표 비중 비교 · {allocationTargetLabel(previewMonth)} · 상품 배분 확인 대기</p>}
     {tab>=2&&<div aria-label="투자구성 비교 상태"><p role="status">{selectedPortfolio?`${portfolioNames[selectedPortfolio]} 비교 초안 · `:""}{comparison.busy?"비교 초안을 저장하고 있어요…":comparison.status||"구성을 선택해 비교할 수 있어요. 계획 채택과 월 기록은 별도로 유지돼요."}</p>{comparison.error&&<div role="alert"><p>{comparison.error}</p><button type="button" className="d-secondary" onClick={comparison.retry}>비교 초안 다시 불러오기</button></div>}</div>}
     {tab===0 && <>
       <h2>현재 재무 상태</h2>
@@ -178,9 +185,9 @@ export function Results({view,demoScenario,deep,tab,setTab:changeTab,stale,onEdi
     </>}
     {tab===1 && <ResultBasis id="OUT-05" result={result} source={sourceDoc} inputVersion={view.serverVersion??view.localVersion} stale={stale} onEdit={onEdit}/>}
     {tab===2 && <InvestmentFollowup review={visible("OUT-06")} onEdit={onEdit}/>}
-    {tab===2 && <PortfolioChoice key={selectedPlan} doc={sourceDoc} review={visible("OUT-06")} flow={flow} planRow={selectedRow} selectedPlan={selectedPlan} onPlan={setSelectedPlan} chosen={selectedPortfolio} onChoose={id=>{void comparison.choose(id).then(ok=>{if(ok)setCompositionFocus(n=>n+1);});}} onProducts={()=>setTab(3)} onRecalculate={onRecalculate} blocked={comparison.blocked} onEdit={onEdit}/>}
+    {tab===2 && <PortfolioChoice key={selectedPlan} doc={sourceDoc} review={visible("OUT-06")} flow={flow} planRow={selectedRow} selectedPlan={selectedPlan} onPlan={setSelectedPlan} chosen={selectedPortfolio} preview={previewType} onPreview={id=>{setPortfolioPreview({plan:selectedPlan,type:id});setCompositionFocus(n=>n+1);}} onChoose={id=>{void comparison.choose(id).then(ok=>{if(ok){setPortfolioPreview(null);setCompositionFocus(n=>n+1);}});}} onProducts={()=>setTab(3)} onRecalculate={onRecalculate} blocked={comparison.blocked} onEdit={onEdit}/>}
     
-    {tab===3 && <><div className="d-plan-row"><div><strong>{planName(selectedPlan)} · 상품 정보</strong><button className="d-text-button" onClick={()=>setTab(2)}>투자구성 비교로 돌아가기</button>{selectedPortfolio&&<button className="d-secondary" disabled={comparison.blocked} onClick={()=>setTab(4)}>반영한 포트폴리오 확인 →</button>}</div><PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/></div><ProductAllocation evidenceAccess={evidenceAccess} stale={stale} review={selectedReview} selectedPlan={selectedPlan} evaluationOn={textValue(object(result.context).evaluation_on)} onEdit={onEdit}/></>}
+    {tab===3 && <><div className="d-plan-row"><div><strong>{planName(selectedPlan)} · 상품 정보</strong><button className="d-text-button" onClick={()=>setTab(2)}>투자구성 비교로 돌아가기</button>{selectedPortfolio&&<button className="d-secondary" disabled={comparison.blocked} onClick={()=>setTab(4)}>반영한 포트폴리오 확인 →</button>}</div><PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/></div><ProductAllocation evidenceAccess={evidenceAccess} stale={stale} review={productScreenReview} selectedPlan={selectedPlan} evaluationOn={textValue(object(result.context).evaluation_on)} onEdit={onEdit}/></>}
     {tab===3&&<div className="d-result-cta"><button type="button" className="d-primary" onClick={openConsultation}>DION과 상담하기</button><p>1~4 확인 후 상담과 변경 검토를 거쳐 최종 생성을 요청해요.</p></div>}
     <div hidden={tab!==4}><PortfolioReviewFlow visited={visited} selectionBlocked={comparison.blocked} flow={reviewFlow} basis={basis} view={view} token={token} caseId={caseId} stale={stale} doc={sourceDoc} onTab={setTab} onOpenRun={onOpenRun??(async()=>{})} onReadRun={onReadRun??onOpenRun??(async()=>{})} onPrepared={r=>onReviewResume?.(r)} onAdopt={focusAdoption}/></div>
     {tab===4 && <><ChoiceStatus plan={selectedPlan} portfolio={selectedPortfolio} draft={comparison.draft}

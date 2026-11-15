@@ -67,7 +67,7 @@ def test_candidate_cap_and_unapproved_role_do_not_relax_filter():
 
 
 @pytest.mark.parametrize(('preference', 'targets', 'allocated'), [
-    ('PREF_STABILITY', ('PREF_STABILITY',) * 3, (0, 0, 0)),
+    ('PREF_STABILITY', ('PREF_STABILITY',) * 3, (0, 30000, 60000)),
     ('PREF_LEAN_STABILITY', ('PREF_STABILITY', 'PREF_LEAN_STABILITY', 'PREF_BALANCED'), (0, 90000, 90000)),
     ('PREF_BALANCED', ('PREF_LEAN_STABILITY', 'PREF_BALANCED', 'PREF_LEAN_RETURN'), (90000, 180000, 125520)),
     ('PREF_LEAN_RETURN', ('PREF_BALANCED', 'PREF_LEAN_RETURN', 'PREF_RETURN'), (180000, 139230, 125520)),
@@ -93,6 +93,28 @@ def test_fifteen_relative_choices_preserve_source_and_customer_limits(preference
         assert int(v['stress_review']['scenario_loss_krw_ceil']) <= 60000
         if preference in {'PREF_STABILITY', 'PREF_LEAN_STABILITY'}:
             assert all(a['code'] == '153130' for a in v['allocations'])
+
+
+def test_p1_household_with_unknown_horizon_can_compare_distinct_targets():
+    doc = current_product_document()
+    doc["context"]["scope"] = "household"
+    change(doc, "F17", "risk_preference_choice_raw", field("PREF_STABILITY"))
+    change(doc, "NEW-10", "loss_tolerance_band_raw", field("LOSS_UNDER_5"))
+    funds = [{"fund_id": "monthly-one", "earliest_use_status": {"state": "UNKNOWN", "raw_value": None, "unit": "TEXT"}}]
+    change(doc, "F15", "investment_funds", field(funds, "JSON"))
+    doc["confirmations"] = [c for c in doc["confirmations"] if c["question_id"] != "F15"]
+    before = deepcopy(doc)
+    result = current_review(doc)
+    assert doc == before
+    assert result["portfolio_types"]["customer_preference"] == "PREF_STABILITY"
+    assert result["missing_question_ids"] == []
+    assert "FUND_USE_UNDECIDED" in result["reason_codes"]
+    views = result["candidates"][0]["rows"][0]["portfolio_type_views"]
+    for name, bonds in (("STABLE", 0), ("BALANCED", 1000), ("RETURN", 2000)):
+        v = views[name]
+        assert v["target_mix_bps"] == {"BOND": bonds, "CASH": 10000-bonds, "KR_EQUITY": 0, "US_EQUITY": 0}
+        assert v["comparison_only"] and not v["selectable"]
+        assert v["allocated_total_krw"] == "0" and v["unallocated_krw"] == "300000"
 
 
 @pytest.mark.parametrize('missing_id,key', [('D19', 'product_understanding'), ('F17', 'risk_preference_choice_raw')])

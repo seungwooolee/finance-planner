@@ -79,7 +79,10 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
     {period:"2026-12",new_investment_krw:"0"}, {period:"2027-01",new_investment_krw:"880000"},
   ]);
   const retiredProducts = retiredOutputs["OUT-06"];
-  expect(retiredProducts.reason_codes).toEqual(expect.arrayContaining(["PERSONAL_SCOPE_REQUIRED","STABILITY_POLICY_UNALLOCATED"]));
+  expect(retiredProducts.diagnosis_scope).toBe("household");
+  expect(retiredProducts.reason_codes).toContain("FUND_USE_UNDECIDED");
+  expect(retiredProducts.reason_codes).not.toContain("PERSONAL_SCOPE_REQUIRED");
+  expect(retiredProducts.missing_question_ids).not.toContain("F15");
   expect(retiredProducts.candidates[0].rows[1]).toMatchObject({allocated_total_krw:"0",unallocated_krw:"550000"});
   await expect(rendered.locator(".d-metric").filter({hasText:"순자산"}).locator("strong")).toHaveText("14억원");
   await expect(assumptions).toContainText("은퇴·상속 의향");
@@ -87,7 +90,15 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   await expect(plans.getByRole("button",{name:"생활 안정 우선"})).toBeVisible();
   await expect(plans.getByRole("button",{name:"투자 여력 확대"})).toBeVisible();
   await expect(rendered.getByRole("rowheader", {name:/^시연용 주거 정비비/})).toBeVisible();
+  await resultTabs.getByRole("button",{name:"투자구성",exact:true}).click();
+  await expect(rendered.locator('[data-portfolio-type="STABLE"]')).toContainText("현금 100%");
+  await expect(rendered.locator('[data-portfolio-type="BALANCED"]')).toContainText("현금 90%");
+  await expect(rendered.locator('[data-portfolio-type="RETURN"]')).toContainText("현금 80%");
+  await rendered.getByRole("button",{name:"위험추구형 목표 비중 비교",exact:true}).click();
+  await expect(rendered.getByRole("region",{name:"위험추구형 구성 상세"})).toContainText("상품 배분 확인 대기");
   await checkPortfolioViews();
+  await expect(rendered.getByText(/위험 추구형 목표 비중 비교/)).toBeVisible();
+  await expect(rendered.getByText("아직 고르지 않음",{exact:true})).toBeVisible();
   await expect(page.getByText(/입력 또는 계산 오류가 있어요/)).toHaveCount(0);
 
   await launch.click();
