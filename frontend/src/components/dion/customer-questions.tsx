@@ -59,7 +59,7 @@ export function SituationQuestion({ doc, onChange }: Props) {
 export function GoalsQuestion({ doc, onChange }: Props) {
   const goals = list(fieldValue(doc, "F11", "goals"));
   const options = question("F11").options.filter(o => o.code !== "GOAL_TYPE_07");
-  const name = (g: Record<string, Json>) => goalName(g.type) ?? options.find(o => o.code === g.type)?.label ?? "이전에 입력한 목표";
+  const name = (g: Record<string, Json>) => textValue(g.label) || (goalName(g.type) ?? options.find(o => o.code === g.type)?.label ?? "이전에 입력한 목표");
   function remove(ids: string[]) {
     onChange(retainGoals(doc, ids));
   }
