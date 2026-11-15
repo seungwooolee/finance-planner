@@ -29,9 +29,9 @@ test('actual HTTP preview connects its reference snapshot to the selected cohort
     await expect(assets).toHaveAttribute('data-data-version', peer.data_version);
     await expect(assets.getByRole('figure')).toBeVisible();
     await expect(page.getByRole('region', { name: '생활단계 참고 통계', exact: true })).toHaveCount(0);
-    await expect(assets.getByLabel('비교할 참고 집단')).toHaveValue('ANSWER');
-    await expect(assets).toContainText('사회초년생');
-    await expect(assets.locator('[data-asset-metric="proposal.total_assets"] [data-asset-series="reference"]')).toHaveAttribute('data-value', total.value);
+    await expect(assets.getByLabel('비교할 참고 집단')).toHaveCount(0);
+    await expect(assets).toContainText('개인 단위로 비교할 수 있는 평균 자료를 아직 확보하지 못했어요');
+    await expect(assets.locator('[data-asset-series="reference"]')).toHaveCount(0);
     expect(peer.scope).toBe('personal');
     await expect(assets.locator('[data-asset-series="own"][data-value="12000000"]')).toHaveCount(1);
     await assets.scrollIntoViewIfNeeded();
