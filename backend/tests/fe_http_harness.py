@@ -54,6 +54,7 @@ def main():
     parser.add_argument("--port", type=int, default=8002)
     parser.add_argument("--scheme-fixture", action="store_true", help="Enable test-only synthetic scheme evidence")
     parser.add_argument("--portfolio-fixture", action="store_true", help="Enable test-only product/tax evidence mappings")
+    parser.add_argument("--registered-evidence", action="store_true", help="Use the checked-in reviewed public evidence with no model")
     parser.add_argument("--chat-review-fixture", action="store_true", help="Use a synthetic income-change reply for chat review")
     parser.add_argument("--conversation-fixture", action="store_true", help="Enable synthetic conversational replies, no model calls")
     parser.add_argument("--test-clock", help="TEST ONLY: timezone-aware ISO time for the month guard; store timestamps remain actual")
@@ -84,9 +85,13 @@ def main():
         store = BackendStore(tmp + "/synthetic.sqlite3")
         app.dependency_overrides[get_actor] = mock_actor
         app.dependency_overrides[get_store] = lambda: store
-        app.dependency_overrides[get_scheme_evidence_service] = lambda: SchemeEvidenceService(
-            portfolio_corpus if args.portfolio_fixture else corpus if args.scheme_fixture else lambda: EMPTY,
-        )
+        if args.registered_evidence:
+            registered = get_scheme_evidence_service().registry
+            app.dependency_overrides[get_scheme_evidence_service] = lambda: SchemeEvidenceService(registered)
+        else:
+            app.dependency_overrides[get_scheme_evidence_service] = lambda: SchemeEvidenceService(
+                portfolio_corpus if args.portfolio_fixture else corpus if args.scheme_fixture else lambda: EMPTY,
+            )
         if args.scheme_fixture:
             consultation = ConsultationService(clock=lambda: datetime(2026, 11, 12, 5, tzinfo=timezone.utc),
                                                proposal_provider=mock_proposal)
