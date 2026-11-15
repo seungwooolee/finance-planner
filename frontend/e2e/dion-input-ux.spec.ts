@@ -1,3 +1,4 @@
+import { loadProductReviewCase } from "./review-scenario-helpers";
 import { expect, test } from '@playwright/test';
 import { blankDocument, clone, field, fieldValue, record, revise, type Document } from '../src/lib/dion/model';
 import { selectLifeStage, stepComplete } from '../src/lib/dion/customer-flow';
@@ -171,7 +172,7 @@ for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 
     expect(Number.parseFloat(geometry.transition)).toBeLessThanOrEqual(0.001);
     // Load a current case through the existing engine path, then edit its amount with split units.
     await page.locator('.d-logo').click();
-    await page.getByRole('button', { name: '예시로 결과 보기 · 대표상품 포함', exact: true }).click();
+    await loadProductReviewCase(page);
     await expect(page.getByRole('region', { name: '계산 결과' })).toBeVisible();
     await page.getByRole('button', { name: '입력 내용 수정 ↗', exact: true }).click();
     const loaded = productExample.document as unknown as Document;

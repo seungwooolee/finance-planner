@@ -13,7 +13,7 @@ import { Results, ViewResult } from "./results";
 import { ConsultationJourney } from "./consultation-journey";
 import { ResultExplanation } from "./result-explanation";
 import { ConsultationContent } from "./consultation-content";
-import { Scenario, ScenarioPicker, defaultScenario, loadScenarios } from "./scenario-picker";
+import { Scenario, ScenarioPicker, loadReviewScenarios } from "./scenario-picker";
 import { PlanCheckin } from "./plan-checkin";
 import { ApiError, requestJson } from "@/lib/dion/wake-retry";
 import { reviewToolsEnabled } from "@/lib/dion/beta-config";
@@ -322,7 +322,7 @@ export function DionPlanner() {
   }
   async function verifyEarly(deep:boolean) {
     let early:Scenario|undefined;
-    try{early=(await loadScenarios()).find(s=>s.id==="early");}catch{early=undefined;}
+    try{early=(await loadReviewScenarios()).find(s=>s.id==="early");}catch{early=undefined;}
     if(!early){setError("검증용 가상 사례를 불러오지 못했어요. 네트워크를 확인한 뒤 다시 눌러 주세요.");return;}
     await verifyScenario(early,deep);
   }
@@ -412,8 +412,9 @@ export function DionPlanner() {
       <ServerWakeNotice waiting={waking} exhausted={wakeFailed} onRetry={()=>retryAction.current?.()}/>
       {message&&<div className="d-notice" role="status">{message}</div>}{error&&<div ref={errorRef} tabIndex={-1} style={{scrollMarginTop:"var(--d-question-scroll-offset, 96px)"}} className="d-warning" role="alert">{error}{view&&<p>마지막 결과는 이전 계산 기록으로 유지됩니다. 새 계산 성공을 뜻하지 않아요.</p>}</div>}
       {undoDraft&&<div className="d-undo" role="status">작성 화면을 바꿨어요.<button type="button" onClick={()=>{const previous=undoDraft;change(previous.doc);setFictional(previous.fictional);setServerVersion(null);connectedCase.current=null;pending.current=null;pendingAnalysis.current=null;saved.current={};setRuns([]);setShowResults(false);}}>이전 작성값으로 되돌리기</button></div>}
+      {reviewOpen&&<section className="d-review-tools" aria-label="검증용 사례 도구"><ScenarioPicker review disabled={busy||saveBusy} onLoad={loadScenario}/></section>}
       {reviewOpen&&mode==="welcome"&&<section className="d-review-tools" aria-label="저장 검증 도구">{verifyTools}</section>}
-      {mode==="welcome"?<section className="d-welcome"><div className="d-welcome-hero"><div><span className="d-eyebrow">MY FINANCIAL NEXT STEP</span><h1>내 재무를 한눈에,<br/><em>앞으로의 계획을 함께.</em></h1><p className="d-welcome-intro"><strong>나를 이해하는 AI 재무설계, dion</strong><span>내 재무상황을 정리하고<br/>앞으로의 계획을 살펴보세요. dion과 대화하며 함께 미래를 설계해요.</span></p></div><div className="d-welcome-cat"><div className="d-cat-bubble">좋은 삶은 작은 선택에서 시작된대.<br/>dion과 함께 원하는 내일을 그려볼까?</div><Cat kind="guide" size={300} eager/><span className="d-cat-label">돈 이야기, dion과 함께</span></div></div><div className="d-columns"><button className="d-start" onClick={()=>setMode("quick")}><LayoutDashboard/><strong>빠르게 현재 확인</strong><span>8개 화면 + 필요한 상세 질문</span><b>빠른진단 시작 →</b></button><button className="d-start light" onClick={()=>setMode("deep")}><ShieldCheck/><strong>목표와 가정까지 점검</strong><span>확인한 답변을 재사용하는 정밀 경로</span><b>정밀진단 바로 시작 →</b></button></div><div className="d-sample"><button className="d-secondary" disabled={busy||saveBusy} onClick={()=>loadScenario(defaultScenario)}>예시로 결과 보기 · 대표상품 포함</button><span>기준일 {defaultScenario.document.context.evaluation_on}</span></div></section>:<>
+      {mode==="welcome"?<section className="d-welcome"><div className="d-welcome-hero"><div><span className="d-eyebrow">MY FINANCIAL NEXT STEP</span><h1>내 재무를 한눈에,<br/><em>앞으로의 계획을 함께.</em></h1><p className="d-welcome-intro"><strong>나를 이해하는 AI 재무설계, dion</strong><span>내 재무상황을 정리하고<br/>앞으로의 계획을 살펴보세요. dion과 대화하며 함께 미래를 설계해요.</span></p></div><div className="d-welcome-cat"><div className="d-cat-bubble">좋은 삶은 작은 선택에서 시작된대.<br/>dion과 함께 원하는 내일을 그려볼까?</div><Cat kind="guide" size={300} eager/><span className="d-cat-label">돈 이야기, dion과 함께</span></div></div><div className="d-columns"><button className="d-start" onClick={()=>setMode("quick")}><LayoutDashboard/><strong>빠르게 현재 확인</strong><span>8개 화면 + 필요한 상세 질문</span><b>빠른진단 시작 →</b></button><button className="d-start light" onClick={()=>setMode("deep")}><ShieldCheck/><strong>목표와 가정까지 점검</strong><span>확인한 답변을 재사용하는 정밀 경로</span><b>정밀진단 바로 시작 →</b></button></div><div className="d-sample"><ScenarioPicker inline disabled={busy||saveBusy} onLoad={loadScenario} onRestore={original.current?restoreOriginal:undefined}/><span>사회초년생 · 은퇴기</span></div></section>:<>
         <ConsultationJourney active={showResults?(tab===4?3:2):1} canNavigate={!!view} onNavigate={next=>{setShowResults(true);setTab(next);}}/>
         {fictional&&!showResults&&<div className="d-fictional">가상 사례{scenario?` · ${scenario.title}`:""} · 실제 고객·계좌 자료 아님 · 기준일 {doc.context.evaluation_on}{scenario&&<><button className="d-secondary" onClick={restoreOriginal}>원래 입력으로 돌아가기</button><details><summary>현재 사례의 가정</summary><ul>{scenario.assumptions.map(a=><li key={a}>{a}</li>)}</ul></details></>}</div>}
 
@@ -442,7 +443,7 @@ export function DionPlanner() {
           {runs.map(r=><div key={String(r.run_id)}><button className="d-run" disabled={saveBusy} onClick={()=>openRun(String(r.run_id))}>입력버전 {String(r.input_version)} · {({SUCCEEDED:"계산 완료",FAILED:"계산 실패",PARTIAL:"일부 계산"} as Record<string,string>)[String(r.status)]??String(r.status)} · {r.is_current?"최신 입력":"과거 입력"}<small>계산 기록 {String(r.run_id)} · {String(r.adapter_version??"이전 계약")}</small></button>
             <button type="button" className="d-text-button" disabled={saveBusy} onClick={()=>void openRun(String(r.run_id),'')}>입력버전 {String(r.input_version)} 결과·상담 내역 확인</button></div>)}
         </details>}
-    </main><ScenarioPicker disabled={busy||saveBusy} onLoad={loadScenario} onRestore={original.current?restoreOriginal:undefined}/>{loginOpen&&<LoginDialog onClose={()=>{loginSave.current=false;setLoginOpen(false);}} onLogin={(value,seconds)=>handleLogin(value,seconds)}/>}<ConsultationWidget compact={mode!=="welcome"} open={consultationOpen} onOpen={()=>setConsultationOpen(true)} onClose={()=>setConsultationOpen(false)}>
+    </main>{mode!=="welcome"&&<ScenarioPicker disabled={busy||saveBusy} onLoad={loadScenario} onRestore={original.current?restoreOriginal:undefined}/>}{loginOpen&&<LoginDialog onClose={()=>{loginSave.current=false;setLoginOpen(false);}} onLogin={(value,seconds)=>handleLogin(value,seconds)}/>}<ConsultationWidget compact={mode!=="welcome"} open={consultationOpen} onOpen={()=>setConsultationOpen(true)} onClose={()=>setConsultationOpen(false)}>
       <div className="d-ai-content">
         {showResults&&view&&<div className="d-ai-modes" role="group" aria-label="상담 방식">
           <button ref={chatModeButton} type="button" aria-pressed={!resultQuestionMode} onClick={()=>setResultQuestionMode(false)}>DION과 대화</button>

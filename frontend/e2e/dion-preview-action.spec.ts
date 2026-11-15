@@ -1,3 +1,4 @@
+import { loadProductReviewCase } from "./review-scenario-helpers";
 import {expect, test, type Page} from '@playwright/test';
 
 const harness = process.env.DION_TEST_BE_URL;
@@ -11,7 +12,7 @@ async function preview(page: Page) {
   await page.route('**/api/be/v1/auth/status', route => route.fulfill({json: {configured: true}}));
   await page.route('**/api/be/v1/auth/login', route => route.fulfill({json: {access_token: 'MOCK-FE-ONLY', expires_in: 3600}}));
   await page.goto('/dion');
-  await page.getByRole('button', {name: '예시로 결과 보기 · 대표상품 포함'}).click();
+  await loadProductReviewCase(page);
   await expect(page.getByRole('region', {name: '계산 결과'})).toBeVisible();
 }
 

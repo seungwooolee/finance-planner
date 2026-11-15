@@ -1,3 +1,4 @@
+import { loadProductReviewCase } from "./review-scenario-helpers";
 import { expect, test } from "@playwright/test";
 import { assetAxis, assetBar, assetReferenceView, INITIAL_ASSET_REFERENCE } from "../src/lib/dion/asset-reference";
 
@@ -85,7 +86,7 @@ test("asset reference web flow uses real preview data and shares selection, snap
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/dion");
   const first = page.waitForResponse(r => r.url().endsWith("/api/fe/v1/preview") && r.request().method() === "POST");
-  await page.getByRole("button", { name: "예시로 결과 보기 · 대표상품 포함", exact: true }).click();
+  await loadProductReviewCase(page);
   const response = await first;
   expect(response.ok()).toBe(true);
   const result = (await response.json()).result;
