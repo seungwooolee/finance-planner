@@ -1,6 +1,7 @@
 """Optional scenario for new product allocations; never a change to the planning ledger."""
 
 import re
+from datetime import date
 from decimal import Decimal, localcontext
 from math import gcd
 
@@ -9,6 +10,8 @@ from .common import month_end
 VERSION = "DION-INVESTMENT-RETURN-PROJECTION-1.0"
 ASSET_ASSUMPTIONS_VERSION = "DION-ASSET-RETURN-ASSUMPTIONS-20261116-1.0"
 US_REFERENCE = "JPM_2027_US_LARGE_CAP_KRW"
+US_RESEARCH_URL = ("https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/insights/"
+                   "portfolio-insights/ltcma/noindex/ltcma-2027-report.pdf")
 WON = re.compile(r"0|[1-9][0-9]{0,29}")
 PERIOD = re.compile(r"[0-9]{4}-(0[1-9]|1[0-2])")
 
@@ -54,6 +57,33 @@ def _amounts(plan_row, product_row, portfolio_type, blocked):
     return allocated, remainder, items
 
 
+def _matches_us_reference(product):
+    disclosure = product.get("disclosure", {})
+    return (product.get("code") == "360200" and disclosure.get("asset_class") == "EQUITY"
+            and disclosure.get("foreign_underlying") is True and disclosure.get("fx_exposed") is True
+            and disclosure.get("benchmark") == "S&P 500 지수")
+
+
+def _us_reference_annual_growth():
+    # JPM 2027 USD compound return and terminal USD/KRW, using a 10-year horizon.
+    return Decimal("1.075") * (Decimal("1000") / Decimal("1340.40")) ** (Decimal(1) / 10)
+
+
+def market_return_assumption(product, on):
+    """Display the same market assumption the projection can apply to a matching product."""
+    if on < date(2026, 10, 19) or not _matches_us_reference(product):
+        return None
+    with localcontext() as ctx:
+        ctx.prec = 32
+        percent = ((_us_reference_annual_growth() - 1) * 100).quantize(Decimal("0.01"))
+    return {
+        "version": ASSET_ASSUMPTIONS_VERSION, "reference": US_REFERENCE,
+        "annual_rate_percent": str(percent), "as_of": "2026-09-30",
+        "basis": "US_LARGE_CAP_BENCHMARK_KRW_BEFORE_COSTS", "horizon_years": 10,
+        "source_url": US_RESEARCH_URL + "#page=68", "fx_source_url": US_RESEARCH_URL + "#page=12",
+    }
+
+
 def _asset_growth_factors(review, items, asset_rates):
     deposits = {item["code"]: _amount(item, "review_allocated_krw")
                 for item in items if _amount(item, "review_allocated_krw") > 0}
@@ -63,13 +93,9 @@ def _asset_growth_factors(review, items, asset_rates):
     for code, rate in asset_rates.items():
         if rate == US_REFERENCE:
             product = next((p for p in review.get("products", []) if p["code"] == code), {})
-            disclosure = product.get("disclosure", {})
-            if (code != "360200" or disclosure.get("asset_class") != "EQUITY"
-                    or disclosure.get("foreign_underlying") is not True or disclosure.get("fx_exposed") is not True
-                    or disclosure.get("benchmark") != "S&P 500 지수"):
+            if not _matches_us_reference(product):
                 raise ProjectionUnavailable("ASSET_ASSUMPTION_MISMATCH")
-            # JPM 2027 USD compound return and terminal USD/KRW, using a 10-year horizon.
-            annual_growth = Decimal("1.075") * (Decimal("1000") / Decimal("1340.40")) ** (Decimal(1) / 10)
+            annual_growth = _us_reference_annual_growth()
         else:
             annual_growth = 1 + Decimal(rate) / 100
         factors[code] = annual_growth ** (Decimal(1) / 12)

@@ -23,7 +23,10 @@ def test_three_views_exact_money_and_bounded_candidates():
         assert sum(int(a['review_allocated_krw']) for a in view['allocations']) == int(allocated)
         assert int(allocated) + int(cash) == 300000
         assert len({a['code'] for a in view['allocations']}) == len(view['allocations'])
-    risk = month['portfolio_type_views']['RETURN']
+    views = month["portfolio_type_views"]
+    assert [v["target_cash_krw"] for v in views.values()] == ["210000", "120000", "30000"]
+    assert [v["held_krw"] for v in views.values()] == ["0", "0", "144480"]
+    risk = views["RETURN"]
     assert risk['target_mix_bps'] == {'BOND': 2000, 'KR_EQUITY': 3500, 'US_EQUITY': 3500, 'CASH': 1000}
     assert (risk['target_cash_krw'], risk['held_krw']) == ('30000', '144480')
     assert [(a['code'], a['review_allocated_krw']) for a in risk['allocations']] == [
@@ -181,6 +184,15 @@ def test_dated_disclosures_feed_variants_and_keep_review_gates():
     assert bonds[:2] == ["214980", "153130"]
     assert screened["214980"]["historical_return"]["percent"] == "2.46"
     assert "historical_return" not in screened["469830"]
+    outlook = screened["360200"]["market_return_assumption"]
+    assert outlook["annual_rate_percent"] == "4.40" and outlook["horizon_years"] == 10
+    assert "market_return_assumption" not in screened["469830"]
+    assert {risk["label"] for risk in screened["360200"]["explanation"]["risk_notes"]} >= {
+        "시장 하락과 쏠림", "원·달러 환율", "매매 가격과 출금 시점",
+    }
+    assert {risk["label"] for risk in screened["469830"]["explanation"]["risk_notes"]} >= {
+        "금리와 채권 가격", "발행사 신용",
+    }
     row = review["candidates"][0]["rows"][0]
     assert len(row["comparison_eligible_codes"]) == 12
     assert [a["code"] for a in row["allocations"]] == ["153130", "069500", "360200"]

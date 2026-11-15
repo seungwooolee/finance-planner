@@ -820,3 +820,8 @@
 }
 .dion-app .d-candidate-detail>summary:focus-visible,.dion-app .d-candidate-detail a:focus-visible{outline:2px solid #63488a;outline-offset:2px}
 .dion-app .d-candidate-detail a{display:inline-block;margin:8px 12px 0 0;color:#63488a;text-decoration:underline}
+
+.dion-app .d-candidate-comparison-row td small{display:block;font-size:11px;color:#564a69}
+.dion-app .d-recommended-risks{display:grid;gap:10px}
+.dion-app .d-recommended-risks strong,.dion-app .d-recommended-risks span{display:block}
+.dion-app .d-recommended-risks span{text-wrap:pretty}

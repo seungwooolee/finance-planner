@@ -3,10 +3,11 @@ import { expect, test } from "@playwright/test";
 test("the final portfolio uses its selected allocation for an explicit signed return scenario", async ({page})=>{
   test.setTimeout(120000);
   await page.goto("/dion");
-  await page.getByRole("button",{name:"예시로 결과 보기 · 대표상품 포함",exact:true}).click();
+  await page.getByRole("button",{name:"가상 사례 불러오기",exact:true}).click();
+  await page.getByRole("button",{name:"사회초년생 불러오기",exact:true}).click();
   const tabs = page.locator(".d-tabs button");
   await tabs.nth(4).click();
-  const chart = page.getByRole("region",{name:"선택한 투자안의 자산 전망",exact:true});
+  const chart = page.getByRole("region",{name:"투자 기대수익률",exact:true});
   await expect(chart).toContainText("투자구성을 선택해 포트폴리오에 반영");
   await tabs.nth(2).click();
   await page.locator('[data-portfolio-apply="RETURN"]').click();

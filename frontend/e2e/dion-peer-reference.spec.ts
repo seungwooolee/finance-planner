@@ -43,20 +43,20 @@ test('reviewed research reaches real results with source, cohort, withholding an
   const composition = page.locator('#dion-selected-composition');
   for (const [type, label] of [['STABLE', '안정형'], ['BALANCED', '중립형'], ['RETURN', '위험추구형']]) {
     const button = page.locator(`[data-portfolio-apply="${type}"]`);
-    await expect(button).toHaveAccessibleName(`${label} 목표 비중 비교`);
+    await expect(button).toHaveAccessibleName(`${label} 선택`);
     await button.press('Enter');
     await expect(button).toHaveAttribute('aria-pressed', 'true');
     await expect(button).toBeFocused();
     await expect(composition.getByRole('heading', {name: `${label} 구성 상세`})).toBeVisible();
-    await expect(composition).toContainText('상품 배분 확인 대기');
+    await expect(composition).toContainText('검토 배분액');
   }
   await composition.getByRole('button', {name: '상품 정보 자세히 보기 →'}).click();
   const products = page.getByRole('region', {name: '자산군별 상품 비교 후보'});
-  await expect(products.locator('[data-candidate-code]')).toHaveCount(6);
-  await expect(products.getByText('현재 배분 보류', {exact: false})).toHaveCount(3);
-  await expect(page.locator('[data-allocation-month]').first()).toHaveAttribute('data-allocated', '0');
-  const comparison = page.getByRole('article', { name: '후보별 비용·유동성·환율·위험 비교' });
-  await expect(comparison.locator('.d-comparison-card')).toHaveCount(6);
+  await expect(products.locator('[data-candidate-code]')).toHaveCount(29);
+  await expect(products.getByText('현재 배분 보류', {exact: false}).first()).toBeVisible();
+  const month = result.results['OUT-06'].candidates[0].rows[0].portfolio_type_views.RETURN;
+  await expect(page.locator('[data-allocation-month]').first()).toHaveAttribute('data-allocated', month.allocated_total_krw);
+  const comparison = page.getByRole('article', { name: '추천 검토 상품' });
   await expect(comparison.locator('.d-comparison-card').first()).toContainText('매도 후 현금화');
   await page.getByRole('button', {name:'투자구성 비교로 돌아가기'}).click();
   await expect(page.locator('[data-portfolio-apply="RETURN"]')).toHaveAttribute('aria-pressed','true');

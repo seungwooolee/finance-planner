@@ -48,7 +48,7 @@ export function allocationRemainder(row: Obj | undefined): Slice[] {
   const { target_cash_krw: cash, held_krw: held } = row;
   if (isWon(cash) && isWon(held) && BigInt(cash) + BigInt(held) === BigInt(row.unallocated_krw)) {
     return [
-      { key: "TARGET_CASH", label: "목표 현금", value: cash, color: UNALLOCATED_COLOR },
+      { key: "TARGET_CASH", label: "계획에 남긴 현금", value: cash, color: UNALLOCATED_COLOR },
       { key: "HELD", label: "배분 보류", value: held, color: "#94a3b8" },
     ];
   }

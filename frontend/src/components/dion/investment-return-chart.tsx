@@ -6,12 +6,12 @@ import { list, object, textValue, won } from "@/lib/dion/model";
 import { portfolioNames } from "@/lib/dion/portfolio-comparison";
 import { isWon } from "@/lib/dion/result-visual";
 import { planName } from "./plan-comparison";
+import { sourceHref } from "./scheme-evidence";
 import type { ViewResult } from "./results";
 
 const version = "DION-INVESTMENT-RETURN-PROJECTION-1.0";
 const assetAssumptionsVersion = "DION-ASSET-RETURN-ASSUMPTIONS-20261116-1.0";
 const usReference = "JPM_2027_US_LARGE_CAP_KRW";
-const researchReport = "https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/insights/portfolio-insights/ltcma/noindex/ltcma-2027-report.pdf";
 const hfReport = "https://www.hf.go.kr/cms/etcResourceDown.do?key=%24cms%24EwBmDZBFGgCQRmsVAnAjPdQCeOAg6wLWOEqx2hYtcBKjA+gGYB2AdAA4AmxQA&site=%24cms%24NYeyA#page=24";
 const moneyFields = ["contribution_krw", "unallocated_krw", "cumulative_contributions_krw", "value_krw", "monthly_gain_krw", "cumulative_gain_krw"] as const;
 type Row = {period: string; on: string} & Record<typeof moneyFields[number], string>;
@@ -63,13 +63,16 @@ export function InvestmentReturnChart({view, plan, portfolio, revision, blocked,
     if (!code || !isWon(amount) || BigInt(amount) === 0n) return [];
     const product = products.find(p => p.code === code);
     const disclosure = object(product?.disclosure);
-    const hasResearch = code === "360200" && disclosure.asset_class === "EQUITY" &&
-      disclosure.foreign_underlying === true && disclosure.fx_exposed === true && disclosure.benchmark === "S&P 500 지수";
+    const outlook = object(product?.market_return_assumption);
+    const research = textValue(outlook.annual_rate_percent);
+    const source = sourceHref(textValue(outlook.source_url));
+    const fxSource = sourceHref(textValue(outlook.fx_source_url));
+    const hasResearch = outlook.reference === usReference && !!research && !!source;
     const group = hasResearch ? "미국주식" : disclosure.asset_class === "BOND" ?
       (code === "153130" ? "국내 단기채권" : "채권") :
       disclosure.asset_class === "CASH" ? "현금성 상품" :
       disclosure.asset_class === "EQUITY" ? (disclosure.foreign_underlying === false ? "국내주식" : "해외주식") : "기타 상품";
-    return [{code, amount, name:textValue(product?.name) || code, group, hasResearch}];
+    return [{code, amount, name:textValue(product?.name) || code, group, hasResearch, research, source, fxSource, asOf: textValue(outlook.as_of)}];
   });
 
   async function calculate(assumptions: Assumptions, months: number | null) {
@@ -153,7 +156,7 @@ export function InvestmentReturnChart({view, plan, portfolio, revision, blocked,
   }
 
   return <section className="d-card d-financial-projection d-investment-return" aria-labelledby={id}>
-    <div className="d-card-head"><h2 id={id}>선택한 투자안의 자산 전망</h2></div>
+    <div className="d-card-head"><h2 id={id}>투자 기대수익률</h2></div>
     <p>{planName(plan)}{portfolio ? ` · ${portfolioNames[portfolio]}` : ""}</p>
     <p className="d-inline-note">상품에 배정된 신규 납입액으로 원금과 가정에 따른 평가액을 비교해요. 기존 보유자산·현금 대기자금·인출은 계산에서 제외해요.</p>
     {!ready ? <p className="d-note">{!portfolio ? "투자구성을 선택해 포트폴리오에 반영하면 전망을 계산할 수 있어요."
@@ -181,14 +184,14 @@ export function InvestmentReturnChart({view, plan, portfolio, revision, blocked,
         <summary>자산군별 수익률 가정으로 10년 보기</summary>
         <form onSubmit={calculateAssets}>
           <p className="d-inline-note">첫 달과 같은 상품 배정액을 매달 말 납입해요. 확인된 참고값을 선택하거나 각 상품의 원화 기준 연 수익률을 입력해 주세요.</p>
-          <ul>{allocations.map(({code, amount, name, group, hasResearch})=>
+          <ul>{allocations.map(({code, amount, name, group, hasResearch, research, source, fxSource, asOf})=>
             <li key={code}>
               <strong>{group} · {name}</strong>
               <span>월 배정 {formatKrw(amount)}</span>
               {hasResearch ? <>
-                <p>장기 참고 가정 연 <strong>4.40%</strong> · 원화 환산 · 2026-09-30</p>
-                <a href={`${researchReport}#page=68`}>미국 대형주 전망 원문</a>{" · "}
-                <a href={`${researchReport}#page=12`}>환율 전망 원문</a>
+                <p>장기 참고 가정 연 <strong>{research}%</strong> · 원화 환산 · {asOf}</p>
+                {source && <a href={source}>미국 대형주 전망 원문</a>}
+                {fxSource && <>{" · "}<a href={fxSource}>환율 전망 원문</a></>}
                 <label className="d-return-research-option"><input type="checkbox" checked={useReference} disabled={busy}
                   onChange={event=>{setUseReference(event.target.checked);clearForecast();}}/> 이 참고 가정 적용</label>
               </> : <p>10년 가정 근거 미확보{code === "069500" && <> · <a href={hfReport}>국내주식 중장기 자료</a></>}</p>}

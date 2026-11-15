@@ -5,7 +5,8 @@ test('v0.7 real engine forecast matches chart/table and keeps old basis after ed
   test.setTimeout(120000);
   await page.goto('/dion');
   const calculated=page.waitForResponse(r=>r.url().endsWith('/api/fe/v1/preview')&&r.request().method()==='POST');
-  await page.getByRole('button',{name:'예시로 결과 보기 · 대표상품 포함',exact:true}).click();
+  await page.getByRole('button',{name:'가상 사례 불러오기',exact:true}).click();
+  await page.getByRole('button',{name:'사회초년생 불러오기',exact:true}).click();
   const response=await calculated;
   expect(response.ok()).toBeTruthy();
   const body=await response.json();
@@ -14,6 +15,8 @@ test('v0.7 real engine forecast matches chart/table and keeps old basis after ed
   await page.locator('.d-tabs button').nth(2).click();
   await page.locator('[data-portfolio-type="RETURN"] > button').click();
   await page.locator('.d-tabs button').nth(4).click();
+  const savedProjection = page.getByText('기존 금융자산 월별 흐름',{exact:true});
+  await savedProjection.click();
   const section=page.getByRole('region',{name:'보유 금융자산 잔액 전망',exact:true});
   await expect(section).toHaveAttribute('data-projection-hash',forecast.sha256);
   await expect(section).toContainText('위험 추구형');
@@ -41,6 +44,7 @@ test('v0.7 real engine forecast matches chart/table and keeps old basis after ed
   const previous=page.getByRole('button',{name:/이전 결과/});
   await previous.click();
   await page.locator('.d-tabs button').nth(4).click();
+  await savedProjection.click();
   await expect(section).toContainText('이전 입력의 전망과 설명이에요');
   await expect(section).toHaveAttribute('data-projection-hash',forecast.sha256);
 });

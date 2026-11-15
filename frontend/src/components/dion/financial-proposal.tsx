@@ -53,7 +53,6 @@ export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabe
   const evaluationOn = textValue(object(result.context).evaluation_on) || "기준일 확인 필요";
   const available = ref.state === "CALCULATED";
   const firstPeriod = textValue(list(list(object(object(result.results)["OUT-05"]).candidates).find(c => c.strategy_id === plan)?.rows)[0]?.period);
-  const stress = object(object(list(object(list(object(object(result.results)["OUT-06"]).candidates).find(c => c.strategy_id === plan)).rows)[0]).stress_review).scenario_loss_krw_ceil;
 
   return <article className="d-card d-proposal" aria-label="재무설계 제안서">
     <span className="d-badge">4단계 · 재무설계 제안서 · 검토용</span>
@@ -75,7 +74,7 @@ export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabe
     <Section n={3} title="다른 방법과 비교하기">
       {!available ? <p className="d-note">비교에 필요한 월별 재무안·목표 계산이 아직 없어요. 입력을 보완해 다시 계산하면 대안 비교가 나와요.</p> : <>
         <p>같은 소득·지출 조건에서 한 가지씩만 바꿨을 때의 차이예요. 모든 숫자는 맨 아래 ‘이 제안의 가정’을 기준으로 한 참고값이에요.</p>
-        <p className="d-inline-note d-proposal-scope">포함 범위: 첫 계획 월{firstPeriod ? `(${firstPeriod})` : ""}의 신규 적립금만 매달 같은 금액으로 쌓는다고 본 장기 비교예요. 이미 가진 금융자산·기존 납입·목표 인출은 넣지 않아요. 기존 자산을 포함한 잔액 흐름은 아래 ‘보유 금융자산 잔액 전망’에서 따로 봐요.</p>
+        <p className="d-inline-note d-proposal-scope">포함 범위: 첫 계획 월{firstPeriod ? `(${firstPeriod})` : ""}의 신규 적립금만 매달 같은 금액으로 쌓는다고 본 장기 비교예요. 이미 가진 금융자산·기존 납입·목표 인출은 넣지 않아요.</p>
         <div className="d-table-wrap"><table className="d-proposal-compare"><thead><tr><th>방법</th><th>무엇이 바뀌나</th><th>신규 적립금만 쌓인 금액 ({horizon || "기간"} 뒤)</th><th>장점</th><th>주의할 점</th></tr></thead><tbody>
           {chosen && <tr className="d-proposal-current"><th>지금 고른 안<small>{planName(plan)}</small></th><td>매달 {formatKrw(chosen.monthly_new_investment_krw)} 투자 후보</td><td>수익 미반영(0%)이면 {formatKrw(last(chosen)?.zero_return_krw)}</td><td>납입한 금액만 더한 기준이라 수익 가정에 흔들리지 않아요. 손실 하한은 아니에요.</td><td>물가가 오르면 실제 구매력은 줄어요.</td></tr>}
           {chosen && <tr><th>투자 방식 변경<small>연 {pct(assumed)} 비교용 가정 · 상품 기대수익률 아님</small></th><td>같은 금액에 비교용 수익률을 적용</td><td>{formatKrw(last(chosen)?.assumed_return_krw)}<small>물가 반영 시 오늘 가치 {formatKrw(last(chosen)?.assumed_return_real_krw)}</small></td><td>오래 둘수록 차이가 커져요. (+{formatKrw(diff(last(chosen)?.assumed_return_krw, last(chosen)?.zero_return_krw))})</td><td>수익률은 보장되지 않고 손실이 날 수 있어요.</td></tr>}
@@ -105,7 +104,6 @@ export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabe
     <Section n={4} title="위험과 확인할 점">
       <ul className="d-proposal-risks">
         <li><strong>수익은 보장되지 않아요.</strong> 연 {pct(assumed)}는 비교를 위한 가정이에요. 시장 상황에 따라 더 낮거나 손실이 날 수 있어요.</li>
-        {isWon(stress) && BigInt(stress) > 0n && <li>선택한 배분의 내부 하락 시나리오에서 손실액은 약 {formatKrw(stress)}로 계산됐어요. 실제 손실은 이보다 클 수 있어요.</li>}
         <li>세금 혜택은 소득·가입 조건에 따라 달라져요. 절세 안내는 개인별 판정이 아니에요.</li>
         <li className="d-warning">누군가 “수익을 보장합니다”라고 말한다면 반드시 의심하고, 판매자의 자격을 확인하세요.</li>
       </ul>

@@ -36,7 +36,7 @@ export function ResultTiles({ row, month, totalAssets }: { row?: Record<string, 
   return <div className="d-kpis d-kpis-4" aria-label="첫 계획 월 숫자 구분">
     <article className="d-kpi"><i className="d-kpi-icon" aria-hidden="true"><PiggyBank size={18}/></i><span>{period ? period + " 신규 투자 후보금" : "첫 계획 월 신규 투자 후보금"}</span><strong><MoneyAmount value={row?.new_investment_krw}/></strong><small>한 달 납입 · 새로 들어가는 돈</small></article>
     <article className="d-kpi"><i className="d-kpi-icon" aria-hidden="true"><Package size={18}/></i><span>그중 상품 배분액</span><strong className="d-accent"><MoneyAmount value={month?.allocated_total_krw}/></strong><small>후보 상품에 나눠 담는 금액</small></article>
-    <article className="d-kpi"><i className="d-kpi-icon" aria-hidden="true"><PackageOpen size={18}/></i><span>{allocationTargetLabel(month) ? "목표 현금과 배분 보류 합계" : "그중 현금 대기자금"}</span><strong><MoneyAmount value={month?.unallocated_krw}/></strong><small>첫 계획 월의 투자 후보 중 상품에 배정하기 전 남은 금액</small></article>
+    <article className="d-kpi"><i className="d-kpi-icon" aria-hidden="true"><PackageOpen size={18}/></i><span>{allocationTargetLabel(month) ? "계획 현금과 배분 보류 합계" : "그중 현금 대기자금"}</span><strong><MoneyAmount value={month?.unallocated_krw}/></strong><small>첫 계획 월의 투자 후보 중 상품에 배정하기 전 남은 금액</small></article>
     <article className="d-kpi d-kpi-soft"><i className="d-kpi-icon" aria-hidden="true"><Landmark size={18}/></i><span>전체 보유자산 · 참고</span><strong><MoneyAmount value={totalAssets}/></strong><small>이미 가진 자산 · 이번 배분과 별개</small></article>
   </div>;
 }
@@ -97,7 +97,6 @@ export function FinalPortfolio({ plan, row, review, assetReference, portfolio=nu
           <Donut slices={slices} total={budget} size={150} center={<><small>후보금</small><strong>{formatKrw(budget)}</strong></>} />
           <DonutLegend slices={slices} total={budget} />
         </div> : <p className="d-alert-card">{review.review_version ? "현재 조건으로 배분된 상품이 없어요. 상품 정보 탭에서 사유와 보완할 답변을 확인해주세요." : "상품 검토 결과가 없어요. 현재 입력으로 다시 계산하면 확인할 수 있어요."}</p>}
-        {allocations.length > 0 && <p className="d-inline-note">내부 하락 시나리오 손실액 {formatKrw(object(month?.stress_review).scenario_loss_krw_ceil)} · 실제 손실은 더 클 수 있어요.</p>}
       </div>
       <div>
         <h3>이번 달 자금 배정</h3>
