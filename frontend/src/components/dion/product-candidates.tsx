@@ -31,7 +31,9 @@ export function ProductCandidates({ review, month }: { review: Record<string, Js
           {matches.length === 0 ? <p className="d-candidate-empty">{group.asset_group === "CASH"
             ? "등록된 현금성 상품 비교 후보가 없어요. 현금 대기자금은 별도로 표시해요."
             : "이 자산군은 검토가 끝난 상품 자료가 없어요."}</p> :
-            <ul className="d-candidate-grid">
+            <table className="d-candidate-table">
+              <caption className="sr-only">{label} 상품 비교</caption>
+              <thead><tr><th scope="col">상품</th><th scope="col">위험등급</th><th scope="col">연 보수·비용</th><th scope="col">환율 영향</th></tr></thead>
               {matches.map(product => {
                 const code = textValue(product.code);
                 const disclosure = object(product.disclosure), dates = object(disclosure.source_as_of);
@@ -42,16 +44,16 @@ export function ProductCandidates({ review, month }: { review: Record<string, Js
                 const scoreValue = score?.score;
                 const coverage = score?.completeness_percent;
                 const href = sourceHref(textValue(product.official_source));
-                return <li key={code}>
-                  <article className="d-candidate-product" data-candidate-code={code}>
-                    <header><h4>{textValue(product.name)}</h4><small>{code}</small></header>
-                    <dl className="d-candidate-facts">
-                      <div><dt>공시 위험등급</dt><dd>{typeof disclosure.risk_grade === "number" ? `${disclosure.risk_grade}등급` : "미확인"}</dd></div>
-                      <div><dt>연간 보수·비용</dt><dd>{expense ? `${expense}%` : "미확인"}</dd></div>
-                      <div><dt>환율 영향</dt><dd>{disclosure.fx_exposed === true ? "환노출" : disclosure.fx_exposed === false ? "직접 환노출 없음" : "미확인"}</dd></div>
-                    </dl>
+                return <tbody key={code} data-candidate-code={code}>
+                  <tr className="d-candidate-comparison-row">
+                    <th scope="row"><strong>{textValue(product.name)}</strong><small>{code}</small></th>
+                    <td>{typeof disclosure.risk_grade === "number" ? `${disclosure.risk_grade}등급` : "미확인"}</td>
+                    <td>{expense ? `${expense}%` : "미확인"}</td>
+                    <td>{disclosure.fx_exposed === true ? "환노출" : disclosure.fx_exposed === false ? "직접 환노출 없음" : "미확인"}</td>
+                  </tr>
+                  <tr className="d-candidate-disclosure-row"><td colSpan={4}>
                     <details className="d-fold d-candidate-detail">
-                      <summary>공시 정보 더 보기</summary>
+                      <summary aria-label={`공시 정보 더 보기 · ${textValue(product.name)}`}>공시 정보 더 보기</summary>
                       <dl>
                         <div><dt>기초지수</dt><dd>{textValue(disclosure.benchmark) || "미확인"}</dd></div>
                         <div><dt>거래 통화</dt><dd>{textValue(disclosure.trading_currency) || "미확인"}</dd></div>
@@ -65,10 +67,10 @@ export function ProductCandidates({ review, month }: { review: Record<string, Js
                       </dl>
                       {href && <a href={href} target="_blank" rel="noopener noreferrer">공식 상품 자료 ↗</a>}
                     </details>
-                  </article>
-                </li>;
+                  </td></tr>
+                </tbody>;
               })}
-            </ul>}
+            </table>}
         </section>;
       })}
     </div>

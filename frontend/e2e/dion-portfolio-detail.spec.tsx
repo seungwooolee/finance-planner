@@ -5,6 +5,7 @@ import {expect, test} from '@playwright/test';
 import {PortfolioChoice} from '../src/components/dion/portfolio-choice';
 import {PortfolioChoiceDetail} from '../src/components/dion/portfolio-choice-detail';
 import {FinalPortfolio} from '../src/components/dion/final-portfolio';
+import {ProductAllocation} from '../src/components/dion/product-allocation';
 import {comparisonReview} from '../src/lib/dion/portfolio-comparison';
 import {list, object, type Json} from '../src/lib/dion/model';
 
@@ -51,7 +52,8 @@ test('each composition opens read-only monthly detail by keyboard on desktop and
       const month = card.getByRole('region', {name: '2026-11 구성 상세'});
       await expect(month).toContainText(`${i + 1}만원`);
       await expect(month).toContainText(`후보금 대비 ${(i + 1) * 10}%`);
-      await expect(month).toContainText('연 총보수 0%');
+      await expect(month.locator('dl > div').filter({hasText:'연 총보수'}).locator('dd')).toHaveText('0%');
+      await expect(month.getByRole('heading', {name:'상품별 검토 배분'})).toBeVisible();
       await expect(card.getByRole('region', {name: '2026-12 구성 상세'})).toBeVisible();
       await expect(card.locator(':scope > button')).toBeEnabled();
       await expect(card.locator(':scope > button')).toHaveAttribute('aria-pressed', 'false');
@@ -76,7 +78,7 @@ test('all three choices show the saved product explanation and separate explicit
       expect(navigated).toBe(false);
       const panel = renderToStaticMarkup(<PortfolioChoice {...base} selectedPlan={plan} chosen={chosen}/>);
       expect(panel).toContain(titles[i] + ' 구성 상세');
-      expect(panel).toContain('산정 대기');
+      expect(panel).toContain('상품별 검토 배분');
       expect(panel).toContain('저장된 검토 설명');
       expect(panel).toContain('상품 정보 자세히 보기');
       const selected = comparisonReview(review, plan, chosen);
@@ -89,6 +91,27 @@ test('all three choices show the saved product explanation and separate explicit
     }
   }
   expect(JSON.stringify(review)).toBe(original);
+});
+
+test('a portfolio candidate with a positive allocation appears ahead of the comparison table', async ({page}) => {
+  const basis = comparisonReview({
+    ...review,
+    products: [
+      {...list(review.products)[0], allocation_role: 'PORTFOLIO_CANDIDATE'},
+      {code:'DEFAULT', name:'기본 후보', allocation_role:'DEFAULT_SLOT'},
+    ],
+    catalog_comparison: {groups:[{asset_group:'BOND', label:'채권', product_codes:['TEST','DEFAULT']}]},
+  }, 'STABILITY_FIRST', 'STABLE');
+  await page.setContent(renderToStaticMarkup(<ProductAllocation review={basis} selectedPlan="STABILITY_FIRST" onEdit={()=>{}}/>));
+  const priority = page.getByRole('article', {name:'우선 검토 상품'});
+  await expect(priority).toContainText('검토 상품');
+  await expect(priority).toContainText('1만원');
+  await expect(priority).not.toContainText('기본 후보');
+  const candidates = page.getByRole('table', {name:'채권 상품 비교'});
+  await expect(candidates.getByRole('rowheader', {name:/기본 후보/})).toBeVisible();
+  const ordered = await page.locator('.d-product-priority, .d-candidate-panel').evaluateAll(panels =>
+    panels.map(panel => panel.classList.contains('d-product-priority')));
+  expect(ordered).toEqual([true, false]);
 });
 
 test('legacy and blocked results allow inspection but never enable application; recalculation remains explicit', () => {

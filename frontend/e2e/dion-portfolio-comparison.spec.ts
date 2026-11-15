@@ -34,7 +34,7 @@ test('P1-P5 each keep their own basis while three relative choices drive real pr
       const selected=page.locator('#dion-selected-composition');
       await expect(page.locator('.d-tabs button').nth(2)).toHaveAttribute('aria-current','page');
       await expect(page.locator(`[data-portfolio-apply="${type}"]`)).toBeFocused();
-      await expect(selected).toContainText('기대수익률산정 대기');
+      await expect(selected.getByRole('heading',{name:'상품별 검토 배분'})).toBeVisible();
       await selected.getByRole('button',{name:'상품 정보 자세히 보기 →'}).click();
       await expect(page.locator('[data-allocation-month]').first()).toHaveAttribute('data-allocated', view.allocated_total_krw);
       await expect(page.locator('[data-allocation-month]').first()).toHaveAttribute('data-unallocated', view.unallocated_krw);
