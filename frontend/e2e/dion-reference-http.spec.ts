@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 // Real page -> Next rewrite -> BE preview -> engine -> graphs. No API mocks,
 // accounts, saved runs, production writes or paid model calls.
-test('actual HTTP preview connects its reference snapshot to both graphs', async ({ page }, info) => {
+test('actual HTTP preview connects its reference snapshot to the selected cohort graph', async ({ page }, info) => {
   test.setTimeout(90_000);
   await page.goto('/dion');
   const pending = page.waitForResponse(r => r.url().endsWith('/api/fe/v1/preview') && r.request().method() === 'POST');
@@ -19,7 +19,7 @@ test('actual HTTP preview connects its reference snapshot to both graphs', async
   expect(peer.records.filter((r: { review_status: string }) => r.review_status === 'REFERENCE_ONLY')).toHaveLength(15);
   expect(peer.input_version).toBe(response.request().postDataJSON().raw_bundle.input_version);
   expect(peer.input_sha256).toBe(payload.result.adapter.source_sha256);
-  const total = peer.records.find((r: { cohort_id: string; metric_key: string }) => r.cohort_id === 'C07' && r.metric_key === 'proposal.total_assets');
+  const total = peer.records.find((r: { cohort_id: string; metric_key: string }) => r.cohort_id === 'C08' && r.metric_key === 'proposal.total_assets');
   expect(total.value).toMatch(/^\d+$/);
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: 1000 });
@@ -27,15 +27,13 @@ test('actual HTTP preview connects its reference snapshot to both graphs', async
     await expect(assets).toHaveAttribute('data-input-version', String(peer.input_version));
     await expect(assets).toHaveAttribute('data-data-version', peer.data_version);
     await expect(assets.getByRole('figure')).toBeVisible();
-    const life = page.getByRole('region', { name: '생활단계 참고 통계', exact: true });
-    await expect(life.getByRole('combobox')).toHaveValue('C07');
-    const chart = life.getByRole('figure', { name: '총자산 참고 그래프', exact: true });
-    await expect(chart).toBeVisible();
-    await expect(chart.locator('[data-peer-series="reference"]')).toHaveAttribute('data-value', total.value);
-    // This fixture is personal; household statistics must not acquire a fabricated own value.
+    await expect(page.getByRole('region', { name: '생활단계 참고 통계', exact: true })).toHaveCount(0);
+    await expect(assets.getByLabel('살펴볼 조사 집단')).toHaveValue('ANSWER');
+    await expect(assets).toContainText('사회초년생');
+    await expect(assets.locator('[data-asset-series="reference"]')).toHaveAttribute('data-value', total.value);
     expect(peer.scope).toBe('personal');
-    await expect(life.locator('[data-peer-series="own"]')).toHaveCount(0);
-    await chart.scrollIntoViewIfNeeded();
+    await expect(assets.locator('[data-asset-series="own"][data-value]')).toHaveCount(0);
+    await assets.scrollIntoViewIfNeeded();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBeTruthy();
     await page.screenshot({ path: info.outputPath(`real-http-reference-${width}.png`), fullPage: true });
   }

@@ -49,7 +49,7 @@ test("preview engine snapshot renders asset and life-stage graphs immediately on
 
 test("fresh unsupported response never promises recalculation will supply data; saved result stays explicit",async({page})=>{
   await show(page,assets(undefined));
-  await expect(page.getByRole("status")).toContainText("계산 서버가 자산·생활단계 참고 통계를 보내지 않았어요");
+  await expect(page.getByRole("status")).toContainText("계산 서버가 자산 참고 통계를 보내지 않았어요");
   await expect(page.getByRole("button",{name:/새 결과|다시 계산/})).toHaveCount(0);
   await expect(page.getByRole("figure")).toHaveCount(0);
   await show(page,assets(undefined,true));
