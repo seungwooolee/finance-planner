@@ -2,9 +2,11 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "git": {
     "deploymentEnabled": {
+      "codex/return-allocation-20261115": false,
       "codex/results-cleanup-20261115": false,
       "codex/ui-review-20261115": false,
       "codex/selected-asset-line-20261115": false,
+      "codex/investment-choice-detail-20261115": false,
       "codex/overnight-judge-20261115": false,
       "codex/chat-response-feedback-20261115": false,
       "codex/chat-deployment-repair-20261115": false,

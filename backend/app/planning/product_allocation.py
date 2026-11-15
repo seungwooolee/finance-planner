@@ -10,6 +10,7 @@ import json
 import re
 from datetime import date
 from decimal import Decimal
+from fractions import Fraction
 from pathlib import Path
 
 from . import portfolio_types
@@ -350,7 +351,7 @@ def _validate_policy(policy):
             raise ContractError("product policy role/budget values")
 
 
-def guarded_targets(slots, products, policy, loss_band):
+def guarded_targets(slots, products, policy, loss_band, *, reduce_concentration=False):
     """Scale original slots only down; rejected products never release risk budget.
 
     The adverse scenario is a service assumption, not VaR or a loss guarantee.
@@ -377,15 +378,20 @@ def guarded_targets(slots, products, policy, loss_band):
         if type(shock) is not int:
             raise ContractError("scenario shock missing for target role")
         numerator += weight * shock
-    if (max(issuers.values(), default=0) > policy["maximum_issuer_bps"]
-            or max(benchmarks.values(), default=0) > policy["maximum_benchmark_bps"]
-            or equity > policy["maximum_equity_bps"] or foreign > policy["maximum_foreign_bps"]):
+    constraints = (
+        (max(issuers.values(), default=0), policy["maximum_issuer_bps"]),
+        (max(benchmarks.values(), default=0), policy["maximum_benchmark_bps"]),
+        (equity, policy["maximum_equity_bps"]),
+        (foreign, policy["maximum_foreign_bps"]),
+    )
+    excess = [Fraction(cap, weight) for weight, cap in constraints if weight > cap]
+    if excess and not reduce_concentration:
         raise ContractError("original target concentration exceeds policy")
     budget = policy["stress_budget_bps_by_loss_band"].get(loss_band, 0)
     allowed = budget * 10000
     reduced = numerator > allowed
-    scaled = [{**s, "target_bps": s["target_bps"] * allowed // numerator if reduced else s["target_bps"]}
-              for s in slots]
+    scale = min([Fraction(allowed, numerator) if reduced else Fraction(1), *excess])
+    scaled = [{**s, "target_bps": s["target_bps"] * scale.numerator // scale.denominator} for s in slots]
     return scaled, {"stress_budget_bps": budget, "original_scenario_loss_numerator": str(numerator),
                     "scenario_loss_denominator": 100000000, "target_reduced": reduced,
                     "scenario_is_loss_limit": False, "sizing_basis": "ORIGINAL_TARGETS_BEFORE_FILTERING"}
@@ -448,9 +454,18 @@ def review_products(document, result, *, catalog=None, policy=None):
         guarded_targets(targets, products, policy, "LOSS_30_PLUS")
     slots, stress = guarded_targets(original, products, policy, profile.get("loss_tolerance_band_raw"))
     relative = portfolio_types.relative_preferences(preference)
-    type_targets = {type_id: guarded_targets(policy["target_slots_by_preference"].get(pref, []), products, policy,
-                                             profile.get("loss_tolerance_band_raw"))[0]
-                    for type_id, pref in relative.items()}
+    use_return_mix = (policy["version"] == portfolio_types.RETURN_MIX_PRODUCT_POLICY
+                      and preference in portfolio_types.PREFERENCES[2:])
+    type_targets = {}
+    for type_id, pref in relative.items():
+        explicit_mix = type_id == "RETURN" and use_return_mix
+        targets = policy["target_slots_by_preference"].get(pref, [])
+        if explicit_mix:
+            targets = [{"code": code, "target_bps": weight, "cap_bps": policy["maximum_product_bps"]}
+                       for _, code, weight in portfolio_types.RETURN_TARGETS]
+        type_targets[type_id], _ = guarded_targets(targets, products, policy,
+                                                   profile.get("loss_tolerance_band_raw"),
+                                                   reduce_concentration=explicit_mix)
     if not slots or not any(slot["target_bps"] for slot in slots):
         blockers.append("STABILITY_POLICY_UNALLOCATED" if preference == "PREF_STABILITY"
                         else "LOSS_BUDGET_UNRESOLVED" if stress["target_reduced"]
@@ -504,6 +519,11 @@ def review_products(document, result, *, catalog=None, policy=None):
                 # It must not bypass missing customer facts, dates, or budget guards.
                 cash_only = relative[type_id] == "PREF_STABILITY" and not type_slots
                 view = allocate_budget(month["new_investment_krw"], type_slots, set() if general else month_eligible)
+                if type_id == "RETURN" and use_return_mix:
+                    mix = portfolio_types.RETURN_MIX_BPS
+                    target_cash = integer(view["scenario_budget_krw"]) * mix["CASH"] // 10000
+                    view.update(target_mix_bps=mix, target_cash_krw=str(target_cash),
+                                held_krw=str(integer(view["unallocated_krw"]) - target_cash))
                 type_loss = sum(int(a["review_allocated_krw"]) * policy["scenario_shock_bps_by_role"][
                     next(p for p in products if p["code"] == a["code"])["service_constraints"]["role"]]
                                 for a in view["allocations"])
@@ -601,6 +621,8 @@ def block_product_budget(result):
                 view.update(allocations=[], allocated_total_krw="0", unallocated_krw=month["scenario_budget_krw"],
                             selectable=False, calc_state="NEEDS_INPUT", reason_codes=["BUDGET_UNAVAILABLE"])
                 view["stress_review"] = {"scenario_loss_krw_ceil": "0", "full_loss_scenario_krw": "0"}
+                if "target_cash_krw" in view:
+                    view["held_krw"] = str(integer(view["unallocated_krw"]) - integer(view["target_cash_krw"]))
             for group in month.get("comparison_groups", []):
                 group.update(product_codes=[], state="NO_ELIGIBLE_CANDIDATES", reason="BUDGET_UNAVAILABLE")
             month["reason_codes"] = sorted(set(month["reason_codes"] + ["BUDGET_UNAVAILABLE"]))

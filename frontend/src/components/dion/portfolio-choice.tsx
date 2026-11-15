@@ -2,7 +2,7 @@
 import { Document, Json, fieldValue, list, object, textValue } from '@/lib/dion/model';
 import { MoneyAmount } from "./money-amount";
 import { formatKrw } from '@/lib/dion/money-format';
-import { allocationSlices, isWon } from '@/lib/dion/result-visual';
+import { allocationSlices, allocationTargetLabel, isWon } from '@/lib/dion/result-visual';
 import { PlanSelector } from './plan-comparison';
 import { Donut, DonutLegend } from './donut';
 import { PortfolioChoiceDetail } from './portfolio-choice-detail';
@@ -66,13 +66,15 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
         const ready = isWon(view.allocated_total_krw) && (list(view.allocations).length > 0 || view.cash_only === true);
         const mine = customerType === id;
         const enabled = view.selectable === true && !blocked;
-        const slices = ready ? allocationSlices(list(view.allocations), products, view.unallocated_krw) : [];
+        const slices = ready ? allocationSlices(list(view.allocations), products, view) : [];
+        const target = allocationTargetLabel(view);
         const total = month?.scenario_budget_krw;
         return <div key={id} data-portfolio-type={id} className={`d-portfolio-card ${mine ? 'mine' : ''} ${chosen === id ? 'selected' : ''}`}>
           {mine && <span className="d-mine-badge">{relative ? '내 기준의 기본 구성' : '저장 당시 성향 기준'}</span>}
           <div className="d-card-head"><span className="d-pill">안 {String(i + 1).padStart(2, '0')}</span></div>
           <h3>{title}</h3><p className="d-type-sub">{subtitle}</p>
           {relative && <p className="d-type-line">{profileName} 기준의 {title} 구성</p>}
+          {target && <p className="d-type-line"><b>목표 비중</b> {target}</p>}
           {ready ? <>
             <Donut slices={slices} total={total} center={<><small>배분</small><strong>{formatKrw(view.allocated_total_krw)}</strong></>} />
             <DonutLegend slices={slices} total={total} />
@@ -95,7 +97,7 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
         <PortfolioChoiceDetail rows={rows.slice(0, 1)} products={products} type={chosen} messages={object(review.reason_messages)} showExplanation/>
         <button className="d-secondary" type="button" onClick={onProducts}>상품 정보 자세히 보기 →</button>
       </section>}
-      <p className="d-inline-note">도넛은 실제 배분액의 비율이고 회색은 현금 대기자금이에요. 현금 대기자금 금액은 현금성 상품으로 자동 대체하지 않아요.</p>
+      <p className="d-inline-note">도넛은 검토 조건을 적용한 금액 비율이에요. 위험추구형의 배분 보류액은 손실 한도·상품 조건과 원 단위 내림을 반영한 금액이에요.</p>
       {relative && <p className="d-inline-note">안정·중립·위험추구는 내 P1~P5 기준 안의 상대적인 선택이에요. 상한이나 배분 보류 조건이 적용되면 두 구성의 금액이 같을 수 있어요. 선택한 구성은 상담용 검토안이에요. 상담 후 최종 생성과 계획 채택을 각각 요청해요.</p>}
     </article>
   </>;
