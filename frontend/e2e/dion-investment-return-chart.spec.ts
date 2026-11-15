@@ -12,6 +12,7 @@ test("the final portfolio uses its selected allocation for an explicit signed re
   await tabs.nth(2).click();
   await page.locator('[data-portfolio-apply="RETURN"]').click();
   await expect(page.locator("#dion-selected-composition").getByText("손실·집중 한도로 줄인 금액").first()).toBeVisible();
+  await page.locator('[data-portfolio-apply="STABLE"]').click();
   await tabs.nth(4).click();
   const rate = chart.getByLabel("연 수익률 가정 (%)",{exact:true});
   await expect(rate).toHaveValue("");
@@ -24,7 +25,7 @@ test("the final portfolio uses its selected allocation for an explicit signed re
   const res = await response;
   expect(res.ok()).toBeTruthy();
   const result = await res.json();
-  expect(result.portfolio_type).toBe("RETURN");
+  expect(result.portfolio_type).toBe("STABLE");
   expect(result.rows).toHaveLength(12);
   expect(BigInt(result.rows[11].cumulative_gain_krw)).toBeLessThan(0n);
   await expect(chart.getByRole("img")).toBeVisible();
@@ -38,9 +39,10 @@ test("the final portfolio uses its selected allocation for an explicit signed re
   await page.setViewportSize({width:390,height:844});
   expect(await chart.evaluate(el=>el.scrollWidth<=el.clientWidth)).toBeTruthy();
   await tabs.nth(2).click();
+  await page.getByRole("article",{name:"포트폴리오 검토 유형"}).getByRole("button",{name:"투자 여력 확대",exact:true}).click();
   await page.locator('[data-portfolio-apply="STABLE"]').click();
   await tabs.nth(4).click();
-  await expect(chart).toContainText("안정형");
+  await expect(chart).toContainText("투자 여력 확대 · 안정형");
   await expect(rate).toHaveValue("");
   await expect(chart.getByRole("img")).toHaveCount(0);
 });

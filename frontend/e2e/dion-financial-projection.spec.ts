@@ -13,13 +13,13 @@ test('v0.7 real engine forecast matches chart/table and keeps old basis after ed
   const forecast=body.result.results['OUT-05'].candidates.find((c:any)=>c.strategy_id==='STABILITY_FIRST').financial_projection;
   expect(forecast.calc_state).toBe('CALCULATED');
   await page.locator('.d-tabs button').nth(2).click();
-  await page.locator('[data-portfolio-type="RETURN"] > button').click();
+  await page.locator('[data-portfolio-type="STABLE"] > button').click();
   await page.locator('.d-tabs button').nth(4).click();
   const savedProjection = page.getByText('기존 금융자산 월별 흐름',{exact:true});
   await savedProjection.click();
   const section=page.getByRole('region',{name:'보유 금융자산 잔액 전망',exact:true});
   await expect(section).toHaveAttribute('data-projection-hash',forecast.sha256);
-  await expect(section).toContainText('위험 추구형');
+  await expect(section).toContainText('안정형');
   await expect(section).toContainText('수익 반영 전망: 계산하지 않음');
   await expect(section.getByRole('img')).toBeVisible();
   await section.getByText('월별 수치 표 · 정확한 원 단위',{exact:true}).click();

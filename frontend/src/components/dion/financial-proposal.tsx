@@ -103,9 +103,8 @@ export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabe
 
     <Section n={4} title="위험과 확인할 점">
       <ul className="d-proposal-risks">
-        <li><strong>수익은 보장되지 않아요.</strong> 연 {pct(assumed)}는 비교를 위한 가정이에요. 시장 상황에 따라 더 낮거나 손실이 날 수 있어요.</li>
-        <li>세금 혜택은 소득·가입 조건에 따라 달라져요. 절세 안내는 개인별 판정이 아니에요.</li>
-        <li className="d-warning">누군가 “수익을 보장합니다”라고 말한다면 반드시 의심하고, 판매자의 자격을 확인하세요.</li>
+        <li><strong>수익은 보장되지 않아요.</strong> dion은 AI를 활용한 재무 진단 서비스예요.</li>
+        <li>시장 상황에 따라 수익이 예상보다 낮거나 손실이 날 수 있어요.</li>
       </ul>
     </Section>
 

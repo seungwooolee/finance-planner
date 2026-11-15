@@ -95,14 +95,15 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
       <div className="d-portfolio-grid">{order.map((id, i) => {
         const [title, subtitle, purpose, risk] = TYPES[id];
         const view = viewWithTarget(id);
-        const ready = isWon(view.allocated_total_krw) && (list(view.allocations).length > 0 || view.cash_only === true);
+        const inverted = Array.isArray(view.reason_codes) && view.reason_codes.includes('COMPOSITION_INVERSION');
+        const ready = !inverted && isWon(view.allocated_total_krw) && (list(view.allocations).length > 0 || view.cash_only === true);
         const mine = customerType === id;
         const enabled = view.selectable === true && object(firstViews[id]).selectable === true && !blocked;
         const slices = ready ? allocationSlices(list(view.allocations), products, view) : [];
         const target = allocationTargetLabel(view);
         const canCompareTarget = !!target && !blocked;
         const total = month?.scenario_budget_krw;
-        const targetSlices = !isWon(view.allocated_total_krw) || view.allocated_total_krw === "0" ? allocationTargetSlices(view) : [];
+        const targetSlices = inverted || !isWon(view.allocated_total_krw) || view.allocated_total_krw === "0" ? allocationTargetSlices(view) : [];
         const zeroRemainder = view.allocated_total_krw === "0" ? allocationRemainder(view) : [];
         return <div key={id} data-portfolio-type={id} className={`d-portfolio-card ${mine ? 'mine' : ''} ${displayed === id ? 'selected' : ''}`}>
           {mine && <span className="d-mine-badge">{relative ? '내 기준의 기본 구성' : '저장 당시 성향 기준'}</span>}
@@ -113,7 +114,7 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
           {targetSlices.length > 0 ? <>
             <Donut slices={targetSlices} total="10000" center={<small>목표 비중</small>} />
             <DonutLegend slices={targetSlices} total="10000" percentOnly />
-            <p className="d-inline-note">{isWon(view.allocated_total_krw) ? '상품 검토 배분액 0원' : '상품 검토 배분액 확인 대기'}</p>
+            <p className="d-inline-note">{inverted ? '현재 조건에서는 이 유형을 선택할 수 없어요.' : isWon(view.allocated_total_krw) ? '상품 검토 배분액 0원' : '상품 검토 배분액 확인 대기'}</p>
             {zeroRemainder.length > 0 && <ul className="d-composition-hold">{zeroRemainder.map(item =>
               <li key={item.key}>{item.label} {formatKrw(item.value)}</li>)}</ul>}
           </> : ready ? <>

@@ -15,7 +15,7 @@ from pathlib import Path
 
 from . import portfolio_types
 from .common import ContractError, Missing, digest, integer, output
-from .investment_return_projection import market_return_assumption
+from .investment_return_projection import market_return_assumption, market_return_one_year
 from .product_candidates import GROUPS, comparison_groups, review_universe_groups
 from .product_candidates import VERSION as COMPARISON_VERSION
 from .product_disclosures import REVIEWED_ON, apply_disclosures
@@ -67,6 +67,7 @@ MESSAGES = {
     "DEFAULT_POLICY_EXCLUDED": "이번 기본 배분에서 다루는 상품 범위에 포함되지 않아요.",
     "POLICY_DISCLOSURE_STALE": "배분 정책의 검토 기준일이나 갱신 기한을 확인해야 해요.",
     "LOSS_BUDGET_UNRESOLVED": "손실을 감수할 수 있는 범위가 작거나 불명확해 상품 배분을 보류해요.",
+    "COMPOSITION_INVERSION": "이 유형은 앞선 유형보다 투자 배정액이 적고 계산상 위험 노출도 더 크지 않아요. 목표 비중을 비교할 수 있어요.",
     "STRESS_TARGET_REDUCED": "내부 손실 시나리오 기준에 맞춰 원래 목표 비중을 낮췄어요. 실제 손실의 상한은 아니에요.",
     "STABILITY_POLICY_UNALLOCATED": "안정형의 기본 배분은 현금 중심이에요. 각 투자구성에서 검토 결과를 볼 수 있어요.",
     "BUDGET_PERIOD_PAST": "기준일보다 이전 달의 예산에는 현재 상품 자료로 배분하지 않아요.",
@@ -511,6 +512,9 @@ def review_products(document, result, *, catalog=None, policy=None):
         outlook = market_return_assumption(screened[-1], on) if use_current_disclosures else None
         if outlook:
             screened[-1]["market_return_assumption"] = outlook
+        one_year = market_return_one_year(screened[-1], on) if use_current_disclosures else None
+        if one_year:
+            screened[-1]["market_return_one_year"] = one_year
     by_role = {}
     for product in products:
         if product["code"] in eligible:
@@ -607,6 +611,7 @@ def review_products(document, result, *, catalog=None, policy=None):
                                    if reason in {"UNDERSTANDING_REQUIRED", "RESTRICTIONS_UNCONFIRMED",
                                                  "INDUSTRY_EXCLUSION_UNRESOLVED"}}))
             views = {}
+            available_lower_types = []
             for type_id, type_slots in type_targets.items():
                 # A reviewed all-unallocated alternative is still a selectable comparison.
                 # It must not bypass missing customer facts, dates, or budget guards.
@@ -638,7 +643,14 @@ def review_products(document, result, *, catalog=None, policy=None):
                 if type_loss > integer(view["scenario_budget_krw"]) * stress["stress_budget_bps"]:
                     raise ContractError("comparison scenario exceeds customer service budget")
                 reasons = sorted(set(general + ([] if view["allocations"] or cash_only else ["NO_ELIGIBLE_PRODUCTS"])))
-                comparison_only = (
+                amount = integer(view["allocated_total_krw"])
+                inverted = not reasons and any(amount < lower_amount and type_loss <= lower_loss
+                                               for lower_amount, lower_loss in available_lower_types)
+                if inverted:
+                    reasons.append("COMPOSITION_INVERSION")
+                if not reasons:
+                    available_lower_types.append((amount, type_loss))
+                comparison_only = inverted or (
                     bool(reasons) and mix is not None and not missing and not invalid
                     and not set(general) - {"FUND_USE_UNDECIDED"}
                     and profile.get("loss_affects_essentials") == "LOSS_AFFECTS_ESSENTIALS_02"

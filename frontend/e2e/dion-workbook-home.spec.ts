@@ -19,7 +19,16 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
     await resultTabs.getByRole("button", {name:"투자구성", exact:true}).click();
     await expect(rendered.locator("[data-portfolio-type]")).toHaveCount(3);
     await expect(rendered.locator("[data-portfolio-type] .d-donut")).toHaveCount(3);
-    const choice = rendered.locator('[data-portfolio-apply="RETURN"]');
+    const risk = rendered.locator('[data-portfolio-apply="RETURN"]');
+    await expect(risk).toHaveAccessibleName("위험추구형 목표 비중 비교");
+    await risk.click();
+    await expect(rendered.getByRole("region", {name:"위험추구형 구성 상세"})).toContainText("위험 노출도 더 크지 않아요");
+    await rendered.getByRole("button",{name:"상품 정보 자세히 보기 →"}).click();
+    await expect(rendered.getByRole("article",{name:"선택 보류 · 배분 검토 내역"})).toBeVisible();
+    await expect(rendered.getByRole("article",{name:"추천 검토 상품"})).toHaveCount(0);
+    await resultTabs.getByRole("button", {name:"투자구성", exact:true}).click();
+    await expect(rendered.locator('[data-portfolio-apply="BALANCED"]')).toHaveAccessibleName("중립형 목표 비중 비교");
+    const choice = rendered.locator('[data-portfolio-apply="STABLE"]');
     await choice.scrollIntoViewIfNeeded();
     await choice.focus();
     const position = await page.evaluate(() => scrollY);
@@ -38,12 +47,21 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
     await expect(screening.getByRole("row").filter({hasText:"273130"})).not.toContainText("투자구성 편입 조건 통과");
     await expect(rendered.locator("[data-candidate-code]")).toHaveCount(29);
     const candidates = rendered.getByRole("region",{name:"자산군별 상품 비교 후보"});
-    await expect(candidates.getByRole("columnheader",{name:"예상 수익률"}).first()).toBeVisible();
-    await expect(candidates.locator('[data-candidate-code="360200"]').first()).toContainText("연 4.40%");
-    await expect(candidates.locator('[data-candidate-code="325020"]').first().locator("tr").first()).toContainText("가정 없음");
+    await expect(candidates.getByRole("columnheader",{name:"예상 1년 수익률"}).first()).toBeVisible();
+    await expect(candidates.locator('[data-candidate-code="360200"]').first()).toContainText("12.06%");
+    await expect(candidates.locator('[data-candidate-code="325020"]').first().locator("tr").first()).toContainText("전망 없음");
     await expect(screening.getByText("0091C0", {exact:true})).toHaveCount(0);
     await resultTabs.getByRole("button", {name:"결과·다음 행동", exact:true}).click();
     await expect(rendered.getByRole("heading", {name:"나의 재무설계 제안서"})).toBeVisible();
+    const goalPlan=rendered.getByRole("region",{name:"내가 선택한 투자안"}).getByRole("table",{name:"수익을 반영하지 않은 목표 적립 계획"});
+    const goal=goalPlan.getByRole("row").filter({hasText:"시연용 목돈 준비"});
+    await expect(goal).toContainText("회차당 30만원");
+    await expect(goal).toContainText("2026-12-15");
+    const ai=rendered.getByRole("article",{name:"DION AI 상담",exact:true});
+    await expect(ai.getByRole("button")).toHaveCount(1);
+    await expect(ai.getByRole("button",{name:"AI 상담 시작"})).toBeVisible();
+    await expect(rendered.getByRole("article",{name:"첫 계획 월 할 일"})).toContainText("월말에는 실제 저축·상환·투자 금액을 계획과 대조해");
+    await expect(rendered.getByText("dion은 AI를 활용한 재무 진단 서비스예요.", {exact:false})).toBeVisible();
   };
   const preview = () => page.waitForResponse(reply =>
     new URL(reply.url()).pathname === "/api/fe/v1/preview" && reply.request().method() === "POST");
@@ -79,7 +97,7 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   await expect(plans.getByRole("button",{name:"생활 안정 우선"})).toBeVisible();
   await expect(plans.getByRole("button",{name:"투자 여력 확대"})).toBeVisible();
   await expect(rendered.getByRole("button",{name:"재계산",exact:true})).toHaveCount(0);
-  await expect(rendered.getByRole("rowheader", {name:/^시연용 목돈 준비/})).toBeVisible();
+  await expect(rendered.getByRole("rowheader", {name:/^시연용 목돈 준비/})).toHaveCount(0);
   await checkPortfolioViews();
   await resultTabs.getByRole("button", {name:"상품 정보", exact:true}).click();
   await expect(rendered.getByRole("article", {name:"우선 검토 상품"})).toBeVisible();
@@ -90,7 +108,7 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   const recommended = rendered.getByRole("article",{name:"추천 검토 상품"});
   await expect(recommended).toContainText("금리와 채권 가격");
   await expect(recommended).toContainText("매매 가격과 출금 시점");
-  const eligible = earlyMonth.portfolio_type_views.RETURN.allocations
+  const eligible = earlyMonth.portfolio_type_views.STABLE.allocations
     .filter((item: { code:string; review_allocated_krw:string })=>BigInt(item.review_allocated_krw)>0n);
   await expect(recommended.locator("[data-comparison-product]")).toHaveCount(eligible.length);
   for (const item of eligible) await expect(recommended.locator(`[data-comparison-product="${item.code}"]`)).toBeVisible();
@@ -133,7 +151,7 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   await expect(plans.getByRole("button",{name:"생활 안정 우선"})).toBeVisible();
   await expect(plans.getByRole("button",{name:"투자 여력 확대"})).toBeVisible();
   await expect(rendered.getByRole("button",{name:"재계산",exact:true})).toHaveCount(0);
-  await expect(rendered.getByRole("rowheader", {name:/^시연용 주거 정비비/})).toBeVisible();
+  await expect(rendered.getByRole("rowheader", {name:/^시연용 주거 정비비/})).toHaveCount(0);
   await resultTabs.getByRole("button",{name:"투자구성",exact:true}).click();
   const budget = rendered.locator(".d-kpi").filter({hasText:"2027-01 신규 투자 후보금"});
   const compositions = rendered.getByRole("article",{name:"포트폴리오 검토 유형"});

@@ -52,7 +52,8 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
       const priority:{product:Record<string,Json>; allocation?:Record<string,Json>}[]=allocated.length>0
         ?allocated.map(allocation=>({product:products.find(product=>product.code===allocation.code)??{code:allocation.code},allocation}))
         :defaults.map(product=>({product}));
-      const priorityTitle=allocated.length>0?"우선 검토 상품":"기본 배분 후보";
+      const inverted=Array.isArray(month?.reason_codes)&&month.reason_codes.includes("COMPOSITION_INVERSION");
+      const priorityTitle=inverted?"선택 보류 · 배분 검토 내역":allocated.length>0?"우선 검토 상품":"기본 배분 후보";
       const slices=allocationSlices(allocations,products,month);
       const target=allocationTargetLabel(month);
       return <div key={String(candidate.strategy_id)}>
@@ -60,7 +61,7 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
         {priority.length>0&&<div className="d-product-layout">
           <article className="d-card d-product-priority" aria-label={priorityTitle}>
             <div className="d-card-head"><h2>{priorityTitle}</h2></div>
-            <p className="d-inline-note">{allocated.length>0
+            <p className="d-inline-note">{inverted?reason("COMPOSITION_INVERSION"):allocated.length>0
               ? `${textValue(month?.period)} 계획에 금액이 배정된 검토 상품이에요.`
               : month?.allocated_total_krw==="0"?"이 달에 배분된 상품은 없어요. 기본 후보에서 검토 이유를 확인할 수 있어요."
               :"배분 결과를 확인할 때까지 기본 후보의 정보를 볼 수 있어요."}</p>
@@ -91,7 +92,7 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
           {allocationRemainder(m).map(part=><div key={part.key}><span>{part.label}</span><strong>{formatKrw(part.value)}</strong></div>)}
           {Array.isArray(m.reason_codes)&&m.reason_codes.length>0&&<p className="d-band-note">{m.reason_codes.map(code=>code==="POLICY_DISCLOSURE_STALE"?policyDateMessage(review,evaluationOn,String(m.period)):reason(code)).join(" ")}</p>}
         </div>)}
-        <ProductComparison products={priority.flatMap(({product,allocation})=>allocation?[product]:[])}/>
+        {!inverted&&<ProductComparison products={priority.flatMap(({product,allocation})=>allocation?[product]:[])}/>}
         <ProductCandidates review={review} month={month}/>
       </div>;
     })}

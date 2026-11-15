@@ -45,7 +45,7 @@ export function PortfolioChoiceDetail({ rows, products, type, messages, target }
             : <div><dt>현금 대기자금</dt><dd>확인 대기</dd></div>}
         </dl>
         {targets.length > 0 && <div className="d-composition-target"><h5>목표 비중</h5><DonutLegend slices={targets} total="10000" percentOnly/></div>}
-        <h5>상품별 검토 배분</h5>
+        <h5>{reasons.includes("COMPOSITION_INVERSION") ? "조건 적용 후 계산된 상품별 금액" : "상품별 검토 배분"}</h5>
         {allocations.map((allocation, i) => {
           const product = products.find(p => p.code === allocation.code);
           const disclosure = object(product?.disclosure), group = assetGroup(product);

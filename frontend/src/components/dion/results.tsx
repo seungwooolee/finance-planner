@@ -42,10 +42,10 @@ import type { ReviewBasis, PortfolioReview } from "@/lib/dion/portfolio-review";
 
 const stateLabels: Record<string,string> = { CALCULATED:"계산됨", PARTIAL:"부분 결과", NEEDS_INPUT:"정보 보완 필요", INVALID_INPUT:"입력 확인 필요", NOT_SUPPORTED:"미지원", NOT_IMPLEMENTED:"준비 중", NOT_APPLICABLE:"해당 없음", NOT_REQUESTED:"요청하지 않음", REVIEW_ONLY:"검토 목록", INTERNAL_ERROR:"계산 오류", INFEASIBLE:"월 예산 부족", CALCULATED_MONTHLY_SCENARIO:"월 예산 시나리오" };
 const TASKS=[
-  {key:"protection_topup_krw",text:"보호자금 보충하기 · 비상금 유지 목표까지"},
-  {key:"operating_refill_krw",text:"생활 운영자금 채워두기"},
-  {key:"goal_deposits_krw",text:"목표 적립금 넣기 · 적립 예정일 확인"},
-  {key:"new_investment_krw",text:"투자 후보금의 상품 구성 확인하기"},
+  {key:"protection_topup_krw",text:"비상금 보충하기", hint:"비상금 계좌로 옮길 금액과 지금 확보한 잔액을 대조해요."},
+  {key:"operating_refill_krw",text:"생활 운영자금 채워두기", hint:"월세·공과금·대출처럼 먼저 빠져나가는 돈의 날짜를 확인해요."},
+  {key:"goal_deposits_krw",text:"목표 적립금 준비하기", hint:"목표별 준비표에서 이번 달 적립일과 회차당 금액을 확인해요."},
+  {key:"new_investment_krw",text:"배정된 상품과 금액 확인하기", hint:"이번 달 상품 배정액과 나중에 검토할 돈을 확인해요."},
 ];
 // The first plan month's review items; amounts are plan figures, never actual records.
 function monthTasks(row:Record<string,Json>|undefined){
@@ -154,6 +154,9 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
       {(selectedPortfolio||comparisonMessage)&&<p role="status">{[selectedPortfolio?`${portfolioNames[selectedPortfolio]} 비교 초안`:"",comparisonMessage].filter(Boolean).join(" · ")}</p>}
       {comparison.error&&<div role="alert"><p>{comparison.error}</p><button type="button" className="d-secondary" onClick={comparison.retry}>비교 초안 다시 불러오기</button></div>}
     </div>;
+  const goalPlan=<GoalTable goals={goals} goalLabel={displayGoal} missing={assetGoal
+    ? <p>자산 잔액 목표 {formatKrw(fieldKrw({state:textValue(assetGoalAmount.state),raw_value:assetGoalAmount.raw_value,unit:textValue(assetGoalAmount.unit)}))} · {textValue(assetGoalDate) || "사용일 확인 필요"}. 자산 잔액 목표의 적립액은 계산이 지원되지 않아요.</p>
+    : <Missing row={goals} title="목표"/>}/>;
   return <section className="d-results" aria-label="계산 결과">
     <div className="d-result-heading"><div>{actionFlow?.fictional&&<span className="d-example-tag">예시 결과</span>}<span className="d-eyebrow">{deep?"정밀 진단 결과":"빠른 진단 결과"}</span><h1 ref={heading} tabIndex={-1} style={{scrollMarginTop:"var(--d-results-scroll-offset, 96px)"}}>{(()=>{const Icon=TAB_ICONS[tab];return Icon?<i className="d-title-icon" aria-hidden="true"><Icon size={26}/></i>:null;})()}{tabs[tab]}</h1><p>{["현재 재무 상태를 먼저 확인해요","두 재무안 중 하나를 골라 남는 돈의 배정을 비교해요","투자 선호와 신규 납입금의 구성을 확인해요","신규 납입금을 담을 상품과 현금 대기자금을 확인해요","첫 계획 월의 납입안과 할 일, 채택·기록 상태를 확인해요"][tab]}</p></div><button className="d-secondary" onClick={()=>onEdit("F03")}>입력 내용 수정 ↗</button></div>
     <ResultNotice next={next}/>
@@ -182,12 +185,9 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
       {assetReference()}
       <FinancialOverview flow={flow}/>
     </>}
-    {tab===1 && <>
-      {(()=>{const goalsCard=<GoalTable goals={goals} goalLabel={displayGoal} missing={assetGoal
-        ? <p>자산 잔액 목표 {formatKrw(fieldKrw({state:textValue(assetGoalAmount.state),raw_value:assetGoalAmount.raw_value,unit:textValue(assetGoalAmount.unit)}))} · {textValue(assetGoalDate) || "목표일 확인 필요"}. 자산 잔액 목표의 월 적립액은 현재 지원 범위 밖이에요.</p>
-        : <Missing row={goals} title="목표"/>}/>;
-        return candidates.length ? <PlanComparison candidates={candidates} selected={selectedPlan} onSelect={setSelectedPlan} goals={goalsCard} basis={{runId:view.runId,inputVersion}}/> : <>{goalsCard}<Missing row={plans} title="두 월별 후보 확인 대기"/><button className="d-secondary" onClick={()=>onEdit("ASSUMPTIONS")}>필요한 가정 확인 →</button></>;})()}
-    </>}
+    {tab===1 && (candidates.length
+      ? <PlanComparison candidates={candidates} selected={selectedPlan} onSelect={setSelectedPlan} basis={{runId:view.runId,inputVersion}}/>
+      : <><Missing row={plans} title="두 월별 후보 확인 대기"/><button className="d-secondary" onClick={()=>onEdit("ASSUMPTIONS")}>필요한 가정 확인 →</button></>)}
     {tab===1 && <ResultBasis id="OUT-05" result={result} source={sourceDoc} inputVersion={view.serverVersion??view.localVersion} stale={stale} onEdit={onEdit}/>}
     {tab===2 && <InvestmentFollowup review={visible("OUT-06")} onEdit={onEdit}/>}
     {tab===2 && <PortfolioChoice doc={sourceDoc} review={visible("OUT-06")} flow={flow} planRow={selectedRow}
@@ -201,12 +201,12 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
     {tab===3&&<div className="d-result-cta"><button type="button" className="d-primary" onClick={openConsultation}>DION과 상담하기</button><p>1~4 확인 후 상담과 변경 검토를 거쳐 최종 생성을 요청해요.</p></div>}
     <div hidden={tab!==4}><PortfolioReviewFlow taxSelection={currentTax} clearTaxSelection={()=>setTaxSelection(undefined)} chatHandoff={chatHandoff} visited={visited} selectionBlocked={comparison.blocked} flow={reviewFlow} basis={basis} view={view} token={token} caseId={caseId} stale={stale} doc={sourceDoc} onTab={setTab} onOpenRun={onOpenRun??(async()=>{})} onReadRun={onReadRun??onOpenRun??(async()=>{})} onPrepared={r=>onReviewResume?.(r)} onAdopt={focusAdoption}/></div>
     {tab===4 && <><ResultDashboard after={metricValue(flow,"after_existing_contributions_krw")} row={selectedRow} month={selectedMonth} review={selectedReview}
-      plan={selectedPlan} portfolio={selectedPortfolio} generated={generated} evaluationOn={textValue(object(result.context).evaluation_on)} goals={goals} goalLabel={displayGoal}
+      plan={selectedPlan} portfolio={selectedPortfolio} generated={generated} evaluationOn={textValue(object(result.context).evaluation_on)} goalPlan={goalPlan}
       portfolioSummary={<FinalPortfolio generated={generated} plan={selectedPlan} row={selectedRow} review={selectedReview} portfolio={selectedPortfolio} assetReference={assetReference(true)}/>} returnChart={<InvestmentReturnChart key={`${view.inputHash}:${view.runId}:${selectedPlan}:${selectedPortfolio}:${comparison.revision}`} view={view} plan={selectedPlan} portfolio={selectedPortfolio} revision={comparison.revision} blocked={stale||comparison.blocked} token={token} caseId={caseId}/>}
       status={<ChoiceStatus plan={selectedPlan} portfolio={selectedPortfolio} draft={comparison.draft}
       stored={comparison.saved} adoption={adoption} runId={view.runId} evaluationOn={textValue(object(result.context).evaluation_on)}
       planMonth={textValue(selectedRow?.period)} recordMonth={recordMonth??thisMonth()} onJump={()=>tasksRef.current?.scrollIntoView({behavior:"smooth",block:"start"})}/>}
-      onEdit={onEdit} onPortfolio={()=>setTab(2)} onProducts={()=>setTab(3)} onConsult={openConsultation} onAsk={onAskResult} onAdopt={focusAdoption}/>
+      onPortfolio={()=>setTab(2)} onProducts={()=>setTab(3)} onConsult={openConsultation} onAdopt={focusAdoption}/>
       <FinancialProposal result={{...result,results:{...outputs,"OUT-06":selectedReview}}} doc={sourceDoc} plan={selectedPlan} portfolio={selectedPortfolio} deep={deep} goalLabel={displayGoal} onEdit={onEdit} onAsk={onAskResult}
         allocation={<IncomeBar row={selectedRow}/>}/>
       <div ref={tasksRef} className="d-scroll-anchor"/><MonthTasks key={`${selectedPlan}:${view.localVersion}`} row={selectedRow} actions={actions} candidates={candidates.length>0} actionList={actionList} onProducts={()=>setTab(3)} onEdit={onEdit}/>
@@ -231,8 +231,9 @@ function MonthTasks({row,actions,candidates,actionList,onProducts,onEdit}:{row?:
   const tasks=monthTasks(row);
   const toggle=(k:string)=>setDone(d=>d.includes(k)?d.filter(x=>x!==k):[...d,k]);
   return <article className="d-card" aria-label="첫 계획 월 할 일"><div className="d-card-head"><h2>첫 계획 월 할 일</h2>{row&&<small>{textValue(row.period)} 기준</small>}</div>
-    {candidates?<ul className="d-task-list">{tasks.map(t=><li key={t.key} className={done.includes(t.key)?"done":""}><label><input type="checkbox" checked={done.includes(t.key)} onChange={()=>toggle(t.key)}/><span><strong>{t.text}</strong><small>계획 금액 {formatKrw(row?.[t.key])}</small></span></label>{t.key==="new_investment_krw"&&<button className="d-text-button" onClick={onProducts}>상품 보기 →</button>}</li>)}
+    {candidates?<ul className="d-task-list">{tasks.map(t=><li key={t.key} className={done.includes(t.key)?"done":""}><label><input type="checkbox" checked={done.includes(t.key)} onChange={()=>toggle(t.key)}/><span><strong>{t.text}</strong><small>계획 금액 {formatKrw(row?.[t.key])}</small><small>{t.hint}</small></span></label>{t.key==="goal_deposits_krw"&&<a className="d-text-button" href="#d-goals-title">목표 준비표 →</a>}{t.key==="new_investment_krw"&&<button className="d-text-button" onClick={onProducts}>상품 보기 →</button>}</li>)}
       {actions.slice(0,3-tasks.length).map(a=><li key={a.id}><label><input type="checkbox" checked={done.includes(a.id)} onChange={()=>toggle(a.id)}/><span><strong>{a.text}</strong></span></label><button className="d-text-button" onClick={()=>onEdit(a.id)}>확인 →</button></li>)}</ul>:actionList}
-    <p className="d-inline-note">체크 표시는 이 화면에서만 보여요. 실제 기록은 아래 월 기록에서 저장해요.</p>
+    {row && <p className="d-note">월말에는 실제 저축·상환·투자 금액을 계획과 대조해 월 기록에 남겨요.</p>}
+    <p className="d-inline-note">할 일 체크는 이 화면에서만 유지돼요.</p>
   </article>;
 }

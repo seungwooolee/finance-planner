@@ -227,3 +227,10 @@ ETF는 매도 체결 후 2영업일에 결제한다. 거래량, 호가 차이, �
 상품 정보의 예상 수익률은 `OUT-06.products[].market_return_assumption`에 출처·기간·단위와 함께 제공되는 시장 가정만 표시한다. 현재 해당 조건으로 확인한 것은 ACE 미국S&P500에 대응하는 미국 대형주 10년 원화 가정이다. 2026-09-30 기준 달러 수익률 7.5%와 1,340.40→1,000원 환율 가정을 기존 전망 산식으로 환산해 연 4.40%로 표시한다. 비용·세금·추적오차는 반영하지 않았다. 비교 공시의 과거 실적은 접힌 공시 정보에 남긴다. [J.P. Morgan 2027 시장 가정 발표](https://am.jpmorgan.com/us/en/asset-management/adv/about-us/media/press-releases/jp-morgan-releases-2027-long-term-capital-market-assumptions/) · [전망 보고서](https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/insights/portfolio-insights/ltcma/noindex/ltcma-2027-report.pdf)
 
 추천 검토 상품은 선택한 안의 표시 월에서 배정액이 양수인 상품이다. 위험 설명에는 `explanation.risk_notes`를 사용한다. 개별 투자설명서와 [SOL 초단기채권 상품 공시](https://www.soletf.co.kr/ko/fund/etf/211038), [SOL 종합채권 상품 공시](https://www.soletf.co.kr/ko/fund/etf/210932), [KODEX 단기채권PLUS 월간 자료](https://m.samsungfund.com/sheet/20250805/2ETF48_20250731.pdf), [KODEX 200 월간 자료](https://www.samsungfund.com/sheet/20260907/2ETF01_20260831.pdf), 기존 원장의 거래소 결제 규칙을 확인했다. 금리 민감도·신용·시장 쏠림·환율·호가·출금 가능일을 해당 상품에 맞게 보여준다.
+
+
+## 투자구성 선택 역전과 1년 시장 전망 — 2026-11-16
+
+`DION-PORTFOLIO-TYPES-0.6`은 같은 재무안·월에서 상위 투자구성의 실제 배정액이 선택 가능한 하위 구성보다 적고, 기존 동시 하락 가정에 따른 위험 노출도 더 크지 않으면 `COMPOSITION_INVERSION`으로 선택을 보류한다. 이 비교는 화면에 내림하기 전의 원 단위 배정액×기존 충격 비율을 사용한다. 배정액·목표 현금·보류액 합계, 사용일·손실·집중 조건과 저장 결과를 보존한다. 계산된 내역은 비교에서 열 수 있으며 새 저장·전망 요청은 기존 `selectable` 검사로 제한한다. 예로 주식이 제한된 월 후보 30만원에서 중립형 9만원, 위험추구형 2만7,900원이 모두 단기채에 배정되면 위험추구형은 비교만 가능하다.
+
+`OUT-06.products[].market_return_one_year`은 검증된 기초지수의 기준일·종료일·통화·기초값·목표값과 출처를 제공한다. 2026-09-23에 발표된 전망의 7,764→8,700을 2026-09-21부터 12개월간의 달러 기준 가격 변동률 12.06%로 표시한다. 같은 지수를 추종하고 환노출이 확인된 3종에 연결한다. 분배금·원화 환율 변화·세금·비용을 반영한 ETF 수익률 자료는 별도로 필요하다. 과거 1년 실적과 기존 10년 원화 가정은 접힌 공시 정보에 유지한다. 최종 화면의 1년 평가액 계산은 선택한 안과 사용자가 입력한 원화 가정을 사용한다. [Goldman Sachs Research](https://www.goldmansachs.com/insights/articles/can-ai-investment-drive-s-and-p-500-earnings-even-higher)
