@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Check, LayoutDashboard, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, LayoutDashboard, PieChart, Scale, ShieldCheck, Wallet } from "lucide-react";
 import { Document, Envelope, Json, Revision, blankDocument, catalog, clone, download, object, question, textValue } from "@/lib/dion/model";
 import { copy, customerStep, customerSteps, stepComplete } from "@/lib/dion/customer-flow";
 import { responseProgress } from "@/lib/dion/question-progress";
@@ -414,7 +414,16 @@ export function DionPlanner() {
       {undoDraft&&<div className="d-undo" role="status">작성 화면을 바꿨어요.<button type="button" onClick={()=>{const previous=undoDraft;change(previous.doc);setFictional(previous.fictional);setServerVersion(null);connectedCase.current=null;pending.current=null;pendingAnalysis.current=null;saved.current={};setRuns([]);setShowResults(false);}}>이전 작성값으로 되돌리기</button></div>}
       {reviewOpen&&<section className="d-review-tools" aria-label="검증용 사례 도구"><ScenarioPicker review disabled={busy||saveBusy} onLoad={loadScenario}/></section>}
       {reviewOpen&&mode==="welcome"&&<section className="d-review-tools" aria-label="저장 검증 도구">{verifyTools}</section>}
-      {mode==="welcome"?<section className="d-welcome"><div className="d-welcome-hero"><div><span className="d-eyebrow">MY FINANCIAL NEXT STEP</span><h1>내 재무를 한눈에,<br/><em>앞으로의 계획을 함께.</em></h1><p className="d-welcome-intro"><strong>나를 이해하는 AI 재무설계, dion</strong><span>내 재무상황을 정리하고<br/>앞으로의 계획을 살펴보세요. dion과 대화하며 함께 미래를 설계해요.</span></p></div><div className="d-welcome-cat"><div className="d-cat-bubble">좋은 삶은 작은 선택에서 시작된대.<br/>dion과 함께 원하는 내일을 그려볼까?</div><Cat kind="guide" size={300} eager/><span className="d-cat-label">돈 이야기, dion과 함께</span></div></div><div className="d-columns"><button className="d-start" onClick={()=>setMode("quick")}><LayoutDashboard/><strong>빠르게 현재 확인</strong><span>8개 화면 + 필요한 상세 질문</span><b>빠른진단 시작 →</b></button><button className="d-start light" onClick={()=>setMode("deep")}><ShieldCheck/><strong>목표와 가정까지 점검</strong><span>확인한 답변을 재사용하는 정밀 경로</span><b>정밀진단 바로 시작 →</b></button></div><div className="d-sample"><ScenarioPicker inline disabled={busy||saveBusy} onLoad={loadScenario} onRestore={original.current?restoreOriginal:undefined}/><span>사회초년생 · 은퇴기</span></div></section>:<>
+      {mode==="welcome"?<section className="d-welcome"><div className="d-welcome-hero"><div><span className="d-eyebrow">MY FINANCIAL NEXT STEP</span><h1>내 재무를 한눈에</h1><p className="d-welcome-intro">소득·지출·자산을 정리하고, 내 목표에 맞는 두 가지 재무안을 비교해 보세요. 궁금한 점은 dion과 대화하며 확인할 수 있어요.</p></div>
+        <aside className="d-welcome-preview" aria-labelledby="d-welcome-preview-title"><h2 id="d-welcome-preview-title">진단 후 볼 수 있는 결과</h2><ol>
+          <li><span className="d-preview-icon" aria-hidden="true"><Wallet size={20}/></span><div><strong>내 재무현황</strong><small>소득·지출·자산 정리</small></div></li>
+          <li><span className="d-preview-icon" aria-hidden="true"><Scale size={20}/></span><div><strong>두 재무안 비교</strong><small>남는 돈을 나누는 두 방법</small></div></li>
+          <li><span className="d-preview-icon" aria-hidden="true"><PieChart size={20}/></span><div><strong>월 포트폴리오</strong><small>첫 계획 월 배정과 상품 구성</small></div></li>
+        </ol></aside></div>
+        <div className="d-columns"><button className="d-start" onClick={()=>setMode("quick")}><LayoutDashboard/><strong>빠른 진단</strong><em className="d-start-time">예상 약 3~5분</em><span>8개 화면 · 꼭 필요한 질문만</span><b>빠른진단 시작 →</b></button>
+          <button className="d-start light" onClick={()=>setMode("deep")}><ShieldCheck/><strong>정밀진단</strong><em className="d-start-time">예상 약 8~12분</em><span>목표·가정·투자 성향까지 점검</span><b>정밀진단 바로 시작 →</b></button></div>
+        <div className="d-sample"><ScenarioPicker inline disabled={busy||saveBusy} onLoad={loadScenario} onRestore={original.current?restoreOriginal:undefined}/></div>
+      </section>:<>
         <ConsultationJourney active={showResults?(tab===4?3:2):1} canNavigate={!!view} onNavigate={next=>{setShowResults(true);setTab(next);}}/>
         {fictional&&!showResults&&<div className="d-fictional">가상 사례{scenario?` · ${scenario.title}`:""} · 실제 고객·계좌 자료 아님 · 기준일 {doc.context.evaluation_on}{scenario&&<><button className="d-secondary" onClick={restoreOriginal}>원래 입력으로 돌아가기</button><details><summary>현재 사례의 가정</summary><ul>{scenario.assumptions.map(a=><li key={a}>{a}</li>)}</ul></details></>}</div>}
 
@@ -466,6 +475,6 @@ export function DionPlanner() {
           <div ref={setConsultationTarget}/>
         </div>
       </div>
-    </ConsultationWidget><footer className="d-footer"><strong>dion.</strong><span>확인한 정보로, 나에게 맞는 다음 단계.</span><small>계산 미리보기 · 상품 추천과 금융거래는 준비 중</small></footer>
+    </ConsultationWidget><footer className="d-footer"><strong>dion.</strong><span>확인한 정보로, 나에게 맞는 다음 단계.</span>{mode!=="welcome"&&<small>계산 미리보기 · 상품 추천과 금융거래는 준비 중</small>}</footer>
   </div>;
 }

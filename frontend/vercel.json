@@ -3,6 +3,7 @@
   "git": {
     "deploymentEnabled": {
       "codex/retirement-demo-results-20261115": false,
+      "codex/home-entry-20261115": false,
       "codex/remove-judge-replay-20261115": false,
       "codex/result-reference-scope-20261115": false,
       "codex/financial-partial-results-20261115": false,
