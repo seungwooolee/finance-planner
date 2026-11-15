@@ -1,0 +1,22 @@
+[
+  {
+    "file": "s01.pdf",
+    "sha256": "8bef2f739d95708b5668016de9065322373a9af9b7277b52e4138dbb9cf72b28",
+    "license_page": 1
+  },
+  {
+    "file": "s01-bok.pdf",
+    "sha256": "c189542b4eadc49e7341a1776932028c5889dc24e465add6b868d6215cc59321",
+    "license_page": null
+  },
+  {
+    "file": "s02.pdf",
+    "sha256": "bc30936c77043d117f9667315fe77d8d7658262058fdf462e58cd897fa80fc1d",
+    "license_page": 1
+  },
+  {
+    "file": "s03.pdf",
+    "sha256": "d7e883c41ba0add0b26433edb4aeb45dbd56b5390eb4ccdeb0ebc6f5361cb0c0",
+    "license_page": 1
+  }
+]

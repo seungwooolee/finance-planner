@@ -14,7 +14,7 @@ async function load(page: Page, title: string) {
   await expect(page.getByRole('region', { name: '계산 결과', exact: true })).toBeVisible();
 }
 test('exact KRW and archived raw goals preserve zero, dates and identifiers', () => {
-  for (const [input, expected] of [['100000000', '1억원'], ['10000000', '1,000만원'], ['1000000', '100만원'], ['9000', '9,000원'], ['189000', '18만 9천원'], ['0', '0원']]) expect(formatKrw(input)).toBe(expected);
+  for (const [input, expected] of [['100000000', '1억원'], ['10000000', '1,000만원'], ['1000000', '100만원'], ['9000', '9,000원'], ['189000', '18만 9천 원'], ['0', '0원']]) expect(formatKrw(input)).toBe(expected);
   expect(formatKrw(null)).toBe('확인 대기');
   const doc = clone(source[0].document) as unknown as Document;
   const id = String(list(fieldValue(doc, 'F11', 'goals'))[0].goal_id);
@@ -87,6 +87,6 @@ test('selected plan updates actual products; missing FX or understanding stays u
     rows = page.locator('[data-allocation-month]');
     await expect(rows).toHaveCount(1);
     expect(BigInt((await rows.first().getAttribute('data-unallocated'))!)).toBeGreaterThan(0n);
-    await expect(page.getByRole('region', { name: '상품 적합성·배분 검토' })).toContainText('미배분');
+    await expect(page.getByRole('region', { name: '상품 적합성·배분 검토' })).toContainText('현금 대기자금');
   }
 });

@@ -1,6 +1,8 @@
 "use client";
 
-import { formatKrw } from "@/lib/dion/money-format";
+import { fieldKrw, formatKrw } from "@/lib/dion/money-format";
+import { useId, useState } from "react";
+import { joinMoneyInput, splitMoneyInput, type MoneyParts } from "@/lib/dion/money-input";
 import { Field, Json, State, field, object, states } from "@/lib/dion/model";
 
 export const labels: Record<string, string> = {
@@ -24,8 +26,8 @@ export const labels: Record<string, string> = {
   question_version: "질문 정의버전", payment_type: "지급 형태", price_basis: "금액 가격 기준", price_base_date: "가격 기준일",
   payment_start: "첫 사용일", payment_end: "마지막 사용일", prepared_asset_refs: "준비자산 참조",
   reservations: "현재 확보한 보호·운영자금", reservation_id: "배정 식별자", asset_ref: "자금원 자산 참조", purpose: "자금 목적",
-  goal_ref: "목표 참조", customer_target_mode: "고객 유지목표 정의", customer_protection_total: "보호자금 총목표",
-  customer_operating_total: "운영현금 총목표", policy_version: "정책 버전", planned_expenses: "예정 지출·지원",
+  goal_ref: "목표 참조", customer_target_mode: "남겨둘 돈은 어떻게 정할까요?", customer_protection_total: "비상자금으로 남겨둘 총금액",
+  customer_operating_total: "평소 지출을 위해 남겨둘 총금액", policy_version: "정책 버전", planned_expenses: "예정 지출·지원",
   events: "확인한 소득 변경 사건", income_change_status: "소득 변경 여부", asset_coverage: "전체 자산 확인 수준",
   included_owner_ids: "포함한 구성원 참조", income_period_start: "소득 기준기간 시작일", income_period_end: "소득 기준기간 종료일",
   includes_one_off_income: "일회성 소득 포함 여부", period_start: "기준기간 시작일", period_end: "기준기간 종료일",
@@ -36,13 +38,13 @@ export const labels: Record<string, string> = {
   source_period_start: "원소득 기간 시작", source_period_end: "원소득 기간 종료", applies_from: "미래 가정 시작일", applies_to: "미래 가정 종료일",
   assumption_text: "미래 가정 설명", zero_return: "수익률 0 가정 확인", carry_forward_snapshot: "현재 잔액 이월 가정 확인",
   unchanged_living_confirmed: "생활비 유지 가정 확인", income_basis: "미래 소득 가정 기준", source_income_fingerprint: "확인한 원소득 지문",
-  customer_protection_target: "보호자금 목표", customer_operating_target: "운영현금 목표", schedule_definition: "상환 일정 정의버전",
+  customer_protection_target: "비상자금으로 남겨둘 총금액", customer_operating_target: "평소 지출을 위해 남겨둘 총금액", schedule_definition: "상환 일정 정의버전",
 };
 const choices: Record<string, [Json, string][]> = {
   asset_coverage: [["complete", "전체 확인"], ["partial", "일부 확인"]], coverage: [["complete", "전체 확인"], ["partial", "일부 확인"]],
   financial_assets_detail_status: [["COMPLETE", "전체 내역 확인"], ["PARTIAL", "일부 확인"]],
   includes_one_off_income: [["NO", "포함하지 않음"], ["YES", "포함함"], ["UNKNOWN", "모름"]],
-  customer_target_mode: [["POLICY_ONLY", "정책 최소만 검토"], ["TOTAL_TARGET", "내가 정한 총목표"], ["EXTRA_ABOVE_MINIMUM", "최소액 위 추가목표 (계산 미지원)"], ["UNKNOWN", "미정"]],
+  customer_target_mode: [["POLICY_ONLY", "DION의 기본 기준으로 정할게요"], ["TOTAL_TARGET", "남겨둘 총금액을 직접 정할게요"], ["EXTRA_ABOVE_MINIMUM", "기본 금액에 더 보탤게요 (계산 미지원)"], ["UNKNOWN", "아직 정하지 못했어요"]],
   asset_class: [["CASH", "현금"], ["DEPOSIT", "예금"], ["INVESTMENT", "투자자산"]],
   investment_vehicle: [["DEPOSIT", "예금·예치"], ["ETF", "ETF"], ["STOCK", "주식"], ["FUND", "펀드"]],
   amount_status: [["KNOWN", "확인"], ["UNKNOWN", "모름"]], balance_timing: [["AFTER_PAYMENT", "상환 후"], ["OPENING_BEFORE_PAYMENT", "상환 전"]],
@@ -68,16 +70,35 @@ const choices: Record<string, [Json, string][]> = {
 };
 
 export function MoneyField({ label, value, onChange }: { label: string; value: Field; onChange: (v: Field) => void }) {
+  const id = useId();
   const raw = typeof value.raw_value === "string" ? value.raw_value : "";
-  const valid = (value.unit === "KRW" ? /^\d+$/ : /^\d+(?:\.\d{1,4})?$/).test(raw);
-  let readable = "";
-  if (valid && raw.length < 50) {
-    const [whole, fraction = ""] = raw.split(".");
-    const won = value.unit === "KRW" ? whole : whole + fraction.padEnd(4, "0");
-    readable = formatKrw(BigInt(won).toString());
-  }
+  const source = JSON.stringify(value);
+  const [draft, setDraft] = useState<{ source: string; parts: MoneyParts }>(() => ({ source, parts: splitMoneyInput(value) }));
+  const [error, setError] = useState("");
+  const [exact, setExact] = useState(false);
+  const parts = draft.source === source ? draft.parts : splitMoneyInput(value);
+  const won = raw.length < 50 ? fieldKrw(value) : null, readable = won === null ? "" : formatKrw(won);
   const deferred = !["KNOWN", "NOT_ENTERED", "NOT_ASKED"].includes(value.state);
-  return <div className="d-field d-money-field"><label><span>{label}</span><div className={`d-amount ${raw && !valid ? "invalid" : ""}`}><input aria-label={label} aria-invalid={raw ? !valid : undefined} inputMode="decimal" autoComplete="off" value={raw} onChange={e => { const next=e.target.value.replaceAll(",", ""); if ((value.unit === "KRW" ? /^\d*$/ : /^\d*(?:\.\d{0,4})?$/).test(next) && next.length <= 40) onChange(field(next, value.unit)); }} /><span>{value.unit === "KRW" ? "원" : "만원"}</span>{raw && <button type="button" aria-label={`${label} 지우기`} className="d-clear-money" onClick={() => onChange(field(null, value.unit))}>×</button>}</div></label><div className="d-money-caption"><small className={readable ? "d-won-value" : ""} aria-live="polite"><span className="d-won-symbol" aria-hidden="true">₩</span>{raw && !valid ? "쉼표 없이 숫자로 적어주세요. 소수는 넷째 자리까지 입력할 수 있어요." : readable || (deferred ? "금액을 확인한 뒤 이어서 적어주세요." : "만원으로 입력하면, 원 단위로 바로 보여드려요.")}</small><button type="button" className="d-text-button" onClick={() => onChange(field(null, value.unit, deferred ? "NOT_ENTERED" : "DEFERRED"))}>{deferred ? "지금 입력하기" : "나중에 입력"}</button></div></div>;
+  function commit(next: Field, nextParts = splitMoneyInput(next)) {
+    setError(""); setDraft({ source: JSON.stringify(next), parts: nextParts }); onChange(next);
+  }
+  function edit(key: keyof MoneyParts, text: string) {
+    const entered = text.replaceAll(",", "");
+    if (!/^\d*$/.test(entered) || entered.length > 40) { setError("소수점 없이 정수로 적어주세요. 천원은 옆 칸에 입력해요."); return; }
+    if (key !== "man" && BigInt(entered || "0") > (key === "cheon" ? 9n : 999n)) { setError(key === "cheon" ? "천원 칸에는 0~9를 적어주세요. 10천원은 1만원이에요." : "원 칸에는 0~999를 적어주세요."); return; }
+    const nextParts = { ...parts, [key]: entered }, next = joinMoneyInput(nextParts, value.unit);
+    if (next && next.length > 40) { setError("금액이 입력 가능한 길이를 넘었어요. 단위를 확인해주세요."); return; }
+    commit(field(next, value.unit), nextParts);
+  }
+  const inputs: [keyof MoneyParts, string][] = [["man", "만원"], ["cheon", "천원"], ...(exact || parts.won !== "" ? [["won", "원"] as [keyof MoneyParts, string]] : [])];
+  return <div className="d-field d-money-field" role="group" aria-labelledby={`${id}-label`}>
+    <div className="d-money-heading"><span id={`${id}-label`}>{label}</span>{raw && <button type="button" aria-label={`${label} 지우기`} className="d-text-button" onClick={() => { setExact(false); commit(field(null, value.unit)); }}>지우기</button>}</div>
+    <div className="d-money-inputs">{inputs.map(([key, unit]) => <label className={`d-amount d-money-${key}`} key={key}><input aria-label={key === "man" ? label : `${label} ${unit}`} aria-describedby={`${id}-${key}-unit${error ? ` ${id}-error` : ""}`} aria-invalid={!!error} inputMode="numeric" autoComplete="off" value={parts[key]} onChange={e => edit(key, e.target.value)}/><span id={`${id}-${key}-unit`}>{unit}</span></label>)}</div>
+    {error && <small id={`${id}-error`} className="d-field-error" role="alert">{error}</small>}
+    {raw && won === null && value.state === "KNOWN" && <small className="d-field-error">기존 금액을 확인해주세요. 원응답은 보관돼 있어요.</small>}
+    <div className="d-money-caption"><small className={readable ? "d-won-value" : ""} aria-live="polite"><span className="d-won-symbol" aria-hidden="true">₩</span>{readable || (deferred ? "금액을 확인한 뒤 이어서 적어주세요." : "만원과 천원을 나눠 입력해주세요.")}</small></div>
+    <div className="d-money-actions">{!exact && parts.won === "" && <button type="button" className="d-text-button" onClick={() => setExact(true)}>원 단위도 입력</button>}<button type="button" className="d-text-button" onClick={() => commit(field(null, value.unit, deferred ? "NOT_ENTERED" : "DEFERRED"))}>{deferred ? "지금 입력하기" : "나중에 입력"}</button></div>
+  </div>;
 }
 
 function blank(template: Json, key = ""): Json {

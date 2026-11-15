@@ -37,12 +37,12 @@ test('signed-in case list reopens raw answers and prior result references', asyn
   await dialog.getByLabel('비밀번호', { exact: true }).fill('test-password');
   await dialog.getByRole('button', { name: '이메일로 로그인' }).click();
   await page.getByRole('button', { name: '검토 도구', exact: true }).click();
-  await page.getByText('내 상담 · 저장과 다시 열기', { exact: true }).click();
+  await page.getByRole('button', { name: '내 상담', exact: true }).click();
   await page.getByRole('button', { name: '내 상담 조회' }).click();
   await page.getByRole('button', { name: /demo-001 · 입력버전 13 · 다시 열기/ }).click();
   await expect(page.getByRole('textbox', { name: '상담 ID' })).toHaveValue('demo-001');
   await expect(page.getByText('서버 입력버전: 13')).toBeVisible();
-  await expect(page.getByRole('button', { name: /입력버전 12 · DION-QUESTION12-ADAPTER-1.0 · SUCCEEDED · 과거 입력/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /입력버전 12 · 계산 완료 · 과거 입력.*DION-QUESTION12-ADAPTER-1.0/ })).toBeVisible();
   await page.getByText('검토 패널 · 원응답·엔진 입력·오류·버전', { exact: true }).click();
   await page.getByText('원응답과 필드 상태', { exact: true }).click();
   await expect(page.getByText('00300.0000', { exact: false })).toBeVisible();

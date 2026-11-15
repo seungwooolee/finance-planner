@@ -1,0 +1,913 @@
+{
+  "A": {
+    "case_id": "overnight-a-0613ca028b",
+    "run_id": "run_abb7b7f8e88542c9908d91450425d75b",
+    "input_version": 25,
+    "input_hash": "f312c7c8ac665eb6a4ea9df7a203e199b0718e6161b036e4104219a9fdec3d4c",
+    "status": "SUCCEEDED",
+    "context": {
+      "evaluation_on": "2026-11-13",
+      "scope": "personal",
+      "included_owner_ids": [
+        "person_self"
+      ],
+      "currency": "KRW",
+      "timezone": "Asia/Seoul",
+      "projection_start": "2026-12-01",
+      "projection_end": "2026-12-31",
+      "case_id": "overnight-a-0613ca028b",
+      "snapshot_id": "raw_7a9ba3434f8b46108ca55a34227f0436",
+      "profile_version": "25"
+    },
+    "review_id": "prv_261ed3a65ef1483db938d0d618880d60",
+    "session_id": "agent_7b6a0e10a5e7842418f08e609546157cc2f1aea5441916a19e24a4b685fb17fc",
+    "adoption_id": "adp_98d5425abbe94b81980fe2d331750fc3",
+    "database": "audit-synthetic.sqlite3",
+    "engine_input_schema": "DION-QUESTION12-ADAPTER-1.0",
+    "engine_release": "DION-ENGINE-1.2",
+    "engine_version": "DION-ENGINE-1.0",
+    "policy_version": "DION-ALLOCATION-1.0",
+    "overall_calc_state": "CALCULATED",
+    "output_states": {
+      "OUT-02": "CALCULATED",
+      "OUT-03": "CALCULATED",
+      "OUT-04": "CALCULATED",
+      "OUT-05": "CALCULATED",
+      "OUT-06": "CALCULATED"
+    },
+    "legal_evidence": {
+      "active_rule_count": 0,
+      "statutory_calculation": "NOT_IMPLEMENTED",
+      "supplied_official_pension_estimates": "USER_SUPPLIED_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    "goals": [
+      {
+        "goal_id": "early-goal-1",
+        "type": "WEALTH",
+        "priority": 1,
+        "calc_state": "CALCULATED",
+        "due_on": "2026-12-31",
+        "target_krw": "300000",
+        "prepared_krw": "0",
+        "gap_krw": "300000",
+        "contribution_count": 1,
+        "level_contribution_krw": "300000",
+        "funding_schedule": [
+          {
+            "on": "2026-12-15",
+            "amount_krw": "300000"
+          }
+        ],
+        "payments": [
+          {
+            "on": "2026-12-31",
+            "amount_krw": "300000",
+            "economic_event_id": "education-payment-1"
+          }
+        ],
+        "readiness": {
+          "numerator": "0",
+          "denominator": "300000"
+        },
+        "price_basis": "FUTURE_NOMINAL",
+        "return_basis": "ZERO_RETURN"
+      }
+    ],
+    "plans": [
+      {
+        "strategy_id": "STABILITY_FIRST",
+        "calc_state": "CALCULATED_MONTHLY_SCENARIO",
+        "failure": null,
+        "completed_months": 1,
+        "requested_months": 1,
+        "rows": [
+          {
+            "period": "2026-12",
+            "income_krw": "3000000",
+            "living_krw": "1600000",
+            "debt_payment_krw": "101000",
+            "kept_total_krw": "200000",
+            "goal_deposits_krw": "300000",
+            "new_investment_krw": "399500",
+            "additional_cash_krw": "399500",
+            "closing_cash_krw": "12399500",
+            "modeled_total_assets_krw": "12999000"
+          }
+        ]
+      },
+      {
+        "strategy_id": "INVESTMENT_CAPACITY",
+        "calc_state": "CALCULATED_MONTHLY_SCENARIO",
+        "failure": null,
+        "completed_months": 1,
+        "requested_months": 1,
+        "rows": [
+          {
+            "period": "2026-12",
+            "income_krw": "3000000",
+            "living_krw": "1600000",
+            "debt_payment_krw": "101000",
+            "kept_total_krw": "200000",
+            "goal_deposits_krw": "300000",
+            "new_investment_krw": "639200",
+            "additional_cash_krw": "159800",
+            "closing_cash_krw": "12159800",
+            "modeled_total_assets_krw": "12999000"
+          }
+        ]
+      }
+    ]
+  },
+  "B-isolated-recheck": {
+    "case_id": "overnight-b-isolated-recheck-fd47f61e2a",
+    "run_id": "run_d5d82fa9d4f344cabe65880236ecd49e",
+    "input_version": 13,
+    "input_hash": "3130725820e67e03a78978600b8f4cd016e0c84b2b84123b556dd0afd67ba7f9",
+    "status": "SUCCEEDED",
+    "context": {
+      "evaluation_on": "2026-11-30",
+      "scope": "household",
+      "included_owner_ids": [
+        "adult-1",
+        "adult-2"
+      ],
+      "currency": "KRW",
+      "timezone": "Asia/Seoul",
+      "projection_start": "2026-12-01",
+      "projection_end": "2027-02-28",
+      "case_id": "overnight-b-isolated-recheck-fd47f61e2a",
+      "snapshot_id": "raw_d1f1d3cf94a2428fa6e14f2203a8d814",
+      "profile_version": "13"
+    },
+    "database": "isolated-B.sqlite3",
+    "engine_input_schema": "DION-QUESTION12-ADAPTER-1.0",
+    "engine_release": "DION-ENGINE-1.2",
+    "engine_version": "DION-ENGINE-1.0",
+    "policy_version": "DION-ALLOCATION-1.0",
+    "overall_calc_state": "PARTIAL",
+    "output_states": {
+      "OUT-02": "CALCULATED",
+      "OUT-03": "CALCULATED",
+      "OUT-04": "CALCULATED",
+      "OUT-05": "CALCULATED",
+      "OUT-06": "NEEDS_INPUT",
+      "OUT-08": "NEEDS_INPUT",
+      "OUT-09": "NEEDS_INPUT",
+      "OUT-10": "NOT_SUPPORTED",
+      "OUT-11": "NEEDS_INPUT",
+      "OUT-12": "NEEDS_INPUT",
+      "OUT-14": "REVIEW_ONLY"
+    },
+    "legal_evidence": {
+      "active_rule_count": 0,
+      "statutory_calculation": "NOT_IMPLEMENTED",
+      "supplied_official_pension_estimates": "USER_SUPPLIED_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    "goals": [
+      {
+        "goal_id": "goal-1",
+        "type": "EDUCATION",
+        "priority": 1,
+        "calc_state": "CALCULATED",
+        "due_on": "2027-02-28",
+        "target_krw": "5000000",
+        "prepared_krw": "2000000",
+        "gap_krw": "3000000",
+        "contribution_count": 3,
+        "level_contribution_krw": "1000000",
+        "funding_schedule": [
+          {
+            "on": "2026-12-15",
+            "amount_krw": "1000000"
+          },
+          {
+            "on": "2027-01-15",
+            "amount_krw": "1000000"
+          },
+          {
+            "on": "2027-02-15",
+            "amount_krw": "1000000"
+          }
+        ],
+        "payments": [
+          {
+            "on": "2027-02-28",
+            "amount_krw": "5000000",
+            "economic_event_id": "tuition-1"
+          }
+        ],
+        "readiness": {
+          "numerator": "2000000",
+          "denominator": "5000000"
+        },
+        "price_basis": "FUTURE_NOMINAL",
+        "return_basis": "ZERO_RETURN"
+      }
+    ],
+    "plans": [
+      {
+        "strategy_id": "STABILITY_FIRST",
+        "calc_state": "CALCULATED_MONTHLY_SCENARIO",
+        "failure": null,
+        "completed_months": 3,
+        "requested_months": 3,
+        "rows": [
+          {
+            "period": "2026-12",
+            "income_krw": "5000000",
+            "living_krw": "2000000",
+            "debt_payment_krw": "0",
+            "kept_total_krw": "500000",
+            "goal_deposits_krw": "1000000",
+            "new_investment_krw": "750000",
+            "additional_cash_krw": "750000",
+            "closing_cash_krw": "21750000",
+            "modeled_total_assets_krw": "23000000"
+          },
+          {
+            "period": "2027-01",
+            "income_krw": "5000000",
+            "living_krw": "2000000",
+            "debt_payment_krw": "0",
+            "kept_total_krw": "500000",
+            "goal_deposits_krw": "1000000",
+            "new_investment_krw": "750000",
+            "additional_cash_krw": "750000",
+            "closing_cash_krw": "23500000",
+            "modeled_total_assets_krw": "26000000"
+          },
+          {
+            "period": "2027-02",
+            "income_krw": "5000000",
+            "living_krw": "2000000",
+            "debt_payment_krw": "0",
+            "kept_total_krw": "500000",
+            "goal_deposits_krw": "1000000",
+            "new_investment_krw": "750000",
+            "additional_cash_krw": "750000",
+            "closing_cash_krw": "20250000",
+            "modeled_total_assets_krw": "24000000"
+          }
+        ]
+      },
+      {
+        "strategy_id": "INVESTMENT_CAPACITY",
+        "calc_state": "CALCULATED_MONTHLY_SCENARIO",
+        "failure": null,
+        "completed_months": 3,
+        "requested_months": 3,
+        "rows": [
+          {
+            "period": "2026-12",
+            "income_krw": "5000000",
+            "living_krw": "2000000",
+            "debt_payment_krw": "0",
+            "kept_total_krw": "500000",
+            "goal_deposits_krw": "1000000",
+            "new_investment_krw": "1200000",
+            "additional_cash_krw": "300000",
+            "closing_cash_krw": "21300000",
+            "modeled_total_assets_krw": "23000000"
+          },
+          {
+            "period": "2027-01",
+            "income_krw": "5000000",
+            "living_krw": "2000000",
+            "debt_payment_krw": "0",
+            "kept_total_krw": "500000",
+            "goal_deposits_krw": "1000000",
+            "new_investment_krw": "1200000",
+            "additional_cash_krw": "300000",
+            "closing_cash_krw": "22600000",
+            "modeled_total_assets_krw": "26000000"
+          },
+          {
+            "period": "2027-02",
+            "income_krw": "5000000",
+            "living_krw": "2000000",
+            "debt_payment_krw": "0",
+            "kept_total_krw": "500000",
+            "goal_deposits_krw": "1000000",
+            "new_investment_krw": "1200000",
+            "additional_cash_krw": "300000",
+            "closing_cash_krw": "18900000",
+            "modeled_total_assets_krw": "24000000"
+          }
+        ]
+      }
+    ]
+  },
+  "C-retired": {
+    "case_id": "overnight-c-retired-a22a154b59",
+    "run_id": "run_745b361ba3b64d21ac291b6ef28562cb",
+    "input_version": 22,
+    "input_hash": "a5676fb9aa31ded33cee443000057b2ab618aae51ff8e47f31b26c703a332770",
+    "status": "SUCCEEDED",
+    "context": {
+      "evaluation_on": "2026-10-31",
+      "scope": "personal",
+      "included_owner_ids": [
+        "person_self"
+      ],
+      "currency": "KRW",
+      "timezone": "Asia/Seoul",
+      "projection_start": "2026-11-01",
+      "projection_end": "2026-11-30",
+      "case_id": "overnight-c-retired-a22a154b59",
+      "snapshot_id": "raw_b350a89c5b1f40cca1e9e79bc754d503",
+      "profile_version": "22"
+    },
+    "database": "isolated-C.sqlite3",
+    "engine_input_schema": "DION-QUESTION12-ADAPTER-1.0",
+    "engine_release": "DION-ENGINE-1.2",
+    "engine_version": "DION-ENGINE-1.0",
+    "policy_version": "DION-ALLOCATION-1.0",
+    "overall_calc_state": "PARTIAL",
+    "output_states": {
+      "OUT-02": "CALCULATED",
+      "OUT-03": "CALCULATED",
+      "OUT-04": "CALCULATED",
+      "OUT-05": "PARTIAL",
+      "OUT-06": "NEEDS_INPUT"
+    },
+    "legal_evidence": {
+      "active_rule_count": 0,
+      "statutory_calculation": "NOT_IMPLEMENTED",
+      "supplied_official_pension_estimates": "USER_SUPPLIED_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    "goals": [
+      {
+        "goal_id": "retired-goal-1",
+        "type": "GOAL_TYPE_06",
+        "priority": 1,
+        "calc_state": "CALCULATED",
+        "due_on": "2026-11-30",
+        "target_krw": "300000",
+        "prepared_krw": "0",
+        "gap_krw": "300000",
+        "contribution_count": 1,
+        "level_contribution_krw": "300000",
+        "funding_schedule": [
+          {
+            "on": "2026-11-15",
+            "amount_krw": "300000"
+          }
+        ],
+        "payments": [
+          {
+            "on": "2026-11-30",
+            "amount_krw": "300000",
+            "economic_event_id": "education-payment-1"
+          }
+        ],
+        "readiness": {
+          "numerator": "0",
+          "denominator": "300000"
+        },
+        "price_basis": "FUTURE_NOMINAL",
+        "return_basis": "ZERO_RETURN"
+      }
+    ],
+    "plans": [
+      {
+        "strategy_id": "STABILITY_FIRST",
+        "calc_state": "INFEASIBLE",
+        "failure": {
+          "period": "2026-11",
+          "calc_state": "INFEASIBLE",
+          "allocation": {
+            "tool_schema": "DION-ALLOCATION-RULES-1",
+            "policy_version": "DION-ALLOCATION-1.0",
+            "policy_state": "DECIDED",
+            "recommendation": false,
+            "changes_executed": false,
+            "adoption_state": "NOT_IMPLEMENTED",
+            "full_plan_generation_state": "NOT_IMPLEMENTED",
+            "lump_sum_generation_state": "NOT_IMPLEMENTED",
+            "input_snapshot": {
+              "funding": {
+                "context": {
+                  "case_id": "overnight-c-retired-a22a154b59",
+                  "profile_version": "22",
+                  "snapshot_id": "raw_b350a89c5b1f40cca1e9e79bc754d503",
+                  "plan_id": "monthly:2026-11",
+                  "plan_version": "1",
+                  "currency": "KRW",
+                  "basis": "SCENARIO",
+                  "strategy_id": "STABILITY_FIRST"
+                },
+                "stock": {
+                  "coverage": "complete",
+                  "sources": [
+                    {
+                      "source_id": "pool",
+                      "asset_id": "derived-cash-pool",
+                      "kind": "CASH",
+                      "assignable_krw": "15000000",
+                      "available_on": "2026-11-01"
+                    }
+                  ],
+                  "allocations": [
+                    {
+                      "allocation_id": "reserve",
+                      "source_id": "pool",
+                      "purpose": "PROTECTION",
+                      "amount_krw": "6600000",
+                      "use_on": "2026-11-01"
+                    },
+                    {
+                      "allocation_id": "operating",
+                      "source_id": "pool",
+                      "purpose": "OPERATING",
+                      "amount_krw": "2200000",
+                      "use_on": "2026-11-01"
+                    }
+                  ]
+                },
+                "monthly": {
+                  "period": "2026-11",
+                  "income_krw": "1800000",
+                  "living_krw": "2200000",
+                  "debt_payment_krw": "0",
+                  "kept": [],
+                  "targets": [
+                    {
+                      "target_id": "all-goal-minima",
+                      "purpose": "GOAL",
+                      "budget_basis": "MIN_REQUIRED",
+                      "total_contribution_krw": "300000",
+                      "kept_contribution_ids": [],
+                      "schedule_ref": "goal-calendar:2026-11"
+                    }
+                  ],
+                  "h_krw": "0",
+                  "new_investment_krw": "0",
+                  "unassigned_krw": "0",
+                  "coverage": "complete",
+                  "goal_status": "KNOWN"
+                },
+                "timing": {
+                  "source_id": "pool",
+                  "opening_on": "2026-11-01",
+                  "events": []
+                }
+              },
+              "policy": {
+                "version": "DION-ALLOCATION-1.0",
+                "evaluation_on": "2026-11-01",
+                "essential_living_krw": "2200000",
+                "customer_protection_target_krw": "6600000",
+                "customer_operating_target_krw": "2200000",
+                "protection_target_id": "protection",
+                "source_ref": "raw-revision:ans_06a3d03b707344638f1d37961dcb11d5",
+                "goal_requirement_ref": "raw-revision:ans_1921eba820934b7faa7d300bb95df4d5",
+                "adjustment_options": [],
+                "requested_reductions": []
+              }
+            },
+            "input_sha256": "bf8f637e0621d943cf672d5f2a4fca1c9f405d23d0e10b1c9c5b35c0534c456d",
+            "state": "INFEASIBLE",
+            "context": {
+              "case_id": "overnight-c-retired-a22a154b59",
+              "profile_version": "22",
+              "snapshot_id": "raw_b350a89c5b1f40cca1e9e79bc754d503",
+              "plan_id": "monthly:2026-11",
+              "plan_version": "1",
+              "currency": "KRW",
+              "basis": "SCENARIO",
+              "strategy_id": "STABILITY_FIRST"
+            },
+            "evaluation_on": "2026-11-01",
+            "essential_base_krw": "2200000",
+            "core_surplus_raw_krw": "-400000",
+            "after_kept_raw_krw": "-400000",
+            "protection": {
+              "customer_target_krw": "6600000",
+              "service_minimum_krw": "6600000",
+              "target_krw": "6600000",
+              "funded_at_open_krw": "6600000",
+              "gap_at_open_krw": "0",
+              "kept_topup_krw": "0"
+            },
+            "operating": {
+              "target_krw": "2200000",
+              "funded_at_open_krw": "2200000",
+              "required_h_krw": "0"
+            },
+            "review": {
+              "priority": "B1_EXPLICIT_FLEXIBLE_CONTRIBUTION_REVIEW",
+              "options": [],
+              "required_reduction_before_krw": "700000",
+              "explicit_reductions_krw": "0",
+              "automatic_reductions": false
+            },
+            "timing_state": "RECONCILED",
+            "complete_cash_calendar_verified": false,
+            "goals_unchanged": true,
+            "drafts": null,
+            "committed_shortfall_krw": "400000",
+            "reason_codes": [
+              "CORE_AND_EXISTING_COMMITMENTS_EXCEED_MONTHLY_FUNDS"
+            ],
+            "target_resolution": {
+              "version": "DION-RESERVE-TARGETS-1.0",
+              "policy_version": "DION-ALLOCATION-1.0",
+              "period": "2026-11",
+              "source_ref": "raw-revision:ans_06a3d03b707344638f1d37961dcb11d5",
+              "mode": "TOTAL_TARGET",
+              "essential_living_krw": "2200000",
+              "required_debt_payment_krw": "0",
+              "policy_minimum_krw": {
+                "protection": "6600000",
+                "operating": "2200000"
+              },
+              "confirmed_extra_krw": {
+                "protection": null,
+                "operating": null
+              },
+              "customer_total_krw": {
+                "protection": "6600000",
+                "operating": "2200000"
+              },
+              "effective_target_krw": {
+                "protection": "6600000",
+                "operating": "2200000"
+              }
+            }
+          },
+          "minimum_shortfall_krw": "700000",
+          "reason": "income cannot fund living, debt and independently required goal minima"
+        },
+        "completed_months": 0,
+        "requested_months": 1,
+        "rows": []
+      },
+      {
+        "strategy_id": "INVESTMENT_CAPACITY",
+        "calc_state": "INFEASIBLE",
+        "failure": {
+          "period": "2026-11",
+          "calc_state": "INFEASIBLE",
+          "allocation": {
+            "tool_schema": "DION-ALLOCATION-RULES-1",
+            "policy_version": "DION-ALLOCATION-1.0",
+            "policy_state": "DECIDED",
+            "recommendation": false,
+            "changes_executed": false,
+            "adoption_state": "NOT_IMPLEMENTED",
+            "full_plan_generation_state": "NOT_IMPLEMENTED",
+            "lump_sum_generation_state": "NOT_IMPLEMENTED",
+            "input_snapshot": {
+              "funding": {
+                "context": {
+                  "case_id": "overnight-c-retired-a22a154b59",
+                  "profile_version": "22",
+                  "snapshot_id": "raw_b350a89c5b1f40cca1e9e79bc754d503",
+                  "plan_id": "monthly:2026-11",
+                  "plan_version": "1",
+                  "currency": "KRW",
+                  "basis": "SCENARIO",
+                  "strategy_id": "STABILITY_FIRST"
+                },
+                "stock": {
+                  "coverage": "complete",
+                  "sources": [
+                    {
+                      "source_id": "pool",
+                      "asset_id": "derived-cash-pool",
+                      "kind": "CASH",
+                      "assignable_krw": "15000000",
+                      "available_on": "2026-11-01"
+                    }
+                  ],
+                  "allocations": [
+                    {
+                      "allocation_id": "reserve",
+                      "source_id": "pool",
+                      "purpose": "PROTECTION",
+                      "amount_krw": "6600000",
+                      "use_on": "2026-11-01"
+                    },
+                    {
+                      "allocation_id": "operating",
+                      "source_id": "pool",
+                      "purpose": "OPERATING",
+                      "amount_krw": "2200000",
+                      "use_on": "2026-11-01"
+                    }
+                  ]
+                },
+                "monthly": {
+                  "period": "2026-11",
+                  "income_krw": "1800000",
+                  "living_krw": "2200000",
+                  "debt_payment_krw": "0",
+                  "kept": [],
+                  "targets": [
+                    {
+                      "target_id": "all-goal-minima",
+                      "purpose": "GOAL",
+                      "budget_basis": "MIN_REQUIRED",
+                      "total_contribution_krw": "300000",
+                      "kept_contribution_ids": [],
+                      "schedule_ref": "goal-calendar:2026-11"
+                    }
+                  ],
+                  "h_krw": "0",
+                  "new_investment_krw": "0",
+                  "unassigned_krw": "0",
+                  "coverage": "complete",
+                  "goal_status": "KNOWN"
+                },
+                "timing": {
+                  "source_id": "pool",
+                  "opening_on": "2026-11-01",
+                  "events": []
+                }
+              },
+              "policy": {
+                "version": "DION-ALLOCATION-1.0",
+                "evaluation_on": "2026-11-01",
+                "essential_living_krw": "2200000",
+                "customer_protection_target_krw": "6600000",
+                "customer_operating_target_krw": "2200000",
+                "protection_target_id": "protection",
+                "source_ref": "raw-revision:ans_06a3d03b707344638f1d37961dcb11d5",
+                "goal_requirement_ref": "raw-revision:ans_1921eba820934b7faa7d300bb95df4d5",
+                "adjustment_options": [],
+                "requested_reductions": []
+              }
+            },
+            "input_sha256": "bf8f637e0621d943cf672d5f2a4fca1c9f405d23d0e10b1c9c5b35c0534c456d",
+            "state": "INFEASIBLE",
+            "context": {
+              "case_id": "overnight-c-retired-a22a154b59",
+              "profile_version": "22",
+              "snapshot_id": "raw_b350a89c5b1f40cca1e9e79bc754d503",
+              "plan_id": "monthly:2026-11",
+              "plan_version": "1",
+              "currency": "KRW",
+              "basis": "SCENARIO",
+              "strategy_id": "STABILITY_FIRST"
+            },
+            "evaluation_on": "2026-11-01",
+            "essential_base_krw": "2200000",
+            "core_surplus_raw_krw": "-400000",
+            "after_kept_raw_krw": "-400000",
+            "protection": {
+              "customer_target_krw": "6600000",
+              "service_minimum_krw": "6600000",
+              "target_krw": "6600000",
+              "funded_at_open_krw": "6600000",
+              "gap_at_open_krw": "0",
+              "kept_topup_krw": "0"
+            },
+            "operating": {
+              "target_krw": "2200000",
+              "funded_at_open_krw": "2200000",
+              "required_h_krw": "0"
+            },
+            "review": {
+              "priority": "B1_EXPLICIT_FLEXIBLE_CONTRIBUTION_REVIEW",
+              "options": [],
+              "required_reduction_before_krw": "700000",
+              "explicit_reductions_krw": "0",
+              "automatic_reductions": false
+            },
+            "timing_state": "RECONCILED",
+            "complete_cash_calendar_verified": false,
+            "goals_unchanged": true,
+            "drafts": null,
+            "committed_shortfall_krw": "400000",
+            "reason_codes": [
+              "CORE_AND_EXISTING_COMMITMENTS_EXCEED_MONTHLY_FUNDS"
+            ],
+            "target_resolution": {
+              "version": "DION-RESERVE-TARGETS-1.0",
+              "policy_version": "DION-ALLOCATION-1.0",
+              "period": "2026-11",
+              "source_ref": "raw-revision:ans_06a3d03b707344638f1d37961dcb11d5",
+              "mode": "TOTAL_TARGET",
+              "essential_living_krw": "2200000",
+              "required_debt_payment_krw": "0",
+              "policy_minimum_krw": {
+                "protection": "6600000",
+                "operating": "2200000"
+              },
+              "confirmed_extra_krw": {
+                "protection": null,
+                "operating": null
+              },
+              "customer_total_krw": {
+                "protection": "6600000",
+                "operating": "2200000"
+              },
+              "effective_target_krw": {
+                "protection": "6600000",
+                "operating": "2200000"
+              }
+            }
+          },
+          "minimum_shortfall_krw": "700000",
+          "reason": "income cannot fund living, debt and independently required goal minima"
+        },
+        "completed_months": 0,
+        "requested_months": 1,
+        "rows": []
+      }
+    ]
+  },
+  "D-Past-Month": {
+    "case_id": "overnight-d-past-month-88dae02ed4",
+    "run_id": "run_5b5c7cdf01194661b99550bcb5c78a73",
+    "input_version": 13,
+    "input_hash": "419b00110a6029d077762448d94ea8dfd80308b397025425a1d95c4afdf74a0e",
+    "status": "SUCCEEDED",
+    "context": {
+      "evaluation_on": "2026-09-30",
+      "scope": "personal",
+      "included_owner_ids": [
+        "person_self"
+      ],
+      "currency": "KRW",
+      "timezone": "Asia/Seoul",
+      "projection_start": "2026-10-01",
+      "projection_end": "2026-10-31",
+      "case_id": "overnight-d-past-month-88dae02ed4",
+      "snapshot_id": "raw_9aa2bd1318704a2fa248bd65ca2d39b2",
+      "profile_version": "13"
+    },
+    "adoption_id": "adp_606d7b4293724180a9e0bcb13b6ccdeb",
+    "checkin_id": "chk_49c0ea23466f4722a8f639e49e3819f6",
+    "draft_id": null,
+    "draft_run_id": "run_7786af0ebd11457090837cb1e0e54609",
+    "database": "isolated-D.sqlite3",
+    "engine_input_schema": "DION-QUESTION12-ADAPTER-1.0",
+    "engine_release": "DION-ENGINE-1.2",
+    "engine_version": "DION-ENGINE-1.0",
+    "policy_version": "DION-ALLOCATION-1.0",
+    "overall_calc_state": "CALCULATED",
+    "output_states": {
+      "OUT-02": "CALCULATED",
+      "OUT-03": "CALCULATED",
+      "OUT-04": "CALCULATED",
+      "OUT-05": "CALCULATED"
+    },
+    "legal_evidence": {
+      "active_rule_count": 0,
+      "statutory_calculation": "NOT_IMPLEMENTED",
+      "supplied_official_pension_estimates": "USER_SUPPLIED_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    "goals": [
+      {
+        "goal_id": "goal-1",
+        "type": "EDUCATION",
+        "priority": 1,
+        "calc_state": "CALCULATED",
+        "due_on": "2026-10-30",
+        "target_krw": "300000",
+        "prepared_krw": "0",
+        "gap_krw": "300000",
+        "contribution_count": 1,
+        "level_contribution_krw": "300000",
+        "funding_schedule": [
+          {
+            "on": "2026-10-15",
+            "amount_krw": "300000"
+          }
+        ],
+        "payments": [
+          {
+            "on": "2026-10-30",
+            "amount_krw": "300000",
+            "economic_event_id": "education-payment-1"
+          }
+        ],
+        "readiness": {
+          "numerator": "0",
+          "denominator": "300000"
+        },
+        "price_basis": "FUTURE_NOMINAL",
+        "return_basis": "ZERO_RETURN"
+      }
+    ],
+    "plans": [
+      {
+        "strategy_id": "STABILITY_FIRST",
+        "calc_state": "CALCULATED_MONTHLY_SCENARIO",
+        "failure": null,
+        "completed_months": 1,
+        "requested_months": 1,
+        "rows": [
+          {
+            "period": "2026-10",
+            "income_krw": "3000000",
+            "living_krw": "1600000",
+            "debt_payment_krw": "300000",
+            "kept_total_krw": "200000",
+            "goal_deposits_krw": "300000",
+            "new_investment_krw": "300000",
+            "additional_cash_krw": "300000",
+            "closing_cash_krw": "12300000",
+            "modeled_total_assets_krw": "12800000"
+          }
+        ]
+      },
+      {
+        "strategy_id": "INVESTMENT_CAPACITY",
+        "calc_state": "CALCULATED_MONTHLY_SCENARIO",
+        "failure": null,
+        "completed_months": 1,
+        "requested_months": 1,
+        "rows": [
+          {
+            "period": "2026-10",
+            "income_krw": "3000000",
+            "living_krw": "1600000",
+            "debt_payment_krw": "300000",
+            "kept_total_krw": "200000",
+            "goal_deposits_krw": "300000",
+            "new_investment_krw": "480000",
+            "additional_cash_krw": "120000",
+            "closing_cash_krw": "12120000",
+            "modeled_total_assets_krw": "12800000"
+          }
+        ]
+      }
+    ]
+  },
+  "E-R3-synthetic-user": {
+    "case_id": "overnight-e-r3-synthetic-user-885f672680",
+    "run_id": "run_ff7b8b1cb18e48d798cfc06dbd6e8bf3",
+    "input_version": 14,
+    "input_hash": "1d0260b13661ef24001b12777f10944baa90e054e2bed02c8615a36684ed8789",
+    "status": "SUCCEEDED",
+    "context": {
+      "evaluation_on": "2026-10-31",
+      "scope": "personal",
+      "included_owner_ids": [
+        "person_self"
+      ],
+      "currency": "KRW",
+      "timezone": "Asia/Seoul",
+      "projection_start": "2026-11-01",
+      "projection_end": "2026-11-30",
+      "case_id": "overnight-e-r3-synthetic-user-885f672680",
+      "snapshot_id": "raw_a235d96f16f84a65a6be47d49c63b858",
+      "profile_version": "14"
+    },
+    "session_id": "agent_c360d31dd8562a0b155dc28e25e596a59799cd55bdef73c1d0897bed1484156f",
+    "scenario_id": "scenario_a7e8c5658c4f4cbaa622cbf457ddc9c3",
+    "database": "isolated-E.sqlite3",
+    "engine_input_schema": "DION-QUESTION12-ADAPTER-1.0",
+    "engine_release": "DION-ENGINE-1.2",
+    "engine_version": "DION-ENGINE-1.0",
+    "policy_version": "DION-ALLOCATION-1.0",
+    "overall_calc_state": "PARTIAL",
+    "output_states": {
+      "OUT-02": "CALCULATED",
+      "OUT-03": "CALCULATED",
+      "OUT-04": "CALCULATED",
+      "OUT-05": "NEEDS_INPUT"
+    },
+    "legal_evidence": {
+      "active_rule_count": 0,
+      "statutory_calculation": "NOT_IMPLEMENTED",
+      "supplied_official_pension_estimates": "USER_SUPPLIED_NOT_INDEPENDENTLY_VERIFIED"
+    },
+    "goals": [
+      {
+        "goal_id": "goal-1",
+        "type": "EDUCATION",
+        "priority": 1,
+        "calc_state": "CALCULATED",
+        "due_on": "2026-11-30",
+        "target_krw": "300000",
+        "prepared_krw": "0",
+        "gap_krw": "300000",
+        "contribution_count": 1,
+        "level_contribution_krw": "300000",
+        "funding_schedule": [
+          {
+            "on": "2026-11-15",
+            "amount_krw": "300000"
+          }
+        ],
+        "payments": [
+          {
+            "on": "2026-11-30",
+            "amount_krw": "300000",
+            "economic_event_id": "education-payment-1"
+          }
+        ],
+        "readiness": {
+          "numerator": "0",
+          "denominator": "300000"
+        },
+        "price_basis": "FUTURE_NOMINAL",
+        "return_basis": "ZERO_RETURN"
+      }
+    ],
+    "plans": []
+  }
+}

@@ -1,0 +1,14 @@
+.F..............                                                         [100%]
+================================== FAILURES ===================================
+_______________________________ test_dev[R1-02] _______________________________
+tests\be\test_consultation_contest_eval.py:332: in test_dev
+    dev_case(eval_id, tmp_path, monkeypatch)
+tests\be\test_consultation_contest_eval.py:155: in dev_case
+    assert stored["result"]["calc_state"] == "PARTIAL"
+E   AssertionError: assert 'CALCULATED' == 'PARTIAL'
+E     
+E     - PARTIAL
+E     + CALCULATED
+=========================== short test summary info ===========================
+FAILED tests/be/test_consultation_contest_eval.py::test_dev[R1-02] - Assertio...
+1 failed, 15 passed, 8 deselected in 41.11s

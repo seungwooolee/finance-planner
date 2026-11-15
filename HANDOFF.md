@@ -1,4 +1,87 @@
+# 질문 집단 자산 선 그래프·기대수익률 조사 — 2026-11-15
+
+질문 결과의 관련 집단을 기본 선택하고 자산 선 그래프/정확한 금액 표로 연결했다. 생활단계 통계 영역을 제거했다. 지정 Drive 폴더의 조사 지침서와 6탭 양식을 제공했으며 구성별 기대수익률 구현은 조사 후로 보류했다. 타입/린트·고유6검사 통과, 최종 페이지 모바일 가로 넘침1건은 남아 draft 인계한다. [계약·검사·자료·남은 조건](docs/integration/2026-11-15-selected-asset-line-HANDOFF.md).
+
+# 운영 AI 채팅 복구 — 2026-11-15
+
+최신 FE와 구 BE의 버전 불일치(채팅 API404), DB006~008 누락, OnePort 무제한 키 승인/일일 예약 예산 문제를 확인하고 사용자 실행 위임으로 복구했다. 운영 배포 live 및 로그인한 실제 화면의 연속 대화2건 HTTP200 확인. [실행·권한·검사·미검증](docs/integration/2026-11-15-chat-deployment-repair.md). 기존 금융 정책·원응답·과거 비용 원장을 보존했다.
+
+# 참고 통계 실제 HTTP 연결 후속 — 2026-11-15
+
+PR #71이 병합된 `e29cbbf`에서 실제 Next → FastAPI → 엔진 → 자산/생활단계 그래프 검사 **1건 통과**.
+사용자 배포 승인 후 운영 FE·BE `5e515f8`에서 실제 화면 검사도 **1건 통과**. 새 preview 통계28행/표시허용15행과 1440/390px 자산·생활단계 그래프를 확인했다.
+[관찰·실행 명령·배포 후보·접근/승인 경계](docs/integration/2026-11-15-reference-http-HANDOFF.md).
+
+# 최신 채팅 전용 AI 비서 — 2026-11-15
+
+PR #72 후속 충돌 해소: integration `e29cbbf`의 참고 통계 그래프 변경과 양측 인계·개발 기록·Vercel 배포 차단을 모두 보존했다. JSON 구조/배포 차단 및 diff 공백 검사 완료, 최신 Core 결과는 PR에 기록한다. 병합·배포는 실행하지 않는다.
+
+구현 후보: `e3b8054e51c31437281b8f67f0071e865c161923`, branch `codex/chat-only-assistant-20261115`. PR 링크와 최종 CI는 PR 설명에 기록한다.
+
+
+상담창의 탭·설문 카드·FAQ를 제거하고 하나의 대화와 입력창으로 연결했다. 실제 OnePort6회(브라우저2회 포함) 검증 성공.
+[계약·검증·제한·후보](docs/integration/2026-11-15-chat-only-assistant.md).
+금액/비중은 기존 엔진, 후보 반영/계산/저장/최종 검토는 명시 행동을 유지한다. 아래 기록은 이전 이력이다.
+
+# 참고 통계 그래프 연결 인계 — 2026-11-15
+
+`codex/reference-chart-connect-20261115`: [원인·수정·검사·배포 담당 조치](docs/integration/2026-11-15-reference-chart-connect-HANDOFF.md).
+배포 BE 새 계산 응답의 통계 누락과 생활단계 그래프 부족을 구분했다. FE 표시 개선·관련 컴포넌트 검사 완료.
+실제 배포 사이트 반영은 BE 통합본 반영 및 별도 FE 병합/배포가 필요하다. 병합·배포·운영 DB 변경은 하지 않았다.
+
+# 로그인 복구·초기 계산 연결 인계 — 2026-11-15
+
+`codex/login-calculation-20261115`: [계약·검사·운영 미검증](docs/integration/2026-11-15-login-calculation.md).
+구현·검사 후보 SHA: `fd8d0a033ec7f373c550038bd7c3b36f3e7f038f` (후속 문서 커밋에서 기록).
+로그인 상태 확인의 일시 실패로 버튼이 잠기는 경로를 복구하고 첫 화면에서 서버 연결을 미리 시작한다.
+타입·변경 린트·단위14건·Edge 고유5건 통과. 최초 E2E의 fixture 2건 실패는 1회 보정·관련 재검사로 통과.
+BE/금액/원응답/DB 계약 변경 없음. 운영 30초 대기의 실제 개선율은 미검증이며 병합·배포하지 않는다.
+
+# 결과 화면 정리 인계 — 2026-11-15
+
+`codex/result-review-polish-20261115`: [변경·계약·실제 검사·미실행](docs/integration/2026-11-15-result-review-polish-HANDOFF.md).
+6단계 디자인, 결과 배너/확인 목록 정리, 상품 검토 이유·공시 위험 설명을 반영했다.
+기존 상담·최종 생성·별도 채택 계약과 예시 격리를 유지한다. 타입/변경 린트 및 컴포넌트 브라우저 2경로 통과.
+전체 Build/E2E와 실제 API·DB·AI 재검증은 미실행이며, 병합·배포·운영 DB 변경은 수행하지 않는다.
+
+# 최신 대화형 설문 인계 — 2026-11-15
+
+`codex/chat-survey-20261115`는 결과 없이 시작하는 채팅 설문·확인 답변·기존 엔진 계산·결과 상담 인계를 구현한다.
+[계약·실제 검사·미검증·출시 조건](docs/integration/2026-11-15-chat-survey.md)을 따른다.
+고유 관련 pytest 43건, 로컬 Edge E2E 2건 통과. 새 실제 유료 호출·병합·배포는 하지 않았다.
+구현 후보 `ae49d20`, [PR #67](https://github.com/seungwooolee/finance-planner/pull/67), 대상 integration.
+필수 CI 최종 결과는 PR 설명에 기록한다. 아래 이전 기록은 당시 이력이다.
+
+# 최신 AI 대화 비서 인계 — 2026-11-15
+
+`codex/consultation-result-history-20261115`: [계약·설계](docs/integration/2026-11-15-conversation-assistant-DESIGN.md),
+[실제 검사·미실행·후속 조건](docs/integration/2026-11-15-conversation-assistant-HANDOFF.md).
+동의된 원문 대화·결과 근거·저장/재개를 기존 세션과 최종 상담에 연결했다.
+API/저장 및 FE 공통 파일 담당 독점 규칙은 사용자 결정으로 해제했다.
+고유 관련 pytest90개와 실제 모델3회 통과. 전체 브라우저 검사는 실패/미완료로 구분한다.
+[Draft PR #63](https://github.com/seungwooolee/finance-planner/pull/63)은 PR62의 후속 후보다.
+최초 CI의 AGENTS 고정 해시 충돌은 승인 근거를 기준 1.5로 등록해 보정했으며 관련 46 passed/6 skipped.
+원격 병합·배포·운영 DB 변경은 수행하지 않았다.
+
+# 최신 인계 — 투자구성 선택 즉시 반영
+
+`codex/portfolio-selection-20261115`: 세 구성 카드 선택 한 번으로 저장·상품/비중 검토안 반영.
+[계약·실제 검사·후보·운영 미반영](docs/integration/2026-11-15-portfolio-selection.md).
+타입·변경 린트·직접 관련 브라우저2건 통과. 최종 생성·명시 채택은 별도이며 과거 인계는 아래 보존한다.
+
+# 최신 BE 인계 — 2026-11-15 상담 기반 최종 포트폴리오
+
+현재 작업은 `codex/consultation-finalization-be-20261115`이다.
+[BE 계약/요청 예시](docs/integration/2026-11-15-portfolio-review-BE-CONTRACT.md)와
+[후보·검증·운영 미적용·남은 FE 연결](docs/integration/2026-11-15-portfolio-review-BE-HANDOFF.md)을 따른다.
+고유 관련 검사43건 통과. 기존 증거와 아래 역사 인계는 그대로 보존한다.
+최종 생성은 별도 명시 채택과 구분하며 migration008 운영 적용·병합·배포는 실행하지 않았다.
+
 # HANDOFF · DION 결과 화면 (codex/contest-results-20261114)
+
+## 2026-11-15 상담 기반 최종 생성 FE 후속
+
+현행 상담용 검토안·명시 단계 확인·저장 상담 연결·확인한 변경의 새 계산·최종 생성·별도 채택을 FE에서 연결한다. BE PR #61 계약을 소비하며 엔진/API/원응답 계약은 수정하지 않는다. 실제 검사·운영 조건·후보는 [FE 인계](docs/integration/2026-11-15-portfolio-review-FE-HANDOFF.md)를 따른다. 아래 과거 후보와 검사 기록은 당시 이력으로 보존한다.
 
 ## 후보
 - 브랜치: `codex/contest-results-20261114`

@@ -1,0 +1,17 @@
+{
+  "file_count": 66,
+  "total_bytes": 3667466,
+  "json_parsed": 50,
+  "ownership_violations": [],
+  "missing_links": [],
+  "secret_pattern_findings": [],
+  "locked_file_changes": [],
+  "candidate_code_unchanged_after_holdout": true,
+  "tracked_product_changes": [],
+  "whitespace_findings": [],
+  "github_push": false,
+  "remote_merge": false,
+  "deploy": false,
+  "production_db": false,
+  "paid_model": false
+}

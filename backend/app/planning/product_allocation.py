@@ -10,10 +10,15 @@ import json
 import re
 from datetime import date
 from decimal import Decimal
+from fractions import Fraction
 from pathlib import Path
 
 from . import portfolio_types
 from .common import ContractError, Missing, digest, integer, output
+from .investment_return_projection import market_return_assumption
+from .product_candidates import GROUPS, comparison_groups, review_universe_groups
+from .product_candidates import VERSION as COMPARISON_VERSION
+from .product_disclosures import REVIEWED_ON, apply_disclosures
 from .product_explanation import explain
 from .product_scoring import score_role
 from .statuses import axes
@@ -47,6 +52,7 @@ MESSAGES = {
     "PRODUCT_NOT_TRADABLE": "공식 자료의 상장 참조 상태를 확인해야 해요.",
     "HORIZON_TOO_SHORT": "자금 사용일까지의 기간이 이 상품의 검토 기간보다 짧아요.",
     "FUND_DATE_UNRESOLVED": "검토할 자금 하나의 사용 가능일과 사용일 연결이 필요해요.",
+    "FUND_USE_UNDECIDED": "사용 시점이 미정이에요. 목표 비중은 비교할 수 있고, 개별 상품은 기간을 확인한 뒤 검토해요.",
     "RESTRICTIONS_UNCONFIRMED": "반드시 제외할 투자 대상이나 조건을 확인해야 해요.",
     "RESTRICTED_ASSET": "고객이 제외한 투자 대상이나 조건에 해당해요.",
     "INDUSTRY_EXCLUSION_UNRESOLVED": "제외 산업과 상품의 기초자산 노출을 확인해야 해요.",
@@ -62,7 +68,7 @@ MESSAGES = {
     "POLICY_DISCLOSURE_STALE": "배분 정책의 검토 기준일이나 갱신 기한을 확인해야 해요.",
     "LOSS_BUDGET_UNRESOLVED": "손실을 감수할 수 있는 범위가 작거나 불명확해 상품 배분을 보류해요.",
     "STRESS_TARGET_REDUCED": "내부 손실 시나리오 기준에 맞춰 원래 목표 비중을 낮췄어요. 실제 손실의 상한은 아니에요.",
-    "STABILITY_POLICY_UNALLOCATED": "안정 선호에 적용하는 내부 기준상 ETF 자동 배분은 보류해요.",
+    "STABILITY_POLICY_UNALLOCATED": "안정형의 기본 배분은 현금 중심이에요. 각 투자구성에서 검토 결과를 볼 수 있어요.",
     "BUDGET_PERIOD_PAST": "기준일보다 이전 달의 예산에는 현재 상품 자료로 배분하지 않아요.",
 }
 
@@ -86,9 +92,6 @@ def profile_from_raw(document):
     """No age/life-stage score, UNKNOWN-as-zero, or experience-as-understanding."""
     profile, missing, invalid, sources, fields_by_id = {}, [], [], [], {}
     context = document["context"]
-    profile["personal_scope_supported"] = context["scope"] == "personal" and len(context["included_owner_ids"]) == 1
-    if context["scope"] != "personal" or len(context["included_owner_ids"]) != 1:
-        missing.append("NEW-01")
     for qid in sorted(PRODUCT_QUESTION_IDS):
         records = [r for r in document["raw_bundle"]["answers"]
                    if r["envelope"]["question_ref"].get("design_id") == qid]
@@ -147,15 +150,21 @@ def profile_from_raw(document):
                 fund = funds[0]
                 if not isinstance(fund.get("fund_id"), str) or not fund["fund_id"]:
                     raise ContractError("fund identity required")
+                status_field = fund.get("earliest_use_status")
+                status = ("EARLIEST_USE_STATUS_03" if status_field == {
+                    "state": "UNKNOWN", "raw_value": None, "unit": "TEXT"
+                } else _known(fund, "earliest_use_status"))
+                if status in {"EARLIEST_USE_STATUS_02", "EARLIEST_USE_STATUS_03"}:
+                    profile["use_date_undecided"] = True
+                    continue
+                if status != "EARLIEST_USE_STATUS_01":
+                    raise ContractError("unknown use status")
                 links = [c for c in document.get("confirmations", []) if c.get("question_id") == "F15"]
                 if (len(links) != 1 or links[0].get("definition_version") != CONFIRMATION_VERSION
                         or not links[0].get("source_ref") or links[0].get("values") != {
                             "fund_ref": fund["fund_id"], "budget_scope": "MONTHLY_NEW_CONTRIBUTIONS"}):
                     raise Missing("explicit fund-to-monthly-budget confirmation required")
-                status = _known(fund, "earliest_use_status")
                 available = _day(_known(fund, "availability_date"))
-                if status != "EARLIEST_USE_STATUS_01":
-                    raise Missing("finite review horizon required")
                 use = _day(_known(fund, "earliest_use_date"))
                 if use < available:
                     raise ContractError("use before availability")
@@ -221,9 +230,10 @@ def _facts_complete(product, on, policy):
     return [] if facts["listing_reference_confirmed"] else ["PRODUCT_NOT_TRADABLE"]
 
 
-def filter_product(product, profile, missing, invalid, policy, on):
-    reasons = _facts_complete(product, on, policy)
-    if product.get("recommendation_eligible") is not True:
+def filter_product(product, profile, missing, invalid, policy, on, *, in_review_universe=False):
+    reasons = (["PRODUCT_ROLE_POLICY_REQUIRED"] if product.get("audit_state") == "DISCLOSURE_VERIFIED_POLICY_HOLD"
+               else _facts_complete(product, on, policy))
+    if not in_review_universe and product.get("recommendation_eligible") is not True:
         reasons.append("PRODUCT_NOT_ENABLED")
         reasons.extend(product.get("audit_reason_codes", []))
     if policy.get("state") != "REVIEWED_FOR_PREVIEW":
@@ -255,7 +265,9 @@ def filter_product(product, profile, missing, invalid, policy, on):
     if constraints["requires_etf_experience"] and "EXPERIENCE_PRODUCTS_05" not in profile["experience_products"]:
         reasons.append("EXPERIENCE_REQUIRED")
     fund = profile.get("fund")
-    if not fund:
+    if profile.get("use_date_undecided"):
+        reasons.append("FUND_USE_UNDECIDED")
+    elif not fund:
         reasons.append("FUND_DATE_UNRESOLVED")
     elif (_day(fund["use_on"]) - max(on, _day(fund["available_on"]))).days < constraints["minimum_holding_days"]:
         reasons.append("HORIZON_TOO_SHORT")
@@ -348,7 +360,7 @@ def _validate_policy(policy):
             raise ContractError("product policy role/budget values")
 
 
-def guarded_targets(slots, products, policy, loss_band):
+def guarded_targets(slots, products, policy, loss_band, *, reduce_concentration=False):
     """Scale original slots only down; rejected products never release risk budget.
 
     The adverse scenario is a service assumption, not VaR or a loss guarantee.
@@ -375,48 +387,115 @@ def guarded_targets(slots, products, policy, loss_band):
         if type(shock) is not int:
             raise ContractError("scenario shock missing for target role")
         numerator += weight * shock
-    if (max(issuers.values(), default=0) > policy["maximum_issuer_bps"]
-            or max(benchmarks.values(), default=0) > policy["maximum_benchmark_bps"]
-            or equity > policy["maximum_equity_bps"] or foreign > policy["maximum_foreign_bps"]):
+    constraints = (
+        (max(issuers.values(), default=0), policy["maximum_issuer_bps"]),
+        (max(benchmarks.values(), default=0), policy["maximum_benchmark_bps"]),
+        (equity, policy["maximum_equity_bps"]),
+        (foreign, policy["maximum_foreign_bps"]),
+    )
+    excess = [Fraction(cap, weight) for weight, cap in constraints if weight > cap]
+    if excess and not reduce_concentration:
         raise ContractError("original target concentration exceeds policy")
     budget = policy["stress_budget_bps_by_loss_band"].get(loss_band, 0)
     allowed = budget * 10000
     reduced = numerator > allowed
-    scaled = [{**s, "target_bps": s["target_bps"] * allowed // numerator if reduced else s["target_bps"]}
-              for s in slots]
+    scale = min([Fraction(allowed, numerator) if reduced else Fraction(1), *excess])
+    scaled = [{**s, "target_bps": s["target_bps"] * scale.numerator // scale.denominator} for s in slots]
     return scaled, {"stress_budget_bps": budget, "original_scenario_loss_numerator": str(numerator),
                     "scenario_loss_denominator": 100000000, "target_reduced": reduced,
                     "scenario_is_loss_limit": False, "sizing_basis": "ORIGINAL_TARGETS_BEFORE_FILTERING"}
 
 
+def _comparison_mix(slots, products):
+    role_by_code = {p["code"]: p["service_constraints"]["role"] for p in products
+                    if p.get("service_constraints", {}).get("role")}
+    groups = {role: group for group, (_, roles) in GROUPS.items() for role in roles}
+    mix = dict.fromkeys(GROUPS, 0)
+    for slot in slots:
+        group = groups.get(role_by_code.get(slot["code"]))
+        if group is None:
+            return None
+        mix[group] += slot["target_bps"]
+    mix["CASH"] = 10000 - sum(mix.values())
+    return mix
+
+
+def _portfolio_slots(slots, candidates, eligible, products, policy, loss_band):
+    # One product per existing asset slot. Keep the slot limit; recheck risk and concentration
+    # for each substitution, including changes to bond duration, issuer and benchmark.
+    selected = slots
+    for index, slot in enumerate(slots):
+        first_valid = None
+        for code in candidates.get(slot["code"], []):
+            if code not in eligible or slot["target_bps"] == 0:
+                continue
+            proposed = list(selected)
+            proposed[index] = {**proposed[index], "code": code}
+            guarded, _ = guarded_targets(proposed, products, policy, loss_band, reduce_concentration=True)
+            if guarded[index]["target_bps"] == 0:
+                continue
+            if guarded == proposed:
+                first_valid = guarded
+                break
+            if first_valid is None:
+                first_valid = guarded
+        if first_valid is not None:
+            selected = first_valid
+    return selected
+
+
 def review_products(document, result, *, catalog=None, policy=None):
     root = Path(__file__).parent
+    use_current_disclosures = catalog is None and policy is None
     catalog = json.loads((root / "product_catalog.json").read_text(encoding="utf-8")) if catalog is None else catalog
     policy = json.loads((root / "product_policy.json").read_text(encoding="utf-8")) if policy is None else policy
     if (catalog.get("schema_version") != "DION-PRODUCT-CATALOG-0.2"
             or policy.get("schema_version") != "DION-PRODUCT-POLICY-0.2"):
         raise ContractError("product configuration schema")
     _validate_policy(policy)
+    on = _day(document["context"]["evaluation_on"])
+    variant_candidates = apply_disclosures(catalog, policy) if use_current_disclosures and on >= REVIEWED_ON else {}
+    messages = MESSAGES if not variant_candidates else {
+        **MESSAGES, "PRODUCT_ROLE_POLICY_REQUIRED": "공시를 확인했어요. 이 상품 유형의 보유기간과 손실 한도 기준이 필요해요.",
+    }
     products = catalog["products"]
     if len({p["code"] for p in products}) != len(products):
         raise ContractError("duplicate catalog ticker")
     profile, missing, invalid, sources = profile_from_raw(document)
-    on = _day(document["context"]["evaluation_on"])
     screened, eligible = [], set()
+    review_codes = set(catalog.get("personal_review_codes", []))
     default_codes = {slot["code"] for slots in policy["target_slots_by_preference"].values() for slot in slots}
+    # These registered disclosures are independent of a user's dated allocation.
+    # Only listed policy slots and reviewed alternatives can enter the reference list.
+    reference_on = _day(policy["reviewed_on"])
+    reference_codes = default_codes.union(policy.get("selection", {}).get("reference_alternative_codes", []))
+    reference_products = {
+        product["code"] for product in products
+        if policy.get("state") == "REVIEWED_FOR_PREVIEW" and product["code"] in reference_codes
+        and product.get("recommendation_eligible") is True
+        and not _facts_complete(product, reference_on, policy)
+    }
+    performance = json.loads((root / "product_performance_202610.json").read_text(
+        encoding="utf-8")) if use_current_disclosures else {}
+    returns = performance.get("products", {}) if performance and _day(performance["published_on"]) <= on else {}
     for product in products:
-        reasons = filter_product(product, profile, missing, invalid, policy, on)
+        in_review = product["code"] in review_codes
+        reasons = filter_product(product, profile, missing, invalid, policy, on, in_review_universe=in_review)
         if not reasons:
             eligible.add(product["code"])
         screened.append({"code": product["code"], "name": product["name"],
+                         "in_review_universe": in_review or product.get("recommendation_eligible") is True,
                          "allocation_role": "DEFAULT_SLOT" if product["code"] in default_codes else
-                         "COMPARISON_ALTERNATIVE" if product.get("recommendation_eligible") else "REFERENCE_ONLY",
+                         "PORTFOLIO_CANDIDATE" if product.get("audit_state") == "VERIFIED_FOR_PORTFOLIO_TYPE" else
+                         "COMPARISON_ALTERNATIVE" if product.get("recommendation_eligible") or not reasons
+                         else "REFERENCE_ONLY",
                          "official_source": product["official_source"],
+                         **({"historical_return": returns[product["code"]]} if product["code"] in returns else {}),
                          "detail_review_state": product.get("audit_state", "UNKNOWN"),
                          "disclosure": {**{k: (product.get("facts") or {}).get(k) for k in (
                              "risk_grade", "annual_base_fee_percent", "annual_total_expense_percent",
                              "transaction_cost_percent", "asset_class", "fx_exposed", "principal_loss_possible",
-                             "deposit_protected")},
+                             "deposit_protected", "benchmark", "cash_conversion", "foreign_underlying")},
                              "source_as_of": {k: v.get("source_as_of") for k, v in
                                               (product.get("facts") or {}).get("evidence", {}).items()},
                              "source_urls": {k: v.get("url") for k, v in
@@ -425,7 +504,10 @@ def review_products(document, result, *, catalog=None, policy=None):
                              "valid_until": product.get("review", {}).get("valid_until")},
                          "state": "ELIGIBLE_FOR_REVIEW" if not reasons else "EXCLUDED_FROM_ALLOCATION",
                          "reason_codes": reasons})
-        screened[-1]["explanation"] = explain(screened[-1], product, MESSAGES)
+        screened[-1]["explanation"] = explain(screened[-1], product, messages)
+        outlook = market_return_assumption(screened[-1], on) if use_current_disclosures else None
+        if outlook:
+            screened[-1]["market_return_assumption"] = outlook
     by_role = {}
     for product in products:
         if product["code"] in eligible:
@@ -445,15 +527,36 @@ def review_products(document, result, *, catalog=None, policy=None):
     for targets in policy.get("target_slots_by_preference", {}).values():
         guarded_targets(targets, products, policy, "LOSS_30_PLUS")
     slots, stress = guarded_targets(original, products, policy, profile.get("loss_tolerance_band_raw"))
-    type_targets = {type_id: guarded_targets(policy["target_slots_by_preference"].get(pref, []), products, policy,
-                                             profile.get("loss_tolerance_band_raw"))[0]
-                    for type_id, pref in portfolio_types.REPRESENTATIVE_PREFERENCE.items()}
+    relative = portfolio_types.relative_preferences(preference)
+    comparison_preference = preference if relative else "PREF_BALANCED"
+    comparison_preferences = relative or portfolio_types.relative_preferences(comparison_preference)
+    use_p1_mix = (policy["version"] == portfolio_types.RETURN_MIX_PRODUCT_POLICY
+                  and preference == "PREF_STABILITY")
+    use_return_mix = (policy["version"] == portfolio_types.RETURN_MIX_PRODUCT_POLICY
+                      and comparison_preference in portfolio_types.PREFERENCES[2:])
+    type_targets = {}
+    comparison_mixes = {}
+    for type_id, pref in comparison_preferences.items():
+        explicit_mix = type_id == "RETURN" and use_return_mix
+        targets = policy["target_slots_by_preference"].get(pref, [])
+        if explicit_mix:
+            targets = [{"code": code, "target_bps": weight, "cap_bps": policy["maximum_product_bps"]}
+                       for _, code, weight in portfolio_types.RETURN_TARGETS]
+        if use_p1_mix:
+            bond = portfolio_types.P1_SHORT_BOND_BPS[type_id]
+            targets = [{"code": "153130", "target_bps": bond, "cap_bps": policy["maximum_product_bps"]}] if bond else []
+        comparison_mixes[type_id] = (portfolio_types.RETURN_MIX_BPS if explicit_mix
+                                     else _comparison_mix(targets, products))
+        if type_id in relative:
+            type_targets[type_id], _ = guarded_targets(targets, products, policy,
+                                                       profile.get("loss_tolerance_band_raw"),
+                                                       reduce_concentration=explicit_mix)
     if not slots or not any(slot["target_bps"] for slot in slots):
         blockers.append("STABILITY_POLICY_UNALLOCATED" if preference == "PREF_STABILITY"
                         else "LOSS_BUDGET_UNRESOLVED" if stress["target_reduced"]
                         else "ALLOCATION_TARGETS_UNCONFIRMED")
-    if not profile["personal_scope_supported"]:
-        blockers.append("PERSONAL_SCOPE_REQUIRED")
+    if profile.get("use_date_undecided"):
+        blockers.append("FUND_USE_UNDECIDED")
     if not any(slot["target_bps"] and slot["code"] in eligible for slot in slots):
         blockers.append("NO_ELIGIBLE_PRODUCTS")
     for candidate in plans.get("candidates", []):
@@ -465,14 +568,17 @@ def review_products(document, result, *, catalog=None, policy=None):
             if month["period"] < on.strftime("%Y-%m"):
                 month_reasons.append("BUDGET_PERIOD_PAST")
             fund = profile.get("fund")
-            if not fund or fund["available_on"] > month["period"] + "-01":
+            if not profile.get("use_date_undecided") and (not fund or fund["available_on"] > month["period"] + "-01"):
                 month_reasons.append("FUND_NOT_AVAILABLE")
             month_on = max(on, _day(month["period"] + "-01"))
             if not _day(policy["reviewed_on"]) <= month_on <= _day(policy["valid_until"]):
                 month_reasons.append("POLICY_DISCLOSURE_STALE")
             # Future contributions must recheck both data freshness and remaining horizon.
-            month_eligible = {p["code"] for p in products if p["code"] in eligible
-                              and not filter_product(p, profile, missing, invalid, policy, month_on)} if fund else set()
+            month_eligible = {
+                p["code"] for p in products if p["code"] in eligible and not filter_product(
+                    p, profile, missing, invalid, policy, month_on, in_review_universe=p["code"] in review_codes
+                )
+            } if fund else set()
             if not any(slot["target_bps"] and slot["code"] in month_eligible for slot in slots):
                 month_reasons.append("NO_ELIGIBLE_PRODUCTS")
             allocation = allocate_budget(month["new_investment_krw"], slots,
@@ -488,14 +594,53 @@ def review_products(document, result, *, catalog=None, policy=None):
             allocation["stress_review"] = {**stress, "scenario_loss_krw_ceil": str((loss_numerator + 9999) // 10000),
                                             "full_loss_scenario_krw": allocation["allocated_total_krw"]}
             general = [r for r in month_reasons if r not in portfolio_types.PREFERENCE_ONLY_REASONS]
+            if missing or invalid:
+                general.append("PROFILE_INPUT_REQUIRED")
+            # These raw-answer checks live in the product filter, not CORE_FIELDS.
+            # Preserve their hold even when comparing an intentionally empty slot table.
+            general.extend(sorted({reason for product in screened for reason in product["reason_codes"]
+                                   if reason in {"UNDERSTANDING_REQUIRED", "RESTRICTIONS_UNCONFIRMED",
+                                                 "INDUSTRY_EXCLUSION_UNRESOLVED"}}))
             views = {}
             for type_id, type_slots in type_targets.items():
+                # A reviewed all-unallocated alternative is still a selectable comparison.
+                # It must not bypass missing customer facts, dates, or budget guards.
+                cash_only = relative[type_id] == "PREF_STABILITY" and not type_slots
+                if not general and type_id in variant_candidates:
+                    type_slots = _portfolio_slots(type_slots, variant_candidates[type_id], month_eligible,
+                                                  products, policy, profile.get("loss_tolerance_band_raw"))
                 view = allocate_budget(month["new_investment_krw"], type_slots, set() if general else month_eligible)
-                views[type_id] = {"allocated_total_krw": view["allocated_total_krw"],
-                                  "unallocated_krw": view["unallocated_krw"],
-                                  "allocations": [{"code": a["code"], "review_allocated_krw": a["review_allocated_krw"]}
-                                                  for a in view["allocations"]]}
+                mix = comparison_mixes[type_id]
+                if mix is not None:
+                    # Strategic cash is the unscaled target's cash share. Failed slots and
+                    # sizing limits never increase it; those amounts remain held.
+                    target_cash = integer(view["scenario_budget_krw"]) * mix["CASH"] // 10000
+                    view.update(target_mix_bps=mix, target_cash_krw=str(target_cash),
+                                held_krw=str(integer(view["unallocated_krw"]) - target_cash))
+                type_loss = sum(int(a["review_allocated_krw"]) * policy["scenario_shock_bps_by_role"][
+                    next(p for p in products if p["code"] == a["code"])["service_constraints"]["role"]]
+                                for a in view["allocations"])
+                if type_loss > integer(view["scenario_budget_krw"]) * stress["stress_budget_bps"]:
+                    raise ContractError("comparison scenario exceeds customer service budget")
+                reasons = sorted(set(general + ([] if view["allocations"] or cash_only else ["NO_ELIGIBLE_PRODUCTS"])))
+                comparison_only = (
+                    bool(reasons) and mix is not None and not missing and not invalid
+                    and not set(general) - {"FUND_USE_UNDECIDED"}
+                    and profile.get("loss_affects_essentials") == "LOSS_AFFECTS_ESSENTIALS_02"
+                )
+                views[type_id] = {**view, "selectable": not reasons, "reason_codes": reasons,
+                                  "comparison_only": comparison_only,
+                                  "basis_preference": preference, "target_preference": relative[type_id],
+                                  "selection_scope": portfolio_types.SELECTION_SCOPE,
+                                  "cash_only": cash_only,
+                                  "notice_codes": ["STABILITY_POLICY_UNALLOCATED"] if cash_only else [],
+                                  "calc_state": "CALCULATED" if not reasons else "REVIEW_REQUIRED",
+                                  "stress_review": {"scenario_loss_krw_ceil": str((type_loss + 9999) // 10000),
+                                                    "full_loss_scenario_krw": view["allocated_total_krw"]}}
             rows.append({"period": month["period"], **allocation, "portfolio_type_views": views,
+                         "comparison_eligible_codes": sorted(month_eligible & review_codes) if not general else [],
+                         "comparison_groups": comparison_groups(products, set() if general else month_eligible,
+                                                                default_codes),
                          "reason_codes": sorted(set(month_reasons)),
                          "adjustment_codes": ["STRESS_TARGET_REDUCED"] if stress["target_reduced"] else [],
                          "calc_state": "REVIEW_REQUIRED" if month_reasons else "CALCULATED"})
@@ -506,21 +651,37 @@ def review_products(document, result, *, catalog=None, policy=None):
     if state == "CALCULATED" and any(r["reason_codes"] for c in candidates for r in c["rows"]):
         state = "PARTIAL"
     row = output(state, title="상품 적합성·배분 검토", review_version=VERSION,
-                 scope="CONSTRAINED_MONTHLY_REVIEW_PREVIEW", missing_question_ids=missing,
+                 scope="CONSTRAINED_MONTHLY_REVIEW_PREVIEW", diagnosis_scope=document["context"]["scope"],
+                 missing_question_ids=missing,
                  invalid_question_ids=invalid, source_refs=sources, reason_codes=blockers,
                  catalog={"version": catalog["version"], "identity_verified_count": len(products),
                           "research_excluded_count": catalog["research_excluded_count"],
+                          "screening_candidate_count": sum(p["in_review_universe"] for p in screened),
                           "eligible_for_review_count": len(eligible), "detail_review": catalog.get("detail_review", {}),
                           "sha256": digest(catalog)},
                  product_policy={"version": policy["version"], "state": policy["state"], "sha256": digest(policy),
                                  "reviewed_on": policy["reviewed_on"], "valid_until": policy["valid_until"],
                                  "basis": "SERVICE_ASSUMPTIONS_FOR_PREVIEW", "backtested": False,
                                  "regulatory_certification": False},
-                 products=screened, candidates=candidates, reason_messages=MESSAGES,
+                 products=screened, candidates=candidates, reason_messages=messages,
+                 catalog_comparison={"reviewed_on": reference_on.isoformat(),
+                                     "groups": comparison_groups(products, reference_products, default_codes),
+                                     "review_universe_groups": review_universe_groups(
+                                         [product for product in products if product["code"] in review_codes], returns),
+                                     "performance": {key: performance[key] for key in ("period_end", "basis")}
+                                     if returns else None},
                  comparison_scores=comparison_scores,
+                 comparison_version=COMPARISON_VERSION,
                  portfolio_types={"version": portfolio_types.VERSION, "state": portfolio_types.STATE,
                                   "customer_type": portfolio_types.type_of_preference(preference),
                                   "representative_preference": portfolio_types.REPRESENTATIVE_PREFERENCE,
+                                  "selection_scope": portfolio_types.SELECTION_SCOPE,
+                                  "customer_preference": preference,
+                                  "preference_level": "P" + str(portfolio_types.PREFERENCES.index(preference) + 1)
+                                  if preference in portfolio_types.PREFERENCES else None,
+                                  "baseline_type": "BALANCED", "relative_preferences": relative,
+                                  "comparison_targets": comparison_mixes,
+                                  "comparison_basis": "CUSTOMER_PREFERENCE" if relative else "GENERAL_COMPARISON",
                                   "limits_relaxed": False},
                  recommended_new_investment_krw=None, adopted=False, transaction_executed=False,
                  input_source_sha256=digest(document), monthly_budget_source_sha256=digest(plans),
@@ -563,11 +724,18 @@ def block_product_budget(result):
     for candidate in row.get("candidates", []):
         for month in candidate["rows"]:
             month.update(allocations=[], allocated_total_krw="0", unallocated_krw=month["scenario_budget_krw"],
-                         calc_state="NEEDS_INPUT")
+                         calc_state="NEEDS_INPUT", comparison_eligible_codes=[])
             if "stress_review" in month:
                 month["stress_review"].update(scenario_loss_krw_ceil="0", full_loss_scenario_krw="0")
             for view in month.get("portfolio_type_views", {}).values():
-                view.update(allocations=[], allocated_total_krw="0", unallocated_krw=month["scenario_budget_krw"])
+                view.update(allocations=[], allocated_total_krw="0", unallocated_krw=month["scenario_budget_krw"],
+                            selectable=False, comparison_only=False, calc_state="NEEDS_INPUT",
+                            reason_codes=["BUDGET_UNAVAILABLE"])
+                view["stress_review"] = {"scenario_loss_krw_ceil": "0", "full_loss_scenario_krw": "0"}
+                if "target_cash_krw" in view:
+                    view["held_krw"] = str(integer(view["unallocated_krw"]) - integer(view["target_cash_krw"]))
+            for group in month.get("comparison_groups", []):
+                group.update(product_codes=[], state="NO_ELIGIBLE_CANDIDATES", reason="BUDGET_UNAVAILABLE")
             month["reason_codes"] = sorted(set(month["reason_codes"] + ["BUDGET_UNAVAILABLE"]))
     row["status_axes"] = axes("NEEDS_INPUT", "OUT-06", adapter_blocked=True)
     row["status_axes"]["investment_suitability"]["state"] = "REVIEW_BLOCKED"

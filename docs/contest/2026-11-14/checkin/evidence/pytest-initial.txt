@@ -1,0 +1,77 @@
+............FFF......................................................... [ 60%]
+................................................                         [100%]
+================================== FAILURES ===================================
+__________ test_checkin_validation[postgres-record0-INVALID_AMOUNT] ___________
+
+ctx = (<starlette.testclient.TestClient object at 0x000001BD9B340530>, <app.be.postgres.PostgresStore object at 0x000001BD9B26BB30>, {'id': 'MOCK-FE-ONLY'}, 13, 'run_e877bae87e4146989bb493303039ae55')
+record = {}, code = 'INVALID_AMOUNT'
+
+    @pytest.mark.parametrize("record,code", [
+        ({"amounts": {"income": "1.5"}}, "INVALID_AMOUNT"),
+        ({"amounts": {"income": 300}}, "INVALID_AMOUNT"),
+        ({"amounts": {"income": "-1"}}, "INVALID_AMOUNT"),
+        ({"tasks": [{"key": "a", "label": "a", "state": "HELD"}]}, "HOLD_REASON_REQUIRED"),
+        ({"changes": ["NONE", "INCOME"]}, "INVALID_CHECKIN"),
+        ({"surprise": True}, "INVALID_CHECKIN"),
+    ])
+    def test_checkin_validation(ctx, record, code):
+        client, *_ = ctx
+        amounts = {**EMPTY, **record.pop("amounts", {})}
+        r = client.put(BASE + f"/checkins/{MONTH}", json={"expected_revision": 0, "request_key": "bad",
+                                                          "status": "DRAFT", "record": {"amounts": amounts, **record}})
+>       assert r.status_code == 422 and r.json()["detail"]["code"] == code
+E       assert (200 == 422)
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests\be\test_plan_checkin.py:142: AssertionError
+__________ test_checkin_validation[postgres-record1-INVALID_AMOUNT] ___________
+
+ctx = (<starlette.testclient.TestClient object at 0x000001BD9B4F5FA0>, <app.be.postgres.PostgresStore object at 0x000001BD9B4F7470>, {'id': 'MOCK-FE-ONLY'}, 13, 'run_133f92069cae4b5d858d8b27faeb3e7a')
+record = {}, code = 'INVALID_AMOUNT'
+
+    @pytest.mark.parametrize("record,code", [
+        ({"amounts": {"income": "1.5"}}, "INVALID_AMOUNT"),
+        ({"amounts": {"income": 300}}, "INVALID_AMOUNT"),
+        ({"amounts": {"income": "-1"}}, "INVALID_AMOUNT"),
+        ({"tasks": [{"key": "a", "label": "a", "state": "HELD"}]}, "HOLD_REASON_REQUIRED"),
+        ({"changes": ["NONE", "INCOME"]}, "INVALID_CHECKIN"),
+        ({"surprise": True}, "INVALID_CHECKIN"),
+    ])
+    def test_checkin_validation(ctx, record, code):
+        client, *_ = ctx
+        amounts = {**EMPTY, **record.pop("amounts", {})}
+        r = client.put(BASE + f"/checkins/{MONTH}", json={"expected_revision": 0, "request_key": "bad",
+                                                          "status": "DRAFT", "record": {"amounts": amounts, **record}})
+>       assert r.status_code == 422 and r.json()["detail"]["code"] == code
+E       assert (200 == 422)
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests\be\test_plan_checkin.py:142: AssertionError
+__________ test_checkin_validation[postgres-record2-INVALID_AMOUNT] ___________
+
+ctx = (<starlette.testclient.TestClient object at 0x000001BD9B505A00>, <app.be.postgres.PostgresStore object at 0x000001BD9B5051C0>, {'id': 'MOCK-FE-ONLY'}, 13, 'run_c657cfe6c3624ae59d0e96f3304cd9a2')
+record = {}, code = 'INVALID_AMOUNT'
+
+    @pytest.mark.parametrize("record,code", [
+        ({"amounts": {"income": "1.5"}}, "INVALID_AMOUNT"),
+        ({"amounts": {"income": 300}}, "INVALID_AMOUNT"),
+        ({"amounts": {"income": "-1"}}, "INVALID_AMOUNT"),
+        ({"tasks": [{"key": "a", "label": "a", "state": "HELD"}]}, "HOLD_REASON_REQUIRED"),
+        ({"changes": ["NONE", "INCOME"]}, "INVALID_CHECKIN"),
+        ({"surprise": True}, "INVALID_CHECKIN"),
+    ])
+    def test_checkin_validation(ctx, record, code):
+        client, *_ = ctx
+        amounts = {**EMPTY, **record.pop("amounts", {})}
+        r = client.put(BASE + f"/checkins/{MONTH}", json={"expected_revision": 0, "request_key": "bad",
+                                                          "status": "DRAFT", "record": {"amounts": amounts, **record}})
+>       assert r.status_code == 422 and r.json()["detail"]["code"] == code
+E       assert (200 == 422)
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests\be\test_plan_checkin.py:142: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/be/test_plan_checkin.py::test_checkin_validation[postgres-record0-INVALID_AMOUNT]
+FAILED tests/be/test_plan_checkin.py::test_checkin_validation[postgres-record1-INVALID_AMOUNT]
+FAILED tests/be/test_plan_checkin.py::test_checkin_validation[postgres-record2-INVALID_AMOUNT]
+3 failed, 117 passed in 261.72s (0:04:21)

@@ -1,0 +1,26 @@
+{
+  "state": "RESOLVED",
+  "original_conflict_report_preserved": "ai-baseline-review.json",
+  "frozen_lock_sha256": "0613a19e686bd05a93294d0eb6408291860157d56c6c918910ecec9e4f797e8d",
+  "integration_baseline_sha256": "9465f945cd29c0b1f11a7f4eda621184a9c68efbb52afe1a22ebef65da47d56f",
+  "exact_overrides": {
+    "backend/tests/be/test_plan_checkin.py": {
+      "frozen_sha256": "73c1b60c147c96223061c3d3c1d98bacc31ca928a60d416da4e56ad7a4fd79af",
+      "candidate_sha256": "b4d132304d3b6ca75bc5f6b6508183f5648cae313a65c0240d1f4242baeb9933",
+      "source_commit": "db5a31d0dbe76d6b6c29b664cabe2a9857c094d5",
+      "reason": "Accepted BE checkin1.1 and B partial-mapping tests; not AI expected behavior or grading data."
+    },
+    "backend/tests/be/test_question_bridge.py": {
+      "frozen_sha256": "7f95b37b28da9bef81a06309a4eae060a168108fbad3d87bd3b753b0f056a29a",
+      "candidate_sha256": "42c11148c517b2ccca0539a3573ca19fc0fa7e29cdf5c59f26411fcdc0b7310b",
+      "source_commit": "db5a31d0dbe76d6b6c29b664cabe2a9857c094d5",
+      "reason": "Accepted BE checkin1.1 and B partial-mapping tests; not AI expected behavior or grading data."
+    }
+  },
+  "active_evaluation_restored": true,
+  "expectations_and_grading_unchanged": true,
+  "guard_tests_passed": 6,
+  "R1_02_passed": 1,
+  "other_23_cases_not_rerun": true,
+  "full_CI": "NOT_RUN"
+}

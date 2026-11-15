@@ -1,0 +1,167 @@
+"""Research registration, privacy-safe public projection, immutable real API runs."""
+import copy
+import json
+import runpy
+from pathlib import Path
+
+import pytest
+
+from app.be import question_bridge
+from app.planning import peer_reference
+from app.planning.peer_reference import DATA_PATH, attach_peer_reference
+
+from .test_question_frontend import FIXTURE, analyze, client, seed  # noqa: F401
+
+
+def inputs(scope="household", amount="0", state="CALCULATED", gates=()):
+    document = {"context": {"scope": scope, "evaluation_on": "2026-11-14"},
+                "raw_bundle": {"input_version": 7, "answers": [{"envelope": {
+                    "question_ref": {"design_id": "LIFE-01"}, "fields": {
+                        "life_stage_primary": {"state": "KNOWN", "raw_value": "LC_NEWLYWED"},
+                        "life_stage_overlaps": {"state": "KNOWN", "raw_value": ["LC_CHILDCARE", "LC_NEWLYWED"]},
+                    }}}]}}
+    result = {"adapter": {"source_sha256": "captured-source"}, "results": {"OUT-02": {
+        "calc_state": state, "net_worth": {"calc_state": state, "value": amount}}},
+        "frontend_integration": {"presentation_gates": list(gates)}}
+    return document, result
+
+
+def test_registry_reproduces_unchanged_household_and_new_personal_rows():
+    script = Path(__file__).resolve().parents[3] / "scripts/import_peer_research.py"
+    importer = runpy.run_path(str(script))
+    assert importer["build"]() == json.loads(DATA_PATH.read_text(encoding="utf-8"))
+    normalize = importer["normalize"]
+    assert normalize("12.3456", "만원") == "123456"
+    assert normalize("9007199254740993", "원") == "9007199254740993"
+    assert normalize("0", "만원") == "0"
+    assert normalize("", "만원") is None
+    with pytest.raises(ValueError):
+        normalize("0.00001", "만원")
+    registry = importer["build"]()
+    original = importer["build"](include_supplement=False)
+    assert len(original["records"]) == 28
+    assert registry["records"][:28] == original["records"]
+    assert registry["research_sha256"] == original["research_sha256"]
+    assert len(registry["records"]) == 62
+    assert registry["records"][:50] == importer["build"](include_coverage=False)["records"]
+    reviewed_household = importer["build"](include_personal=False)
+    assert registry["records"][:42] == reviewed_household["records"]
+    previous = importer["build"](include_under30=False)
+    assert registry["records"][:34] == previous["records"]
+    assert registry["data_version"] != original["data_version"]
+    # Independent published table values, not calculated as assets minus debt.
+    assert [r["value"] for r in registry["records"][28:34]] == [
+        "95480000", "219500000", "126400000", "65040000", "535910000", "250000000"]
+    assert [r["statistic_type"] for r in registry["records"][28:34]] == ["평균", "평균", "중앙값"] * 2
+    assert [(r["cohort_id"], r["statistic_type"], r["value"]) for r in registry["records"][34:39]] == [
+        ("C20", "중앙값", "72600000"), ("C20", "중앙값", "50000000"),
+        ("C07", "중앙값", "302700000"), ("C08", "중앙값", "204200000"), ("C09", "중앙값", "280600000")]
+    published = [r for r in registry["records"] if r["review_status"] == "REFERENCE_ONLY"]
+    assert len(published) == 49
+    assert [(r["cohort_id"], r["statistic_type"], r["value"]) for r in registry["records"][39:42]] == [
+        ("C20", "평균", "155000000"), ("C20", "평균", "47030000"), ("C20", "평균", "107960000")]
+    assert {r["source_id"] for r in published} == {"S01", "S03", "S10", "S11"}
+    youth = registry["records"][42:50]
+    assert [(r["cohort_id"], r["metric_key"], r["value"]) for r in youth] == [
+        ("C21", "proposal.total_assets", "50120000"), ("C21", "proposal.total_liabilities", "16370000"),
+        ("C22", "proposal.total_assets", "13980000"), ("C22", "proposal.total_liabilities", "2710000"),
+        ("C23", "proposal.total_assets", "43740000"), ("C23", "proposal.total_liabilities", "13390000"),
+        ("C24", "proposal.total_assets", "91660000"), ("C24", "proposal.total_liabilities", "32650000"),
+    ]
+    assert all(r["target_unit"] == "개인" and r["statistic_type"] == "평균" for r in youth)
+    assert all(r["period_start"] == r["period_end"] == "2023-12-31" for r in youth)
+    assert all(r["review_status"] == "REFERENCE_ONLY" and r["sample_size"] is None for r in youth)
+    assert all(r["license"] == "KOGL_TYPE_1" for r in published if r["source_id"] in {"S01", "S03"})
+    coverage = registry["records"][50:]
+    assert [(r["cohort_id"], r["target_unit"], r["period_start"], r["value"]) for r in coverage] == [
+        *[("C25", "개인", "2024-03-31", v) for v in ("134427000", "33931000", "100496000")],
+        *[("C26", "가구", "2025-03-31", v) for v in ("359580000", "108990000", "250600000")],
+        *[("C27", "가구", "2025-03-31", v) for v in ("627140000", "143250000", "483890000")],
+        *[("C28", "가구", "2025-03-31", v) for v in ("662050000", "110440000", "551610000")],
+    ]
+
+
+@pytest.mark.parametrize("scope,expected", [("personal", "C25"), ("household", "C07"), (None, None)])
+def test_asset_fallback_uses_only_the_captured_scope(scope, expected):
+    document, result = inputs(scope=scope)
+    review = attach_peer_reference(document, result)["peer_reference"]
+    assert review.get("asset_fallback_cohort_id") == expected
+
+
+@pytest.mark.parametrize("amount", ["0", "-100", "9007199254740993", None])
+def test_exact_user_values_and_no_unapproved_difference(amount):
+    document, result = inputs(amount=amount)
+    original = copy.deepcopy(document)
+    result_before = copy.deepcopy(result)
+    review = attach_peer_reference(document, result)["peer_reference"]
+    net = [r for r in review["records"] if r["statistic_id"] in {"V004", "V005"}]
+    assert [r["value"] for r in net] == ["471440000", "238600000"]
+    assert [r["statistic_type"] for r in net] == ["평균", "중앙값"]
+    assert all(r["user_value"] == amount and r["difference"] is None for r in net)
+    assert document == original
+    assert {k: v for k, v in result.items() if k != "peer_reference"} == result_before
+    assert review["input_sha256"] == "captured-source"
+    assert [s["code"] for s in review["stage_hints"]] == ["LC_NEWLYWED", "LC_CHILDCARE"]
+
+
+@pytest.mark.parametrize("scope,state,gates", [
+    ("personal", "CALCULATED", []), ("household", "NEEDS_INPUT", []),
+    ("household", "CALCULATED", [{"affected_outputs": ["OUT-02"]}]),
+])
+def test_scope_missing_and_presentation_gates_block_user_value(scope, state, gates):
+    document, result = inputs(scope=scope, state=state, gates=gates)
+    rows = attach_peer_reference(document, result)["peer_reference"]["records"]
+    assert all(r["user_value"] is None and r["difference"] is None for r in rows)
+
+
+def test_personal_assets_and_youth_references_keep_their_scope():
+    doc, result = inputs(scope="personal", amount="0")
+    doc["context"]["included_owner_ids"] = ["person_self"]
+    doc["raw_bundle"]["answers"][0]["envelope"]["fields"]["life_stage_primary"]["raw_value"] = "LC_EARLY_CAREER"
+    peer = attach_peer_reference(doc, result)["peer_reference"]
+    assert peer["primary_stage"] == "LC_EARLY_CAREER"
+    assert peer["stage_hints"][0]["cohort_ids"][:2] == ["C20", "C21"]
+    assert peer["personal_asset_values"] == {"proposal.net_assets": "0"}
+    assert all(row["user_value"] is None for row in peer["records"])
+    result["frontend_integration"]["presentation_gates"] = [{"affected_outputs": ["OUT-02"]}]
+    assert attach_peer_reference(doc, result)["peer_reference"]["personal_asset_values"] == {}
+
+
+def test_withheld_values_are_not_returned_as_original_values_or_free_text():
+    document, result = inputs()
+    review = attach_peer_reference(document, result)["peer_reference"]
+    held = [r for r in review["records"] if r["review_status"] == "WITHHELD"]
+    assert len(held) == 13
+    assert all(r["value"] is None and r["source_value"] is None for r in held)
+    wire = json.dumps(held, ensure_ascii=False)
+    for withheld in ["2939000", "361000", "98.9", "105만원", "14.4", "32.3"]:
+        assert withheld not in wire
+
+
+def test_real_bridge_preserves_all_other_results(monkeypatch):
+    doc = copy.deepcopy(FIXTURE)
+    with monkeypatch.context() as patch:
+        patch.setattr(question_bridge, "attach_peer_reference", lambda d, r: r)
+        before = question_bridge.run_frontend_questions(doc)
+    after = question_bridge.run_frontend_questions(doc)
+    assert {k: v for k, v in after.items() if k != "peer_reference"} == before
+    assert doc == FIXTURE
+
+
+def test_actual_preview_saved_restore_and_new_catalog_do_not_rewrite_old_run(client, monkeypatch, tmp_path):  # noqa: F811
+    preview = client.post("/api/fe/v1/preview", json=FIXTURE).json()["result"]["peer_reference"]
+    version = seed(client)
+    receipt = analyze(client, version).json()
+    url = f"/api/be/v1/cases/synthetic/analyses/{receipt['run_id']}"
+    saved = client.get(url).json()["result"]["peer_reference"]
+    assert saved["records"] == preview["records"]
+    assert saved["data_sha256"] == preview["data_sha256"]
+    changed = json.loads(DATA_PATH.read_text(encoding="utf-8"))
+    changed["data_version"] = "synthetic-next-catalog"
+    path = tmp_path / "next.json"
+    path.write_text(json.dumps(changed), encoding="utf-8")
+    monkeypatch.setattr(peer_reference, "DATA_PATH", path)
+    assert client.get(url).json()["result"]["peer_reference"] == saved
+    newer = client.post("/api/fe/v1/preview", json=FIXTURE).json()["result"]["peer_reference"]
+    assert newer["data_version"] == "synthetic-next-catalog"
+    assert newer["data_sha256"] != saved["data_sha256"]

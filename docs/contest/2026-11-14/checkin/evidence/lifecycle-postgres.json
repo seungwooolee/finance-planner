@@ -1,0 +1,215 @@
+{
+  "data_scope": "ISOLATED_SYNTHETIC_FIXTURE_NOT_SUBMISSION_B",
+  "case_id": "synthetic",
+  "A": {
+    "adoption_id": "adp_808f571aac0c48679b47032b0065ef3b",
+    "run_id": "run_57dcca5259ee4d8bbaf400692f62d7f3",
+    "strategy_id": "STABILITY_FIRST",
+    "input_version": 13,
+    "transaction_executed": false
+  },
+  "first_record": {
+    "record_month": "2026-11",
+    "contract_version": "DION-PLAN-CHECKIN-1.1",
+    "revision": 1,
+    "record": {
+      "amounts": {
+        "income": "3000000",
+        "living": null,
+        "loan": null,
+        "goal": null,
+        "invest_existing": null,
+        "invest_new": "0",
+        "emergency": null,
+        "extra_cash": null
+      },
+      "tasks": [],
+      "changes": [],
+      "memo": null
+    },
+    "status": "DRAFT",
+    "checkin_id": "chk_13936ef1b96f46b599d928845cc9f9b5",
+    "adoption_id": "adp_808f571aac0c48679b47032b0065ef3b",
+    "recorded_at": "2026-11-14T09:13:38.066556+00:00",
+    "summary": {
+      "entered_count": 2,
+      "amount_count": 8,
+      "partial": true,
+      "spending_entered_krw": "0",
+      "transfers_entered_krw": "0",
+      "spending_entered_count": 0,
+      "transfers_entered_count": 1,
+      "allocation_check": "INCOMPLETE_RECORD",
+      "tasks_done": 0,
+      "tasks_total": 0,
+      "review_suggested": false
+    },
+    "adoption": {
+      "adoption_id": "adp_808f571aac0c48679b47032b0065ef3b",
+      "run_id": "run_57dcca5259ee4d8bbaf400692f62d7f3",
+      "strategy_id": "STABILITY_FIRST",
+      "input_version": 13,
+      "adopted_at": "2026-11-14T09:13:37.877597+00:00"
+    },
+    "current_adoption": {
+      "adoption_id": "adp_808f571aac0c48679b47032b0065ef3b",
+      "run_id": "run_57dcca5259ee4d8bbaf400692f62d7f3",
+      "strategy_id": "STABILITY_FIRST",
+      "input_version": 13,
+      "adopted_at": "2026-11-14T09:13:37.877597+00:00"
+    },
+    "original_adoption_id": "adp_808f571aac0c48679b47032b0065ef3b",
+    "binding_state": "LOCKED",
+    "record_kind": "ADOPTED_PLAN",
+    "comparison": {
+      "state": "POLICY_REQUIRED",
+      "reason": "ACTUAL_AND_PLAN_AMOUNT_SEMANTICS_REQUIRE_CONFIRMATION",
+      "record_month": "2026-11",
+      "amount_differences_krw": null
+    },
+    "review": {
+      "action": "NONE",
+      "base_run_id": "run_57dcca5259ee4d8bbaf400692f62d7f3",
+      "adoption_changed": false
+    }
+  },
+  "B": {
+    "adoption_id": "adp_8516761817de45f1b1add9b4365cb216",
+    "run_id": "run_74d8342a7b4c4bd088820b9131e9fdc3",
+    "strategy_id": "INVESTMENT_CAPACITY",
+    "input_version": 14,
+    "transaction_executed": false
+  },
+  "read_after_B": {
+    "record_month": "2026-11",
+    "contract_version": "DION-PLAN-CHECKIN-1.1",
+    "revision": 1,
+    "record": {
+      "amounts": {
+        "income": "3000000",
+        "living": null,
+        "loan": null,
+        "goal": null,
+        "invest_existing": null,
+        "invest_new": "0",
+        "emergency": null,
+        "extra_cash": null
+      },
+      "tasks": [],
+      "changes": [],
+      "memo": null
+    },
+    "status": "DRAFT",
+    "checkin_id": "chk_13936ef1b96f46b599d928845cc9f9b5",
+    "adoption_id": "adp_808f571aac0c48679b47032b0065ef3b",
+    "recorded_at": "2026-11-14T09:13:38.066556+00:00",
+    "summary": {
+      "entered_count": 2,
+      "amount_count": 8,
+      "partial": true,
+      "spending_entered_krw": "0",
+      "transfers_entered_krw": "0",
+      "spending_entered_count": 0,
+      "transfers_entered_count": 1,
+      "allocation_check": "INCOMPLETE_RECORD",
+      "tasks_done": 0,
+      "tasks_total": 0,
+      "review_suggested": false
+    },
+    "adoption": {
+      "adoption_id": "adp_808f571aac0c48679b47032b0065ef3b",
+      "run_id": "run_57dcca5259ee4d8bbaf400692f62d7f3",
+      "strategy_id": "STABILITY_FIRST",
+      "input_version": 13,
+      "adopted_at": "2026-11-14T09:13:37.877597+00:00"
+    },
+    "current_adoption": {
+      "adoption_id": "adp_8516761817de45f1b1add9b4365cb216",
+      "run_id": "run_74d8342a7b4c4bd088820b9131e9fdc3",
+      "strategy_id": "INVESTMENT_CAPACITY",
+      "input_version": 14,
+      "adopted_at": "2026-11-14T09:13:38.831574+00:00"
+    },
+    "original_adoption_id": "adp_808f571aac0c48679b47032b0065ef3b",
+    "binding_state": "LOCKED",
+    "record_kind": "ADOPTED_PLAN",
+    "comparison": {
+      "state": "POLICY_REQUIRED",
+      "reason": "ACTUAL_AND_PLAN_AMOUNT_SEMANTICS_REQUIRE_CONFIRMATION",
+      "record_month": "2026-11",
+      "amount_differences_krw": null
+    },
+    "review": {
+      "action": "NONE",
+      "base_run_id": "run_57dcca5259ee4d8bbaf400692f62d7f3",
+      "adoption_changed": false
+    }
+  },
+  "edited": {
+    "record_month": "2026-11",
+    "contract_version": "DION-PLAN-CHECKIN-1.1",
+    "revision": 2,
+    "record": {
+      "amounts": {
+        "income": "3000000",
+        "living": null,
+        "loan": null,
+        "goal": null,
+        "invest_existing": null,
+        "invest_new": "20000",
+        "emergency": null,
+        "extra_cash": null
+      },
+      "tasks": [],
+      "changes": [],
+      "memo": null
+    },
+    "status": "DRAFT",
+    "checkin_id": "chk_cbf2534e84f1473ab51d2b600e9737f0",
+    "adoption_id": "adp_808f571aac0c48679b47032b0065ef3b",
+    "recorded_at": "2026-11-14T09:13:39.188529+00:00",
+    "summary": {
+      "entered_count": 2,
+      "amount_count": 8,
+      "partial": true,
+      "spending_entered_krw": "0",
+      "transfers_entered_krw": "20000",
+      "spending_entered_count": 0,
+      "transfers_entered_count": 1,
+      "allocation_check": "INCOMPLETE_RECORD",
+      "tasks_done": 0,
+      "tasks_total": 0,
+      "review_suggested": false
+    },
+    "adoption": {
+      "adoption_id": "adp_808f571aac0c48679b47032b0065ef3b",
+      "run_id": "run_57dcca5259ee4d8bbaf400692f62d7f3",
+      "strategy_id": "STABILITY_FIRST",
+      "input_version": 13,
+      "adopted_at": "2026-11-14T09:13:37.877597+00:00"
+    },
+    "current_adoption": {
+      "adoption_id": "adp_8516761817de45f1b1add9b4365cb216",
+      "run_id": "run_74d8342a7b4c4bd088820b9131e9fdc3",
+      "strategy_id": "INVESTMENT_CAPACITY",
+      "input_version": 14,
+      "adopted_at": "2026-11-14T09:13:38.831574+00:00"
+    },
+    "original_adoption_id": "adp_808f571aac0c48679b47032b0065ef3b",
+    "binding_state": "LOCKED",
+    "record_kind": "ADOPTED_PLAN",
+    "comparison": {
+      "state": "POLICY_REQUIRED",
+      "reason": "ACTUAL_AND_PLAN_AMOUNT_SEMANTICS_REQUIRE_CONFIRMATION",
+      "record_month": "2026-11",
+      "amount_differences_krw": null
+    },
+    "review": {
+      "action": "NONE",
+      "base_run_id": "run_57dcca5259ee4d8bbaf400692f62d7f3",
+      "adoption_changed": false
+    }
+  },
+  "original_raw_snapshot_id": "raw_fab031afb17c4124ae6762662805b6b1",
+  "original_input_hash": "b7408d29727a3c26a9d24150dc4a625ea2cfcae5a439b87a45673cae42243fdc"
+}

@@ -200,18 +200,29 @@ def test_stale_facts_horizon_fx_and_restrictions_exclude_products():
     assert all("HORIZON_TOO_SHORT" in p["reason_codes"] for p in review(d)["products"])
 
 
-def test_no_plan_no_date_multiple_funds_or_household_are_not_infinite_capacity():
+def test_use_plan_can_be_undecided_but_cannot_allocate_dated_products():
     d = document()
     row = next(r for r in d["raw_bundle"]["answers"] if r["envelope"]["question_ref"]["design_id"] == "F15")
     funds = row["envelope"]["fields"]["investment_funds"]["raw_value"]
     funds[0]["earliest_use_status"] = field("EARLIEST_USE_STATUS_02")
-    assert "F15" in review(d)["missing_question_ids"]
+    x = review(d)
+    assert "F15" not in x["missing_question_ids"]
+    assert "FUND_USE_UNDECIDED" in x["reason_codes"]
+    assert all(row["allocated_total_krw"] == "0" for c in x["candidates"] for row in c["rows"])
     funds.append(copy.deepcopy(funds[0]))
     assert "F15" in review(d)["missing_question_ids"]
+
+
+def test_household_uses_the_same_review_rules_for_a_declared_monthly_fund():
     d = document()
+    personal = review(d)
     d["context"]["scope"] = "household"
-    assert "NEW-01" in review(d)["missing_question_ids"]
-    assert review(d)["calc_state"] == "NEEDS_INPUT"
+    change(d, "NEW-01", "assessment_scope", field("household"))
+    x = review(d)
+    assert x["diagnosis_scope"] == "household"
+    assert "NEW-01" not in x["missing_question_ids"]
+    assert "PERSONAL_SCOPE_REQUIRED" not in x["reason_codes"]
+    assert x["candidates"] == personal["candidates"]
 
 
 def test_future_contribution_rechecks_use_date_and_availability():
@@ -513,7 +524,7 @@ def test_portfolio_type_views_never_relax_customer_limits():
     views = row['portfolio_type_views']
     assert views['BALANCED']['allocated_total_krw'] == row['allocated_total_krw'] == '180000'
     assert [(a['code'], a['review_allocated_krw']) for a in views['STABLE']['allocations']] == [('153130', '90000')]
-    assert views['RETURN']['allocated_total_krw'] == '139230'  # LOSS_20_30 stress budget still shrinks it
+    assert views['RETURN']['allocated_total_krw'] == '125520'  # LOSS_20_30 stress budget still shrinks it
     d = current_product_document()
     change(d, 'D18', 'fx_preference_raw_v2', field('FX_REJECT'))
     blocked_fx = current_review(d)['candidates'][0]['rows'][0]['portfolio_type_views']

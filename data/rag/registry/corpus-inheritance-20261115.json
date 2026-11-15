@@ -1,0 +1,611 @@
+{
+  "schema_version": "DION-RAG-CORPUS-1.0",
+  "corpus_version": "dion-rag-inheritance-20261116-1.1",
+  "item_ids": [
+    "INH-RAG-01",
+    "INH-RAG-02",
+    "INH-RAG-03",
+    "INH-RAG-04",
+    "INH-RAG-05",
+    "INH-RAG-06",
+    "INH-RAG-07"
+  ],
+  "item_labels": {
+    "INH-RAG-01": "상속재산 평가 기준일",
+    "INH-RAG-02": "남길 재산·채무의 확인 범위",
+    "INH-RAG-03": "사전증여 확인",
+    "INH-RAG-04": "받을 상속의 재산 조회",
+    "INH-RAG-05": "가구원과 법적 상속인",
+    "INH-RAG-06": "상속세·비용을 낼 현금",
+    "INH-RAG-07": "상속 개시 후 신고와 채무 자료"
+  },
+  "sources": [
+    {
+      "source_id": "SRC-INH-RAG-01",
+      "source_version": "2026-11-15",
+      "source_kind": "REVIEWED_SUMMARY",
+      "access_scope": "PUBLIC",
+      "official_url": "https://www.law.go.kr/LSW/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1032163625",
+      "title": "상속세 및 증여세법 제60조 · DION 검토 요약",
+      "issuer": "DION 내부 내용 검토",
+      "jurisdiction": "KR",
+      "original_text": "상속세에서 재산은 원칙적으로 상속개시일 기준 시가로 평가해요. 먼저 재산 종류, 명의와 지분, 평가 자료의 날짜를 확인해 주세요.\n\n법률 제21065호, 2026-01-02 시행본 기준. 시가 확인이 어려운 재산이나 일부 상장주식·가상자산은 자산별 평가 규정을 추가로 확인해요.\n\n진단에 입력한 현재 시세로 개별 상속재산 평가액이나 세액을 확정하지 않아요.",
+      "content_sha256": "f367637e2bcf3e7f1775ef36c685ad51b3d727c61583fd17cdaf25c5ae0f521d",
+      "collected_on": "2026-11-15",
+      "effective_from": "2026-11-15",
+      "effective_to": null,
+      "applicable_tax_years": [
+        2026
+      ],
+      "review_status": "APPROVED",
+      "reviewed_on": "2026-11-15",
+      "review_through": "2026-12-31",
+      "review_ref": "ChatGPT 공모전용 설명 검토완료 · 사용자 자료 검증 2026-11-15 · https://docs.google.com/document/d/1DqW3Q8r5758Srvo_H7H39RxCE6uPFAM-YHCKyEh2e5s/edit?usp=drivesdk"
+    },
+    {
+      "source_id": "SRC-INH-RAG-02",
+      "source_version": "2026-11-15",
+      "source_kind": "REVIEWED_SUMMARY",
+      "access_scope": "PUBLIC",
+      "official_url": "https://www.law.go.kr/LSW/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1029615467",
+      "title": "상속세 및 증여세법 제14조 · DION 검토 요약",
+      "issuer": "DION 내부 내용 검토",
+      "jurisdiction": "KR",
+      "original_text": "남길 재산을 살펴보려면 본인 명의 재산과 공동명의 지분을 먼저 확인해요. 채무는 누가 부담하는지와 잔액을 입증할 자료를 따로 정리해요.\n\n법률 제21065호, 2026-01-02 시행본 기준. 거주자의 상속에 관한 공과금·장례비용·채무에는 증명 요건과 제외 조건이 있어요.\n\n가구 전체 재산을 한 사람의 유산으로 잡지 않아요. 비거주자의 경우나 개별 채무의 차감 가능 여부는 별도 확인이 필요해요.",
+      "content_sha256": "92b22bd4fc82f0515153f6b8881ad624eb2b379dd63569497977ecd74718bb76",
+      "collected_on": "2026-11-15",
+      "effective_from": "2026-11-15",
+      "effective_to": null,
+      "applicable_tax_years": [
+        2026
+      ],
+      "review_status": "APPROVED",
+      "reviewed_on": "2026-11-15",
+      "review_through": "2026-12-31",
+      "review_ref": "ChatGPT 공모전용 설명 검토완료 · 사용자 자료 검증 2026-11-15 · https://docs.google.com/document/d/1y-nvVavDWLi3YIvqewKeeuOHD2le2hICM3gGJ8eq7EE/edit?usp=drivesdk"
+    },
+    {
+      "source_id": "SRC-INH-RAG-03",
+      "source_version": "2026-11-15",
+      "source_kind": "REVIEWED_SUMMARY",
+      "access_scope": "PUBLIC",
+      "official_url": "https://www.law.go.kr/LSW/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1029615629",
+      "title": "상속세 및 증여세법 제13조 · DION 검토 요약",
+      "issuer": "DION 내부 내용 검토",
+      "jurisdiction": "KR",
+      "original_text": "생전에 준 재산이 상속세 검토에 필요할 수 있어요. 증여 날짜, 받는 사람, 재산 종류를 먼저 정리해 주세요.\n\n법률 제21065호, 2026-01-02 시행본 기준. 일반 규정에서 가산 대상 기간은 상속개시 전 상속인에게 증여한 경우 10년, 그 외의 사람에게 증여한 경우 5년이에요.\n\n합산배제, 비거주자 사망 시 증여재산의 소재, 특례를 각각 확인해야 해요. 기간만으로 개인별 합산이나 세액을 확정하지 않아요.",
+      "content_sha256": "531c17c27b71e6e52773669f1ecb431f9cdf8b67e1897da10f7b34e1059a8827",
+      "collected_on": "2026-11-15",
+      "effective_from": "2026-11-15",
+      "effective_to": null,
+      "applicable_tax_years": [
+        2026
+      ],
+      "review_status": "APPROVED",
+      "reviewed_on": "2026-11-15",
+      "review_through": "2026-12-31",
+      "review_ref": "ChatGPT 공모전용 설명 검토완료 · 사용자 자료 검증 2026-11-15 · https://docs.google.com/document/d/1nPyln1UVL-Rz_752zmSVveJYGrshO1pZeEENtzVrQQE/edit?usp=drivesdk"
+    },
+    {
+      "source_id": "SRC-INH-RAG-04",
+      "source_version": "2026-11-15",
+      "source_kind": "REVIEWED_SUMMARY",
+      "access_scope": "PUBLIC",
+      "official_url": "https://www.gov.kr/mw/AA020InfoCappView.do?CappBizCD=17400000001&HighCtgCD=A09001",
+      "title": "정부24 안심상속 재산조회 통합처리 신청 · DION 검토 요약",
+      "issuer": "DION 내부 내용 검토",
+      "jurisdiction": "KR",
+      "original_text": "상속이 발생했다면 정부24 안심상속에서 금융·토지·자동차·세금 등 여러 기관의 재산 정보를 통합 조회 신청할 수 있어요.\n\n2026-11-15 확인한 민원 안내예요. 신청 자격과 방법은 온라인·방문에 따라 다르므로 공식 페이지에서 현재 조건을 확인해 주세요.\n\n조회 결과만으로 상속인이나 실제 수령액을 확정하지 않아요. 아직 받지 않은 예상 금액은 현재 투자재원으로 잡지 않아요.",
+      "content_sha256": "58f422ebd64f880c6601f781cf724f53caef6a5250acd40f12a6b9ae1ed2c49b",
+      "collected_on": "2026-11-15",
+      "effective_from": "2026-11-15",
+      "effective_to": null,
+      "applicable_tax_years": [
+        2026
+      ],
+      "review_status": "APPROVED",
+      "reviewed_on": "2026-11-15",
+      "review_through": "2026-12-31",
+      "review_ref": "ChatGPT 공모전용 설명 검토완료 · 사용자 자료 검증 2026-11-15 · https://docs.google.com/document/d/1w9HQWvpL5al6YxdaaRpXYbELa-SgmIdG6jvYETzGofw/edit?usp=drivesdk"
+    },
+    {
+      "source_id": "SRC-INH-RAG-05",
+      "source_version": "2026-11-15",
+      "source_kind": "REVIEWED_SUMMARY",
+      "access_scope": "PUBLIC",
+      "official_url": "https://www.law.go.kr/LSW/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1029615255",
+      "title": "민법 제1000조 · DION 검토 요약",
+      "issuer": "DION 내부 내용 검토",
+      "jurisdiction": "KR",
+      "original_text": "가구원은 재무 상담의 범위예요. 실제 상속인은 사건의 가족관계와 민법의 상속 순위를 확인해야 해요.\n\n법률 제21454호, 2026-03-17 시행본 기준. 같은 순위에서도 친등과 공동상속 조건을 확인하고, 배우자의 상속 순위에는 별도 조문을 적용해요.\n\n가구원 목록만으로 법적 상속인이나 법정상속분, 유언의 효력, 포기 여부를 판단하지 않아요.",
+      "content_sha256": "2eec2c3ee028404233d5637392af9d04e86ec723ac4fc488c0afb026c6b63909",
+      "collected_on": "2026-11-15",
+      "effective_from": "2026-11-15",
+      "effective_to": null,
+      "applicable_tax_years": [
+        2026
+      ],
+      "review_status": "APPROVED",
+      "reviewed_on": "2026-11-15",
+      "review_through": "2026-12-31",
+      "review_ref": "ChatGPT 공모전용 설명 검토완료 · 사용자 자료 검증 2026-11-15 · https://docs.google.com/document/d/1xXV2IngV8-ObNNIjuQAZZuWao8EtdIzcoXNQXqjjY-Q/edit?usp=drivesdk"
+    },
+    {
+      "source_id": "SRC-INH-RAG-06",
+      "source_version": "2026-11-15",
+      "source_kind": "REVIEWED_SUMMARY",
+      "access_scope": "PUBLIC",
+      "official_url": "https://www.law.go.kr/LSW/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1032164621",
+      "title": "상속세 및 증여세법 제71조 · DION 검토 요약",
+      "issuer": "DION 내부 내용 검토",
+      "jurisdiction": "KR",
+      "original_text": "재산이 부동산에 몰려 있다면 확인된 세액과 비용, 납부 시점, 그날 쓸 수 있는 현금을 따로 점검해 주세요.\n\n법률 제21065호, 2026-01-02 시행본 기준. 연부연납에는 신청, 담보 등 조건이 있으며 재산 종류에 따라 적용되는 기간이 달라요.\n\n부동산 시세를 즉시 쓸 수 있는 현금으로 보지 않아요. 개별 세액이나 연부연납 허가를 가정하지 않아요.",
+      "content_sha256": "8387788bf17f7685ced9e0049c132d25a890ee37df2e01bdc3426de876f64e84",
+      "collected_on": "2026-11-15",
+      "effective_from": "2026-11-15",
+      "effective_to": null,
+      "applicable_tax_years": [
+        2026
+      ],
+      "review_status": "APPROVED",
+      "reviewed_on": "2026-11-15",
+      "review_through": "2026-12-31",
+      "review_ref": "ChatGPT 공모전용 설명 검토완료 · 사용자 자료 검증 2026-11-15 · https://docs.google.com/document/d/1BuNqlNmU6U9FW8CnGX8mte3hWOwOC8Eevbd5Tbc_ENk/edit?usp=drivesdk"
+    },
+    {
+      "source_id": "SRC-INH-RAG-07",
+      "source_version": "2026-11-16",
+      "source_kind": "REVIEWED_SUMMARY",
+      "access_scope": "PUBLIC",
+      "official_url": "https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=7722&mi=2328",
+      "title": "국세청 상속세 신고시 유의사항 · DION 검토 요약",
+      "issuer": "DION 내부 내용 검토",
+      "jurisdiction": "KR",
+      "original_text": "상속세 신고를 검토할 때 상속재산과 평가 내역, 채무·공과금의 명세를 정리해요.\n채무가 있다면 채무자 명의와 당시 잔액을 확인할 수 있는 자료를 확보해 두세요.\n제출 서류와 채무 인정 여부는 상속이 시작된 뒤 실제 사실관계에 따라 확인해요.",
+      "content_sha256": "17383b18c0a22e6a88120dcd629f31893a63d10eca8238bccaf0b7b94e484aef",
+      "collected_on": "2026-11-16",
+      "effective_from": "2026-11-16",
+      "effective_to": null,
+      "applicable_tax_years": [
+        2026
+      ],
+      "review_status": "APPROVED",
+      "reviewed_on": "2026-11-16",
+      "review_through": "2026-12-31",
+      "review_ref": "DION 내부 내용 검토 2026-11-16 · 국세청 신고서 작성 순서 및 제출서류"
+    }
+  ],
+  "chunks": [
+    {
+      "chunk_id": "CHUNK-INH-RAG-01-1",
+      "source_id": "SRC-INH-RAG-01",
+      "source_version": "2026-11-15",
+      "section_ref": "제60조 제1~4항 / DION 설명 요약",
+      "start": 0,
+      "end": 72,
+      "text": "상속세에서 재산은 원칙적으로 상속개시일 기준 시가로 평가해요. 먼저 재산 종류, 명의와 지분, 평가 자료의 날짜를 확인해 주세요.",
+      "chunk_sha256": "f12cf08739f245f5150288292d6660af90c45a71479c1e75c973d9b2daad0d09"
+    },
+    {
+      "chunk_id": "CHUNK-INH-RAG-01-2",
+      "source_id": "SRC-INH-RAG-01",
+      "source_version": "2026-11-15",
+      "section_ref": "제60조 제1~4항 / DION 설명 요약",
+      "start": 74,
+      "end": 155,
+      "text": "법률 제21065호, 2026-01-02 시행본 기준. 시가 확인이 어려운 재산이나 일부 상장주식·가상자산은 자산별 평가 규정을 추가로 확인해요.",
+      "chunk_sha256": "0e4f6784c0d791d2650abad75072cf6fd6c846ef525335e988d3e4aec81298a5"
+    },
+    {
+      "chunk_id": "CHUNK-INH-RAG-01-3",
+      "source_id": "SRC-INH-RAG-01",
+      "source_version": "2026-11-15",
+      "section_ref": "제60조 제1~4항 / DION 설명 요약",
+      "start": 157,
+      "end": 199,
+      "text": "진단에 입력한 현재 시세로 개별 상속재산 평가액이나 세액을 확정하지 않아요.",
+      "chunk_sha256": "87d0487e8e6bdc0ee76fa0d035052cbecfa1f0ed8d47c6a5b4a6bdb519dfd7a3"
+    },
+    {
+      "chunk_id": "CHUNK-INH-RAG-02-1",
+      "source_id": "SRC-INH-RAG-02",
+      "source_version": "2026-11-15",
+      "section_ref": "제14조 제1~4항 / DION 설명 요약",
+      "start": 0,
+      "end": 75,
+      "text": "남길 재산을 살펴보려면 본인 명의 재산과 공동명의 지분을 먼저 확인해요. 채무는 누가 부담하는지와 잔액을 입증할 자료를 따로 정리해요.",
+      "chunk_sha256": "99769edb71f0dc4c8009bb985e9648e45b9bbc4cd2ad01a4fbabc15eb5996e8f"
+    },
+    {
+      "chunk_id": "CHUNK-INH-RAG-02-2",
+      "source_id": "SRC-INH-RAG-02",
+      "source_version": "2026-11-15",
+      "section_ref": "제14조 제1~4항 / DION 설명 요약",
+      "start": 77,
+      "end": 152,
+      "text": "법률 제21065호, 2026-01-02 시행본 기준. 거주자의 상속에 관한 공과금·장례비용·채무에는 증명 요건과 제외 조건이 있어요.",
+      "chunk_sha256": "f2032ff12edb7a4e06f08b1c52d83d0a76ba66b4d85562469a33209e5905f1ed"
+    },
+    {
+      "chunk_id": "CHUNK-INH-RAG-02-3",
+      "source_id": "SRC-INH-RAG-02",
+      "source_version": "2026-11-15",
+      "section_ref": "제14조 제1~4항 / DION 설명 요약",
+      "start": 154,
+      "end": 222,
+      "text": "가구 전체 재산을 한 사람의 유산으로 잡지 않아요. 비거주자의 경우나 개별 채무의 차감 가능 여부는 별도 확인이 필요해요.",
+      "chunk_sha256": "811e02f76ea22faee3645490cd05f257ac595899d44341fd0693f25afb2b6b14"
+    },
+    {
+      "chunk_id": "CHUNK-INH-RAG-03-1",
+      "source_id": "SRC-INH-RAG-03",
+      "source_version": "2026-11-15",
+      "section_ref": "제13조 제1~3항 / DION 설명 요약",
+      "start": 0,
+      "end": 61,
+      "text": "생전에 준 재산이 상속세 검토에 필요할 수 있어요. 증여 날짜, 받는 사람, 재산 종류를 먼저 정리해 주세요.",
+      "chunk_sha256": "77b0f216c3b9fdbb6c7b4e74c81103f05b971d57bfac7a9eb08fadc9842ed886"
+    },
+    {
+      "chunk_id": "CHUNK-INH-RAG-03-2",
+      "source_id": "SRC-INH-RAG-03",
+      "source_version": "2026-11-15",
+      "section_ref": "제13조 제1~3항 / DION 설명 요약",
+      "start": 63,
+      "end": 160,
+      "text": "법률 제21065호, 2026-01-02 시행본 기준. 일반 규정에서 가산 대상 기간은 상속개시 전 상속인에게 증여한 경우 10년, 그 외의 사람에게 증여한 경우 5년이에요.",
+      "chunk_sha256": "2d0cfd075f390d0391a5875e5648018d9e538a066b3dbd5900d914f9e388f283"
+    },
+    {
+      "chunk_id": "CHUNK-INH-RAG-03-3",
+      "source_id": "SRC-INH-RAG-03",
+      "source_version": "2026-11-15",
+      "section_ref": "제13조 제1~3항 / DION 설명 요약",
+      "start": 162,
+      "end": 232,
+      "text": "합산배제, 비거주자 사망 시 증여재산의 소재, 특례를 각각 확인해야 해요. 기간만으로 개인별 합산이나 세액을 확정하지 않아요.",
+      "chunk_sha256": "206cf824943955f3efec2a1d6b7f0c1eb419ae3efdf3a29f75389af2d8d73fc2"
+    },
+    {
+      "chunk_id": "CHUNK-INH-RAG-04-1",
+      "source_id": "SRC-INH-RAG-04",
+      "source_version": "2026-11-15",
+      "section_ref": "기본정보 · 신청자격 · 제출 서류 / DION 설명 요약",
+      "start": 0,
+      "end": 67,
+      "text": "상속이 발생했다면 정부24 안심상속에서 금융·토지·자동차·세금 등 여러 기관의 재산 정보를 통합 조회 신청할 수 있어요.",
+      "chunk_sha256": "5ad688fa9fdfc5d1b36df51e71d1afea2a7b8899b0c2a645a9242edbfff84915"
+    },
+    {
+      "chunk_id": "CHUNK-INH-RAG-04-2",
+      "source_id": "SRC-INH-RAG-04",
+      "source_version": "2026-11-15",
+      "section_ref": "기본정보 · 신청자격 · 제출 서류 / DION 설명 요약",
+      "start": 69,
+      "end": 144,
+      "text": "2026-11-15 확인한 민원 안내예요. 신청 자격과 방법은 온라인·방문에 따라 다르므로 공식 페이지에서 현재 조건을 확인해 주세요.",
+      "chunk_sha256": "ec903dde52fdcc0ba1e879750e688392533d58e52c91d0c895b921a75f3a2043"
+    },
+    {
+      "chunk_id": "CHUNK-INH-RAG-04-3",
+      "source_id": "SRC-INH-RAG-04",
+      "source_version": "2026-11-15",
+      "section_ref": "기본정보 · 신청자격 · 제출 서류 / DION 설명 요약",
+      "start": 146,
+      "end": 212,
+      "text": "조회 결과만으로 상속인이나 실제 수령액을 확정하지 않아요. 아직 받지 않은 예상 금액은 현재 투자재원으로 잡지 않아요.",
+      "chunk_sha256": "7ec8d51dc96cd14dc88e0d3ee6c72dabe47ab4919bcd31309dd39b1300674ff4"
+    },
+    {
+      "chunk_id": "CHUNK-INH-RAG-05-1",
+      "source_id": "SRC-INH-RAG-05",
+      "source_version": "2026-11-15",
+      "section_ref": "제1000조 제1~3항 / DION 설명 요약",
+      "start": 0,
+      "end": 55,
+      "text": "가구원은 재무 상담의 범위예요. 실제 상속인은 사건의 가족관계와 민법의 상속 순위를 확인해야 해요.",
+      "chunk_sha256": "fcf73e4d528d90016278ae005da2610fc9aa4e13f382a37227f04620e8096976"
+    },
+    {
+      "chunk_id": "CHUNK-INH-RAG-05-2",
+      "source_id": "SRC-INH-RAG-05",
+      "source_version": "2026-11-15",
+      "section_ref": "제1000조 제1~3항 / DION 설명 요약",
+      "start": 57,
+      "end": 141,
+      "text": "법률 제21454호, 2026-03-17 시행본 기준. 같은 순위에서도 친등과 공동상속 조건을 확인하고, 배우자의 상속 순위에는 별도 조문을 적용해요.",
+      "chunk_sha256": "0b3039a6cae3a2ab93068fc2f81172d0111fc887a37464a249c679ec96f44038"
+    },
+    {
+      "chunk_id": "CHUNK-INH-RAG-05-3",
+      "source_id": "SRC-INH-RAG-05",
+      "source_version": "2026-11-15",
+      "section_ref": "제1000조 제1~3항 / DION 설명 요약",
+      "start": 143,
+      "end": 193,
+      "text": "가구원 목록만으로 법적 상속인이나 법정상속분, 유언의 효력, 포기 여부를 판단하지 않아요.",
+      "chunk_sha256": "5db03a21ec5938007bf66a77b61cad0ad1cd1067b2791c43ffe163c5863e22c7"
+    },
+    {
+      "chunk_id": "CHUNK-INH-RAG-06-1",
+      "source_id": "SRC-INH-RAG-06",
+      "source_version": "2026-11-15",
+      "section_ref": "제71조 제1~2항 / DION 설명 요약",
+      "start": 0,
+      "end": 60,
+      "text": "재산이 부동산에 몰려 있다면 확인된 세액과 비용, 납부 시점, 그날 쓸 수 있는 현금을 따로 점검해 주세요.",
+      "chunk_sha256": "438558615307b89ae28aab53afc0d57ff32e9e131db599856a697f3100352350"
+    },
+    {
+      "chunk_id": "CHUNK-INH-RAG-06-2",
+      "source_id": "SRC-INH-RAG-06",
+      "source_version": "2026-11-15",
+      "section_ref": "제71조 제1~2항 / DION 설명 요약",
+      "start": 62,
+      "end": 140,
+      "text": "법률 제21065호, 2026-01-02 시행본 기준. 연부연납에는 신청, 담보 등 조건이 있으며 재산 종류에 따라 적용되는 기간이 달라요.",
+      "chunk_sha256": "04cf703fbd9a5f13fb00e2dc1566fb4c0d3abbc69707ae98251ea23666ea21d2"
+    },
+    {
+      "chunk_id": "CHUNK-INH-RAG-06-3",
+      "source_id": "SRC-INH-RAG-06",
+      "source_version": "2026-11-15",
+      "section_ref": "제71조 제1~2항 / DION 설명 요약",
+      "start": 142,
+      "end": 199,
+      "text": "부동산 시세를 즉시 쓸 수 있는 현금으로 보지 않아요. 개별 세액이나 연부연납 허가를 가정하지 않아요.",
+      "chunk_sha256": "3ac681bf601408aab15367b80bd751d698185fb306258d3ded08e7bda92bcecf"
+    },
+    {
+      "chunk_id": "CHUNK-INH-RAG-07-1",
+      "source_id": "SRC-INH-RAG-07",
+      "source_version": "2026-11-16",
+      "section_ref": "국세청 신고서 작성 · 제출서류 / DION 요약",
+      "start": 0,
+      "end": 44,
+      "text": "상속세 신고를 검토할 때 상속재산과 평가 내역, 채무·공과금의 명세를 정리해요.",
+      "chunk_sha256": "a0b8385ec126cb9ea67d74d291721215d47656f309841da8344d90d4a1ecd2c1"
+    },
+    {
+      "chunk_id": "CHUNK-INH-RAG-07-2",
+      "source_id": "SRC-INH-RAG-07",
+      "source_version": "2026-11-16",
+      "section_ref": "국세청 신고서 작성 · 제출서류 / DION 요약",
+      "start": 45,
+      "end": 89,
+      "text": "채무가 있다면 채무자 명의와 당시 잔액을 확인할 수 있는 자료를 확보해 두세요.",
+      "chunk_sha256": "b6e2ccea70fd459543aa4575f1e3d9eb840b37e9cea606bb7a87c8715699ecd3"
+    },
+    {
+      "chunk_id": "CHUNK-INH-RAG-07-3",
+      "source_id": "SRC-INH-RAG-07",
+      "source_version": "2026-11-16",
+      "section_ref": "국세청 신고서 작성 · 제출서류 / DION 요약",
+      "start": 90,
+      "end": 134,
+      "text": "제출 서류와 채무 인정 여부는 상속이 시작된 뒤 실제 사실관계에 따라 확인해요.",
+      "chunk_sha256": "6bef567d0c7a5c33fafa76b89bd63ab07828b30f144efaa04e71045edf9d1800"
+    }
+  ],
+  "citations": [
+    {
+      "citation_id": "CITE-INH-RAG-01-1",
+      "chunk_id": "CHUNK-INH-RAG-01-1",
+      "start": 0,
+      "end": 72
+    },
+    {
+      "citation_id": "CITE-INH-RAG-01-2",
+      "chunk_id": "CHUNK-INH-RAG-01-2",
+      "start": 0,
+      "end": 81
+    },
+    {
+      "citation_id": "CITE-INH-RAG-01-3",
+      "chunk_id": "CHUNK-INH-RAG-01-3",
+      "start": 0,
+      "end": 42
+    },
+    {
+      "citation_id": "CITE-INH-RAG-02-1",
+      "chunk_id": "CHUNK-INH-RAG-02-1",
+      "start": 0,
+      "end": 75
+    },
+    {
+      "citation_id": "CITE-INH-RAG-02-2",
+      "chunk_id": "CHUNK-INH-RAG-02-2",
+      "start": 0,
+      "end": 75
+    },
+    {
+      "citation_id": "CITE-INH-RAG-02-3",
+      "chunk_id": "CHUNK-INH-RAG-02-3",
+      "start": 0,
+      "end": 68
+    },
+    {
+      "citation_id": "CITE-INH-RAG-03-1",
+      "chunk_id": "CHUNK-INH-RAG-03-1",
+      "start": 0,
+      "end": 61
+    },
+    {
+      "citation_id": "CITE-INH-RAG-03-2",
+      "chunk_id": "CHUNK-INH-RAG-03-2",
+      "start": 0,
+      "end": 97
+    },
+    {
+      "citation_id": "CITE-INH-RAG-03-3",
+      "chunk_id": "CHUNK-INH-RAG-03-3",
+      "start": 0,
+      "end": 70
+    },
+    {
+      "citation_id": "CITE-INH-RAG-04-1",
+      "chunk_id": "CHUNK-INH-RAG-04-1",
+      "start": 0,
+      "end": 67
+    },
+    {
+      "citation_id": "CITE-INH-RAG-04-2",
+      "chunk_id": "CHUNK-INH-RAG-04-2",
+      "start": 0,
+      "end": 75
+    },
+    {
+      "citation_id": "CITE-INH-RAG-04-3",
+      "chunk_id": "CHUNK-INH-RAG-04-3",
+      "start": 0,
+      "end": 66
+    },
+    {
+      "citation_id": "CITE-INH-RAG-05-1",
+      "chunk_id": "CHUNK-INH-RAG-05-1",
+      "start": 0,
+      "end": 55
+    },
+    {
+      "citation_id": "CITE-INH-RAG-05-2",
+      "chunk_id": "CHUNK-INH-RAG-05-2",
+      "start": 0,
+      "end": 84
+    },
+    {
+      "citation_id": "CITE-INH-RAG-05-3",
+      "chunk_id": "CHUNK-INH-RAG-05-3",
+      "start": 0,
+      "end": 50
+    },
+    {
+      "citation_id": "CITE-INH-RAG-06-1",
+      "chunk_id": "CHUNK-INH-RAG-06-1",
+      "start": 0,
+      "end": 60
+    },
+    {
+      "citation_id": "CITE-INH-RAG-06-2",
+      "chunk_id": "CHUNK-INH-RAG-06-2",
+      "start": 0,
+      "end": 78
+    },
+    {
+      "citation_id": "CITE-INH-RAG-06-3",
+      "chunk_id": "CHUNK-INH-RAG-06-3",
+      "start": 0,
+      "end": 57
+    },
+    {
+      "citation_id": "CITE-INH-RAG-07-1",
+      "chunk_id": "CHUNK-INH-RAG-07-1",
+      "start": 0,
+      "end": 44
+    },
+    {
+      "citation_id": "CITE-INH-RAG-07-2",
+      "chunk_id": "CHUNK-INH-RAG-07-2",
+      "start": 0,
+      "end": 44
+    },
+    {
+      "citation_id": "CITE-INH-RAG-07-3",
+      "chunk_id": "CHUNK-INH-RAG-07-3",
+      "start": 0,
+      "end": 44
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "CLAIM-INH-RAG-01",
+      "item_id": "INH-RAG-01",
+      "condition_id": "RULE-INH-RAG-01",
+      "tax_year": 2026,
+      "statement_id": "CITE-INH-RAG-01-1",
+      "condition_ids": [
+        "CITE-INH-RAG-01-2"
+      ],
+      "exception_ids": [
+        "CITE-INH-RAG-01-3"
+      ]
+    },
+    {
+      "claim_id": "CLAIM-INH-RAG-02",
+      "item_id": "INH-RAG-02",
+      "condition_id": "RULE-INH-RAG-02",
+      "tax_year": 2026,
+      "statement_id": "CITE-INH-RAG-02-1",
+      "condition_ids": [
+        "CITE-INH-RAG-02-2"
+      ],
+      "exception_ids": [
+        "CITE-INH-RAG-02-3"
+      ]
+    },
+    {
+      "claim_id": "CLAIM-INH-RAG-03",
+      "item_id": "INH-RAG-03",
+      "condition_id": "RULE-INH-RAG-03",
+      "tax_year": 2026,
+      "statement_id": "CITE-INH-RAG-03-1",
+      "condition_ids": [
+        "CITE-INH-RAG-03-2"
+      ],
+      "exception_ids": [
+        "CITE-INH-RAG-03-3"
+      ]
+    },
+    {
+      "claim_id": "CLAIM-INH-RAG-04",
+      "item_id": "INH-RAG-04",
+      "condition_id": "RULE-INH-RAG-04",
+      "tax_year": 2026,
+      "statement_id": "CITE-INH-RAG-04-1",
+      "condition_ids": [
+        "CITE-INH-RAG-04-2"
+      ],
+      "exception_ids": [
+        "CITE-INH-RAG-04-3"
+      ]
+    },
+    {
+      "claim_id": "CLAIM-INH-RAG-05",
+      "item_id": "INH-RAG-05",
+      "condition_id": "RULE-INH-RAG-05",
+      "tax_year": 2026,
+      "statement_id": "CITE-INH-RAG-05-1",
+      "condition_ids": [
+        "CITE-INH-RAG-05-2"
+      ],
+      "exception_ids": [
+        "CITE-INH-RAG-05-3"
+      ]
+    },
+    {
+      "claim_id": "CLAIM-INH-RAG-06",
+      "item_id": "INH-RAG-06",
+      "condition_id": "RULE-INH-RAG-06",
+      "tax_year": 2026,
+      "statement_id": "CITE-INH-RAG-06-1",
+      "condition_ids": [
+        "CITE-INH-RAG-06-2"
+      ],
+      "exception_ids": [
+        "CITE-INH-RAG-06-3"
+      ]
+    },
+    {
+      "claim_id": "CLAIM-INH-RAG-07",
+      "item_id": "INH-RAG-07",
+      "condition_id": "RULE-INH-RAG-07",
+      "tax_year": 2026,
+      "statement_id": "CITE-INH-RAG-07-1",
+      "condition_ids": [
+        "CITE-INH-RAG-07-2"
+      ],
+      "exception_ids": [
+        "CITE-INH-RAG-07-3"
+      ]
+    }
+  ]
+}

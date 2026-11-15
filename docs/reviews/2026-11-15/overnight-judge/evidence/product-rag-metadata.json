@@ -1,0 +1,29 @@
+{
+  "item_id": "PRD-069500",
+  "case_effective_on": "2026-11-13",
+  "review_on": "2026-11-15",
+  "claim_count": 3,
+  "sources": [
+    {
+      "source_id": "SRC-PRD-069500",
+      "source_version": "2026-11-15",
+      "source_kind": "REVIEWED_SUMMARY",
+      "access_scope": "PUBLIC",
+      "official_url": "https://www.samsungfund.com/upload/invest/2ETF01-A.pdf",
+      "title": "PRD-069500 KODEX 200 (검토 요약)",
+      "issuer": "DION AI 내부 내용 검토 · 공식 원문 링크 별도",
+      "jurisdiction": "KR",
+      "content_sha256": "3d1c892ca33486f0ffd86e628f50107b50fcf93aa5ba0b0a7e8eeeb70e2a6f6d",
+      "collected_on": "2026-11-15",
+      "effective_from": "2026-11-15",
+      "effective_to": null,
+      "applicable_tax_years": [
+        2026
+      ],
+      "review_status": "APPROVED",
+      "reviewed_on": "2026-11-15",
+      "review_through": "2026-12-31",
+      "review_ref": "사용자 위임 2026-11-15 / AI 내부 설명 검토·독립 전문가 검토 아님 / https://docs.google.com/document/d/1q2ZtQmjXQ-3E-V7Npzn9_G-mB-IHtOcyyPWWrjplwsY/edit?usp=drivesdk"
+    }
+  ]
+}

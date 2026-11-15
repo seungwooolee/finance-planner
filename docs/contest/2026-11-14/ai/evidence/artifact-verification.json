@@ -1,0 +1,33 @@
+{
+  "phase": "FINAL_HANDOFF_COMMIT",
+  "file_count": 86,
+  "json_parsed": 58,
+  "ownership_violations": [],
+  "missing_current_document_links": [],
+  "secret_pattern_findings": [],
+  "whitespace_findings": [],
+  "expectation_lock_file_changes": [],
+  "preserved_round1_file_changes": [],
+  "single_followup_pytest": "PASS 1, no retry",
+  "ruff": "PASS",
+  "full_CI": "NOT_RUN; integration lock conflict identified",
+  "github_push": false,
+  "deploy": false,
+  "paid_model": false,
+  "staged_whitespace": {
+    "status": "FAIL_ON_PRESERVED_HISTORICAL_RAW_OUTPUT_ONLY",
+    "count": 4,
+    "findings": [
+      "docs/contest/2026-11-14/ai/evidence/dev-initial.txt:935: trailing whitespace.",
+      "docs/contest/2026-11-14/ai/evidence/dev-initial.txt:945: trailing whitespace.",
+      "docs/contest/2026-11-14/ai/evidence/dev-retry.txt:9: trailing whitespace.",
+      "docs/contest/2026-11-14/ai/evidence/dev-retry.xml:6: trailing whitespace."
+    ],
+    "raw_evidence_normalized": false
+  },
+  "git_byte_preservation": "STAGED_LOCK_HASHES_MATCH_AFTER_AI_LOCAL_ATTRIBUTES",
+  "initial_checkpoint_eligible": false,
+  "code_candidate_sha": "d70e1f1e35ab948094fd3399332b47998de57e66",
+  "candidate_git_blobs_match_original_expectation_lock": true,
+  "test_code_unchanged_since_PASS": true
+}

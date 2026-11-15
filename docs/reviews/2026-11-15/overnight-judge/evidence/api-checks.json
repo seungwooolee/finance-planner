@@ -1,0 +1,378 @@
+{
+  "checks": [
+    {
+      "name": "Independent cash-flow arithmetic",
+      "pass": true,
+      "observed": "1099000"
+    },
+    {
+      "name": "A allocation identity STABILITY_FIRST 2026-12",
+      "pass": true,
+      "observed": {
+        "new_investment_krw": "399500",
+        "additional_cash_krw": "399500",
+        "goal_deposits_krw": "300000",
+        "protection_topup_krw": "0",
+        "operating_refill_krw": "0"
+      }
+    },
+    {
+      "name": "A allocation identity INVESTMENT_CAPACITY 2026-12",
+      "pass": true,
+      "observed": {
+        "new_investment_krw": "639200",
+        "additional_cash_krw": "159800",
+        "goal_deposits_krw": "300000",
+        "protection_topup_krw": "0",
+        "operating_refill_krw": "0"
+      }
+    },
+    {
+      "name": "Final generation is blocked before review/consultation",
+      "pass": true,
+      "observed": 422
+    },
+    {
+      "name": "Saved consultation enables explicit final generation",
+      "pass": true,
+      "observed": "READY_TO_GENERATE"
+    },
+    {
+      "name": "Final generation is saved without adopting or executing",
+      "pass": true,
+      "observed": "GENERATED_NOT_ADOPTED"
+    },
+    {
+      "name": "Final review reload is stable",
+      "pass": true,
+      "observed": null
+    },
+    {
+      "name": "Explicit adoption preserves captured portfolio revision",
+      "pass": true,
+      "observed": null
+    },
+    {
+      "name": "Read-only model discussions preserve raw run and adoption",
+      "pass": true,
+      "observed": null
+    },
+    {
+      "name": "Other synthetic identity cannot access stored result",
+      "pass": true,
+      "observed": 404
+    },
+    {
+      "name": "Wrong-owner chat rejected before model call",
+      "pass": true,
+      "observed": 404
+    },
+    {
+      "name": "Product RAG returns scoped evidence without changing result",
+      "pass": true,
+      "observed": {
+        "status": 200,
+        "target": "069500",
+        "evidence": {
+          "contract_version": "DION-PORTFOLIO-EVIDENCE-1.0",
+          "base_run_id": "run_abb7b7f8e88542c9908d91450425d75b",
+          "input_version": 25,
+          "input_hash": "f312c7c8ac665eb6a4ea9df7a203e199b0718e6161b036e4104219a9fdec3d4c",
+          "kind": "PRODUCT",
+          "target_id": "069500",
+          "topic": "product",
+          "retrieved_at": "2026-11-15T00:51:47.452196+00:00",
+          "evidence": {
+            "contract_version": "DION-SCHEME-EVIDENCE-1.0",
+            "status": "FALLBACK",
+            "reason_code": "NO_APPROVED_EVIDENCE",
+            "base_run_id": "run_abb7b7f8e88542c9908d91450425d75b",
+            "item_id": "PRD-069500",
+            "tax_year": 2026,
+            "effective_on": "2026-11-13",
+            "review_on": "2026-11-15",
+            "context_status": "INSUFFICIENT",
+            "guidance": "상품 자료의 미확인·상충·검토기한 때문에 설명을 보류했어요. 저장된 진단과 배분은 그대로예요.",
+            "blocks": [],
+            "citations": [],
+            "application_status": "NOT_APPLIED"
+          },
+          "personal_application": "NOT_ASSESSED",
+          "financial_result_changed": false
+        }
+      }
+    },
+    {
+      "name": "B household analysis in isolated definition registry",
+      "pass": true,
+      "observed": "PARTIAL"
+    },
+    {
+      "name": "Retirement example keeps statutory rules inactive",
+      "pass": true,
+      "observed": {
+        "active_rule_count": 0,
+        "statutory_calculation": "NOT_IMPLEMENTED",
+        "supplied_official_pension_estimates": "USER_SUPPLIED_NOT_INDEPENDENTLY_VERIFIED"
+      }
+    },
+    {
+      "name": "Past-month actual-minus-planned differences match independent arithmetic",
+      "pass": true,
+      "observed": {
+        "living": "-100000",
+        "loan": "0",
+        "invest_existing": "0",
+        "invest_new": "-300000",
+        "extra_cash": "50000"
+      }
+    },
+    {
+      "name": "Partial record preserves actual zero versus missing income",
+      "pass": true,
+      "observed": null
+    },
+    {
+      "name": "Confirmed situation change creates a new draft and preserves adoption/record",
+      "pass": true,
+      "observed": "run_7786af0ebd11457090837cb1e0e54609"
+    },
+    {
+      "name": "Engine monthly remainder matches independent expected amount",
+      "pass": true,
+      "observed": "1099000"
+    },
+    {
+      "name": "Two-plan new-investment and cash delta are equal and opposite",
+      "pass": true,
+      "observed": null
+    },
+    {
+      "name": "Zero-return asset balance excludes transfers as gains STABILITY_FIRST",
+      "pass": true,
+      "observed": "12999000"
+    },
+    {
+      "name": "Zero-return asset balance excludes transfers as gains INVESTMENT_CAPACITY",
+      "pass": true,
+      "observed": "12999000"
+    },
+    {
+      "name": "General product-risk evidence retrieval",
+      "pass": true,
+      "observed": {
+        "status": 200,
+        "body": {
+          "contract_version": "DION-PORTFOLIO-EVIDENCE-1.0",
+          "base_run_id": "run_abb7b7f8e88542c9908d91450425d75b",
+          "input_version": 25,
+          "input_hash": "f312c7c8ac665eb6a4ea9df7a203e199b0718e6161b036e4104219a9fdec3d4c",
+          "kind": "PRODUCT",
+          "target_id": "069500",
+          "topic": "risk",
+          "retrieved_at": "2026-11-15T00:55:06.214670+00:00",
+          "evidence": {
+            "contract_version": "DION-SCHEME-EVIDENCE-1.0",
+            "status": "ANSWERED",
+            "source": "REGISTERED",
+            "reason_code": null,
+            "base_run_id": "run_abb7b7f8e88542c9908d91450425d75b",
+            "item_id": "CON-01",
+            "tax_year": 2026,
+            "effective_on": "2026-11-13",
+            "review_on": "2026-11-15",
+            "context_status": "USABLE",
+            "context_sha256": "c6fcfe2679abe428b1702e1b93cc1c2348868b82a1ab16451815695affa78fb8",
+            "corpus_version": "dion-rag-products-20261115-1.1",
+            "retrieval_sha256": "244942243be49c0e256c5b7fb50aa88a68f32d18489255eb1cc5843c6623b645",
+            "retrieval_policy_version": "DION-RAG-RETRIEVAL-1.0",
+            "guidance": "내부 시연 검토를 거친 일반 설명 근거예요. 독립 전문가 검증이나 개인 적합성·세액 판정은 아니에요.",
+            "blocks": [
+              {
+                "claim_id": "CLAIM-CON-01-2",
+                "condition_id": "RULE-CON-01-2",
+                "statement": {
+                  "citation_id": "CITE-CON-01-2",
+                  "text": "금융위원회 발췌 “1~6등급 체계(1등급이 가장 위험한 상품등급)” 금융투자협회 명칭 예시: 매우 높은 위험, 높은 위험, 다소 높은 위험, 보통 위험, 낮은 위험, 매우 낮은 위험."
+                },
+                "conditions": [],
+                "exceptions": []
+              }
+            ],
+            "citations": [
+              {
+                "source_kind": "OFFICIAL_DOCUMENT",
+                "citation_id": "CITE-CON-01-2",
+                "chunk_id": "CHUNK-CON-01-2",
+                "chunk_sha256": "fc69bb0dc19594a99c1030864b18712267b4cd7c5f50e5d13b2a923e2e708437",
+                "source_id": "SRC-CON-01",
+                "source_version": "2026-11-13",
+                "content_sha256": "568f3563090ccb5d82e59e40d197a57d9bbadf47737c81215ca53ca217af80a3",
+                "section_ref": "2. 공식 정의 원문",
+                "source_start": 83,
+                "source_end": 185,
+                "official_url": "https://www.fsc.go.kr/no010101/79327",
+                "title": "CON-01 위험등급 1~6등급 (공식 원문 발췌·대조 문서)",
+                "issuer": "우선순위: 금융위원회·금융감독원 > 금융투자협회·한국거래소 > 운용사(보조)",
+                "tax_year": 2026,
+                "effective_from": "2026-01-01",
+                "effective_to": null,
+                "reviewed_on": "2026-11-13",
+                "review_through": "2026-12-31",
+                "review_status": "APPROVED",
+                "review_ref": "reviewer:공모전 시연용 내부 검토(문서 검토자 ChatGPT, 사용자 승인 2026-11-13). 독립 전문가 검토 아님"
+              }
+            ],
+            "application_status": "NOT_APPLIED"
+          },
+          "personal_application": "NOT_ASSESSED",
+          "financial_result_changed": false
+        }
+      }
+    },
+    {
+      "name": "All later read-only explanations preserve adopted run",
+      "pass": true,
+      "observed": null
+    },
+    {
+      "name": "R3 live proposal uses literal hypothetical amount and separate confirmation",
+      "pass": true,
+      "observed": {
+        "before": "3000000",
+        "after": "3500000",
+        "unit": "KRW",
+        "operation": "SET"
+      }
+    },
+    {
+      "name": "Live-extracted R3 scenario matches independent cash-flow difference",
+      "pass": true,
+      "observed": {
+        "scenario_id": "scenario_a7e8c5658c4f4cbaa622cbf457ddc9c3",
+        "base_run_id": "run_ff7b8b1cb18e48d798cfc06dbd6e8bf3",
+        "proposal_id": "change_ec02af20b9c349d49cb9e6d1f7c7c456",
+        "proposal_hash": "71cf7f6d9c4f335011bf542d9d7541564c850c7cafe6c8e33dd9695d98e5c20f",
+        "confirmed_at": "2026-11-15T01:08:43.043028+00:00",
+        "scenario_policy_version": "DION-SCENARIO-POLICY-1.1",
+        "scenario_policy_hash": "30793285f4177e579685d9df2e21f1e987b28ad211d7722ad0c7f86fa0ffe89c",
+        "field_ref": "F03/monthly_net_income_krw",
+        "field_label": "월평균 세후소득",
+        "change_before": "3000000",
+        "change_after": "3500000",
+        "expense_basis": null,
+        "input_sha256": "5a941a71fc5508cb0cf65bea8309170b5f9d4842318ba4288ebb4d0a087079af",
+        "engine_version": "DION-ENGINE-1.0",
+        "engine_release": "DION-ENGINE-1.2",
+        "policy_version": "DION-ALLOCATION-1.0",
+        "adapter_version": "DION-QUESTION12-ADAPTER-1.0",
+        "subject_ref": "person_self",
+        "period_start": "2026-10-01",
+        "period_end": "2026-10-31",
+        "assumptions": [
+          "같은 기준기간의 월평균 세후소득만 변경해요.",
+          "일회성 소득은 제외하고 다른 진단 입력은 그대로 사용해요."
+        ],
+        "output_id": "OUT-03",
+        "metric": "after_existing_contributions_krw",
+        "unit": "KRW",
+        "before": "900000",
+        "after": "1400000",
+        "difference": "500000",
+        "application_status": "NOT_APPLIED",
+        "storage": "EPHEMERAL"
+      }
+    },
+    {
+      "name": "R3 hypothetical result does not replace original run or adopt a plan",
+      "pass": true,
+      "observed": null
+    },
+    {
+      "name": "Live RAG selector returns registered evidence with no financial mutation",
+      "pass": true,
+      "observed": {
+        "http": 200,
+        "evidence_status": "ANSWERED",
+        "citation_count": 1,
+        "reason": null
+      }
+    }
+  ],
+  "boundaries": [
+    {
+      "name": "Current assets/debt/net worth exact identity",
+      "pass": true,
+      "evidence": {
+        "total_assets": "12000000",
+        "total_debt": "5000000",
+        "net_worth": "7000000"
+      }
+    },
+    {
+      "name": "Real-date future-month guard remains enforced",
+      "pass": true,
+      "evidence": {
+        "http": 422,
+        "response": {
+          "detail": {
+            "code": "FUTURE_MONTH"
+          }
+        },
+        "real_clock": "2026-11-15T10:00:29.293181"
+      }
+    },
+    {
+      "name": "Wrong saved-result hash rejected before model dispatch",
+      "pass": true,
+      "evidence": {
+        "http": 409,
+        "response": {
+          "detail": {
+            "code": "CHAT_BASIS_MISMATCH"
+          }
+        }
+      }
+    },
+    {
+      "name": "Preview preserves UNKNOWN income without replacing missing with zero",
+      "pass": true,
+      "evidence": {
+        "http": 200,
+        "calc_state": "NEEDS_INPUT",
+        "after_existing_contributions_krw": null,
+        "input_state": "UNKNOWN",
+        "input_raw_value": null
+      }
+    },
+    {
+      "name": "Preview preserves KNOWN income without replacing missing with zero",
+      "pass": true,
+      "evidence": {
+        "http": 200,
+        "calc_state": "CALCULATED",
+        "after_existing_contributions_krw": "-1901000",
+        "input_state": "KNOWN",
+        "input_raw_value": "0"
+      }
+    },
+    {
+      "name": "Historical household definition conflict is recorded rather than bypassed",
+      "pass": true,
+      "evidence": [
+        {
+          "path": "/api/be/v1/cases/overnight-b-1cc65444d3/answers",
+          "question_id": "NEW-01",
+          "definition_version": "1.2.1",
+          "incoming_definition_text": "이번 재무진단은 누구의 재무정보를 기준으로 할까요?"
+        }
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "type": "RuntimeError",
+      "message": "PUT /api/be/v1/cases/overnight-b-1cc65444d3/answers: 409 {'detail': {'code': 'DEFINITION_VERSION_CONFLICT'}}"
+    }
+  ]
+}

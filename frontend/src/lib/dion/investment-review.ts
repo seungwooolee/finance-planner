@@ -24,7 +24,15 @@ export function riskNeeds(doc: Document, id: string): string[] {
   if (id === "F15") {
     const funds = list(f.investment_funds.raw_value);
     if (!funds.length) return ["검토할 자금의 사용 시점을 확인해주세요"];
-    if (funds.some(r => !answeredField(r.earliest_use_status as unknown as Field) || !answeredField(r.availability_date as unknown as Field) || (object(r.earliest_use_status).raw_value === "EARLIEST_USE_STATUS_01" && (!answeredField(r.earliest_use_date as unknown as Field) || String(object(r.earliest_use_date).raw_value) < String(object(r.availability_date).raw_value))))) return ["자금별 사용 가능일과 가장 빠른 사용일을 확인해주세요"];
+    if (funds.some(fund => {
+      const status = object(fund.earliest_use_status);
+      if (status.state === "UNKNOWN" || status.state === "KNOWN"
+        && ["EARLIEST_USE_STATUS_02","EARLIEST_USE_STATUS_03"].includes(String(status.raw_value))) return false;
+      const available = object(fund.availability_date).raw_value;
+      const use = object(fund.earliest_use_date).raw_value;
+      return status.state !== "KNOWN" || status.raw_value !== "EARLIEST_USE_STATUS_01" || !available || !use
+        || String(use) < String(available);
+    })) return ["사용 계획을 선택해주세요. 날짜가 정해졌다면 사용 가능일과 가장 빠른 사용일도 입력해주세요."];
   }
   if (id === "NEW-08" && fieldValue(doc, id, "loss_affects_essentials") === "LOSS_AFFECTS_ESSENTIALS_01" && (!Array.isArray(f.affected_outflows?.raw_value) || !f.affected_outflows.raw_value.length)) return ["영향받는 지출을 골라주세요"];
   if (id === "F16") {

@@ -10,11 +10,73 @@ from starlette.concurrency import run_in_threadpool
 from ..explanation.contract import ExplanationRequest
 from ..explanation.oneport import OnePortProvider
 from ..explanation.oneport_config import ConfigurationError, OnePortConfig
+from ..explanation.portfolio import PortfolioEvidenceRequest, explain_portfolio
+from ..explanation.preview_action import PreviewActionRequest, captured_preview, preview_response
+from ..explanation.result_action import ActionProvider, ResultActionRequest, ResultActionService, context_for
 from ..explanation.service import ExplanationService
 from .api import body, call, get_store
 from .auth import get_actor
+from .consultation_api import get_scheme_evidence_service
 
 router = APIRouter(tags=["Stored result explanations"])
+
+
+async def answer_preview(value, actor=None, service=None):
+    try:
+        request = PreviewActionRequest.model_validate(value)
+        if not request.question.strip():
+            raise ValueError()
+    except (ValidationError, ValueError):
+        raise HTTPException(422, detail={"code": "INVALID_PREVIEW_ACTION_REQUEST"}) from None
+    if request.allow_model_question and actor is None:
+        raise HTTPException(401, detail={"code": "AUTH_REQUIRED_FOR_MODEL"})
+    run, comparison, action = await run_in_threadpool(captured_preview, request)
+    # Public guidance has no shared receipt cache and cannot exhaust the paid queue.
+    selected = service if actor is not None else ResultActionService()
+    answer = await selected.answer(actor or "anonymous", "preview-" + request.result_sha256, run, comparison, action)
+    return JSONResponse(preview_response(answer), headers={"Cache-Control": "no-store", "Pragma": "no-cache"})
+
+
+@router.post("/api/fe/v1/preview/result-action")
+async def public_preview_action(value=Depends(body)):
+    return await answer_preview(value)
+
+
+@lru_cache
+def get_result_action_service():
+    mode = os.getenv("DION_RESULT_ACTION_PROVIDER", os.getenv("DION_EXPLANATION_PROVIDER", "mock"))
+    if mode == "oneport":
+        try:
+            return ResultActionService(ActionProvider(OnePortConfig.from_env()))
+        except ConfigurationError:
+            return ResultActionService(configuration_error=True)
+    return ResultActionService(configuration_error=mode not in {"mock", "deterministic"})
+
+
+@router.post("/api/be/v1/preview/result-action")
+async def authenticated_preview_action(value=Depends(body), actor=Depends(get_actor),
+                                       service=Depends(get_result_action_service)):
+    return await answer_preview(value, actor, service)
+
+
+@router.post("/api/be/v1/cases/{case_id}/analyses/{run_id}/result-action")
+async def result_action(case_id: str, run_id: str, value=Depends(body), actor=Depends(get_actor),
+                        store=Depends(get_store), service=Depends(get_result_action_service)):
+    run = await run_in_threadpool(call, store.read_run, actor, case_id, run_id)
+    comparison = await run_in_threadpool(call, store.read_portfolio_comparison, actor, case_id, run_id)
+    try:
+        request = ResultActionRequest.model_validate(value)
+        if not request.question.strip():
+            raise ValueError()
+    except (ValidationError, ValueError):
+        raise HTTPException(422, detail={"code": "INVALID_RESULT_ACTION_REQUEST"}) from None
+    response = await service.answer(actor, case_id, run, comparison, request)
+    current = await run_in_threadpool(call, store.read_run, actor, case_id, run_id)
+    selected = await run_in_threadpool(call, store.read_portfolio_comparison, actor, case_id, run_id)
+    checked = context_for(current, selected, request)
+    if checked["context_sha256"] != response["context_sha256"]:
+        raise HTTPException(409, detail={"code": "RESULT_ACTION_BASIS_MISMATCH"})
+    return JSONResponse(response, headers={"Cache-Control": "no-store", "Pragma": "no-cache"})
 
 
 @lru_cache
@@ -39,4 +101,23 @@ async def explain(case_id: str, run_id: str, value=Depends(body), actor=Depends(
     except ValidationError:
         raise HTTPException(422, detail={"code": "INVALID_EXPLANATION_REQUEST"}) from None
     response = await service.explain(actor, case_id, run, request)
+    return JSONResponse(response, headers={"Cache-Control": "no-store", "Pragma": "no-cache"})
+
+
+@router.post("/api/be/v1/cases/{case_id}/analyses/{run_id}/portfolio-evidence")
+async def portfolio_evidence(case_id: str, run_id: str, value=Depends(body), actor=Depends(get_actor),
+                             store=Depends(get_store), service=Depends(get_scheme_evidence_service)):
+    run = await run_in_threadpool(call, store.read_run, actor, case_id, run_id)
+    try:
+        request = PortfolioEvidenceRequest.model_validate(value)
+    except ValidationError:
+        raise HTTPException(422, detail={"code": "INVALID_PORTFOLIO_EVIDENCE_REQUEST"}) from None
+    try:
+        response = await explain_portfolio(run, request, service)
+    except ValueError as exc:
+        raise HTTPException(409, detail={"code": str(exc)}) from None
+    # Recheck ownership after retrieval, including provider delays. No mutations.
+    current = await run_in_threadpool(call, store.read_run, actor, case_id, run_id)
+    if current["is_current"] is not True or current["input_hash"] != run["input_hash"]:
+        raise HTTPException(409, detail={"code": "PORTFOLIO_EVIDENCE_BASIS_MISMATCH"})
     return JSONResponse(response, headers={"Cache-Control": "no-store", "Pragma": "no-cache"})

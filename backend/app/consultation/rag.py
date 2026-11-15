@@ -44,7 +44,9 @@ def fallback(request, reason, *, context=None):
         "reason_code": reason, "base_run_id": request.base_run_id, "item_id": request.item_id, "tax_year": request.tax_year,
         "effective_on": request.effective_on, "review_on": request.review_on,
         "context_status": context.status if context else "FAILED",
-        "guidance": "어느 귀속연도의 제도를 확인할까요?" if reason == "TAX_YEAR_REQUIRED" else HOLD,
+        "guidance": ("어느 귀속연도의 제도를 확인할까요?" if reason == "TAX_YEAR_REQUIRED" else
+                     "상품 자료의 미확인·상충·검토기한 때문에 설명을 보류했어요. 저장된 진단과 배분은 그대로예요."
+                     if request.item_id.startswith("PRD-") else HOLD),
         "blocks": [], "citations": [], "application_status": "NOT_APPLIED",
     }
 
@@ -71,7 +73,12 @@ def render(draft, context, source):
         "effective_on": request.effective_on, "review_on": request.review_on,
         "context_status": context.status, "context_sha256": draft.context_sha256, "corpus_version": context.corpus_version,
         "retrieval_sha256": context.retrieval_sha256, "retrieval_policy_version": request.policy_version,
-        "guidance": "등록된 일반 제도 근거예요. 개인 적용 여부와 세액은 별도 확인이 필요해요.",
+        "guidance": ("공식 자료를 확인한 검토 요약이에요. 자료 시점과 미확인 조건을 함께 읽어주세요. "
+                     "개인 추천·배분·매수 가능 여부를 확정하지 않으며 독립 전문가 검증은 아니에요."
+                     if any(row.source_kind == "REVIEWED_SUMMARY" for row in citations.values()) else
+                     "내부 시연 검토를 거친 일반 설명 근거예요. 독립 전문가 검증이나 개인 적합성·세액 판정은 아니에요."
+                     if any("내부 검토" in row.review_ref for row in citations.values()) else
+                     "등록된 일반 제도 근거예요. 개인 적용 여부와 세액은 별도 확인이 필요해요."),
         "blocks": blocks, "citations": [row.model_dump(mode="json", exclude={"text"}) for row in citations.values()],
         "application_status": "NOT_APPLIED",
     }

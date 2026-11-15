@@ -1,0 +1,126 @@
+{
+  "case": "isolated test fixture; not submission case",
+  "record_month": "2026-11",
+  "adoption_A": {
+    "adoption_id": "adp_9c58647bafa24c54900cb54790bb638f",
+    "run_id": "run_d26c543a16974b65b18d294f21873281",
+    "strategy_id": "STABILITY_FIRST",
+    "input_version": 13,
+    "transaction_executed": false
+  },
+  "first": {
+    "record_month": "2026-11",
+    "revision": 1,
+    "status": "DRAFT",
+    "adoption_id": "adp_9c58647bafa24c54900cb54790bb638f",
+    "recorded_at": "2026-11-14T09:06:07.138068+00:00",
+    "record": {
+      "amounts": {
+        "income": "0",
+        "living": null,
+        "loan": null,
+        "goal": null,
+        "invest_existing": null,
+        "invest_new": "10000",
+        "emergency": null,
+        "extra_cash": null
+      },
+      "tasks": [],
+      "changes": [],
+      "memo": null
+    },
+    "summary": {
+      "entered_count": 2,
+      "amount_count": 8,
+      "partial": true,
+      "spending_entered_krw": "0",
+      "transfers_entered_krw": "10000",
+      "allocation_check": "OVER_INCOME_CHECK_SOURCE",
+      "tasks_done": 0,
+      "tasks_total": 0,
+      "review_suggested": false
+    }
+  },
+  "adoption_B": {
+    "adoption_id": "adp_153b5793cc074da794e0faf3975e7d3e",
+    "run_id": "run_d26c543a16974b65b18d294f21873281",
+    "strategy_id": "INVESTMENT_CAPACITY",
+    "input_version": 13,
+    "transaction_executed": false
+  },
+  "read_after_B": {
+    "record_month": "2026-11",
+    "revision": 1,
+    "status": "DRAFT",
+    "adoption_id": "adp_9c58647bafa24c54900cb54790bb638f",
+    "recorded_at": "2026-11-14T09:06:07.138068+00:00",
+    "record": {
+      "amounts": {
+        "income": "0",
+        "living": null,
+        "loan": null,
+        "goal": null,
+        "invest_existing": null,
+        "invest_new": "10000",
+        "emergency": null,
+        "extra_cash": null
+      },
+      "tasks": [],
+      "changes": [],
+      "memo": null
+    },
+    "summary": {
+      "entered_count": 2,
+      "amount_count": 8,
+      "partial": true,
+      "spending_entered_krw": "0",
+      "transfers_entered_krw": "10000",
+      "allocation_check": "OVER_INCOME_CHECK_SOURCE",
+      "tasks_done": 0,
+      "tasks_total": 0,
+      "review_suggested": false
+    },
+    "adoption": {
+      "adoption_id": "adp_153b5793cc074da794e0faf3975e7d3e",
+      "run_id": "run_d26c543a16974b65b18d294f21873281",
+      "strategy_id": "INVESTMENT_CAPACITY",
+      "input_version": 13,
+      "adopted_at": "2026-11-14T09:06:07.157373+00:00"
+    }
+  },
+  "edited": {
+    "record_month": "2026-11",
+    "revision": 2,
+    "status": "DRAFT",
+    "adoption_id": "adp_153b5793cc074da794e0faf3975e7d3e",
+    "recorded_at": "2026-11-14T09:06:07.181376+00:00",
+    "record": {
+      "amounts": {
+        "income": "0",
+        "living": null,
+        "loan": null,
+        "goal": null,
+        "invest_existing": null,
+        "invest_new": "20000",
+        "emergency": null,
+        "extra_cash": null
+      },
+      "tasks": [],
+      "changes": [],
+      "memo": null
+    },
+    "summary": {
+      "entered_count": 2,
+      "amount_count": 8,
+      "partial": true,
+      "spending_entered_krw": "0",
+      "transfers_entered_krw": "20000",
+      "allocation_check": "OVER_INCOME_CHECK_SOURCE",
+      "tasks_done": 0,
+      "tasks_total": 0,
+      "review_suggested": false
+    }
+  },
+  "bug_read_uses_active_B": true,
+  "bug_edit_rebinds_to_B": true
+}

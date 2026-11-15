@@ -2,3 +2,4 @@
 *.png binary
 *.jpg binary
 *.ico binary
+/docs/research/product-rag/2026-11-15/research-manifest.json -text whitespace=cr-at-eol

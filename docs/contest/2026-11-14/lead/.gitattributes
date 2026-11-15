@@ -1,0 +1,6 @@
+# Preserve the received pre-update snapshots as raw evidence.
+received/results/pre-707/** -text
+received/lead-before-b11/** -text
+cases/b1.0-manifest-preserved.json -text
+cases/b1.1/*.json -text
+cases/b1.1/*.xml -text

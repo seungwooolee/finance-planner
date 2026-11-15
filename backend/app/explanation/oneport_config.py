@@ -17,6 +17,9 @@ class OnePortConfig:
     model: str = ""
     enabled: bool = False
     allow_saved_results: bool = False
+    # Explicit operator consent for a gateway key whose documented daily limit is null.
+    # Durable local/central grants, reservation ceilings and expiry still apply.
+    allow_uncapped_gateway_key: bool = False
     timeout: float = 15
     connect_timeout: float = 3
     max_output_tokens: int = 4096
@@ -54,6 +57,7 @@ class OnePortConfig:
                 base_url=env("BASE_URL", "https://oneport.kr/v1").rstrip("/"),
                 api_key=env("API_KEY"), model=env("MODEL"), enabled=boolean("ENABLED"),
                 allow_saved_results=boolean("ALLOW_SAVED_RESULTS"),
+                allow_uncapped_gateway_key=boolean("ALLOW_UNCAPPED_GATEWAY_KEY"),
                 timeout=float(env("TIMEOUT_SECONDS", "15")),
                 connect_timeout=float(env("CONNECT_TIMEOUT_SECONDS", "3")),
                 max_output_tokens=int(env("MAX_OUTPUT_TOKENS", "4096")),

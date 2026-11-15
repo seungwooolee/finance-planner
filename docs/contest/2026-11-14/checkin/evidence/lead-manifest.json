@@ -1,0 +1,315 @@
+{
+  "manifest_version": "DION-CONTEST-HANDOFF-1.0",
+  "observed_on": "2026-11-14",
+  "timezone": "Asia/Seoul",
+  "phase": "LOCAL_ENGINE_INTEGRATION_AWAITING_REMAINING_ROLE_RESULTS",
+  "repository": {
+    "remote": "https://github.com/seungwooolee/finance-planner",
+    "base_ref": "origin/dion/integration-20261111",
+    "base_sha": "eed221d1c1d305d79713ebb0dbf0c41d9c624e8a",
+    "remote_main_sha": "8a9f80f8908509c1e5548c7e86129a02deb1b745",
+    "proposal_included_by": "PR #31",
+    "lead_branch": "codex/contest-lead-20261114",
+    "lead_workspace": "C:/Users/LG/Projects/DION-contest-lead-20261114",
+    "base_reason": "Latest observed integration includes proposal/reference scenario/RAG fixes; main is older. No other branch changes selected."
+  },
+  "case": {
+    "case_version": "DION-CONTEST-B-20261114-1.0",
+    "fixture_case_id": "SUBMISSION-B-01",
+    "case_kind": "FICTIONAL_HOUSEHOLD_FUTURE_SIMULATION",
+    "canonical_input_path": "docs/design/2026-11-10/connected-demo/submission-input.json",
+    "canonical_input_sha256": "3afcb98cef3729aee85e19aff9075ea2a78795e7cb9f91e2261bf1a2ddae5bb4",
+    "source_schema_version": "DION-ENGINE-1.0",
+    "source_question_definition_version": "1.3-engine",
+    "source_profile_version_literal": "1",
+    "source_snapshot_id_literal": "draft",
+    "source_identifiers_are_persisted_ids": false,
+    "evaluation_on": "2026-11-30",
+    "projection_start": "2026-12-01",
+    "projection_end": "2027-02-28",
+    "proposed_record_month": "2026-12",
+    "record_month_state": "SCENARIO_ONLY_FUTURE_MONTH_REJECTED_BY_CURRENT_API",
+    "currency": "KRW",
+    "raw_amount_unit": "KRW_10000",
+    "amount_values_are_strings": true,
+    "raw_basis": "SCENARIO",
+    "existing_submission_path": "docs/submission/2026-11-10/B안_DION_참가작.docx",
+    "existing_submission_sha256": "28487793773d3835d0e5a1c884ecd68c4fcb45143558db19354fdbf2e9c65bae",
+    "default_product_example": {
+      "path": "frontend/src/lib/dion/fictional-example.json",
+      "sha256": "68147a8c2dbbe8d6b33a813664e5f66c593e5734e3c39c42b0cbbbedca28ce75",
+      "case_id": "DION-FICTIONAL-300-210",
+      "same_case": false,
+      "instruction": "Do not mix or relabel as submission case."
+    },
+    "current_product_execution": {
+      "state": "NOT_EXECUTED",
+      "persisted_case_id": null,
+      "input_version": null,
+      "raw_snapshot_id": null,
+      "run_id": null,
+      "adoption_id": null,
+      "strategy_id": null,
+      "plan_id": null,
+      "plan_version": null,
+      "plan_version_contract": "Current API has no standalone plan_id/plan_version; use observed adoption_id + run_id + input_version + strategy_id after execution.",
+      "checkin_revision": null,
+      "next_draft_run_id": null
+    },
+    "policy_versions_from_source": {
+      "engine_schema": "DION-ENGINE-1.0",
+      "question_binding": "1.3-engine",
+      "allocation_policy": "DION-ALLOCATION-1.0",
+      "proposal_reference": "DION-PROPOSAL-REFERENCE-0.1",
+      "authority": "Existing code/contracts; historical artifact runtime release is not inferred."
+    },
+    "current_engine_execution": {
+      "state": "DIRECT_FUNCTION_REPLAY_WITH_INDEPENDENT_RECONCILIATION",
+      "evidence_root": "docs/contest/2026-11-14/engine/evidence",
+      "variants": [
+        "canonical",
+        "initial",
+        "revised",
+        "partial"
+      ],
+      "product_api_or_db_executed": false,
+      "runtime_ids_created": false,
+      "authority": "engine/HANDOFF.md and lead/engine-intake.json; historical input versions remain historical."
+    }
+  },
+  "historical_evidence": {
+    "state": "FILES_LOCATED_AND_HASHED_NOT_REEXECUTED_NOT_CURRENT_PRODUCT_RUN",
+    "local_roots": [
+      "C:/Users/LG/Projects/DION-git/docs/submission/2026-11-10/evidence",
+      "C:/Users/LG/Projects/DION_Integrated_20261110_v6/dion/docs/submission/2026-11-10/evidence"
+    ],
+    "same_hashes_in_two_roots": true,
+    "snapshots": [
+      {
+        "file": "initial-snapshot.json",
+        "sha256": "3239e6460ac8bdb6cc7044705562a6a8b881164a2654de23156443f3a5452d5c",
+        "input_version": 12,
+        "raw_snapshot_id": "raw_72657ec196dc48f5a21e778d4364048f",
+        "engine_input_sha256": "5a8f30ddeb9a4b5c5cba87f6ba3c62579c191e866218120383d8a30a4c150adc"
+      },
+      {
+        "file": "revised-snapshot.json",
+        "sha256": "fc93b821182b97980f7e9c4401f37fe013f09ce8acad3fb42bd8127e5773c84f",
+        "input_version": 13,
+        "raw_snapshot_id": "raw_fb691f7f0b404d0f85217e8410a3d171",
+        "engine_input_sha256": "e6c75695fb23faf6fe706330f1d9896e914b012556c10cde9017a775b95e9aa4"
+      },
+      {
+        "file": "partial-snapshot.json",
+        "sha256": "6013f4976621ca930f4570bcd5e3c7f4f8df8907a7a7c6d6bbb19b4476a16c19",
+        "input_version": 14,
+        "raw_snapshot_id": "raw_dbda754484d944298fa66bf08ae28c25",
+        "engine_input_sha256": "ac7fa1b324fd34f56f40e941ece5b7fc97ef24472767a6e1c15a76f8d4ae560f"
+      }
+    ],
+    "git_status": "Ignored by .gitignore line 45; absent from fresh checkout; not force-added.",
+    "local_only": true,
+    "current_submission_readiness": false,
+    "extracted_replay_evidence": {
+      "path": "docs/contest/2026-11-14/engine/evidence/recovered-sources.json",
+      "state": "INPUT_ONLY_EXTRACTIONS_AND_CURRENT_DIRECT_ENGINE_RESULTS_LOCALLY_INCLUDED",
+      "original_ignored_files_preserved": true,
+      "complete_submission_package_verified": false
+    }
+  },
+  "ownership": {
+    "roles": [
+      {
+        "id": "lead",
+        "branch": "codex/contest-lead-20261114",
+        "workspace": "C:/Users/LG/Projects/DION-contest-lead-20261114",
+        "status": "ACTIVE_LOCAL_INTEGRATION",
+        "write": [
+          "docs/contest/2026-11-14/lead/**",
+          "docs/project-status.md",
+          "docs/development-log.md"
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "engine",
+        "branch": "codex/contest-engine-20261114",
+        "workspace": "C:/Users/LG/Projects/DION-contest-engine-20261114",
+        "status": "COMPLETED_HANDOFF_ACCEPTED_LOCALLY",
+        "write": [
+          "backend/app/planning/**",
+          "backend/app/financial_contract.py",
+          "backend/tests/planning/**",
+          "docs/questions/v1.2/**",
+          "docs/questions/v1.3-engine/**",
+          "docs/contest/2026-11-14/engine/**"
+        ],
+        "depends_on": [
+          "lead.case_freeze"
+        ]
+      },
+      {
+        "id": "checkin",
+        "branch": "codex/contest-checkin-20261114",
+        "workspace": "C:/Users/LG/Projects/DION-contest-checkin-20261114",
+        "status": "PLANNED_NOT_CREATED_BY_LEAD",
+        "write": [
+          "backend/app/be/plan_api.py",
+          "backend/app/be/plan_checkin.py",
+          "backend/app/be/api.py",
+          "backend/app/be/question_api.py",
+          "backend/app/be/question_bridge.py",
+          "backend/app/be/adapter.py",
+          "backend/app/be/raw_store.py",
+          "backend/app/be/store.py",
+          "backend/app/be/postgres.py",
+          "backend/app/be/auth.py",
+          "backend/app/be/auth_api.py",
+          "backend/app/be/readiness.py",
+          "backend/app/be_server.py",
+          "backend/migrations/be/**",
+          "backend/tests/be/test_plan_checkin.py",
+          "backend/tests/be/test_account_cases.py",
+          "backend/tests/be/test_question_bridge.py",
+          "backend/tests/be/test_question_frontend.py",
+          "backend/tests/be/test_definition_compatibility.py",
+          "docs/contest/2026-11-14/checkin/**"
+        ],
+        "depends_on": [
+          "lead.case_freeze",
+          "engine.case_field_mapping"
+        ]
+      },
+      {
+        "id": "ai",
+        "branch": "codex/contest-ai-eval-20261114",
+        "workspace": "C:/Users/LG/Projects/DION-contest-ai-eval-20261114",
+        "status": "PLANNED_NOT_CREATED_BY_LEAD",
+        "write": [
+          "backend/app/consultation/**",
+          "backend/app/explanation/**",
+          "backend/app/be/consultation_api.py",
+          "backend/app/be/explanation_api.py",
+          "backend/tests/be/test_consultation*.py",
+          "backend/tests/be/test_scenario*.py",
+          "backend/tests/be/test_explanation.py",
+          "backend/tests/be/test_rag*.py",
+          "backend/tests/be/test_oneport*.py",
+          "backend/tests/rag_fixture.py",
+          "data/rag/**",
+          "docs/contest/2026-11-14/ai/**"
+        ],
+        "depends_on": [
+          "lead.case_freeze",
+          "engine.case_reconciliation",
+          "checkin.saved_case_contract"
+        ]
+      },
+      {
+        "id": "results",
+        "branch": "codex/contest-results-20261114",
+        "workspace": "C:/Users/LG/Projects/DION-contest-results-20261114",
+        "status": "PLANNED_NOT_CREATED_BY_LEAD",
+        "write": [
+          "frontend/src/components/dion/**",
+          "frontend/src/lib/dion/**",
+          "frontend/e2e/**",
+          "docs/contest/2026-11-14/results/**"
+        ],
+        "depends_on": [
+          "lead.case_freeze",
+          "engine.case_reconciliation",
+          "checkin.plan_checkin_contract",
+          "ai.explanation_contract_for_ai_ui"
+        ]
+      },
+      {
+        "id": "submission",
+        "branch": "codex/contest-submission-20261114",
+        "workspace": "C:/Users/LG/Projects/DION-contest-submission-20261114",
+        "status": "PLANNED_NOT_CREATED_BY_LEAD",
+        "write": [
+          "docs/contest/2026-11-14/submission/**",
+          "docs/submission/2026-11-14/**"
+        ],
+        "depends_on": [
+          "lead.case_freeze",
+          "engine.case_reconciliation",
+          "checkin.lifecycle_evidence",
+          "ai.evaluation_evidence",
+          "results.candidate_captures"
+        ]
+      }
+    ],
+    "protected_without_cross_role_review": [
+      "AGENTS.md",
+      "frontend/AGENTS.md",
+      "package.json",
+      "frontend/package.json",
+      "frontend/package-lock.json",
+      "backend/requirements.txt",
+      ".github/**",
+      "frontend/vercel.json",
+      ".env*",
+      "docs/design/2026-11-10/connected-demo/submission-input.json",
+      "docs/submission/2026-11-10/**"
+    ],
+    "rules": [
+      "One file owner. Shared provider or consumer changes require named contract review and owner implementation.",
+      "No new schema generator, .10x records or automatic delegation.",
+      "Requested workspaces other than lead were not created by lead; verify before use.",
+      "Case/ID/amount/policy changes require explicit mapping/version, never relabel old evidence."
+    ]
+  },
+  "integration": {
+    "selected_role_results": [
+      {
+        "role": "engine",
+        "branch": "codex/contest-engine-20261114",
+        "source_head_sha": "eed221d1c1d305d79713ebb0dbf0c41d9c624e8a",
+        "source_kind": "COMPLETED_UNCOMMITTED_HASHED_HANDOFF",
+        "handoff_sha256": "11c385707754e31f5b4c88e29c142533c528838d47f073f24ae13a9c5dd3b646",
+        "candidate_files_sha256": "62b2f92533a7b31c85bf3d2b11463500238a41a01f58f104c59de1b7576df264",
+        "receipt_path": "docs/contest/2026-11-14/lead/engine-intake.json",
+        "accepted_file_count": 22,
+        "contract_delta": "Additive proposal_reference.goal_omissions; irregular calendars omit only monthly reference comparisons.",
+        "consumer_state": "FE_NOTICE_PENDING; original OUT-04/05 preserved; product end-to-end readiness not claimed."
+      }
+    ],
+    "intake_status": {
+      "engine": "RECEIVED_REVIEWED_ACCEPTED_LOCALLY",
+      "checkin": "NOT_RECEIVED",
+      "ai": "NOT_RECEIVED",
+      "results": "NOT_RECEIVED",
+      "submission": "NOT_RECEIVED"
+    },
+    "candidate_head_sha": "eed221d1c1d305d79713ebb0dbf0c41d9c624e8a",
+    "candidate_delta": "LOCAL_ENGINE_BOUNDARY_FIX_TESTS_EVIDENCE_AND_LEAD_DOCUMENTATION",
+    "candidate_diff_path": "C:/Users/LG/Projects/DION-contest-lead-20261114.diff",
+    "product_candidate_state": "NOT_READY_PENDING_BE_CASE_MAPPING_LIFECYCLE_AND_FE_AI_SUBMISSION_EVIDENCE"
+  },
+  "verification": {
+    "this_turn_scope": "INTEGRATION_HASHES_JUNIT_PROVENANCE_CONSUMER_CONTRACT_LINKS_WHITESPACE",
+    "app_tests": "NOT_REPEATED_BYTE_IDENTICAL_TO_OWNER_VERIFIED_SOURCE",
+    "full_core": "NOT_RUN",
+    "build": "NOT_RUN",
+    "e2e": "NOT_RUN",
+    "paid_ai": "NOT_RUN",
+    "operating_db": "NOT_ACCESSED",
+    "servers": "NOT_TOUCHED",
+    "github_push": false,
+    "remote_merge": false,
+    "vercel_deploy": false,
+    "render_deploy": false,
+    "owner_engine_tests": {
+      "initial_passed": 238,
+      "initial_failed": 4,
+      "retry_passed": 4,
+      "unique_passed": 242,
+      "new_tests": 31,
+      "source": "docs/contest/2026-11-14/engine/evidence/pytest-initial.xml and pytest-retry.xml",
+      "ruff": "PASS_REPORTED_BY_OWNER_HANDOFF_NOT_RERUN_BY_LEAD"
+    },
+    "integration_static_report": "docs/contest/2026-11-14/lead/integration-verification.json"
+  }
+}

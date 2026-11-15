@@ -1,0 +1,28 @@
+{
+  "role": "ai",
+  "state": "PENDING_UPDATED_COMPLETE_HANDOFF_HASH_SET",
+  "source_workspace": "C:\\Users\\LG\\Projects\\DION-contest-ai-eval-20261114",
+  "candidate_files_sha256": "fb881f5bd23bd84d8dc44214a987a7b43f1eb44ec9a254307234e14057afaa80",
+  "expected_test_sha256": "bbb3096cc0884dcdb7bbd1de21b9334c637da346ac14e5ed04e9d66eceac8c32",
+  "observed_test_sha256": "5775d6221c097f9b880b69b739c7b92ad223b6f467a540cec4e6a0df948177d1",
+  "accepted_files": [],
+  "last_completed_evaluation": {
+    "pass": 22,
+    "fail": 1,
+    "blocked": 1
+  },
+  "instruction": "Wait for updated completed HANDOFF and matching hashes; do not copy in-progress files or rerun holdout.",
+  "latest_observed_followup": {
+    "document": "C:/Users/LG/Projects/DION-contest-ai-eval-20261114/docs/contest/2026-11-14/ai/FOLLOWUP-R1-02.md",
+    "R1_02": "OWNER_REPORT_1_PASS_NO_RETRY",
+    "across_rounds": {
+      "pass": 23,
+      "fail": 0,
+      "blocked": 1
+    },
+    "rerun_all_current_candidate": false,
+    "R3_04": "BLOCKED_B_MAPPING_AND_HOUSEHOLD_SCOPE",
+    "integrated_BE_baseline_lock": "BLOCKED_OLD_test_plan_checkin.py_HASH",
+    "acceptance_attempt": "HANDOFF.md changed after candidate-files snapshot; no AI files copied"
+  }
+}

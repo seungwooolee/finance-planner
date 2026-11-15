@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="2.109" timestamp="2026-11-14T19:55:42.856032+09:00" hostname="이승우"><testcase classname="tests.be.test_contest_b_lifecycle" name="test_same_b11_input_comparison_adoption_record_and_changed_draft" time="1.386" /></testsuite></testsuites>

@@ -30,10 +30,8 @@ test('basic: real calculation, six risk answers, edit/reuse, product boundary an
   expect(first.posted.schema_version).toBe('DION-QUESTION12-ADAPTER-1.0');
   expect(first.result.results['OUT-03'].after_existing_contributions_krw).toBe('1099000');
   await page.getByRole('button',{name:/투자구성/}).click();
-  await expect(page.getByText('6개 항목의 답변이 있어요.',{exact:false})).toBeVisible();
-  await expect(page.getByText('투자 검토 답변 · 상품 필터 연결',{exact:true})).toBeVisible();
-  if(!(await page.getByRole('button',{name:'돈을 사용할 시점 수정 →',exact:true}).isVisible()))await page.getByText('투자 답변 확인 완료 · 답변 보기 ▾',{exact:true}).click();
-  await page.getByRole('button',{name:'돈을 사용할 시점 수정 →',exact:true}).click();
+  await expect(page.getByText('투자 검토 답변 · 상품 필터 연결',{exact:true})).toHaveCount(0);
+  await page.getByRole('button',{name:'투자 선호 수정 →',exact:true}).click();
   await expect(page.locator('.d-risk-question')).toHaveCount(6);
   await page.locator('.d-risk-question').filter({hasText:'감수할 손실'}).locator('summary').click();
   await page.getByRole('button',{name:'5% 이상~10% 미만',exact:true}).click();
@@ -45,7 +43,7 @@ test('basic: real calculation, six risk answers, edit/reuse, product boundary an
   expect(updated.result.results['OUT-05'].candidates[0].rows[0].policy_input_sha256).not.toBe(first.result.results['OUT-05'].candidates[0].rows[0].policy_input_sha256);
   await page.getByRole('button',{name:/상품 정보|상품·비중/}).click();
   await expect(page.getByText('검토용 초안 · 실제 가입·매수·이체 없음',{exact:true})).toBeVisible();
-  await expect(page.getByText('현재 배분할 수 있는 상품이 없어 투자 후보 금액을 미배분으로 남겼어요.',{exact:true})).toBeVisible();
+  await expect(page.getByText('현재 배분할 수 있는 상품이 없어 투자 후보 금액을 현금 대기자금으로 남겼어요.',{exact:true})).toBeVisible();
   expect(updated.posted.requested_outputs).toContain('OUT-06');
   const review=updated.result.results['OUT-06'];
   expect(review.catalog.identity_verified_count).toBe(78);
@@ -78,8 +76,7 @@ test('overlap: mobile, shared answers in quick/deep, isolated switching and retu
   const deepCount=await nav.getByRole('button').count();
   await expect(page.getByRole('textbox',{name:'가족의 한 달 소득',exact:true})).toHaveValue('480');
   await nav.getByRole('button',{name:/나의 상황/}).click();
-  await expect(page.getByRole('button',{name:'신혼기',exact:true})).toHaveAttribute('aria-pressed','true');
-  await page.getByText('두 가지 이상에 해당해요',{exact:true}).click();
+  await expect(page.getByRole('checkbox',{name:'신혼기',exact:true})).toBeChecked();
   await expect(page.getByRole('checkbox',{name:'자녀 출산·양육기',exact:true})).toBeChecked();
   await page.getByRole('button',{name:'빠른진단',exact:true}).click();
   const reused=await recalculate(page);

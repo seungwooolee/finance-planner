@@ -1,0 +1,15 @@
+{
+  "initial_checkpoint_sha": "38c3734272407d53eac686860ccf9e0aa37703cb",
+  "initial_checkpoint_eligible": false,
+  "reason": "PowerShell continued to git commit after a failed Python assertion; staged snapshot inputs had been normalized by root eol=lf",
+  "normalized_locked_snapshots": [
+    "docs/contest/2026-11-14/ai/evidence/inputs/canonical-current-result.json",
+    "docs/contest/2026-11-14/ai/evidence/inputs/lead-HANDOFF.md",
+    "docs/contest/2026-11-14/ai/evidence/inputs/lead-manifest.json",
+    "docs/contest/2026-11-14/ai/evidence/inputs/partial-current-result.json",
+    "docs/contest/2026-11-14/ai/evidence/inputs/revised-current-result.json"
+  ],
+  "fix": "AI-local .gitattributes evidence/** -text; stage raw evidence again without editing expectations",
+  "staged_lock_mismatches_after_fix": [],
+  "tests_repeated": false
+}

@@ -1,0 +1,377 @@
+{
+  "verified_at": "2026-11-14T18:40:00.865169+00:00",
+  "model": "gpt-6.1-terra",
+  "data_scope": "SYNTHETIC_ONLY",
+  "authorization": "User explicitly requested paid live validation on 2026-11-15; local test grant only.",
+  "live_input": {
+    "data_scope": "SYNTHETIC_ONLY",
+    "model": "gpt-6.1-terra",
+    "planned_cases": 5,
+    "passed": 5,
+    "results": [
+      {
+        "case": 1,
+        "passed": true,
+        "source": "ONEPORT",
+        "actual": [
+          [
+            "F03/monthly_net_income_krw",
+            "KNOWN",
+            "3125000"
+          ]
+        ],
+        "expected": [
+          [
+            "F03/monthly_net_income_krw",
+            "KNOWN",
+            "3125000"
+          ]
+        ]
+      },
+      {
+        "case": 2,
+        "passed": true,
+        "source": "ONEPORT",
+        "actual": [
+          [
+            "F04/included_contributions",
+            "KNOWN",
+            "300000"
+          ],
+          [
+            "F04/included_debt",
+            "KNOWN",
+            "400000"
+          ]
+        ],
+        "expected": [
+          [
+            "F04/included_contributions",
+            "KNOWN",
+            "300000"
+          ],
+          [
+            "F04/included_debt",
+            "KNOWN",
+            "400000"
+          ]
+        ]
+      },
+      {
+        "case": 3,
+        "passed": true,
+        "source": "ONEPORT",
+        "actual": [
+          [
+            "F04/living",
+            "UNKNOWN",
+            null
+          ]
+        ],
+        "expected": [
+          [
+            "F04/living",
+            "UNKNOWN",
+            null
+          ]
+        ]
+      },
+      {
+        "case": 4,
+        "passed": true,
+        "source": "ONEPORT",
+        "actual": [
+          [
+            "F03/income_period_end",
+            "KNOWN",
+            "2026-10-31"
+          ],
+          [
+            "F03/income_period_start",
+            "KNOWN",
+            "2026-10-01"
+          ]
+        ],
+        "expected": [
+          [
+            "F03/income_period_end",
+            "KNOWN",
+            "2026-10-31"
+          ],
+          [
+            "F03/income_period_start",
+            "KNOWN",
+            "2026-10-01"
+          ]
+        ]
+      },
+      {
+        "case": 5,
+        "passed": true,
+        "source": "ONEPORT",
+        "actual": [
+          [
+            "NEW-04/has_liabilities",
+            "KNOWN",
+            false
+          ]
+        ],
+        "expected": [
+          [
+            "NEW-04/has_liabilities",
+            "KNOWN",
+            false
+          ]
+        ]
+      }
+    ]
+  },
+  "live_result_action": {
+    "passed": 5,
+    "total": 5,
+    "cases": [
+      {
+        "case": 1,
+        "expected_topic": "ALLOCATION",
+        "actual_topic": "ALLOCATION",
+        "passed": true
+      },
+      {
+        "case": 2,
+        "expected_topic": "CASH_WAITING",
+        "actual_topic": "CASH_WAITING",
+        "passed": true
+      },
+      {
+        "case": 3,
+        "expected_topic": "CURRENCY",
+        "actual_topic": "CURRENCY",
+        "passed": true
+      },
+      {
+        "case": 4,
+        "expected_topic": "PROJECTION",
+        "actual_topic": "PROJECTION",
+        "passed": true
+      },
+      {
+        "case": 5,
+        "expected_topic": "UNSUPPORTED",
+        "actual_topic": "UNSUPPORTED",
+        "passed": true
+      }
+    ]
+  },
+  "browser": {
+    "passed": 1,
+    "seconds": 55.9,
+    "flow": "real model -> source-linked candidate -> user review -> conflict confirmation -> CONSULTATION_ONLY / NOT_APPLIED; saved diagnosis unchanged",
+    "auth": "synthetic test identity",
+    "storage": "disposable local SQLite"
+  },
+  "receipts": [
+    {
+      "case_sequence": 1,
+      "state": "VALIDATED",
+      "http_status": 200,
+      "execution": "RESPONSE_RECEIVED",
+      "structured_output": "OBSERVED_VALID",
+      "input_tokens": 694,
+      "output_tokens": 84,
+      "total_tokens": 778,
+      "cost_credits": "1.0247",
+      "settlement": "REPORTED",
+      "elapsed_ms": 4875,
+      "gateway_daily_cap_verified": false,
+      "gateway_uncapped_key_authorized": true,
+      "error_code": null,
+      "provider_request_sha256": "1b48633b04f0aa581675cfbbfe6367039b26078afa78023bc6db44653ca6f4dc"
+    },
+    {
+      "case_sequence": 2,
+      "state": "VALIDATED",
+      "http_status": 200,
+      "execution": "RESPONSE_RECEIVED",
+      "structured_output": "OBSERVED_VALID",
+      "input_tokens": 698,
+      "output_tokens": 231,
+      "total_tokens": 929,
+      "cost_credits": "1.7044",
+      "settlement": "REPORTED",
+      "elapsed_ms": 5592,
+      "gateway_daily_cap_verified": false,
+      "gateway_uncapped_key_authorized": true,
+      "error_code": null,
+      "provider_request_sha256": "bead9b5f68c92939b90f6aa91d6342a34a9a6091ff39d1a60d9aa96e937af853"
+    },
+    {
+      "case_sequence": 3,
+      "state": "VALIDATED",
+      "http_status": 200,
+      "execution": "RESPONSE_RECEIVED",
+      "structured_output": "OBSERVED_VALID",
+      "input_tokens": 687,
+      "output_tokens": 74,
+      "total_tokens": 761,
+      "cost_credits": "0.9723",
+      "settlement": "REPORTED",
+      "elapsed_ms": 4141,
+      "gateway_daily_cap_verified": false,
+      "gateway_uncapped_key_authorized": true,
+      "error_code": null,
+      "provider_request_sha256": "bddbb6329014c55cb66b63efad4eb21f363cc063521fdcb80e68de9fba6629bd"
+    },
+    {
+      "case_sequence": 4,
+      "state": "VALIDATED",
+      "http_status": 200,
+      "execution": "RESPONSE_RECEIVED",
+      "structured_output": "OBSERVED_VALID",
+      "input_tokens": 702,
+      "output_tokens": 147,
+      "total_tokens": 849,
+      "cost_credits": "1.3218",
+      "settlement": "REPORTED",
+      "elapsed_ms": 4296,
+      "gateway_daily_cap_verified": false,
+      "gateway_uncapped_key_authorized": true,
+      "error_code": null,
+      "provider_request_sha256": "d80f1d125f8e115efc9c3a13983f91faf89ad6e72f0227d3e27e420b43d9779b"
+    },
+    {
+      "case_sequence": 5,
+      "state": "VALIDATED",
+      "http_status": 200,
+      "execution": "RESPONSE_RECEIVED",
+      "structured_output": "OBSERVED_VALID",
+      "input_tokens": 678,
+      "output_tokens": 68,
+      "total_tokens": 746,
+      "cost_credits": "0.9364",
+      "settlement": "REPORTED",
+      "elapsed_ms": 3250,
+      "gateway_daily_cap_verified": false,
+      "gateway_uncapped_key_authorized": true,
+      "error_code": null,
+      "provider_request_sha256": "93a47639b3328494cd06a80629ca8b82dbb2a15c122445540022f3c3f54429e7"
+    },
+    {
+      "case_sequence": 6,
+      "state": "VALIDATED",
+      "http_status": 200,
+      "execution": "RESPONSE_RECEIVED",
+      "structured_output": "OBSERVED_VALID",
+      "input_tokens": 492,
+      "output_tokens": 60,
+      "total_tokens": 552,
+      "cost_credits": "0.7285",
+      "settlement": "REPORTED",
+      "elapsed_ms": 4422,
+      "gateway_daily_cap_verified": false,
+      "gateway_uncapped_key_authorized": true,
+      "error_code": null,
+      "provider_request_sha256": "0d002346300e8d875edc0b7c1eb41412df241221624427242a2cafdf95917816"
+    },
+    {
+      "case_sequence": 7,
+      "state": "VALIDATED",
+      "http_status": 200,
+      "execution": "RESPONSE_RECEIVED",
+      "structured_output": "OBSERVED_VALID",
+      "input_tokens": 487,
+      "output_tokens": 90,
+      "total_tokens": 577,
+      "cost_credits": "0.8619",
+      "settlement": "REPORTED",
+      "elapsed_ms": 5906,
+      "gateway_daily_cap_verified": false,
+      "gateway_uncapped_key_authorized": true,
+      "error_code": null,
+      "provider_request_sha256": "ebfda78c150eee303417676f85f40bb938d4a1fc1c7287d4a23320e934af525b"
+    },
+    {
+      "case_sequence": 8,
+      "state": "VALIDATED",
+      "http_status": 200,
+      "execution": "RESPONSE_RECEIVED",
+      "structured_output": "OBSERVED_VALID",
+      "input_tokens": 489,
+      "output_tokens": 208,
+      "total_tokens": 697,
+      "cost_credits": "1.4064",
+      "settlement": "REPORTED",
+      "elapsed_ms": 5655,
+      "gateway_daily_cap_verified": false,
+      "gateway_uncapped_key_authorized": true,
+      "error_code": null,
+      "provider_request_sha256": "899bcad67450e342c3e1de9b27ff340f8ee7cc476c6a843c2835a0a7ac77137a"
+    },
+    {
+      "case_sequence": 9,
+      "state": "VALIDATED",
+      "http_status": 200,
+      "execution": "RESPONSE_RECEIVED",
+      "structured_output": "OBSERVED_VALID",
+      "input_tokens": 483,
+      "output_tokens": 79,
+      "total_tokens": 562,
+      "cost_credits": "0.8076",
+      "settlement": "REPORTED",
+      "elapsed_ms": 3797,
+      "gateway_daily_cap_verified": false,
+      "gateway_uncapped_key_authorized": true,
+      "error_code": null,
+      "provider_request_sha256": "220f3f579498cdca498fe9c6769c8ad59577f475e7bcb6709650109c24c89cca"
+    },
+    {
+      "case_sequence": 10,
+      "state": "VALIDATED",
+      "http_status": 200,
+      "execution": "RESPONSE_RECEIVED",
+      "structured_output": "OBSERVED_VALID",
+      "input_tokens": 485,
+      "output_tokens": 60,
+      "total_tokens": 545,
+      "cost_credits": "0.7221",
+      "settlement": "REPORTED",
+      "elapsed_ms": 4375,
+      "gateway_daily_cap_verified": false,
+      "gateway_uncapped_key_authorized": true,
+      "error_code": null,
+      "provider_request_sha256": "43d3290eb586d1b19e1c568e4718c139c986fbd8d671ab7ebfdf1c42cd38223e"
+    },
+    {
+      "case_sequence": 11,
+      "state": "VALIDATED",
+      "http_status": 200,
+      "execution": "RESPONSE_RECEIVED",
+      "structured_output": "OBSERVED_VALID",
+      "input_tokens": 694,
+      "output_tokens": 62,
+      "total_tokens": 756,
+      "cost_credits": "0.9235",
+      "settlement": "REPORTED",
+      "elapsed_ms": 7593,
+      "gateway_daily_cap_verified": false,
+      "gateway_uncapped_key_authorized": true,
+      "error_code": null,
+      "provider_request_sha256": "e29204a3fc04065dbe143b018acb7ea5e6582a8bdc2a9e7a81cec6bc70565b0f"
+    }
+  ],
+  "totals": {
+    "calls": 11,
+    "validated": 11,
+    "reported_cost_credits": "11.4096",
+    "unknown_cost_count": 0,
+    "krw_equivalent_at_2_per_credit": "22.8192",
+    "total_tokens": 7752,
+    "latency_ms_min": 3250,
+    "latency_ms_max": 7593
+  },
+  "operational_limits": [
+    "Production deployment/environment unchanged",
+    "No real customer/account/remote DB validation",
+    "Finite synthetic cases do not establish general model accuracy",
+    "Default gateway daily-cap requirement unchanged; explicit operator opt-in only"
+  ]
+}

@@ -1,0 +1,305 @@
+{
+  "environment": "LOCAL_NEXT_DEV_REAL_ENGINE_TEMP_SQLITE_MOCK_IDENTITY",
+  "source_fe": "707da4156b1cbfafdf4be81b4b15060008e02aad",
+  "common_B_case": false,
+  "response_overrides": false,
+  "paid_calls": 0,
+  "operating_db": "NOT_ACCESSED",
+  "started_at": "2026-11-14T10:29:05.826Z",
+  "scenarios": [
+    {
+      "name": "goal_omissions",
+      "checks": [
+        "real engine emits omission while original goal stays CALCULATED at 300000 KRW",
+        "FE renders actual omission, original goal amount and fixed-reference limitations",
+        "source fixture bytes unchanged"
+      ],
+      "state": "PASS",
+      "fixture": "frontend/src/lib/dion/product-review-scenario.json",
+      "source_sha256": "f4b334c543181d1ebafd4dc035e53e0be91bc1b02eaf8a8731e78e354f968c9f",
+      "input_change": {
+        "question": "F12",
+        "goal_id": "early-goal-1",
+        "contribution_dates": [
+          "2026-12-05",
+          "2026-12-15",
+          "2026-12-25"
+        ]
+      },
+      "transmitted_input": {
+        "local_only_path": "C:\\Users\\LG\\Projects\\DION-contest-lead-20261114\\artifacts\\contest-fe707\\preview-request.json",
+        "sha256": "4d4dfe2d951fc3b9a08957df1eb94ec1fa9b046fa586b40a14e13a8468b1cfd7"
+      },
+      "raw_response": {
+        "local_only_path": "C:\\Users\\LG\\Projects\\DION-contest-lead-20261114\\artifacts\\contest-fe707\\preview-response.json",
+        "sha256": "979b9d7af26237fec610f9a7306c4bb98052b16a69e6f4fb1129576a11d61a75"
+      },
+      "actual": {
+        "context": {
+          "case_id": "FE-FICTIONAL-product-review",
+          "snapshot_id": "FE-FICTIONAL-product-review-raw",
+          "profile_version": "1",
+          "evaluation_on": "2026-11-13",
+          "scope": "personal",
+          "included_owner_ids": [
+            "person_self"
+          ],
+          "currency": "KRW",
+          "timezone": "Asia/Seoul",
+          "projection_start": "2026-12-01",
+          "projection_end": "2026-12-31"
+        },
+        "reference_version": "DION-PROPOSAL-REFERENCE-0.1",
+        "reference_state": "CALCULATED",
+        "goal_omissions": [
+          {
+            "goal_id": "early-goal-1",
+            "reason": "MONTHLY_REFERENCE_CALENDAR_UNSUPPORTED"
+          }
+        ],
+        "original_goal": {
+          "goal_id": "early-goal-1",
+          "type": "WEALTH",
+          "priority": 1,
+          "calc_state": "CALCULATED",
+          "due_on": "2026-12-31",
+          "target_krw": "300000",
+          "prepared_krw": "0",
+          "gap_krw": "300000",
+          "contribution_count": 3,
+          "level_contribution_krw": "100000",
+          "funding_schedule": [
+            {
+              "on": "2026-12-05",
+              "amount_krw": "100000"
+            },
+            {
+              "on": "2026-12-15",
+              "amount_krw": "100000"
+            },
+            {
+              "on": "2026-12-25",
+              "amount_krw": "100000"
+            }
+          ],
+          "payments": [
+            {
+              "on": "2026-12-31",
+              "amount_krw": "300000",
+              "economic_event_id": "education-payment-1"
+            }
+          ],
+          "readiness": {
+            "numerator": "0",
+            "denominator": "300000"
+          },
+          "price_basis": "FUTURE_NOMINAL",
+          "return_basis": "ZERO_RETURN"
+        }
+      }
+    },
+    {
+      "name": "checkin_binding",
+      "checks": [
+        "actual UI saves 0 separately from null; actual BE 1.1 partial counts reach FE",
+        "remounted FE reads saved month A separately from actual current adoption B",
+        "revision 2 keeps A/B binding, null financial differences, and suggests draft without automatic adoption"
+      ],
+      "state": "PASS",
+      "fixture": "FE review-tool quick diagnosis (personal synthetic case; not submission B)",
+      "case_id": "test-early-af857356",
+      "analysis": {
+        "run_id": "run_d49e5fabe91446aaae37a691ea388982",
+        "raw_snapshot_id": "raw_cc404a124a1a4080bdd83ccea29dc61c",
+        "input_version": 22,
+        "draft_id": "draft_38fff174d229423d8f4d18b1d547ac7f",
+        "status": "SUCCEEDED",
+        "error_code": null
+      },
+      "first_record": {
+        "record_month": "2026-11",
+        "contract_version": "DION-PLAN-CHECKIN-1.1",
+        "revision": 1,
+        "record": {
+          "amounts": {
+            "income": "3000000",
+            "living": null,
+            "loan": null,
+            "goal": null,
+            "invest_existing": null,
+            "invest_new": "0",
+            "emergency": null,
+            "extra_cash": null
+          },
+          "tasks": [
+            {
+              "key": "goal_deposits_krw",
+              "label": "목표 적립금 넣기 · 적립 예정일 확인 (계획 2026-11 · 30만원)",
+              "state": "PLANNED",
+              "reason": null
+            },
+            {
+              "key": "new_investment_krw",
+              "label": "투자 후보금의 상품 구성 확인하기 (계획 2026-11 · 39만 9,500원)",
+              "state": "PLANNED",
+              "reason": null
+            }
+          ],
+          "changes": [],
+          "memo": null
+        },
+        "status": "DRAFT",
+        "checkin_id": "chk_2e18ba61a6e246c0896fdfcdfd3df4d2",
+        "adoption_id": "adp_67163b49258a445fa8ea59e9f8186393",
+        "recorded_at": "2026-11-14T10:30:04.949755+00:00",
+        "summary": {
+          "entered_count": 2,
+          "amount_count": 8,
+          "partial": true,
+          "spending_entered_krw": "0",
+          "transfers_entered_krw": "0",
+          "spending_entered_count": 0,
+          "transfers_entered_count": 1,
+          "allocation_check": "INCOMPLETE_RECORD",
+          "tasks_done": 0,
+          "tasks_total": 2,
+          "review_suggested": false
+        },
+        "adoption": {
+          "adoption_id": "adp_67163b49258a445fa8ea59e9f8186393",
+          "run_id": "run_d49e5fabe91446aaae37a691ea388982",
+          "strategy_id": "STABILITY_FIRST",
+          "input_version": 22,
+          "adopted_at": "2026-11-14T10:30:04.737909+00:00"
+        },
+        "current_adoption": {
+          "adoption_id": "adp_67163b49258a445fa8ea59e9f8186393",
+          "run_id": "run_d49e5fabe91446aaae37a691ea388982",
+          "strategy_id": "STABILITY_FIRST",
+          "input_version": 22,
+          "adopted_at": "2026-11-14T10:30:04.737909+00:00"
+        },
+        "original_adoption_id": "adp_67163b49258a445fa8ea59e9f8186393",
+        "binding_state": "LOCKED",
+        "record_kind": "ADOPTED_PLAN",
+        "comparison": {
+          "state": "POLICY_REQUIRED",
+          "reason": "ACTUAL_AND_PLAN_AMOUNT_SEMANTICS_REQUIRE_CONFIRMATION",
+          "record_month": "2026-11",
+          "amount_differences_krw": null
+        },
+        "review": {
+          "action": "NONE",
+          "base_run_id": "run_d49e5fabe91446aaae37a691ea388982",
+          "adoption_changed": false
+        }
+      },
+      "first_receipt": {
+        "local_only_path": "C:\\Users\\LG\\Projects\\DION-contest-lead-20261114\\artifacts\\contest-fe707\\checkin-first.json",
+        "sha256": "c2d780a3241f12b35c42344948b2facdb55ca07b8c1b02a58959b57279ef669f"
+      },
+      "explicit_adoptions": {
+        "first_ui": {
+          "adoption_id": "adp_67163b49258a445fa8ea59e9f8186393",
+          "run_id": "run_d49e5fabe91446aaae37a691ea388982",
+          "strategy_id": "STABILITY_FIRST",
+          "input_version": 22,
+          "transaction_executed": false
+        },
+        "second_tester_api": {
+          "adoption_id": "adp_65f24bdc641549c4b35888f4dba9d839",
+          "run_id": "run_d49e5fabe91446aaae37a691ea388982",
+          "strategy_id": "INVESTMENT_CAPACITY",
+          "input_version": 22,
+          "transaction_executed": false
+        }
+      },
+      "updated_record": {
+        "record_month": "2026-11",
+        "contract_version": "DION-PLAN-CHECKIN-1.1",
+        "revision": 2,
+        "record": {
+          "amounts": {
+            "income": "3000000",
+            "living": null,
+            "loan": null,
+            "goal": null,
+            "invest_existing": null,
+            "invest_new": "0",
+            "emergency": null,
+            "extra_cash": null
+          },
+          "tasks": [
+            {
+              "key": "goal_deposits_krw",
+              "label": "목표 적립금 넣기 · 적립 예정일 확인 (계획 2026-11 · 30만원)",
+              "state": "PLANNED",
+              "reason": null
+            },
+            {
+              "key": "new_investment_krw",
+              "label": "투자 후보금의 상품 구성 확인하기 (계획 2026-11 · 39만 9,500원)",
+              "state": "PLANNED",
+              "reason": null
+            }
+          ],
+          "changes": [
+            "INCOME"
+          ],
+          "memo": null
+        },
+        "status": "CLOSED",
+        "checkin_id": "chk_6d304dd35e2c4d1aa19fa7b71e480ded",
+        "adoption_id": "adp_67163b49258a445fa8ea59e9f8186393",
+        "recorded_at": "2026-11-14T10:30:06.126097+00:00",
+        "summary": {
+          "entered_count": 2,
+          "amount_count": 8,
+          "partial": true,
+          "spending_entered_krw": "0",
+          "transfers_entered_krw": "0",
+          "spending_entered_count": 0,
+          "transfers_entered_count": 1,
+          "allocation_check": "INCOMPLETE_RECORD",
+          "tasks_done": 0,
+          "tasks_total": 2,
+          "review_suggested": true
+        },
+        "adoption": {
+          "adoption_id": "adp_67163b49258a445fa8ea59e9f8186393",
+          "run_id": "run_d49e5fabe91446aaae37a691ea388982",
+          "strategy_id": "STABILITY_FIRST",
+          "input_version": 22,
+          "adopted_at": "2026-11-14T10:30:04.737909+00:00"
+        },
+        "current_adoption": {
+          "adoption_id": "adp_65f24bdc641549c4b35888f4dba9d839",
+          "run_id": "run_d49e5fabe91446aaae37a691ea388982",
+          "strategy_id": "INVESTMENT_CAPACITY",
+          "input_version": 22,
+          "adopted_at": "2026-11-14T10:30:05.110887+00:00"
+        },
+        "original_adoption_id": "adp_67163b49258a445fa8ea59e9f8186393",
+        "binding_state": "LOCKED",
+        "record_kind": "ADOPTED_PLAN",
+        "comparison": {
+          "state": "POLICY_REQUIRED",
+          "reason": "ACTUAL_AND_PLAN_AMOUNT_SEMANTICS_REQUIRE_CONFIRMATION",
+          "record_month": "2026-11",
+          "amount_differences_krw": null
+        },
+        "review": {
+          "action": "CREATE_NEW_DRAFT",
+          "base_run_id": "run_d49e5fabe91446aaae37a691ea388982",
+          "adoption_changed": false
+        }
+      },
+      "final_receipt": {
+        "local_only_path": "C:\\Users\\LG\\Projects\\DION-contest-lead-20261114\\artifacts\\contest-fe707\\checkin-second.json",
+        "sha256": "4df33b03ac996028cfc1ed70b0b56cdff52976d3b698fd383f872ed5b61fbe89"
+      }
+    }
+  ],
+  "completed_at": "2026-11-14T10:30:07.767Z",
+  "state": "PASS"
+}

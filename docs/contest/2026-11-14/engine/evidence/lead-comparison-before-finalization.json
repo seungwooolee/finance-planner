@@ -1,0 +1,169 @@
+{
+  "base_sha": "eed221d1c1d305d79713ebb0dbf0c41d9c624e8a",
+  "case_version": "DION-CONTEST-B-20261114-1.0",
+  "engine_workspace": "C:\\Users\\LG\\Projects\\DION-contest-engine-20261114",
+  "lead_workspace": "C:\\Users\\LG\\Projects\\DION-contest-lead-20261114",
+  "comparison_phase": "BEFORE_FINAL_HANDOFF_DOCUMENTATION",
+  "matched_files": 22,
+  "files": [
+    {
+      "path": "backend/app/planning/proposal_reference.py",
+      "source_sha256": "2b4e18ee2e47d709e0062074fb9743a5b3e11f4866ee815e8b5713a3dcb59492",
+      "lead_sha256": "2b4e18ee2e47d709e0062074fb9743a5b3e11f4866ee815e8b5713a3dcb59492",
+      "intake_sha256": "2b4e18ee2e47d709e0062074fb9743a5b3e11f4866ee815e8b5713a3dcb59492",
+      "matches": true
+    },
+    {
+      "path": "backend/tests/planning/test_contest_reconciliation.py",
+      "source_sha256": "a85d098324d1ecd0067569c775c52c3788fd563979bb65237e1e8ccf83169e21",
+      "lead_sha256": "a85d098324d1ecd0067569c775c52c3788fd563979bb65237e1e8ccf83169e21",
+      "intake_sha256": "a85d098324d1ecd0067569c775c52c3788fd563979bb65237e1e8ccf83169e21",
+      "matches": true
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/case-reconciliation.md",
+      "source_sha256": "00ef034d88f2ca5f12067f11d80286b6f8cc54c77b6e4fb8231f17df7774688e",
+      "lead_sha256": "00ef034d88f2ca5f12067f11d80286b6f8cc54c77b6e4fb8231f17df7774688e",
+      "intake_sha256": "00ef034d88f2ca5f12067f11d80286b6f8cc54c77b6e4fb8231f17df7774688e",
+      "matches": true
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/baseline-check.json",
+      "source_sha256": "9c90fd44604792756af52bebe2db45b0595488d496bfd92df0488de8c4ede6bc",
+      "lead_sha256": "9c90fd44604792756af52bebe2db45b0595488d496bfd92df0488de8c4ede6bc",
+      "intake_sha256": "9c90fd44604792756af52bebe2db45b0595488d496bfd92df0488de8c4ede6bc",
+      "matches": true
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/candidate.patch",
+      "source_sha256": "2c289586eec08cbd3995b1dd211767b8324b3ed6d67e3ce510d2120e87070f4a",
+      "lead_sha256": "2c289586eec08cbd3995b1dd211767b8324b3ed6d67e3ce510d2120e87070f4a",
+      "intake_sha256": "2c289586eec08cbd3995b1dd211767b8324b3ed6d67e3ce510d2120e87070f4a",
+      "matches": true
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/canonical-current-result.json",
+      "source_sha256": "9ea15b23c474b8546d9faa2d8c64821946784581b156c758e5db5b7e20b4f67a",
+      "lead_sha256": "9ea15b23c474b8546d9faa2d8c64821946784581b156c758e5db5b7e20b4f67a",
+      "intake_sha256": "9ea15b23c474b8546d9faa2d8c64821946784581b156c758e5db5b7e20b4f67a",
+      "matches": true
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/initial-current-result.json",
+      "source_sha256": "8ce87b3937796831f9dbecd61fbd8ec0131ff4c6490ec00091b9d2896828de13",
+      "lead_sha256": "8ce87b3937796831f9dbecd61fbd8ec0131ff4c6490ec00091b9d2896828de13",
+      "intake_sha256": "8ce87b3937796831f9dbecd61fbd8ec0131ff4c6490ec00091b9d2896828de13",
+      "matches": true
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/initial-input.json",
+      "source_sha256": "75b010d314b989225e455d860cb56f6dc0035c0433a5bbe8095c1b64909f8249",
+      "lead_sha256": "75b010d314b989225e455d860cb56f6dc0035c0433a5bbe8095c1b64909f8249",
+      "intake_sha256": "75b010d314b989225e455d860cb56f6dc0035c0433a5bbe8095c1b64909f8249",
+      "matches": true
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/lead-manifest.json",
+      "source_sha256": "3bd0b7017d93e1b3eac08d893969e9baf2c01a2aa8f98b8141a59124b3b7b774",
+      "lead_sha256": "3bd0b7017d93e1b3eac08d893969e9baf2c01a2aa8f98b8141a59124b3b7b774",
+      "intake_sha256": "3bd0b7017d93e1b3eac08d893969e9baf2c01a2aa8f98b8141a59124b3b7b774",
+      "matches": true
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/partial-current-result.json",
+      "source_sha256": "6ccea0053c0a629d130d64cde36fca8e30d10dbfd167aab885f3fff7a519bde2",
+      "lead_sha256": "6ccea0053c0a629d130d64cde36fca8e30d10dbfd167aab885f3fff7a519bde2",
+      "intake_sha256": "6ccea0053c0a629d130d64cde36fca8e30d10dbfd167aab885f3fff7a519bde2",
+      "matches": true
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/partial-input.json",
+      "source_sha256": "34e924726868b25e85c710c357c8b63f9149123fb68ce99a1a3def101a68dcc7",
+      "lead_sha256": "34e924726868b25e85c710c357c8b63f9149123fb68ce99a1a3def101a68dcc7",
+      "intake_sha256": "34e924726868b25e85c710c357c8b63f9149123fb68ce99a1a3def101a68dcc7",
+      "matches": true
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/pytest-initial.txt",
+      "source_sha256": "f1c9835396dac0e93a47961575dba701f6c93853af23da27ce461a947d613d7a",
+      "lead_sha256": "f1c9835396dac0e93a47961575dba701f6c93853af23da27ce461a947d613d7a",
+      "intake_sha256": "f1c9835396dac0e93a47961575dba701f6c93853af23da27ce461a947d613d7a",
+      "matches": true
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/pytest-initial.xml",
+      "source_sha256": "0c1d13bfd806df92ba4709e8921045138eaaf558d548e317da0e489a557b743b",
+      "lead_sha256": "0c1d13bfd806df92ba4709e8921045138eaaf558d548e317da0e489a557b743b",
+      "intake_sha256": "0c1d13bfd806df92ba4709e8921045138eaaf558d548e317da0e489a557b743b",
+      "matches": true
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/pytest-retry.txt",
+      "source_sha256": "dc025b0d9bac06e343d414e4e1f9f5d0cc4336294fa9ceb3beaa75d6362b9bd2",
+      "lead_sha256": "dc025b0d9bac06e343d414e4e1f9f5d0cc4336294fa9ceb3beaa75d6362b9bd2",
+      "intake_sha256": "dc025b0d9bac06e343d414e4e1f9f5d0cc4336294fa9ceb3beaa75d6362b9bd2",
+      "matches": true
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/pytest-retry.xml",
+      "source_sha256": "ed01a8165915f97ea0a28b73192cb5f682acf9b85311e8da75374b97f98aaea3",
+      "lead_sha256": "ed01a8165915f97ea0a28b73192cb5f682acf9b85311e8da75374b97f98aaea3",
+      "intake_sha256": "ed01a8165915f97ea0a28b73192cb5f682acf9b85311e8da75374b97f98aaea3",
+      "matches": true
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/recovered-sources.json",
+      "source_sha256": "9700dcebee459d484557993ef8140997e07c657cad499042f728258c47bfc3b6",
+      "lead_sha256": "9700dcebee459d484557993ef8140997e07c657cad499042f728258c47bfc3b6",
+      "intake_sha256": "9700dcebee459d484557993ef8140997e07c657cad499042f728258c47bfc3b6",
+      "matches": true
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/revised-current-result.json",
+      "source_sha256": "b34fafd41878a867d3140adf054375ee024933d630d76ad8b480463fe671c710",
+      "lead_sha256": "b34fafd41878a867d3140adf054375ee024933d630d76ad8b480463fe671c710",
+      "intake_sha256": "b34fafd41878a867d3140adf054375ee024933d630d76ad8b480463fe671c710",
+      "matches": true
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/revised-input.json",
+      "source_sha256": "98311ec465c931aec68b3fc002f04b230d03c2cee8f23b4b20f182bc8cea407a",
+      "lead_sha256": "98311ec465c931aec68b3fc002f04b230d03c2cee8f23b4b20f182bc8cea407a",
+      "intake_sha256": "98311ec465c931aec68b3fc002f04b230d03c2cee8f23b4b20f182bc8cea407a",
+      "matches": true
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/financial-assumptions.md",
+      "source_sha256": "fcf2cfc7df645928d017e9ebf438340ee7a70438781af86a90b9929082a72e50",
+      "lead_sha256": "fcf2cfc7df645928d017e9ebf438340ee7a70438781af86a90b9929082a72e50",
+      "intake_sha256": "fcf2cfc7df645928d017e9ebf438340ee7a70438781af86a90b9929082a72e50",
+      "matches": true
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/question-result-trace.md",
+      "source_sha256": "bb8b26027590084337a0f62d8a531ab0834954f3eb1f01bc2b6d3e658b19a3aa",
+      "lead_sha256": "bb8b26027590084337a0f62d8a531ab0834954f3eb1f01bc2b6d3e658b19a3aa",
+      "intake_sha256": "bb8b26027590084337a0f62d8a531ab0834954f3eb1f01bc2b6d3e658b19a3aa",
+      "matches": true
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/HANDOFF.md",
+      "source_sha256": "11c385707754e31f5b4c88e29c142533c528838d47f073f24ae13a9c5dd3b646",
+      "lead_sha256": "11c385707754e31f5b4c88e29c142533c528838d47f073f24ae13a9c5dd3b646",
+      "intake_sha256": "11c385707754e31f5b4c88e29c142533c528838d47f073f24ae13a9c5dd3b646",
+      "matches": true
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/candidate-files.json",
+      "source_sha256": "62b2f92533a7b31c85bf3d2b11463500238a41a01f58f104c59de1b7576df264",
+      "lead_sha256": "62b2f92533a7b31c85bf3d2b11463500238a41a01f58f104c59de1b7576df264",
+      "intake_sha256": "62b2f92533a7b31c85bf3d2b11463500238a41a01f58f104c59de1b7576df264",
+      "matches": true
+    }
+  ],
+  "code_delta_since_accepted_intake": false,
+  "duplicate_application_required": false,
+  "test_execution_this_turn": false,
+  "frozen_eof_file": "docs/contest/2026-11-14/engine/evidence/lead-manifest.json",
+  "frozen_eof_sha256": "3bd0b7017d93e1b3eac08d893969e9baf2c01a2aa8f98b8141a59124b3b7b774"
+}

@@ -1,0 +1,58 @@
+{
+  "case_version": "DION-CONTEST-B-20261114-1.0",
+  "candidate_branch": "codex/contest-checkin-20261114",
+  "candidate_head_sha": "eed221d1c1d305d79713ebb0dbf0c41d9c624e8a",
+  "candidate_kind": "UNCOMMITTED_HASHED_DIFF_ON_MANIFEST_BASE",
+  "lead_manifest_sha256": "7caa8d999cce6249604e810b5f939276c7709e92482c287631cf890bca31b44d",
+  "code_diff_sha256": "353dd3cd49d6092abbb7834573f9adf67038d6afeb8d5a973ea2ad3b671dfc40",
+  "initial": {
+    "passed": 117,
+    "failed": 3,
+    "skipped": 0,
+    "seconds": 261.72
+  },
+  "retry": {
+    "passed": 12,
+    "deselected": 66,
+    "seconds": 45.37,
+    "changed_only": "copy mutable test parameter before pop; no runtime change"
+  },
+  "unique_passed": 120,
+  "repeat_overlap_passes": 9,
+  "fixed_failures": [
+    "tests.be.test_plan_checkin::test_checkin_validation[postgres-record0-INVALID_AMOUNT]",
+    "tests.be.test_plan_checkin::test_checkin_validation[postgres-record1-INVALID_AMOUNT]",
+    "tests.be.test_plan_checkin::test_checkin_validation[postgres-record2-INVALID_AMOUNT]"
+  ],
+  "ruff": {
+    "initial_changed_three_files": "PASS",
+    "after_fixture_fix_test_file": "PASS"
+  },
+  "storage": [
+    "actual temporary SQLite",
+    "actual local PostgreSQL17.12,127.0.0.1:55441"
+  ],
+  "identity": "mock only; additional tests verify missing Bearer denied and no foreign replay",
+  "operating_database": "NOT_ACCESSED",
+  "migration": "NONE_ADDED_NONE_APPLIED; existing005 local test only",
+  "frontend": "NOT_CHANGED_NOT_TESTED",
+  "full_core": "NOT_RUN",
+  "full_e2e": "NOT_RUN",
+  "production_build": "NOT_RUN",
+  "paid_calls": 0,
+  "push": false,
+  "deployment": false,
+  "owned_test_server": "STOPPED_PORT_55441_CLOSED",
+  "static_checks": {
+    "ownership": "PASS",
+    "manifest_case_input_hash": "PASS",
+    "scope_python_ruff": "PASS",
+    "added_document_links": 14,
+    "json": "PASS",
+    "source_diff_and_file_hashes": "PASS",
+    "secret_patterns": "NONE",
+    "tracked_diff_whitespace": "PASS",
+    "evidence_format": "Raw pytest/JUnit and exact patch/lead manifest preserved verbatim; not normalized"
+  },
+  "startup_shell_followup": "After tests and successful owned shutdown, delayed pg_isready/pid followup returned no response/pid missing and exit1; real PostgreSQL tests passed. No repeated startup or tests."
+}

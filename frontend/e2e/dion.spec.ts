@@ -39,7 +39,7 @@ test('DION actual input, engine oracles, raw spelling, five result views and edi
   await page.evaluate(()=>window.scrollTo(0,0));
   await page.evaluate(()=>window.scrollTo(0,0));
   await page.screenshot({path:info.outputPath('dion-feedback-desktop-candidates.png'),fullPage:true});
-  for(const name of ['투자구성','상품 정보','결과·이번 달 행동']) {
+  for(const name of ['투자구성','상품 정보','결과·다음 행동']) {
     await page.getByRole('navigation',{name:'빠른 결과 5뷰'}).getByRole('button',{name:new RegExp(name)}).click();
     if(name==='상품 정보') await expect(page.locator('[data-product-empty]')).toContainText('대표상품 0개');
   }
@@ -66,8 +66,7 @@ test('DION fresh combined situation, today, conditional details and distinct zer
   await page.getByRole('checkbox',{name:/가족의 동의/}).check();
   await page.getByRole('button',{name:/^나 혼자/}).click();
   await expect(page.getByRole('checkbox',{name:'내 정보를 기준으로 살펴볼게요.'})).toHaveCount(0);
-  await page.getByRole('button',{name:'기타',exact:true}).click();
-  await page.getByText('두 가지 이상에 해당해요',{exact:true}).click();
+  await page.getByRole('checkbox',{name:'기타',exact:true}).check();
   await page.getByRole('checkbox',{name:'자녀 학령기',exact:true}).check();
   await page.evaluate(()=>window.scrollTo(0,0));
   await page.screenshot({path:info.outputPath('dion-feedback-situation.png'),fullPage:true});
@@ -96,13 +95,13 @@ test('DION fresh combined situation, today, conditional details and distinct zer
 test('DION expense and goal edits change real engine results; unsupported property stays gated',async({page})=>{
   await sample(page);
   await questionNav(page).getByRole('button',{name:/한 달 지출/}).click();
-  await page.getByRole('textbox',{name:'한 달에 통장에서 나간 돈',exact:true}).fill('220');
+  await page.getByRole('textbox',{name:'한 달 생활비·상환·저축을 합친 전체 금액',exact:true}).fill('220');
   const expense=await calculate(page);
   expect(expense.body.result.results['OUT-03'].normalized_living.value).toBe('1700000');
   expect(expense.body.result.results['OUT-03'].after_existing_contributions_krw).toBe('800000');
   await page.getByRole('button',{name:'입력 내용 수정 ↗'}).click();
   await questionNav(page).getByRole('button',{name:/목표 정하기/}).click();
-  await page.getByRole('textbox',{name:'목표로 생각한 금액',exact:true}).fill('40');
+  await page.getByRole('textbox',{name:'한 번에 필요한 목표 금액',exact:true}).fill('40');
   const goal=await calculate(page);
   expect(goal.body.result.results['OUT-04'].rows[0].target_krw).toBe('400000');
   expect(goal.body.result.results['OUT-04'].rows[0].level_contribution_krw).toBe('400000');
@@ -120,14 +119,14 @@ test('DION expense and goal edits change real engine results; unsupported proper
 test('DION combined goals, no internal IDs, explicit none and undo preserve original contracts',async({page},info)=>{
   await sample(page);await questionNav(page).getByRole('button',{name:/목표 정하기/}).click();
   await expect(questionNav(page).getByRole('button',{name:/목표 시점|목표 금액/})).toHaveCount(0);
-  await expect(page.getByRole('textbox',{name:'목표로 생각한 금액',exact:true})).toHaveValue('30');
+  await expect(page.getByRole('textbox',{name:'한 번에 필요한 목표 금액',exact:true})).toHaveValue('30');
   await expect(page.getByText('목표별 내역',{exact:true})).toHaveCount(0);
   await expect(page.locator('.d-question')).not.toContainText('goal_id');
   await page.evaluate(()=>window.scrollTo(0,0));
   await page.screenshot({path:info.outputPath('dion-feedback-goals.png'),fullPage:true});
   page.on('dialog',()=>{ throw new Error('Unexpected blocking native confirmation'); });
   await page.getByRole('button',{name:'지금은 목표 없음',exact:true}).click();
-  await expect(page.getByRole('textbox',{name:'목표로 생각한 금액',exact:true})).toHaveCount(0);
+  await expect(page.getByRole('textbox',{name:'한 번에 필요한 목표 금액',exact:true})).toHaveCount(0);
   // Inspect the submitted document without unmounting the goal editor, so undo remains available.
   await openReviewTools(page);
   await page.getByText('검토 패널 · 원응답·엔진 입력·오류·버전',{exact:true}).click();
@@ -138,7 +137,7 @@ test('DION combined goals, no internal IDs, explicit none and undo preserve orig
   for(const id of ['F11','F12','F13'])expect(cleared.raw_bundle.answers.find((r:any)=>r.envelope.question_ref.design_id===id).envelope.fields.goals).toEqual({state:'KNOWN',raw_value:[],unit:'JSON'});
   // Goals are archived, not deleted: reselecting the same goal restores its amount, date and ID.
   await page.getByRole('button',{name:'자녀 교육',exact:true}).click();
-  await expect(page.getByRole('textbox',{name:'목표로 생각한 금액',exact:true})).toHaveValue('30');
+  await expect(page.getByRole('textbox',{name:'한 번에 필요한 목표 금액',exact:true})).toHaveValue('30');
   const restored=await calculate(page);
   expect(restored.body.result.results['OUT-04'].rows[0].target_krw).toBe('300000');
   const goals=restored.posted.raw_bundle.answers.filter((r:any)=>['F11','F12','F13'].includes(r.envelope.question_ref.design_id));
@@ -150,12 +149,12 @@ test('DION new goal binds amount and date without borrowing example facts',async
   await page.goto('/dion');await page.getByRole('button',{name:/빠른진단 시작/}).click();
   await questionNav(page).getByRole('button',{name:/목표 정하기/}).click();
   await page.getByRole('button',{name:'주거',exact:true}).click();
-  await expect(page.getByRole('textbox',{name:'목표로 생각한 금액',exact:true})).toHaveValue('');
+  await expect(page.getByRole('textbox',{name:'한 번에 필요한 목표 금액',exact:true})).toHaveValue('');
   await expect(page.getByRole('progressbar')).toHaveAttribute('value','0');
-  await page.getByRole('textbox',{name:'목표로 생각한 금액',exact:true}).fill('1000.1234');
+  await page.getByRole('textbox',{name:'한 번에 필요한 목표 금액',exact:true}).fill('1000.1234');
   await page.getByLabel('언제쯤 필요해요?',{exact:false}).fill('2027-12');
-  await page.getByLabel('어떻게 쓸 돈인가요?',{exact:false}).selectOption('ONE_OFF');
-  await page.getByRole('checkbox',{name:/그 날짜에 필요할/}).check();
+  await expect(page.getByLabel('어떻게 쓸 돈인가요?',{exact:false})).toHaveCount(0);
+  await page.getByRole('checkbox',{name:/그때 한 번에 쓸 목돈/}).check();
   const r=await calculate(page);
   const rows=(id:string)=>r.posted.raw_bundle.answers.find((v:any)=>v.envelope.question_ref.design_id===id).envelope.fields.goals.raw_value;
   expect(rows('F11')[0].goal_id).toBe(rows('F12')[0].goal_id);expect(rows('F13')[0].goal_id).toBe(rows('F11')[0].goal_id);

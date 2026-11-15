@@ -1,0 +1,14 @@
+diff --git a/frontend/vercel.json b/frontend/vercel.json
+index e384074..882de12 100644
+--- a/frontend/vercel.json
++++ b/frontend/vercel.json
+@@ -10,7 +10,8 @@
+       "feat/final-portfolio-20261114": false,
+       "feat/beta-gate-20261114": false,
+       "feat/result-stitch-20261114": false,
+-      "dion/proposal-20261114": false
++      "dion/proposal-20261114": false,
++      "codex/contest-results-20261114": false
+     }
+   }
+ }

@@ -201,8 +201,36 @@ def build_context(run: dict, request: ExplanationRequest) -> dict:
                     relation("SCENARIO_RESERVES_" + strategy, refs[2:],
                              f"이 {label}에는 추가 목표 적립 {wan(row[metrics[2]])}만원, 보호자금 보충 {wan(row[metrics[3]])}만원, 운영자금 보충 {wan(row[metrics[4]])}만원이 반영돼 있어요.",
                              kind="REASON", required=False)
+                    projection = candidate.get("financial_projection", {})
+                    projected_rows = projection.get("rows", [])
+                    if (projection.get("version") == "DION-FINANCIAL-PROJECTION-1.0"
+                            and projection.get("calc_state") == "CALCULATED"
+                            and projection.get("input_sha256") == result.get("input_sha256")
+                            and projection.get("assumptions", {}).get("version") == "DION-ZERO-RETURN-1.0"
+                            and projection.get("sha256") == _digest({k: v for k, v in projection.items() if k != "sha256"})
+                            and money(projection.get("final_balance_krw")) and projected_rows
+                            and money(projected_rows[-1].get("cumulative_goal_withdrawal_krw"))):
+                        end = projected_rows[-1]["period"]
+                        base = f"/results/{output_id}/candidates/{ci}/financial_projection"
+                        projection_refs = [
+                            fact(output_id, "financial_projection/final_balance_krw", projection["final_balance_krw"],
+                                 base + "/final_balance_krw", proof, strategy=strategy, period=periods[0], period_end=end),
+                            fact(output_id, "financial_projection/cumulative_goal_withdrawal_krw",
+                                 projected_rows[-1]["cumulative_goal_withdrawal_krw"],
+                                 base + f"/rows/{len(projected_rows)-1}/cumulative_goal_withdrawal_krw",
+                                 proof, strategy=strategy, period=periods[0], period_end=end),
+                        ]
+                        for item in facts[-2:]:
+                            item["value_kind"] = "ZERO_RETURN_FINANCIAL_PROJECTION"
+                            item["projection_sha256"] = projection["sha256"]
+                            item["policy_refs"].append(projection["assumptions"]["version"])
+                        relation("FINANCIAL_PROJECTION_" + strategy, projection_refs,
+                                 f"{label}의 {end} 월말 금융자산 원금선은 {wan(projection['final_balance_krw'])}만원이며, "
+                                 f"기간 중 목표 인출 {wan(projected_rows[-1]['cumulative_goal_withdrawal_krw'])}만원을 반영했어요. "
+                                 "기준일 평가잔액에서 시작하는 무수익 시나리오로, 구성별 수익 전망이나 보장 금액이 아니에요.",
+                                 assumptions=("DION-ZERO-RETURN-1.0", "SNAPSHOT_MARKET_VALUE_NOT_HISTORICAL_COST"))
                 if explained_candidate:
-                    relation("SCENARIO_LIMITS", [], "확인한 미래소득·지출과 현재 잔액 이월, 수익률 0의 시나리오입니다. 실제 투자 권장액은 미정이고, 지급일별 잔고 보장·계획 채택·금융거래를 뜻하지 않아요. 해설은 첫 계산 월을 다루며 전체 기간은 기존 결과에서 확인하세요.", kind="LIMITATION",
+                    relation("SCENARIO_LIMITS", [], "확인한 미래소득·지출과 현재 잔액 이월, 수익률 0의 시나리오입니다. 실제 투자 권장액은 미정이고, 지급일별 잔고 보장·계획 채택·금융거래를 뜻하지 않아요. 월 배정 해설은 첫 계산 월 기준이며, 금융자산 전망이 제공되면 표시된 종료월 기준입니다.", kind="LIMITATION",
                              assumptions=("CURRENT_BALANCES_CARRIED_FORWARD_SCENARIO", "ZERO_RETURN", "CONFIRMED_FUTURE_INPUT"))
                 else:
                     relation("SCENARIO_UNVERIFIED_LIMITS", [], "미완성 후보의 금액·가정을 확정하지 않아요. 기존 결과의 전체 기간과 보류 이유를 확인해 주세요.", kind="LIMITATION")

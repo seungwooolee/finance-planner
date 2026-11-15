@@ -248,7 +248,13 @@ class OnePortChat:
         telemetry["price_ceiling_credits"] = str(ceiling)
         telemetry["reserved_credits"] = str(self.config.reserve_credits)
         telemetry["gateway_daily_cap_verified"] = type(limit) in (int, Decimal) and 0 < limit <= self.config.budget_credits
-        if not telemetry["gateway_daily_cap_verified"]:
+        # The gateway documents an explicit null as "no daily key limit", not an
+        # unknown value. Accept it only with server-side operator authorization;
+        # absent/malformed metadata and insufficient finite caps remain blocked.
+        telemetry["gateway_uncapped_key_authorized"] = bool(
+            self.config.allow_uncapped_gateway_key and isinstance(day, dict)
+            and "limit_credits" in day and limit is None)
+        if not (telemetry["gateway_daily_cap_verified"] or telemetry["gateway_uncapped_key_authorized"]):
             raise ProviderFailure("ONEPORT_GATEWAY_CAP_UNVERIFIED")
         if ceiling > self.config.reserve_credits:
             raise ProviderFailure("ONEPORT_RESERVATION_TOO_SMALL")

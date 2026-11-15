@@ -1,0 +1,15 @@
+{
+  "base_sha": "eed221d1c1d305d79713ebb0dbf0c41d9c624e8a",
+  "candidate_kind": "BASE_PLUS_NEW_EVAL_HARNESS_NO_PRODUCT_CHANGES",
+  "product_changes": [],
+  "test_file": "backend/tests/be/test_consultation_contest_eval.py",
+  "test_sha256": "bbb3096cc0884dcdb7bbd1de21b9334c637da346ac14e5ed04e9d66eceac8c32",
+  "patch_sha256": "d8aa0d484852ac13383e26a769a34a3688d2fd030d7b1598b095879b4bb3392d",
+  "expectations_lock_sha256": "0613a19e686bd05a93294d0eb6408291860157d56c6c918910ecec9e4f797e8d",
+  "holdout_started": false,
+  "known_development_result": {
+    "PASS": 17,
+    "FAIL": 1,
+    "failure": "R1-02: chosen existing fixture is CALCULATED, not required PARTIAL; no oracle relaxation"
+  }
+}

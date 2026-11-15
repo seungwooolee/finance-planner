@@ -17,8 +17,8 @@ async function thirdScreen(page: Page, result: any) {
   await page.locator('.d-tabs button').nth(3).click();
   const screen = page.getByRole('region', { name: '상품 적합성·배분 검토' });
   await expect(screen).toBeVisible();
-  await expect(screen.getByRole('heading', { name: '기본 배분 상품 3개 · 비교 대안 3개' })).toBeVisible();
-  await expect(page.getByText('현재 입력 기준 결과', { exact: true })).toBeVisible();
+  await expect(screen.getByRole('heading', { name: /^(우선 검토 상품|기본 배분 후보)$/ })).toBeVisible();
+  await expect(page.getByText('현재 입력 기준 결과', { exact: true })).toHaveCount(0);
   const review = result.results['OUT-06'];
   expect(review.review_version).toBe('DION-PRODUCT-REVIEW-0.2');
   expect(review.recommended_new_investment_krw).toBeNull();
@@ -64,8 +64,9 @@ test('normal: actual OUT-05 to OUT-06, three defaults and three comparison alter
   ]);
   expect(rows.every((r: any) => r.allocations.length === 3)).toBe(true);
   const product = screen.locator('[data-product-code="360200"]');
-  await product.locator('summary').click();
-  await expect(product.getByRole('link', { name: '공식 상품 자료 ↗' })).toHaveAttribute('href', /^https:\/\//);
+  await product.locator(':scope > summary').click();
+  await product.getByText('상품 공시 출처', {exact: true}).click();
+  await expect(product.locator('.d-explanation-evidence').last().getByRole('link').first()).toHaveAttribute('href', /^https:\/\//);
   await expect(product).toContainText('기준일');
   await expect(product).toContainText('2026-11-13');
   await page.screenshot({ path: info.outputPath('normal-screen-3.png'), fullPage: true });
@@ -83,7 +84,7 @@ test('FX restriction: foreign slot excluded, no redistribution, same monthly bud
   expect(review.products.find((p: any) => p.code === '360200').reason_codes).toContain('FX_ACCEPTANCE_REQUIRED');
   expect(review.candidates.map((c: any) => [c.rows[0].allocated_total_krw, c.rows[0].unallocated_krw])).toEqual([['159800', '239700'], ['255680', '383520']]);
   expect(review.candidates.every((c: any) => !c.rows[0].allocations.some((a: any) => a.code === '360200'))).toBe(true);
-  await screen.locator('[data-product-code="360200"] summary').click();
+  await screen.locator('[data-product-code="360200"] > summary').click();
   await expect(screen.locator('[data-product-code="360200"]')).toContainText('환노출');
   await page.screenshot({ path: info.outputPath('fx-exclusion-screen-3.png'), fullPage: true });
 });

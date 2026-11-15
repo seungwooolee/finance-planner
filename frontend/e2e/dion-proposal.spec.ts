@@ -17,13 +17,16 @@ test('step 4 proposal shows choices, compared alternatives, assumptions and risk
   await page.getByRole('button',{name:'검토 도구'}).click();
   await page.getByRole('button',{name:'빠른진단 저장·계산'}).click();
   await expect(page.getByText(/검증 사례 저장 · 사회초년생/)).toBeVisible({timeout:30_000});
-  await page.getByRole('button',{name:/결과·이번 달 행동/}).click();
+  await page.getByRole('button',{name:/결과·다음 행동/}).click();
   const p=page.getByRole('article',{name:'재무설계 제안서'});
   await expect(p).toBeVisible();
-  for (const title of ['내가 선택한 내용','이번 달 실행안 · 자금 배정과 상품 배분','다른 방법과 비교하기','이 제안의 가정','위험과 확인할 점','이해가 어렵거나 바꾸고 싶다면'])
+  for (const title of ['내가 선택한 내용','첫 계획 월 실행안 · 자금 배정과 상품 배분','다른 방법과 비교하기','위험과 확인할 점','이해가 어렵거나 바꾸고 싶다면'])
     await expect(p.getByRole('heading',{name:title})).toBeVisible();
   for (const row of ['지금 고른 안','투자 방식 변경','재무안 바꾸기','지출 조정']) await expect(p.getByRole('rowheader',{name:new RegExp(row)})).toBeVisible();
-  await expect(p).toContainText('물가상승률');await expect(p).toContainText('연 2%');
+  const assumptions=page.locator('#dion-proposal-assumptions');
+  await expect(assumptions.getByText('물가상승률')).toBeHidden();
+  await assumptions.locator('summary').click();
+  await expect(assumptions.getByText('연 2%', {exact:true})).toBeVisible();
   // Engine amounts are copied, not recomputed: 10-year 0% equals 120 × monthly candidate.
   await expect(p.getByRole('row',{name:/^지금 고른 안/})).toContainText('4,794만원');
   await expect(p.getByRole('row',{name:/^투자 방식 변경 연/})).toContainText('5,882만 6,296원');
@@ -36,4 +39,98 @@ test('step 4 proposal shows choices, compared alternatives, assumptions and risk
   await expect(panel.getByRole('status').first()).toContainText('이 결과 설명해 줘');
   await panel.getByRole('button',{name:'결과 해설 바로 열기'}).click();
   await expect(page.getByRole('complementary',{name:'결과 해설'})).toBeVisible();
+});
+
+// Engine CONSUMER-HANDOFF (goal_omissions, additive in DION-PROPOSAL-REFERENCE-0.1). The engine change is not in this
+// branch's backend, so the preview response is augmented in the test only; OUT-04 stays as the engine returned it.
+test('proposal shows goal_omissions reasons and keeps the original goal result', async ({page}) => {
+  test.skip(!harness,'Real engine harness required.');
+  let goalId='';
+  await page.route('**/api/fe/v1/preview',async route=>{
+    const response=await route.fetch();const json=await response.json();
+    const ref=json.result.proposal_reference;goalId=json.result.results['OUT-04'].rows[0].goal_id;
+    ref.goals=ref.goals.filter((g:{goal_id:string})=>g.goal_id!==goalId);
+    ref.goal_omissions=[{goal_id:goalId,reason:'MONTHLY_REFERENCE_CALENDAR_UNSUPPORTED'},{goal_id:'goal-unknown',reason:'FUTURE_ENGINE_CODE'}];
+    await route.fulfill({response,json});
+  });
+  await page.goto('/dion');
+  await page.getByRole('button',{name:'가상 사례 불러오기',exact:true}).click();
+  await page.getByRole('button',{name:'상품 배분 검토 불러오기',exact:true}).click();
+  await page.getByRole('region',{name:'계산 결과'}).waitFor();
+  await page.getByRole('button',{name:/결과·다음 행동/}).click();
+  const box=page.getByRole('article',{name:'재무설계 제안서'}).locator('[data-goal-omissions]');
+  await expect(box).toHaveAttribute('data-goal-omissions','2');
+  const known=box.locator('[data-omission-reason="MONTHLY_REFERENCE_CALENDAR_UNSUPPORTED"]');
+  await expect(known).toContainText('월 납입 참고 비교를 보류');
+  await expect(known).toContainText('원래 목표 결과: 목표 30만원');
+  await expect(box.locator('[data-omission-reason="FUTURE_ENGINE_CODE"]')).toContainText('사유 코드 FUTURE_ENGINE_CODE');
+  await expect(box).toContainText('목표가 삭제되거나 투자 불가로 판정된 것이 아니에요');
+  await page.locator('#dion-proposal-assumptions summary').click();
+  await expect(page.getByRole('list',{name:'참고 비교의 한계'})).toContainText('첫 계획 월의 금액이 매달 같다고 가정');
+});
+
+// Uses a public scenario, a real preview and the registered default interpretation.
+test('public proposal opens result questions, edits the input and invokes print', async ({page}) => {
+  test.setTimeout(150_000);
+  await page.goto('/dion');
+  await page.getByRole('button', {name:'가상 사례 불러오기', exact:true}).click();
+  await page.getByRole('button', {name:'사회초년생 불러오기', exact:true}).click();
+  const result = page.getByRole('region', {name:'계산 결과', exact:true});
+  const next = result.getByRole('button', {name:'결과·다음 행동', exact:true});
+  await next.click();
+
+  const proposal = result.getByRole('article', {name:'재무설계 제안서'});
+  const ask = proposal.getByRole('button', {name:'AI에게 질문하기', exact:true});
+  await expect(proposal.getByRole('heading', {name:/이해가 어렵거나 바꾸고 싶다면/})).toBeVisible();
+  await expect(result.getByRole('article', {name:'첫 계획 월 할 일', exact:true})).toBeVisible();
+
+  const sent: string[] = [];
+  page.on('request', request => {
+    if (request.url().includes('/result-action')) sent.push(request.url());
+  });
+  await ask.focus();
+  await page.keyboard.press('Enter');
+  const dialog = page.getByRole('dialog', {name:'dion AI 상담', exact:true});
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByRole('button', {name:'결과에 대해 질문', exact:true})).toHaveAttribute('aria-pressed', 'true');
+  const question = dialog.getByRole('textbox', {name:'현재 결과에 대한 질문'});
+  await expect(question).toBeFocused();
+  await expect(page).not.toHaveURL(/#dion-agent-consultation/);
+  await page.setViewportSize({width:390,height:844});
+  const panel = dialog.getByRole('region', {name:'현재 결과 다음 행동 상담'});
+  await expect(panel.getByText('미리보기 결과', {exact:false}).first()).toBeVisible();
+  await expect(panel.getByText(/내 결과, 다음에는|입력 버전 저장 전/)).toHaveCount(0);
+  await expect(panel.getByRole('button', {name:'로그인하고 결과 저장'})).toBeHidden();
+  await expect(panel.getByRole('group', {name:'예시 질문'})).toBeVisible();
+  expect(await panel.evaluate(node => node.scrollWidth <= node.clientWidth)).toBe(true);
+  expect(sent).toEqual([]);
+  await question.fill('돈이 남는데 왜 투자 배정이 적어요?');
+  const answer = page.waitForResponse(response => response.url().endsWith('/api/fe/v1/preview/result-action'));
+  await dialog.getByRole('button', {name:'내 결과로 답변 보기', exact:true}).click();
+  const reply = await answer;
+  expect(reply.ok()).toBe(true);
+  expect(await reply.json()).toMatchObject({source:'DETERMINISTIC', financial_result_changed:false});
+  expect(sent).toHaveLength(1);
+  await page.keyboard.press('Escape');
+  await expect(ask).toBeFocused();
+
+  await page.evaluate(() => {
+    window.print = () => { document.documentElement.dataset.proposalPrint = 'invoked'; };
+  });
+  await proposal.getByRole('button', {name:'제안서 인쇄·PDF 저장', exact:true}).click();
+  await expect(page.locator('html')).toHaveAttribute('data-proposal-print','invoked');
+
+  await proposal.getByRole('button', {name:'입력 내용 수정', exact:true}).click();
+  await expect(page.getByRole('heading', {name:'한 달 평균 세후 소득은 얼마인가요?', exact:true})).toBeFocused();
+  await page.getByRole('textbox', {name:'한 달 평균 세후 소득은 얼마인가요?', exact:true}).fill('301');
+  const recalculation = page.waitForResponse(response => response.url().endsWith('/api/fe/v1/preview'));
+  await page.getByRole('button', {name:'재계산', exact:true}).click();
+  const updated = await recalculation;
+  expect(updated.ok()).toBe(true);
+  const income = updated.request().postDataJSON().raw_bundle.answers.find(
+    (row: {envelope:{question_ref:{design_id:string}}}) => row.envelope.question_ref.design_id === 'F03',
+  );
+  expect(income.envelope.fields.monthly_net_income_krw.raw_value).toBe('301');
+  await next.click();
+  await expect(proposal.getByRole('heading', {name:'나의 재무설계 제안서', exact:true})).toBeVisible();
 });

@@ -1,0 +1,881 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="16" skipped="0" tests="18" time="32.180" timestamp="2026-11-14T18:15:26.636687+09:00" hostname="이승우"><testcase classname="tests.be.test_consultation_contest_eval" name="test_dev[R1-01]" time="0.601"><failure message="Failed: External socket connection forbidden in contract/mock evaluation">tests\be\test_consultation_contest_eval.py:315: in test_dev
+    dev_case(eval_id, tmp_path, monkeypatch)
+tests\be\test_consultation_contest_eval.py:116: in dev_case
+    with isolated(r1.harness, tmp_path) as h:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+tests\be\test_consultation_contest_eval.py:97: in isolated
+    value = next(generator)
+            ^^^^^^^^^^^^^^^
+tests\be\test_explanation.py:98: in harness
+    with TestClient(app) as client:
+..\..\DION-git\backend\.venv\Lib\site-packages\starlette\testclient.py:559: in __enter__
+    self.portal = portal = stack.enter_context(anyio.from_thread.start_blocking_portal(**self.async_backend))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:526: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:554: in start_blocking_portal
+    portal = future.result()
+             ^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:401: in __get_result
+    raise self._exception
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:538: in run_blocking_portal
+    run_eventloop(
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_core\_eventloop.py:83: in run
+    return async_backend.run(func, args, {}, backend_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_backends\_asyncio.py:2547: in run
+    with Runner(debug=debug, loop_factory=loop_factory) as runner:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:58: in __enter__
+    self._lazy_init()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:137: in _lazy_init
+    self._loop = events.new_event_loop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:823: in new_event_loop
+    return get_event_loop_policy().new_event_loop()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:720: in new_event_loop
+    return self._loop_factory()
+           ^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py:316: in __init__
+    super().__init__(proactor)
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:640: in __init__
+    self._make_self_pipe()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:787: in _make_self_pipe
+    self._ssock, self._csock = socket.socketpair()
+                               ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\socket.py:643: in socketpair
+    csock.connect((addr, port))
+tests\be\test_consultation_contest_eval.py:46: in blocked
+    pytest.fail("External socket connection forbidden in contract/mock evaluation")
+E   Failed: External socket connection forbidden in contract/mock evaluation</failure></testcase><testcase classname="tests.be.test_consultation_contest_eval" name="test_dev[R1-02]" time="0.628"><failure message="Failed: External socket connection forbidden in contract/mock evaluation">tests\be\test_consultation_contest_eval.py:315: in test_dev
+    dev_case(eval_id, tmp_path, monkeypatch)
+tests\be\test_consultation_contest_eval.py:134: in dev_case
+    with isolated(r1.harness, tmp_path) as h:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+tests\be\test_consultation_contest_eval.py:97: in isolated
+    value = next(generator)
+            ^^^^^^^^^^^^^^^
+tests\be\test_explanation.py:98: in harness
+    with TestClient(app) as client:
+..\..\DION-git\backend\.venv\Lib\site-packages\starlette\testclient.py:559: in __enter__
+    self.portal = portal = stack.enter_context(anyio.from_thread.start_blocking_portal(**self.async_backend))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:526: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:554: in start_blocking_portal
+    portal = future.result()
+             ^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:401: in __get_result
+    raise self._exception
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:538: in run_blocking_portal
+    run_eventloop(
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_core\_eventloop.py:83: in run
+    return async_backend.run(func, args, {}, backend_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_backends\_asyncio.py:2547: in run
+    with Runner(debug=debug, loop_factory=loop_factory) as runner:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:58: in __enter__
+    self._lazy_init()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:137: in _lazy_init
+    self._loop = events.new_event_loop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:823: in new_event_loop
+    return get_event_loop_policy().new_event_loop()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:720: in new_event_loop
+    return self._loop_factory()
+           ^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py:316: in __init__
+    super().__init__(proactor)
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:640: in __init__
+    self._make_self_pipe()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:787: in _make_self_pipe
+    self._ssock, self._csock = socket.socketpair()
+                               ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\socket.py:643: in socketpair
+    csock.connect((addr, port))
+tests\be\test_consultation_contest_eval.py:46: in blocked
+    pytest.fail("External socket connection forbidden in contract/mock evaluation")
+E   Failed: External socket connection forbidden in contract/mock evaluation</failure></testcase><testcase classname="tests.be.test_consultation_contest_eval" name="test_dev[R1-03]" time="0.542"><failure message="Failed: External socket connection forbidden in contract/mock evaluation">tests\be\test_consultation_contest_eval.py:315: in test_dev
+    dev_case(eval_id, tmp_path, monkeypatch)
+tests\be\test_consultation_contest_eval.py:149: in dev_case
+    with isolated(r1.harness, tmp_path / "zero") as h:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+tests\be\test_consultation_contest_eval.py:97: in isolated
+    value = next(generator)
+            ^^^^^^^^^^^^^^^
+tests\be\test_explanation.py:98: in harness
+    with TestClient(app) as client:
+..\..\DION-git\backend\.venv\Lib\site-packages\starlette\testclient.py:559: in __enter__
+    self.portal = portal = stack.enter_context(anyio.from_thread.start_blocking_portal(**self.async_backend))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:526: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:554: in start_blocking_portal
+    portal = future.result()
+             ^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:401: in __get_result
+    raise self._exception
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:538: in run_blocking_portal
+    run_eventloop(
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_core\_eventloop.py:83: in run
+    return async_backend.run(func, args, {}, backend_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_backends\_asyncio.py:2547: in run
+    with Runner(debug=debug, loop_factory=loop_factory) as runner:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:58: in __enter__
+    self._lazy_init()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:137: in _lazy_init
+    self._loop = events.new_event_loop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:823: in new_event_loop
+    return get_event_loop_policy().new_event_loop()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:720: in new_event_loop
+    return self._loop_factory()
+           ^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py:316: in __init__
+    super().__init__(proactor)
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:640: in __init__
+    self._make_self_pipe()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:787: in _make_self_pipe
+    self._ssock, self._csock = socket.socketpair()
+                               ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\socket.py:643: in socketpair
+    csock.connect((addr, port))
+tests\be\test_consultation_contest_eval.py:46: in blocked
+    pytest.fail("External socket connection forbidden in contract/mock evaluation")
+E   Failed: External socket connection forbidden in contract/mock evaluation</failure></testcase><testcase classname="tests.be.test_consultation_contest_eval" name="test_dev[R2-01]" time="1.313"><failure message="Failed: External socket connection forbidden in contract/mock evaluation">tests\be\test_consultation_contest_eval.py:315: in test_dev
+    dev_case(eval_id, tmp_path, monkeypatch)
+tests\be\test_consultation_contest_eval.py:158: in dev_case
+    with isolated(r2.setup, tmp_path) as s:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+tests\be\test_consultation_contest_eval.py:97: in isolated
+    value = next(generator)
+            ^^^^^^^^^^^^^^^
+tests\be\test_consultation.py:43: in setup
+    with TestClient(app) as client:
+..\..\DION-git\backend\.venv\Lib\site-packages\starlette\testclient.py:559: in __enter__
+    self.portal = portal = stack.enter_context(anyio.from_thread.start_blocking_portal(**self.async_backend))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:526: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:554: in start_blocking_portal
+    portal = future.result()
+             ^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:401: in __get_result
+    raise self._exception
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:538: in run_blocking_portal
+    run_eventloop(
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_core\_eventloop.py:83: in run
+    return async_backend.run(func, args, {}, backend_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_backends\_asyncio.py:2547: in run
+    with Runner(debug=debug, loop_factory=loop_factory) as runner:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:58: in __enter__
+    self._lazy_init()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:137: in _lazy_init
+    self._loop = events.new_event_loop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:823: in new_event_loop
+    return get_event_loop_policy().new_event_loop()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:720: in new_event_loop
+    return self._loop_factory()
+           ^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py:316: in __init__
+    super().__init__(proactor)
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:640: in __init__
+    self._make_self_pipe()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:787: in _make_self_pipe
+    self._ssock, self._csock = socket.socketpair()
+                               ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\socket.py:643: in socketpair
+    csock.connect((addr, port))
+tests\be\test_consultation_contest_eval.py:46: in blocked
+    pytest.fail("External socket connection forbidden in contract/mock evaluation")
+E   Failed: External socket connection forbidden in contract/mock evaluation</failure></testcase><testcase classname="tests.be.test_consultation_contest_eval" name="test_dev[R2-02]" time="1.402"><failure message="Failed: External socket connection forbidden in contract/mock evaluation">tests\be\test_consultation_contest_eval.py:315: in test_dev
+    dev_case(eval_id, tmp_path, monkeypatch)
+tests\be\test_consultation_contest_eval.py:171: in dev_case
+    with isolated(r2.setup, tmp_path) as s:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+tests\be\test_consultation_contest_eval.py:97: in isolated
+    value = next(generator)
+            ^^^^^^^^^^^^^^^
+tests\be\test_consultation.py:43: in setup
+    with TestClient(app) as client:
+..\..\DION-git\backend\.venv\Lib\site-packages\starlette\testclient.py:559: in __enter__
+    self.portal = portal = stack.enter_context(anyio.from_thread.start_blocking_portal(**self.async_backend))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:526: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:554: in start_blocking_portal
+    portal = future.result()
+             ^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:401: in __get_result
+    raise self._exception
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:538: in run_blocking_portal
+    run_eventloop(
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_core\_eventloop.py:83: in run
+    return async_backend.run(func, args, {}, backend_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_backends\_asyncio.py:2547: in run
+    with Runner(debug=debug, loop_factory=loop_factory) as runner:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:58: in __enter__
+    self._lazy_init()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:137: in _lazy_init
+    self._loop = events.new_event_loop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:823: in new_event_loop
+    return get_event_loop_policy().new_event_loop()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:720: in new_event_loop
+    return self._loop_factory()
+           ^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py:316: in __init__
+    super().__init__(proactor)
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:640: in __init__
+    self._make_self_pipe()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:787: in _make_self_pipe
+    self._ssock, self._csock = socket.socketpair()
+                               ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\socket.py:643: in socketpair
+    csock.connect((addr, port))
+tests\be\test_consultation_contest_eval.py:46: in blocked
+    pytest.fail("External socket connection forbidden in contract/mock evaluation")
+E   Failed: External socket connection forbidden in contract/mock evaluation</failure></testcase><testcase classname="tests.be.test_consultation_contest_eval" name="test_dev[R2-03]" time="0.100" /><testcase classname="tests.be.test_consultation_contest_eval" name="test_dev[R2-04]" time="1.413"><failure message="Failed: External socket connection forbidden in contract/mock evaluation">tests\be\test_consultation_contest_eval.py:315: in test_dev
+    dev_case(eval_id, tmp_path, monkeypatch)
+tests\be\test_consultation_contest_eval.py:182: in dev_case
+    with isolated(r2.setup, tmp_path) as s:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+tests\be\test_consultation_contest_eval.py:97: in isolated
+    value = next(generator)
+            ^^^^^^^^^^^^^^^
+tests\be\test_consultation.py:43: in setup
+    with TestClient(app) as client:
+..\..\DION-git\backend\.venv\Lib\site-packages\starlette\testclient.py:559: in __enter__
+    self.portal = portal = stack.enter_context(anyio.from_thread.start_blocking_portal(**self.async_backend))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:526: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:554: in start_blocking_portal
+    portal = future.result()
+             ^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:401: in __get_result
+    raise self._exception
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:538: in run_blocking_portal
+    run_eventloop(
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_core\_eventloop.py:83: in run
+    return async_backend.run(func, args, {}, backend_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_backends\_asyncio.py:2547: in run
+    with Runner(debug=debug, loop_factory=loop_factory) as runner:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:58: in __enter__
+    self._lazy_init()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:137: in _lazy_init
+    self._loop = events.new_event_loop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:823: in new_event_loop
+    return get_event_loop_policy().new_event_loop()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:720: in new_event_loop
+    return self._loop_factory()
+           ^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py:316: in __init__
+    super().__init__(proactor)
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:640: in __init__
+    self._make_self_pipe()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:787: in _make_self_pipe
+    self._ssock, self._csock = socket.socketpair()
+                               ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\socket.py:643: in socketpair
+    csock.connect((addr, port))
+tests\be\test_consultation_contest_eval.py:46: in blocked
+    pytest.fail("External socket connection forbidden in contract/mock evaluation")
+E   Failed: External socket connection forbidden in contract/mock evaluation</failure></testcase><testcase classname="tests.be.test_consultation_contest_eval" name="test_dev[R2-05]" time="1.392"><failure message="Failed: External socket connection forbidden in contract/mock evaluation">tests\be\test_consultation_contest_eval.py:315: in test_dev
+    dev_case(eval_id, tmp_path, monkeypatch)
+tests\be\test_consultation_contest_eval.py:185: in dev_case
+    with isolated(r2.setup, tmp_path) as s:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+tests\be\test_consultation_contest_eval.py:97: in isolated
+    value = next(generator)
+            ^^^^^^^^^^^^^^^
+tests\be\test_consultation.py:43: in setup
+    with TestClient(app) as client:
+..\..\DION-git\backend\.venv\Lib\site-packages\starlette\testclient.py:559: in __enter__
+    self.portal = portal = stack.enter_context(anyio.from_thread.start_blocking_portal(**self.async_backend))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:526: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:554: in start_blocking_portal
+    portal = future.result()
+             ^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:401: in __get_result
+    raise self._exception
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:538: in run_blocking_portal
+    run_eventloop(
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_core\_eventloop.py:83: in run
+    return async_backend.run(func, args, {}, backend_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_backends\_asyncio.py:2547: in run
+    with Runner(debug=debug, loop_factory=loop_factory) as runner:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:58: in __enter__
+    self._lazy_init()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:137: in _lazy_init
+    self._loop = events.new_event_loop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:823: in new_event_loop
+    return get_event_loop_policy().new_event_loop()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:720: in new_event_loop
+    return self._loop_factory()
+           ^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py:316: in __init__
+    super().__init__(proactor)
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:640: in __init__
+    self._make_self_pipe()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:787: in _make_self_pipe
+    self._ssock, self._csock = socket.socketpair()
+                               ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\socket.py:643: in socketpair
+    csock.connect((addr, port))
+tests\be\test_consultation_contest_eval.py:46: in blocked
+    pytest.fail("External socket connection forbidden in contract/mock evaluation")
+E   Failed: External socket connection forbidden in contract/mock evaluation</failure></testcase><testcase classname="tests.be.test_consultation_contest_eval" name="test_dev[R3-01]" time="1.315"><failure message="Failed: External socket connection forbidden in contract/mock evaluation">tests\be\test_consultation_contest_eval.py:315: in test_dev
+    dev_case(eval_id, tmp_path, monkeypatch)
+tests\be\test_consultation_contest_eval.py:188: in dev_case
+    with isolated(r2.setup, tmp_path / "session") as s:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+tests\be\test_consultation_contest_eval.py:97: in isolated
+    value = next(generator)
+            ^^^^^^^^^^^^^^^
+tests\be\test_consultation.py:43: in setup
+    with TestClient(app) as client:
+..\..\DION-git\backend\.venv\Lib\site-packages\starlette\testclient.py:559: in __enter__
+    self.portal = portal = stack.enter_context(anyio.from_thread.start_blocking_portal(**self.async_backend))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:526: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:554: in start_blocking_portal
+    portal = future.result()
+             ^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:401: in __get_result
+    raise self._exception
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:538: in run_blocking_portal
+    run_eventloop(
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_core\_eventloop.py:83: in run
+    return async_backend.run(func, args, {}, backend_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_backends\_asyncio.py:2547: in run
+    with Runner(debug=debug, loop_factory=loop_factory) as runner:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:58: in __enter__
+    self._lazy_init()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:137: in _lazy_init
+    self._loop = events.new_event_loop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:823: in new_event_loop
+    return get_event_loop_policy().new_event_loop()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:720: in new_event_loop
+    return self._loop_factory()
+           ^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py:316: in __init__
+    super().__init__(proactor)
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:640: in __init__
+    self._make_self_pipe()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:787: in _make_self_pipe
+    self._ssock, self._csock = socket.socketpair()
+                               ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\socket.py:643: in socketpair
+    csock.connect((addr, port))
+tests\be\test_consultation_contest_eval.py:46: in blocked
+    pytest.fail("External socket connection forbidden in contract/mock evaluation")
+E   Failed: External socket connection forbidden in contract/mock evaluation</failure></testcase><testcase classname="tests.be.test_consultation_contest_eval" name="test_dev[R3-02]" time="1.187"><failure message="Failed: External socket connection forbidden in contract/mock evaluation">tests\be\test_consultation_contest_eval.py:315: in test_dev
+    dev_case(eval_id, tmp_path, monkeypatch)
+tests\be\test_consultation_contest_eval.py:191: in dev_case
+    with isolated(r2.setup, tmp_path) as s:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+tests\be\test_consultation_contest_eval.py:97: in isolated
+    value = next(generator)
+            ^^^^^^^^^^^^^^^
+tests\be\test_consultation.py:43: in setup
+    with TestClient(app) as client:
+..\..\DION-git\backend\.venv\Lib\site-packages\starlette\testclient.py:559: in __enter__
+    self.portal = portal = stack.enter_context(anyio.from_thread.start_blocking_portal(**self.async_backend))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:526: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:554: in start_blocking_portal
+    portal = future.result()
+             ^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:401: in __get_result
+    raise self._exception
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:538: in run_blocking_portal
+    run_eventloop(
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_core\_eventloop.py:83: in run
+    return async_backend.run(func, args, {}, backend_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_backends\_asyncio.py:2547: in run
+    with Runner(debug=debug, loop_factory=loop_factory) as runner:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:58: in __enter__
+    self._lazy_init()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:137: in _lazy_init
+    self._loop = events.new_event_loop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:823: in new_event_loop
+    return get_event_loop_policy().new_event_loop()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:720: in new_event_loop
+    return self._loop_factory()
+           ^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py:316: in __init__
+    super().__init__(proactor)
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:640: in __init__
+    self._make_self_pipe()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:787: in _make_self_pipe
+    self._ssock, self._csock = socket.socketpair()
+                               ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\socket.py:643: in socketpair
+    csock.connect((addr, port))
+tests\be\test_consultation_contest_eval.py:46: in blocked
+    pytest.fail("External socket connection forbidden in contract/mock evaluation")
+E   Failed: External socket connection forbidden in contract/mock evaluation</failure></testcase><testcase classname="tests.be.test_consultation_contest_eval" name="test_dev[R3-03]" time="1.232"><failure message="Failed: External socket connection forbidden in contract/mock evaluation">tests\be\test_consultation_contest_eval.py:315: in test_dev
+    dev_case(eval_id, tmp_path, monkeypatch)
+tests\be\test_consultation_contest_eval.py:196: in dev_case
+    with isolated(r2.setup, tmp_path) as s:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+tests\be\test_consultation_contest_eval.py:97: in isolated
+    value = next(generator)
+            ^^^^^^^^^^^^^^^
+tests\be\test_consultation.py:43: in setup
+    with TestClient(app) as client:
+..\..\DION-git\backend\.venv\Lib\site-packages\starlette\testclient.py:559: in __enter__
+    self.portal = portal = stack.enter_context(anyio.from_thread.start_blocking_portal(**self.async_backend))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:526: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:554: in start_blocking_portal
+    portal = future.result()
+             ^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:401: in __get_result
+    raise self._exception
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:538: in run_blocking_portal
+    run_eventloop(
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_core\_eventloop.py:83: in run
+    return async_backend.run(func, args, {}, backend_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_backends\_asyncio.py:2547: in run
+    with Runner(debug=debug, loop_factory=loop_factory) as runner:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:58: in __enter__
+    self._lazy_init()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:137: in _lazy_init
+    self._loop = events.new_event_loop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:823: in new_event_loop
+    return get_event_loop_policy().new_event_loop()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:720: in new_event_loop
+    return self._loop_factory()
+           ^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py:316: in __init__
+    super().__init__(proactor)
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:640: in __init__
+    self._make_self_pipe()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:787: in _make_self_pipe
+    self._ssock, self._csock = socket.socketpair()
+                               ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\socket.py:643: in socketpair
+    csock.connect((addr, port))
+tests\be\test_consultation_contest_eval.py:46: in blocked
+    pytest.fail("External socket connection forbidden in contract/mock evaluation")
+E   Failed: External socket connection forbidden in contract/mock evaluation</failure></testcase><testcase classname="tests.be.test_consultation_contest_eval" name="test_dev[RAG-01]" time="0.319"><failure message="Failed: External socket connection forbidden in contract/mock evaluation">tests\be\test_consultation_contest_eval.py:315: in test_dev
+    dev_case(eval_id, tmp_path, monkeypatch)
+tests\be\test_consultation_contest_eval.py:203: in dev_case
+    tax.test_qa01_valid_selection_renders_server_text_only()
+tests\be\test_rag_tax01.py:138: in test_qa01_valid_selection_renders_server_text_only
+    result = answer(FakeProvider(lambda draft: draft))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests\be\test_rag_tax01.py:115: in answer
+    return asyncio.run(SchemeEvidenceService(lambda: corpus, provider=provider).answer(query(), "key-1"))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:193: in run
+    with Runner(debug=debug, loop_factory=loop_factory) as runner:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:58: in __enter__
+    self._lazy_init()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:137: in _lazy_init
+    self._loop = events.new_event_loop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:823: in new_event_loop
+    return get_event_loop_policy().new_event_loop()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:720: in new_event_loop
+    return self._loop_factory()
+           ^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py:316: in __init__
+    super().__init__(proactor)
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:640: in __init__
+    self._make_self_pipe()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:787: in _make_self_pipe
+    self._ssock, self._csock = socket.socketpair()
+                               ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\socket.py:643: in socketpair
+    csock.connect((addr, port))
+tests\be\test_consultation_contest_eval.py:46: in blocked
+    pytest.fail("External socket connection forbidden in contract/mock evaluation")
+E   Failed: External socket connection forbidden in contract/mock evaluation</failure></testcase><testcase classname="tests.be.test_consultation_contest_eval" name="test_dev[RAG-02]" time="0.064" /><testcase classname="tests.be.test_consultation_contest_eval" name="test_dev[RAG-03]" time="1.152"><failure message="Failed: External socket connection forbidden in contract/mock evaluation">tests\be\test_consultation_contest_eval.py:315: in test_dev
+    dev_case(eval_id, tmp_path, monkeypatch)
+tests\be\test_consultation_contest_eval.py:214: in dev_case
+    with isolated(r2.setup, tmp_path / "session") as s:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+tests\be\test_consultation_contest_eval.py:97: in isolated
+    value = next(generator)
+            ^^^^^^^^^^^^^^^
+tests\be\test_consultation.py:43: in setup
+    with TestClient(app) as client:
+..\..\DION-git\backend\.venv\Lib\site-packages\starlette\testclient.py:559: in __enter__
+    self.portal = portal = stack.enter_context(anyio.from_thread.start_blocking_portal(**self.async_backend))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:526: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:554: in start_blocking_portal
+    portal = future.result()
+             ^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:401: in __get_result
+    raise self._exception
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:538: in run_blocking_portal
+    run_eventloop(
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_core\_eventloop.py:83: in run
+    return async_backend.run(func, args, {}, backend_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_backends\_asyncio.py:2547: in run
+    with Runner(debug=debug, loop_factory=loop_factory) as runner:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:58: in __enter__
+    self._lazy_init()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:137: in _lazy_init
+    self._loop = events.new_event_loop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:823: in new_event_loop
+    return get_event_loop_policy().new_event_loop()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:720: in new_event_loop
+    return self._loop_factory()
+           ^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py:316: in __init__
+    super().__init__(proactor)
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:640: in __init__
+    self._make_self_pipe()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:787: in _make_self_pipe
+    self._ssock, self._csock = socket.socketpair()
+                               ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\socket.py:643: in socketpair
+    csock.connect((addr, port))
+tests\be\test_consultation_contest_eval.py:46: in blocked
+    pytest.fail("External socket connection forbidden in contract/mock evaluation")
+E   Failed: External socket connection forbidden in contract/mock evaluation</failure></testcase><testcase classname="tests.be.test_consultation_contest_eval" name="test_dev[SAFE-01]" time="0.948"><failure message="Failed: External socket connection forbidden in contract/mock evaluation">tests\be\test_consultation_contest_eval.py:315: in test_dev
+    dev_case(eval_id, tmp_path, monkeypatch)
+tests\be\test_consultation_contest_eval.py:220: in dev_case
+    with isolated(r2.setup, tmp_path) as s:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+tests\be\test_consultation_contest_eval.py:97: in isolated
+    value = next(generator)
+            ^^^^^^^^^^^^^^^
+tests\be\test_consultation.py:43: in setup
+    with TestClient(app) as client:
+..\..\DION-git\backend\.venv\Lib\site-packages\starlette\testclient.py:559: in __enter__
+    self.portal = portal = stack.enter_context(anyio.from_thread.start_blocking_portal(**self.async_backend))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:526: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:554: in start_blocking_portal
+    portal = future.result()
+             ^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:401: in __get_result
+    raise self._exception
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:538: in run_blocking_portal
+    run_eventloop(
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_core\_eventloop.py:83: in run
+    return async_backend.run(func, args, {}, backend_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_backends\_asyncio.py:2547: in run
+    with Runner(debug=debug, loop_factory=loop_factory) as runner:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:58: in __enter__
+    self._lazy_init()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:137: in _lazy_init
+    self._loop = events.new_event_loop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:823: in new_event_loop
+    return get_event_loop_policy().new_event_loop()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:720: in new_event_loop
+    return self._loop_factory()
+           ^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py:316: in __init__
+    super().__init__(proactor)
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:640: in __init__
+    self._make_self_pipe()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:787: in _make_self_pipe
+    self._ssock, self._csock = socket.socketpair()
+                               ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\socket.py:643: in socketpair
+    csock.connect((addr, port))
+tests\be\test_consultation_contest_eval.py:46: in blocked
+    pytest.fail("External socket connection forbidden in contract/mock evaluation")
+E   Failed: External socket connection forbidden in contract/mock evaluation</failure></testcase><testcase classname="tests.be.test_consultation_contest_eval" name="test_dev[SAFE-02]" time="0.540"><failure message="Failed: External socket connection forbidden in contract/mock evaluation">tests\be\test_consultation_contest_eval.py:315: in test_dev
+    dev_case(eval_id, tmp_path, monkeypatch)
+tests\be\test_consultation_contest_eval.py:224: in dev_case
+    with isolated(r1.harness, tmp_path) as h:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+tests\be\test_consultation_contest_eval.py:97: in isolated
+    value = next(generator)
+            ^^^^^^^^^^^^^^^
+tests\be\test_explanation.py:98: in harness
+    with TestClient(app) as client:
+..\..\DION-git\backend\.venv\Lib\site-packages\starlette\testclient.py:559: in __enter__
+    self.portal = portal = stack.enter_context(anyio.from_thread.start_blocking_portal(**self.async_backend))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:526: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:554: in start_blocking_portal
+    portal = future.result()
+             ^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:401: in __get_result
+    raise self._exception
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:538: in run_blocking_portal
+    run_eventloop(
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_core\_eventloop.py:83: in run
+    return async_backend.run(func, args, {}, backend_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_backends\_asyncio.py:2547: in run
+    with Runner(debug=debug, loop_factory=loop_factory) as runner:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:58: in __enter__
+    self._lazy_init()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:137: in _lazy_init
+    self._loop = events.new_event_loop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:823: in new_event_loop
+    return get_event_loop_policy().new_event_loop()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:720: in new_event_loop
+    return self._loop_factory()
+           ^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py:316: in __init__
+    super().__init__(proactor)
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:640: in __init__
+    self._make_self_pipe()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:787: in _make_self_pipe
+    self._ssock, self._csock = socket.socketpair()
+                               ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\socket.py:643: in socketpair
+    csock.connect((addr, port))
+tests\be\test_consultation_contest_eval.py:46: in blocked
+    pytest.fail("External socket connection forbidden in contract/mock evaluation")
+E   Failed: External socket connection forbidden in contract/mock evaluation</failure></testcase><testcase classname="tests.be.test_consultation_contest_eval" name="test_dev[SAFE-03]" time="0.085"><failure message="Failed: External socket connection forbidden in contract/mock evaluation">tests\be\test_consultation_contest_eval.py:315: in test_dev
+    dev_case(eval_id, tmp_path, monkeypatch)
+tests\be\test_consultation_contest_eval.py:230: in dev_case
+    tax.test_qa15_injected_text_never_reaches_the_model_or_the_answer_contract()
+tests\be\test_rag_tax01.py:149: in test_qa15_injected_text_never_reaches_the_model_or_the_answer_contract
+    result = answer(provider, corpus)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+tests\be\test_rag_tax01.py:115: in answer
+    return asyncio.run(SchemeEvidenceService(lambda: corpus, provider=provider).answer(query(), "key-1"))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:193: in run
+    with Runner(debug=debug, loop_factory=loop_factory) as runner:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:58: in __enter__
+    self._lazy_init()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:137: in _lazy_init
+    self._loop = events.new_event_loop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:823: in new_event_loop
+    return get_event_loop_policy().new_event_loop()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:720: in new_event_loop
+    return self._loop_factory()
+           ^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py:316: in __init__
+    super().__init__(proactor)
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:640: in __init__
+    self._make_self_pipe()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:787: in _make_self_pipe
+    self._ssock, self._csock = socket.socketpair()
+                               ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\socket.py:643: in socketpair
+    csock.connect((addr, port))
+tests\be\test_consultation_contest_eval.py:46: in blocked
+    pytest.fail("External socket connection forbidden in contract/mock evaluation")
+E   Failed: External socket connection forbidden in contract/mock evaluation</failure></testcase><testcase classname="tests.be.test_consultation_contest_eval" name="test_dev[SAFE-04]" time="0.587"><failure message="Failed: External socket connection forbidden in contract/mock evaluation">tests\be\test_consultation_contest_eval.py:315: in test_dev
+    dev_case(eval_id, tmp_path, monkeypatch)
+tests\be\test_consultation_contest_eval.py:232: in dev_case
+    with isolated(r1.harness, tmp_path) as h:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+tests\be\test_consultation_contest_eval.py:97: in isolated
+    value = next(generator)
+            ^^^^^^^^^^^^^^^
+tests\be\test_explanation.py:98: in harness
+    with TestClient(app) as client:
+..\..\DION-git\backend\.venv\Lib\site-packages\starlette\testclient.py:559: in __enter__
+    self.portal = portal = stack.enter_context(anyio.from_thread.start_blocking_portal(**self.async_backend))
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:526: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:554: in start_blocking_portal
+    portal = future.result()
+             ^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\concurrent\futures\_base.py:401: in __get_result
+    raise self._exception
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\from_thread.py:538: in run_blocking_portal
+    run_eventloop(
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_core\_eventloop.py:83: in run
+    return async_backend.run(func, args, {}, backend_options)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\DION-git\backend\.venv\Lib\site-packages\anyio\_backends\_asyncio.py:2547: in run
+    with Runner(debug=debug, loop_factory=loop_factory) as runner:
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:58: in __enter__
+    self._lazy_init()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py:137: in _lazy_init
+    self._loop = events.new_event_loop()
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:823: in new_event_loop
+    return get_event_loop_policy().new_event_loop()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py:720: in new_event_loop
+    return self._loop_factory()
+           ^^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\windows_events.py:316: in __init__
+    super().__init__(proactor)
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:640: in __init__
+    self._make_self_pipe()
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py:787: in _make_self_pipe
+    self._ssock, self._csock = socket.socketpair()
+                               ^^^^^^^^^^^^^^^^^^^
+..\..\..\AppData\Local\Programs\Python\Python312\Lib\socket.py:643: in socketpair
+    csock.connect((addr, port))
+tests\be\test_consultation_contest_eval.py:46: in blocked
+    pytest.fail("External socket connection forbidden in contract/mock evaluation")
+E   Failed: External socket connection forbidden in contract/mock evaluation</failure></testcase></testsuite></testsuites>

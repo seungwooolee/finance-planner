@@ -1,0 +1,174 @@
+{
+  "role": "engine",
+  "source_workspace": "C:\\Users\\LG\\Projects\\DION-contest-engine-20261114",
+  "source_head_sha": "6e37441e666bf9c8cdb9ffaa490de81735bdd9c1",
+  "source_kind": "CLEAN_LOCAL_COMMIT_WITH_RAW_BYTE_INTAKE",
+  "base_sha": "eed221d1c1d305d79713ebb0dbf0c41d9c624e8a",
+  "accepted_files": [
+    {
+      "path": "backend/app/planning/proposal_reference.py",
+      "source_path": "backend/app/planning/proposal_reference.py",
+      "sha256": "2b4e18ee2e47d709e0062074fb9743a5b3e11f4866ee815e8b5713a3dcb59492",
+      "source_git_blob_sha256": "2b4e18ee2e47d709e0062074fb9743a5b3e11f4866ee815e8b5713a3dcb59492"
+    },
+    {
+      "path": "backend/tests/planning/test_contest_reconciliation.py",
+      "source_path": "backend/tests/planning/test_contest_reconciliation.py",
+      "sha256": "a85d098324d1ecd0067569c775c52c3788fd563979bb65237e1e8ccf83169e21",
+      "source_git_blob_sha256": "a85d098324d1ecd0067569c775c52c3788fd563979bb65237e1e8ccf83169e21"
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/.gitattributes",
+      "source_path": "docs/contest/2026-11-14/engine/.gitattributes",
+      "sha256": "39406acea84a79b6b163fa537f6980fb27b77390389dc0fabab3671a5774c0cd",
+      "source_git_blob_sha256": "39406acea84a79b6b163fa537f6980fb27b77390389dc0fabab3671a5774c0cd"
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/CONSUMER-HANDOFF.md",
+      "source_path": "docs/contest/2026-11-14/engine/CONSUMER-HANDOFF.md",
+      "sha256": "4514341007cea284498db0c89870ad979be7bf1d80e4c633bd644a21e796e947",
+      "source_git_blob_sha256": "4514341007cea284498db0c89870ad979be7bf1d80e4c633bd644a21e796e947"
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/HANDOFF.md",
+      "source_path": "docs/contest/2026-11-14/engine/HANDOFF.md",
+      "sha256": "331567ca42e3f734e878d3adb3fa8a64323ef1c1573c290ce17d72b835efbf56",
+      "source_git_blob_sha256": "331567ca42e3f734e878d3adb3fa8a64323ef1c1573c290ce17d72b835efbf56"
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/case-reconciliation.md",
+      "source_path": "docs/contest/2026-11-14/engine/case-reconciliation.md",
+      "sha256": "00ef034d88f2ca5f12067f11d80286b6f8cc54c77b6e4fb8231f17df7774688e",
+      "source_git_blob_sha256": "00ef034d88f2ca5f12067f11d80286b6f8cc54c77b6e4fb8231f17df7774688e"
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/baseline-check.json",
+      "source_path": "docs/contest/2026-11-14/engine/evidence/baseline-check.json",
+      "sha256": "9c90fd44604792756af52bebe2db45b0595488d496bfd92df0488de8c4ede6bc",
+      "source_git_blob_sha256": "9c90fd44604792756af52bebe2db45b0595488d496bfd92df0488de8c4ede6bc"
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/candidate-files.json",
+      "source_path": "docs/contest/2026-11-14/engine/evidence/candidate-files.json",
+      "sha256": "62b2f92533a7b31c85bf3d2b11463500238a41a01f58f104c59de1b7576df264",
+      "source_git_blob_sha256": "62b2f92533a7b31c85bf3d2b11463500238a41a01f58f104c59de1b7576df264"
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/candidate.patch",
+      "source_path": "docs/contest/2026-11-14/engine/evidence/candidate.patch",
+      "sha256": "2c289586eec08cbd3995b1dd211767b8324b3ed6d67e3ce510d2120e87070f4a",
+      "source_git_blob_sha256": "2c289586eec08cbd3995b1dd211767b8324b3ed6d67e3ce510d2120e87070f4a"
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/canonical-current-result.json",
+      "source_path": "docs/contest/2026-11-14/engine/evidence/canonical-current-result.json",
+      "sha256": "9ea15b23c474b8546d9faa2d8c64821946784581b156c758e5db5b7e20b4f67a",
+      "source_git_blob_sha256": "9ea15b23c474b8546d9faa2d8c64821946784581b156c758e5db5b7e20b4f67a"
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/final-handoff-files.json",
+      "source_path": "docs/contest/2026-11-14/engine/evidence/final-handoff-files.json",
+      "sha256": "539b8064b4812a37b25ddf7b30f5d66c8b1b16cf3bf31cbf8417991bb557f1ed",
+      "source_git_blob_sha256": "539b8064b4812a37b25ddf7b30f5d66c8b1b16cf3bf31cbf8417991bb557f1ed"
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/initial-current-result.json",
+      "source_path": "docs/contest/2026-11-14/engine/evidence/initial-current-result.json",
+      "sha256": "8ce87b3937796831f9dbecd61fbd8ec0131ff4c6490ec00091b9d2896828de13",
+      "source_git_blob_sha256": "8ce87b3937796831f9dbecd61fbd8ec0131ff4c6490ec00091b9d2896828de13"
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/initial-input.json",
+      "source_path": "docs/contest/2026-11-14/engine/evidence/initial-input.json",
+      "sha256": "75b010d314b989225e455d860cb56f6dc0035c0433a5bbe8095c1b64909f8249",
+      "source_git_blob_sha256": "75b010d314b989225e455d860cb56f6dc0035c0433a5bbe8095c1b64909f8249"
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/lead-comparison-before-finalization.json",
+      "source_path": "docs/contest/2026-11-14/engine/evidence/lead-comparison-before-finalization.json",
+      "sha256": "f10ae537034de23085791ee9424c49d7cdf793c37951577fc1a436968e2b9f48",
+      "source_git_blob_sha256": "f10ae537034de23085791ee9424c49d7cdf793c37951577fc1a436968e2b9f48"
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/lead-manifest.json",
+      "source_path": "docs/contest/2026-11-14/engine/evidence/lead-manifest.json",
+      "sha256": "3bd0b7017d93e1b3eac08d893969e9baf2c01a2aa8f98b8141a59124b3b7b774",
+      "source_git_blob_sha256": "3bd0b7017d93e1b3eac08d893969e9baf2c01a2aa8f98b8141a59124b3b7b774"
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/partial-current-result.json",
+      "source_path": "docs/contest/2026-11-14/engine/evidence/partial-current-result.json",
+      "sha256": "6ccea0053c0a629d130d64cde36fca8e30d10dbfd167aab885f3fff7a519bde2",
+      "source_git_blob_sha256": "6ccea0053c0a629d130d64cde36fca8e30d10dbfd167aab885f3fff7a519bde2"
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/partial-input.json",
+      "source_path": "docs/contest/2026-11-14/engine/evidence/partial-input.json",
+      "sha256": "34e924726868b25e85c710c357c8b63f9149123fb68ce99a1a3def101a68dcc7",
+      "source_git_blob_sha256": "34e924726868b25e85c710c357c8b63f9149123fb68ce99a1a3def101a68dcc7"
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/pytest-initial.txt",
+      "source_path": "docs/contest/2026-11-14/engine/evidence/pytest-initial.txt",
+      "sha256": "f1c9835396dac0e93a47961575dba701f6c93853af23da27ce461a947d613d7a",
+      "source_git_blob_sha256": "f1c9835396dac0e93a47961575dba701f6c93853af23da27ce461a947d613d7a"
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/pytest-initial.xml",
+      "source_path": "docs/contest/2026-11-14/engine/evidence/pytest-initial.xml",
+      "sha256": "0c1d13bfd806df92ba4709e8921045138eaaf558d548e317da0e489a557b743b",
+      "source_git_blob_sha256": "0c1d13bfd806df92ba4709e8921045138eaaf558d548e317da0e489a557b743b"
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/pytest-retry.txt",
+      "source_path": "docs/contest/2026-11-14/engine/evidence/pytest-retry.txt",
+      "sha256": "dc025b0d9bac06e343d414e4e1f9f5d0cc4336294fa9ceb3beaa75d6362b9bd2",
+      "source_git_blob_sha256": "dc025b0d9bac06e343d414e4e1f9f5d0cc4336294fa9ceb3beaa75d6362b9bd2"
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/pytest-retry.xml",
+      "source_path": "docs/contest/2026-11-14/engine/evidence/pytest-retry.xml",
+      "sha256": "ed01a8165915f97ea0a28b73192cb5f682acf9b85311e8da75374b97f98aaea3",
+      "source_git_blob_sha256": "ed01a8165915f97ea0a28b73192cb5f682acf9b85311e8da75374b97f98aaea3"
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/recovered-sources.json",
+      "source_path": "docs/contest/2026-11-14/engine/evidence/recovered-sources.json",
+      "sha256": "9700dcebee459d484557993ef8140997e07c657cad499042f728258c47bfc3b6",
+      "source_git_blob_sha256": "9700dcebee459d484557993ef8140997e07c657cad499042f728258c47bfc3b6"
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/revised-current-result.json",
+      "source_path": "docs/contest/2026-11-14/engine/evidence/revised-current-result.json",
+      "sha256": "b34fafd41878a867d3140adf054375ee024933d630d76ad8b480463fe671c710",
+      "source_git_blob_sha256": "b34fafd41878a867d3140adf054375ee024933d630d76ad8b480463fe671c710"
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/evidence/revised-input.json",
+      "source_path": "docs/contest/2026-11-14/engine/evidence/revised-input.json",
+      "sha256": "98311ec465c931aec68b3fc002f04b230d03c2cee8f23b4b20f182bc8cea407a",
+      "source_git_blob_sha256": "98311ec465c931aec68b3fc002f04b230d03c2cee8f23b4b20f182bc8cea407a"
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/financial-assumptions.md",
+      "source_path": "docs/contest/2026-11-14/engine/financial-assumptions.md",
+      "sha256": "fcf2cfc7df645928d017e9ebf438340ee7a70438781af86a90b9929082a72e50",
+      "source_git_blob_sha256": "fcf2cfc7df645928d017e9ebf438340ee7a70438781af86a90b9929082a72e50"
+    },
+    {
+      "path": "docs/contest/2026-11-14/engine/question-result-trace.md",
+      "source_path": "docs/contest/2026-11-14/engine/question-result-trace.md",
+      "sha256": "bb8b26027590084337a0f62d8a531ab0834954f3eb1f01bc2b6d3e658b19a3aa",
+      "source_git_blob_sha256": "bb8b26027590084337a0f62d8a531ab0834954f3eb1f01bc2b6d3e658b19a3aa"
+    }
+  ],
+  "excluded_active_files": [],
+  "preserved_previous_intake": [
+    {
+      "path": "docs/contest/2026-11-14/engine/HANDOFF.md",
+      "old_sha256": "11c385707754e31f5b4c88e29c142533c528838d47f073f24ae13a9c5dd3b646",
+      "preserved_at": "docs/contest/2026-11-14/lead/received/engine/previous-intake/docs/contest/2026-11-14/engine/HANDOFF.md"
+    }
+  ],
+  "source_worktree_unchanged": true
+}

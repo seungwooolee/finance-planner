@@ -1,0 +1,30 @@
+{
+  "case_id": "SUBMISSION-B-01",
+  "source_kind": "HISTORICAL_LOCAL_SYNTHETIC_CAPTURE",
+  "files": [
+    {
+      "variant": "initial",
+      "source_path": "C:\\Users\\LG\\Projects\\DION_Integrated_20261110_v6\\dion\\docs\\submission\\2026-11-10\\evidence\\initial-snapshot.json",
+      "source_file_sha256": "3239e6460ac8bdb6cc7044705562a6a8b881164a2654de23156443f3a5452d5c",
+      "extracted_file": "initial-input.json",
+      "extracted_sha256": "75b010d314b989225e455d860cb56f6dc0035c0433a5bbe8095c1b64909f8249",
+      "historical_engine_output_included": false
+    },
+    {
+      "variant": "revised",
+      "source_path": "C:\\Users\\LG\\Projects\\DION_Integrated_20261110_v6\\dion\\docs\\submission\\2026-11-10\\evidence\\revised-snapshot.json",
+      "source_file_sha256": "fc93b821182b97980f7e9c4401f37fe013f09ce8acad3fb42bd8127e5773c84f",
+      "extracted_file": "revised-input.json",
+      "extracted_sha256": "98311ec465c931aec68b3fc002f04b230d03c2cee8f23b4b20f182bc8cea407a",
+      "historical_engine_output_included": false
+    },
+    {
+      "variant": "partial",
+      "source_path": "C:\\Users\\LG\\Projects\\DION_Integrated_20261110_v6\\dion\\docs\\submission\\2026-11-10\\evidence\\partial-snapshot.json",
+      "source_file_sha256": "6013f4976621ca930f4570bcd5e3c7f4f8df8907a7a7c6d6bbb19b4476a16c19",
+      "extracted_file": "partial-input.json",
+      "extracted_sha256": "34e924726868b25e85c710c357c8b63f9149123fb68ce99a1a3def101a68dcc7",
+      "historical_engine_output_included": false
+    }
+  ]
+}

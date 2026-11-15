@@ -1,0 +1,111 @@
+[
+  {
+    "url": "https://dion-api-review.onrender.com/health",
+    "method": "GET",
+    "error": "ReadTimeout"
+  },
+  {
+    "url": "https://dion-api-review.onrender.com/readyz",
+    "method": "GET",
+    "status": 200,
+    "body": {
+      "status": "ready",
+      "checks": {
+        "database": "READY",
+        "authentication": "CONFIGURED_NOT_PROBED",
+        "explanation_provider": "ONEPORT",
+        "consultation_model": "ONEPORT",
+        "rag_selector": "ONEPORT",
+        "rag": "CORPUS_READY_65",
+        "explanation": "READY"
+      }
+    },
+    "observed_at": "2026-11-15T01:04:51.285738+00:00"
+  },
+  {
+    "url": "https://dion-api-review.onrender.com/api/deployment-info",
+    "method": "GET",
+    "status": 200,
+    "body": {
+      "contract_version": "DION-DEPLOYMENT-1.0",
+      "commit_sha": "5e515f8fc66714b56f3ab7fe1ffaebbdbe0d31dd",
+      "rag": {
+        "status": "READY",
+        "corpus_version": "dion-rag-products-20261115-1.1",
+        "corpus_sha256": "e067e753e7a9a0d69ba06fd6df47a518b79ba75e43d18898ee063fd84ce59599",
+        "source_count": 65
+      },
+      "api_paths": [
+        "/api/be/v1/auth/login",
+        "/api/be/v1/auth/logout",
+        "/api/be/v1/auth/signup",
+        "/api/be/v1/auth/status",
+        "/api/be/v1/cases",
+        "/api/be/v1/cases/{case_id}",
+        "/api/be/v1/cases/{case_id}/agent-sessions",
+        "/api/be/v1/cases/{case_id}/agent-sessions/{sid}",
+        "/api/be/v1/cases/{case_id}/agent-sessions/{sid}/confirmations",
+        "/api/be/v1/cases/{case_id}/agent-sessions/{sid}/conversation-consent",
+        "/api/be/v1/cases/{case_id}/agent-sessions/{sid}/input-previews",
+        "/api/be/v1/cases/{case_id}/agent-sessions/{sid}/messages",
+        "/api/be/v1/cases/{case_id}/agent-sessions/{sid}/persistence",
+        "/api/be/v1/cases/{case_id}/agent-sessions/{sid}/scenario-confirmations",
+        "/api/be/v1/cases/{case_id}/agent-sessions/{sid}/scenario-proposals",
+        "/api/be/v1/cases/{case_id}/agent-sessions/{sid}/scheme-evidence",
+        "/api/be/v1/cases/{case_id}/agent-sessions/{sid}/survey-history",
+        "/api/be/v1/cases/{case_id}/agent-sessions/{sid}/turns",
+        "/api/be/v1/cases/{case_id}/analyses",
+        "/api/be/v1/cases/{case_id}/analyses/question-v12",
+        "/api/be/v1/cases/{case_id}/analyses/{run_id}",
+        "/api/be/v1/cases/{case_id}/analyses/{run_id}/explanation",
+        "/api/be/v1/cases/{case_id}/analyses/{run_id}/portfolio-comparison",
+        "/api/be/v1/cases/{case_id}/analyses/{run_id}/portfolio-evidence",
+        "/api/be/v1/cases/{case_id}/analyses/{run_id}/result-action",
+        "/api/be/v1/cases/{case_id}/answers",
+        "/api/be/v1/cases/{case_id}/checkins",
+        "/api/be/v1/cases/{case_id}/checkins/{month}",
+        "/api/be/v1/cases/{case_id}/checkins/{month}/coach",
+        "/api/be/v1/cases/{case_id}/checkins/{month}/draft-options",
+        "/api/be/v1/cases/{case_id}/checkins/{month}/drafts",
+        "/api/be/v1/cases/{case_id}/checkins/{month}/review",
+        "/api/be/v1/cases/{case_id}/checkins/{month}/review-explanation",
+        "/api/be/v1/cases/{case_id}/checkins/{month}/review-record",
+        "/api/be/v1/cases/{case_id}/history",
+        "/api/be/v1/cases/{case_id}/plan",
+        "/api/be/v1/cases/{case_id}/plan/adoptions",
+        "/api/be/v1/cases/{case_id}/portfolio-reviews",
+        "/api/be/v1/cases/{case_id}/portfolio-reviews/{review_id}",
+        "/api/be/v1/cases/{case_id}/portfolio-reviews/{review_id}/confirm-steps",
+        "/api/be/v1/cases/{case_id}/portfolio-reviews/{review_id}/consultation",
+        "/api/be/v1/cases/{case_id}/portfolio-reviews/{review_id}/consultation-confirmation",
+        "/api/be/v1/cases/{case_id}/portfolio-reviews/{review_id}/finalizations",
+        "/api/be/v1/cases/{case_id}/portfolio-reviews/{review_id}/proposal-confirmation",
+        "/api/be/v1/cases/{case_id}/portfolio-reviews/{review_id}/proposals",
+        "/api/be/v1/cases/{case_id}/portfolio-reviews/{review_id}/recalculation-confirmation",
+        "/api/be/v1/cases/{case_id}/portfolio-reviews/{review_id}/selection",
+        "/api/be/v1/cases/{case_id}/question-analyses",
+        "/api/be/v1/cases/{case_id}/snapshots",
+        "/api/be/v1/cases/{case_id}/snapshots/{snapshot_id}",
+        "/api/be/v1/dialogue",
+        "/api/be/v1/preview/result-action",
+        "/api/be/v1/survey-chat",
+        "/api/deployment-info",
+        "/api/fe/v1/preview",
+        "/api/fe/v1/preview/result-action",
+        "/api/fe/v1/survey-chat"
+      ],
+      "review_notice": "자료집 등록 승인은 독립 전문가 검증이나 개인별 적합성·세액 계산 승인이 아닙니다."
+    },
+    "observed_at": "2026-11-15T01:04:52.639095+00:00"
+  },
+  {
+    "url": "https://dion-review.vercel.app/api/deployment-info",
+    "method": "GET",
+    "status": 401,
+    "body": {
+      "content_type": "text/plain;charset=UTF-8",
+      "body_omitted": true
+    },
+    "observed_at": "2026-11-15T01:04:53.399617+00:00"
+  }
+]

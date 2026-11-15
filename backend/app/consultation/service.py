@@ -2,7 +2,7 @@
 
 Minimal lifecycle metadata coordinates workers without persisting temporary answers.
 
-No raw-answer mutations, financial execution, or transcript log.
+No raw-answer mutations or financial execution. Conversation is separately opt-in.
 """
 import json
 from copy import deepcopy
@@ -17,7 +17,9 @@ from ..explanation.contract import ExplanationRequest
 from ..explanation.facts import build_context
 from ..oneport_transport import ProviderFailure
 from . import scenario
-from .contract import CONTRACT, NOTICE, POLICY
+from .contract import CONTRACT, CONVERSATION_NOTICE, NOTICE, POLICY
+from .conversation import ConversationMixin, conversation_view
+from .dialogue import reviewed_dialogue
 from .evidence import (
     QUESTION_HISTORY_VERSION,
     VALIDATION_VERSION,
@@ -30,7 +32,8 @@ from .evidence import (
     select_question,
 )
 from .model_proposal import VERSION as MODEL_PROPOSAL_VERSION
-from .model_proposal import groundable, review_proposal
+from .model_proposal import review_proposal
+from .natural_proposal import review_model_proposal, should_extract
 from .policy import ALLOWED, REGISTRY, VERSION_HASH, classify, guidance
 
 
@@ -38,12 +41,14 @@ def fail(code, status=409):
     raise HTTPException(status, detail={"code": code})
 
 
-class ConsultationService:
-    def __init__(self, *, clock=None, proposal_provider=None, oneport_provider=None, oneport_configuration_error=False):
+class ConsultationService(ConversationMixin):
+    def __init__(self, *, clock=None, proposal_provider=None, oneport_provider=None, oneport_configuration_error=False,
+                 assistant_provider=None):
         self.clock = clock or (lambda: datetime.now(timezone.utc))
         self.proposal_provider = proposal_provider
         self.oneport_provider = oneport_provider
         self.oneport_configuration_error = oneport_configuration_error
+        self.assistant_provider = assistant_provider
         self.temporary = {}
         self.worker_id = uuid4().hex
         self.lock = RLock()
@@ -160,6 +165,8 @@ class ConsultationService:
         view["limitations"] = [mode, "복합 계좌·목표·가정은 기존 입력 화면에서 확인",
                                "상담 확인은 증빙 인증·진단 반영·절세 판정·재계산·채택이 아님"]
         view["current_case_input_version"] = run["current_input_version"]
+        view["conversation"] = conversation_view(state)
+        view["conversation"]["provider_available"] = self.assistant_provider is not None
         return view
 
     def create(self, store, actor, case_id, request):
@@ -251,14 +258,15 @@ class ConsultationService:
             }
 
     def mutate(self, store, actor, case_id, sid, request, operation):
-        fingerprint = _digest([operation, request.model_dump()])
+        value = request.model_dump()
+        if operation == "persist" and value.get("conversation_notice_version") is None:
+            value.pop("conversation_notice_version", None)  # Preserve pre-conversation receipt fingerprints.
+        fingerprint = _digest([operation, value])
         payload, review_code = None, None
         if (operation == "turn" and request.message.strip()
                 and (self.oneport_provider or self.oneport_configuration_error)
                 and classify(request.message)["intent"] != "UNSUPPORTED"
-                # Questions ("왜 0원이야?") cannot become an evidence candidate; do not spend a call
-                # that the server-side grounding check would reject as MODEL_PROPOSAL_INVALID.
-                and groundable(request.message)):
+                and should_extract(request.message)):
             payload, review_code = self._extract_oneport(store, actor, case_id, sid, request, fingerprint)
         with self.lock:
             self._cleanup(store, actor, case_id)
@@ -284,7 +292,7 @@ class ConsultationService:
                 else:
                     if len(state["receipts"]) >= 128:
                         fail("AGENT_SESSION_LIMIT", 429)
-                    if operation in {"turn", "confirm", "scenario_propose", "scenario_confirm"} and self._view(state, run)["progress"] == "RECONFIRM_REQUIRED":
+                    if operation in {"turn", "confirm", "scenario_propose", "scenario_confirm", "conversation_consent", "survey_history"} and self._view(state, run)["progress"] == "RECONFIRM_REQUIRED":
                         fail("SESSION_RECONFIRM_REQUIRED")
                     if operation == "turn":
                         self._turn(state, run, request, payload, review_code)
@@ -292,7 +300,29 @@ class ConsultationService:
                         self._confirm(state, request)
                     elif operation in {"scenario_propose", "scenario_confirm"}:
                         self._scenario(state, run, request, operation)
+                    elif operation == "conversation_consent":
+                        if state["pending_proposal"]:
+                            fail("CONFIRMATION_PENDING")
+                        conversation = state.setdefault("conversation", {"messages": []})
+                        conversation.update(enabled=request.enabled, notice_version=request.notice_version,
+                                            consented_at=self.clock().isoformat())
+                    elif operation == "survey_history":
+                        conversation = state.get("conversation", {})
+                        if not conversation.get("enabled") or conversation.get("notice_version") != CONVERSATION_NOTICE:
+                            fail("CONVERSATION_SAVE_CONSENT_REQUIRED")
+                        if state["pending_proposal"] or state["progress"] == "PAUSED":
+                            fail("CONFIRMATION_PENDING")
+                        if request.input_hash != run["input_hash"] or conversation.get("survey_history"):
+                            fail("SURVEY_HISTORY_BASIS_OR_DUPLICATE")
+                        conversation["survey_history"] = {
+                            "source": "CLIENT_REPORTED_UNVERIFIED", "input_hash": run["input_hash"],
+                            "recorded_at": self.clock().isoformat(),
+                            "items": [row.model_dump() for row in request.history],
+                        }
                     elif operation == "persist":
+                        if (request.action == "SAVE" and (state.get("conversation", {}).get("messages") or state.get("conversation", {}).get("survey_history"))
+                                and request.conversation_notice_version != CONVERSATION_NOTICE):
+                            fail("CONVERSATION_STORAGE_CONSENT_REQUIRED", 422)
                         if request.action == "STOP_SAVING":
                             conn.execute("DELETE FROM agent_sessions WHERE case_id=? AND session_id=? AND session_version=?",
                                          (case_id, sid, state["session_version"]))
@@ -406,7 +436,11 @@ class ConsultationService:
 
     def _model_turn(self, state, run, message, turn_id, payload, review_code):
         try:
-            reason, answer = review_proposal(payload, message, state)
+            if review_code == "ONEPORT_PROPOSAL_REVIEWED" and isinstance(payload, dict) and payload.get("candidates") == []:
+                state.update(**reviewed_dialogue(payload, message), progress="ACTIVE")
+                return
+            reviewer = review_model_proposal if review_code == "ONEPORT_PROPOSAL_REVIEWED" else review_proposal
+            reason, answer = reviewer(payload, message, state)
         except ValueError:
             fail("MODEL_PROPOSAL_INVALID", 422)
         if reason:
@@ -417,6 +451,7 @@ class ConsultationService:
                 "MEANING_NOT_RESOLVED": "한 가지 항목의 값과 단위를 확인해 주세요.",
                 "OUTSIDE_SUPPORTED_FIELDS": "이 결과의 상담에서 지원하지 않는 항목이에요.",
                 "RELATIVE_CHANGE_DEFERRED": "증감 요청을 기록할 수 없어요. 가정할 총액을 직접 확인해 주세요.",
+                "MULTIPLE_INTENTS": "여러 항목의 금액을 읽었어요. 한 번에 한 항목씩 확인할게요. 확인할 항목 하나와 금액을 다시 보내 주세요.",
             }[reason]
             state.update(intent=intent, progress="ACTIVE", guidance=prompt,
                          classification={"intent": intent, "reason_code": reason, "candidates": []})

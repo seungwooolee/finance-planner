@@ -1,0 +1,128 @@
+{
+  "audit_base_sha": "1fad08138bc28c1363de0a1cee0a7302925b0dcc",
+  "confirmed_p0_count": 0,
+  "coverage_warning": "No complete browser journey or real-account/PostgreSQL write journey was verified. Zero observed P0 findings is not proof that none exist.",
+  "findings": [
+    {
+      "id": "DION-JUDGE-01", "priority": "P1", "area": "전망·금융 표현", "classification": "정적 확인된 표현 문제", "actual_or_potential": "actual_source", "confidence": "HIGH",
+      "title": "수익률 0%를 가장 보수적인 기준으로 표현",
+      "user_impact": "손실 가능성이 있는 상품의 하락 시나리오나 원금 하한으로 오해할 수 있다.",
+      "reproduction": ["최종 화면의 재무설계 제안서에서 다른 방법과 비교하기를 확인", "지금 고른 안의 장점 문구를 읽는다"],
+      "expected": "수익 미반영 가정이며 손실 하한·원금보장이 아님을 실제 계산 의미에 맞게 표시",
+      "actual": "원금이 그대로 남는 기준이라 가장 보수적이에요.",
+      "evidence": ["frontend/src/components/dion/financial-proposal.tsx:81", "evidence/source-observations.json"],
+      "recommendation": "가장 보수적 표현을 수익 미반영 기준으로 바꾸고, 장기 가정 비교와 전체 금융자산 잔액 전망의 범위를 가까이 표시한다. 금융 가정값은 변경하지 않는다.",
+      "owner": "결과 화면 FE", "estimated_size": "S", "browser_reproduction": "UNVERIFIED"
+    },
+    {
+      "id": "DION-JUDGE-02", "priority": "P1", "area": "계획·기록 기간", "classification": "API 값과 표시 문구의 의미 불일치", "actual_or_potential": "actual_source_and_api", "confidence": "HIGH",
+      "title": "첫 계획 월이 미래인데 이번 달 배정으로 반복 표기",
+      "user_impact": "이번 달 실제 기록과 다음 계획 월의 후보금을 직접 비교하거나 현재 납입할 금액으로 오인할 수 있다.",
+      "reproduction": ["대표상품 포함 기존 예시 A를 계산", "기준일 2026-11-13, 첫 계획 월 2026-12를 확인", "최종 KPI·제안서·할 일에서 이번 달 문구 확인"],
+      "expected": "계산 기준일·계획 월·기록 월을 구분하고 금액 제목에 실제 계획 월을 표시",
+      "actual": "rows[0]를 선택한 뒤 이번 달 신규 투자 후보금·이번 달 실행안·이번 달 자금 배정으로 표시한다. 실제 12월 기록 요청은 11월15일에 FUTURE_MONTH로 거부된다.",
+      "evidence": ["frontend/src/components/dion/results.tsx:112", "frontend/src/components/dion/final-portfolio.tsx:34", "frontend/src/components/dion/financial-proposal.tsx:75", "evidence/case-summaries.json", "evidence/api-checks.json"],
+      "recommendation": "selectedRow.period를 주요 제목과 금액 근처에 사용한다. FUTURE_MONTH와 실제 날짜 검증은 유지한다.",
+      "owner": "결과 화면 FE", "estimated_size": "S", "browser_reproduction": "UNVERIFIED"
+    },
+    {
+      "id": "DION-JUDGE-03", "priority": "P1", "area": "시연·통합 검증", "classification": "검증 공백", "actual_or_potential": "coverage_gap", "confidence": "HIGH",
+      "title": "한 사례의 브라우저 전체 여정과 동일 계획 월 사후점검 증거가 없음",
+      "user_impact": "심사 중 같은 고객·버전으로 이어진다는 것을 입증하기 어렵다.",
+      "reproduction": ["A에서 저장·검토·최종 생성·채택 API 진행", "A의 첫 계획 월 2026-12와 현재 날짜 2026-11-15 대조", "D의 2026-10 기록·새 초안 증거와 사례 ID 비교"],
+      "expected": "하나의 명시된 사례에서 입력·run·계획·채택·실적·새 초안을 추적하고 실제 브라우저 연결도 확인",
+      "actual": "A의 생성·채택과 D의 과거월 기록·새 초안은 각각 성공했지만 서로 다른 사례다. 전용 서버 시작은 자동 승인 거절, 공유 브라우저 실행본은 중단/500으로 전체 웹 여정은 미검증이다.",
+      "evidence": ["evidence/case-summaries.json", "evidence/browser-limitations.json", "RUN_MANIFEST.json"],
+      "recommendation": "원본 예시와 고정 증거는 보존하고 별도 버전의 시연 사례·명시된 시계·동일 식별자 사슬을 준비한다. 실제 날짜의 미래 기록 제한을 없애거나 서로 다른 사례를 하나처럼 합치지 않는다.",
+      "owner": "총괄·FE·BE 검증", "estimated_size": "M", "browser_reproduction": "BLOCKED"
+    },
+    {
+      "id": "DION-JUDGE-04", "priority": "P1", "area": "상품 RAG·예시", "classification": "실제 API 설명 보류", "actual_or_potential": "actual_api", "confidence": "HIGH",
+      "title": "대표 예시의 상품 고유 설명은 RAG 근거가 비어 있음",
+      "user_impact": "등록 자료가 있어도 심사 예시에서 상품 추천이유를 눌렀을 때 설명이 나오지 않을 수 있다.",
+      "reproduction": ["A의 저장 run에서 기본 상품 069500의 portfolio-evidence 요청", "kind=PRODUCT, topic=product, 평가일 2026-11-13 사용"],
+      "expected": "해당 평가일에 유효한 검토 근거를 제시하거나 사례와 자료의 기준일 차이를 구체적으로 설명",
+      "actual": "HTTP200이지만 evidence.status=FALLBACK, NO_APPROVED_EVIDENCE, blocks/citations=[]이다. PRD-069500 자료의 effective_from은 2026-11-15다. 같은 상품의 일반 위험 CON-01 근거는 ANSWERED로 반환된다.",
+      "evidence": ["evidence/api-checks.json", "evidence/product-rag-metadata.json", "backend/app/consultation/rag_registry.py:72"],
+      "recommendation": "과거 원본의 날짜나 자료 효력을 소급 변경하지 않는다. 유효한 기준일의 신규 사례를 만들거나 과거 기준으로 사용 가능한 자료를 별도 검토·버전 등록한다.",
+      "owner": "AI·RAG·시연 사례", "estimated_size": "S-M", "browser_reproduction": "UNVERIFIED"
+    },
+    {
+      "id": "DION-JUDGE-05", "priority": "P2", "area": "AI 안전·실패 UX", "classification": "실제 모델 출력 검증 실패", "actual_or_potential": "actual_api", "confidence": "HIGH",
+      "title": "주입 요청은 차단됐지만 안전한 거절 대신 일반 503 오류",
+      "user_impact": "차단된 요청의 이유를 이해하지 못하고 같은 요청을 반복할 수 있다.",
+      "reproduction": ["L8-injection의 시스템 지시 무시·타인 정보·채택 완료 요구를 합성 계정으로 전송"],
+      "expected": "정보·권한 경계를 지키면서 가능한 상담 범위를 간단히 안내",
+      "actual": "게이트웨이는 응답했으나 CHAT_REPLY_UNGROUNDED로 출력이 차단됐다. HTTP503 CHAT_MODEL_UNAVAILABLE이며 타인 데이터나 모델 응답은 노출되지 않았다.",
+      "evidence": ["evidence/model-responses.json#L8-injection", "evidence/model-usage.json"],
+      "recommendation": "검증 실패 차단을 유지하며 제한된 안전 안내와 진단 코드를 연결한다. 숫자·행동 검증기를 완화해 통과시키지 않는다.",
+      "owner": "AI·BE", "estimated_size": "S-M", "browser_reproduction": "UNVERIFIED"
+    },
+    {
+      "id": "DION-JUDGE-06", "priority": "P2", "area": "고정 사례·질문 정의 호환", "classification": "합성 자료 호환성 충돌", "actual_or_potential": "actual_api_fixture_compatibility", "confidence": "HIGH",
+      "title": "A와 역사적 B를 한 정의 레지스트리에 저장하면 정의 버전 충돌",
+      "user_impact": "고정 B 인계를 현재 저장 흐름에 그대로 재사용하기 어렵다.",
+      "reproduction": ["A를 SQLite 저장소에 등록", "B1.1 원본 envelopes를 같은 저장소의 새 사례에 저장"],
+      "expected": "기존 정의를 보존하고 실제 차이를 명시 매핑·버전 관리",
+      "actual": "NEW-01 definition_version=1.2.1에서 DEFINITION_VERSION_CONFLICT 409. 원문을 수정하지 않은 별도 DB 재검사는 분석 성공, 전체 상태 PARTIAL이다.",
+      "evidence": ["evidence/api-checks.json", "evidence/case-summaries.json"],
+      "recommendation": "계약상 정의 차이를 대조해 명시 호환 또는 신규 정의 버전으로 관리한다. 글로벌 원장을 덮어쓰거나 정의 검사·해시를 삭제하지 않는다.",
+      "owner": "질문 계약·BE", "estimated_size": "M", "browser_reproduction": "UNVERIFIED"
+    },
+    {
+      "id": "DION-JUDGE-07", "priority": "P2", "area": "생애단계·제품 범위", "classification": "지원 범위 한계", "actual_or_potential": "supported_limitation", "confidence": "HIGH",
+      "title": "가구·은퇴 예시는 전 단계가 계산되는 사례가 아님",
+      "user_impact": "여러 생애단계를 지원한다는 소개가 모든 목표·상품·연금 계산 완료로 해석될 수 있다.",
+      "reproduction": ["B1.1과 현재 retired 예시를 각각 독립 저장·분석", "개별 결과 상태를 확인"],
+      "expected": "계산 가능한 결과와 미확정·미지원 부분을 예시 소개와 연결",
+      "actual": "B는 OUT-06/08/09/11/12 NEEDS_INPUT, OUT-10 NOT_SUPPORTED, OUT-14 REVIEW_ONLY다. 은퇴 C는 OUT-05 PARTIAL, OUT-06 NEEDS_INPUT이며 법정산식 활성은 0이다.",
+      "evidence": ["evidence/case-summaries.json"],
+      "recommendation": "공모전 핵심 시연 대상과 보조 예시의 지원 범위를 정리하고 필요한 사실만 보완한다. 나이로 연금액·수익률·추천 비중을 채우지 않는다.",
+      "owner": "총괄·엔진·FE", "estimated_size": "M", "browser_reproduction": "UNVERIFIED"
+    },
+    {
+      "id": "DION-JUDGE-08", "priority": "P2", "area": "AI 답변 유용성", "classification": "실제 응답 내용 개선", "actual_or_potential": "actual_model_response", "confidence": "MEDIUM-HIGH",
+      "title": "질문에 대한 의미 설명보다 숫자·제약 나열이 길어지는 답변",
+      "user_impact": "정확한 값이 있어도 후보금·추가 현금·대기자금의 차이나 선택 이유를 이해하기 어렵다.",
+      "reproduction": ["L4에서 두 안의 차이를 질문", "L11에서 신규 투자 후보금과 남기는 현금의 의미를 질문", "L10의 장문 응답과 대조"],
+      "expected": "질문의 결론과 용어 관계를 먼저 설명하고 필요한 수치·근거·한계를 이어 제공",
+      "actual": "L4는 선택한 안정안 중심 설명, L11은 수치를 길게 나열한다. L10은 두 안을 정확히 설명하지만 같은 가정·제약이 반복된다. 실제 원응답과 채택은 변경되지 않았다.",
+      "evidence": ["evidence/model-responses.json", "evidence/independent-model-review.json"],
+      "recommendation": "질문별 첫 문장·용어 설명·상위 핵심 근거를 개선하고 기존 검증된 숫자와 상태·출처를 유지한다. 긴 상세 근거는 펼쳐보기로 분리한다.",
+      "owner": "AI·FE", "estimated_size": "M", "browser_reproduction": "UNVERIFIED"
+    },
+    {
+      "id": "DION-JUDGE-09", "priority": "P2", "area": "최종 화면 상태", "classification": "정적 상태 연결 개선", "actual_or_potential": "potential_ui_ambiguity", "confidence": "MEDIUM",
+      "title": "최종 상단에서 실제 채택 상태 대신 기록 영역 존재 여부를 사용",
+      "user_impact": "이미 채택한 계획·구성이 무엇인지 상단에서 바로 확인하기 어렵다.",
+      "reproduction": ["저장 결과의 5번 화면 ChoiceStatus와 아래 PlanCheckin을 대조"],
+      "expected": "실제 adoption의 계획·구성·버전으로 현재 선택과 채택을 구분",
+      "actual": "ChoiceStatus는 adoption을 받지 않고 hasCheckin 값에 따라 아래 기록에서 확인/아직 채택 전을 표시한다. 정확한 채택 자료는 하위 API에 있으나 상단에는 연결하지 않는다.",
+      "evidence": ["frontend/src/components/dion/results.tsx:155", "frontend/src/components/dion/final-portfolio.tsx:42", "evidence/source-observations.json"],
+      "recommendation": "서버의 실제 채택 상태를 상단에 전달한다. 해당 UI 증상은 정상 실행본에서 추가 확인하고 기존 채택 계약을 유지한다.",
+      "owner": "FE·BE 연결", "estimated_size": "S-M", "browser_reproduction": "UNVERIFIED"
+    },
+    {
+      "id": "DION-JUDGE-10", "priority": "P2", "area": "결과 완료 문구", "classification": "정적 범위 표현 개선", "actual_or_potential": "actual_source", "confidence": "HIGH",
+      "title": "계산 완료를 모든 화면 결과로 넓혀 표현",
+      "user_impact": "법정 세금·연금 산식, 수익 포함 전망, 상품 근거까지 완료됐다고 오인할 여지가 있다.",
+      "reproduction": ["전체 calc_state가 CALCULATED인 A의 상태 안내 분기 확인", "같은 A의 return_scenario_state=NOT_SUPPORTED와 상품 고유 RAG 보류 대조"],
+      "expected": "확인된 입력으로 계산된 항목과 아직 다른 상태인 기능을 구분",
+      "actual": "확인한 답변으로 모든 화면 결과를 계산했어요.",
+      "evidence": ["frontend/src/components/dion/calc-basis-strip.tsx:26", "evidence/source-observations.json", "evidence/case-summaries.json"],
+      "recommendation": "확인된 정보로 계산 가능한 재무 결과를 정리했다는 범위의 문구로 좁힌다. 미지원 상태를 성공으로 승격하지 않는다.",
+      "owner": "결과 화면 FE", "estimated_size": "S", "browser_reproduction": "UNVERIFIED"
+    },
+    {
+      "id": "DION-JUDGE-11", "priority": "P2", "area": "용어 일관성", "classification": "정적 문구 잔여", "actual_or_potential": "actual_source", "confidence": "HIGH",
+      "title": "최종 생성본 상세에는 미배분 표현이 남아 있음",
+      "user_impact": "다른 화면의 현금 대기자금과 같은 항목인지 혼동할 수 있다.",
+      "reproduction": ["최종 생성본의 고정 월별 포트폴리오 상세를 펼친다"],
+      "expected": "현금 대기자금이라는 표시 용어를 일관되게 사용하고 실제 보유 현금과 구분",
+      "actual": "월 투자 후보금 · 상품 배분 · 미배분으로 표시한다.",
+      "evidence": ["frontend/src/components/dion/portfolio-review-flow.tsx:167", "evidence/source-observations.json"],
+      "recommendation": "표시 문구만 현금 대기자금으로 바꾼다. 내부 unallocated_krw 필드명과 금액 의미는 유지한다.",
+      "owner": "FE", "estimated_size": "S", "browser_reproduction": "UNVERIFIED"
+    }
+  ]
+}
