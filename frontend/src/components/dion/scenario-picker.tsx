@@ -34,8 +34,8 @@ export function ScenarioPicker({disabled,onLoad,onRestore,review=false,inline=fa
   const load = () => { setFailed(false); (review ? loadReviewScenarios() : loadScenarios()).then(setScenarios, () => setFailed(true)); };
   const open = () => { dialog.current?.showModal(); if (!scenarios) load(); };
   return <>
-    <button type="button" className={review||inline?"d-secondary":"d-scenario-launch d-secondary"} disabled={disabled} onClick={open}>
-      {review?"검증용 고정 사례 불러오기":"가상 사례 불러오기"}
+    <button type="button" className={review?"d-secondary":inline?"d-scenario-entry":"d-scenario-launch d-secondary"} disabled={disabled} onClick={open}>
+      {review?"검증용 고정 사례 불러오기":inline?"심사용 가상사례 불러오기":"가상 사례 불러오기"}
     </button>
     <dialog ref={dialog} className="d-scenario-dialog" aria-labelledby={titleId}>
       <div className="d-scenario-heading"><div><span className="d-eyebrow">가상 자료 · 실제 기록과 분리</span>
