@@ -10,6 +10,7 @@ function fields(doc: {raw_bundle: {answers: {envelope: {question_ref: {design_id
 test("the public picker switches only the two demonstrations, then restores the draft", async ({page})=>{
   test.setTimeout(150_000);
   await page.goto("/dion");
+  await expect(page.locator('a[href="/dion/judge"]')).toHaveCount(0);
   await page.getByRole("button",{name:/빠른진단 시작/}).click();
   const nav = page.getByRole("navigation",{name:"질문 이동"});
   await nav.getByRole("button",{name:/한 달 소득/}).click();
@@ -18,12 +19,24 @@ test("the public picker switches only the two demonstrations, then restores the 
   const launch = page.getByRole("button",{name:"가상 사례 불러오기",exact:true});
   await launch.click();
   await expect(picker(page).getByRole("heading",{level:3})).toHaveText(["사회초년생","은퇴기"]);
+  await expect(picker(page).locator('a[href="/dion/judge"]')).toHaveCount(0);
   const first = preview(page);
   await picker(page).getByRole("button",{name:"사회초년생 불러오기",exact:true}).click();
   const early = await first;
   expect(early.ok()).toBe(true);
   expect(fields(early.request().postDataJSON(),"LIFE-01").life_stage_primary.raw_value).toBe("LC_EARLY_CAREER");
   await expect(page.getByRole("region",{name:"계산 결과",exact:true})).toBeVisible();
+
+  const resultNav = page.getByRole("navigation", {name:"빠른 결과 5뷰"});
+  await resultNav.getByRole("button", {name:"재무안 선택", exact:true}).click();
+  const comparison = page.getByRole("region", {name:"두 재무안 비교", exact:true});
+  const stability = comparison.getByRole("button", {name:/생활 안정 우선/});
+  const capacity = comparison.getByRole("button", {name:/투자 여력 확대/});
+  await expect(stability).toBeVisible();
+  await capacity.click();
+  await expect(capacity).toHaveAttribute("aria-pressed", "true");
+  await stability.click();
+  await expect(stability).toHaveAttribute("aria-pressed", "true");
 
   await page.setViewportSize({width:390,height:844});
   await launch.click();
@@ -61,6 +74,11 @@ test("the public picker switches only the two demonstrations, then restores the 
   await expect(reported.getByRole("button",{name:/함께 살펴볼 가족/})).toBeVisible();
   await expect(page.locator(".d-metric").filter({hasText:"순자산"})).toContainText("확인 대기");
   await expect(page.getByRole("article",{name:"월 현금흐름 차감표"}).getByRole("figure")).toHaveCount(0);
+  await resultNav.getByRole("button", {name:"재무안 선택", exact:true}).click();
+  await expect(page.getByRole("heading", {name:"재무안 선택", exact:true})).toBeVisible();
+  await expect(page.getByText(/두 월별 후보 확인 대기/)).toBeVisible();
+  await expect(comparison).toHaveCount(0);
+
   await launch.click();
   await picker(page).getByRole("button",{name:"내 입력으로 복귀",exact:true}).click();
   await expect(personalIncome).toHaveValue("777");

@@ -1,7 +1,6 @@
 import {createRoot} from 'react-dom/client';
 import {useState} from 'react';
 import {JudgeJourney} from '../../src/components/dion/judge-journey';
-import {ScenarioPicker} from '../../src/components/dion/scenario-picker';
 import {PlanCheckin, type AdoptionView} from '../../src/components/dion/plan-checkin';
 
 function AdoptionFixture(){
@@ -11,5 +10,4 @@ function AdoptionFixture(){
     token="MOCK-FE-ONLY" caseId="case_fixture" plan="STABILITY_FIRST" tasks={[]} finalGenerated
     recordMonth="2026-10" onAdoption={setAdoption}/></main></div>;
 }
-createRoot(document.getElementById('root')!).render(location.pathname==='/dion/judge'?<JudgeJourney/>
-  :location.pathname==='/adoption'?<AdoptionFixture/>:<div className="dion-app"><ScenarioPicker inline disabled={false} onLoad={()=>{}}/></div>);
+createRoot(document.getElementById('root')!).render(location.pathname==='/adoption'?<AdoptionFixture/>:<JudgeJourney/>);
