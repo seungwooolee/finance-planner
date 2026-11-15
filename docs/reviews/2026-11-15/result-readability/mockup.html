@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DION 결과 가독성 시안 · 가상 사례</title>
+<style>
+:root{--p:#3d43c8;--ink:#1f2742;--muted:#5b6274;--line:#e3e5f0;--soft:#f3f2fd}
+*{box-sizing:border-box}body{margin:0;font:16px/1.65 system-ui,"Pretendard","Noto Sans KR",sans-serif;color:var(--ink);background:#faf9ff}
+main{max-width:1120px;margin:0 auto;padding:32px 20px}
+.tag{display:inline-block;font-size:13px;font-weight:700;color:var(--p);background:var(--soft);border-radius:999px;padding:2px 10px}
+h1{font-size:28px;margin:8px 0 24px}h2{font-size:22px;margin:0 0 16px}h3{font-size:15px;color:var(--p);margin:0 0 6px}
+.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;margin-bottom:28px}
+.sum{display:grid;grid-template-columns:1.1fr 1fr .9fr;gap:24px}
+.big{font-size:32px;font-weight:800;line-height:1.2;font-variant-numeric:tabular-nums}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.chips span{font-size:14px;border:1px solid var(--line);border-radius:8px;padding:2px 8px}
+dl{margin:0;display:grid;gap:6px}dl div{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:4px 0}dt{color:var(--muted)}dd{margin:0;font-weight:700}
+.sub{font-size:14px;color:var(--muted);margin-top:8px}
+.btn{display:inline-block;background:var(--p);color:#fff;border:0;border-radius:12px;padding:12px 18px;font-weight:700;font-size:16px;margin-top:12px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:12px}.kpis small{display:block;color:var(--muted);font-size:14px}.kpis b{font-size:26px}
+.bar{display:flex;height:16px;border-radius:8px;overflow:hidden;gap:2px;margin:8px 0}.bar i{display:block}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:14px}.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;background:var(--c)}
+table{width:100%;border-collapse:collapse;font-size:15px}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}th{font-size:13px;color:var(--muted)}td small{display:block;color:var(--muted);font-size:13px}
+.role{font-size:12px;border:1px solid var(--p);color:var(--p);border-radius:6px;padding:0 6px}.alt{border-style:dashed;color:var(--muted);border-color:var(--muted)}
+.note{background:var(--soft);border-radius:12px;padding:10px 14px;font-size:14px;margin-bottom:12px}
+@media(max-width:720px){.sum,.kpis{grid-template-columns:1fr}thead{display:none}tr{display:block;border:1px solid var(--line);border-radius:12px;margin-bottom:10px;padding:8px}td{display:flex;justify-content:space-between;border:0;padding:4px 0}td::before{content:attr(data-l);color:var(--muted);font-size:13px}}
+</style></head><body><main>
+<span class="tag">시안 · 가상 사례 값</span><h1>결과 화면 가독성 시안</h1>
+
+<section class="card" aria-label="요약을 먼저 읽는 현황 화면">
+  <h2>내 상황 한눈에</h2>
+  <div class="sum">
+    <div><h3>지금 상태</h3><small>기존 저축·상환 후 월 잔여</small><div class="big">109만 9천 원</div>
+      <div class="chips"><span>목표·비상금 배정 전</span><span>대출 상환 반영 완료</span></div>
+      <p class="sub">전부 투자 가능한 금액이라는 뜻이 아니에요.</p></div>
+    <div><h3>중요한 목표·제약</h3><strong>장기 자산 형성</strong>
+      <dl><div><dt>목표일</dt><dd>2026-12-31</dd></div><div><dt>남은 목표액</dt><dd>30만원</dd></div><div><dt>납입</dt><dd>1회 · 회차당 30만원</dd></div></dl>
+      <p class="sub">첫 계획 월(2026-12) 비상금 보충 없음 · 두 안 동일</p></div>
+    <div><h3>다음 행동</h3><p>두 재무안이 남는 돈을 어떻게 나누는지 비교해 보세요.</p><button class="btn">두 재무안 비교하기</button></div>
+  </div>
+</section>
+
+<section class="card" aria-label="수치를 나란히 비교하는 상품 화면">
+  <h2>중립형 구성 상세 · 2026-12</h2>
+  <div class="kpis"><div><small>신규 투자 후보금</small><b>39만 9,500원</b></div><div><small>검토 배분액</small><b>23만 9,700원</b></div><div><small>현금 대기자금 · 40%</small><b>15만 9,800원</b></div></div>
+  <div class="bar" role="img" aria-label="채권 30%, 국내주식 10%, 해외주식 20%, 현금 대기 40%"><i style="width:30%;background:#3848ce"></i><i style="width:10%;background:#d97b2b"></i><i style="width:20%;background:#8a5cc2"></i><i style="width:40%;background:#c9ccd6"></i></div>
+  <div class="legend"><span style="--c:#3848ce">채권 30%</span><span style="--c:#d97b2b">국내주식 10%</span><span style="--c:#8a5cc2">해외주식 20%</span><span style="--c:#c9ccd6">현금 대기 40%</span></div>
+  <p class="sub">기대수익률 · 산정 대기 &nbsp;|&nbsp; <strong>내부 하락 시나리오 손실 7만 7,903원</strong> · 실제 손실은 더 클 수 있어요</p>
+
+  <h2 style="margin-top:28px">후보별 비용·유동성·환율·위험 비교</h2>
+  <p class="note">공통: 모든 후보는 가격 하락 시 원금 손실이 날 수 있고 예금자보호 대상이 아니에요.</p>
+  <table><thead><tr><th>상품·코드</th><th>구분</th><th>총보수·비용(연)</th><th>매도 후 결제</th><th>환율 영향</th><th>공시 위험등급</th></tr></thead><tbody>
+    <tr><td data-l="상품"><strong>KODEX 단기채권</strong><small>153130</small></td><td data-l="구분"><span class="role">기본 후보</span></td><td data-l="총보수·비용">0.1671%<small>기준일 2026-07-31</small></td><td data-l="결제">2영업일 뒤 결제</td><td data-l="환율">직접 환노출 없음</td><td data-l="위험">6등급</td></tr>
+    <tr><td data-l="상품"><strong>ACE 미국S&amp;P500</strong><small>360200</small></td><td data-l="구분"><span class="role">기본 후보</span></td><td data-l="총보수·비용">0.0707%<small>기준일 2025-12-31</small></td><td data-l="결제">2영업일 뒤 결제</td><td data-l="환율">환노출</td><td data-l="위험">2등급</td></tr>
+    <tr><td data-l="상품"><strong>TIGER 미국S&amp;P500</strong><small>360750</small></td><td data-l="구분"><span class="role alt">비교 대안 · 자동 교체 없음</span></td><td data-l="총보수·비용">0.0668%<small>기준일 2026-10-01</small></td><td data-l="결제">2영업일 뒤 결제</td><td data-l="환율">환노출</td><td data-l="위험">2등급</td></tr>
+  </tbody></table>
+  <p class="sub">각 행의 ‘검토 이유·위험·공식 자료’는 펼쳐보기로 이동</p>
+</section>
+</main></body></html>
