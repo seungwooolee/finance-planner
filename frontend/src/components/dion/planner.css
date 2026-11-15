@@ -828,3 +828,11 @@ body:has(.dion-app[data-view="welcome"]) .beta-notice{display:none}
 }
 .dion-app .d-ov-applied>div{display:flex;justify-content:space-between;gap:8px}.dion-app .d-ov-applied dt{color:#4c5568}.dion-app .d-ov-applied dd{margin:0;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
 .dion-app .d-results .d-ov-next p{color:inherit}.dion-app .d-ov-next .d-ov-next-detail{font-size:15px;font-weight:500;opacity:.92;margin-top:4px}
+
+.d-inheritance-result .d-table-wrap th,
+.d-inheritance-result .d-table-wrap td { vertical-align: top; }
+.d-inheritance-result .d-table-wrap td:last-child { white-space: normal; min-width: 8em; }
+@media (max-width: 480px) {
+  .d-inheritance-result .d-table-wrap th, .d-inheritance-result .d-table-wrap td { padding: 8px 6px; }
+  .d-inheritance-result .d-table-wrap tbody th { white-space: normal; }
+}

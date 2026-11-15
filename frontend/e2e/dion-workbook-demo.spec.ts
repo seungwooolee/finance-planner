@@ -146,12 +146,21 @@ test("life-stage cards open the matching workbook and previous demo results", as
     "금융자산 총액5억원","부동산 전체 시세10억원","남은 대출 원금1억원",
   ]);
   await expect(rendered.locator(".d-metric").filter({hasText:"순자산"}).locator("strong")).toHaveText("확인 대기");
-  const inheritance = page.getByRole("region", {name:"유산·상속 준비"});
-  const leave = inheritance.getByRole("button", {name:"남길 재산 알아보기"});
+  const inheritance = rendered.getByRole("region", {name:"유산·상속 준비 결과"});
+  await expect(inheritance.getByText("진단 기준일 확인 필요")).toBeVisible();
+  const estate = inheritance.getByRole("table", {name:"유산·상속 준비 자산과 채무"});
+  await expect(estate.getByRole("columnheader", {name:"입력한 금액"})).toBeVisible();
+  await expect(estate.getByRole("row", {name:/실거주 주택/})).toContainText(/10억원.*본인 지분 100% 입력.*평가 기준일 확인 필요/);
+  await expect(estate.getByRole("row", {name:/금융자산 6건/})).toContainText(/5억원.*명의 확인 필요.*평가 기준일 확인 필요/);
+  await expect(estate.getByRole("row", {name:/대출 잔액/})).toContainText(/1억원.*채무자 확인 필요.*잔액 기준일 확인 필요/);
+  const leave = inheritance.getByRole("button", {name:"왜 명의부터 확인하나요?"});
   await leave.click();
   const consultation = page.getByRole("dialog",{name:"dion AI 상담"});
-  await consultation.getByRole("button",{name:"집값은 언제 기준으로 보나요?"}).click();
   const answer = consultation.getByRole("status",{name:"등록된 상속 근거 답변"});
+  await expect(answer).toContainText("본인 명의 재산과 공동명의 지분");
+  await consultation.getByText("근거 보기",{exact:true}).click();
+  await expect(consultation.getByRole("link",{name:/상속세 및 증여세법 제14조/})).toHaveAttribute("href", /1029615467/);
+  await consultation.getByRole("button",{name:"집값은 언제 기준으로 보나요?"}).click();
   await expect(answer).toContainText("상속개시일 기준 시가");
   await consultation.getByText("근거 보기",{exact:true}).click();
   await expect(consultation.getByRole("link",{name:/상속세 및 증여세법 제60조/})).toHaveAttribute("href", /1032163625/);
@@ -193,6 +202,17 @@ test("life-stage cards open the matching workbook and previous demo results", as
   await expect(proposal).toContainText("진단 기준일 확인 필요.");
   await expect(reference.getByRole("heading",{name:"안정 추구형 · 시연 투자구성"})).toBeVisible();
   await expect(page.locator(".d-kpi").filter({hasText:"그중 상품 배분액"}).locator("strong")).toHaveText("확인 대기");
+
+  await resultNav.getByRole("button", {name:"재무현황", exact:true}).click();
+  await inheritance.getByRole("button", {name:"금융자산 명의 확인하기"}).click();
+  const ownerHeading = page.getByText("금융자산 명의", {exact:true});
+  await expect(ownerHeading).toBeFocused();
+  const assetOwners = page.getByRole("group", {name:"ACE 미국하이일드액티브(H)",exact:true});
+  const self = assetOwners.getByRole("button", {name:"본인",exact:true});
+  await expect(self).toHaveAttribute("aria-pressed","false");
+  await self.click();
+  await expect(self).toHaveAttribute("aria-pressed","true");
+  await expect(page.getByRole("textbox",{name:"모아둔 돈의 총금액",exact:true})).toHaveValue("50000");
 
   async function loadPrevious(title: string) {
     await launch.click();

@@ -3,7 +3,8 @@
 import type { WorkbookPortfolioTarget } from "@/lib/dion/workbook-scenario-targets";
 import { WorkbookPortfolioChoices, WorkbookPortfolioProducts } from "./workbook-portfolio";
 import type { Scenario } from "./scenario-picker";
-import { InheritanceCard, type InheritanceDirection } from "./inheritance-consultation";
+import type { InheritanceDirection } from "./inheritance-consultation";
+import { InheritanceResult } from "./inheritance-result";
 
 import { useAssetReferenceSelection } from "./use-asset-reference-selection";
 
@@ -71,7 +72,7 @@ function metricValue(out:Record<string,Json>,key:string) {
 }
 function Missing({row,title}:{row:Record<string,Json>;title:string}) {return <div className="d-note"><strong>{title} · {stateLabels[textValue(row.calc_state)]??"확인 필요"}</strong><p>{row.calc_state==="NOT_SUPPORTED"?"이 결과의 계산은 아직 지원하지 않아요. 입력은 보관하고 다른 재무 결과를 유지해요.":row.calc_state==="NOT_IMPLEMENTED"?"이 계산은 준비 중이에요. 추가 입력으로 완료되는 단계가 아니에요.":row.calc_state==="NOT_APPLICABLE"?"현재 확인한 답변에는 해당하는 항목이 없어요.":row.calc_state==="INVALID_INPUT"?"금액·기간·소유 관계가 맞지 않아 계산을 보류했어요. 관련 답변을 확인해주세요.":"추가 확인 필요 · 관련 답변과 계산에 필요한 가정을 확인해주세요."}</p></div>;}
 
-export function Results({view,demoScenario,deep,tab,setTab:changeTab,stale,onEdit,onRecalculate,checkin,technical=false,token=null,caseId="",evidenceAccess,actionFlow,consultationTarget,closeConsultation,onOpenRun,onReadRun,onReviewResume,calcBar,recordMonth,onInheritance}:{onInheritance?:(direction:InheritanceDirection)=>void;calcBar?:ReactNode;recordMonth?:string;demoScenario?:Scenario;onReadRun?:(id:string)=>Promise<void>;onOpenRun?:(id:string)=>Promise<void>;onReviewResume?:(review:PortfolioReview)=>void;actionFlow?: ActionFlow;consultationTarget?: HTMLDivElement|null;closeConsultation?: ()=>void;evidenceAccess?: EvidenceAccess;technical?:boolean;onRecalculate?:()=>void;view:ViewResult;deep:boolean;tab:number;setTab:(n:number)=>void;stale:boolean;onEdit:(id:string)=>void;checkin?:(plan:string,tasks:CheckinTask[],portfolioSelection:AppliedPortfolioRef|null,portfolioBlocked:boolean,onAdoption:(value:AdoptionView)=>void)=>ReactNode;token?:string|null;caseId?:string}) {
+export function Results({view,demoScenario,deep,tab,setTab:changeTab,stale,onEdit,onRecalculate,checkin,technical=false,token=null,caseId="",evidenceAccess,actionFlow,consultationTarget,closeConsultation,onOpenRun,onReadRun,onReviewResume,calcBar,recordMonth,onInheritance,onEditAssetOwners}:{onEditAssetOwners?:()=>void;onInheritance?:(direction:InheritanceDirection)=>void;calcBar?:ReactNode;recordMonth?:string;demoScenario?:Scenario;onReadRun?:(id:string)=>Promise<void>;onOpenRun?:(id:string)=>Promise<void>;onReviewResume?:(review:PortfolioReview)=>void;actionFlow?: ActionFlow;consultationTarget?: HTMLDivElement|null;closeConsultation?: ()=>void;evidenceAccess?: EvidenceAccess;technical?:boolean;onRecalculate?:()=>void;view:ViewResult;deep:boolean;tab:number;setTab:(n:number)=>void;stale:boolean;onEdit:(id:string)=>void;checkin?:(plan:string,tasks:CheckinTask[],portfolioSelection:AppliedPortfolioRef|null,portfolioBlocked:boolean,onAdoption:(value:AdoptionView)=>void)=>ReactNode;token?:string|null;caseId?:string}) {
   const heading=useRef<HTMLHeadingElement>(null);
   const comparison=usePortfolioComparison(view,token,caseId,stale,actionFlow?.selection);
   const selectedPlan=comparison.plan, selectedPortfolio=comparison.portfolio, setSelectedPlan=comparison.selectPlan;
@@ -175,8 +176,9 @@ export function Results({view,demoScenario,deep,tab,setTab:changeTab,stale,onEdi
       <OverviewDashboard flow={flow} after={metricValue(flow,"after_existing_contributions_krw")} baseSurplus={metricValue(flow,"base_surplus")} assets={{total:metricValue(assets,"total_assets"),debt:metricValue(assets,"total_debt"),net:metricValue(assets,"net_worth")}} goals={goals} goalLabel={displayGoal} exampleGoal={workbookGoal}
         evaluationOn={textValue(object(result.context).evaluation_on)} next={overviewNext} onGoals={candidates.length?()=>setTab(1):undefined}
         cashflow={<FinancialOverview flow={flow} basis="계산된 한 달 흐름 · 월별 실적 추이 아님"/>}/>
+      {sourceDoc && onInheritance && onEditAssetOwners && !stale && originalGoals.some(goal=>goal.type==="GOAL_V12_INHERITANCE") &&
+        <InheritanceResult doc={sourceDoc} onEditOwners={onEditAssetOwners} onExplain={()=>onInheritance("leave")}/>}
       <div className="d-columns"><article className="d-card"><h2><Landmark size={20} aria-hidden="true"/> 자산과 부채</h2><BalanceBars assets={metricValue(assets,"total_assets")} debt={metricValue(assets,"total_debt")} net={metricValue(assets,"net_worth")}/>{estimatedProperty&&<p className="d-note">부동산의 대략적인 시세가 포함된 자산 추정치예요.</p>}<button className="d-text-button" onClick={()=>onEdit("F06")}>자산 내역 확인·수정 →</button></article><AssetComposition assets={assets} asOf={textValue(object(result.context).evaluation_on)} onEdit={()=>onEdit("F06")}/></div>
-      {onInheritance&&!stale&&originalGoals.some(goal=>goal.type==="GOAL_V12_INHERITANCE")&&<InheritanceCard onOpen={onInheritance}/>}
       {assetReference()}
     </>}
     {tab===1 && <>
