@@ -44,7 +44,7 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
       {missing.length>0&&<div className="d-alert-card"><strong>투자 답변 보완이 필요해요</strong><p>아래 답변을 확인하면 상품 배분을 다시 검토할 수 있어요.</p><div className="d-toolbar">{missing.filter(id=>titles[String(id)]).map(id=><button className="d-secondary" key={String(id)} onClick={()=>onEdit(String(id))}>{titles[String(id)]} 확인 →</button>)}</div></div>}
     </>}
     {!candidates.length&&review.review_version&&<article className="d-card"><h2>월 투자예산 확인 필요</h2><p>배분할 월 투자예산이 아직 계산되지 않았어요. 미확인 금액을 0원으로 표시하지 않아요.</p><button className="d-secondary" onClick={()=>onEdit("ASSUMPTIONS")}>월 후보에 필요한 확인 →</button></article>}
-    {!candidates.length&&review.review_version&&<ProductCandidates review={review}/>}
+    {!candidates.length&&review.review_version&&<><ProductComparison products={[]}/><ProductCandidates review={review}/></>}
     {candidates.map(candidate=>{
       const months=list(candidate.rows), month=investmentDisplayMonth(months);
       const allocations=list(month?.allocations);
@@ -77,8 +77,6 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
                 {evidence(p,!!a)}
               </div>;
             })}</div>
-            {allocations.length>0&&<p className="d-inline-note">내부 하락 시나리오 손실액 {formatKrw(object(month?.stress_review).scenario_loss_krw_ceil)} · 실제 손실은 더 클 수 있고 최대 손실을 보장하지 않아요.</p>}
-            {Array.isArray(month?.adjustment_codes)&&month.adjustment_codes.map(code=><p className="d-note" key={String(code)}>{reason(code)}</p>)}
           </article>
           <aside className="d-card d-donut-card" aria-label="상품 구성"><h2>{textValue(month?.period)} 상품 구성</h2>
             {target&&<p className="d-inline-note">목표 비중 · {target}</p>}
@@ -93,6 +91,7 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
           {allocationRemainder(m).map(part=><div key={part.key}><span>{part.label}</span><strong>{formatKrw(part.value)}</strong></div>)}
           {Array.isArray(m.reason_codes)&&m.reason_codes.length>0&&<p className="d-band-note">{m.reason_codes.map(code=>code==="POLICY_DISCLOSURE_STALE"?policyDateMessage(review,evaluationOn,String(m.period)):reason(code)).join(" ")}</p>}
         </div>)}
+        <ProductComparison products={priority.flatMap(({product,allocation})=>allocation?[product]:[])}/>
         <ProductCandidates review={review} month={month}/>
       </div>;
     })}
@@ -109,7 +108,6 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
         </tr>)}</tbody>
       </table></div>
     </details>}
-    <ProductComparison products={[...defaults,...alternatives]}/>
     {alternatives.length>0&&<details className="d-card d-fold"><summary>비교 대안 상품 {alternatives.length}개 · 자동 배분 없음</summary><p>기본 상품이 제외돼도 비교 대안으로 자동 대체하거나 추가 배분하지 않아요.</p>{alternatives.map(product=>evidence(product))}</details>}
     {products.length>0&&<details className="d-card d-fold"><summary>조사 상품 {products.length}개 · 검토 상태와 공식 출처</summary><p>기록된 공시값과 기준일이에요. 보류·제외 상품의 과거 값은 현재 검토 근거로 쓰지 않아요. 세금·증권사 수수료·호가 차이를 포함한 실제 총비용은 계산하지 않아요.</p><div className="d-table-wrap"><table><thead><tr><th>상품·코드</th><th>기록 위험등급</th><th>기록 연간 비용</th><th>배분 검토 결과</th><th>근거</th></tr></thead><tbody>{products.map(product=>{
       const disclosure=object(product.disclosure),dates=object(disclosure.source_as_of),urls=object(disclosure.source_urls);

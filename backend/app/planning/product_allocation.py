@@ -15,6 +15,7 @@ from pathlib import Path
 
 from . import portfolio_types
 from .common import ContractError, Missing, digest, integer, output
+from .investment_return_projection import market_return_assumption
 from .product_candidates import GROUPS, comparison_groups, review_universe_groups
 from .product_candidates import VERSION as COMPARISON_VERSION
 from .product_disclosures import REVIEWED_ON, apply_disclosures
@@ -504,6 +505,9 @@ def review_products(document, result, *, catalog=None, policy=None):
                          "state": "ELIGIBLE_FOR_REVIEW" if not reasons else "EXCLUDED_FROM_ALLOCATION",
                          "reason_codes": reasons})
         screened[-1]["explanation"] = explain(screened[-1], product, messages)
+        outlook = market_return_assumption(screened[-1], on) if use_current_disclosures else None
+        if outlook:
+            screened[-1]["market_return_assumption"] = outlook
     by_role = {}
     for product in products:
         if product["code"] in eligible:
@@ -607,9 +611,9 @@ def review_products(document, result, *, catalog=None, policy=None):
                                                   products, policy, profile.get("loss_tolerance_band_raw"))
                 view = allocate_budget(month["new_investment_krw"], type_slots, set() if general else month_eligible)
                 mix = comparison_mixes[type_id]
-                if mix is not None and (
-                    use_p1_mix or profile.get("use_date_undecided") or (type_id == "RETURN" and use_return_mix)
-                ):
+                if mix is not None:
+                    # Strategic cash is the unscaled target's cash share. Failed slots and
+                    # sizing limits never increase it; those amounts remain held.
                     target_cash = integer(view["scenario_budget_krw"]) * mix["CASH"] // 10000
                     view.update(target_mix_bps=mix, target_cash_krw=str(target_cash),
                                 held_krw=str(integer(view["unallocated_krw"]) - target_cash))

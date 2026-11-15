@@ -23,7 +23,7 @@ export function PortfolioChoiceDetail({ rows, products, type, messages, target }
       const remainder = allocationRemainder(view);
       const targets = allocationTargetSlices({target_mix_bps: view.target_mix_bps ?? target ?? null});
       const reasons = Array.isArray(view.reason_codes) ? view.reason_codes : [];
-      const loss = object(view.stress_review).scenario_loss_krw_ceil;
+      const held = remainder.find(item => item.key === "HELD");
       return <section key={`${textValue(row.period)}:${index}`} aria-label={`${textValue(row.period) || '기준월 미확인'} 구성 상세`}>
         <h4>{textValue(row.period) || '기준월 확인 대기'}</h4>
         <dl className="d-composition-totals">
@@ -60,7 +60,7 @@ export function PortfolioChoiceDetail({ rows, products, type, messages, target }
         {allocations.length === 0 && <p className="d-composition-reason">{view.cash_only === true ? '상품 배분 없이 후보금을 현금 대기자금으로 남겼어요.' : '이 구성에 표시할 상품 배분 내역이 없어요.'}</p>}
         {reasons.length > 0 && <ul className="d-composition-hold">{reasons.map((code, i) =>
           <li key={i}>{cashWaitingText(textValue(messages[String(code)])) || '상품 검토 조건을 확인해주세요.'}</li>)}</ul>}
-        {allocations.length > 0 && isWon(loss) && <p className="d-inline-note">내부 하락 시나리오 손실액 {formatKrw(loss)} · 실제 손실은 더 클 수 있어요.</p>}
+        {held && BigInt(held.value) > 0n && <p className="d-inline-note">배분 보류액은 투자 기간, 손실 허용 범위와 상품 조건을 적용한 뒤 배정되지 않은 돈이에요.</p>}
       </section>;
     })}
   </div>;

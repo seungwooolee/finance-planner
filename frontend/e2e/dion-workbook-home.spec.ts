@@ -37,7 +37,10 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
     await expect(screening.locator("tbody tr")).toHaveCount(29);
     await expect(screening.getByRole("row").filter({hasText:"273130"})).not.toContainText("투자구성 편입 조건 통과");
     await expect(rendered.locator("[data-candidate-code]")).toHaveCount(29);
-    await expect(rendered.locator('[data-candidate-code="325020"]')).toContainText("42.81%");
+    const candidates = rendered.getByRole("region",{name:"자산군별 상품 비교 후보"});
+    await expect(candidates.getByRole("columnheader",{name:"예상 수익률"}).first()).toBeVisible();
+    await expect(candidates.locator('[data-candidate-code="360200"]').first()).toContainText("연 4.40%");
+    await expect(candidates.locator('[data-candidate-code="325020"]').first().locator("tr").first()).toContainText("가정 없음");
     await expect(screening.getByText("0091C0", {exact:true})).toHaveCount(0);
     await resultTabs.getByRole("button", {name:"결과·다음 행동", exact:true}).click();
     await expect(rendered.getByRole("heading", {name:"나의 재무설계 제안서"})).toBeVisible();
@@ -84,6 +87,14 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   const bonds = rendered.getByRole("region", {name:"채권 비교 후보", exact:true});
   await expect(bonds.locator("[data-candidate-code]").first()).toHaveAttribute("data-candidate-code", "214980");
   await expect(bonds.locator("[data-candidate-code]").nth(1)).toHaveAttribute("data-candidate-code", "153130");
+  const recommended = rendered.getByRole("article",{name:"추천 검토 상품"});
+  await expect(recommended).toContainText("금리와 채권 가격");
+  await expect(recommended).toContainText("매매 가격과 출금 시점");
+  const eligible = earlyMonth.portfolio_type_views.RETURN.allocations
+    .filter((item: { code:string; review_allocated_krw:string })=>BigInt(item.review_allocated_krw)>0n);
+  await expect(recommended.locator("[data-comparison-product]")).toHaveCount(eligible.length);
+  for (const item of eligible) await expect(recommended.locator(`[data-comparison-product="${item.code}"]`)).toBeVisible();
+  await expect(rendered.getByText(/내부 하락 시나리오 손실액|내부 손실 시나리오 기준/)).toHaveCount(0);
 
   await page.setViewportSize({width:390,height:844});
   await launch.click();
@@ -159,6 +170,7 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   await expect(comparedBonds.getByRole("columnheader", {name:"연 보수·비용"})).toBeVisible();
   await expect(shortBond.getByRole("rowheader", {name:/KODEX 단기채권/})).toBeVisible();
   await expect(productInfo.getByRole("article", {name:"기본 배분 후보"})).toContainText("이 달에 배분된 상품은 없어요");
+  await expect(productInfo.getByRole("article", {name:"추천 검토 상품"})).toContainText("배정된 상품이 없어요");
   await expect(shortBond.getByText("비용 기준일", {exact:true})).toBeHidden();
   await shortBond.getByText("공시 정보 더 보기", {exact:true}).press("Enter");
   await expect(shortBond.getByText("비용 기준일", {exact:true})).toBeVisible();

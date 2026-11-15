@@ -3,6 +3,7 @@
   "git": {
     "deploymentEnabled": {
       "feat/result-dashboard-20261116": false,
+      "codex/portfolio-return-risk-20261116": false,
       "codex/product-review-coverage-20261116": false,
       "codex/asset-investment-comparison-20261116": false,
       "codex/dion-asset-return-projection": false,
