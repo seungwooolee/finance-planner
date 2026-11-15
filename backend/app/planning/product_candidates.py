@@ -3,7 +3,7 @@
 VERSION = "DION-PRODUCT-COMPARISON-1.0"
 GROUPS = {
     "CASH": ("현금성", set()),
-    "BOND": ("채권", {"KRW_SHORT_BOND", "KRW_GOVT_BOND", "KRW_AGG_BOND"}),
+    "BOND": ("채권", {"KRW_SHORT_BOND", "KRW_GOVT_BOND", "KRW_GOVT_INTERMEDIATE", "KRW_AGG_BOND"}),
     "KR_EQUITY": ("국내주식", {"KR_BROAD_EQUITY"}),
     "US_EQUITY": ("미국주식", {"US_BROAD_EQUITY"}),
 }

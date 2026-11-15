@@ -16,6 +16,7 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
   const empty=productEmptyCause(review,evaluationOn);
   const catalog=object(review.catalog),policy=object(review.product_policy),messages=object(review.reason_messages);
   const products=list(review.products),candidates=list(review.candidates).filter(c=>!selectedPlan||c.strategy_id===selectedPlan),detail=object(catalog.detail_review);
+  const disclosureReview=object(detail.allocation_disclosures);
   const reason=(code:unknown)=>code==="POLICY_DISCLOSURE_STALE"?policyDateMessage(review,evaluationOn):cashWaitingText(textValue(messages[String(code)]))||"상품의 검토 조건을 확인해주세요.";
   const titles:Record<string,string>={...riskTitles,"NEW-01":"진단 범위",D14:"제외할 투자 조건",D18:"환율 변동 수용",D19:"상품 설명 이해","NEW-12":"제외할 산업"};
   const questionsForReason:Record<string,string>={RESTRICTIONS_UNCONFIRMED:"D14",FX_ACCEPTANCE_REQUIRED:"D18",UNDERSTANDING_REQUIRED:"D19",FUND_DATE_UNRESOLVED:"F15",FUND_NOT_AVAILABLE:"F15",EXPERIENCE_REQUIRED:"F16",INDUSTRY_EXCLUSION_UNRESOLVED:"NEW-12"};
@@ -88,11 +89,12 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
     {screening.length>0&&<details className="d-card d-fold">
       <summary>개인별 검토 대상 {screening.length}종</summary>
       <p>상품 근거와 개인별 조건을 확인한 결과예요. 실제 배분 금액은 월 투자예산을 기준으로 계산해요.</p>
+      {typeof disclosureReview.verified_count==="number"&&<p>추가 공시 확인 {disclosureReview.verified_count}종 · 투자구성에 편입 가능한 상품 유형 {String(disclosureReview.portfolio_candidate_count)}종</p>}
       <div className="d-table-wrap"><table aria-label="개인별 상품 검토 결과">
         <thead><tr><th scope="col">상품</th><th scope="col">검토 결과</th></tr></thead>
         <tbody>{screening.map(product=><tr key={String(product.code)}>
           <th scope="row">{textValue(product.name)}<small>{textValue(product.code)}</small></th>
-          <td>{product.state==="ELIGIBLE_FOR_REVIEW"?"검토 조건 통과"
+          <td>{product.state==="ELIGIBLE_FOR_REVIEW"?(product.allocation_role==="PORTFOLIO_CANDIDATE"?"투자구성 편입 조건 통과":"검토 조건 통과")
             : (Array.isArray(product.reason_codes)?product.reason_codes.map(reason).join(" "):"확인 필요")}</td>
         </tr>)}</tbody>
       </table></div>
@@ -101,7 +103,18 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
     {alternatives.length>0&&<details className="d-card d-fold"><summary>비교 대안 상품 {alternatives.length}개 · 자동 배분 없음</summary><p>기본 상품이 제외돼도 비교 대안으로 자동 대체하거나 추가 배분하지 않아요.</p>{alternatives.map(evidence)}</details>}
     {products.length>0&&<details className="d-card d-fold"><summary>조사 상품 {products.length}개 · 검토 상태와 공식 출처</summary><p>기록된 공시값과 기준일이에요. 보류·제외 상품의 과거 값은 현재 검토 근거로 쓰지 않아요. 세금·증권사 수수료·호가 차이를 포함한 실제 총비용은 계산하지 않아요.</p><div className="d-table-wrap"><table><thead><tr><th>상품·코드</th><th>기록 위험등급</th><th>기록 연간 비용</th><th>배분 검토 결과</th><th>근거</th></tr></thead><tbody>{products.map(product=>{
       const disclosure=object(product.disclosure),dates=object(disclosure.source_as_of),urls=object(disclosure.source_urls);
-      return <tr key={String(product.code)}><th>{String(product.name)}<small>{String(product.code)}</small></th><td>{typeof disclosure.risk_grade==="number"?`${disclosure.risk_grade}등급`:"미확인"}<small>{textValue(dates.risk_grade)||"기준일 미확인"}</small></td><td>총보수 {textValue(disclosure.annual_base_fee_percent)?`${textValue(disclosure.annual_base_fee_percent)}%`:"미확인"}<small>{textValue(dates.annual_base_fee_percent)||"기준일 미확인"}</small><br/>보수·비용 {textValue(disclosure.annual_total_expense_percent)?`${textValue(disclosure.annual_total_expense_percent)}%`:"미확인"}<small>{textValue(dates.annual_total_expense_percent)||"기준일 미확인"}</small></td><td>{product.state==="ELIGIBLE_FOR_REVIEW"?"검토 조건 통과":Array.isArray(product.reason_codes)?product.reason_codes.map(reason).join(" "):"확인 필요"}</td><td>{textValue(product.official_source).startsWith("https://")&&<a href={String(product.official_source)} target="_blank" rel="noreferrer">상품 자료 ↗</a>}{textValue(urls.risk_grade).startsWith("https://")&&<><br/><a href={String(urls.risk_grade)} target="_blank" rel="noreferrer">위험 근거 ↗</a></>}{textValue(urls.annual_total_expense_percent).startsWith("https://")&&<><br/><a href={String(urls.annual_total_expense_percent)} target="_blank" rel="noreferrer">비용 근거 ↗</a></>}</td></tr>;
+      const settlementSource=sourceHref(textValue(urls.cash_conversion));
+      return <tr key={String(product.code)}>
+        <th scope="row">{String(product.name)}<small>{String(product.code)}</small></th>
+        <td>{typeof disclosure.risk_grade==="number"?`${disclosure.risk_grade}등급`:"미확인"}<small>{textValue(dates.risk_grade)||"기준일 미확인"}</small></td>
+        <td>총보수 {textValue(disclosure.annual_base_fee_percent)?`${textValue(disclosure.annual_base_fee_percent)}%`:"미확인"}<small>{textValue(dates.annual_base_fee_percent)||"기준일 미확인"}</small><br/>
+          보수·비용 {textValue(disclosure.annual_total_expense_percent)?`${textValue(disclosure.annual_total_expense_percent)}%`:"미확인"}<small>{textValue(dates.annual_total_expense_percent)||"기준일 미확인"}</small>
+          {textValue(disclosure.transaction_cost_percent)&&<small>공시 증권거래비용 {textValue(disclosure.transaction_cost_percent)}%</small>}
+          {disclosure.cash_conversion==="KRX_T_PLUS_2_BUSINESS_DAYS"&&<small>매도 체결 후 2영업일 결제</small>}
+        </td>
+        <td>{product.state==="ELIGIBLE_FOR_REVIEW"?"검토 조건 통과":Array.isArray(product.reason_codes)?product.reason_codes.map(reason).join(" "):"확인 필요"}</td>
+        <td>{textValue(product.official_source).startsWith("https://")&&<a href={String(product.official_source)} target="_blank" rel="noreferrer">상품 자료 ↗</a>}{textValue(urls.risk_grade).startsWith("https://")&&<><br/><a href={String(urls.risk_grade)} target="_blank" rel="noreferrer">위험 근거 ↗</a></>}{textValue(urls.annual_total_expense_percent).startsWith("https://")&&<><br/><a href={String(urls.annual_total_expense_percent)} target="_blank" rel="noreferrer">비용 근거 ↗</a></>}{settlementSource&&<><br/><a href={settlementSource} target="_blank" rel="noreferrer">결제 근거 ↗</a></>}</td>
+      </tr>;
     })}</tbody></table></div><details><summary>조사 상품의 설명 자료 확인</summary><p>배분 대상과 별개인 설명 자료예요. 등록 근거가 없거나 상충하면 보류하며 현재 배분은 바꾸지 않아요.</p>{products.filter(p=>p.allocation_role==="REFERENCE_ONLY").map(p=><details key={String(p.code)}><summary>{textValue(p.name)} · {String(p.code)}</summary><PortfolioEvidence key={`${evidenceAccess?.runId}:${evidenceAccess?.inputHash}:${evidenceAccess?.token}`} access={evidenceAccess} kind="PRODUCT" targetId={String(p.code)} stale={stale} referenceOnly/></details>)}</details></details>}
     {review.review_version&&<details className="d-card d-fold"><summary>검토 기준 자세히 보기</summary>
       <p>공식 명칭·코드 확인 {String(catalog.identity_verified_count??0)}개 · 조사에서 제외 {String(catalog.research_excluded_count??0)}개 · 현재 조건 통과 {String(catalog.eligible_for_review_count??0)}개{typeof detail.reviewed_count==="number"&&<> · 상세 자료 검토 {detail.reviewed_count}개</>}</p>

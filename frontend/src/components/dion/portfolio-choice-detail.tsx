@@ -28,10 +28,16 @@ export function PortfolioChoiceDetail({ rows, products, type, messages, showExpl
           const group = assetGroup(product);
           const source = sourceHref(textValue(product.official_source));
           const explanation = cashWaitingText(textValue(object(product.explanation).summary));
+          const totalExpense = textValue(disclosure.annual_total_expense_percent);
           return <article className="d-composition-product" key={`${textValue(allocation.code)}:${i}`}>
             <strong>{textValue(product.name) || textValue(allocation.code) || '상품명 확인 대기'}</strong>
             <p>{formatKrw(allocation.review_allocated_krw)} · 후보금 대비 {percent(allocation.review_allocated_krw, budget)}</p>
             <p className="d-inline-note">{group.label} · 위험등급 {typeof disclosure.risk_grade === 'number' ? `${disclosure.risk_grade}등급` : '미확인'} · 연 총보수 {textValue(disclosure.annual_base_fee_percent) ? `${textValue(disclosure.annual_base_fee_percent)}%` : '미확인'} · 환노출 {disclosure.fx_exposed === true ? '있음' : disclosure.fx_exposed === false ? '없음' : '미확인'}</p>
+            {(totalExpense || disclosure.cash_conversion === 'KRX_T_PLUS_2_BUSINESS_DAYS') && <p className="d-inline-note">
+              {totalExpense && `공시 연 보수·비용 ${totalExpense}%`}
+              {totalExpense && disclosure.cash_conversion === 'KRX_T_PLUS_2_BUSINESS_DAYS' && ' · '}
+              {disclosure.cash_conversion === 'KRX_T_PLUS_2_BUSINESS_DAYS' && '매도 체결 후 2영업일 결제'}
+            </p>}
             {showExplanation && explanation && <p>{explanation}</p>}
             {source && <a className="d-text-button" href={source} target="_blank" rel="noreferrer">공식 상품 자료 ↗</a>}
           </article>;
