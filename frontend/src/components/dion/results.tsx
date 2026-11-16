@@ -75,6 +75,8 @@ function Missing({row,title}:{row:Record<string,Json>;title:string}) {return <di
 
 export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalculate,checkin,technical=false,token=null,caseId="",evidenceAccess,actionFlow,consultationTarget,closeConsultation,onOpenRun,onReadRun,onReviewResume,calcBar,recordMonth,onAskResult,chatHandoff,onApplyProducts,applyingProducts,onSaveProducts,retirementDemo}:{retirementDemo?:{saving:boolean;investmentAssumption?:string;saveMonthly?:(plan:string)=>void};onApplyProducts?:(selection:ProductSelection)=>void;applyingProducts?:boolean;onSaveProducts?:(selection:ProductSelection)=>void;onAskResult?:()=>void;chatHandoff?:ChatReviewHandoff;calcBar?:ReactNode;recordMonth?:string;onReadRun?:(id:string)=>Promise<void>;onOpenRun?:(id:string)=>Promise<void>;onReviewResume?:(review:PortfolioReview)=>void;actionFlow?: ActionFlow;consultationTarget?: HTMLDivElement|null;closeConsultation?: ()=>void;evidenceAccess?: EvidenceAccess;technical?:boolean;onRecalculate?:()=>void;view:ViewResult;deep:boolean;tab:number;setTab:(n:number)=>void;stale:boolean;onEdit:(id:string)=>void;checkin?:(plan:string,tasks:CheckinTask[],portfolioSelection:AppliedPortfolioRef|null,portfolioBlocked:boolean,onAdoption:(value:AdoptionView)=>void)=>ReactNode;token?:string|null;caseId?:string}) {
   const heading=useRef<HTMLHeadingElement>(null);
+  const retirementHeading=useRef<HTMLHeadingElement>(null);
+  const pendingRetirementFocus=useRef(false);
   const productReview=object(object(view.result.results)["OUT-06"]);
   const productSelection=appliedProducts(productReview);
   const comparison=usePortfolioComparison(view,token,caseId,stale,productSelection??actionFlow?.selection);
@@ -105,9 +107,20 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
   const [adoption, setAdoption] = useState<AdoptionView | null>(null);
   const tasksRef=useRef<HTMLDivElement>(null);
   const focusAdoption=()=>{checkinRef.current?.scrollIntoView({block:"start"});checkinRef.current?.querySelector<HTMLElement>("button.d-primary:not(:disabled)")?.focus({preventScroll:true});};
+  function showRetirementReport() {
+    if (tab===1) {
+      retirementHeading.current?.focus({preventScroll:true});
+      retirementHeading.current?.scrollIntoView({block:"start"});
+    } else {
+      pendingRetirementFocus.current=true;
+      setTab(1);
+    }
+  }
   useEffect(()=>{
-    heading.current?.focus({preventScroll:true});
-    heading.current?.scrollIntoView({block:"start"});
+    const target=tab===1&&pendingRetirementFocus.current ? retirementHeading.current : heading.current;
+    pendingRetirementFocus.current=false;
+    target?.focus({preventScroll:true});
+    target?.scrollIntoView({block:"start"});
   },[view,tab]);
   const result=view.result, outputs=object(result.results);
   const gates=list(object(result.frontend_integration).presentation_gates);
@@ -196,7 +209,7 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
     {tab===3&&previewType&&!targetPreview&&<p className="d-note">{portfolioNames[previewType]} 구성 미리보기 · 상품은 공시 기준으로 확인할 수 있어요.</p>}
     {tab>=3&&(selectedPortfolio||comparison.busy||comparison.error)&&comparisonStatus}
     {tab===0 && <>
-      {retirementDemo&&<RetirementGoals onCompare={()=>setTab(1)}/>}
+      {retirementDemo&&<RetirementGoals onCompare={showRetirementReport}/>}
       <h2>현재 재무 상태</h2>
       {needsEvaluationDate && sourceDoc && <ReportedAmounts doc={sourceDoc}/>}
       <PersonalSummary after={metricValue(flow,"after_existing_contributions_krw")} debt={totalDebt} goals={goals} firstRows={firstRows} goalLabel={displayGoal} next={summaryNext}/>
@@ -205,17 +218,17 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
       {assetReference()}
       <FinancialOverview flow={flow}/>
     </>}
-    {tab===1&&retirementDemo&&<>
-      <RetirementReport choice={retirementAlternative} onSelect={setRetirementAlternative} onMonthly={()=>setTab(4)}/>
-      <section className="d-card" aria-label="월별 신규 투자금 비교">
-        <h2>월별 신규 투자금 비교</h2>
-        <p>두 월별 안은 대출을 유지하고 주거 정비비 60만원을 준비하는 별도 시연이에요.</p>
-      </section>
-    </>}
+    {tab===1&&retirementDemo&&<section className="d-card" aria-label="월별 신규 투자금 비교">
+      <h2>월별 신규 투자금 비교</h2>
+      <p>두 월별 안은 대출을 유지하고 주거 정비비 60만원을 준비하는 별도 시연이에요.</p>
+      <button type="button" className="d-text-button" onClick={showRetirementReport}>대출 유지와 전액 상환 비교로 이동 ↓</button>
+    </section>}
     {tab===1 && (candidates.length
       ? <PlanComparison candidates={candidates} selected={selectedPlan} onSelect={setSelectedPlan} basis={{runId:view.runId,inputVersion}}/>
       : <><Missing row={plans} title="두 월별 후보 확인 대기"/><button className="d-secondary" onClick={()=>onEdit("ASSUMPTIONS")}>필요한 가정 확인 →</button></>)}
     {tab===1 && <ResultBasis id="OUT-05" result={result} source={sourceDoc} inputVersion={view.serverVersion??view.localVersion} stale={stale} onEdit={onEdit}/>}
+    {tab===1&&retirementDemo&&<RetirementReport choice={retirementAlternative} onSelect={setRetirementAlternative}
+      onMonthly={()=>setTab(4)} headingRef={retirementHeading}/>}
     {tab===2 && <InvestmentFollowup review={visible("OUT-06")} onEdit={onEdit}/>}
     {tab===2 && <PortfolioChoice doc={sourceDoc} review={visible("OUT-06")} flow={flow} planRow={selectedRow}
       selectedPlan={selectedPlan} onPlan={setSelectedPlan} chosen={selectedPortfolio} preview={previewType}

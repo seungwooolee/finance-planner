@@ -26,6 +26,18 @@ test("retirement report compares the two alternatives and records the explicitly
   await goals.getByRole("button", { name: "대출 유지와 전액 상환 비교" }).click();
 
   const report = page.getByRole("region", { name: "대출 유지와 전액 상환 비교" });
+  await expect(report.getByRole("heading", { name:"대출 유지와 전액 상환 비교" })).toBeFocused();
+  const monthlyPlans = page.getByRole("region", { name: "두 재무안 비교", exact: true });
+  expect(await monthlyPlans.evaluate(node => {
+    const retirementReport = document.querySelector(".d-retirement-report");
+    return !!retirementReport && !!(node.compareDocumentPosition(retirementReport) & Node.DOCUMENT_POSITION_FOLLOWING);
+  })).toBe(true);
+  const assetsChart = report.getByRole("figure", { name: "비교안 적용 후 금융자산" });
+  await expect(assetsChart).toContainText("5억원");
+  await expect(assetsChart).toContainText("4억원");
+  const cashflowChart = report.getByRole("figure", { name: "대출이자 차감 후 연간 금액" });
+  await expect(cashflowChart).toContainText(formatKrw("12109000"));
+  await expect(cashflowChart).toContainText(formatKrw("14609000"));
   const comparison = report.getByRole("row", { name: /대출이자 차감 후 연간 금액/ });
   await expect(comparison).toContainText(formatKrw("12109000"));
   await expect(comparison).toContainText(formatKrw("14609000"));
@@ -41,6 +53,13 @@ test("retirement report compares the two alternatives and records the explicitly
   await expect(products.getByRole("row", { name: /국고채 5년물/ })).toContainText(formatKrw("100000000"));
   await expect(stress).toContainText(formatKrw("36584076"));
   await expect(page.getByRole("region", { name: "월별 신규 투자금 비교" })).toContainText("주거 정비비 60만원");
+  await page.setViewportSize({ width: 390, height: 844 });
+  const productTableRegion = report.getByRole("region", { name: "상품별 운용 금액 표" });
+  await productTableRegion.focus();
+  await expect(productTableRegion).toBeFocused();
+  expect(await productTableRegion.evaluate(node => node.scrollWidth > node.clientWidth)).toBe(true);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+  await page.setViewportSize({ width: 1280, height: 720 });
   await report.getByRole("button", { name: "월별 재무계획 저장·채택 보기" }).click();
 
   await page.getByRole("button", { name: "가상 월별 재무계획 저장", exact: true }).click();
