@@ -244,7 +244,14 @@ def test_dated_disclosures_feed_variants_and_keep_review_gates():
     assert "market_return_one_year" not in screened["469830"]
     outlook = screened["360200"]["market_return_assumption"]
     assert outlook["annual_rate_percent"] == "4.40" and outlook["horizon_years"] == 10
-    assert "market_return_assumption" not in screened["469830"]
+    rates = {code: p["market_return_assumption"]["annual_rate_percent"] for code, p in screened.items()
+             if "market_return_assumption" in p}
+    assert rates == {
+        "069500": "5.57", "102110": "5.57",
+        "360200": "4.40", "360750": "4.40", "379800": "4.40",
+        "153130": "3.25", "214980": "3.25", "469830": "3.25", "114260": "3.25",
+        "114820": "3.25", "273130": "3.25", "436140": "3.25",
+    }
     assert {risk["label"] for risk in screened["360200"]["explanation"]["risk_notes"]} >= {
         "시장 하락과 쏠림", "원·달러 환율", "거래가격 차이",
     }

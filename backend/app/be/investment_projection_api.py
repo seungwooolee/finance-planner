@@ -5,7 +5,13 @@ from typing import Annotated, Literal
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from ..planning.investment_return_projection import US_REFERENCE, ProjectionUnavailable, investment_return_projection
+from ..planning.investment_return_projection import (
+    KR_BOND_REFERENCE,
+    KR_EQUITY_REFERENCE,
+    US_REFERENCE,
+    ProjectionUnavailable,
+    investment_return_projection,
+)
 from .api import body, call, get_store, private_read
 from .auth import get_actor
 from .question_bridge import run_frontend_questions
@@ -29,7 +35,10 @@ class ProjectionRequest(Exact):
     portfolio_type: Portfolio
     input_hash: Hash
     annual_rate_percent: Rate | None = None
-    asset_rates: Annotated[dict[ProductCode, Rate | Literal[US_REFERENCE]], Field(min_length=1, max_length=50)] | None = None
+    asset_rates: Annotated[
+        dict[ProductCode, Rate | Literal[US_REFERENCE, KR_EQUITY_REFERENCE, KR_BOND_REFERENCE]],
+        Field(min_length=1, max_length=50),
+    ] | None = None
     repeat_months: RepeatMonths = None
 
     @model_validator(mode="after")

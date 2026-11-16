@@ -25,11 +25,15 @@ test("status identifies server draft and adopted portfolio independently from cu
     adoption: { adoption_id: "adp-1", run_id: "run-1", strategy_id: "STABILITY_FIRST", input_version: 3,
       adopted_at: "2026-11-15T00:00:00Z", portfolio: { portfolio_type: "STABLE", comparison_revision: 1 } },
   }}/>);
-  await expect(panel).toContainText("화면에서 보는 초안투자 여력 확대 · 위험 추구형");
+  await expect(panel.getByRole("heading",{name:"계획 상태",exact:true})).toBeVisible();
+  await expect(panel.locator(".d-choice-current")).toContainText("투자 여력 확대위험 추구형");
   await expect(panel).toContainText("저장한 비교 초안투자 여력 확대 · 위험 추구형저장 2회차");
-  await expect(panel).toContainText("채택한 계획생활 안정 우선 · 안정형입력버전 3 · 다른 계산 결과 · 이전 입력");
-  await expect(panel).toContainText("DION에서 실행한 금융거래없음");
-  await expect(panel).toContainText("첫 계획 월 2026-12 · 기록 월 2026년 11월");
+  await expect(panel).toContainText("생활 안정 우선 · 안정형");
+  await expect(panel).toContainText("입력버전 3 · 다른 계산 결과 · 이전 입력");
+  await expect(panel).toContainText("DION에서 실행한 금융거래 없음");
+  await expect(panel).toContainText("첫 계획 월2026-12");
+  await expect(panel).toContainText("기록 월2026년 11월");
+  await expect(panel.getByRole("button",{name:"첫 계획 월 할 일로 이동"})).toBeVisible();
 });
 
 test.use({ locale: "en-US" });

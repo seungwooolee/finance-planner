@@ -7,7 +7,7 @@ import source from '../src/lib/dion/review-scenarios.json';
 import type { Document } from '../src/lib/dion/model';
 
 async function load(page: Page, title: string) {
-  await page.getByRole('button', { name: '심사용 사례', exact: true }).click();
+  await page.getByRole('button', { name: '심사용 가상사례', exact: true }).click();
   const pending = page.waitForResponse(r => r.url().endsWith('/api/fe/v1/preview'));
   await page.getByRole('button', { name: `${title} 불러오기`, exact: true }).click();
   expect((await pending).ok()).toBeTruthy();

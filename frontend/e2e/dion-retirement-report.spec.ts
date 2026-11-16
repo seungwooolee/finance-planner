@@ -9,7 +9,7 @@ test("retirement report compares the two alternatives and records the explicitly
   await page.route("**/api/be/v1/auth/login", route => route.fulfill({ json: { access_token: "MOCK-FE-ONLY", expires_in: 3600 } }));
 
   await page.goto("/dion");
-  await page.getByRole("button", { name: "심사용 사례", exact: true }).click();
+  await page.getByRole("button", { name: "심사용 가상사례", exact: true }).click();
   const preview = page.waitForResponse(response => response.url().endsWith("/api/fe/v1/preview"));
   await page.getByRole("button", { name: "은퇴기 불러오기", exact: true }).click();
   const calculated = await preview;
@@ -63,7 +63,10 @@ test("retirement report compares the two alternatives and records the explicitly
   await report.getByRole("button", { name: "월별 재무계획 저장·채택 보기" }).click();
   await page.getByRole("combobox", {name:"결과 조회 월"}).selectOption("2027-01");
 
-  await page.getByRole("button", { name: "가상 월별 재무계획 저장", exact: true }).click();
+  const saveAndPdf = page.getByRole("region", {name:"결과 저장 및 PDF", exact:true});
+  await expect(saveAndPdf.getByRole("button", { name: "이 버전 PDF 리포트 받기", exact: true })).toBeVisible();
+  await expect(page.getByText("가상 월별 재무계획 저장·채택", {exact:true})).toHaveCount(0);
+  await saveAndPdf.getByRole("button", { name: "월별 계획 저장", exact: true }).click();
   const login = page.getByRole("dialog");
   await login.getByLabel("이메일", { exact: true }).fill("retirement@example.test");
   await login.getByLabel("비밀번호", { exact: true }).fill("test-only");

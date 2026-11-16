@@ -162,7 +162,7 @@ function ActionForm(props: Props) {
     {error && <p role="alert" className="d-warning">{error}</p>}
     {answer && <div className="d-action-answer">
       <h3 ref={heading} tabIndex={-1}>현재 결과에 대한 답변</h3>
-      <p role="status">{answer.source === "ONEPORT" ? "AI가 질문의 뜻에 맞춰 고른 설명" : answer.status === "FALLBACK"
+      <p role="status">{answer.source === "ONEPORT" ? "AI 추천 · 질문에 맞춰 고른 설명" : answer.status === "FALLBACK"
         ? `AI 응답을 확인하지 못해 ${preview ? "미리보기" : "저장"} 결과의 기본 안내를 표시해요` : `${preview ? "미리보기" : "저장"} 결과의 기본 안내`}</p>
       {!!answer.facts.length && <><h4>확인된 사실</h4><ul>{answer.facts.map((item, i) => <li key={`${item.code}-${i}`}>{item.text}</li>)}</ul></>}
       <h4>{answer.answer_state === "UNSUPPORTED" ? "상담 가능한 범위" : "이유와 확인할 점"}</h4>

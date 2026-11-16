@@ -4,8 +4,8 @@ import { expect, test, type Page } from '@playwright/test';
 const preview = (page:Page) => page.waitForResponse(r => r.url().endsWith('/api/fe/v1/preview') && r.request().method() === 'POST');
 const answer = (doc:any,id:string) => doc.raw_bundle.answers.find((r:any)=>r.envelope.question_ref.design_id === id).envelope;
 async function load(page:Page,name:string) {
-  await page.getByRole('button',{name:'심사용 사례',exact:true}).click();
-  await expect(page.getByRole('dialog',{name:'요즘 나의 생활 · 가상 사례'})).toBeVisible();
+  await page.getByRole('button',{name:'심사용 가상사례',exact:true}).click();
+  await expect(page.getByRole('dialog',{name:'심사용 가상사례'})).toBeVisible();
   const response = preview(page);
   await page.getByRole('button',{name:`${name} 불러오기`,exact:true}).click();
   const r = await response;

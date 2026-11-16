@@ -6,8 +6,8 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   await page.goto("/dion");
   await expect(page.getByRole("button", {name:"예시로 결과 보기 · 대표상품 포함"})).toHaveCount(0);
   const quickStart = page.getByRole("button", {name:/빠른진단 시작/});
-  const launch = page.getByRole("button", {name:"심사용 사례", exact:true});
-  const dialog = page.getByRole("dialog", {name:"심사용 사례", exact:true});
+  const launch = page.getByRole("button", {name:"심사용 가상사례", exact:true});
+  const dialog = page.getByRole("dialog", {name:"심사용 가상사례", exact:true});
   const quickBounds = (await quickStart.boundingBox())!;
   const demoBounds = (await launch.boundingBox())!;
   expect(demoBounds.y).toBeGreaterThanOrEqual(quickBounds.y + quickBounds.height);
@@ -235,7 +235,7 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   await expect(productInfo.locator('[data-allocation-month="2026-12"]')).toHaveAttribute("data-allocated","220000");
   await expect(retirementRecommendations.locator('[data-comparison-product="153130"]')).toBeVisible();
   await resultTabs.getByRole("button",{name:"결과·다음 행동",exact:true}).click();
-  await expect(rendered.getByRole("button",{name:"가상 월별 재무계획 저장",exact:true})).toBeVisible();
+  await expect(rendered.getByRole("button",{name:"월별 계획 저장",exact:true})).toBeVisible();
   const monthlyTotals = dashboard.getByLabel("이번 달 핵심 숫자");
   await expect(monthlyTotals).toContainText(formatKrw("550000"));
   await expect(monthlyTotals).toContainText(formatKrw("220000"));

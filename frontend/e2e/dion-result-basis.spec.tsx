@@ -51,7 +51,7 @@ test('question branches and restored calculation evidence keep zero, unknown and
 
 test('result evidence is accessible beside the real financial results', async ({ page }, info) => {
   await page.goto('/dion');
-  await page.getByRole('button', { name: '심사용 사례', exact: true }).click();
+  await page.getByRole('button', { name: '심사용 가상사례', exact: true }).click();
   const pending = page.waitForResponse(r => r.url().endsWith('/api/fe/v1/preview') && r.request().method() === 'POST');
   await page.getByRole('button', { name: '사회초년생 불러오기', exact: true }).click();
   const response = await pending;

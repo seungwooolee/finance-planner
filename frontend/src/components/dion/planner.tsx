@@ -442,7 +442,7 @@ export function DionPlanner() {
       setFictional(retirementMonthly);setScenario(null);
       if (retirementMonthly) {
         setTab(4);
-        setMessage("가상 월별 재무계획을 내 상담의 별도 사례에 저장했어요. 아래에서 채택할 안을 직접 선택해 주세요.");
+        setMessage("가상 월별 재무계획을 내 상담의 별도 사례에 저장했어요. 채택하려면 계획 채택 버튼을 눌러주세요.");
       } else {
         setMessage(`${captured.fictional ? "예시를 별도 테스트 상담에" : "현재 결과를 새 상담에"} 저장했어요. 상담 창에서 이어서 질문해 주세요. 계획은 채택하지 않았어요.`);
       }

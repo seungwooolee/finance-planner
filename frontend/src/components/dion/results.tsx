@@ -117,7 +117,7 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
   const focusAdoption=()=>{
     const node=checkinRef.current??monthlyAdoptionRef.current;
     node?.scrollIntoView({block:"start"});
-    (node?.querySelector<HTMLElement>("button.d-primary:not(:disabled)")??monthlyAdoptionRef.current)?.focus({preventScroll:true});
+    (node?.querySelector<HTMLElement>("button.d-primary:not(:disabled)")??node)?.focus({preventScroll:true});
   };
   function showRetirementReport() {
     if (tab===1 && retirementDetails.current) {
@@ -311,22 +311,17 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
     {consultationTarget&&createPortal(<ResultActionConsultation flow={actionFlow} view={view} token={token??""} caseId={caseId} stale={stale} blocked={comparison.blocked}
       basis={{strategy_id:selectedPlan,portfolio_type:selectedPortfolio,revision:comparison.revision}}
       onEdit={id=>{closeConsultation?.();onEdit(id);}} onResult={n=>{closeConsultation?.();setTab(n);}}/>,consultationTarget)}
-    {tab===4&&retirementDemo&&<section ref={monthlyAdoptionRef} tabIndex={-1} className="d-card" aria-label="가상 월별 재무계획">
-      <h2>가상 월별 재무계획 저장·채택</h2>
-      <p>대출을 유지하는 월별 계획을 별도 가상 사례에 저장해요. 선택한 보유자산 운용안은 위의 은퇴기 보유자산 포트폴리오에 표시돼요.</p>
-      <PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/>
-      {retirementDemo.saveMonthly&&<button type="button" className="d-primary" disabled={!monthlyCandidateReady||retirementDemo.saving}
-        onClick={()=>retirementDemo.saveMonthly?.(selectedPlan)}>{retirementDemo.saving?"가상 사례 저장 중…":"가상 월별 재무계획 저장"}</button>}
-      {!monthlyCandidateReady&&<p className="d-note">현재 결과의 월별 후보를 확인한 뒤 저장하거나 채택할 수 있어요.</p>}
-    </section>}
-    {tab===4&&checkin&&(!retirementDemo||view.storage==="SAVED")&&<div ref={checkinRef}>{checkin(
+    {tab===4&&checkin&&(!retirementDemo||view.storage==="SAVED")&&<div ref={checkinRef} tabIndex={-1}>{checkin(
       selectedPlan,monthTasks(recordRow).map(t=>({key:t.key,label:`${t.text} (계획 ${actualRecordMonth} · ${formatKrw(recordRow?.[t.key])})`})),
       !retirementDemo&&selectedPortfolio ? {portfolio_type:selectedPortfolio,comparison_revision:comparison.revision} : null,
       retirementDemo ? !canAdoptDemo : comparison.blocked||!generated,setAdoption
     )}</div>}
-    {tab===4&&<div className="d-result-cta"><button className="d-secondary" onClick={()=>window.print()}>이 버전 PDF 리포트 받기</button>
-      {!retirementDemo&&<button className="d-primary" disabled={!generated} onClick={focusAdoption}>최종안의 계획 채택 검토 →</button>}
-    </div>}
+    {tab===4&&<section ref={monthlyAdoptionRef} tabIndex={-1} className="d-result-cta d-final-actions" aria-label="결과 저장 및 PDF">
+      {retirementDemo?.saveMonthly&&<button type="button" className="d-primary" disabled={!monthlyCandidateReady||retirementDemo.saving}
+        onClick={()=>retirementDemo.saveMonthly?.(selectedPlan)}>{retirementDemo.saving?"가상 사례 저장 중…":"월별 계획 저장"}</button>}
+      <button type="button" className="d-secondary" onClick={()=>window.print()}>이 버전 PDF 리포트 받기</button>
+      {!retirementDemo&&<button type="button" className="d-primary" disabled={!generated} onClick={focusAdoption}>최종안의 계획 채택 검토 →</button>}
+    </section>}
     {tab===4&&<TaxBenefits evidenceAccess={evidenceAccess} key={view.sourceSignature} doc={sourceDoc} stale={stale} review={view.taxReview}
       guidance={result.tax_guidance} onScenario={setTaxSelection} onEditHoldings={()=>onEdit("F06")} sourceHash={textValue(object(result.adapter).source_sha256)}/>}
     {tab===4&&<>

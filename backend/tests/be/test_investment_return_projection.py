@@ -76,3 +76,13 @@ def test_preview_accepts_asset_assumptions_only_for_products_in_the_selected_all
     }
     assert client.post(path, json={**request, "asset_rates": rates, "repeat_months": 12}).status_code == 422
     assert client.post(path, json={**request, "asset_rates": rates, "annual_rate_percent": "4"}).status_code == 422
+
+    market_rates = {**rates, "153130": "HF_2026_KR_BONDS_KRW", "069500": "HF_2026_KR_EQUITIES_KRW"}
+    sourced = client.post(path, json={**request, "asset_rates": market_rates})
+    assert sourced.status_code == 200, sourced.text
+    assert sourced.json()["asset_rates"] == market_rates
+    assert int(sourced.json()["rows"][-1]["value_krw"]) > int(forecast["rows"][-1]["value_krw"])
+    wrong = {**market_rates, "153130": "HF_2026_KR_EQUITIES_KRW"}
+    assert client.post(path, json={**request, "asset_rates": wrong}).json()["detail"] == {
+        "code": "ASSET_ASSUMPTION_MISMATCH",
+    }
