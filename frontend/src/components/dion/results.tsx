@@ -38,6 +38,7 @@ import { usePortfolioReview } from "./use-portfolio-review";
 import { PortfolioReviewFlow, sameReviewBasis } from "./portfolio-review-flow";
 import type { ChatReviewHandoff } from "./chat-survey";
 import { type AdoptionView, thisMonth } from "./plan-checkin";
+import { RetirementGoals, RetirementReport, type RetirementAlternative } from "./retirement-report";
 import type { ReviewBasis, PortfolioReview } from "@/lib/dion/portfolio-review";
 
 const stateLabels: Record<string,string> = { CALCULATED:"계산됨", PARTIAL:"부분 결과", NEEDS_INPUT:"정보 보완 필요", INVALID_INPUT:"입력 확인 필요", NOT_SUPPORTED:"미지원", NOT_IMPLEMENTED:"준비 중", NOT_APPLICABLE:"해당 없음", NOT_REQUESTED:"요청하지 않음", REVIEW_ONLY:"검토 목록", INTERNAL_ERROR:"계산 오류", INFEASIBLE:"월 예산 부족", CALCULATED_MONTHLY_SCENARIO:"월 예산 시나리오" };
@@ -72,12 +73,13 @@ function metricValue(out:Record<string,Json>,key:string) {
 function Metric({title,value,note,icon:Icon}:{title:string;value:unknown;note?:string;icon?:LucideIcon}) {return <article className="d-metric">{Icon&&<i className="d-metric-icon" aria-hidden="true"><Icon size={18}/></i>}<span>{title}</span><strong><MoneyAmount value={value}/></strong>{note&&<small>{note}</small>}</article>;}
 function Missing({row,title}:{row:Record<string,Json>;title:string}) {return <div className="d-note"><strong>{title} · {stateLabels[textValue(row.calc_state)]??"확인 필요"}</strong><p>{row.calc_state==="NOT_SUPPORTED"?"이 결과의 계산은 아직 지원하지 않아요. 입력은 보관하고 다른 재무 결과를 유지해요.":row.calc_state==="NOT_IMPLEMENTED"?"이 계산은 준비 중이에요. 추가 입력으로 완료되는 단계가 아니에요.":row.calc_state==="NOT_APPLICABLE"?"현재 확인한 답변에는 해당하는 항목이 없어요.":row.calc_state==="INVALID_INPUT"?"금액·기간·소유 관계가 맞지 않아 계산을 보류했어요. 관련 답변을 확인해주세요.":"추가 확인 필요 · 관련 답변과 계산에 필요한 가정을 확인해주세요."}</p></div>;}
 
-export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalculate,checkin,technical=false,token=null,caseId="",evidenceAccess,actionFlow,consultationTarget,closeConsultation,onOpenRun,onReadRun,onReviewResume,calcBar,recordMonth,onAskResult,chatHandoff,onApplyProducts,applyingProducts,onSaveProducts}:{onApplyProducts?:(selection:ProductSelection)=>void;applyingProducts?:boolean;onSaveProducts?:(selection:ProductSelection)=>void;onAskResult?:()=>void;chatHandoff?:ChatReviewHandoff;calcBar?:ReactNode;recordMonth?:string;onReadRun?:(id:string)=>Promise<void>;onOpenRun?:(id:string)=>Promise<void>;onReviewResume?:(review:PortfolioReview)=>void;actionFlow?: ActionFlow;consultationTarget?: HTMLDivElement|null;closeConsultation?: ()=>void;evidenceAccess?: EvidenceAccess;technical?:boolean;onRecalculate?:()=>void;view:ViewResult;deep:boolean;tab:number;setTab:(n:number)=>void;stale:boolean;onEdit:(id:string)=>void;checkin?:(plan:string,tasks:CheckinTask[],portfolioSelection:AppliedPortfolioRef|null,portfolioBlocked:boolean,onAdoption:(value:AdoptionView)=>void)=>ReactNode;token?:string|null;caseId?:string}) {
+export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalculate,checkin,technical=false,token=null,caseId="",evidenceAccess,actionFlow,consultationTarget,closeConsultation,onOpenRun,onReadRun,onReviewResume,calcBar,recordMonth,onAskResult,chatHandoff,onApplyProducts,applyingProducts,onSaveProducts,retirementDemo}:{retirementDemo?:{saving:boolean;saveMonthly?:(plan:string)=>void};onApplyProducts?:(selection:ProductSelection)=>void;applyingProducts?:boolean;onSaveProducts?:(selection:ProductSelection)=>void;onAskResult?:()=>void;chatHandoff?:ChatReviewHandoff;calcBar?:ReactNode;recordMonth?:string;onReadRun?:(id:string)=>Promise<void>;onOpenRun?:(id:string)=>Promise<void>;onReviewResume?:(review:PortfolioReview)=>void;actionFlow?: ActionFlow;consultationTarget?: HTMLDivElement|null;closeConsultation?: ()=>void;evidenceAccess?: EvidenceAccess;technical?:boolean;onRecalculate?:()=>void;view:ViewResult;deep:boolean;tab:number;setTab:(n:number)=>void;stale:boolean;onEdit:(id:string)=>void;checkin?:(plan:string,tasks:CheckinTask[],portfolioSelection:AppliedPortfolioRef|null,portfolioBlocked:boolean,onAdoption:(value:AdoptionView)=>void)=>ReactNode;token?:string|null;caseId?:string}) {
   const heading=useRef<HTMLHeadingElement>(null);
   const productReview=object(object(view.result.results)["OUT-06"]);
   const productSelection=appliedProducts(productReview);
   const comparison=usePortfolioComparison(view,token,caseId,stale,productSelection??actionFlow?.selection);
   const selectedPlan=comparison.plan, selectedPortfolio=comparison.portfolio, setSelectedPlan=comparison.selectPlan;
+  const [retirementAlternative,setRetirementAlternative]=useState<RetirementAlternative>("KEEP");
   const [portfolioPreview,setPortfolioPreview]=useState<{plan:string;type:string}|null>(null);
   const previewType=portfolioPreview?.plan===selectedPlan ? portfolioPreview.type : null;
   const [visited,setVisited]=useState<number[]>([tab]);
@@ -132,7 +134,10 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
     return goal ? textValue(goal.label) || (goalName(goal.type)??question("F11").options.find(option=>option.code===goal.type)?.label??"입력한 목표") : "입력한 목표";
   };
   const candidates=["CALCULATED","PARTIAL"].includes(textValue(plans.calc_state))?list(plans.candidates):[];
-  const selectedRow=list(candidates.find(c=>c.strategy_id===selectedPlan)?.rows)[0];
+  const selectedCandidate=candidates.find(c=>c.strategy_id===selectedPlan);
+  const selectedRow=list(selectedCandidate?.rows)[0];
+  const monthlyCandidateReady=!!selectedRow&&/^(CALCULATED|PARTIAL)/.test(textValue(selectedCandidate?.calc_state))&&!stale;
+  const canAdoptDemo=!!retirementDemo&&monthlyCandidateReady&&view.isCurrent===true&&["SUCCEEDED","PARTIAL"].includes(view.runStatus??"");
   const selectedReview=comparisonReview(visible("OUT-06"),selectedPlan,selectedPortfolio);
   const previewReview=previewType ? comparisonReview(visible("OUT-06"),selectedPlan,previewType) : null;
   const previewMonth=investmentDisplayMonth(list(list(previewReview?.candidates).find(c=>c.strategy_id===selectedPlan)?.rows));
@@ -181,6 +186,7 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
     {tab===3&&previewType&&!targetPreview&&<p className="d-note">{portfolioNames[previewType]} 구성 미리보기 · 상품은 공시 기준으로 확인할 수 있어요.</p>}
     {tab>=3&&comparisonStatus}
     {tab===0 && <>
+      {retirementDemo&&<RetirementGoals onCompare={()=>setTab(1)}/>}
       <h2>현재 재무 상태</h2>
       {needsEvaluationDate && sourceDoc && <ReportedAmounts doc={sourceDoc}/>}
       <PersonalSummary after={metricValue(flow,"after_existing_contributions_krw")} debt={totalDebt} goals={goals} firstRows={firstRows} goalLabel={displayGoal} next={summaryNext}/>
@@ -188,6 +194,13 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
       <div className="d-columns"><article className="d-card"><h2><Landmark size={20} aria-hidden="true"/> 보유현황을 먼저 살펴봐요</h2><div className="d-metrics"><Metric title="전체 자산" value={totalAssets} /><Metric title="전체 채무" value={totalDebt} /><Metric title="순자산" value={netAssets} /></div><BalanceBars assets={totalAssets} debt={totalDebt} net={netAssets}/>{estimatedProperty&&<p className="d-note">부동산의 대략적인 시세가 포함된 자산 추정치예요.</p>}<button className="d-text-button" onClick={()=>onEdit("F06")}>자산 내역 확인·수정 →</button></article><AssetComposition assets={assets} asOf={textValue(object(result.context).evaluation_on)} onEdit={()=>onEdit("F06")}/></div>
       {assetReference()}
       <FinancialOverview flow={flow}/>
+    </>}
+    {tab===1&&retirementDemo&&<>
+      <RetirementReport choice={retirementAlternative} onSelect={setRetirementAlternative} onMonthly={()=>setTab(4)}/>
+      <section className="d-card" aria-label="월별 신규 투자금 비교">
+        <h2>월별 신규 투자금 비교</h2>
+        <p>두 월별 안은 대출을 유지하고 주거 정비비 60만원을 준비하는 별도 시연이에요.</p>
+      </section>
     </>}
     {tab===1 && (candidates.length
       ? <PlanComparison candidates={candidates} selected={selectedPlan} onSelect={setSelectedPlan} basis={{runId:view.runId,inputVersion}}/>
@@ -226,8 +239,22 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
     {consultationTarget&&createPortal(<ResultActionConsultation flow={actionFlow} view={view} token={token??""} caseId={caseId} stale={stale} blocked={comparison.blocked}
       basis={{strategy_id:selectedPlan,portfolio_type:selectedPortfolio,revision:comparison.revision}}
       onEdit={id=>{closeConsultation?.();onEdit(id);}} onResult={n=>{closeConsultation?.();setTab(n);}}/>,consultationTarget)}
-    {tab===4&&checkin&&<div ref={checkinRef}>{checkin(selectedPlan,monthTasks(selectedRow).map(t=>({key:t.key,label:`${t.text} (계획 ${textValue(selectedRow?.period)} · ${formatKrw(selectedRow?.[t.key])})`})),selectedPortfolio ? {portfolio_type:selectedPortfolio,comparison_revision:comparison.revision} : null,comparison.blocked||!generated,setAdoption)}</div>}
-    {tab===4&&<div className="d-result-cta"><button className="d-secondary" onClick={()=>window.print()}>이 버전 PDF 리포트 받기</button><button className="d-primary" disabled={!generated} onClick={focusAdoption}>최종안의 계획 채택 검토 →</button></div>}
+    {tab===4&&retirementDemo&&<section className="d-card" aria-label="가상 월별 재무계획">
+      <h2>가상 월별 재무계획 저장·채택</h2>
+      <p>대출을 유지하는 월별 계획을 별도 가상 사례에 저장해요. 상환안과 보유상품 운용안은 위의 비교 화면에서 확인해요.</p>
+      <PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/>
+      {retirementDemo.saveMonthly&&<button type="button" className="d-primary" disabled={!monthlyCandidateReady||retirementDemo.saving}
+        onClick={()=>retirementDemo.saveMonthly?.(selectedPlan)}>{retirementDemo.saving?"가상 사례 저장 중…":"가상 월별 재무계획 저장"}</button>}
+      {!monthlyCandidateReady&&<p className="d-note">현재 결과의 월별 후보를 확인한 뒤 저장하거나 채택할 수 있어요.</p>}
+    </section>}
+    {tab===4&&checkin&&(!retirementDemo||view.storage==="SAVED")&&<div ref={checkinRef}>{checkin(
+      selectedPlan,monthTasks(selectedRow).map(t=>({key:t.key,label:`${t.text} (계획 ${textValue(selectedRow?.period)} · ${formatKrw(selectedRow?.[t.key])})`})),
+      !retirementDemo&&selectedPortfolio ? {portfolio_type:selectedPortfolio,comparison_revision:comparison.revision} : null,
+      retirementDemo ? !canAdoptDemo : comparison.blocked||!generated,setAdoption
+    )}</div>}
+    {tab===4&&<div className="d-result-cta"><button className="d-secondary" onClick={()=>window.print()}>이 버전 PDF 리포트 받기</button>
+      {!retirementDemo&&<button className="d-primary" disabled={!generated} onClick={focusAdoption}>최종안의 계획 채택 검토 →</button>}
+    </div>}
     {tab===4&&<TaxBenefits evidenceAccess={evidenceAccess} key={view.sourceSignature} doc={sourceDoc} stale={stale} review={view.taxReview}
       guidance={result.tax_guidance} onScenario={setTaxSelection} onEditHoldings={()=>onEdit("F06")} sourceHash={textValue(object(result.adapter).source_sha256)}/>}
     {tab===4&&<ProposalAssumptions key={`proposal-assumptions:${view.sourceSignature}`} value={result.proposal_reference} firstPeriod={textValue(selectedRow?.period)}/>}
