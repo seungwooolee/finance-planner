@@ -3,11 +3,13 @@
   "git": {
     "deploymentEnabled": {
       "codex/portfolio-product-entry-20261116": false,
+      "codex/lifestage-results-ux-20261116": false,
       "codex/retirement-report-visual-comparison-20261116": false,
       "codex/retirement-demo-product-recommendations-20261116": false,
       "codex/retirement-report-demo-alignment-20261116": false,
       "codex/portfolio-product-selection-20261116": false,
       "codex/retirement-product-comparison-20261116": false,
+      "codex/retirement-final-holdings-20261116": false,
       "codex/portfolio-choice-year-one-20261116": false,
       "feat/product-info-design-20261116": false,
       "feat/result-dashboard-20261116": false,
