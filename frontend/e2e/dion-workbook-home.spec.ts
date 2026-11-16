@@ -25,7 +25,9 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
     await expect(rendered.getByRole("region", {name:"위험추구형 구성 상세"})).toContainText("위험 노출이 크지 않아요");
     await rendered.getByRole("button",{name:"상품 정보 자세히 보기 →"}).click();
     await expect(rendered.getByRole("article",{name:"선택 보류 · 배분 검토 내역"})).toBeVisible();
-    await expect(rendered.getByRole("article",{name:"추천 상품"}).getByRole("button",{name:/최종안에 추가/})).toHaveCount(0);
+    const recommendation = rendered.getByRole("article",{name:"추천 상품"});
+    await expect(recommendation.locator("[data-comparison-product]")).toHaveCount(0);
+    await expect(recommendation).toContainText("목표 비중을 비교할 수 있어요");
     await resultTabs.getByRole("button", {name:"투자구성", exact:true}).click();
     await expect(rendered.locator('[data-portfolio-apply="BALANCED"]')).toHaveAccessibleName("중립형 목표 비중 비교");
     const choice = rendered.locator('[data-portfolio-apply="STABLE"]');
@@ -111,7 +113,16 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   await expect(bonds.locator("[data-candidate-code]").first()).toHaveAttribute("data-candidate-code", "214980");
   await expect(bonds.locator("[data-candidate-code]").nth(1)).toHaveAttribute("data-candidate-code", "153130");
   const recommended = rendered.getByRole("article",{name:"추천 상품"});
-  await expect(recommended.locator("[data-comparison-product]")).toHaveCount(3);
+  const activeCodes = earlyTypes.STABLE.allocations
+    .filter((item: {review_allocated_krw:string}) => BigInt(item.review_allocated_krw)>0n)
+    .map((item: {code:string}) => item.code);
+  expect(activeCodes).toEqual(["469830"]);
+  const options = earlyProducts.product_options.STABILITY_FIRST.STABLE.map((item: {code:string}) => item.code);
+  const cards = recommended.locator("[data-comparison-product]");
+  expect(await cards.evaluateAll(items=>items.map(item=>item.getAttribute("data-comparison-product"))))
+    .toEqual([...new Set([...activeCodes,...options])].slice(0,3));
+  await expect(cards.first()).toContainText("현재 구성에 포함");
+  await expect(recommended.locator('[data-comparison-product="069500"], [data-comparison-product="360200"]')).toHaveCount(0);
   await expect(recommended).toContainText("금리와 채권 가격");
   await expect(rendered.getByText(/매도 후 현금화|2영업일 결제/)).toHaveCount(0);
   await expect(recommended.locator('[data-comparison-product="153130"]').getByRole("link",{name:"등록 자료 ↗"})).toBeVisible();
@@ -123,6 +134,7 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   await expect(portfolio.getByText("KODEX 단기채권",{exact:false}).first()).toBeVisible();
   await expect(rendered.getByRole("button",{name:"예시 검토안 저장"})).toBeVisible();
   await resultTabs.getByRole("button",{name:"상품 정보",exact:true}).click();
+  await expect(recommended.locator("[data-comparison-product]").first()).toHaveAttribute("data-comparison-product","153130");
   const alternatePending=preview();
   await bonds.getByRole("button",{name:"KODEX 단기채권PLUS 최종안에 추가",exact:true}).click();
   const alternate=(await (await alternatePending).json()).result.results["OUT-06"];
@@ -212,8 +224,9 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   const comparedBonds = reference.getByRole("table", {name:"채권 상품 비교",exact:true});
   await expect(comparedBonds.getByRole("columnheader", {name:"연 보수·비용"})).toBeVisible();
   await expect(shortBond.getByRole("rowheader", {name:/KODEX 단기채권/})).toBeVisible();
-  await expect(productInfo.getByRole("article", {name:"기본 배분 후보"})).toContainText("이 달에 배분된 상품은 없어요");
-  await expect(productInfo.getByRole("article", {name:"추천 상품"}).getByRole("button",{name:/최종안에 추가/})).toHaveCount(0);
+  await expect(productInfo.getByRole("article", {name:"기본 배분 후보"})).toHaveCount(0);
+  const retiredRecommendations=productInfo.getByRole("article", {name:"추천 상품"});
+  await expect(retiredRecommendations.locator("[data-comparison-product]")).toHaveCount(0);
   await expect(shortBond.getByText("비용 기준일", {exact:true})).toBeHidden();
   await shortBond.getByText("공시 정보 더 보기", {exact:true}).press("Enter");
   await expect(shortBond.getByText("비용 기준일", {exact:true})).toBeVisible();

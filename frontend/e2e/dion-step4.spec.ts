@@ -4,7 +4,7 @@ import scenario from '../src/lib/dion/product-review-scenario.json';
 import { clone, question, todayInSeoul, type Document } from '../src/lib/dion/model';
 import { policyDateMessage, productEmptyCause } from '../src/lib/dion/product-empty';
 
-const label = '투자 성향 질문 답하고 대표상품 보기';
+const label = '투자 답변 보완하고 상품 다시 검토하기';
 
 test('backend reason controls date guidance; missing preference alone opens investment follow-up', () => {
   const review = { review_version: 'test', missing_question_ids: ['F17'], reason_codes: ['POLICY_DISCLOSURE_STALE'], product_policy: { reviewed_on: '2026-11-13', valid_until: '2027-01-12' } };

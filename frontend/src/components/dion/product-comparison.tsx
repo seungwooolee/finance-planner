@@ -26,11 +26,15 @@ export function AddProduct({product,actions}: {product:Record<string,Json>;actio
     aria-label={`${textValue(product.name)} 최종안에 추가`} onClick={()=>actions.add(code)}>최종안에 추가</button>;
 }
 
-export function ProductComparison({products,actions}: {products: Record<string, Json>[];actions?:ProductActions}) {
+export function ProductComparison({products,actions,emptyMessage}: {
+  products: Record<string, Json>[];actions?:ProductActions;emptyMessage?:string;
+}) {
   return <article className="d-card d-product-comparison" aria-labelledby="product-comparison-title">
     <h2 id="product-comparison-title">추천 상품</h2>
-    <p>단기채권·국내주식·미국주식의 대표 상품이에요. 현재 투자구성에 넣을 수 있는 상품에는 추가 버튼이 표시돼요.</p>
-    {!products.length && <p>추천 상품 자료를 확인할 수 없어요. 아래 상품 비교에서 공식 자료를 확인해 보세요.</p>}
+    {products.length>0 && <p>{actions
+      ? "현재 배정된 상품을 먼저 보여줘요. 같은 구성에 넣을 수 있는 대안은 추가 버튼으로 바꿔볼 수 있어요."
+      : "이번 달 검토 배분에 들어간 상품이에요."}</p>}
+    {!products.length && <p>{emptyMessage??"현재 조건에 맞는 상품을 확인할 수 없어요."}</p>}
     {products.length > 0 && <ul className="d-comparison-cards" aria-label="추천 상품 목록">
       {products.map(p => {
         const d = object(p.disclosure), explanation = object(p.explanation);

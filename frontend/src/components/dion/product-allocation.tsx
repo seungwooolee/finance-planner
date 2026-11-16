@@ -23,13 +23,10 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
   const questionsForReason:Record<string,string>={RESTRICTIONS_UNCONFIRMED:"D14",FX_ACCEPTANCE_REQUIRED:"D18",UNDERSTANDING_REQUIRED:"D19",FUND_DATE_UNRESOLVED:"F15",FUND_NOT_AVAILABLE:"F15",EXPERIENCE_REQUIRED:"F16",INDUSTRY_EXCLUSION_UNRESOLVED:"NEW-12"};
   const reasonQuestions=products.flatMap(p=>Array.isArray(p.reason_codes)?p.reason_codes.map(c=>questionsForReason[String(c)]).filter(Boolean):[]);
   const explanationOf=(p:Record<string,Json>)=>{const e=object(p.explanation);if(!textValue(e.summary))return null;const reasons=Array.isArray(e.reasons)?e.reasons.map(object):[];return <div data-explanation={String(e.decision)}><p>{cashWaitingText(textValue(e.summary))}</p>{reasons.map(r=><p className="d-note" key={String(r.code)}>{cashWaitingText(textValue(r.message))}{r.changes_with==="QUESTION"&&textValue(r.question_id)?` · ${titles[textValue(r.question_id)]??"관련"} 답변을 바꾸면 결과가 달라질 수 있어요.`:r.changes_with==="NEW_DISCLOSURE_OR_POLICY"?" · 새 공시나 정책 갱신 후 다시 검토해요.":""}</p>)}{Array.isArray(e.facts)&&e.facts.length>0&&<ul>{e.facts.map(f=><li key={String(f)}>{textValue(f)}</li>)}</ul>}</div>;};
-  const groupOrder=["BOND","KR_EQUITY","GLOBAL_EQUITY","OTHER"];
-  const defaults=products.filter(p=>p.allocation_role==="DEFAULT_SLOT").sort((a,b)=>groupOrder.indexOf(assetGroup(a).id)-groupOrder.indexOf(assetGroup(b).id));
-  const codes=Array.isArray(review.representative_codes)?review.representative_codes:defaults.map(p=>p.code);
-  const representative=codes.flatMap(code=>products.filter(p=>p.code===code)).slice(0,3);
+  const productsByCode=new Map(products.map(product=>[textValue(product.code),product]));
   const missing=[...new Set([...reasonQuestions,...(Array.isArray(review.missing_question_ids)?review.missing_question_ids:[]),...(Array.isArray(review.invalid_question_ids)?review.invalid_question_ids:[])])];
-  const evidence=(p:Record<string,Json>, priority=false)=><details key={String(p.code)} data-product-code={String(p.code)} className="d-evidence">
-    <summary>{priority||p.allocation_role==="DEFAULT_SLOT"?"이 상품을 검토하는 이유":`${textValue(p.name)} · 비교 후보인 이유`}</summary>
+  const evidence=(p:Record<string,Json>)=><details key={String(p.code)} data-product-code={String(p.code)} className="d-evidence">
+    <summary>이 상품을 검토하는 이유</summary>
     {explanationOf(p)??<p>{Array.isArray(p.reason_codes)&&p.reason_codes.length?p.reason_codes.map(reason).join(" "):"이 저장 결과에는 검토 이유가 없어요. 다시 계산한 결과에서 확인해 주세요."}</p>}
     <PortfolioEvidence key={`${evidenceAccess?.runId}:${evidenceAccess?.inputHash}:${evidenceAccess?.token}`} access={evidenceAccess} kind="PRODUCT" targetId={String(p.code)} stale={stale}/>
     <details className="d-explanation-evidence"><summary>상품 공시 출처</summary><p>저장된 공시 기준이며 실시간 거래 조건은 별도 확인해요.</p><ul>{list(object(p.explanation).source_refs).filter(ref=>ref.field!=="cash_conversion").map(ref=>{
@@ -46,22 +43,32 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
       {missing.length>0&&<div className="d-alert-card"><strong>투자 답변 보완이 필요해요</strong><p>아래 답변을 확인하면 상품 배분을 다시 검토할 수 있어요.</p><div className="d-toolbar">{missing.filter(id=>titles[String(id)]).map(id=><button className="d-secondary" key={String(id)} onClick={()=>onEdit(String(id))}>{titles[String(id)]} 확인 →</button>)}</div></div>}
     </>}
     {!candidates.length&&review.review_version&&<article className="d-card"><h2>월 투자예산 확인 필요</h2><p>배분할 월 투자예산이 아직 계산되지 않았어요. 미확인 금액을 0원으로 표시하지 않아요.</p><button className="d-secondary" onClick={()=>onEdit("ASSUMPTIONS")}>월 후보에 필요한 확인 →</button></article>}
-    {!candidates.length&&review.review_version&&<><ProductComparison products={representative}/><ProductCandidates review={review}/></>}
+    {!candidates.length&&review.review_version&&<><ProductComparison products={[]} emptyMessage="월 투자예산이 확인되면 내 조건에 맞는 상품을 볼 수 있어요."/><ProductCandidates review={review}/></>}
     {candidates.map(candidate=>{
       const months=list(candidate.rows), month=investmentDisplayMonth(months);
       const allocations=list(month?.allocations);
       const allocated=allocations.filter(row=>isWon(row.review_allocated_krw)&&BigInt(row.review_allocated_krw)>0n);
-      const priority:{product:Record<string,Json>; allocation?:Record<string,Json>}[]=allocated.length>0
-        ?allocated.map(allocation=>({product:products.find(product=>product.code===allocation.code)??{code:allocation.code},allocation}))
-        :defaults.map(product=>({product}));
+      const priority=allocated.map(allocation=>({
+        product:productsByCode.get(textValue(allocation.code))??{code:allocation.code},allocation,
+      }));
       const inverted=Array.isArray(month?.reason_codes)&&month.reason_codes.includes("COMPOSITION_INVERSION");
-      const priorityTitle=inverted?"선택 보류 · 배분 검토 내역":allocated.length>0?"우선 검토 상품":"기본 배분 후보";
+      const recommendationAvailable=!!month&&!stale&&!inverted&&month.comparison_only!==true&&month.selectable!==false;
+      const priorityTitle=inverted?"선택 보류 · 배분 검토 내역":"우선 검토 상품";
       const strategy=textValue(candidate.strategy_id);
       const selected=appliedProducts(review);
       const existing=selected?.strategy_id===strategy && selected.portfolio_type===portfolio ? selected.codes : [];
-      const options=portfolio&&!inverted?list(object(object(review.product_options)[strategy])[portfolio]):[];
+      const options=portfolio&&recommendationAvailable?list(object(object(review.product_options)[strategy])[portfolio]):[];
       const optionRoles=new Map(options.map(row=>[textValue(row.code),textValue(row.role)]));
-      const actions:ProductActions|undefined=onApplyProducts&&portfolio&&!inverted?{
+      const recommendationCodes=recommendationAvailable
+        ? new Set([...allocated.map(row=>textValue(row.code)),...optionRoles.keys()]) : new Set<string>();
+      const recommendations=[...recommendationCodes].flatMap(code=>{
+        const product=productsByCode.get(code);
+        return product?[product]:[];
+      }).slice(0,3);
+      const emptyRecommendation=stale?"현재 입력으로 다시 계산하면 조건에 맞는 상품을 확인할 수 있어요."
+        : month?.comparison_only===true||inverted?"이 구성은 목표 비중을 비교할 수 있어요. 적용 가능한 구성의 상품을 확인해 주세요."
+        : "현재 조건에서 배정하거나 포트폴리오에 추가할 상품이 없어요. 아래에서 상품 공시를 비교할 수 있어요.";
+      const actions:ProductActions|undefined=onApplyProducts&&portfolio&&recommendationAvailable?{
         canAdd:code=>optionRoles.has(code),
         included:code=>allocated.some(a=>a.code===code),
         busy:choosing,
@@ -89,22 +96,19 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
       return <div key={String(candidate.strategy_id)} className="d-product-plan">
         {month&&month!==months[0]&&<p className="d-inline-note">{textValue(month.period)} 신규 투자 후보금을 기준으로 상품을 확인해요. 첫 계획 월 {textValue(months[0]?.period)}의 후보금은 0원이에요.</p>}
         {months.map(band)}
-        <ProductComparison products={representative} actions={actions}/>
+        <ProductComparison products={recommendations} actions={actions} emptyMessage={emptyRecommendation}/>
         {priority.length>0&&<article className="d-card d-product-priority" aria-label={priorityTitle}>
-          <div className="d-card-head"><h2>{priorityTitle}</h2><small>{inverted?reason("COMPOSITION_INVERSION"):allocated.length>0
-            ? `${textValue(month?.period)} 계획에 금액이 배정된 검토 상품이에요.`
-            : month?.allocated_total_krw==="0"?"이 달에 배분된 상품은 없어요. 기본 후보에서 검토 이유를 확인할 수 있어요."
-            :"배분 결과를 확인할 때까지 기본 후보의 정보를 볼 수 있어요."}</small></div>
+          <div className="d-card-head"><h2>{priorityTitle}</h2><small>{inverted?reason("COMPOSITION_INVERSION")
+            : `${textValue(month?.period)} 계획에 금액이 배정된 검토 상품이에요.`}</small></div>
           <div className="d-product-cards">{priority.map(({product:p,allocation:a})=>{
             const group=assetGroup(p), d=object(p.disclosure);
             const budget=month?.scenario_budget_krw;
-            const bps=a&&isWon(budget)&&BigInt(budget)>0n?shareBps(a.review_allocated_krw,budget):null;
+            const bps=isWon(budget)&&BigInt(budget)>0n?shareBps(a.review_allocated_krw,budget):null;
             const grade=typeof d.risk_grade==="number"?d.risk_grade:null;
             const fee=textValue(d.annual_base_fee_percent);
             return <div className="d-product-card" key={String(p.code)}>
-              <div className="d-product-top"><i style={{background:group.color}} aria-hidden="true"/><div><strong>{textValue(p.name)||textValue(p.code)||"상품명 확인 대기"}</strong><small>{String(p.code)} · {group.label}</small></div><span className="d-pill">{a?group.role:month?.allocated_total_krw==="0"?"배분 없음":"배분 확인 대기"}</span></div>
-              {a?<div className="d-product-figures"><div><span>이번 달 금액</span><strong>{formatKrw(a.review_allocated_krw)}</strong></div><div><span>후보금 대비</span><strong>{bps!==null?bpsLabel(bps):"확인 대기"}</strong></div></div>
-                :<p className="d-product-excluded">{Array.isArray(p.reason_codes)&&p.reason_codes.length?reason(p.reason_codes[0]):month?.allocated_total_krw==="0"?"이번 달 계획에 반영된 배분액이 없어요.":"이 상품의 배분액은 확인 대기예요."}</p>}
+              <div className="d-product-top"><i style={{background:group.color}} aria-hidden="true"/><div><strong>{textValue(p.name)||textValue(p.code)||"상품명 확인 대기"}</strong><small>{String(p.code)} · {group.label}</small></div><span className="d-pill">{group.role}</span></div>
+              <div className="d-product-figures"><div><span>이번 달 금액</span><strong>{formatKrw(a.review_allocated_krw)}</strong></div><div><span>후보금 대비</span><strong>{bps!==null?bpsLabel(bps):"확인 대기"}</strong></div></div>
               <div className="d-bar" aria-hidden="true"><span style={{width:`${(bps??0)/100}%`,background:group.color}}/></div>
               <p className="d-product-role">{productRole(p)}</p>
               <ul className="d-product-tags" aria-label="공시 요약">
@@ -112,11 +116,12 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
                 <li>총보수 {fee?`연 ${fee}%`:"미확인"}</li>
                 <li className={d.fx_exposed===true?"d-tag-fx":""}>{d.fx_exposed===true?"환율 영향 있음":d.fx_exposed===false?"직접 환노출 없음":"환율 영향 미확인"}</li>
               </ul>
-              {evidence(p,!!a)}
+              {evidence(p)}
             </div>;
           })}</div>
         </article>}
-        <ProductCandidates review={review} month={month} actions={actions}/>
+        <ProductCandidates review={review} month={month} actions={actions}
+          evidenceAccess={priority.length===0?evidenceAccess:undefined} stale={stale}/>
       </div>;
     })}
   </section>;
