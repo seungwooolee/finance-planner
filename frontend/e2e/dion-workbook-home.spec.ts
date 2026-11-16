@@ -17,6 +17,7 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   const plans = rendered.getByRole("region", {name:"두 재무안 비교"});
   const checkPortfolioViews = async () => {
     await resultTabs.getByRole("button", {name:"투자구성", exact:true}).click();
+    await expect(rendered.getByRole("region", {name:"은퇴기 상품 검토 후보"})).toHaveCount(0);
     await expect(rendered.locator("[data-portfolio-type]")).toHaveCount(3);
     await expect(rendered.locator("[data-portfolio-type] .d-donut")).toHaveCount(3);
     const risk = rendered.locator('[data-portfolio-apply="RETURN"]');
@@ -192,6 +193,13 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   await resultTabs.getByRole("button",{name:"투자구성",exact:true}).click();
   const budget = rendered.locator(".d-kpi").filter({hasText:"2027-01 신규 투자 후보금"});
   const compositions = rendered.getByRole("article",{name:"포트폴리오 검토 유형"});
+  const retirementReferences = rendered.getByRole("region", {name:"은퇴기 상품 검토 후보"});
+  await expect(retirementReferences.getByRole("link")).toHaveCount(6);
+  await expect(retirementReferences.getByRole("link", {name:/KODEX KOFR금리액티브/})).toHaveAttribute("href", /2ETFG6-A\.pdf$/);
+  await expect(retirementReferences.getByRole("link", {name:/ACE 미국하이일드/})).toHaveAttribute("href", /strIsurCd=45566$/);
+  await expect(retirementReferences).toContainText("국고채 5년물 직접 보유");
+  await expect(retirementReferences).toContainText("KODEX 단기채권의 월 배분 보류 사유");
+  await expect(retirementReferences).toContainText("현재 손실 허용 범위에는 상품에 배정할 수 있는 금액이 없어요");
   await expect(budget.locator("strong")).toHaveText(/55만\s*원/);
   await expect(compositions).toContainText("첫 계획 월(2026-12)의 신규 투자 후보금은 0원");
   await compositions.getByRole("button",{name:"투자 여력 확대",exact:true}).click();
@@ -236,6 +244,11 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   await expect(rendered.getByText(/위험 추구형 목표 비중 비교/)).toBeVisible();
   await expect(rendered.getByText("아직 고르지 않음",{exact:true})).toBeVisible();
   await expect(page.getByText(/입력 또는 계산 오류가 있어요/)).toHaveCount(0);
+
+  await resultTabs.getByRole("button", {name:"투자구성", exact:true}).click();
+  await retirementReferences.getByRole("button", {name:/투자자금 사용 시점 확인/}).click();
+  await expect(page.getByRole("region", {name:"투자 검토 질문"}).locator('[data-question="F15"] summary'))
+    .toContainText("돈을 사용할 시점");
 
   await launch.click();
   await dialog.getByRole("button", {name:"내 입력으로 복귀", exact:true}).click();
