@@ -42,4 +42,4 @@
 .d-dash-tags li.d-dash-tag-high{color:#8a2e1a;background:#fcebe5}
 .d-dash-tags li.d-dash-tag-low{color:#0f5e44;background:#e3f4ec}
 .d-dash-tags li.d-dash-tag-fx{color:#7a4300;background:#fff4e0}
-@media(max-width:700px){.d-dash-head h2{font-size:21px}.d-dash-portfolio{padding:18px}.d-dash-coach>.d-primary{width:100%}}
+@media(max-width:700px){.d-dash-head h2{font-size:21px}.d-dash-portfolio{padding:18px}.d-dash-coach>.d-primary{width:100%}.d-dash-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.d-dash-kpi{padding:14px}.d-dash-kpi>strong{font-size:21px}}
