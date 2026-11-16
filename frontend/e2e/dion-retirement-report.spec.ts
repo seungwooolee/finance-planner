@@ -72,5 +72,16 @@ test("retirement report compares the two alternatives and records the explicitly
   expect(month.adoption_id).toBe(adoption.adoption_id);
   expect(month.record.amounts.invest_new).toBe("0");
   expect(month.record.amounts.goal).toBeNull();
-  await expect(checkin.getByRole("status").filter({ hasText: "저장 1회차" })).toContainText("부분 기록");
+  const recordSummary = checkin.getByRole("status").filter({ hasText: "저장 1회차" });
+  await expect(recordSummary).toContainText("부분 기록");
+
+  const casePath = new URL(saved.url()).pathname.split("/");
+  const caseId = decodeURIComponent(casePath[casePath.indexOf("cases") + 1]);
+  await page.reload();
+  await expect(page.getByRole("button", { name: "로그아웃", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "내 상담", exact: true }).click();
+  await page.getByRole("button", { name: new RegExp(`${caseId} .*다시 열기`) }).click();
+  await expect(recordSummary).toContainText("부분 기록");
+  await expect(checkin.getByRole("textbox", { name: "신규 투자 납입 (만원)" })).toHaveValue("0");
+  await expect(checkin.getByRole("textbox", { name: "목표 적립 (만원)" })).toHaveValue("");
 });

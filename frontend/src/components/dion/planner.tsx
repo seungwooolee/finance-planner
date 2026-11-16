@@ -224,11 +224,11 @@ export function DionPlanner() {
     if(e instanceof ApiError&&e.status===401){sessionGeneration.current++;clearSession();setToken("");setExpiresAt(null);setCases([]);setRuns([]);setNextAfter(null);setServerVersion(null);connectedCase.current=null;}
     setLastError(e instanceof Error?e.message:"CONNECTION_ERROR");setError(errorText(e));
   }
-  async function serverAction(action:()=>Promise<void>, targetCase=caseId) {
+  async function serverAction(action:()=>Promise<void>, targetCase=caseId, allowDemoRead=false) {
     if(saveLock.current)return;
-    if(fictional){setError("가상 사례는 실제 상담에 저장하지 않아요. 원래 입력으로 돌아간 뒤 저장해주세요.");return;}
+    if(fictional&&!allowDemoRead){setError("가상 사례는 실제 상담에 저장하지 않아요. 원래 입력으로 돌아간 뒤 저장해주세요.");return;}
     if(!token||!targetCase){setError("서버 저장·복원에는 상담 ID와 로그인이 필요해요. 미리보기 계산은 저장 없이 사용할 수 있어요.");return;}
-    retryAction.current=()=>void serverAction(action,targetCase);
+    retryAction.current=()=>void serverAction(action,targetCase,allowDemoRead);
     saveLock.current=true;setSaveBusy(true);setError("");setMessage("");
     try{await action();}catch(e){handleServerError(e);}
     finally{saveLock.current=false;setSaveBusy(false);}
@@ -254,6 +254,7 @@ export function DionPlanner() {
     await serverAction(async()=>{const r=await request("/api/be/v1/cases","POST",{case_id:id},token);setCaseId(id);setServerVersion(r.input_version);connectedCase.current=id;saved.current={};pending.current=null;pendingAnalysis.current=null;setRuns([]);setCases(previous=>previous.some(p=>p.case_id===id)?previous:[...previous,{case_id:id,input_version:0}]);setMessage("상담을 만들었어요. ‘답변 저장·계산’으로 작성값과 결과를 보관하세요.");},id);
   }
   async function restore(targetCase=caseId, followupRunId?:string) {
+    const retirementTarget=isRetirementMonthlyCase(targetCase);
     await serverAction(async()=>{
       const ownerGeneration=sessionGeneration.current,editSequence=sequence.current;
       const raw=await request(base(targetCase),"GET",undefined,token);
@@ -269,14 +270,16 @@ export function DionPlanner() {
       next.raw_bundle.input_version=Math.max(1,raw.input_version);next.context.profile_version=String(raw.input_version);next.context.snapshot_id=`local-restored-${raw.input_version}`;
       next.raw_bundle.case_id=targetCase;
       const latest=runList.find(r=>r.is_current);
+      let currentRun=null;
       if(latest){
         const run=await request(`${base(targetCase)}/analyses/${encodeURIComponent(String(latest.run_id))}`,"GET",undefined,token);
         if(run.input_version===raw.input_version&&run.is_current&&["DION-QUESTION12-ADAPTER-1.0","DION-QUESTION12-ADAPTER-1.1"].includes(run.engine_input?.schema_version)){
+          currentRun=run;
           next.context=clone(run.engine_input.context);next.scope_ref=run.engine_input.scope_ref;
           next.confirmations=clone(run.engine_input.confirmations);next.requested_outputs=clone(run.engine_input.requested_outputs);
         }
       }
-      const followupRun=followupRunId?await request(`${base(targetCase)}/analyses/${encodeURIComponent(followupRunId)}`,"GET",undefined,token):null;
+      const followupRun=followupRunId?await request(`${base(targetCase)}/analyses/${encodeURIComponent(followupRunId)}`,"GET",undefined,token):retirementTarget?currentRun:null;
       if(followupRun){
         if(!["DION-QUESTION12-ADAPTER-1.0","DION-QUESTION12-ADAPTER-1.1"].includes(followupRun.engine_input?.schema_version))throw new ApiError(422,"EXPLICIT_DEFINITION_MIGRATION_REQUIRED");
         Object.assign(next,clone(followupRun.engine_input));
@@ -285,13 +288,13 @@ export function DionPlanner() {
       const previous={doc:clone(docRef.current),fictional};
       change(next);setUndoDraft(previous);setCaseId(targetCase);setServerVersion(raw.input_version);connectedCase.current=targetCase;pending.current=null;pendingAnalysis.current=null;setView(null);setHistory([]);
       saved.current=Object.fromEntries((raw.answers as Revision[]).map(r=>[r.envelope.question_ref.design_id,stable(r.envelope)]));
-      setRuns(runList);setMode("quick");setCurrent("NEW-01");setShowResults(false);setFictional(isRetirementMonthlyCase(targetCase));setScenario(null);
+      setRuns(runList);setMode("quick");setCurrent("NEW-01");setShowResults(false);setFictional(retirementTarget);setScenario(null);
       setMessage("서버 원응답을 복원했어요. 같은 입력버전에 저장된 계산이 있으면 그 기준·가정도 함께 불러와요. 이전 결과는 목록에서 확인하세요.");
       if(followupRun){
         setView({result:followupRun.result,sourceSignature:signature(followupRun.engine_input),localVersion:0,storage:"SAVED",runId:followupRun.run_id,serverVersion:followupRun.input_version,isCurrent:followupRun.is_current,adapterVersion:followupRun.adapter_version,runStatus:followupRun.status,currentInputVersion:followupRun.current_input_version,source:followupRun.engine_input,inputHash:followupRun.input_hash,rawSnapshotId:followupRun.raw_snapshot_id});
-        setShowResults(true);setTab(4);setMessage("선택한 새 초안과 같은 버전의 답변·가정을 열었어요. 기존 채택과 기록은 유지돼요.");
+        setShowResults(true);setTab(4);setMessage(retirementTarget?"저장된 가상 월별 재무계획을 열었어요. 채택과 첫 달 기록을 아래에서 확인할 수 있어요.":"선택한 새 초안과 같은 버전의 답변·가정을 열었어요. 기존 채택과 기록은 유지돼요.");
       }
-    },targetCase);
+    },targetCase,retirementTarget||isRetirementMonthlyCase(caseId));
   }
   async function persistAnswers(id=caseId, start=serverVersion) {
     if(connectedCase.current!==id||start===null)throw new ApiError(409,"RESTORE_OR_CREATE_CASE_FIRST");
@@ -380,7 +383,7 @@ export function DionPlanner() {
     setView(next);setShowResults(true);if(mode==="welcome")setMode("quick");setMessage("과거 결과를 읽기 전용으로 열었어요. 작성 중인 답변은 바꾸지 않았어요.");
     setConversationResume(consultationSessionId?{token,caseId,runId,sessionId:consultationSessionId}:null);
     if(consultationSessionId!==undefined)setConsultationOpen(true);
-  });}
+  },caseId,isRetirementMonthlyCase(caseId));}
   async function restoreRunInputs(){
     if(!view?.runId)return;
     const runId=view.runId;
