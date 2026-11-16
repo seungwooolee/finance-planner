@@ -89,7 +89,7 @@ export function ResultDashboard({ after, row, month, review, plan, portfolio, ge
     <div className="d-dash-coach" role="note" aria-label="DION 코치">
       <span className="d-dash-coach-icon" aria-hidden="true"><Compass size={20}/></span>
       <div><small>DION 코치 · 지금 할 한 가지</small><p>{next.text}</p></div>
-      <button type="button" className="d-primary" onClick={next.run}>{next.label}</button>
+      <button type="button" className="d-primary" aria-haspopup={next.run===onConsult ? "dialog" : undefined} onClick={next.run}>{next.label}</button>
     </div>
 
     <section className="d-dash-portfolio" aria-label="내가 선택한 투자안">
@@ -106,7 +106,7 @@ export function ResultDashboard({ after, row, month, review, plan, portfolio, ge
     <article className="d-card d-dash-card d-dash-ai" aria-labelledby="d-dash-ai-title">
       <div className="d-card-head"><h2 id="d-dash-ai-title"><Bot size={18} aria-hidden="true"/> DION AI 상담</h2></div>
       <p>내 재무 결과나 투자구성이 궁금하면 DION에게 물어보세요. 바꾸고 싶은 조건도 함께 확인할 수 있어요.</p>
-      <button type="button" className="d-primary" onClick={onConsult}><MessagesSquare size={16} aria-hidden="true"/>AI 상담 시작</button>
+      <button type="button" className="d-primary" aria-controls="dion-help" aria-haspopup="dialog" onClick={onConsult}><MessagesSquare size={16} aria-hidden="true"/>AI 상담 시작</button>
     </article>
 
     <div className="d-dash-grid">

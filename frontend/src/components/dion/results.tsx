@@ -75,7 +75,7 @@ function metricValue(out:Record<string,Json>,key:string) {
 function Metric({title,value,note,icon:Icon}:{title:string;value:unknown;note?:string;icon?:LucideIcon}) {return <article className="d-metric">{Icon&&<i className="d-metric-icon" aria-hidden="true"><Icon size={18}/></i>}<span>{title}</span><strong><MoneyAmount value={value}/></strong>{note&&<small>{note}</small>}</article>;}
 function Missing({row,title}:{row:Record<string,Json>;title:string}) {return <div className="d-note"><strong>{title} · {stateLabels[textValue(row.calc_state)]??"확인 필요"}</strong><p>{row.calc_state==="NOT_SUPPORTED"?"이 결과의 계산은 아직 지원하지 않아요. 입력은 보관하고 다른 재무 결과를 유지해요.":row.calc_state==="NOT_IMPLEMENTED"?"이 계산은 준비 중이에요. 추가 입력으로 완료되는 단계가 아니에요.":row.calc_state==="NOT_APPLICABLE"?"현재 확인한 답변에는 해당하는 항목이 없어요.":row.calc_state==="INVALID_INPUT"?"금액·기간·소유 관계가 맞지 않아 계산을 보류했어요. 관련 답변을 확인해주세요.":"추가 확인 필요 · 관련 답변과 계산에 필요한 가정을 확인해주세요."}</p></div>;}
 
-export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalculate,checkin,technical=false,token=null,caseId="",evidenceAccess,actionFlow,consultationTarget,closeConsultation,onOpenRun,onReadRun,onReviewResume,calcBar,recordMonth,resultMonth,onResultMonth,onAskResult,chatHandoff,onApplyProducts,applyingProducts,onSaveProducts,retirementDemo}:{retirementDemo?:{saving:boolean;investmentAssumption?:string;saveMonthly?:(plan:string)=>void};onApplyProducts?:(selection:ProductSelection)=>void;applyingProducts?:boolean;onSaveProducts?:(selection:ProductSelection)=>void;onAskResult?:()=>void;chatHandoff?:ChatReviewHandoff;calcBar?:ReactNode;recordMonth?:string;resultMonth?:string;onResultMonth?:(period:string)=>void;onReadRun?:(id:string)=>Promise<void>;onOpenRun?:(id:string)=>Promise<void>;onReviewResume?:(review:PortfolioReview)=>void;actionFlow?: ActionFlow;consultationTarget?: HTMLDivElement|null;closeConsultation?: ()=>void;evidenceAccess?: EvidenceAccess;technical?:boolean;onRecalculate?:()=>void;view:ViewResult;deep:boolean;tab:number;setTab:(n:number)=>void;stale:boolean;onEdit:(id:string)=>void;checkin?:(plan:string,tasks:CheckinTask[],portfolioSelection:AppliedPortfolioRef|null,portfolioBlocked:boolean,onAdoption:(value:AdoptionView)=>void)=>ReactNode;token?:string|null;caseId?:string}) {
+export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalculate,checkin,technical=false,token=null,caseId="",evidenceAccess,actionFlow,consultationTarget,closeConsultation,onOpenRun,onReadRun,onReviewResume,calcBar,recordMonth,resultMonth,onResultMonth,onAskResult,onOpenAiConsultation,chatHandoff,onApplyProducts,applyingProducts,onSaveProducts,retirementDemo}:{retirementDemo?:{saving:boolean;investmentAssumption?:string;saveMonthly?:(plan:string)=>void};onApplyProducts?:(selection:ProductSelection)=>void;applyingProducts?:boolean;onSaveProducts?:(selection:ProductSelection)=>void;onAskResult?:()=>void;onOpenAiConsultation?:()=>void;chatHandoff?:ChatReviewHandoff;calcBar?:ReactNode;recordMonth?:string;resultMonth?:string;onResultMonth?:(period:string)=>void;onReadRun?:(id:string)=>Promise<void>;onOpenRun?:(id:string)=>Promise<void>;onReviewResume?:(review:PortfolioReview)=>void;actionFlow?: ActionFlow;consultationTarget?: HTMLDivElement|null;closeConsultation?: ()=>void;evidenceAccess?: EvidenceAccess;technical?:boolean;onRecalculate?:()=>void;view:ViewResult;deep:boolean;tab:number;setTab:(n:number)=>void;stale:boolean;onEdit:(id:string)=>void;checkin?:(plan:string,tasks:CheckinTask[],portfolioSelection:AppliedPortfolioRef|null,portfolioBlocked:boolean,onAdoption:(value:AdoptionView)=>void)=>ReactNode;token?:string|null;caseId?:string}) {
   const heading=useRef<HTMLHeadingElement>(null);
   const retirementHeading=useRef<HTMLHeadingElement>(null);
   const retirementDetails=useRef<HTMLDetailsElement>(null);
@@ -296,7 +296,7 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
       stored={view.storage==="SAVED"} adoption={adoption} runId={view.runId} evaluationOn={textValue(object(result.context).evaluation_on)}
       planMonth={firstPlanMonth} viewingMonth={shownMonth} recordMonth={actualRecordMonth}
       adoptionScope={retirementDemo?"월별 재무계획":"최종 포트폴리오"} readyToAdopt={retirementDemo?canAdoptDemo:generated} onJump={()=>tasksRef.current?.scrollIntoView({behavior:"smooth",block:"start"})}/>}
-      onPortfolio={()=>setTab(2)} onProducts={()=>setTab(3)} onConsult={openConsultation} onAdopt={focusAdoption}/>
+      onPortfolio={()=>setTab(2)} onProducts={()=>setTab(3)} onConsult={onOpenAiConsultation??openConsultation} onAdopt={focusAdoption}/>
       <FinancialProposal period={shownMonth} result={{...result,results:{...outputs,"OUT-06":selectedReview}}} doc={sourceDoc} plan={selectedPlan} portfolio={selectedPortfolio} deep={deep} goalLabel={displayGoal} onEdit={onEdit} onAsk={onAskResult}
         allocation={<IncomeBar row={selectedRow}/>}/>
       <div ref={tasksRef} className="d-scroll-anchor"/><MonthTasks key={`${selectedPlan}:${shownMonth}:${view.localVersion}`} row={selectedRow} period={shownMonth} firstPlanMonth={firstPlanMonth} actions={actions} candidates={candidates.length>0} actionList={actionList} onProducts={()=>setTab(3)} onEdit={onEdit}/>
@@ -325,7 +325,18 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
     </div>}
     {tab===4&&<TaxBenefits evidenceAccess={evidenceAccess} key={view.sourceSignature} doc={sourceDoc} stale={stale} review={view.taxReview}
       guidance={result.tax_guidance} onScenario={setTaxSelection} onEditHoldings={()=>onEdit("F06")} sourceHash={textValue(object(result.adapter).source_sha256)}/>}
-    {tab===4&&<ProposalAssumptions key={`proposal-assumptions:${view.sourceSignature}`} value={result.proposal_reference} firstPeriod={firstPlanMonth}/>}
+    {tab===4&&<>
+      <ProposalAssumptions key={`proposal-assumptions:${view.sourceSignature}`} value={result.proposal_reference} firstPeriod={firstPlanMonth}/>
+      <section className="d-card d-monthly-review" aria-labelledby="dion-monthly-review-title">
+        <span>월 1회 · 월말 지출을 정리한 뒤</span>
+        <h2 id="dion-monthly-review-title">다음 달에도 dion에서 재무를 점검해요</h2>
+        <p>지난달 실제 소득·지출과 목표에 모은 금액을 계획과 비교해 보세요. 이직, 큰 지출, 목표일 변경이 생기면 다음 점검을 기다리지 않고 달라진 답변으로 다시 진단할 수 있어요.</p>
+        <div className="d-toolbar">
+          <button type="button" className="d-primary" onClick={()=>onEdit("F03")}>답변 점검하고 다시 진단하기</button>
+          <a className="d-text-button" href="https://blog.naver.com/ifpkkorea/224408454272" target="_blank" rel="noopener noreferrer">한국재무설계협회 · 점검 방법 ↗</a>
+        </div>
+      </section>
+    </>}
     {tab<3&&!(tab===2&&selectedPortfolio)&&<nav className="d-result-next" aria-label="다음 결과 단계"><button type="button" className="d-primary" onClick={()=>setTab(tab+1)}>{`다음 · ${tabs[tab+1]}`}<ArrowRight size={18} aria-hidden="true"/></button></nav>}
   </section>;
 }

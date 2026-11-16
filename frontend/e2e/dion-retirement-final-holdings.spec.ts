@@ -54,6 +54,13 @@ test("the retirement demo keeps monthly recommendations and reflects the chosen 
   await expect(metric("선택안 적용 후 금융자산")).toHaveText(formatKrw("400000000"));
   await expect(metric("6개 상품 운용액 합계")).toHaveText(formatKrw("390000000"));
   await expect(metric("남는 대출잔액")).toHaveText(formatKrw("0"));
+  const comparison = page.getByRole("region",{name:"3 다른 방법과 비교하기",exact:true});
+  await expect(comparison).toContainText("두 재무안 모두 신규 투자 후보금이 0원");
+  await expect(comparison.getByRole("article",{name:"같은 금액에 수익률 가정 적용"})).toHaveCount(0);
+  await expect(comparison.getByRole("article",{name:"지출 조정"})).toContainText(formatKrw("150000"));
+  const goal = comparison.getByRole("listitem").filter({hasText:"시연용 주거 정비비"});
+  await expect(goal).toContainText("목표일을 1년 늦추면");
+  await expect(goal).toContainText(formatKrw("43715"));
   const monthly = page.getByRole("article", {name: "상담용 포트폴리오 검토안"});
   await expect(monthly.locator("dl > div").filter({hasText: "신규 투자 후보금"}).locator("dd")).toHaveText(formatKrw("550000"));
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);

@@ -29,6 +29,17 @@ function Section({ n, title, children }: { n: number; title: string; children: R
   return <section className="d-proposal-section" aria-labelledby={`proposal-s${n}`}><h3 id={`proposal-s${n}`}><span className="d-proposal-num">{n}</span>{title}</h3>{children}</section>;
 }
 
+function ComparisonCard({title, context, amount, children, current=false}: {
+  title: string; context: string; amount: unknown; children?: ReactNode; current?: boolean;
+}) {
+  return <article className={current ? "d-proposal-option d-proposal-current" : "d-proposal-option"} aria-label={title}>
+    <h4>{title}</h4>
+    <p>{context}</p>
+    <strong className="d-proposal-amount">{formatKrw(amount)}</strong>
+    {children}
+  </article>;
+}
+
 export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabel, onEdit, onAsk, allocation, period }: {
   result: Record<string, Json>; doc: Document | null; plan: string; portfolio: string | null; deep: boolean;
   period?: string; goalLabel: (id: Json) => string; onEdit: (id: string) => void; onAsk?: () => void; allocation: ReactNode;
@@ -47,7 +58,10 @@ export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabe
   const outGoals = list(object(object(result.results)["OUT-04"]).rows);
   const expense = object(ref.expense_adjustment);
   const last = (p: Record<string, Json> | undefined) => list(p?.points).at(-1);
-  const horizon = years(last(chosen)?.months);
+  const chosenEnd = last(chosen), otherEnd = last(other), expenseEnd = list(expense.points).at(-1);
+  const monthlyDiff = chosen?.period && chosen.period === other?.period
+    ? diff(other?.monthly_new_investment_krw, chosen?.monthly_new_investment_krw) : null;
+  const bothZero = chosen?.monthly_new_investment_krw === "0" && other?.monthly_new_investment_krw === "0";
   const preferenceCode = doc ? fieldValue(doc, "F17", "risk_preference_choice_raw") : null;
   const preference = preferenceCode ? question("F17").options.find(o => o.code === preferenceCode)?.label ?? "확인 필요" : "미응답";
   const evaluationOn = textValue(object(result.context).evaluation_on) || "기준일 확인 필요";
@@ -73,14 +87,33 @@ export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabe
 
     <Section n={3} title="다른 방법과 비교하기">
       {!available ? <p className="d-note">비교에 필요한 월별 재무안·목표 계산이 아직 없어요. 입력을 보완해 다시 계산하면 대안 비교가 나와요.</p> : <>
-        <p>같은 소득·지출 조건에서 한 가지씩만 바꿨을 때의 차이예요. 모든 숫자는 맨 아래 ‘이 제안의 가정’을 기준으로 한 참고값이에요.</p>
-        <p className="d-inline-note d-proposal-scope">포함 범위: 첫 계획 월{firstPeriod ? `(${firstPeriod})` : ""}의 신규 적립금만 매달 같은 금액으로 쌓는다고 본 장기 비교예요. 이미 가진 금융자산·기존 납입·목표 인출은 넣지 않아요.</p>
-        <div className="d-table-wrap"><table className="d-proposal-compare"><thead><tr><th>방법</th><th>무엇이 바뀌나</th><th>신규 적립금만 쌓인 금액 ({horizon || "기간"} 뒤)</th><th>장점</th><th>주의할 점</th></tr></thead><tbody>
-          {chosen && <tr className="d-proposal-current"><th>지금 고른 안<small>{planName(plan)}</small></th><td>매달 {formatKrw(chosen.monthly_new_investment_krw)} 투자 후보</td><td>수익 미반영(0%)이면 {formatKrw(last(chosen)?.zero_return_krw)}</td><td>납입한 금액만 더한 기준이라 수익 가정에 흔들리지 않아요. 손실 하한은 아니에요.</td><td>물가가 오르면 실제 구매력은 줄어요.</td></tr>}
-          {chosen && <tr><th>투자 방식 변경<small>연 {pct(assumed)} 비교용 가정 · 상품 기대수익률 아님</small></th><td>같은 금액에 비교용 수익률을 적용</td><td>{formatKrw(last(chosen)?.assumed_return_krw)}<small>물가 반영 시 오늘 가치 {formatKrw(last(chosen)?.assumed_return_real_krw)}</small></td><td>오래 둘수록 차이가 커져요. (+{formatKrw(diff(last(chosen)?.assumed_return_krw, last(chosen)?.zero_return_krw))})</td><td>수익률은 보장되지 않고 손실이 날 수 있어요.</td></tr>}
-          {other && <tr><th>재무안 바꾸기<small>{planName(other.strategy_id)}</small></th><td>매달 {formatKrw(other.monthly_new_investment_krw)} 투자 후보</td><td>수익 미반영이면 {formatKrw(last(other)?.zero_return_krw)} · 연 {pct(assumed)} 가정이면 {formatKrw(last(other)?.assumed_return_krw)}</td><td>매달 신규 투자 후보금이 지금 고른 안과 달라요.</td><td>남기는 현금·목표 적립의 실제 차이는 2번 화면 비교표의 차이 열에서 확인해요.</td></tr>}
-          {isWon(expense.monthly_extra_krw) && <tr><th>지출 조정<small>생활비 {pct(expense.cut_rate)} 절감</small></th><td>매달 {formatKrw(expense.monthly_extra_krw)} 추가 저축</td><td>수익 미반영이면 {formatKrw(list(expense.points).at(-1)?.zero_return_krw)} · 연 {pct(assumed)} 가정이면 {formatKrw(list(expense.points).at(-1)?.assumed_return_krw)}</td><td>수익률과 상관없이 확실하게 쌓여요.</td><td>필수 지출까지 줄이면 생활이 불편해져요. 줄일 항목을 직접 정해야 해요.</td></tr>}
-        </tbody></table></div>
+        <p className="d-inline-note d-proposal-scope">첫 계획 월{firstPeriod && " " + firstPeriod}의 신규 적립을 같은 금액으로 이어가는 비교예요. 보유자산, 기존 납입과 목표 인출은 제외해요.</p>
+        {bothZero && <p className="d-note">첫 계획 월에는 두 재무안 모두 신규 투자 후보금이 0원이에요. 지출과 목표일을 바꿨을 때의 차이를 아래에서 확인해 보세요.</p>}
+        <div className="d-proposal-options">
+          {chosen && <ComparisonCard title="지금 고른 안" context={planName(plan) + " · 매달 신규 투자 후보"}
+            amount={chosen.monthly_new_investment_krw} current>
+            {!bothZero && <p>{years(chosenEnd?.months)} 뒤 · 수익 미반영 {formatKrw(chosenEnd?.zero_return_krw)}</p>}
+          </ComparisonCard>}
+          {other && <ComparisonCard title="재무안 바꾸기" context={planName(other.strategy_id) + " · 매달 신규 투자 후보"}
+            amount={other.monthly_new_investment_krw}>
+            {monthlyDiff !== null && <p>{monthlyDiff === "0" ? "지금 고른 안과 월 투자 후보금이 같아요."
+              : <>지금 고른 안보다 매달 {formatKrw(monthlyDiff.replace(/^-/, ""))} {monthlyDiff.startsWith("-") ? "적어요." : "많아요."}</>}</p>}
+            {!bothZero && <p>{years(otherEnd?.months)} 뒤 · 수익 미반영 {formatKrw(otherEnd?.zero_return_krw)}
+              {assumed && <> · 연 {pct(assumed)} 가정 {formatKrw(otherEnd?.assumed_return_krw)}</>}</p>}
+          </ComparisonCard>}
+          {isWon(expense.monthly_extra_krw) && <ComparisonCard title="지출 조정" context={"생활비 " + pct(expense.cut_rate) + " 절감 · 매달 추가 저축"}
+            amount={expense.monthly_extra_krw}>
+            <p>{years(expenseEnd?.months)} 뒤 · 수익 미반영 {formatKrw(expenseEnd?.zero_return_krw)}
+              {assumed && <> · 연 {pct(assumed)} 가정 {formatKrw(expenseEnd?.assumed_return_krw)}</>}</p>
+            <small>필수 지출을 확인하고 실제로 줄일 수 있는 항목을 정해 보세요.</small>
+          </ComparisonCard>}
+          {chosen && chosen.monthly_new_investment_krw !== "0" && assumed && <ComparisonCard title="같은 금액에 수익률 가정 적용"
+            context={years(chosenEnd?.months) + " 뒤 · 연 " + pct(assumed) + " 비교용 가정"}
+            amount={chosenEnd?.assumed_return_krw}>
+            <p>물가를 반영한 오늘 가치 {formatKrw(chosenEnd?.assumed_return_real_krw)}</p>
+            <small>실제 수익률은 비교 가정과 달라질 수 있어요.</small>
+          </ComparisonCard>}
+        </div>
         {omissions.length > 0 && <div className="d-alert-card d-goal-omissions" data-goal-omissions={omissions.length}>
           <strong>일부 목표는 월 납입 참고 비교를 보류했어요</strong>
           <ul>{omissions.map((o, i) => { const goal = outGoals.find(g => g.goal_id === o.goal_id); return <li key={`${textValue(o.goal_id)}-${i}`} data-omission-reason={textValue(o.reason)}>
@@ -91,12 +124,27 @@ export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabe
         </div>}
         {goals.length > 0 && <>
           <h4>목표별 · 매달 필요한 금액 비교</h4>
-          <div className="d-table-wrap"><table><thead><tr><th>목표</th><th>지금 계획 (수익 미반영)</th><th>비교용 수익률 적용 (연 {pct(assumed)} 가정)</th><th>목표 시기 1년 늦추기</th></tr></thead><tbody>
-            {goals.map(g => <tr key={textValue(g.goal_id)}><th>{goalLabel(g.goal_id)}<small>{textValue(g.due_on)} · 남은 {years(g.months)} · 목표 {formatKrw(g.target_krw)}</small></th>
-              <td>{formatKrw(g.current_monthly_krw)}</td>
-              <td>{isWon(g.assumed_return_monthly_krw) ? <>{formatKrw(g.assumed_return_monthly_krw)}<small>{change(g.current_monthly_krw, g.assumed_return_monthly_krw)}</small></> : <small>3년 미만 목표라 수익률을 가정하지 않아요</small>}</td>
-              <td>{formatKrw(g.delay_monthly_krw)}<small>물가 반영 목표 {formatKrw(g.delay_target_krw)} · {change(g.current_monthly_krw, g.delay_monthly_krw)}</small></td></tr>)}
-          </tbody></table></div>
+          <ul className="d-proposal-goals">
+            {goals.map(g => <li key={textValue(g.goal_id)} className="d-proposal-goal">
+              <h5>{goalLabel(g.goal_id)}</h5>
+              <p>{textValue(g.due_on)}까지 · 남은 {years(g.months)} · 목표 {formatKrw(g.target_krw)}</p>
+              <dl className="d-proposal-options">
+                <div className="d-proposal-option d-proposal-current"><dt>지금 계획 · 수익 미반영</dt>
+                  <dd className="d-proposal-amount">{formatKrw(g.current_monthly_krw)}</dd></div>
+                <div className="d-proposal-option"><dt>목표일을 1년 늦추면</dt>
+                  <dd className="d-proposal-amount">{formatKrw(g.delay_monthly_krw)}</dd>
+                  <dd>{change(g.current_monthly_krw, g.delay_monthly_krw)}</dd>
+                  <dd><small>물가 반영 목표 {formatKrw(g.delay_target_krw)}</small></dd></div>
+                <div className="d-proposal-option"><dt>{assumed ? "연 " + pct(assumed) + " 비교용 가정" : "수익률 가정 비교"}</dt>
+                  {isWon(g.assumed_return_monthly_krw) ? <>
+                    <dd className="d-proposal-amount">{formatKrw(g.assumed_return_monthly_krw)}</dd>
+                    <dd>{change(g.current_monthly_krw, g.assumed_return_monthly_krw)}</dd>
+                  </> : <dd>{g.assumed_return_reason === "SHORT_TERM_GOAL_NO_RETURN"
+                    ? (years(assumptions.min_months_for_return) || "기준 기간") + " 미만 목표라 수익률을 가정하지 않아요." : "비교할 수익률 가정이 없어요."}</dd>}
+                </div>
+              </dl>
+            </li>)}
+          </ul>
         </>}
       </>}
     </Section>

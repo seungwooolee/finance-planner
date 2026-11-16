@@ -37,6 +37,13 @@ test("no-change consultation, failed save/retry, final server artifact, resume a
   await page.getByRole("button", {name:new RegExp(first.run_id)}).click();
   await select(page);
   await expect(page.getByRole("region", {name:"상담 전 결과 확인"})).toHaveCount(0);
+  await page.locator(".d-tabs button").nth(4).click();
+  const ai = page.getByRole("article",{name:"DION AI 상담",exact:true}).getByRole("button",{name:"AI 상담 시작",exact:true});
+  await ai.click();
+  const chat = page.getByRole("dialog",{name:"dion AI 상담",exact:true});
+  await expect(chat.getByLabel("DION에게 메시지",{exact:true})).toBeVisible();
+  await chat.getByRole("button",{name:"상담창 닫기",exact:true}).click();
+  await expect(ai).toBeFocused();
   await confirmSteps(page); await consult(page);
   let fail = true;
   const keys: string[] = [];
