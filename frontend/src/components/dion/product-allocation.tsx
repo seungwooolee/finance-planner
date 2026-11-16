@@ -29,7 +29,10 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
   const explanationOf=(p:Record<string,Json>)=>{const e=object(p.explanation);if(!textValue(e.summary))return null;const reasons=Array.isArray(e.reasons)?e.reasons.map(object):[];return <div data-explanation={String(e.decision)}><p>{cashWaitingText(textValue(e.summary))}</p>{reasons.map(r=><p className="d-note" key={String(r.code)}>{cashWaitingText(textValue(r.message))}{r.changes_with==="QUESTION"&&textValue(r.question_id)?` · ${titles[textValue(r.question_id)]??"관련"} 답변을 바꾸면 결과가 달라질 수 있어요.`:r.changes_with==="NEW_DISCLOSURE_OR_POLICY"?" · 새 공시나 정책 갱신 후 다시 검토해요.":""}</p>)}{Array.isArray(e.facts)&&e.facts.length>0&&<ul>{e.facts.map(f=><li key={String(f)}>{textValue(f)}</li>)}</ul>}</div>;};
   const productsByCode=new Map(products.map(product=>[textValue(product.code),product]));
   const missing=[...new Set([...codes(review.missing_question_ids),...codes(review.invalid_question_ids)])].filter(id=>titles[id]);
-  const nextActions=(ids:string[])=><div className="d-toolbar">{ids.map(id=><button type="button" className="d-secondary" key={id} onClick={()=>onEdit(id)}>{titles[id]} 확인 →</button>)}</div>;
+  const nextActions=(ids:string[])=><div className="d-toolbar">
+    {empty?.investment&&<button type="button" className="d-secondary" onClick={()=>onEdit("F17")}>투자 답변 보완하고 상품 다시 검토하기</button>}
+    {ids.map(id=><button type="button" className="d-secondary" key={id} onClick={()=>onEdit(id)}>{titles[id]} 확인 →</button>)}
+  </div>;
   const evidence=(p:Record<string,Json>)=><details key={String(p.code)} data-product-code={String(p.code)} className="d-evidence">
     <summary>이 상품을 검토하는 이유</summary>
     {explanationOf(p)??<p>{Array.isArray(p.reason_codes)&&p.reason_codes.length?codes(p.reason_codes).map(code=>reason(code)).join(" "):"이 저장 결과에는 검토 이유가 없어요. 다시 계산한 결과에서 확인해 주세요."}</p>}

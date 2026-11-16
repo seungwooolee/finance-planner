@@ -146,7 +146,7 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
   const targetPreview=!!previewReview&&previewMonth?.comparison_only===true&&!comparison.blocked;
   const types=object(review.portfolio_types);
   const baselineType=textValue(types.baseline_type);
-  const baselineReview=!selectedPortfolio&&!previewType&&types.customer_preference==="PREF_STABILITY"&&baselineType
+  const baselineReview=!!retirementDemo&&!selectedPortfolio&&!previewType&&types.customer_preference==="PREF_STABILITY"&&baselineType
     ? comparisonReview(review,selectedPlan,baselineType) : null;
   const baselineMonth=baselineReview&&reviewMonth(baselineReview);
   const showBaseline=!!baselineMonth&&(baselineMonth.selectable===true||baselineMonth.comparison_only===true);
