@@ -61,7 +61,7 @@ export function ConsultationWidget({ compact = false, open, onOpen, onClose, chi
     </dialog>
     <button type="button" className={`d-help-launcher ${compact ? "compact" : ""}`} ref={launcher}
       disabled={!hydrated} aria-busy={!hydrated} aria-expanded={open} aria-controls="dion-help" aria-haspopup="dialog" aria-label="dion AI 상담 열기" onClick={onOpen}>
-      <Cat kind="guide" size={48}/><span>AI 상담</span><MessageCircle size={19}/></button>
+      <Cat kind="guide" size={48}/><span>AI 상담창</span><MessageCircle size={18} aria-hidden="true"/></button>
   </div>;
 }
 

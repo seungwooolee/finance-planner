@@ -22,14 +22,15 @@ test('step 4 proposal shows choices, compared alternatives, assumptions and risk
   await expect(p).toBeVisible();
   for (const title of ['내가 선택한 내용','첫 계획 월 실행안 · 자금 배정과 상품 배분','다른 방법과 비교하기','위험과 확인할 점','이해가 어렵거나 바꾸고 싶다면'])
     await expect(p.getByRole('heading',{name:title})).toBeVisible();
-  for (const row of ['지금 고른 안','투자 방식 변경','재무안 바꾸기','지출 조정']) await expect(p.getByRole('rowheader',{name:new RegExp(row)})).toBeVisible();
+  for (const name of ['지금 고른 안','같은 금액에 수익률 가정 적용','재무안 바꾸기','지출 조정'])
+    await expect(p.getByRole('article',{name,exact:true})).toBeVisible();
   const assumptions=page.locator('#dion-proposal-assumptions');
   await expect(assumptions.getByText('물가상승률')).toBeHidden();
   await assumptions.locator('summary').click();
   await expect(assumptions.getByText('연 2%', {exact:true})).toBeVisible();
   // Engine amounts are copied, not recomputed: 10-year 0% equals 120 × monthly candidate.
-  await expect(p.getByRole('row',{name:/^지금 고른 안/})).toContainText('4,794만원');
-  await expect(p.getByRole('row',{name:/^투자 방식 변경 연/})).toContainText('5,882만 6,296원');
+  await expect(p.getByRole('article',{name:'지금 고른 안',exact:true})).toContainText('4,794만원');
+  await expect(p.getByRole('article',{name:'같은 금액에 수익률 가정 적용',exact:true})).toContainText('5,882만 6,296원');
   await expect(p).not.toContainText('약 0원');
   // R2 consultation with an everyday question
   const panel=page.getByRole('region',{name:'결과 상담',exact:true});
@@ -83,6 +84,21 @@ test('public proposal opens result questions, edits the input and invokes print'
   const ask = proposal.getByRole('button', {name:'AI에게 질문하기', exact:true});
   await expect(proposal.getByRole('heading', {name:/이해가 어렵거나 바꾸고 싶다면/})).toBeVisible();
   await expect(result.getByRole('article', {name:'첫 계획 월 할 일', exact:true})).toBeVisible();
+  await expect(proposal.getByRole('article',{name:'지금 고른 안',exact:true})).toContainText('39만 9,500');
+  await expect(proposal.getByRole('article',{name:'같은 금액에 수익률 가정 적용',exact:true})).toBeVisible();
+  const launcher = page.getByRole('button',{name:'dion AI 상담 열기',exact:true});
+  const scenario = page.getByRole('button',{name:'가상 사례 불러오기',exact:true});
+  await page.setViewportSize({width:320,height:780});
+  await expect(launcher.getByText('AI 상담창',{exact:true})).toBeVisible();
+  const left = (await launcher.boundingBox())!, right = (await scenario.boundingBox())!;
+  expect(left.x + left.width).toBeLessThan(right.x);
+  const consult = result.getByRole('article',{name:'DION AI 상담',exact:true}).getByRole('button',{name:'AI 상담 시작',exact:true});
+  await consult.press('Enter');
+  const chat = page.getByRole('dialog',{name:'dion AI 상담',exact:true});
+  await expect(chat.getByRole('button',{name:'DION과 대화',exact:true})).toHaveAttribute('aria-pressed','true');
+  await expect(chat.getByLabel('DION에게 메시지',{exact:true})).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(consult).toBeFocused();
 
   const sent: string[] = [];
   page.on('request', request => {
@@ -120,7 +136,8 @@ test('public proposal opens result questions, edits the input and invokes print'
   await proposal.getByRole('button', {name:'제안서 인쇄·PDF 저장', exact:true}).click();
   await expect(page.locator('html')).toHaveAttribute('data-proposal-print','invoked');
 
-  await proposal.getByRole('button', {name:'입력 내용 수정', exact:true}).click();
+  const checkup = result.getByRole('region',{name:'다음 달에도 dion에서 재무를 점검해요'});
+  await checkup.getByRole('button', {name:'답변 점검하고 다시 진단하기', exact:true}).click();
   await expect(page.getByRole('heading', {name:'한 달 평균 세후 소득은 얼마인가요?', exact:true})).toBeFocused();
   await page.getByRole('textbox', {name:'한 달 평균 세후 소득은 얼마인가요?', exact:true}).fill('301');
   const recalculation = page.waitForResponse(response => response.url().endsWith('/api/fe/v1/preview'));

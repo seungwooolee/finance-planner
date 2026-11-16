@@ -8,7 +8,7 @@ import { rowForMonth } from '@/lib/dion/result-visual';
 
 export const planName = (id: unknown) => id === 'STABILITY_FIRST' ? '생활 안정 우선' : '투자 여력 확대';
 export function PlanSelector({ selected, onSelect }: { selected: string; onSelect: (id: string) => void }) {
-  return <div className="d-toolbar" role="group" aria-label="비교할 재무안">{['STABILITY_FIRST', 'INVESTMENT_CAPACITY'].map(id => <button className={selected === id ? 'd-primary' : 'd-secondary'} key={id} aria-pressed={selected === id} onClick={() => onSelect(id)}>{planName(id)}</button>)}</div>;
+  return <div className="d-plan-selector" role="group" aria-label="비교할 재무안">{['STABILITY_FIRST', 'INVESTMENT_CAPACITY'].map(id => <button type="button" className={selected === id ? 'd-primary' : 'd-secondary'} key={id} aria-pressed={selected === id} onClick={() => onSelect(id)}>{planName(id)}</button>)}</div>;
 }
 const FLOW_ROWS: [string, string][] = [
   ['new_investment_krw', '신규 투자 후보금'],

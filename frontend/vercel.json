@@ -3,6 +3,7 @@
   "git": {
     "deploymentEnabled": {
       "codex/result-month-navigation-20261116": false,
+      "codex/results-consultation-checkup-20261116": false,
       "codex/portfolio-product-entry-20261116": false,
       "codex/lifestage-results-ux-20261116": false,
       "codex/retirement-report-visual-comparison-20261116": false,
