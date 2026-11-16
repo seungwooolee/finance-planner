@@ -1,0 +1,55 @@
+/* 결과 화면 타이포 스케일 — 결과(.d-results) 안에서만 적용한다.
+   meta 12px(최소) · label 13px(항목명·표 머리·범례) · body 14px · 탭 14px.
+   굵기는 400 / 600 / 700 세 단계로 맞추고, 문단은 46em에서 줄을 바꾼다. */
+.dion-app .d-results{--d-type-meta:12px;--d-type-label:13px;--d-type-body:14px}
+
+/* 문단 줄 길이 */
+.dion-app .d-results p:not([class]){max-width:46em}
+.dion-app .d-results .d-draft-chip{width:fit-content;justify-self:start;align-self:flex-start}
+
+/* 탭 */
+.dion-app .d-results .d-tabs button{font-size:var(--d-type-body)}
+.dion-app .d-results .d-tabs button small{font-size:var(--d-type-meta)}
+
+/* 항목명·표 머리·범례·지표 라벨: 12px → 13px */
+.dion-app .d-results dl dt,
+.dion-app .d-results .d-candidate-table thead th,
+.dion-app .d-results .d-legend li,
+.dion-app .d-results .d-metric>span,
+.dion-app .d-results>.d-metrics>.d-metric>span,
+.dion-app .d-results .d-type-line,
+.dion-app .d-results .d-inline-note,
+.dion-app .d-results .d-money-kind,
+.dion-app .d-results .d-candidate-status,
+.dion-app .d-results .d-candidate-nav a{font-size:var(--d-type-label)}
+
+/* 보조 설명·배지: 10~11px → 12px */
+.dion-app .d-results .d-legend li span small,
+.dion-app .d-results .d-legend li strong small,
+.dion-app .d-results .d-diff-tag,
+.dion-app .d-results .d-candidate-comparison-row>th small,
+.dion-app .d-results .d-candidate-comparison-row td small,
+.dion-app .d-results .d-composition-totals small,
+.dion-app .d-results .d-donut-center small,
+.dion-app .d-results .d-candidate-nav small,
+.dion-app .d-results .d-kpi small,
+.dion-app .d-results .d-badge,
+.dion-app .d-results .d-pill,
+.dion-app .d-results .d-eyebrow,
+.dion-app .d-results .d-example-tag,
+.dion-app .d-results .d-draft-chip{font-size:var(--d-type-meta)}
+
+/* 굵기 800·900 → 700 */
+.dion-app .d-results .d-row-diff th,
+.dion-app .d-results .d-row-diff td,
+.dion-app .d-results .d-plan-choice-name,
+.dion-app .d-results .d-candidate-comparison-row strong,
+.dion-app .d-results .d-diff-tag{font-weight:700}
+
+@media(max-width:700px){
+  .dion-app .d-results .d-tabs button{font-size:var(--d-type-label)}
+}
+
+/* 안별 상세 카드 안 지표: 큰 금액이 두 줄로 끊기지 않게 */
+.dion-app .d-results .d-card.d-candidate .d-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+.dion-app .d-results .d-card.d-candidate .d-metric strong{font-size:22px;letter-spacing:-.04em}

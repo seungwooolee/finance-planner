@@ -1,6 +1,7 @@
 "use client";
 
 import { useAssetReferenceSelection } from "./use-asset-reference-selection";
+import "./result-typography.css";
 
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { type LucideIcon, ArrowRight, CalendarCheck, ChartPie, Coins, HandCoins, Landmark, Package, PiggyBank, Scale, Wallet } from "lucide-react";
