@@ -10,7 +10,7 @@ import { sourceHref } from "./scheme-evidence";
 import { RISK_LABEL, productRole } from "@/lib/dion/product-role";
 import { ProductCandidates } from "./product-candidates";
 import { ProductComparison, type ProductActions } from "./product-comparison";
-import { appliedProducts, type ProductSelection } from "@/lib/dion/portfolio-comparison";
+import { productOptionRoles, replaceProductChoice, type ProductSelection } from "@/lib/dion/portfolio-comparison";
 import "./product-info.css";
 
 export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="", evidenceAccess, stale=false, portfolio, choosing=false, onApplyProducts }: { portfolio?: string|null; choosing?:boolean; onApplyProducts?:(value:ProductSelection)=>void; evidenceAccess?: EvidenceAccess; stale?: boolean; review: Record<string, Json>; selectedPlan?: string; evaluationOn?: string; onEdit: (id: string) => void }) {
@@ -77,10 +77,7 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
         .map(code=>questionsForReason[code]).filter(Boolean)])];
       const priorityTitle=inverted?"선택 보류 · 배분 검토 내역":"우선 검토 상품";
       const strategy=textValue(candidate.strategy_id);
-      const selected=appliedProducts(review);
-      const existing=selected?.strategy_id===strategy && selected.portfolio_type===portfolio ? selected.codes : [];
-      const options=portfolio&&recommendationAvailable?list(object(object(review.product_options)[strategy])[portfolio]):[];
-      const optionRoles=new Map(options.map(row=>[textValue(row.code),textValue(row.role)]));
+      const optionRoles=portfolio&&recommendationAvailable?productOptionRoles(review,strategy,portfolio):new Map<string,string>();
       const recommendationCodes=recommendationAvailable
         ? new Set([...allocated.map(row=>textValue(row.code)),...optionRoles.keys()]) : new Set<string>();
       const recommendations=[...recommendationCodes].flatMap(code=>{
@@ -97,10 +94,8 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
         included:code=>allocated.some(a=>a.code===code),
         busy:choosing,
         add:code=>{
-          const role=optionRoles.get(code);
-          if (!role || choosing) return;
-          const codes=[...existing.filter(c=>optionRoles.get(c)!==role),code].sort();
-          onApplyProducts({strategy_id:strategy,portfolio_type:portfolio,codes});
+          const selection=replaceProductChoice(review,strategy,portfolio,optionRoles,code);
+          if (selection&&!choosing) onApplyProducts(selection);
         },
       }:undefined;
       const band=(m:Record<string,Json>)=>{

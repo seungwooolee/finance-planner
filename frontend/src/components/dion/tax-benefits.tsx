@@ -64,7 +64,7 @@ export function TaxBenefits({doc, stale = false, review, evidenceAccess, guidanc
   const close = () => {setSelection(null); opener.current?.focus();};
   return <section className="d-tax-benefits" aria-label="확인해볼 절세 혜택">
     <div className="d-tax-heading"><span className="d-eyebrow">TAX CHECK</span><h2>확인해볼 절세 혜택</h2>
-      <p>이 결과에 사용한 답변과 관련 있는 항목부터 안내해요. 적용 자격과 개인별 절세액을 확정한 결과는 아니에요.</p></div>
+    </div>
     {stale && <p className="d-warning">이전 입력 기준 안내예요.</p>}
     <div className="d-tax-grid d-tax-priority">{rows.slice(0, 3).map(card => <BenefitCard key={card.benefit.id} card={card} followup={byBenefit.get(card.benefit.id)} onOpen={open}/>)}</div>
     <details className="d-card d-tax-all"><summary>다른 절세 항목 보기 · {rows.length - 3}개</summary>

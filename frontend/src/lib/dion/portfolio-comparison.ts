@@ -1,4 +1,4 @@
-import { Json, list, object } from './model';
+import { Json, list, object, textValue } from './model';
 
 export const portfolioNames: Record<string, string> = { STABLE: '안정형', BALANCED: '중립형', RETURN: '위험 추구형' };
 export type AppliedPortfolioRef = { portfolio_type: string; comparison_revision: number };
@@ -26,6 +26,21 @@ export type ComparisonResponse = { revision: number; selection: ComparisonSelect
 export type ProductSelection = { strategy_id: string; portfolio_type: string; codes: string[] };
 export const productSelectionIdentity = "PRODUCT-SELECTION";
 export const productSelectionVersion = "DION-PRODUCT-SELECTION-1.0";
+
+export function productOptionRoles(review: Record<string, Json>, strategy: string, type: string) {
+  return new Map(list(object(object(review.product_options)[strategy])[type])
+    .map(row => [textValue(row.code), textValue(row.role)] as const)
+    .filter(([code, role]) => code && role));
+}
+
+export function replaceProductChoice(review: Record<string, Json>, strategy: string, type: string,
+  options: Map<string, string>, code: string): ProductSelection | undefined {
+  const role = options.get(code);
+  if (!role) return undefined;
+  const saved = appliedProducts(review);
+  const current = saved?.strategy_id === strategy && saved.portfolio_type === type ? saved.codes : [];
+  return {strategy_id: strategy, portfolio_type: type, codes: [...current.filter(item => options.get(item) !== role), code].sort()};
+}
 
 export function appliedProducts(review: Record<string, Json>): ProductSelection | undefined {
   const value = object(review.product_selection);
