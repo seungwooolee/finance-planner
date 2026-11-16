@@ -55,6 +55,6 @@ test("the retirement demo keeps monthly recommendations and reflects the chosen 
   await expect(metric("6개 상품 운용액 합계")).toHaveText(formatKrw("390000000"));
   await expect(metric("남는 대출잔액")).toHaveText(formatKrw("0"));
   const monthly = page.getByRole("article", {name: "상담용 포트폴리오 검토안"});
-  await expect(monthly.locator("dl > div").filter({hasText: "신규 투자 후보금"}).locator("dd")).toHaveText(formatKrw("0"));
+  await expect(monthly.locator("dl > div").filter({hasText: "신규 투자 후보금"}).locator("dd")).toHaveText(formatKrw("550000"));
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
 });

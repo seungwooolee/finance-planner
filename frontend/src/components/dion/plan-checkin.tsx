@@ -282,7 +282,7 @@ function PlanCheckinMonth({ view, token, caseId, plan, tasks, onEdit, onDraftCre
     {!loaded && <p role="status">{error ? "저장된 기준을 확인할 수 없어 입력·저장을 멈췄어요." : "저장된 채택과 월 기록을 확인 중이에요."}
       {error && <button type="button" className="d-secondary" onClick={() => { setError(""); setLoadAttempt(n => n + 1); }}>저장 기준 다시 불러오기</button>}</p>}
     <p>선택은 이 계산 결과 중 어떤 계획으로 진행할지 기록하는 거예요. 실제 송금·매매·자동이체는 실행되지 않아요.</p>
-    {loaded && (adoption ? <p className="d-notice">현재 선택한 계획: <strong>{planName(adoption.strategy_id)}{adoption.portfolio ? ` · ${portfolioNames[adoption.portfolio.portfolio_type]} 구성` : ''}</strong> · 입력버전 {adoption.input_version}{adoption.run_id !== view.runId && " · 다른 계산 결과에서 선택함"}</p>
+    {loaded && (adoption ? <p className="d-notice">현재 선택한 계획: <strong>{planName(adoption.strategy_id)}{adoption.portfolio ? ` · ${portfolioNames[adoption.portfolio.portfolio_type]} 구성` : ''}</strong> · {adoption.portfolio ? "최종 포트폴리오" : "월별 재무계획"} · 입력버전 {adoption.input_version}{adoption.run_id !== view.runId && " · 다른 계산 결과에서 선택함"}</p>
       : <p className="d-note">{demoMonth ? "가상 월 기록은 월별 재무계획을 채택한 뒤 열려요." : "아직 선택한 계획이 없어요. 계획 없이도 월 기록을 남길 수 있어요."}</p>)}
     {!adoptedHere && <button className="d-primary" disabled={!loaded || busy || portfolioBlocked || view.isCurrent === false || sourceChanged} onClick={() => void adopt()}>{demoMonth ? `${planName(plan)} 월별 계획 채택` : `${planName(plan)}으로 진행할게요`}</button>}
     {sourceChanged && <p className="d-warning">새 입력·계산 초안을 저장했어요. 아래에서 새 초안과 답변을 열어 최신 버전을 확인해 주세요. 기존 채택은 유지돼요.</p>}
@@ -296,7 +296,7 @@ function PlanCheckinMonth({ view, token, caseId, plan, tasks, onEdit, onDraftCre
     {!demoMonth && revision === 0 && <label className="d-field"><span>이 월 기록에 연결할 계획</span><select disabled={!loaded || busy} aria-label="이 월 기록에 연결할 계획" value={bindingChoice} onChange={e => { setDirty(true); setBindingChoice(e.target.value); }}>
       <option value="">채택 없이 일반 기록으로 저장</option>{planHistory.map(a => <option key={a.adoption_id} value={a.adoption_id}>{planName(a.strategy_id)} · 입력버전 {a.input_version} · {a.adopted_at.slice(0, 10)}</option>)}
     </select><small>처음 저장한 연결은 나중에 현재 채택이 바뀌어도 유지돼요. 기록월의 계획이 없으면 다른 월로 대신하지 않아요.</small></label>}
-    <p className="d-help">할 일 옆 계획 금액은 화면에서 보는 안의 첫 계획 월 기준이에요. 기록 월({month})과 계획 월이 다르면 금액을 직접 비교하지 않아요.</p>
+    <p className="d-help">할 일의 새 계획 금액은 기록 월({month})의 재무안에서 가져와요. 저장한 기록은 당시 채택과 실제 입력을 기준으로 보여줘요.</p>
     <p>만원 단위로 입력해요. 빈칸은 &lsquo;아직 입력 안 함&rsquo;, 0은 &lsquo;이번 달 없음&rsquo;이에요. 계획 금액을 실제 금액으로 자동 복사하지 않아요.</p>
     <div className="d-fields">
       {AMOUNTS.map(a => <label key={a.key} className="d-field"><span>{a.label}{a.hint && <small> · {a.hint}</small>}</span>

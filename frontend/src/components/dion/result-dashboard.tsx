@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { Bot, Compass, MessagesSquare, Package, PiggyBank, Target, Wallet } from "lucide-react";
 import { type Json, list, object, textValue } from "@/lib/dion/model";
 import { formatKrw } from "@/lib/dion/money-format";
-import { assetGroup, investmentDisplayMonth, isWon } from "@/lib/dion/result-visual";
+import { allocationStateLabel, assetGroup, investmentDisplayMonth, isWon } from "@/lib/dion/result-visual";
 import { RISK_LABEL, productRole } from "@/lib/dion/product-role";
 import { portfolioNames } from "@/lib/dion/portfolio-comparison";
 import { planName } from "./plan-comparison";
@@ -17,10 +17,12 @@ const positive = (v: unknown) => isWon(v) && BigInt(v) > 0n;
 
 type Coach = { text: string; label: string; run: () => void };
 
-function coach({ portfolio, allocated, generated, onPortfolio, onProducts, onConsult, onAdopt }: {
-  portfolio: string | null; allocated: unknown; generated: boolean;
+function coach({ portfolio, allocated, budget, generated, monthlyAdoption, onPortfolio, onProducts, onConsult, onAdopt }: {
+  portfolio: string | null; allocated: unknown; budget: unknown; generated: boolean; monthlyAdoption?: boolean;
   onPortfolio: () => void; onProducts: () => void; onConsult: () => void; onAdopt: () => void;
 }): Coach {
+  if (monthlyAdoption) return { text: "월별 재무계획을 채택하고 기록할 수 있어요. 보유자산 비교에서 선택한 대출안은 별도예요.", label: "월별 재무계획 채택 보기", run: onAdopt };
+  if (budget === "0") return { text: "이 달의 신규 투자 후보금은 0원이에요. 재무안에서 생활비·목표·보호자금 배정을 확인할 수 있어요.", label: "투자구성 보기", run: onPortfolio };
   if (!portfolio) return { text: "투자구성을 고르면 신규 투자 후보금이 상품으로 나뉘고 상담으로 넘어갈 수 있어요.", label: "투자구성 고르기", run: onPortfolio };
   if (allocated === "0") return { text: "지금 조건으로는 상품에 배분된 금액이 없어요. 상품 정보에서 사유와 보완할 답변을 확인해 주세요.", label: "상품 정보 보기", run: onProducts };
   if (!generated) return { text: `${portfolioNames[portfolio] ?? portfolio} 구성이 정해졌어요. AI 상담에서 궁금한 점을 확인한 뒤 최종안을 만들어요.`, label: "AI 상담 시작", run: onConsult };
@@ -35,8 +37,7 @@ function Kpi({ icon: Icon, label, value, note, tone }: { icon: typeof Wallet; la
   </article>;
 }
 
-function ProductCards({ review, plan }: { review: Row; plan: string }) {
-  const month = investmentDisplayMonth(list(object(list(review.candidates).find(c => c.strategy_id === plan)).rows));
+function ProductCards({ review, month }: { review: Row; month?: Row }) {
   const products = list(review.products);
   const allocations = list(month?.allocations).filter(a => positive(a.review_allocated_krw));
   if (!allocations.length) return null;
@@ -61,27 +62,27 @@ function ProductCards({ review, plan }: { review: Row; plan: string }) {
   </div>;
 }
 
-export function ResultDashboard({ after, row, month, review, plan, portfolio, generated, evaluationOn,
+export function ResultDashboard({ after, row, month, review, plan, portfolio, generated, evaluationOn, period, monthlyAdoption,
   goalPlan, portfolioSummary, returnChart, status, onPortfolio, onProducts, onConsult, onAdopt }: {
-  after: unknown; row?: Row; month?: Row; review: Row; plan: string; portfolio: string | null; generated: boolean; evaluationOn: string;
+  after: unknown; row?: Row; month?: Row; period?: string; monthlyAdoption?: boolean; review: Row; plan: string; portfolio: string | null; generated: boolean; evaluationOn: string;
   goalPlan: ReactNode; portfolioSummary: ReactNode; returnChart: ReactNode; status: ReactNode;
   onPortfolio: () => void; onProducts: () => void; onConsult: () => void; onAdopt: () => void;
 }) {
-  const period = textValue(row?.period);
+  const shownPeriod = period ?? textValue(row?.period);
   const allocated = month?.allocated_total_krw;
-  const next = coach({ portfolio, allocated, generated, onPortfolio, onProducts, onConsult, onAdopt });
+  const next = coach({ portfolio, allocated, budget:row?.new_investment_krw, generated, monthlyAdoption, onPortfolio, onProducts, onConsult, onAdopt });
   const portfolioName = portfolio ? portfolioNames[portfolio] ?? portfolio : null;
   const productCount = list(month?.allocations).filter(a => positive(a.review_allocated_krw)).length;
   return <section className="d-dash" aria-label="결과 한눈에 보기">
     <header className="d-dash-head">
-      <h2>{period ? `${period}, 이렇게 움직이면 돼요` : "이번 달, 이렇게 움직이면 돼요"}</h2>
+      <h2>{shownPeriod ? `${shownPeriod}, 이렇게 움직이면 돼요` : "이번 달, 이렇게 움직이면 돼요"}</h2>
       <p>{evaluationOn || "기준일 확인 필요"} 기준 · {planName(plan)}{portfolioName ? ` · ${portfolioName}` : " · 투자구성 선택 전"} · 검토용 초안</p>
     </header>
 
     <div className="d-dash-kpis" aria-label="이번 달 핵심 숫자">
-      <Kpi icon={Wallet} label="이번 달 남는 돈" value={after} note="저축·투자까지 반영하고 남는 돈"/>
+      <Kpi icon={Wallet} label={period?"진단 기준월에 남는 돈":"이번 달 남는 돈"} value={after} note="저축·투자까지 반영하고 남는 돈"/>
       <Kpi icon={PiggyBank} label="신규 투자 후보금" value={row?.new_investment_krw} tone="accent" note={portfolioName ? `${portfolioName} 기준 · 한 달 납입` : "투자구성 선택 전 · 한 달 납입"}/>
-      <Kpi icon={Package} label="그중 상품에 배분" value={allocated} tone={allocated === "0" ? "warn" : undefined} note={productCount ? `${productCount}개 상품에 나눠 담아요` : portfolio ? "배분된 상품 없음" : "투자구성을 고르면 나뉘어요"}/>
+      <Kpi icon={Package} label="그중 상품에 배분" value={allocated} tone={allocated === "0" ? "warn" : undefined} note={allocationStateLabel(month, month?.scenario_budget_krw ?? row?.new_investment_krw)}/>
       <Kpi icon={Target} label="목표 적립" value={row?.goal_deposits_krw} note="이번 달 목표에 따로 모으는 돈"/>
     </div>
 
@@ -97,7 +98,7 @@ export function ResultDashboard({ after, row, month, review, plan, portfolio, ge
         <button type="button" className="d-secondary" onClick={onPortfolio}>{portfolio ? "다른 구성과 비교" : "투자구성 고르기"}</button>
       </div>
       {portfolioSummary}
-      <ProductCards review={review} plan={plan}/>
+      <ProductCards review={review} month={period ? month : month ?? investmentDisplayMonth(list(list(review.candidates).find(candidate=>candidate.strategy_id===plan)?.rows))}/>
       {goalPlan}
       {productCount > 0 && <p className="d-inline-note">상품은 검토 후보예요. 매수 지시가 아니며, 위험등급·총보수는 공시 기준이에요. 근거는 상품 정보에서 확인해요.</p>}
     </section>

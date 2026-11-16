@@ -4,7 +4,7 @@ import { Json, list, object, textValue } from "@/lib/dion/model";
 import { formatKrw } from "@/lib/dion/money-format";
 import { riskTitles } from "@/lib/dion/investment-review";
 import { policyDateMessage, productEmptyCause } from "@/lib/dion/product-empty";
-import { allocationRemainder, allocationSlices, allocationTargetLabel, assetGroup, bpsLabel, cashWaitingText, investmentDisplayMonth, isWon, shareBps } from "@/lib/dion/result-visual";
+import { allocationRemainder, allocationSlices, allocationStateLabel, allocationTargetLabel, assetGroup, bpsLabel, cashWaitingText, investmentDisplayMonth, isWon, rowForMonth, shareBps } from "@/lib/dion/result-visual";
 import { PortfolioEvidence, type EvidenceAccess } from "./portfolio-evidence";
 import { sourceHref } from "./scheme-evidence";
 import { RISK_LABEL, productRole } from "@/lib/dion/product-role";
@@ -13,7 +13,7 @@ import { ProductComparison, type ProductActions } from "./product-comparison";
 import { productOptionRoles, replaceProductChoice, type ProductSelection } from "@/lib/dion/portfolio-comparison";
 import "./product-info.css";
 
-export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="", evidenceAccess, stale=false, portfolio, choosing=false, onApplyProducts }: { portfolio?: string|null; choosing?:boolean; onApplyProducts?:(value:ProductSelection)=>void; evidenceAccess?: EvidenceAccess; stale?: boolean; review: Record<string, Json>; selectedPlan?: string; evaluationOn?: string; onEdit: (id: string) => void }) {
+export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="", evidenceAccess, stale=false, period, portfolio, choosing=false, onApplyProducts }: { period?: string; portfolio?: string|null; choosing?:boolean; onApplyProducts?:(value:ProductSelection)=>void; evidenceAccess?: EvidenceAccess; stale?: boolean; review: Record<string, Json>; selectedPlan?: string; evaluationOn?: string; onEdit: (id: string) => void }) {
   const empty=productEmptyCause(review,evaluationOn);
   const messages=object(review.reason_messages);
   const products=list(review.products),candidates=list(review.candidates).filter(c=>!selectedPlan||c.strategy_id===selectedPlan);
@@ -49,7 +49,8 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
     {!candidates.length&&review.review_version&&<article className="d-card"><h2>월 투자예산 확인 필요</h2><p>배분할 월 투자예산이 아직 계산되지 않았어요. 미확인 금액을 0원으로 표시하지 않아요.</p><button className="d-secondary" onClick={()=>onEdit("ASSUMPTIONS")}>월 후보에 필요한 확인 →</button></article>}
     {!candidates.length&&review.review_version&&<><ProductComparison products={[]} emptyMessage="월 투자예산이 확인되면 내 조건에 맞는 상품을 볼 수 있어요."/><ProductCandidates review={review}/></>}
     {candidates.map(candidate=>{
-      const months=list(candidate.rows), month=investmentDisplayMonth(months);
+      const months=list(candidate.rows);
+      const month=period?rowForMonth(months,period):investmentDisplayMonth(months);
       const allocations=list(month?.allocations);
       const allocated=allocations.filter(row=>isWon(row.review_allocated_krw)&&BigInt(row.review_allocated_krw)>0n);
       const priority=allocated.map(allocation=>({
@@ -116,7 +117,8 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
         </div>;
       };
       return <div key={String(candidate.strategy_id)} className="d-product-plan">
-        {month&&band(month)}
+        <p className="d-draft-chip">{allocationStateLabel(month)}</p>
+        {month ? band(month) : <p className="d-note">{period ? `${period}의 상품 검토 결과를 확인할 수 없어요.` : "월별 상품 검토 결과를 확인할 수 없어요."}</p>}
         {funded&&(blockers.size>0||missingForMonth.length>0)&&<div className="d-alert-card">
           <strong>{textValue(month?.period)} 상품 검토 조건</strong>
           {[...blockers].filter(code=>code!=="POLICY_DISCLOSURE_STALE"||!empty?.date).map(code=><p key={code}>{reason(code,textValue(month?.period))}</p>)}
@@ -148,7 +150,7 @@ export function ProductAllocation({ review, onEdit, selectedPlan, evaluationOn="
         </article>}
         <ProductCandidates review={review} month={month} actions={actions}
           evidenceAccess={priority.length===0?evidenceAccess:undefined} stale={stale}/>
-        {months.filter(row=>row!==month).map(band)}
+        {!period&&months.filter(row=>row!==month).map(band)}
       </div>;
     })}
   </section>;

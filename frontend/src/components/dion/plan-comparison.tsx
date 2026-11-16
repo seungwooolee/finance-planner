@@ -4,6 +4,7 @@ import { type ReactNode } from 'react';
 import { Check, Scale, ShieldCheck, TrendingUp, TriangleAlert } from 'lucide-react';
 import { MoneyAmount } from "./money-amount";
 import { formatKrw } from '@/lib/dion/money-format';
+import { rowForMonth } from '@/lib/dion/result-visual';
 
 export const planName = (id: unknown) => id === 'STABILITY_FIRST' ? '생활 안정 우선' : '투자 여력 확대';
 export function PlanSelector({ selected, onSelect }: { selected: string; onSelect: (id: string) => void }) {
@@ -41,17 +42,17 @@ function AllocationBar({ row }: { row?: Record<string, Json> }) {
   return <div className="d-stack-bar" aria-hidden="true">{parts.map(([k, label]) => <span key={k} title={`${label} ${formatKrw(row[k])}`} style={{ width: `${Number(BigInt(row[k] as string) * 10000n / sum) / 100}%`, background: SEG_COLORS[k] }}/>)}</div>;
 }
 
-export function PlanComparison({ candidates, selected, onSelect, goals, basis }: { candidates: Record<string, Json>[]; selected: string; onSelect: (id: string) => void; goals?: ReactNode; basis?: { runId?: string; inputVersion: number } }) {
+export function PlanComparison({ candidates, selected, onSelect, goals, basis, period }: { period?: string; candidates: Record<string, Json>[]; selected: string; onSelect: (id: string) => void; goals?: ReactNode; basis?: { runId?: string; inputVersion: number } }) {
   const ordered = ['STABILITY_FIRST', 'INVESTMENT_CAPACITY'].map(id => candidates.find(c => c.strategy_id === id)).filter((c): c is Record<string, Json> => !!c);
-  const first = ordered.map(c => list(c.rows)[0]);
-  const period = textValue(first.find(Boolean)?.period);
-  const samePeriod = first.length === 2 && !!period && textValue(first[0]?.period) === textValue(first[1]?.period);
-  const differs = (key: string) => diffOf(first[0], first[1], key, samePeriod).state === 'DIFF';
-  const diffCell = (key: string) => { const d = diffOf(first[0], first[1], key, samePeriod); return <td className={`d-diff-cell d-diff-${d.state.toLowerCase()}`}>{d.state === 'SAME' ? '같음' : d.state === 'DIFF' ? signed(d.value!) : '비교 보류'}</td>; };
+  const visibleRows = ordered.map(c => period ? rowForMonth(list(c.rows), period) : list(c.rows)[0]);
+  const shownPeriod = period ?? textValue(visibleRows.find(Boolean)?.period);
+  const samePeriod = visibleRows.length === 2 && !!shownPeriod && visibleRows.every(row => row?.period === shownPeriod);
+  const differs = (key: string) => diffOf(visibleRows[0], visibleRows[1], key, samePeriod).state === 'DIFF';
+  const diffCell = (key: string) => { const d = diffOf(visibleRows[0], visibleRows[1], key, samePeriod); return <td className={`d-diff-cell d-diff-${d.state.toLowerCase()}`}>{d.state === 'SAME' ? '같음' : d.state === 'DIFF' ? signed(d.value!) : '비교 보류'}</td>; };
   const pair = ordered.length === 2;
   return <section aria-label="두 재무안 비교" className="d-plan-compare" data-run-id={basis?.runId} data-input-version={basis?.inputVersion}>
     <div className="d-plan-choices" role="group" aria-label="비교할 재무안">{ordered.map((c, i) => {
-      const id = textValue(c.strategy_id), copy = PLAN_COPY[id], Icon = copy?.icon ?? Scale, on = id === selected, r = first[i];
+      const id = textValue(c.strategy_id), copy = PLAN_COPY[id], Icon = copy?.icon ?? Scale, on = id === selected, r = visibleRows[i];
       return <button key={id} type="button" className={`d-plan-choice ${on ? 'on' : ''}`} aria-pressed={on} aria-label={planName(id)} aria-describedby={`plan-choice-${id}`} onClick={() => onSelect(id)}>
         <span className="d-plan-choice-top"><span className="d-plan-icon" aria-hidden="true"><Icon size={22}/></span><span className="d-plan-choice-name">{planName(id)}</span><span className="d-plan-check" aria-hidden="true">{on ? <Check size={16}/> : null}</span></span>
         <span id={`plan-choice-${id}`} className="d-plan-choice-body">
@@ -61,19 +62,19 @@ export function PlanComparison({ candidates, selected, onSelect, goals, basis }:
         </span>
       </button>;
     })}</div>
-    {first.length > 0 && <article className="d-card d-plan-diff" aria-label="첫 달 납입안 비교">
-      <div className="d-card-head"><h2><Scale size={20} aria-hidden="true"/> 남는 돈을 이렇게 나눠요</h2></div>
-      <div className="d-plan-bars">{ordered.map((c, i) => <div key={textValue(c.strategy_id)} className={c.strategy_id === selected ? 'on' : undefined}><span>{planName(c.strategy_id)}</span><AllocationBar row={first[i]}/></div>)}</div>
+    {visibleRows.length > 0 && <article className="d-card d-plan-diff" aria-label={period ? `${period} 납입안 비교` : "첫 달 납입안 비교"}>
+      <div className="d-card-head"><h2><Scale size={20} aria-hidden="true"/> {period ? `${period} 자금 배정 비교` : "남는 돈을 이렇게 나눠요"}</h2></div>
+      <div className="d-plan-bars">{ordered.map((c, i) => <div key={textValue(c.strategy_id)} className={c.strategy_id === selected ? 'on' : undefined}><span>{planName(c.strategy_id)}</span><AllocationBar row={visibleRows[i]}/></div>)}</div>
       <ul className="d-legend-row">{FLOW_ROWS.map(([k, label]) => <li key={k}><i style={{ background: SEG_COLORS[k] }} aria-hidden="true"/>{label}</li>)}</ul>
       <div className="d-table-wrap"><table>
         <caption>막대와 같은 금액 · 차이 열은 투자 여력 확대 − 생활 안정 우선</caption>
         <thead><tr><th scope="col">항목</th>{ordered.map(c => <th scope="col" key={textValue(c.strategy_id)} className={c.strategy_id === selected ? 'd-col-selected' : undefined}>{planName(c.strategy_id)}{c.strategy_id === selected && <small>화면에서 보는 중</small>}</th>)}{pair && <th scope="col">차이<small>확대 − 안정</small></th>}</tr></thead>
         <tbody>
           <tr className="d-row-group"><th colSpan={ordered.length + (pair ? 2 : 1)} scope="colgroup">첫 계획 월 납입·배정 · 한 달 흐름</th></tr>
-          {FLOW_ROWS.map(([key, label]) => <tr key={key} className={differs(key) ? 'd-row-diff' : undefined}><th scope="row"><i className="d-swatch" style={{ background: SEG_COLORS[key] }} aria-hidden="true"/>{label}{differs(key) && <span className="d-diff-tag">차이</span>}</th>{first.map((r, i) => <td key={i}>{formatKrw(r?.[key])}</td>)}{pair && diffCell(key)}</tr>)}
+          {FLOW_ROWS.map(([key, label]) => <tr key={key} className={differs(key) ? 'd-row-diff' : undefined}><th scope="row"><i className="d-swatch" style={{ background: SEG_COLORS[key] }} aria-hidden="true"/>{label}{differs(key) && <span className="d-diff-tag">차이</span>}</th>{visibleRows.map((r, i) => <td key={i}>{formatKrw(r?.[key])}</td>)}{pair && diffCell(key)}</tr>)}
           <tr className="d-row-group"><th colSpan={ordered.length + (pair ? 2 : 1)} scope="colgroup">월말 보유 현금 · 잔액이며 납입액이 아니에요</th></tr>
-          <tr><th scope="row">월말 현금 합계</th>{first.map((r, i) => <td key={i}>{formatKrw(r?.closing_cash_krw)}</td>)}{pair && diffCell('closing_cash_krw')}</tr>
-          <tr><th scope="row">그중 목적 미배정</th>{first.map((r, i) => <td key={i}>{formatKrw(object(r?.closing_earmarks_krw).free)}</td>)}{pair && <td className="d-diff-cell">—</td>}</tr>
+          <tr><th scope="row">월말 현금 합계</th>{visibleRows.map((r, i) => <td key={i}>{formatKrw(r?.closing_cash_krw)}</td>)}{pair && diffCell('closing_cash_krw')}</tr>
+          <tr><th scope="row">그중 목적 미배정</th>{visibleRows.map((r, i) => <td key={i}>{formatKrw(object(r?.closing_earmarks_krw).free)}</td>)}{pair && <td className="d-diff-cell">—</td>}</tr>
         </tbody>
       </table></div>
       {pair && !samePeriod && <p className="d-inline-note">두 안의 비교 월이 같지 않거나 확인되지 않아 금액 차이를 표시하지 않았어요.</p>}

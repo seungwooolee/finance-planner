@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { Json, list, object, textValue } from "@/lib/dion/model";
 import { MoneyAmount } from "./money-amount";
 import { formatKrw } from "@/lib/dion/money-format";
-import { allocationRemainder, allocationSlices, allocationTargetLabel, bpsLabel, investmentDisplayMonth, isWon, shareBps } from "@/lib/dion/result-visual";
+import { allocationRemainder, allocationSlices, allocationStateLabel, allocationTargetLabel, bpsLabel, investmentDisplayMonth, isWon, shareBps } from "@/lib/dion/result-visual";
 import { Landmark, Package, PackageOpen, PiggyBank } from "lucide-react";
 import { planName } from "./plan-comparison";
 import { portfolioNames } from "@/lib/dion/portfolio-comparison";
@@ -42,11 +42,17 @@ export function ResultTiles({ row, month, totalAssets }: { row?: Record<string, 
 }
 
 /** Screen choice, saved comparison and adoption can describe different versions. */
-export function ChoiceStatus({ plan, portfolio, draft, stored, adoption, runId, evaluationOn, planMonth, recordMonth, onJump }: {
+export function ChoiceStatus({ plan, portfolio, draft, stored, adoption, runId, evaluationOn, planMonth, viewingMonth, recordMonth, adoptionScope, readyToAdopt, onJump }: {
   plan: string; portfolio: string | null; draft: { strategy: string; portfolio: string; revision: number; current: boolean } | null;
-  stored: boolean; adoption: AdoptionView | null; runId?: string; evaluationOn: string; planMonth: string; recordMonth: string; onJump: () => void;
+  stored: boolean; adoption: AdoptionView | null; runId?: string; evaluationOn: string; planMonth: string; viewingMonth?: string;
+  recordMonth: string; adoptionScope?: string; readyToAdopt?: boolean; onJump: () => void;
 }) {
   const adopted = adoption?.state === "ADOPTED" ? adoption.adoption : null;
+  const adoptedKind = adopted?.portfolio ? "최종 포트폴리오" : "월별 재무계획";
+  const pending = !stored ? (adoptionScope ? "저장 필요" : "저장 후 채택 가능")
+    : !adoption ? "확인 중"
+    : adoption.state === "ERROR" ? "확인할 수 없음"
+    : readyToAdopt ? "채택 가능" : "채택한 계획 없음";
   return <section className="d-choice-status" aria-label="선택·저장·채택·실행 상태">
     <div><span>화면에서 보는 초안</span><strong>{planName(plan)}{portfolio && " · " + portfolioNames[portfolio]}</strong></div>
     <div><span>저장한 비교 초안</span>
@@ -54,13 +60,15 @@ export function ChoiceStatus({ plan, portfolio, draft, stored, adoption, runId, 
       {draft && <small>저장 {draft.revision}회차{!draft.current && " · 이전 입력"}{(draft.strategy !== plan || draft.portfolio !== portfolio) && " · 화면 초안과 다름"}</small>}
     </div>
     <div><span>채택한 계획</span>
-      <strong>{adopted ? planName(adopted.strategy_id) + (adopted.portfolio ? " · " + portfolioNames[adopted.portfolio.portfolio_type] : "") : !stored ? "저장 후 채택 가능" : !adoption ? "확인 중" : adoption.state === "ERROR" ? "확인할 수 없음" : "채택한 계획 없음"}</strong>
-      {adopted && <small>입력버전 {adopted.input_version}{adopted.run_id !== runId && " · 다른 계산 결과"}{adoption?.state === "ADOPTED" && adoption.isCurrent === false && " · 이전 입력"}</small>}
+      <strong>{adopted ? planName(adopted.strategy_id) + (adopted.portfolio ? " · " + portfolioNames[adopted.portfolio.portfolio_type] : "") : pending}</strong>
+      {!adopted&&adoptionScope&&<small>채택 범위 · {adoptionScope}{stored&&readyToAdopt===false&&adoption?.state==="NONE"?" · 채택 조건 확인 필요":""}</small>}
+      {adopted && <small>{adoptedKind} · 입력버전 {adopted.input_version}{adopted.run_id !== runId && " · 다른 계산 결과"}{adoption?.state === "ADOPTED" && adoption.isCurrent === false && " · 이전 입력"}</small>}
     </div>
     <div><span>DION에서 실행한 금융거래</span><strong>없음</strong></div>
-    <p>계산 기준일 {evaluationOn || "확인 필요"} · 첫 계획 월 {planMonth || "확인 필요"} · 기록 월 {monthLabel(recordMonth)}
-      {planMonth && planMonth !== recordMonth && " · 계획 월과 기록 월이 달라 금액을 직접 비교하지 않아요."}</p>
-    <button type="button" className="d-secondary" onClick={onJump}>첫 계획 월 할 일로 이동</button>
+    <p>계산 기준일 {evaluationOn || "확인 필요"} · 첫 계획 월 {planMonth || "확인 필요"}
+      {viewingMonth&&` · 결과 조회 월 ${viewingMonth}`} · 기록 월 {monthLabel(recordMonth)}
+      {(viewingMonth??planMonth) && (viewingMonth??planMonth) !== recordMonth && " · 조회 월과 기록 월은 각각 표시해요."}</p>
+    <button type="button" className="d-secondary" onClick={onJump}>{viewingMonth&&viewingMonth!==planMonth?"조회 월 할 일로 이동":"첫 계획 월 할 일로 이동"}</button>
   </section>;
 }
 
@@ -78,32 +86,36 @@ export function IncomeBar({ row }: { row?: Record<string, Json> }) {
   </article>;
 }
 
-export function FinalPortfolio({ plan, row, review, assetReference, portfolio=null, generated=false }: { plan: string; row?: Record<string, Json>; review: Record<string, Json>; assetReference?: ReactNode; portfolio?: string | null; generated?: boolean }) {
-  const period = textValue(row?.period);
+export function FinalPortfolio({ plan, row, month: lookupMonth, period, review, assetReference, portfolio=null, generated=false }: {
+  plan: string; row?: Record<string, Json>; month?: Record<string, Json>; period?: string; review: Record<string, Json>;
+  assetReference?: ReactNode; portfolio?: string | null; generated?: boolean;
+}) {
+  const shownPeriod = period ?? textValue(row?.period);
   const months = list(object(list(review.candidates).find(c => c.strategy_id === plan)).rows);
-  const firstMonth = months[0];
-  const month = investmentDisplayMonth(months);
+  const month = period ? lookupMonth : investmentDisplayMonth(months);
+  const ledgerMonth = period ? lookupMonth : months[0];
   const allocations = list(month?.allocations).filter(a => isWon(a.review_allocated_krw) && BigInt(a.review_allocated_krw) > 0n);
   const products = list(review.products);
   const budget = month?.scenario_budget_krw;
-  if (!row) return null;
+  if (!row && !period) return null;
   const slices = allocationSlices(allocations, products, month);
   const target = allocationTargetLabel(month);
   return <article className="d-card d-final" aria-label={generated ? "최종 포트폴리오 정리" : "상담용 포트폴리오 검토안"}>
-    <div className="d-card-head"><div><span className="d-pill">{generated ? '서버 생성 완료 · 계획 채택은 별도' : portfolio ? '상담에 가져갈 투자구성 검토안' : '기본 계산 결과 · 투자구성 선택 전'}</span><h2>{generated ? '최종 포트폴리오' : '포트폴리오 검토안'} · {planName(plan)}{portfolio ? ` · ${portfolioNames[portfolio]}` : ''}</h2></div><small>{period ? `${period} 기준` : ""}</small></div>
+    <div className="d-card-head"><div><span className="d-pill">{generated ? '서버 생성 완료 · 계획 채택은 별도' : portfolio ? '상담에 가져갈 투자구성 검토안' : '기본 계산 결과 · 투자구성 선택 전'}</span><h2>{generated ? '최종 포트폴리오' : '포트폴리오 검토안'} · {planName(plan)}{portfolio ? ` · ${portfolioNames[portfolio]}` : ''}</h2></div><small>{shownPeriod ? `${shownPeriod} 기준` : ""}</small></div>
     <div className="d-final-grid">
       <div>
-        <h3>{month && month !== firstMonth ? textValue(month.period) + " " : ""}투자 후보금의 상품별 배분</h3>
+        <h3>{month && (period || month !== months[0]) ? textValue(month.period) + " " : ""}투자 후보금의 상품별 배분</h3>
+        <p className="d-draft-chip">{allocationStateLabel(month, month?.scenario_budget_krw ?? row?.new_investment_krw)}</p>
         {target && <p className="d-inline-note">목표 비중 · {target}</p>}
         {allocations.length > 0 ? <div className="d-final-chart">
           <Donut slices={slices} total={budget} size={150} center={<><small>후보금</small><strong>{formatKrw(budget)}</strong></>} />
           <DonutLegend slices={slices} total={budget} />
-        </div> : <p className="d-alert-card">{review.review_version ? "현재 조건으로 배분된 상품이 없어요. 상품 정보 탭에서 사유와 보완할 답변을 확인해주세요." : "상품 검토 결과가 없어요. 현재 입력으로 다시 계산하면 확인할 수 있어요."}</p>}
+        </div> : <p className="d-alert-card">{row?.new_investment_krw==="0" ? "이 달에는 신규 투자 후보금이 없어요." : review.review_version ? "상품 정보에서 이 달의 검토 조건과 배분 내역을 확인할 수 있어요." : "상품 검토 결과를 보려면 현재 입력으로 다시 계산해 주세요."}</p>}
       </div>
       <div>
         <h3>이번 달 자금 배정</h3>
-        <dl className="d-ledger">{ITEMS.map(([key, label]) => <div key={key}><dt>{label}</dt><dd>{formatKrw(row[key])}</dd></div>)}
-          {isWon(firstMonth?.allocated_total_krw) && <><div><dt>상품에 배분한 금액</dt><dd>{formatKrw(firstMonth.allocated_total_krw)}</dd></div>{allocationRemainder(firstMonth).map(part => <div key={part.key}><dt>{part.label}</dt><dd>{formatKrw(part.value)}</dd></div>)}</>}</dl>
+        <dl className="d-ledger">{ITEMS.map(([key, label]) => <div key={key}><dt>{label}</dt><dd>{formatKrw(row?.[key])}</dd></div>)}
+          {isWon(ledgerMonth?.allocated_total_krw) && <><div><dt>상품에 배분한 금액</dt><dd>{formatKrw(ledgerMonth.allocated_total_krw)}</dd></div>{allocationRemainder(ledgerMonth).map(part => <div key={part.key}><dt>{part.label}</dt><dd>{formatKrw(part.value)}</dd></div>)}</>}</dl>
       </div>
     </div>
     {assetReference && <details className="d-fold"><summary>보유자산 참고 통계 다시 보기</summary>{assetReference}</details>}

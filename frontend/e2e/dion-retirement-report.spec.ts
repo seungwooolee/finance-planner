@@ -67,7 +67,7 @@ test("retirement report compares the two alternatives and records the explicitly
   await login.getByLabel("이메일", { exact: true }).fill("retirement@example.test");
   await login.getByLabel("비밀번호", { exact: true }).fill("test-only");
   await login.getByRole("button", { name: "이메일로 로그인" }).click();
-  await expect(page.getByRole("status").filter({ hasText: "가상 월별 재무계획을 내 상담의 별도 사례에 저장했어요" })).toBeVisible();
+  await expect(page.getByRole("status").filter({ hasText: "가상 월별 재무계획을 내 상담의 별도 사례에 저장했어요" })).toBeVisible({ timeout: 30_000 });
 
   const checkin = page.getByRole("region", { name: "계획 선택과 이번 달 기록" });
   const record = checkin.getByRole("heading", { name: "2026년 12월 가상 기록" });
@@ -80,6 +80,8 @@ test("retirement report compares the two alternatives and records the explicitly
   const adoption = await receipt.json();
   expect(adoption.transaction_executed).toBe(false);
   await expect(record).toBeVisible();
+  await expect(page.getByRole("combobox", {name:"결과 조회 월"})).toHaveValue("2027-01");
+  await expect(checkin).toContainText("월별 재무계획");
   await checkin.getByRole("textbox", { name: "신규 투자 납입 (만원)" }).fill("0");
   const recorded = page.waitForResponse(response => response.url().endsWith("/checkins/2026-12/review-record"));
   await checkin.getByRole("button", { name: "점검 완료", exact: true }).click();

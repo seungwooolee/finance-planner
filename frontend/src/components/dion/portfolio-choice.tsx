@@ -2,7 +2,7 @@
 import { Document, Json, fieldValue, list, object, textValue } from '@/lib/dion/model';
 import { MoneyAmount } from "./money-amount";
 import { formatKrw } from '@/lib/dion/money-format';
-import { allocationRemainder, allocationSlices, allocationTargetLabel, allocationTargetSlices, investmentDisplayMonth, isWon } from '@/lib/dion/result-visual';
+import { allocationRemainder, allocationSlices, allocationTargetLabel, allocationTargetSlices, allocationStateLabel, investmentDisplayMonth, isWon, rowForMonth } from '@/lib/dion/result-visual';
 import { PlanSelector } from './plan-comparison';
 import { Donut, DonutLegend } from './donut';
 import type { ReactNode } from 'react';
@@ -19,8 +19,8 @@ const TYPES: Record<string, [string, string, string, string]> = {
   RETURN: ['위험추구형', '허용 범위에서 수익 추구', '현재 기준에서 수익 추구 비중을 높인 구성을 비교해요.', '손실 허용·기간·상품 조건에 따라 배분이 제한돼요.'],
 };
 
-export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPlan, chosen, preview, onChoose, onPreview, onProducts, productPicker, onRecalculate, onEdit, blocked=false }: {
-  doc: Document | null; review: Record<string, Json>; flow: Record<string, Json>; planRow?: Record<string, Json>;
+export function PortfolioChoice({ doc, review, flow, planRow, period, selectedPlan, onPlan, chosen, preview, onChoose, onPreview, onProducts, productPicker, onRecalculate, onEdit, blocked=false }: {
+  doc: Document | null; review: Record<string, Json>; flow: Record<string, Json>; planRow?: Record<string, Json>; period?: string;
   selectedPlan: string; onPlan: (id: string) => void; chosen: string | null; preview: string | null;
   onChoose: (id: string) => void; onPreview: (id: string) => void; onProducts: () => void;
   productPicker?: ReactNode; onRecalculate?: () => void; onEdit: (id: string) => void; blocked?: boolean;
@@ -34,9 +34,9 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
   const profile = PREFS.find(([code]) => code === (relative ? typeInfo.customer_preference : preference));
   const profileName = profile ? `${profile[1]} ${profile[2]}` : '투자 선호 확인 후';
   const rows = list(list(review.candidates).find(c => c.strategy_id === selectedPlan)?.rows);
-  const month = investmentDisplayMonth(rows);
+  const month = period ? rowForMonth(rows, period) : investmentDisplayMonth(rows);
   const firstViews = object(rows[0]?.portfolio_type_views);
-  const laterMonth = !!month && month !== rows[0];
+  const laterMonth = !!month && month !== rows[0] && rows[0]?.scenario_budget_krw === "0";
   const monthLabel = textValue(month?.period);
   const products = list(review.products);
   const messages: Record<string, Json> = {
@@ -53,7 +53,7 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
   };
   const order = Object.keys(TYPES);
   const showRetirementReferences = doc && fieldValue(doc, 'LIFE-01', 'life_stage_primary') === 'LC_RETIRED'
-    && !order.some(id => list(object(views[id]).allocations).some(allocation =>
+    && month?.scenario_budget_krw !== "0" && !order.some(id => list(object(views[id]).allocations).some(allocation =>
       isWon(allocation.review_allocated_krw) && BigInt(allocation.review_allocated_krw) > 0n));
   const hasRiskHold = order.some(id => {
     const amount = object(object(views[id]).held_breakdown_krw).risk_limits;
@@ -87,10 +87,9 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
     </article>
     <div className="d-kpis d-kpis-3">
       <article className="d-kpi"><span>{monthLabel ? `${monthLabel} 신규 투자 후보금` : '신규 투자 후보금'}</span><strong><MoneyAmount value={month?.scenario_budget_krw ?? planRow?.new_investment_krw}/></strong><small>목표·보호자금 배정 후</small></article>
-      <article className="d-kpi"><span>생활비·상환 후 남는 돈</span><strong><MoneyAmount value={surplus}/></strong><small>월 기준 · 투자 권장액 아님</small></article>
+      <article className="d-kpi"><span>생활비·상환 후 남는 돈</span><strong><MoneyAmount value={surplus}/></strong><small>진단 기준월 · 투자 권장액 아님</small></article>
       <article className="d-kpi d-kpi-soft"><span>기존 저축·투자 납입</span><strong><MoneyAmount value={flow.existing_cash_contributions_krw}/></strong><small>바꾸지 않고 별도로 유지해요</small></article>
     </div>
-    {showRetirementReferences && <RetirementProductComparison review={review} onEdit={onEdit}/>}
     <article className="d-card d-portfolio-section" aria-label="포트폴리오 검토 유형">
       <div className="d-card-head"><div><h2>{commonTargets ? '공통 기준으로 투자구성 비교' : relative ? `${profileName} 안에서 투자구성 선택` : '저장 당시의 투자구성 비교'}</h2><p>{commonTargets ? '투자 선호를 확인하기 전에는 공통 목표 비중을 볼 수 있어요.' : relative ? '내 기준을 유지하면서 안정·중립·위험추구 중 운용 방향을 골라보세요.' : '이전 방식으로 계산된 결과예요. 내 기준 안의 세 가지 구성을 보려면 다시 계산해주세요.'}</p></div><PlanSelector selected={selectedPlan} onSelect={onPlan} /></div>
       {laterMonth && <p className="d-inline-note">첫 계획 월({textValue(rows[0]?.period)})의 신규 투자 후보금은 0원이에요. {monthLabel} 후보금으로 구성을 비교해요.</p>}
@@ -115,6 +114,7 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
           {mine && <span className="d-mine-badge">{relative ? '내 기준의 기본 구성' : '저장 당시 성향 기준'}</span>}
           <div className="d-card-head"><span className="d-pill">안 {String(i + 1).padStart(2, '0')}</span></div>
           <h3>{title}</h3><p className="d-type-sub">{subtitle}</p>
+          <p className="d-draft-chip">{allocationStateLabel(view, month?.scenario_budget_krw ?? planRow?.new_investment_krw)}</p>
           {relative && !commonTargets && <p className="d-type-line">{profileName} 기준의 {title} 구성</p>}
           {target && targetSlices.length === 0 && <p className="d-type-line"><b>목표 비중</b> {target}</p>}
           {targetSlices.length > 0 ? <>
@@ -132,7 +132,7 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
           {view.cash_only === true && <p className="d-inline-note">현재 성향의 정책에 따라 상품 배분 없이 후보금 전액을 현금 대기자금으로 표시해요. 자금 이동이나 현금 보유 확정은 아니에요.</p>}
           <details className="d-fold d-composition-fold">
             <summary>{title} 상세 보기 · 상품·금액·위험</summary>
-            <PortfolioChoiceDetail rows={rows} products={products} type={id} messages={messages} target={comparisonTargets[id]}/>
+            <PortfolioChoiceDetail rows={period ? (month ? [month] : []) : rows} products={products} type={id} messages={messages} target={comparisonTargets[id]}/>
           </details>
           <button type="button" data-portfolio-apply={id} className={displayed === id ? 'd-primary' : 'd-secondary'}
             aria-pressed={displayed === id} aria-describedby={`portfolio-state-${id}`}
@@ -153,5 +153,6 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
         <button className="d-secondary" type="button" onClick={onProducts}>상품 정보 자세히 보기 →</button>
       </section>}
     </article>
+    {showRetirementReferences && <RetirementProductComparison review={review} onEdit={onEdit}/>}
   </>;
 }

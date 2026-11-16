@@ -32,8 +32,8 @@ const series = [
   {key:"cumulative_gain_krw", label:"누적 평가손익", color:"#9b4c11", dash:"2 5"},
 ] as const;
 
-export function InvestmentReturnChart({view, plan, portfolio, revision, blocked, token, caseId, onChooseProducts}: {
-  view: ViewResult; plan: string; portfolio: string | null; revision: number; blocked: boolean; token: string | null; caseId: string;
+export function InvestmentReturnChart({view, plan, portfolio, revision, blocked, token, caseId, viewingMonth, onChooseProducts}: {
+  view: ViewResult; plan: string; portfolio: string | null; revision: number; blocked: boolean; token: string | null; caseId: string; viewingMonth?: string;
   onChooseProducts?: () => void;
 }) {
   const id = useId();
@@ -165,6 +165,8 @@ export function InvestmentReturnChart({view, plan, portfolio, revision, blocked,
     <div className="d-card-head"><h2 id={id}>투자 기대수익률</h2></div>
     <p>{planName(plan)}{portfolio ? ` · ${portfolioNames[portfolio]}` : ""}</p>
     <p className="d-inline-note">선택한 투자안의 월 배정액과 입력한 원화 수익률 가정을 바탕으로 전망을 계산해요. 기존 보유자산·현금 대기자금·인출은 계산에서 제외해요.</p>
+    {viewingMonth&&first?.period&&first.period!==viewingMonth&&
+      <p className="d-note">전망의 배분 기준 월은 {textValue(first.period)}이에요. 결과 조회 월은 {viewingMonth}이에요.</p>}
     {!canForecast ? <div className="d-note"><p>{!portfolio ? "투자구성과 상품을 고르면 전망을 계산할 수 있어요."
       : blocked ? "최신 결과와 투자구성을 확인한 뒤 전망을 계산할 수 있어요."
       : !linked ? "현재 계산과 연결된 투자구성 정보가 없어요. 최신 결과를 다시 열어주세요."
