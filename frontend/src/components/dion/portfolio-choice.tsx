@@ -6,6 +6,7 @@ import { allocationRemainder, allocationSlices, allocationTargetLabel, allocatio
 import { PlanSelector } from './plan-comparison';
 import { Donut, DonutLegend } from './donut';
 import { PortfolioChoiceDetail } from './portfolio-choice-detail';
+import { RetirementProductComparison } from './retirement-product-comparison';
 
 const PREFS: [string, string, string][] = [
   ['PREF_STABILITY', 'P1', '안정형'], ['PREF_LEAN_STABILITY', 'P2', '안정추구형'], ['PREF_BALANCED', 'P3', '중립형'],
@@ -50,6 +51,9 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
     return {...view, target_mix_bps: view.target_mix_bps ?? comparisonTargets[id]};
   };
   const order = Object.keys(TYPES);
+  const showRetirementReferences = doc && fieldValue(doc, 'LIFE-01', 'life_stage_primary') === 'LC_RETIRED'
+    && !order.some(id => list(object(views[id]).allocations).some(allocation =>
+      isWon(allocation.review_allocated_krw) && BigInt(allocation.review_allocated_krw) > 0n));
   const hasRiskHold = order.some(id => {
     const amount = object(object(views[id]).held_breakdown_krw).risk_limits;
     return isWon(amount) && BigInt(amount) > 0n;
@@ -85,6 +89,7 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
       <article className="d-kpi"><span>생활비·상환 후 남는 돈</span><strong><MoneyAmount value={surplus}/></strong><small>월 기준 · 투자 권장액 아님</small></article>
       <article className="d-kpi d-kpi-soft"><span>기존 저축·투자 납입</span><strong><MoneyAmount value={flow.existing_cash_contributions_krw}/></strong><small>바꾸지 않고 별도로 유지해요</small></article>
     </div>
+    {showRetirementReferences && <RetirementProductComparison review={review} onEdit={onEdit}/>}
     <article className="d-card d-portfolio-section" aria-label="포트폴리오 검토 유형">
       <div className="d-card-head"><div><h2>{commonTargets ? '공통 기준으로 투자구성 비교' : relative ? `${profileName} 안에서 투자구성 선택` : '저장 당시의 투자구성 비교'}</h2><p>{commonTargets ? '투자 선호를 확인하기 전에는 공통 목표 비중을 볼 수 있어요.' : relative ? '내 기준을 유지하면서 안정·중립·위험추구 중 운용 방향을 골라보세요.' : '이전 방식으로 계산된 결과예요. 내 기준 안의 세 가지 구성을 보려면 다시 계산해주세요.'}</p></div><PlanSelector selected={selectedPlan} onSelect={onPlan} /></div>
       {laterMonth && <p className="d-inline-note">첫 계획 월({textValue(rows[0]?.period)})의 신규 투자 후보금은 0원이에요. {monthLabel} 후보금으로 구성을 비교해요.</p>}

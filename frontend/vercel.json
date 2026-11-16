@@ -4,6 +4,7 @@
     "deploymentEnabled": {
       "codex/retirement-report-demo-alignment-20261116": false,
       "codex/portfolio-product-selection-20261116": false,
+      "codex/retirement-product-comparison-20261116": false,
       "codex/portfolio-choice-year-one-20261116": false,
       "feat/product-info-design-20261116": false,
       "feat/result-dashboard-20261116": false,
