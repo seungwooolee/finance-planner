@@ -73,7 +73,7 @@ function metricValue(out:Record<string,Json>,key:string) {
 function Metric({title,value,note,icon:Icon}:{title:string;value:unknown;note?:string;icon?:LucideIcon}) {return <article className="d-metric">{Icon&&<i className="d-metric-icon" aria-hidden="true"><Icon size={18}/></i>}<span>{title}</span><strong><MoneyAmount value={value}/></strong>{note&&<small>{note}</small>}</article>;}
 function Missing({row,title}:{row:Record<string,Json>;title:string}) {return <div className="d-note"><strong>{title} · {stateLabels[textValue(row.calc_state)]??"확인 필요"}</strong><p>{row.calc_state==="NOT_SUPPORTED"?"이 결과의 계산은 아직 지원하지 않아요. 입력은 보관하고 다른 재무 결과를 유지해요.":row.calc_state==="NOT_IMPLEMENTED"?"이 계산은 준비 중이에요. 추가 입력으로 완료되는 단계가 아니에요.":row.calc_state==="NOT_APPLICABLE"?"현재 확인한 답변에는 해당하는 항목이 없어요.":row.calc_state==="INVALID_INPUT"?"금액·기간·소유 관계가 맞지 않아 계산을 보류했어요. 관련 답변을 확인해주세요.":"추가 확인 필요 · 관련 답변과 계산에 필요한 가정을 확인해주세요."}</p></div>;}
 
-export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalculate,checkin,technical=false,token=null,caseId="",evidenceAccess,actionFlow,consultationTarget,closeConsultation,onOpenRun,onReadRun,onReviewResume,calcBar,recordMonth,onAskResult,chatHandoff,onApplyProducts,applyingProducts,onSaveProducts,retirementDemo}:{retirementDemo?:{saving:boolean;saveMonthly?:(plan:string)=>void};onApplyProducts?:(selection:ProductSelection)=>void;applyingProducts?:boolean;onSaveProducts?:(selection:ProductSelection)=>void;onAskResult?:()=>void;chatHandoff?:ChatReviewHandoff;calcBar?:ReactNode;recordMonth?:string;onReadRun?:(id:string)=>Promise<void>;onOpenRun?:(id:string)=>Promise<void>;onReviewResume?:(review:PortfolioReview)=>void;actionFlow?: ActionFlow;consultationTarget?: HTMLDivElement|null;closeConsultation?: ()=>void;evidenceAccess?: EvidenceAccess;technical?:boolean;onRecalculate?:()=>void;view:ViewResult;deep:boolean;tab:number;setTab:(n:number)=>void;stale:boolean;onEdit:(id:string)=>void;checkin?:(plan:string,tasks:CheckinTask[],portfolioSelection:AppliedPortfolioRef|null,portfolioBlocked:boolean,onAdoption:(value:AdoptionView)=>void)=>ReactNode;token?:string|null;caseId?:string}) {
+export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalculate,checkin,technical=false,token=null,caseId="",evidenceAccess,actionFlow,consultationTarget,closeConsultation,onOpenRun,onReadRun,onReviewResume,calcBar,recordMonth,onAskResult,chatHandoff,onApplyProducts,applyingProducts,onSaveProducts,retirementDemo}:{retirementDemo?:{saving:boolean;investmentAssumption?:string;saveMonthly?:(plan:string)=>void};onApplyProducts?:(selection:ProductSelection)=>void;applyingProducts?:boolean;onSaveProducts?:(selection:ProductSelection)=>void;onAskResult?:()=>void;chatHandoff?:ChatReviewHandoff;calcBar?:ReactNode;recordMonth?:string;onReadRun?:(id:string)=>Promise<void>;onOpenRun?:(id:string)=>Promise<void>;onReviewResume?:(review:PortfolioReview)=>void;actionFlow?: ActionFlow;consultationTarget?: HTMLDivElement|null;closeConsultation?: ()=>void;evidenceAccess?: EvidenceAccess;technical?:boolean;onRecalculate?:()=>void;view:ViewResult;deep:boolean;tab:number;setTab:(n:number)=>void;stale:boolean;onEdit:(id:string)=>void;checkin?:(plan:string,tasks:CheckinTask[],portfolioSelection:AppliedPortfolioRef|null,portfolioBlocked:boolean,onAdoption:(value:AdoptionView)=>void)=>ReactNode;token?:string|null;caseId?:string}) {
   const heading=useRef<HTMLHeadingElement>(null);
   const productReview=object(object(view.result.results)["OUT-06"]);
   const productSelection=appliedProducts(productReview);
@@ -138,11 +138,19 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
   const selectedRow=list(selectedCandidate?.rows)[0];
   const monthlyCandidateReady=!!selectedRow&&/^(CALCULATED|PARTIAL)/.test(textValue(selectedCandidate?.calc_state))&&!stale;
   const canAdoptDemo=!!retirementDemo&&monthlyCandidateReady&&view.isCurrent===true&&["SUCCEEDED","PARTIAL"].includes(view.runStatus??"");
-  const selectedReview=comparisonReview(visible("OUT-06"),selectedPlan,selectedPortfolio);
-  const previewReview=previewType ? comparisonReview(visible("OUT-06"),selectedPlan,previewType) : null;
-  const previewMonth=investmentDisplayMonth(list(list(previewReview?.candidates).find(c=>c.strategy_id===selectedPlan)?.rows));
+  const review=visible("OUT-06");
+  const selectedReview=comparisonReview(review,selectedPlan,selectedPortfolio);
+  const reviewMonth=(value:Record<string,Json>)=>investmentDisplayMonth(list(list(value.candidates).find(c=>c.strategy_id===selectedPlan)?.rows));
+  const previewReview=previewType ? comparisonReview(review,selectedPlan,previewType) : null;
+  const previewMonth=previewReview&&reviewMonth(previewReview);
   const targetPreview=!!previewReview&&previewMonth?.comparison_only===true&&!comparison.blocked;
-  const productScreenReview=targetPreview?previewReview:selectedReview;
+  const types=object(review.portfolio_types);
+  const baselineType=textValue(types.baseline_type);
+  const baselineReview=!!retirementDemo&&!selectedPortfolio&&!previewType&&types.customer_preference==="PREF_STABILITY"&&baselineType
+    ? comparisonReview(review,selectedPlan,baselineType) : null;
+  const baselineMonth=baselineReview&&reviewMonth(baselineReview);
+  const showBaseline=!!baselineMonth&&(baselineMonth.selectable===true||baselineMonth.comparison_only===true);
+  const productScreenReview=targetPreview?previewReview:showBaseline&&baselineReview?baselineReview:selectedReview;
   const selectedMonth=list(list(selectedReview.candidates).find(c=>c.strategy_id===selectedPlan)?.rows)[0];
   const next=nextStep({view,result,stale,source:sourceDoc,firstAction:actions[0],onEdit,onRecalculate});
   const inputVersion=view.serverVersion??view.localVersion;
@@ -181,10 +189,12 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
       {resultCalcBar}
     </section>}
     {tab>=3&&<p className="d-draft-chip">검토용 초안 · 실제 가입·매수·이체 없음</p>}
-    {tab>=2&&productReview.diagnosis_scope==="household"&&<p className="d-note">가구의 월 신규 투자 후보금을 기준으로 구성을 검토해요.</p>}
-    {tab>=3&&previewType&&targetPreview&&<p className="d-note">{portfolioNames[previewType]} 목표 비중 비교 · {allocationTargetLabel(previewMonth)} · 상품 배분 확인 대기</p>}
+    {tab>=2&&retirementDemo?.investmentAssumption&&<details className="d-fold"><summary>은퇴기 상품 검토 가정</summary><p>{retirementDemo.investmentAssumption}</p></details>}
+    {tab===2&&productReview.diagnosis_scope==="household"&&<p className="d-note">가구의 월 신규 투자 후보금을 기준으로 구성을 검토해요.</p>}
+    {tab===3&&showBaseline&&<p className="d-note">{portfolioNames[baselineType]} 기준 상품 검토 · 투자구성에서 선택하면 포트폴리오에 반영할 수 있어요.</p>}
+    {tab>=3&&previewType&&targetPreview&&<p className="d-note">{portfolioNames[previewType]} 목표 비중 비교 · {allocationTargetLabel(previewMonth || undefined)}</p>}
     {tab===3&&previewType&&!targetPreview&&<p className="d-note">{portfolioNames[previewType]} 구성 미리보기 · 상품은 공시 기준으로 확인할 수 있어요.</p>}
-    {tab>=3&&comparisonStatus}
+    {tab>=3&&(selectedPortfolio||comparison.busy||comparison.error)&&comparisonStatus}
     {tab===0 && <>
       {retirementDemo&&<RetirementGoals onCompare={()=>setTab(1)}/>}
       <h2>현재 재무 상태</h2>

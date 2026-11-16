@@ -133,9 +133,9 @@ function confirmRetirementAssets({doc, amend, confirm}: ReturnType<typeof demoCa
   confirm("NEW-06", {coverage:"complete"});
 }
 
-async function retirementDemo(source: Scenario): Promise<Scenario> {
+async function retirementDemo(source: Scenario, reviewExample: boolean): Promise<Scenario> {
   const asOf = "2026-11-13";
-  const demo = demoCase(source, asOf);
+  const demo = demoCase(source, asOf, reviewExample ? "v4" : "v3");
   const {doc, amend, confirm, datedGoal, ref} = demo;
   doc.context.projection_start = "2026-12-01";
   doc.context.projection_end = "2027-01-31";
@@ -160,20 +160,40 @@ async function retirementDemo(source: Scenario): Promise<Scenario> {
     period_basis:"CONFIRMED_CONSTANT",goal_ref:null}}});
   amend("NEW-05", {planned_expenses:json([])});
   datedGoal("시연용 주거 정비비", "60", "2027-01-31", ["2026-12-15","2027-01-15"]);
+  if (reviewExample) {
+    const [fund] = list(fieldValue(doc,"F15","investment_funds"));
+    amend("F15", {
+      investment_funds:json([{...fund, label:"가상 사례의 월 신규 투자금",
+        availability_date:date("2026-12-01"), earliest_use_status:field("EARLIEST_USE_STATUS_01"),
+        earliest_use_date:date("2027-08-01")}]),
+      monthly_new_fund_link:field(true, "BOOLEAN"),
+    });
+    confirm("F15", {fund_ref:fund.fund_id, budget_scope:"MONTHLY_NEW_CONTRIBUTIONS"}, "DION-PRODUCT-CONFIRM-0.1");
+    amend("NEW-10", {loss_tolerance_band_raw:field("LOSS_5_10")});
+  }
+  const investmentAssumption = reviewExample
+    ? "상품 추천 시연은 월 신규 투자금이 2026-12-01부터 사용 가능하고 2027-08-01까지 쓰지 않으며, 손실 허용 범위가 5~10%라고 가정해요. P1 안정 선호와 환율 변동을 줄이고 싶다는 답변은 유지해요."
+    : "원본 투자 조건은 자금 사용 시점 미정, 손실 허용 5% 미만이에요.";
   return {
-    ...source, document:doc, inputGaps:[],
+    ...source, document:doc, inputGaps:[], investmentAssumption,
+    purpose:reviewExample ? "은퇴 및 상속 · 가상 조건으로 상품 추천까지 시연" : source.purpose,
     demoReference:"은퇴·상속 목표와 보유자산 운용안은 심사용 결과에서 확인할 수 있어요. 월별 신규 투자금은 별도로 가정한 주거 정비비 60만원을 반영해 계산해요.",
     assumptions:[
       "진단일·평가일은 2026-11-13, 소득·지출 기준월은 10월, 계획 기간은 2026년 12월과 2027년 1월로 가정해요.",
       "가구 범위 동의와 보유·채무 범위를 시연용으로 확인했다고 가정해요. 월 소득 500만원, 생활비 300만원, 이자 50만원, 기존 납입 10만원을 유지하고 별도 소득을 더하지 않아요.",
       "금융자산 5억원 중 엑셀의 머니마켓 3,000만원을 시연에서 ETF 1,650만원과 이미 현금화된 1,350만원으로 나눠요. 현금 중 비상자금 1,000만원과 운영자금 350만원을 배정해요.",
       "생활비 전액을 필수로 보고, 대출 원금은 그대로 두고 이자만 내며, 기존 10만원을 매월 15일 세후 소득에서 납입한다고 가정해요.",
-      "시연용 주거 정비비 60만원은 두 달간 30만원씩 준비해요. 자금 사용 시점은 미정이어서 목표 비중만 비교해요.",
+      "시연용 주거 정비비 60만원은 두 달간 30만원씩 준비해요.",
+      investmentAssumption,
     ],
   };
 }
 
 export async function workbookDemoScenarios(): Promise<Scenario[]> {
   const cases = await filledWorkbookScenarios();
-  return Promise.all(cases.map(source => source.id === "early" ? earlyDemo(source) : retirementDemo(source)));
+  return Promise.all(cases.map(async source => {
+    if (source.id === "early") return earlyDemo(source);
+    const [example, originalInvestmentConditions] = await Promise.all([retirementDemo(source, true), retirementDemo(source, false)]);
+    return {...example, originalInvestmentConditions};
+  }));
 }

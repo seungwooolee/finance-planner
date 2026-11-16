@@ -10,6 +10,8 @@ export type Scenario = {
   assumptions: string[];
   inputGaps?: string[];
   demoReference?: string;
+  originalInvestmentConditions?: Scenario;
+  investmentAssumption?: string;
   document: Document;
 };
 
@@ -62,6 +64,10 @@ export function ScenarioPicker({ disabled, onLoad, onRestore }: {
         <button type="button" className="d-primary" disabled={disabled} onClick={() => { dialog.current?.close(); onLoad(scenario); }}>
           {scenario.title} 불러오기
         </button>
+        {scenario.originalInvestmentConditions&&<button type="button" className="d-secondary" disabled={disabled} onClick={() => {
+          dialog.current?.close();
+          if (scenario.originalInvestmentConditions) onLoad(scenario.originalInvestmentConditions);
+        }}>은퇴기 원본 투자 조건으로 보기</button>}
       </article>)}</div>}
     </dialog>
   </>;

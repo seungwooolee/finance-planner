@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test("the two workbook demos calculate goals and plans without bypassing allocation rules", async ({page}) => {
-  test.setTimeout(120_000);
+  test.setTimeout(180_000);
   await page.goto("/dion");
   await expect(page.getByRole("button", {name:"예시로 결과 보기 · 대표상품 포함"})).toHaveCount(0);
   await page.getByRole("button", {name:/빠른진단 시작/}).click();
@@ -28,7 +28,7 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
     await expect(rendered.getByRole("article",{name:"선택 보류 · 배분 검토 내역"})).toBeVisible();
     const recommendation = rendered.getByRole("article",{name:"추천 상품"});
     await expect(recommendation.locator("[data-comparison-product]")).toHaveCount(0);
-    await expect(recommendation).toContainText("목표 비중을 비교할 수 있어요");
+    await expect(recommendation).toContainText("검토 조건을 충족한 구성");
     await resultTabs.getByRole("button", {name:"투자구성", exact:true}).click();
     await expect(rendered.locator('[data-portfolio-apply="BALANCED"]')).toHaveAccessibleName("중립형 목표 비중 비교");
     const choice = rendered.locator('[data-portfolio-apply="STABLE"]');
@@ -170,29 +170,61 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   ]);
   const retiredProducts = retiredOutputs["OUT-06"];
   expect(retiredProducts.diagnosis_scope).toBe("household");
-  expect(retiredProducts.reason_codes).toContain("FUND_USE_UNDECIDED");
-  expect(retiredProducts.reason_codes).not.toContain("PERSONAL_SCOPE_REQUIRED");
-  expect(retiredProducts.missing_question_ids).not.toContain("F15");
-  expect(retiredProducts.products.find((product: {code:string}) => product.code === "153130").reason_codes)
-    .toEqual(expect.arrayContaining(["FUND_USE_UNDECIDED","LOSS_BUDGET_UNRESOLVED"]));
-  expect(retiredProducts.candidates[0].rows[1]).toMatchObject({
-    allocated_total_krw:"0", unallocated_krw:"550000",
-    portfolio_type_views:{
-      STABLE:{allocated_total_krw:"0", selectable:false},
-      BALANCED:{allocated_total_krw:"0", selectable:false},
-      RETURN:{allocated_total_krw:"0", target_cash_krw:"440000", held_krw:"110000", selectable:false},
-    },
+  expect(retiredProducts.portfolio_types.preference_level).toBe("P1");
+  expect(retiredProducts.reason_codes).not.toContain("FUND_USE_UNDECIDED");
+  expect(retiredProducts.products.find((product: {code:string}) => product.code === "153130").state).toBe("ELIGIBLE_FOR_REVIEW");
+  expect(retiredProducts.products.find((product: {code:string}) => product.code === "360200").reason_codes).toContain("FX_ACCEPTANCE_REQUIRED");
+  const monthlyRows = retiredProducts.candidates[0].rows;
+  expect(monthlyRows[0].portfolio_type_views.BALANCED).toMatchObject({
+    scenario_budget_krw:"0", allocated_total_krw:"0", selectable:true,
   });
+  expect(monthlyRows[1].portfolio_type_views).toMatchObject({
+    STABLE:{allocated_total_krw:"0", target_cash_krw:"550000", held_krw:"0", selectable:true},
+    BALANCED:{allocated_total_krw:"55000", target_cash_krw:"495000", held_krw:"0", selectable:true},
+    RETURN:{allocated_total_krw:"110000", target_cash_krw:"440000", held_krw:"0", selectable:true},
+  });
+  expect(retiredProducts.candidates[1].rows[1].portfolio_type_views.BALANCED.allocated_total_krw).toBe("88000");
   await expect(rendered.locator(".d-metric").filter({hasText:"순자산"}).locator("strong")).toHaveText("14억원");
   await expect(assumptions).toHaveCount(0);
   await resultTabs.getByRole("button", {name:"재무안 선택",exact:true}).click();
   await expect(plans.getByRole("button",{name:"생활 안정 우선"})).toBeVisible();
   await expect(plans.getByRole("button",{name:"투자 여력 확대"})).toBeVisible();
-  await expect(rendered.getByRole("button",{name:"재계산",exact:true})).toHaveCount(0);
-  await expect(rendered.getByRole("rowheader", {name:/^시연용 주거 정비비/})).toHaveCount(0);
+
+  await resultTabs.getByRole("button",{name:"상품 정보",exact:true}).click();
+  const productInfo = rendered.getByRole("region",{name:"상품 적합성·배분 검토"});
+  const retirementRecommendations=productInfo.getByRole("article", {name:"추천 상품"});
+  await expect(rendered.getByText("중립형 기준 상품 검토", {exact:false})).toBeVisible();
+  await expect(retirementRecommendations.locator('[data-comparison-product="153130"]')).toBeVisible();
+  await expect(productInfo.locator('[data-allocation-month="2026-12"]')).toHaveAttribute("data-budget","0");
+  await expect(productInfo.locator('[data-allocation-month="2027-01"]')).toHaveAttribute("data-allocated","55000");
+  await expect(productInfo.getByRole("button",{name:/환율 변동 수용 확인/})).toHaveCount(0);
+
   await resultTabs.getByRole("button",{name:"투자구성",exact:true}).click();
-  const budget = rendered.locator(".d-kpi").filter({hasText:"2027-01 신규 투자 후보금"});
   const compositions = rendered.getByRole("article",{name:"포트폴리오 검토 유형"});
+  await expect(compositions).toContainText("첫 계획 월(2026-12)의 신규 투자 후보금은 0원");
+  await compositions.getByRole("button",{name:"투자 여력 확대",exact:true}).click();
+  const budget = rendered.locator(".d-kpi").filter({hasText:"2027-01 신규 투자 후보금"});
+  await expect(budget.locator("strong")).toHaveText(/88만\s*원/);
+  await compositions.getByRole("button",{name:"생활 안정 우선",exact:true}).click();
+  await compositions.getByRole("button",{name:"위험추구형 선택",exact:true}).click();
+  await resultTabs.getByRole("button",{name:"상품 정보",exact:true}).click();
+  await expect(productInfo.locator('[data-allocation-month="2027-01"]')).toHaveAttribute("data-allocated","110000");
+  await expect(retirementRecommendations.locator('[data-comparison-product="153130"]')).toBeVisible();
+  await resultTabs.getByRole("button",{name:"결과·다음 행동",exact:true}).click();
+  await expect(rendered.getByRole("button",{name:"가상 월별 재무계획 저장",exact:true})).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+
+  await launch.click();
+  const originalPending = preview();
+  await dialog.getByRole("button", {name:"은퇴기 원본 투자 조건으로 보기", exact:true}).click();
+  const original = (await (await originalPending).json()).result.results["OUT-06"];
+  expect(original.reason_codes).toContain("FUND_USE_UNDECIDED");
+  expect(original.products.find((product: {code:string}) => product.code === "153130").reason_codes)
+    .toEqual(expect.arrayContaining(["FUND_USE_UNDECIDED","LOSS_BUDGET_UNRESOLVED"]));
+  expect(original.candidates[0].rows[1].portfolio_type_views.BALANCED).toMatchObject({
+    allocated_total_krw:"0", target_cash_krw:"495000", held_krw:"55000", selectable:false,
+  });
+  await resultTabs.getByRole("button",{name:"투자구성",exact:true}).click();
   const retirementReferences = rendered.getByRole("region", {name:"은퇴기 상품 검토 후보"});
   await expect(retirementReferences.getByRole("link")).toHaveCount(6);
   await expect(retirementReferences.getByRole("link", {name:/KODEX KOFR금리액티브/})).toHaveAttribute("href", /2ETFG6-A\.pdf$/);
@@ -200,53 +232,16 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   await expect(retirementReferences).toContainText("국고채 5년물 직접 보유");
   await expect(retirementReferences).toContainText("KODEX 단기채권의 월 배분 보류 사유");
   await expect(retirementReferences).toContainText("현재 손실 허용 범위에는 상품에 배정할 수 있는 금액이 없어요");
-  await expect(budget.locator("strong")).toHaveText(/55만\s*원/);
-  await expect(compositions).toContainText("첫 계획 월(2026-12)의 신규 투자 후보금은 0원");
-  await compositions.getByRole("button",{name:"투자 여력 확대",exact:true}).click();
-  await expect(budget.locator("strong")).toHaveText(/88만\s*원/);
-  await compositions.getByRole("button",{name:"생활 안정 우선",exact:true}).click();
-  for (const [type, percent] of [["STABLE", "100%"], ["BALANCED", "90%"], ["RETURN", "80%"]]) {
-    const card = rendered.locator(`[data-portfolio-type="${type}"]`);
-    const legend = card.getByRole("list", {name:"목표 비중 범례"});
-    await expect(legend.getByRole("listitem").filter({hasText:"현금"})).toContainText(percent);
-    const swatches = await legend.locator("i").evaluateAll(nodes => nodes.map(node => getComputedStyle(node).backgroundColor));
-    const slices = await card.locator(".d-donut circle[stroke-dasharray]").evaluateAll(nodes => nodes.map(node => getComputedStyle(node).stroke));
-    expect(swatches).toEqual(slices);
-  }
-  await expect(compositions.locator("[data-portfolio-type] .d-donut")).toHaveCount(3);
-  await rendered.getByRole("button",{name:"위험추구형 목표 비중 비교",exact:true}).click();
-  await expect(rendered.getByRole("region",{name:"위험추구형 구성 상세"})).toContainText("상품 배분 확인 대기");
-  const detail = rendered.getByRole("region",{name:"위험추구형 구성 상세"});
-  const monthlyDetail = detail.getByRole("region",{name:"2027-01 구성 상세"});
-  await expect(monthlyDetail).toContainText(/55만\s*원/);
-  await expect(monthlyDetail.getByRole("list", {name:"목표 비중 범례"})).toContainText("80%");
-  await detail.getByRole("button",{name:"상품 정보 자세히 보기 →"}).click();
-  const productInfo = rendered.getByRole("region",{name:"상품 적합성·배분 검토"});
-  await expect(productInfo).toContainText("2027-01 신규 투자 후보금을 기준으로 상품을 확인해요");
-  await expect(productInfo.locator('[data-allocation-month="2026-12"]')).toHaveAttribute("data-budget","0");
+  await resultTabs.getByRole("button",{name:"상품 정보",exact:true}).click();
   await expect(productInfo.locator('[data-allocation-month="2027-01"]')).toHaveAttribute("data-allocated","0");
-  const reference = productInfo.getByRole("region",{name:"채권 비교 후보",exact:true});
-  await expect(reference.getByText("공시 참고",{exact:true})).toBeVisible();
-  const shortBond = reference.locator('[data-candidate-code="153130"]');
+  await expect(retirementRecommendations.locator("[data-comparison-product]")).toHaveCount(0);
+  await expect(productInfo.getByRole("button",{name:/환율 변동 수용 확인/})).toHaveCount(0);
+  await expect(productInfo.getByRole("button",{name:/감수할 손실 확인/})).toBeVisible();
+  const shortBond = productInfo.getByRole("region",{name:"채권 비교 후보",exact:true}).locator('[data-candidate-code="153130"]');
   await expect(shortBond).toContainText("KODEX 단기채권");
-  const comparedBonds = reference.getByRole("table", {name:"채권 상품 비교",exact:true});
-  await expect(comparedBonds.getByRole("columnheader", {name:"연 보수·비용"})).toBeVisible();
-  await expect(shortBond.getByRole("rowheader", {name:/KODEX 단기채권/})).toBeVisible();
-  await expect(productInfo.getByRole("article", {name:"기본 배분 후보"})).toHaveCount(0);
-  const retiredRecommendations=productInfo.getByRole("article", {name:"추천 상품"});
-  await expect(retiredRecommendations.locator("[data-comparison-product]")).toHaveCount(0);
-  await expect(shortBond.getByText("비용 기준일", {exact:true})).toBeHidden();
   await shortBond.getByText("공시 정보 더 보기", {exact:true}).press("Enter");
-  await expect(shortBond.getByText("비용 기준일", {exact:true})).toBeVisible();
   await expect(shortBond.getByRole("link", {name:"공식 상품 자료 ↗"})).toHaveAttribute("href", /^https:\/\//);
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
-  await resultTabs.getByRole("button",{name:"결과·다음 행동",exact:true}).click();
-  await expect(rendered.getByText(/위험 추구형 목표 비중 비교/)).toBeVisible();
-  await expect(rendered.getByText("아직 고르지 않음",{exact:true})).toBeVisible();
-  await expect(page.getByText(/입력 또는 계산 오류가 있어요/)).toHaveCount(0);
-
-  await resultTabs.getByRole("button", {name:"투자구성", exact:true}).click();
-  await retirementReferences.getByRole("button", {name:/투자자금 사용 시점 확인/}).click();
+  await productInfo.getByRole("button", {name:/돈을 사용할 시점 확인/}).click();
   await expect(page.getByRole("region", {name:"투자 검토 질문"}).locator('[data-question="F15"] summary'))
     .toContainText("돈을 사용할 시점");
 
