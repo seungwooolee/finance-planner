@@ -1,0 +1,169 @@
+.d-retirement-report {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  min-width: 0;
+}
+
+.d-retirement-report > h2 {
+  scroll-margin-top: var(--d-results-scroll-offset, 96px);
+}
+
+.d-retirement-report > p,
+.d-retirement-report h3 {
+  margin: 0;
+}
+
+.d-retirement-charts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.d-retirement-chart {
+  margin: 0;
+  padding: 16px;
+  border: 1px solid var(--d-line);
+  border-radius: 14px;
+  background: #f8f8ff;
+}
+
+.d-retirement-chart figcaption {
+  font-weight: 700;
+}
+
+.d-retirement-bar-row {
+  display: grid;
+  gap: 4px;
+  margin-top: 12px;
+}
+
+.d-retirement-bar-label {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  column-gap: 12px;
+  font-size: .875rem;
+}
+
+.d-retirement-chart strong,
+.d-retirement-table td {
+  font-variant-numeric: tabular-nums;
+}
+
+.d-retirement-track {
+  display: block;
+  overflow: hidden;
+  height: 8px;
+  border-radius: 999px;
+  background: #e9e9fb;
+}
+
+.d-retirement-bar {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: #7c72c4;
+}
+
+.d-retirement-bar.repay {
+  background: var(--d-primary);
+}
+
+.d-retirement-delta {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #eeedff;
+}
+
+.d-retirement-delta strong {
+  color: var(--d-primary);
+}
+
+.d-retirement-delta span,
+.d-retirement-selection {
+  font-size: .875rem;
+}
+
+.d-retirement-table {
+  max-width: 100%;
+  border: 1px solid var(--d-line);
+  border-radius: 12px;
+}
+
+.d-retirement-table caption {
+  padding: 10px 13px;
+  font-weight: 650;
+  text-align: left;
+  caption-side: top;
+}
+
+.d-retirement-table thead {
+  background: #f4f4fc;
+}
+
+.d-retirement-table td {
+  text-align: right;
+}
+
+.d-retirement-table td[data-active] {
+  background: #f6f5ff;
+}
+
+.d-retirement-table tr:last-child > * {
+  border-bottom: 0;
+}
+
+.d-retirement-options {
+  display: flex;
+  flex-wrap: wrap;
+  min-width: 0;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+}
+
+.d-retirement-options legend {
+  margin-bottom: 6px;
+  font-weight: 650;
+}
+
+.d-retirement-options label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  margin: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--d-line);
+  border-radius: 10px;
+}
+
+.d-retirement-options label:has(:checked) {
+  border-color: var(--d-primary);
+  background: #f4f3ff;
+}
+
+.d-retirement-options input {
+  accent-color: var(--d-primary);
+}
+
+.d-retirement-stress-rate .d-retirement-track {
+  min-width: 65px;
+  margin-top: 3px;
+  height: 5px;
+}
+
+.d-retirement-report > .d-secondary {
+  justify-self: start;
+}
+
+@media (max-width: 640px) {
+  .d-retirement-charts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
