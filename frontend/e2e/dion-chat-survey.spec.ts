@@ -99,3 +99,33 @@ test('ISA definitions and eligibility answer through the API with an outdated pr
   await evidence.last().press('Enter');
   await expect(chat.locator('a[href*="law.go.kr"]').last()).toBeVisible();
 });
+
+test('chat searches inheritance and monthly review sources before the first result',async({page})=>{
+  test.skip(!harness,'Registered evidence harness required');
+  test.setTimeout(150000);
+  await page.route('**/api/be/v1/auth/status',r=>r.fulfill({json:{configured:true}}));
+  await page.route('**/api/be/v1/auth/login',r=>r.fulfill({json:{access_token:'MOCK-FE-ONLY',expires_in:3600}}));
+  await page.goto('/dion');
+  await page.getByRole('button',{name:'로그인',exact:true}).click();
+  const login=page.getByRole('dialog');
+  await login.getByLabel('이메일',{exact:true}).fill('synthetic@example.test');
+  await login.getByLabel('비밀번호',{exact:true}).fill('test-only');
+  await login.getByRole('button',{name:'이메일로 로그인'}).click();
+  await expect(page.getByRole('button',{name:'로그아웃',exact:true})).toBeVisible();
+  await page.getByRole('button',{name:'dion AI 상담 열기',exact:true}).click();
+  const chat=page.getByRole('dialog',{name:'dion AI 상담',exact:true});
+  await chat.getByRole('button',{name:'동의하고 대화 시작'}).click();
+  const input=chat.getByRole('textbox',{name:'DION에게 메시지'});
+  for(const [question,answer] of [['안심상속으로 어떤 재산을 조회할 수 있나요?','정부24'],['월 계획과 실제 지출 차이는 어떻게 확인해?','월말에 대조']]){
+    await input.fill(question);
+    await input.press('Enter');
+    await expect(chat.getByRole('log')).toContainText(answer);
+  }
+  const evidence=chat.getByText('등록 근거 보기',{exact:true});
+  await expect(evidence).toHaveCount(2);
+  await evidence.first().press('Enter');
+  await expect(chat.locator('a[href*="gov.kr"]')).toBeVisible();
+  await evidence.last().press('Enter');
+  await expect(chat.getByText(/DION 내부 검토/)).toBeVisible();
+  await expect(chat.getByRole('alert')).toHaveCount(0);
+});

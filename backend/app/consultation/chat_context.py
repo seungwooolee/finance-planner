@@ -1,12 +1,8 @@
 """Read-only chat answers from the current, already verified calculation."""
 
 import re
-from datetime import datetime, timedelta, timezone
 
-from ..be.raw_store import _digest
 from ..explanation.facts import money, wan
-from .rag_contract import RetrievalRequest
-from .rag_registry import retrieve
 
 PLANS = {"STABILITY_FIRST": "생활 안정 우선", "INVESTMENT_CAPACITY": "투자 여력 확대"}
 METRICS = {
@@ -22,9 +18,6 @@ FAST_QUESTIONS = {
                      "기존납입후얼마남아요"), "MONTHLY_REMAINDER_AFTER_EXISTING"),
     **dict.fromkeys(("생활비얼마야", "생활비얼마예요", "월생활비알려줘"), "CHAT_LIVING"),
 }
-RAG_TOPICS = {"환헤지": "CON-05", "환노출": "CON-05", "예금자보호": "CON-06",
-              "매도대금": "CON-07", "단기채권ETF": "CON-08", "머니마켓ETF": "CON-20",
-              "총보수": "CON-02", "위험등급": "CON-01"}
 
 
 def _compact(text):
@@ -81,31 +74,3 @@ def add_result_claims(context, run, message):
         text.append(label + "은 " + ", ".join(f"{name} {wan(row[k])}만원" for k, name in METRICS.items()))
     claims["CHAT_PLAN_COMPARISON"] = {"text": f"{period} 두 재무안 비교예요. " + ". ".join(text) + "입니다.",
                                       "source_kind": "STORED_RESULT", "refs": refs}
-
-
-def add_public_evidence(context, run, message, registry):
-    # Lookup uses only a registered topic and server-owned dates, never the conversation or customer facts.
-    words = _compact(message)
-    topics = {item for word, item in RAG_TOPICS.items() if word in words}
-    if len(topics) != 1 or not any(w in words for w in ("왜", "뭐", "무엇", "알려", "설명", "차이", "어떻")):
-        return
-    date = run["engine_input"]["context"]["evaluation_on"]
-    today = datetime.now(timezone(timedelta(hours=9))).date().isoformat()
-    request = RetrievalRequest(session_scope=_digest([run["run_id"], run["input_hash"]]),
-                               base_run_id=run["run_id"], item_id=next(iter(topics)),
-                               tax_year=int(date[:4]), effective_on=date, review_on=today)
-    try:
-        retrieved = retrieve(registry(), request)
-    except (OSError, ValueError):
-        return
-    if retrieved.status != "USABLE":
-        return
-    evidence = {value.citation_id: value for value in retrieved.evidence}
-    for i, claim in enumerate(retrieved.claims):
-        sources = [evidence[cid] for cid in claim.citation_ids]
-        context["claims"][f"CHAT_PUBLIC_{i}"] = {
-            "text": " ".join(r.text for r in sources), "source_kind": sources[0].source_kind,
-            "refs": list(claim.citation_ids),
-            "sources": [{"title": r.title, "url": r.official_url, "effective_from": r.effective_from}
-                        for r in {value.official_url: value for value in sources}.values()],
-        }

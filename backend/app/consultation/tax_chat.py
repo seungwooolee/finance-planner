@@ -69,9 +69,11 @@ def _response(reply, citations=()):
     return {"reply": reply, "candidates": [], "action": "NONE", "citations": list(citations)}
 
 
-def tax_chat(run, message, registry, *, general_topic=None):
+def tax_chat(run, message, registry, *, general_topic=None, matched_items=()):
     text = re.sub(r"\s+", "", normalize("NFKC", message).casefold())
     topics = [general_topic] if general_topic else _topic(text)
+    if matched_items and not matched_items <= set(topics):
+        return None
     question = any(w in text for w in ("?", "？", "어떻", "얼마", "알려", "설명", "가능", "궁금", "조건", "비교", "받을", "뭐", "나요", "까요"))
     tax_request = any(w in text for w in ("절세", "세액공제", "연말정산", "세금", "환급", "세제"))
     if not general_topic and not question and not tax_request:
