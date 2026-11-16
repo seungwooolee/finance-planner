@@ -6,7 +6,7 @@ test("the retirement demo keeps monthly recommendations and reflects the chosen 
   test.setTimeout(120_000);
   await page.setViewportSize({width: 390, height: 844});
   await page.goto("/dion");
-  await page.getByRole("button", {name: "가상 사례 불러오기", exact: true}).click();
+  await page.getByRole("button", {name: "심사용 사례", exact: true}).click();
   const pending = page.waitForResponse(response => response.url().endsWith("/api/fe/v1/preview"));
   await page.getByRole("button", {name: "은퇴기 불러오기", exact: true}).click();
   const calculated = await pending;

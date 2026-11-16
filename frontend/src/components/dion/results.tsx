@@ -207,9 +207,13 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
   const productDraftNeedsSave=saved&&!!productSelection&&comparison.revision===0&&selectedPortfolio===productSelection.portfolio_type&&selectedPlan===productSelection.strategy_id;
   const comparisonStatus=(selectedPortfolio||comparisonMessage||comparison.error)&&<div aria-label="투자구성 비교 상태">
       {(selectedPortfolio||comparisonMessage)&&<p role="status">{[selectedPortfolio?`${portfolioNames[selectedPortfolio]} 비교 초안`:"",comparisonMessage].filter(Boolean).join(" · ")}</p>}
-      {productDraftNeedsSave&&selectedPortfolio&&<button type="button" className="d-secondary" disabled={comparison.blocked}
+      {productDraftNeedsSave&&selectedPortfolio&&<button type="button" className="d-secondary" disabled={comparison.blocked||comparison.writeUnavailable}
         onClick={()=>void comparison.choose(selectedPortfolio)}>상품을 반영한 검토안 저장</button>}
-      {comparison.error&&<div role="alert"><p>{comparison.error}</p><button type="button" className="d-secondary" onClick={comparison.retry}>비교 초안 다시 불러오기</button></div>}
+      {comparison.error&&<div role="alert"><p>{comparison.error.message}</p>
+        {comparison.error.recalculate
+          ? <button type="button" className="d-secondary" disabled={!onRecalculate} onClick={onRecalculate}>최신 기준으로 다시 계산</button>
+          : <button type="button" className="d-secondary" onClick={comparison.retry}>비교 초안 다시 불러오기</button>}
+      </div>}
     </div>;
   const goalPlan=<GoalTable goals={goals} goalLabel={displayGoal} missing={assetGoal
     ? <p>자산 잔액 목표 {formatKrw(fieldKrw({state:textValue(assetGoalAmount.state),raw_value:assetGoalAmount.raw_value,unit:textValue(assetGoalAmount.unit)}))} · {textValue(assetGoalDate) || "사용일 확인 필요"}. 자산 잔액 목표의 적립액은 계산이 지원되지 않아요.</p>
@@ -273,7 +277,7 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
       onPreview={id=>setPortfolioPreview({plan:selectedPlan,type:id})}
       productPicker={selectedPortfolio&&hasMonthlyAllocation&&onApplyProducts&&<ProductPicker review={selectedReview} month={selectedMonth}
         strategy={selectedPlan} portfolio={selectedPortfolio} blocked={!!applyingProducts||comparison.blocked} onApply={onApplyProducts}/>}
-      onProducts={()=>setTab(3)} onRecalculate={onRecalculate} blocked={comparison.blocked} onEdit={onEdit}/>}
+      onProducts={()=>setTab(3)} onRecalculate={onRecalculate} blocked={comparison.blocked} writeUnavailable={comparison.writeUnavailable} onEdit={onEdit}/>}
     {tab===2&&comparisonStatus}
     
     {tab===3 && <><div className="d-plan-row"><div><strong>{planName(selectedPlan)} · 상품 정보</strong><button className="d-text-button" onClick={()=>setTab(2)}>투자구성 비교로 돌아가기</button>{selectedPortfolio&&<button className="d-secondary" disabled={comparison.blocked} onClick={()=>setTab(4)}>반영한 포트폴리오 확인 →</button>}</div><PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/></div><ProductAllocation evidenceAccess={evidenceAccess} stale={stale} review={productScreenReview} period={shownMonth} selectedPlan={selectedPlan} evaluationOn={textValue(object(result.context).evaluation_on)} onEdit={onEdit}

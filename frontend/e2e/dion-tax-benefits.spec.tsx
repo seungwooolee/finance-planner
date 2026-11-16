@@ -10,7 +10,7 @@ import scenarios from '../src/lib/dion/review-scenarios.json';
 const preview = (page: Page) => page.waitForResponse(r => r.url().endsWith('/api/fe/v1/preview') && r.request().method() === 'POST');
 async function load(page: Page, name: string) {
   await page.goto('/dion');
-  await page.getByRole('button', { name: '가상 사례 불러오기', exact: true }).click();
+  await page.getByRole('button', { name: '심사용 사례', exact: true }).click();
   const response = preview(page);
   await page.getByRole('button', { name: `${name} 불러오기`, exact: true }).click();
   const received = await response;

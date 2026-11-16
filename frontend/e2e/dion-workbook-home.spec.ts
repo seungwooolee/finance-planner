@@ -5,13 +5,22 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   test.setTimeout(180_000);
   await page.goto("/dion");
   await expect(page.getByRole("button", {name:"예시로 결과 보기 · 대표상품 포함"})).toHaveCount(0);
-  await page.getByRole("button", {name:/빠른진단 시작/}).click();
+  const quickStart = page.getByRole("button", {name:/빠른진단 시작/});
+  const launch = page.getByRole("button", {name:"심사용 사례", exact:true});
+  const dialog = page.getByRole("dialog", {name:"심사용 사례", exact:true});
+  const quickBounds = (await quickStart.boundingBox())!;
+  const demoBounds = (await launch.boundingBox())!;
+  expect(demoBounds.y).toBeGreaterThanOrEqual(quickBounds.y + quickBounds.height);
+  expect(demoBounds.x).toBeCloseTo(quickBounds.x, 0);
+  await launch.press("Enter");
+  await expect(dialog).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(launch).toBeFocused();
+  await quickStart.click();
   await page.getByRole("navigation", {name:"질문 이동"}).getByRole("button", {name:/한 달 소득/}).click();
   const ownIncome = page.getByRole("textbox", {name:"한 달 평균 세후 소득은 얼마인가요?",exact:true});
   await ownIncome.fill("777");
 
-  const launch = page.getByRole("button", {name:"가상 사례 불러오기", exact:true});
-  const dialog = page.getByRole("dialog", {name:"가상 사례", exact:true});
   const rendered = page.getByRole("region", {name:"계산 결과", exact:true});
   const assumptions = rendered.getByRole("complementary", {name:"엑셀 원본과 시연 가정"});
   const resultTabs = page.getByRole("navigation", {name:"빠른 결과 5뷰"});
@@ -206,6 +215,16 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
 
   await resultTabs.getByRole("button",{name:"투자구성",exact:true}).click();
   const compositions = rendered.getByRole("article",{name:"포트폴리오 검토 유형"});
+  for (const [id, percent, amount] of [
+    ["STABLE", 20, "110000"], ["BALANCED", 30, "165000"], ["RETURN", 40, "220000"],
+  ] as const) {
+    const card = compositions.locator(`[data-portfolio-type="${id}"]`);
+    await expect(card).toContainText(`채권 ${percent}%`);
+    await expect(card).toContainText(formatKrw(amount));
+    const subtitle = (await card.locator(".d-type-sub").boundingBox())!;
+    const chip = (await card.locator(".d-draft-chip").boundingBox())!;
+    expect(chip.y).toBeGreaterThanOrEqual(subtitle.y + subtitle.height);
+  }
   await compositions.getByRole("button",{name:"투자 여력 확대",exact:true}).click();
   const budget = rendered.locator(".d-kpi").filter({hasText:"2026-12 신규 투자 후보금"});
   await expect(budget.locator("strong")).toHaveText(/88만\s*원/);

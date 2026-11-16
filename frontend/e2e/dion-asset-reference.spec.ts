@@ -119,7 +119,7 @@ test("asset reference web flow uses real preview data and shares selection, snap
   test.setTimeout(210_000);
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto("/dion");
-  await page.getByRole("button", {name:"가상 사례 불러오기", exact:true}).click();
+  await page.getByRole("button", {name:"심사용 사례", exact:true}).click();
   const first = page.waitForResponse(r => r.url().endsWith("/api/fe/v1/preview") && r.request().method() === "POST");
   await page.getByRole("button", {name:"사회초년생 불러오기", exact:true}).click();
   const response = await first;
@@ -195,7 +195,7 @@ test("asset reference web flow uses real preview data and shares selection, snap
   expect(await final.locator('[data-asset-series="own"]').evaluateAll(els => els.map(el => el.getAttribute("data-value")))).toEqual(ownValues);
   await expect(final).toHaveAttribute("data-data-version", result.peer_reference.data_version);
 
-  await page.getByRole("button", {name:"가상 사례 불러오기", exact:true}).click();
+  await page.getByRole("button", {name:"심사용 사례", exact:true}).click();
   await page.getByRole("button", {name:"은퇴기 불러오기", exact:true}).click();
   await expect(chart).toContainText("내 현재값 · 가구");
   await expect(chart).toContainText("조사 평균 · 가구");

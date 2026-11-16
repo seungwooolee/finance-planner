@@ -2,6 +2,7 @@
 import { Document, Json, fieldValue, list, object, textValue } from '@/lib/dion/model';
 import { MoneyAmount } from "./money-amount";
 import { formatKrw } from '@/lib/dion/money-format';
+import { portfolioSelectionAvailable } from '@/lib/dion/portfolio-comparison';
 import { allocationRemainder, allocationSlices, allocationTargetLabel, allocationTargetSlices, allocationStateLabel, investmentDisplayMonth, isWon, rowForMonth } from '@/lib/dion/result-visual';
 import { PlanSelector } from './plan-comparison';
 import { Donut, DonutLegend } from './donut';
@@ -19,11 +20,11 @@ const TYPES: Record<string, [string, string, string, string]> = {
   RETURN: ['위험추구형', '허용 범위에서 수익 추구', '현재 기준에서 수익 추구 비중을 높인 구성을 비교해요.', '손실 허용·기간·상품 조건에 따라 배분이 제한돼요.'],
 };
 
-export function PortfolioChoice({ doc, review, flow, planRow, period, selectedPlan, onPlan, chosen, preview, onChoose, onPreview, onProducts, productPicker, onRecalculate, onEdit, blocked=false }: {
+export function PortfolioChoice({ doc, review, flow, planRow, period, selectedPlan, onPlan, chosen, preview, onChoose, onPreview, onProducts, productPicker, onRecalculate, onEdit, blocked=false, writeUnavailable=false }: {
   doc: Document | null; review: Record<string, Json>; flow: Record<string, Json>; planRow?: Record<string, Json>; period?: string;
   selectedPlan: string; onPlan: (id: string) => void; chosen: string | null; preview: string | null;
   onChoose: (id: string) => void; onPreview: (id: string) => void; onProducts: () => void;
-  productPicker?: ReactNode; onRecalculate?: () => void; onEdit: (id: string) => void; blocked?: boolean;
+  productPicker?: ReactNode; onRecalculate?: () => void; onEdit: (id: string) => void; blocked?: boolean; writeUnavailable?: boolean;
 }) {
   const displayed = preview ?? chosen;
   const preference = doc && fieldValue(doc, 'F17', 'risk_preference_choice_raw');
@@ -35,7 +36,6 @@ export function PortfolioChoice({ doc, review, flow, planRow, period, selectedPl
   const profileName = profile ? `${profile[1]} ${profile[2]}` : '투자 선호 확인 후';
   const rows = list(list(review.candidates).find(c => c.strategy_id === selectedPlan)?.rows);
   const month = period ? rowForMonth(rows, period) : investmentDisplayMonth(rows);
-  const firstViews = object(rows[0]?.portfolio_type_views);
   const laterMonth = !!month && month !== rows[0] && rows[0]?.scenario_budget_krw === "0";
   const monthLabel = textValue(month?.period);
   const products = list(review.products);
@@ -60,12 +60,13 @@ export function PortfolioChoice({ doc, review, flow, planRow, period, selectedPl
     return isWon(amount) && BigInt(amount) > 0n;
   });
   const selected = displayed ? TYPES[displayed] : undefined;
-  const selectedTarget = displayed ? allocationTargetLabel(viewWithTarget(displayed)) : null;
-  const targetPreview = !!preview && !!selectedTarget && !blocked;
+  const selectedView = displayed ? viewWithTarget(displayed) : undefined;
+  const targetPreview = !!preview && !blocked && !isWon(selectedView?.allocated_total_krw);
   const footText = (id: string) => {
     const view = object(views[id]);
     if (blocked) return '현재 입력·결과와 저장 상태를 확인해주세요.';
-    if (view.selectable === true && object(firstViews[id]).selectable !== true) return '이 달의 구성은 미리 볼 수 있어요. 검토안 적용은 첫 계획 월 조건을 확인해요.';
+    if (view.selectable === true && writeUnavailable) return '저장 결과의 일부 계산이 확인 대기예요. 이 구성은 미리 볼 수 있어요.';
+    if (view.selectable === true && !portfolioSelectionAvailable(rows, id)) return '이 달의 구성은 미리 볼 수 있어요. 검토안에 반영하려면 첫 계획 월과 처음 투자하는 달의 조건을 충족해야 해요.';
     if (view.selectable === true) return chosen === id ? '현재 상담용 포트폴리오 검토안에 반영한 구성이에요.' : '선택하면 이 구성의 상품·비중을 검토안에 반영해요.';
     const hasTarget = allocationTargetLabel(viewWithTarget(id)) !== null;
     const codes = Array.isArray(view.reason_codes) ? view.reason_codes : [];
@@ -103,10 +104,10 @@ export function PortfolioChoice({ doc, review, flow, planRow, period, selectedPl
         const inverted = Array.isArray(view.reason_codes) && view.reason_codes.includes('COMPOSITION_INVERSION');
         const ready = !inverted && isWon(view.allocated_total_krw) && (list(view.allocations).length > 0 || view.cash_only === true);
         const mine = customerType === id;
-        const enabled = view.selectable === true && object(firstViews[id]).selectable === true && !blocked;
+        const enabled = view.selectable === true && portfolioSelectionAvailable(rows, id) && !blocked && !writeUnavailable;
         const slices = ready ? allocationSlices(list(view.allocations), products, view) : [];
         const target = allocationTargetLabel(view);
-        const canCompareTarget = !!target && !blocked;
+        const canCompareTarget = !!target && view.selectable !== true && !blocked;
         const total = month?.scenario_budget_krw;
         const targetSlices = inverted || !isWon(view.allocated_total_krw) || view.allocated_total_krw === "0" ? allocationTargetSlices(view) : [];
         const zeroRemainder = view.allocated_total_krw === "0" ? allocationRemainder(view) : [];
@@ -147,7 +148,7 @@ export function PortfolioChoice({ doc, review, flow, planRow, period, selectedPl
       {displayed && selected && <section id="dion-selected-composition" className="d-selected-composition" tabIndex={-1} aria-labelledby="dion-selected-composition-title">
         <h3 id="dion-selected-composition-title">{selected[0]} 구성 상세</h3>
         {targetPreview && <p role="status">상품 배분 확인 대기</p>}
-        {preview && !targetPreview && <p role="status">{blocked ? "구성 미리보기 · 현재 결과와 저장 상태를 확인해 주세요." : "구성 미리보기 · 현재 조건에서 배분은 보류돼요."}</p>}
+        {preview && !targetPreview && <p role="status">구성 미리보기 · 검토안에 반영하려면 선택 조건을 확인해 주세요.</p>}
         {!preview && chosen && productPicker}
         <PortfolioChoiceDetail rows={month ? [month] : []} products={products} type={displayed} messages={messages} target={comparisonTargets[displayed]}/>
         <button className="d-secondary" type="button" onClick={onProducts}>상품 정보 자세히 보기 →</button>

@@ -41,10 +41,10 @@ export function ScenarioPicker({ disabled, onLoad, onRestore }: {
     if (!scenarios) load();
   }
   return <>
-    <button type="button" className="d-scenario-launch d-secondary" disabled={disabled} onClick={open}>가상 사례 불러오기</button>
+    <button type="button" className="d-scenario-launch d-secondary" aria-haspopup="dialog" disabled={disabled} onClick={open}>심사용 사례</button>
     <dialog ref={dialog} className="d-scenario-dialog" aria-labelledby={titleId}>
       <div className="d-scenario-heading">
-        <div><span className="d-eyebrow">가상 자료</span><h2 id={titleId}>가상 사례</h2></div>
+        <div><span className="d-eyebrow">가상 자료</span><h2 id={titleId}>심사용 사례</h2></div>
         <button type="button" className="d-secondary" onClick={() => dialog.current?.close()}>닫기</button>
       </div>
       {onRestore && <button type="button" className="d-secondary" disabled={disabled} onClick={() => { dialog.current?.close(); onRestore(); }}>내 입력으로 복귀</button>}

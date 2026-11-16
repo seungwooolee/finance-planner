@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 test("the final portfolio uses its selected allocation for an explicit signed return scenario", async ({page})=>{
   test.setTimeout(120000);
   await page.goto("/dion");
-  await page.getByRole("button",{name:"가상 사례 불러오기",exact:true}).click();
+  await page.getByRole("button",{name:"심사용 사례",exact:true}).click();
   await page.getByRole("button",{name:"사회초년생 불러오기",exact:true}).click();
   const tabs = page.locator(".d-tabs button");
   await tabs.nth(4).click();

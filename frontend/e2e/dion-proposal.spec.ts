@@ -55,7 +55,7 @@ test('proposal shows goal_omissions reasons and keeps the original goal result',
     await route.fulfill({response,json});
   });
   await page.goto('/dion');
-  await page.getByRole('button',{name:'가상 사례 불러오기',exact:true}).click();
+  await page.getByRole('button',{name:'심사용 사례',exact:true}).click();
   await page.getByRole('button',{name:'상품 배분 검토 불러오기',exact:true}).click();
   await page.getByRole('region',{name:'계산 결과'}).waitFor();
   await page.getByRole('button',{name:/결과·다음 행동/}).click();
@@ -74,7 +74,7 @@ test('proposal shows goal_omissions reasons and keeps the original goal result',
 test('public proposal opens result questions, edits the input and invokes print', async ({page}) => {
   test.setTimeout(150_000);
   await page.goto('/dion');
-  await page.getByRole('button', {name:'가상 사례 불러오기', exact:true}).click();
+  await page.getByRole('button', {name:'심사용 사례', exact:true}).click();
   await page.getByRole('button', {name:'사회초년생 불러오기', exact:true}).click();
   const result = page.getByRole('region', {name:'계산 결과', exact:true});
   const next = result.getByRole('button', {name:'결과·다음 행동', exact:true});
@@ -87,11 +87,13 @@ test('public proposal opens result questions, edits the input and invokes print'
   await expect(proposal.getByRole('article',{name:'지금 고른 안',exact:true})).toContainText('39만 9,500');
   await expect(proposal.getByRole('article',{name:'같은 금액에 수익률 가정 적용',exact:true})).toBeVisible();
   const launcher = page.getByRole('button',{name:'dion AI 상담 열기',exact:true});
-  const scenario = page.getByRole('button',{name:'가상 사례 불러오기',exact:true});
+  const scenario = page.getByRole('button',{name:'심사용 사례',exact:true});
   await page.setViewportSize({width:320,height:780});
   await expect(launcher.getByText('AI 상담창',{exact:true})).toBeVisible();
-  const left = (await launcher.boundingBox())!, right = (await scenario.boundingBox())!;
-  expect(left.x + left.width).toBeLessThan(right.x);
+  const dock = (await launcher.boundingBox())!;
+  expect(320 - dock.x - dock.width).toBeLessThanOrEqual(24);
+  expect(780 - dock.y - dock.height).toBeLessThanOrEqual(24);
+  expect(await scenario.evaluate(el => getComputedStyle(el).position)).not.toBe('fixed');
   const consult = result.getByRole('article',{name:'DION AI 상담',exact:true}).getByRole('button',{name:'AI 상담 시작',exact:true});
   await consult.press('Enter');
   const chat = page.getByRole('dialog',{name:'dion AI 상담',exact:true});

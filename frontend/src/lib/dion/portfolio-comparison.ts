@@ -3,6 +3,16 @@ import { Json, list, object, textValue } from './model';
 export const portfolioNames: Record<string, string> = { STABLE: '안정형', BALANCED: '중립형', RETURN: '위험 추구형' };
 export type AppliedPortfolioRef = { portfolio_type: string; comparison_revision: number };
 
+export function portfolioSelectionAvailable(rows: Record<string, Json>[], type: string): boolean {
+  const first = rows[0];
+  const selectable = (row: Record<string, Json> | undefined) =>
+    object(object(row?.portfolio_type_views)[type]).selectable === true;
+  if (!first || !selectable(first)) return false;
+  // The saved choice covers the plan. Keep the same first funded month check as the API.
+  if (first.scenario_budget_krw !== '0') return true;
+  return selectable(rows.find(row => row.scenario_budget_krw != null && row.scenario_budget_krw !== '0') ?? first);
+}
+
 /** Select a server-calculated comparison, without recalculating any money or changing the captured result. */
 export function comparisonReview(review: Record<string, Json>, plan: string, type: string | null): Record<string, Json> {
   if (!type) return review;
