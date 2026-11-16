@@ -1,5 +1,8 @@
 import { list, textValue, type Json } from "@/lib/dion/model";
 
+const treasuryResearch = "https://am.jpmorgan.com/us/en/asset-management/institutional/about-us/media/press-releases/jp-morgan-releases-2027-long-term-capital-market-assumptions/";
+const hfResearch = "https://www.hf.go.kr/cms/etcResourceDown.do?key=%24cms%24EwBmDZBFGgCQRmsVAnAjPdQCeOAg6wLWOEqx2hYtcBKjA+gGYB2AdAA4AmxQA&site=%24cms%24NYeyA#page=24";
+
 // Product identities and roles from the fictional retirement report, Step 4.
 // The report compares existing holdings. Its allocations and assumed yields do not enter the monthly calculation.
 const groups = [
@@ -7,27 +10,29 @@ const groups = [
     title: "단기 여유자금 운용",
     check: "비상금과 예정 지출에 필요한 현금을 먼저 분리해요. 금리형 ETF는 합성 구조와 거래상대방을, 머니마켓 ETF는 편입 채권과 매도 결제 시점을 확인해요.",
     products: [
-      { name: "KODEX KOFR금리액티브(합성)", code: "423160", url: "https://www.samsungfund.com/upload/invest/2ETFG6-A.pdf" },
-      { name: "KODEX CD금리액티브(합성)", code: "459580", url: "https://m.samsungfund.com/upload/invest/2ETFJ8-A.pdf" },
-      { name: "KODEX 머니마켓액티브", code: "488770", url: "https://m.samsungfund.com/upload/invest/2ETFO1-A.pdf" },
+      { name: "KODEX KOFR금리액티브(합성)", code: "423160", rateContext: "원화 KOFR 지수 · 금리 경로에 따라 달라져요.", url: "https://www.samsungfund.com/upload/invest/2ETFG6-A.pdf" },
+      { name: "KODEX CD금리액티브(합성)", code: "459580", rateContext: "CD 91일물 금리 지수 · 금리 경로에 따라 달라져요.", url: "https://m.samsungfund.com/upload/invest/2ETFJ8-A.pdf" },
+      { name: "KODEX 머니마켓액티브", code: "488770", rateContext: "KAP MMF 지수 · 편입 자산과 단기금리에 따라 달라져요.", url: "https://m.samsungfund.com/upload/invest/2ETFO1-A.pdf" },
     ],
   },
   {
     title: "만기에 맞춘 현금흐름",
     check: "돈이 필요한 날짜와 채권의 만기·이자 지급일을 대조해요. 중도 매도할 경우 금리 변화에 따라 가격이 달라져요.",
     products: [
-      { name: "국고채 5년물 직접 보유", code: "", url: "https://ktb.moef.go.kr/ntndbtUnityIsu.do" },
+      { name: "국고채 5년물 직접 보유", code: "", rateContext: "국내채권 중장기 참고 연 3.25% · 개별 채권 수익률은 종목, 매수가, 만기를 확인해야 해요.", research: hfResearch, url: "https://ktb.moef.go.kr/ntndbtUnityIsu.do" },
     ],
   },
   {
     title: "해외채권 분산",
     check: "환헤지형도 금리와 채권 가격의 영향을 받아요. 미국국채 ETF는 금리 민감도를, 하이일드 ETF는 신용위험과 손실 한도를 먼저 확인해요.",
     products: [
-      { name: "KODEX 미국10년국채액티브(H)", code: "0091C0", url: "https://www.samsungfund.com/upload/kodex/newsroom/20251016084306186.pdf" },
-      { name: "ACE 미국하이일드액티브(H)", code: "455660", url: "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=45566" },
+      { name: "KODEX 미국10년국채액티브(H)", code: "0091C0", rateContext: "미국 중기국채 장기 참고 연 4.6% · 달러 기준, 환헤지 비용 반영 전.", research: treasuryResearch, url: "https://www.samsungfund.com/etf/lounge/notice-view.do?no=80913" },
+      { name: "ACE 미국하이일드액티브(H)", code: "455660", rateContext: "미국 하이일드 채권 장기 참고 연 6.7% · 달러 기준, 환헤지 비용 반영 전.", research: treasuryResearch, url: "https://kind.krx.co.kr/disclosure/etfisudetail.do?method=searchEtfIsuSummary&strIsurCd=45566" },
     ],
   },
 ];
+
+export const retirementProductSources: { name: string; url: string; rateContext: string; research?: string }[] = groups.flatMap(group => group.products);
 
 export function RetirementProductComparison({ review, onEdit }: {
   review: Record<string, Json>; onEdit: (id: string) => void;

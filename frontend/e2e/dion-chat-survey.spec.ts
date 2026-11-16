@@ -24,7 +24,9 @@ test('chat only: consent, confirmed input, engine result and recoverable AI fail
  await expect(chat.getByText('설문 함께하기')).toHaveCount(0);await expect(chat.getByText('질문 카드로 함께 확인하기',{exact:false})).toHaveCount(0);
  await input.fill('저 혼자');await expect(chat.getByRole('button',{name:'메시지 보내기'})).toBeDisabled();expect(requests).toBe(0);
  await chat.getByRole('button',{name:'동의하고 대화 시작'}).click();await input.press('Enter');
- await expect(chat.getByRole('log')).toContainText('미입력 → 본인');await chat.getByRole('button',{name:'확인하고 반영'}).click();
+ await expect(chat.getByRole('log')).toContainText('미입력 → 본인');
+ await expect(chat.getByText('AI 추천',{exact:true})).toBeVisible();
+ await chat.getByRole('button',{name:'확인하고 반영'}).click();
  await expect(chat.locator('.d-chat-message.user p').first()).toHaveCSS('color','rgb(255, 255, 255)');
  await input.fill('세후 월급 300만원');await input.press('Enter');await expect(chat.getByRole('log')).toContainText('미입력 → 300만원');
  await chat.getByRole('button',{name:'확인하고 반영'}).click();await input.fill('결과 보여줘');await input.press('Enter');

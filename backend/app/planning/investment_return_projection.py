@@ -12,6 +12,25 @@ ASSET_ASSUMPTIONS_VERSION = "DION-ASSET-RETURN-ASSUMPTIONS-20261116-1.0"
 US_REFERENCE = "JPM_2027_US_LARGE_CAP_KRW"
 US_RESEARCH_URL = ("https://am.jpmorgan.com/content/dam/jpm-am-aem/global/en/insights/"
                    "portfolio-insights/ltcma/noindex/ltcma-2027-report.pdf")
+KR_EQUITY_REFERENCE = "HF_2026_KR_EQUITIES_KRW"
+KR_BOND_REFERENCE = "HF_2026_KR_BONDS_KRW"
+HF_RESEARCH_URL = (
+    "https://www.hf.go.kr/cms/etcResourceDown.do?"
+    "key=%24cms%24EwBmDZBFGgCQRmsVAnAjPdQCeOAg6wLWOEqx2hYtcBKjA+gGYB2AdAA4AmxQA"
+    "&site=%24cms%24NYeyA#page=24"
+)
+US_BENCHMARKS = {"360200": "S&P 500 지수", "360750": "S&P 500", "379800": "S&P 500"}
+DOMESTIC_REFERENCES = {
+    KR_EQUITY_REFERENCE: ("EQUITY", "5.57", "국내주식", {
+        "069500": "KOSPI 200", "102110": "KOSPI 200",
+    }),
+    KR_BOND_REFERENCE: ("BOND", "3.25", "국내채권", {
+        "153130": "KRW Cash Index(총수익)", "214980": "KRW Cash PLUS Index(총수익)",
+        "469830": "KAP 단기자금시장지수", "114820": "KTB Index(시장가격지수)",
+        "114260": "MKF 국고채 지수", "273130": "KAP한국종합채권지수(AA-이상, 총수익)",
+        "436140": "KAP K-종합채권지수(AA-이상, 총수익)",
+    }),
+}
 WON = re.compile(r"0|[1-9][0-9]{0,29}")
 PERIOD = re.compile(r"[0-9]{4}-(0[1-9]|1[0-2])")
 
@@ -59,9 +78,19 @@ def _amounts(plan_row, product_row, portfolio_type, blocked):
 
 def _matches_us_reference(product):
     disclosure = product.get("disclosure", {})
-    return (product.get("code") == "360200" and disclosure.get("asset_class") == "EQUITY"
+    benchmark = US_BENCHMARKS.get(product.get("code"))
+    return (benchmark is not None and disclosure.get("asset_class") == "EQUITY"
             and disclosure.get("foreign_underlying") is True and disclosure.get("fx_exposed") is True
-            and disclosure.get("benchmark") == "S&P 500 지수")
+            and disclosure.get("benchmark") == benchmark)
+
+
+def _matches_domestic_reference(product, reference):
+    asset_class, _, _, benchmarks = DOMESTIC_REFERENCES[reference]
+    benchmark = benchmarks.get(product.get("code"))
+    disclosure = product.get("disclosure", {})
+    return (benchmark is not None and disclosure.get("asset_class") == asset_class
+            and disclosure.get("foreign_underlying") is False and disclosure.get("fx_exposed") is False
+            and disclosure.get("benchmark") == benchmark)
 
 
 def _us_reference_annual_growth():
@@ -93,6 +122,16 @@ def market_return_one_year(product, on):
 
 def market_return_assumption(product, on):
     """Display the same market assumption the projection can apply to a matching product."""
+    if on >= date(2026, 9, 7):
+        for reference, (_, percent, label, _) in DOMESTIC_REFERENCES.items():
+            if _matches_domestic_reference(product, reference):
+                return {
+                    "version": ASSET_ASSUMPTIONS_VERSION, "reference": reference,
+                    "annual_rate_percent": percent, "as_of": "2026년 운용계획",
+                    "basis": "DOMESTIC_ASSET_CLASS_KRW_BEFORE_COSTS",
+                    "label": f"{label} 중장기 전망", "source_label": "한국주택금융공사",
+                    "source_url": HF_RESEARCH_URL,
+                }
     if on < date(2026, 10, 19) or not _matches_us_reference(product):
         return None
     with localcontext() as ctx:
@@ -102,6 +141,7 @@ def market_return_assumption(product, on):
         "version": ASSET_ASSUMPTIONS_VERSION, "reference": US_REFERENCE,
         "annual_rate_percent": str(percent), "as_of": "2026-09-30",
         "basis": "US_LARGE_CAP_BENCHMARK_KRW_BEFORE_COSTS", "horizon_years": 10,
+        "label": "미국 대형주 장기 전망 · 원화 환산", "source_label": "J.P. Morgan Asset Management",
         "source_url": US_RESEARCH_URL + "#page=68", "fx_source_url": US_RESEARCH_URL + "#page=12",
     }
 
@@ -113,11 +153,20 @@ def _asset_growth_factors(review, items, asset_rates):
         raise ProjectionUnavailable("ASSET_ASSUMPTIONS_INCOMPLETE")
     factors = {}
     for code, rate in asset_rates.items():
-        if rate == US_REFERENCE:
+        if rate == US_REFERENCE or rate in DOMESTIC_REFERENCES:
             product = next((p for p in review.get("products", []) if p["code"] == code), {})
-            if not _matches_us_reference(product):
-                raise ProjectionUnavailable("ASSET_ASSUMPTION_MISMATCH")
-            annual_growth = _us_reference_annual_growth()
+            captured = product.get("market_return_assumption", {})
+            if rate == US_REFERENCE:
+                # Preserve the reference supported by saved ACE allocations before expansion.
+                if not _matches_us_reference(product) or (code != "360200" and captured.get("reference") != rate):
+                    raise ProjectionUnavailable("ASSET_ASSUMPTION_MISMATCH")
+                annual_growth = _us_reference_annual_growth()
+            else:
+                _, percent, _, _ = DOMESTIC_REFERENCES[rate]
+                if (not _matches_domestic_reference(product, rate) or captured.get("reference") != rate
+                        or captured.get("annual_rate_percent") != percent):
+                    raise ProjectionUnavailable("ASSET_ASSUMPTION_MISMATCH")
+                annual_growth = 1 + Decimal(percent) / 100
         else:
             annual_growth = 1 + Decimal(rate) / 100
         factors[code] = annual_growth ** (Decimal(1) / 12)

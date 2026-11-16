@@ -4,7 +4,7 @@ import { expect, test, type Page } from '@playwright/test';
 const preview = (page: Page) => page.waitForResponse(r => r.url().endsWith('/api/fe/v1/preview') && r.request().method() === 'POST');
 async function load(page: Page) {
   await page.goto('/dion');
-  await page.getByRole('button', { name: '심사용 사례', exact: true }).click();
+  await page.getByRole('button', { name: '심사용 가상사례', exact: true }).click();
   const pending = preview(page);
   await page.getByRole('button', { name: '상품 배분 검토 불러오기', exact: true }).click();
   const response = await pending;

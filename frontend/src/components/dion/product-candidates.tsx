@@ -1,3 +1,4 @@
+import { productReturnEvidence, ProductReturnEvidence } from "./product-return-evidence";
 import { Json, list, object, textValue } from '@/lib/dion/model';
 import { sourceHref } from './scheme-evidence';
 import { PortfolioEvidence, type EvidenceAccess } from './portfolio-evidence';
@@ -70,12 +71,10 @@ export function ProductCandidates({ review, month, actions, evidenceAccess, stal
                 const href = sourceHref(textValue(product.official_source));
                 const historical = object(product.historical_return);
                 const historicalPercent = textValue(historical.percent);
-                const outlook = object(product.market_return_assumption);
-                const percent = textValue(outlook.annual_rate_percent);
+                const outlook = productReturnEvidence(product);
                 const oneYear = object(product.market_return_one_year);
                 const yearRate = textValue(oneYear.price_return_percent);
                 const yearSource = sourceHref(textValue(oneYear.source_url));
-                const outlookHref = sourceHref(textValue(outlook.source_url));
                 const performanceHref = sourceHref(textValue(historical.url));
                 const passes = actions ? actions.canAdd(code) || actions.included(code) : monthCodes.has(code);
                 const reasons = Array.isArray(product.reason_codes)
@@ -110,8 +109,7 @@ export function ProductCandidates({ review, month, actions, evidenceAccess, stal
                       {yearRate && yearSource && <p className="d-note">
                         {textValue(oneYear.start_on)}~{textValue(oneYear.end_on)} · {textValue(oneYear.benchmark)} 가격 전망
                         {" · "}<a href={yearSource} target="_blank" rel="noopener noreferrer">1년 전망 원문 ↗</a></p>}
-                      {percent && outlookHref && <p className="d-note">원화 기준 미국 대형주 10년 가정 연 {percent}% · {textValue(outlook.as_of)}
-                        {" · "}<a href={outlookHref} target="_blank" rel="noopener noreferrer">시장 전망 원문 ↗</a></p>}
+                      {outlook && <ProductReturnEvidence evidence={outlook}/>}
                       {historicalPercent && performanceHref && <p className="d-note">{performanceMonth} 말 기준 과거 1년 수익률 {historicalPercent}%
                         {" · "}<a href={performanceHref} target="_blank" rel="noopener noreferrer">운용사 공시 ↗</a></p>}
                       {href && <a href={href} target="_blank" rel="noopener noreferrer">공식 상품 자료 ↗</a>}

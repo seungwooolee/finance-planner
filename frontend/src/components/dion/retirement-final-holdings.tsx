@@ -3,6 +3,7 @@ import { formatKrw } from "@/lib/dion/money-format";
 import report from "@/lib/dion/retirement-report.json";
 import { bpsLabel, shareBps, type Slice } from "@/lib/dion/result-visual";
 import { Donut, DonutLegend } from "./donut";
+import { retirementProductSources } from "./retirement-product-comparison";
 import type { RetirementAlternative } from "./retirement-report";
 import "./retirement-report.css";
 
@@ -79,6 +80,19 @@ export function RetirementFinalHoldings({ choice, onCompare }: {
         </tbody>
       </table>
     </div>
+    <details className="d-fold d-retirement-return-evidence">
+      <summary>보유자산 6종 수익률 근거</summary>
+      <p>시연의 연 수익률 가정과 시장 자료를 함께 확인할 수 있어요.</p>
+      <ul>{plan.positions.flatMap(row => {
+        const evidence = retirementProductSources.find(product => product.name === row.label);
+        return evidence ? [<li key={row.label}>
+          <div><strong>{row.label}</strong><span>보고서 가정 연 {(row.rateBps / 100).toFixed(2)}%</span></div>
+          <p>{evidence.rateContext}</p>
+          <a href={evidence.url} target="_blank" rel="noreferrer">상품 자료 ↗</a>
+          {evidence.research && <> · <a href={evidence.research} target="_blank" rel="noreferrer">시장 전망 원문 ↗</a></>}
+        </li>] : [];
+      })}</ul>
+    </details>
     <p className="d-inline-note">작성팀 제안서의 보유자산 운용 예시예요. 월 신규 투자금은 월별 재무안에 따라 계산해요.</p>
   </section>;
 }

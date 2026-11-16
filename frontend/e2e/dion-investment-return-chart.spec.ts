@@ -3,7 +3,11 @@ import { expect, test } from "@playwright/test";
 test("the final portfolio uses its selected allocation for an explicit signed return scenario", async ({page})=>{
   test.setTimeout(120000);
   await page.goto("/dion");
-  await page.getByRole("button",{name:"심사용 사례",exact:true}).click();
+  const quick = page.getByRole("button",{name:/빠르게 현재 확인/});
+  const scenarios = page.getByRole("button",{name:"심사용 가상사례",exact:true});
+  const quickBox = (await quick.boundingBox())!;
+  expect((await scenarios.boundingBox())!.y).toBeGreaterThanOrEqual(quickBox.y + quickBox.height);
+  await scenarios.press("Enter");
   await page.getByRole("button",{name:"사회초년생 불러오기",exact:true}).click();
   const tabs = page.locator(".d-tabs button");
   await tabs.nth(4).click();
@@ -54,6 +58,19 @@ test("the final portfolio uses its selected allocation for an explicit signed re
   await expect(chart.locator("tbody tr").last().locator("td").last()).toHaveText(
     BigInt(result.rows[11].cumulative_gain_krw).toLocaleString("ko-KR"),
   );
+  await chart.getByText("자산군별 수익률 가정으로 10년 보기",{exact:true}).click();
+  await expect(chart.getByRole("link",{name:"한국주택금융공사 원문 ↗",exact:true})).toBeVisible();
+  await expect(chart.getByLabel("시장 참고 가정 적용")).not.toBeChecked();
+  await chart.getByLabel("시장 참고 가정 적용").check();
+  const researchResponse = page.waitForResponse(r=>r.url().endsWith("/preview/investment-return-projection")&&r.request().method()==="POST");
+  await chart.getByRole("button",{name:"자산군별 10년 전망 계산",exact:true}).click();
+  const research = await researchResponse;
+  expect(research.ok()).toBeTruthy();
+  const outlook = await research.json();
+  expect(outlook.asset_rates).toEqual({153130:"HF_2026_KR_BONDS_KRW"});
+  expect(outlook.rows).toHaveLength(120);
+  expect(BigInt(outlook.rows[119].cumulative_gain_krw)).toBeGreaterThan(0n);
+  await expect(chart.getByRole("img")).toBeVisible();
   await page.setViewportSize({width:390,height:844});
   expect(await chart.evaluate(el=>el.scrollWidth<=el.clientWidth)).toBeTruthy();
   await tabs.nth(2).click();

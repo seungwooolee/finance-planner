@@ -94,7 +94,7 @@ test('live AI selects a saved change review and never changes adoption or record
   const result = await response.json();
   expect(result.source).toBe('ONEPORT'); expect(result.reason_code).toBeNull();
   expect(result.selected_action.id).toBe('REVIEW_CHANGE');
-  await expect(coach.getByRole('status')).toHaveText('AI가 고른 다음 점검 · 아직 실행 전');
+  await expect(coach.getByRole('status')).toHaveText('AI 추천 · 다음 점검');
   await coach.getByRole('button', {name: '변화를 반영할 새 초안 준비'}).click();
   expect(await (await request.get(`${base}/plan`, {headers})).json()).toEqual(before);
   expect(await (await request.get(`${base}/checkins/${month()}`, {headers})).json()).toEqual(original);

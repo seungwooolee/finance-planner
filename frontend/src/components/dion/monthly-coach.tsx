@@ -72,7 +72,7 @@ export function MonthlyCoach({ base, token, month, dirty, onNavigate }: {
     </button>
     <p role="status" aria-live="polite">{busy ? "저장 기준으로 점검 안내를 준비하고 있어요…"
       : stale ? "이전 안내는 만료됐어요. 최신 기준을 다시 불러와 주세요."
-      : context ? context.source === "ONEPORT" ? "AI가 고른 다음 점검 · 아직 실행 전"
+      : context ? context.source === "ONEPORT" ? "AI 추천 · 다음 점검"
         : context.reason_code ? "AI 연결 대신 저장된 사실로 기본 안내해요." : "저장된 사실로 기본 안내해요." : "AI 전송 없이 저장 기준부터 확인할 수 있어요."}</p>
     {error && <p className="d-warning" role="alert">{error}</p>}
     {context && !stale && <>

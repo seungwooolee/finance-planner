@@ -2,6 +2,7 @@ import {type Json, list, object, textValue} from "@/lib/dion/model";
 
 import { productOptionRoles, replaceProductChoice, type ProductSelection } from "@/lib/dion/portfolio-comparison";
 import { assetGroup, isWon } from "@/lib/dion/result-visual";
+import { productReturnEvidence, ProductReturnEvidence } from "./product-return-evidence";
 import {sourceHref} from "./scheme-evidence";
 
 export type ProductActions = { canAdd: (code: string) => boolean; included: (code: string) => boolean;
@@ -72,6 +73,7 @@ export function ProductComparison({products,actions,emptyMessage}: {
         const d = object(p.disclosure), explanation = object(p.explanation);
         const risks = list(explanation.risk_notes).filter(r=>r.label!=="매매 가격과 출금 시점");
         const href = sourceHref(textValue(p.official_source));
+        const outlook = productReturnEvidence(p);
         return <li className="d-comparison-card" key={String(p.code)} data-comparison-product={String(p.code)}>
           <header>
             <h3>{textValue(p.name)}</h3>
@@ -83,6 +85,7 @@ export function ProductComparison({products,actions,emptyMessage}: {
             <div><dt>환율 영향</dt><dd>{d.fx_exposed === true ? "환노출" : d.fx_exposed === false ? "직접 환노출 없음" : "미확인"}</dd></div>
             <div><dt>공시 위험등급</dt><dd>{typeof d.risk_grade === "number" ? `${d.risk_grade}등급` : "미확인"}</dd></div>
           </dl>
+          {outlook && <ProductReturnEvidence evidence={outlook}/>}
           <div className="d-comparison-reason-grid">
             <section aria-label={`${textValue(p.name)} 검토 이유`}><h4>이 상품을 고른 이유</h4>
               <RecommendationComment product={p}/>

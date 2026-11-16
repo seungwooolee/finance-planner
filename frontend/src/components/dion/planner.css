@@ -863,3 +863,28 @@
  .dion-app .d-result-period select{width:100%;min-width:0;min-height:44px}
 }
 @media print{.dion-app .d-monthly-review{display:none!important}}
+
+.dion-app .d-final-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end}
+.dion-app .d-final-actions button{min-height:44px}
+.dion-app .d-ai-recommendation{display:inline-flex;align-items:center;margin:0 0 5px;padding:3px 8px;border-radius:6px;background:#eee5f6;color:#56397c;font-size:12px;font-weight:700}
+.dion-app .d-choice-status{display:grid;min-width:0;grid-template-columns:minmax(0,1fr);gap:14px;padding:18px;border:1px solid var(--d-line);background:#fff}
+.dion-app .d-choice-current{min-width:0;padding:12px;border-radius:12px;background:#f6f0fa}
+.dion-app .d-choice-current h2{font-size:18px;margin:0 0 10px}
+.dion-app .d-choice-current strong{font-size:19px;color:#433065}
+.dion-app .d-choice-current .d-choice-portfolio{display:inline-block;margin-top:5px;padding:3px 8px;border-radius:6px;background:#eaddf2;color:#50346f;font-weight:700}
+.dion-app .d-choice-states,.dion-app .d-choice-dates{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0}
+.dion-app .d-choice-states>div,.dion-app .d-choice-dates>div{min-width:0;padding:8px 10px}
+.dion-app .d-choice-states>div{border:1px solid var(--d-line);border-radius:10px}
+.dion-app .d-choice-dates dt{font-size:12px;color:#564a69}
+.dion-app .d-choice-dates dd{margin:2px 0 0;font-weight:650;font-variant-numeric:tabular-nums}
+.dion-app .d-choice-trades{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;border-block:1px solid var(--d-line)}
+.dion-app .d-choice-status>button{justify-self:start;min-height:44px}
+@media(max-width:380px){.dion-app .d-choice-states{grid-template-columns:minmax(0,1fr)}}
+
+.d-return-evidence{margin:8px 0 12px;padding:9px 11px;border-radius:9px;background:#f5f1fc;color:#49376b;font-size:.83rem;overflow-wrap:anywhere}
+.d-return-evidence small{display:block;color:#564d66;margin-bottom:3px}
+.d-return-evidence a,.d-retirement-return-evidence a{color:#573782;text-decoration:underline}
+.d-retirement-return-evidence ul{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:8px;padding:0}
+.d-retirement-return-evidence li{padding:10px;border:1px solid var(--d-line);border-radius:9px;font-size:.84rem}
+.d-retirement-return-evidence li span{display:block;color:#564d66}
+.d-retirement-return-evidence li p{margin:5px 0}

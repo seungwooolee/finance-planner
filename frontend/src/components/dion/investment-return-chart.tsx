@@ -6,13 +6,11 @@ import { list, object, textValue, won } from "@/lib/dion/model";
 import { portfolioNames } from "@/lib/dion/portfolio-comparison";
 import { investmentDisplayMonth, isWon } from "@/lib/dion/result-visual";
 import { planName } from "./plan-comparison";
-import { sourceHref } from "./scheme-evidence";
+import { marketReturnReferences, productReturnEvidence, ProductReturnEvidence } from "./product-return-evidence";
 import type { ViewResult } from "./results";
 
 const version = "DION-INVESTMENT-RETURN-PROJECTION-1.0";
 const assetAssumptionsVersion = "DION-ASSET-RETURN-ASSUMPTIONS-20261116-1.0";
-const usReference = "JPM_2027_US_LARGE_CAP_KRW";
-const hfReport = "https://www.hf.go.kr/cms/etcResourceDown.do?key=%24cms%24EwBmDZBFGgCQRmsVAnAjPdQCeOAg6wLWOEqx2hYtcBKjA+gGYB2AdAA4AmxQA&site=%24cms%24NYeyA#page=24";
 const moneyFields = ["contribution_krw", "unallocated_krw", "cumulative_contributions_krw", "value_krw", "monthly_gain_krw", "cumulative_gain_krw"] as const;
 type Row = {period: string; on: string} & Record<typeof moneyFields[number], string>;
 type Assumptions = {annual_rate_percent: string; asset_rates?: never} | {annual_rate_percent?: never; asset_rates: Record<string,string>};
@@ -64,17 +62,7 @@ export function InvestmentReturnChart({view, plan, portfolio, revision, blocked,
     const amount = item.review_allocated_krw;
     if (!code || !isWon(amount) || BigInt(amount) === 0n) return [];
     const product = products.find(p => p.code === code);
-    const disclosure = object(product?.disclosure);
-    const outlook = object(product?.market_return_assumption);
-    const research = textValue(outlook.annual_rate_percent);
-    const source = sourceHref(textValue(outlook.source_url));
-    const fxSource = sourceHref(textValue(outlook.fx_source_url));
-    const hasResearch = outlook.reference === usReference && !!research && !!source;
-    const group = hasResearch ? "미국주식" : disclosure.asset_class === "BOND" ?
-      (code === "153130" ? "국내 단기채권" : "채권") :
-      disclosure.asset_class === "CASH" ? "현금성 상품" :
-      disclosure.asset_class === "EQUITY" ? (disclosure.foreign_underlying === false ? "국내주식" : "해외주식") : "기타 상품";
-    return [{code, amount, name:textValue(product?.name) || code, group, hasResearch, research, source, fxSource, asOf: textValue(outlook.as_of)}];
+    return [{code, amount, name:textValue(product?.name) || code, evidence:productReturnEvidence(product)}];
   });
 
   const canForecast = ready && allocations.length > 0 && selection.selectable === true;
@@ -82,7 +70,7 @@ export function InvestmentReturnChart({view, plan, portfolio, revision, blocked,
   async function calculate(assumptions: Assumptions, months: number | null) {
     if (!canForecast || active.current) return;
     const rates = assumptions.asset_rates;
-    if (rates ? !Object.values(rates).every(value=>value === usReference || ratePattern.test(value))
+    if (rates ? !Object.values(rates).every(value=>marketReturnReferences.has(value) || ratePattern.test(value))
       : !ratePattern.test(assumptions.annual_rate_percent ?? "")) {
       setError(rates ? "배정된 모든 상품의 연 수익률 가정을 입력해주세요. -100%~100% 안에서 소수 넷째 자리까지 입력할 수 있어요."
         : "연 수익률 가정을 -100%~100% 안에서 소수 넷째 자리까지 입력해주세요. 수익을 반영하지 않으려면 0을 입력하세요.");
@@ -151,8 +139,8 @@ export function InvestmentReturnChart({view, plan, portfolio, revision, blocked,
 
   function calculateAssets(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const rates = Object.fromEntries(allocations.map(({code, hasResearch})=>
-      [code, hasResearch && useReference ? usReference : (assetRates[code] ?? "").trim()]));
+    const rates = Object.fromEntries(allocations.map(({code, evidence})=>
+      [code, evidence && useReference ? evidence.reference : (assetRates[code] ?? "").trim()]));
     void calculate({asset_rates:rates}, 120);
   }
 
@@ -196,19 +184,16 @@ export function InvestmentReturnChart({view, plan, portfolio, revision, blocked,
       {selection.selectable === true && allocations.length > 0 && <details className="d-investment-return-assets">
         <summary>자산군별 수익률 가정으로 10년 보기</summary>
         <form onSubmit={calculateAssets}>
-          <p className="d-inline-note">기준 월과 같은 상품 배정액을 매달 말 납입해요. 확인된 참고값을 선택하거나 각 상품의 원화 기준 연 수익률을 입력해 주세요.</p>
-          <ul>{allocations.map(({code, amount, name, group, hasResearch, research, source, fxSource, asOf})=>
+          <p className="d-inline-note">기준 월의 상품 배정액을 매달 말 납입하고, 선택한 연 수익률을 10년간 적용해요. 시장 자료는 자산군 전망을 사용해요.</p>
+          {allocations.some(({evidence})=>evidence) &&
+            <label className="d-return-research-option"><input type="checkbox" checked={useReference} disabled={busy}
+              onChange={event=>{setUseReference(event.target.checked);clearForecast();}}/> 시장 참고 가정 적용</label>}
+          <ul>{allocations.map(({code, amount, name, evidence})=>
             <li key={code}>
-              <strong>{group} · {name}</strong>
+              <strong>{name}</strong>
               <span>월 배정 {formatKrw(amount)}</span>
-              {hasResearch ? <>
-                <p>장기 참고 가정 연 <strong>{research}%</strong> · 원화 환산 · {asOf}</p>
-                {source && <a href={source}>미국 대형주 전망 원문</a>}
-                {fxSource && <>{" · "}<a href={fxSource}>환율 전망 원문</a></>}
-                <label className="d-return-research-option"><input type="checkbox" checked={useReference} disabled={busy}
-                  onChange={event=>{setUseReference(event.target.checked);clearForecast();}}/> 이 참고 가정 적용</label>
-              </> : <p>10년 가정 근거 미확보{code === "069500" && <> · <a href={hfReport}>국내주식 중장기 자료</a></>}</p>}
-              {(!hasResearch || !useReference) && <label>{name} 연 수익률 가정 (%)
+              {evidence ? <ProductReturnEvidence evidence={evidence}/> : <p>연 수익률 참고 가정 미확인</p>}
+              {(!evidence || !useReference) && <label>{name} 연 수익률 가정 (%)
                 <input type="text" inputMode="decimal" autoComplete="off" value={assetRates[code] ?? ""} maxLength={9} disabled={busy}
                   onChange={event=>{setAssetRates({...assetRates,[code]:event.target.value});clearForecast();}}/>
               </label>}

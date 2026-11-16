@@ -53,21 +53,33 @@ export function ChoiceStatus({ plan, portfolio, draft, stored, adoption, runId, 
     : !adoption ? "확인 중"
     : adoption.state === "ERROR" ? "확인할 수 없음"
     : readyToAdopt ? "채택 가능" : "채택한 계획 없음";
+  const mismatchedMonth = (viewingMonth ?? planMonth) && (viewingMonth ?? planMonth) !== recordMonth;
   return <section className="d-choice-status" aria-label="선택·저장·채택·실행 상태">
-    <div><span>화면에서 보는 초안</span><strong>{planName(plan)}{portfolio && " · " + portfolioNames[portfolio]}</strong></div>
-    <div><span>저장한 비교 초안</span>
-      <strong>{draft ? planName(draft.strategy) + " · " + portfolioNames[draft.portfolio] : "확인된 저장 초안 없음"}</strong>
-      {draft && <small>저장 {draft.revision}회차{!draft.current && " · 이전 입력"}{(draft.strategy !== plan || draft.portfolio !== portfolio) && " · 화면 초안과 다름"}</small>}
+    <header className="d-choice-current">
+      <h2>계획 상태</h2>
+      <span>현재 보는 안</span>
+      <strong>{planName(plan)}</strong>
+      {portfolio && <span className="d-choice-portfolio">{portfolioNames[portfolio]}</span>}
+    </header>
+    <div className="d-choice-states">
+      <div><span>저장한 비교 초안</span>
+        <strong>{draft ? planName(draft.strategy) + " · " + portfolioNames[draft.portfolio] : "저장된 초안 없음"}</strong>
+        {draft && <small>저장 {draft.revision}회차{!draft.current && " · 이전 입력"}{(draft.strategy !== plan || draft.portfolio !== portfolio) && " · 현재 보는 안과 다름"}</small>}
+      </div>
+      <div><span>채택한 계획</span>
+        <strong>{adopted ? planName(adopted.strategy_id) + (adopted.portfolio ? " · " + portfolioNames[adopted.portfolio.portfolio_type] : "") : pending}</strong>
+        {!adopted&&adoptionScope&&<small>채택 범위 · {adoptionScope}{stored&&readyToAdopt===false&&adoption?.state==="NONE"?" · 채택 조건 확인 필요":""}</small>}
+        {adopted && <small>{adoptedKind} · 입력버전 {adopted.input_version}{adopted.run_id !== runId && " · 다른 계산 결과"}{adoption?.state === "ADOPTED" && adoption.isCurrent === false && " · 이전 입력"}</small>}
+      </div>
     </div>
-    <div><span>채택한 계획</span>
-      <strong>{adopted ? planName(adopted.strategy_id) + (adopted.portfolio ? " · " + portfolioNames[adopted.portfolio.portfolio_type] : "") : pending}</strong>
-      {!adopted&&adoptionScope&&<small>채택 범위 · {adoptionScope}{stored&&readyToAdopt===false&&adoption?.state==="NONE"?" · 채택 조건 확인 필요":""}</small>}
-      {adopted && <small>{adoptedKind} · 입력버전 {adopted.input_version}{adopted.run_id !== runId && " · 다른 계산 결과"}{adoption?.state === "ADOPTED" && adoption.isCurrent === false && " · 이전 입력"}</small>}
-    </div>
-    <div><span>DION에서 실행한 금융거래</span><strong>없음</strong></div>
-    <p>계산 기준일 {evaluationOn || "확인 필요"} · 첫 계획 월 {planMonth || "확인 필요"}
-      {viewingMonth&&` · 결과 조회 월 ${viewingMonth}`} · 기록 월 {monthLabel(recordMonth)}
-      {(viewingMonth??planMonth) && (viewingMonth??planMonth) !== recordMonth && " · 조회 월과 기록 월은 각각 표시해요."}</p>
+    <p className="d-choice-trades">DION에서 실행한 금융거래 <strong>없음</strong></p>
+    <dl className="d-choice-dates">
+      <div><dt>계산 기준일</dt><dd>{evaluationOn || "확인 필요"}</dd></div>
+      <div><dt>첫 계획 월</dt><dd>{planMonth || "확인 필요"}</dd></div>
+      {viewingMonth&&<div><dt>결과 조회 월</dt><dd>{viewingMonth}</dd></div>}
+      <div><dt>기록 월</dt><dd>{monthLabel(recordMonth)}</dd></div>
+    </dl>
+    {mismatchedMonth&&<p>조회 월과 기록 월은 각각 표시해요.</p>}
     <button type="button" className="d-secondary" onClick={onJump}>{viewingMonth&&viewingMonth!==planMonth?"조회 월 할 일로 이동":"첫 계획 월 할 일로 이동"}</button>
   </section>;
 }
