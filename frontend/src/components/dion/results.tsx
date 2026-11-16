@@ -30,6 +30,7 @@ import displayCatalog from "@/lib/dion/result-display-catalog.json";
 import { appliedProducts, comparisonReview, portfolioNames, type AppliedPortfolioRef, type ProductSelection } from "@/lib/dion/portfolio-comparison";
 import { usePortfolioComparison } from "./use-portfolio-comparison";
 import { FinancialProjection } from "./financial-projection";
+import { ProductPicker } from "./product-comparison";
 import { InvestmentReturnChart } from "./investment-return-chart";
 import { ResultActionConsultation, type ActionFlow } from "./result-action-consultation";
 import { GoalTable, PersonalSummary } from "./personal-summary";
@@ -98,7 +99,11 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
     types_version:textValue(object(productReview.portfolio_types).version),catalog_version:textValue(object(productReview.catalog).version),
   }:null;
   const generated=!!reviewFlow.review?.final&&reviewFlow.review.is_current&&sameReviewBasis(reviewFlow.review.final.basis,basis)&&!stale;
-  const openConsultation=()=>{setTab(4);setConsultFocus(true);};
+  const showConsultation=!!(basis||reviewFlow.review||chatHandoff||reviewFlow.error||technical);
+  const openConsultation=()=>{
+    if(!showConsultation&&onAskResult){onAskResult();return;}
+    setTab(4);setConsultFocus(true);
+  };
   useEffect(()=>{if((!consultFocus&&!chatHandoff)||tab!==4)return;const frame=requestAnimationFrame(()=>{
     document.querySelector<HTMLElement>("#dion-portfolio-review h2")?.focus();
     document.getElementById("dion-portfolio-review")?.scrollIntoView({block:"start"});setConsultFocus(false);
@@ -174,9 +179,8 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
     ownValues={{"proposal.total_assets":totalAssets,"proposal.total_liabilities":totalDebt,"proposal.net_assets":netAssets}}
     ownScope={textValue(object(result.context).scope)||sourceDoc?.context.scope} savedResult={view.storage==="SAVED"} stale={stale}
     selection={assetReferenceSelection} onSelect={setAssetReferenceSelection} compact={compact} onRecalculate={onRecalculate}/>;
-  const resultCalcBar=tab>=3?calcBar:undefined;
-  const comparisonMessage=comparison.busy?"비교 초안을 저장하고 있어요…":comparison.status||
-    (tab>=3?"구성을 선택해 비교할 수 있어요. 계획 채택과 월 기록은 별도로 유지돼요.":"");
+  const resultCalcBar=tab===3?calcBar:undefined;
+  const comparisonMessage=comparison.busy?"비교 초안을 저장하고 있어요…":comparison.status;
   const tabs=deep?["자산·목표","재무안 비교","투자선호·구성","상품·비중","요약·다음 확인"]:["재무현황","재무안 선택","투자구성","상품 정보","결과·다음 행동"];
   const productDraftNeedsSave=saved&&!!productSelection&&comparison.revision===0&&selectedPortfolio===productSelection.portfolio_type&&selectedPlan===productSelection.strategy_id;
   const comparisonStatus=(selectedPortfolio||comparisonMessage||comparison.error)&&<div aria-label="투자구성 비교 상태">
@@ -202,7 +206,6 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
     {technical&&<details className="d-fold d-basis"><summary>계산 기준 자세히 보기</summary><p>기준일 {String(object(result.context).evaluation_on??"미확인")} · 원응답 {view.serverVersion!==undefined?`서버 입력버전 ${view.serverVersion}`:`로컬 편집버전 ${view.localVersion}`} · 엔진 구현 {textValue(result.engine_release)||textValue(result.engine_version)||"응답 없음"}</p><p>엔진 입력 계약 {textValue(result.engine_version)} · 질문 바인딩 {textValue(result.question_binding_version)} · 정책 {textValue(result.policy_version)} · 법정산식 활성 {Array.isArray(result.active_legal_rules)?result.active_legal_rules.length:String(result.active_legal_rules??0)}개</p><p>생활단계·거주형태처럼 계산 소비자가 없는 원응답도 보존해요. 전체 상태가 ‘부분 결과’여도 계산된 개별 결과는 확인할 수 있어요.</p><p>결과 기준과 범위를 확인한 뒤 부족한 정보만 보완하세요. 응답 JSON의 엔진 상태는 원문 그대로 보존합니다.</p>{view.runId&&<code>run_id: {view.runId}</code>}</details>}
       {resultCalcBar}
     </section>}
-    {tab>=3&&<p className="d-draft-chip">검토용 초안 · 실제 가입·매수·이체 없음</p>}
     {tab>=2&&retirementDemo?.investmentAssumption&&<details className="d-fold"><summary>은퇴기 상품 검토 가정</summary><p>{retirementDemo.investmentAssumption}</p></details>}
     {tab===2&&productReview.diagnosis_scope==="household"&&<p className="d-note">가구의 월 신규 투자 후보금을 기준으로 구성을 검토해요.</p>}
     {tab===3&&showBaseline&&<p className="d-note">{portfolioNames[baselineType]} 기준 상품 검토 · 투자구성에서 선택하면 포트폴리오에 반영할 수 있어요.</p>}
@@ -235,6 +238,8 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
       selectedPlan={selectedPlan} onPlan={setSelectedPlan} chosen={selectedPortfolio} preview={previewType}
       onChoose={id=>{void comparison.choose(id).then(ok=>{if(ok)setPortfolioPreview(null);});}}
       onPreview={id=>setPortfolioPreview({plan:selectedPlan,type:id})}
+      productPicker={selectedPortfolio&&onApplyProducts&&<ProductPicker review={selectedReview} month={reviewMonth(selectedReview)}
+        strategy={selectedPlan} portfolio={selectedPortfolio} blocked={!!applyingProducts||comparison.blocked} onApply={onApplyProducts}/>}
       onProducts={()=>setTab(3)} onRecalculate={onRecalculate} blocked={comparison.blocked} onEdit={onEdit}/>}
     {tab===2&&comparisonStatus}
     
@@ -242,7 +247,7 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
         portfolio={targetPreview?null:selectedPortfolio} choosing={applyingProducts||comparison.blocked}
         onApplyProducts={onApplyProducts}/></>}
     {tab===3&&<div className="d-result-cta"><button type="button" className="d-primary" onClick={openConsultation}>DION과 상담하기</button><p>1~4 확인 후 상담과 변경 검토를 거쳐 최종 생성을 요청해요.</p></div>}
-    <div hidden={tab!==4}><PortfolioReviewFlow taxSelection={currentTax} clearTaxSelection={()=>setTaxSelection(undefined)} chatHandoff={chatHandoff} visited={visited} selectionBlocked={comparison.blocked} flow={reviewFlow} basis={basis} view={view} token={token} caseId={caseId} stale={stale} doc={sourceDoc} onTab={setTab} onOpenRun={onOpenRun??(async()=>{})} onReadRun={onReadRun??onOpenRun??(async()=>{})} onPrepared={r=>onReviewResume?.(r)} onAdopt={focusAdoption}/></div>
+    {showConsultation&&<div hidden={tab!==4}><PortfolioReviewFlow showHistory={technical} taxSelection={currentTax} clearTaxSelection={()=>setTaxSelection(undefined)} chatHandoff={chatHandoff} visited={visited} selectionBlocked={comparison.blocked} flow={reviewFlow} basis={basis} view={view} token={token} caseId={caseId} stale={stale} doc={sourceDoc} onTab={setTab} onOpenRun={onOpenRun??(async()=>{})} onReadRun={onReadRun??onOpenRun??(async()=>{})} onPrepared={r=>onReviewResume?.(r)} onAdopt={focusAdoption}/></div>}
     {tab===4 && <>{!stale&&view.storage==="NOT_SAVED"&&productSelection&&onSaveProducts&&
       <div className="d-result-cta"><button type="button" className="d-secondary" disabled={applyingProducts}
         onClick={()=>onSaveProducts(productSelection)}>{actionFlow?.fictional?"예시 검토안 저장":"상품을 반영한 결과 저장"}</button></div>}
@@ -251,7 +256,7 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
       portfolioSummary={<>
         {retirementDemo&&<RetirementFinalHoldings choice={retirementAlternative} onCompare={showRetirementReport}/>}
         <FinalPortfolio generated={generated} plan={selectedPlan} row={selectedRow} review={selectedReview} portfolio={selectedPortfolio} assetReference={assetReference(true)}/>
-      </>} returnChart={<InvestmentReturnChart key={`${view.inputHash}:${view.runId}:${selectedPlan}:${selectedPortfolio}:${comparison.revision}`} view={view} plan={selectedPlan} portfolio={selectedPortfolio} revision={comparison.revision} blocked={stale||comparison.blocked} token={token} caseId={caseId}/>}
+      </>} returnChart={<InvestmentReturnChart key={`${view.inputHash}:${view.runId}:${selectedPlan}:${selectedPortfolio}:${comparison.revision}`} view={view} plan={selectedPlan} portfolio={selectedPortfolio} revision={comparison.revision} blocked={stale||comparison.blocked} token={token} caseId={caseId} onChooseProducts={()=>setTab(2)}/>}
       status={<ChoiceStatus plan={selectedPlan} portfolio={selectedPortfolio} draft={comparison.draft}
       stored={comparison.saved} adoption={adoption} runId={view.runId} evaluationOn={textValue(object(result.context).evaluation_on)}
       planMonth={textValue(selectedRow?.period)} recordMonth={recordMonth??thisMonth()} onJump={()=>tasksRef.current?.scrollIntoView({behavior:"smooth",block:"start"})}/>}

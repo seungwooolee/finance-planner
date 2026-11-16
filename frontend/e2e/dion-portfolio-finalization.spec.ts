@@ -12,9 +12,9 @@ async function select(page: Page) {
 async function confirmSteps(page: Page) {
   for (let i = 0; i < 4; i++) await page.locator(".d-tabs button").nth(i).click();
   await page.getByRole("button", {name: "DION과 상담하기", exact: true}).click();
-  await expect(panel(page).getByRole("heading", {name: "DION과 함께 검토안을 완성해요"})).toBeFocused();
+  await expect(panel(page).getByRole("heading", {name: "포트폴리오 상담"})).toBeFocused();
   const confirmed=page.waitForResponse(r=>r.url().endsWith("/confirm-steps")&&r.request().method()==="POST");
-  await panel(page).getByRole("button", {name:"검토 내용 확인하고 상담 준비",exact:true}).click();
+  await panel(page).getByRole("button", {name:"포트폴리오 상담 시작",exact:true}).click();
   expect((await confirmed).ok()).toBeTruthy();
 }
 async function consult(page: Page) {
@@ -114,7 +114,7 @@ test("late review response cannot overwrite edited inputs or mark the old result
   let entered!:()=>void;
   const ready = new Promise<void>(resolve=>entered=resolve);
   await page.route("**/portfolio-reviews/*/confirm-steps",async route=>{const response=await route.fetch();entered();await held;await route.fulfill({response});});
-  await panel(page).getByRole("button",{name:"검토 내용 확인하고 상담 준비",exact:true}).click();await ready;
+  await panel(page).getByRole("button",{name:"포트폴리오 상담 시작",exact:true}).click();await ready;
   await page.getByRole("button",{name:"입력 내용 수정 ↗",exact:true}).click();
   const amount = page.getByLabel("한 달 평균 세후 소득은 얼마인가요?",{exact:true});
   await amount.fill("0");release();
@@ -156,8 +156,8 @@ test("saved chat leads directly to change review and locks the applied change in
   const p = panel(page);
   const handoff = p.getByRole("region",{name:"채팅에서 이어온 상담"});
   await expect(handoff).toContainText("320만원");
-  await expect(p.getByRole("heading",{name:"DION과 함께 검토안을 완성해요"})).toBeFocused();
-  await p.getByRole("button",{name:"검토 내용 확인하고 상담 준비",exact:true}).click();
+  await expect(p.getByRole("heading",{name:"포트폴리오 상담"})).toBeFocused();
+  await p.getByRole("button",{name:"포트폴리오 상담 시작",exact:true}).click();
   await p.getByRole("button",{name:"상담한 내용을 확인했어요",exact:true}).click();
   const proposal = p.getByRole("region",{name:"원응답 변경 확인"});
   await expect(proposal).toContainText("320만원");

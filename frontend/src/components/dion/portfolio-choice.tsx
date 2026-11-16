@@ -5,6 +5,7 @@ import { formatKrw } from '@/lib/dion/money-format';
 import { allocationRemainder, allocationSlices, allocationTargetLabel, allocationTargetSlices, investmentDisplayMonth, isWon } from '@/lib/dion/result-visual';
 import { PlanSelector } from './plan-comparison';
 import { Donut, DonutLegend } from './donut';
+import type { ReactNode } from 'react';
 import { PortfolioChoiceDetail } from './portfolio-choice-detail';
 import { RetirementProductComparison } from './retirement-product-comparison';
 
@@ -18,11 +19,11 @@ const TYPES: Record<string, [string, string, string, string]> = {
   RETURN: ['위험추구형', '허용 범위에서 수익 추구', '현재 기준에서 수익 추구 비중을 높인 구성을 비교해요.', '손실 허용·기간·상품 조건에 따라 배분이 제한돼요.'],
 };
 
-export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPlan, chosen, preview, onChoose, onPreview, onProducts, onRecalculate, onEdit, blocked=false }: {
+export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPlan, chosen, preview, onChoose, onPreview, onProducts, productPicker, onRecalculate, onEdit, blocked=false }: {
   doc: Document | null; review: Record<string, Json>; flow: Record<string, Json>; planRow?: Record<string, Json>;
   selectedPlan: string; onPlan: (id: string) => void; chosen: string | null; preview: string | null;
   onChoose: (id: string) => void; onPreview: (id: string) => void; onProducts: () => void;
-  onRecalculate?: () => void; onEdit: (id: string) => void; blocked?: boolean;
+  productPicker?: ReactNode; onRecalculate?: () => void; onEdit: (id: string) => void; blocked?: boolean;
 }) {
   const displayed = preview ?? chosen;
   const preference = doc && fieldValue(doc, 'F17', 'risk_preference_choice_raw');
@@ -147,6 +148,7 @@ export function PortfolioChoice({ doc, review, flow, planRow, selectedPlan, onPl
         <h3 id="dion-selected-composition-title">{selected[0]} 구성 상세</h3>
         {targetPreview && <p role="status">상품 배분 확인 대기</p>}
         {preview && !targetPreview && <p role="status">{blocked ? "구성 미리보기 · 현재 결과와 저장 상태를 확인해 주세요." : "구성 미리보기 · 현재 조건에서 배분은 보류돼요."}</p>}
+        {!preview && chosen && productPicker}
         <PortfolioChoiceDetail rows={month ? [month] : []} products={products} type={displayed} messages={messages} target={comparisonTargets[displayed]}/>
         <button className="d-secondary" type="button" onClick={onProducts}>상품 정보 자세히 보기 →</button>
       </section>}
