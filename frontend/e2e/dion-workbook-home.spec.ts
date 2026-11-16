@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { formatKrw } from "../src/lib/dion/money-format";
 
 test("the two workbook demos calculate goals and plans without bypassing allocation rules", async ({page}) => {
   test.setTimeout(180_000);
@@ -15,6 +16,8 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   const assumptions = rendered.getByRole("complementary", {name:"엑셀 원본과 시연 가정"});
   const resultTabs = page.getByRole("navigation", {name:"빠른 결과 5뷰"});
   const plans = rendered.getByRole("region", {name:"두 재무안 비교"});
+  const viewingMonth = rendered.getByRole("combobox", {name:"결과 조회 월"});
+  const dashboard = rendered.getByRole("region", {name:"결과 한눈에 보기"});
   const checkPortfolioViews = async () => {
     await resultTabs.getByRole("button", {name:"투자구성", exact:true}).click();
     await expect(rendered.getByRole("region", {name:"은퇴기 상품 검토 후보"})).toHaveCount(0);
@@ -106,6 +109,8 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   await expect(plans.getByRole("button",{name:"투자 여력 확대"})).toBeVisible();
   await expect(rendered.getByRole("button",{name:"재계산",exact:true})).toHaveCount(0);
   await expect(rendered.getByRole("rowheader", {name:/^시연용 목돈 준비/})).toHaveCount(0);
+  await expect(viewingMonth).toHaveValue("2026-12");
+  await expect(viewingMonth).toBeDisabled();
   await checkPortfolioViews();
   await resultTabs.getByRole("button", {name:"상품 정보", exact:true}).click();
   await expect(rendered.getByRole("article", {name:"우선 검토 상품"})).toBeVisible();
@@ -195,7 +200,8 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   const retirementRecommendations=productInfo.getByRole("article", {name:"추천 상품"});
   await expect(rendered.getByText("중립형 기준 상품 검토", {exact:false})).toBeVisible();
   await expect(retirementRecommendations.locator('[data-comparison-product="153130"]')).toBeVisible();
-  await expect(productInfo.locator('[data-allocation-month="2026-12"]')).toHaveAttribute("data-budget","0");
+  await expect(viewingMonth).toHaveValue("2027-01");
+  await expect(productInfo.locator('[data-allocation-month="2026-12"]')).toHaveCount(0);
   await expect(productInfo.locator('[data-allocation-month="2027-01"]')).toHaveAttribute("data-allocated","55000");
   await expect(productInfo.getByRole("button",{name:/환율 변동 수용 확인/})).toHaveCount(0);
 
@@ -212,6 +218,31 @@ test("the two workbook demos calculate goals and plans without bypassing allocat
   await expect(retirementRecommendations.locator('[data-comparison-product="153130"]')).toBeVisible();
   await resultTabs.getByRole("button",{name:"결과·다음 행동",exact:true}).click();
   await expect(rendered.getByRole("button",{name:"가상 월별 재무계획 저장",exact:true})).toBeVisible();
+  const monthlyTotals = dashboard.getByLabel("이번 달 핵심 숫자");
+  await expect(monthlyTotals).toContainText(formatKrw("550000"));
+  await expect(monthlyTotals).toContainText(formatKrw("110000"));
+  await expect(dashboard.getByRole("region",{name:"선택·저장·채택·실행 상태"})).toContainText("월별 재무계획");
+
+  await viewingMonth.selectOption("2026-12");
+  await expect(dashboard.getByRole("heading",{name:/2026-12, 이렇게/})).toBeVisible();
+  await expect(monthlyTotals).toContainText("후보금 0원");
+  await expect(dashboard.getByLabel("선택한 투자안의 상품 설명")).toHaveCount(0);
+  await resultTabs.getByRole("button",{name:"상품 정보",exact:true}).click();
+  await expect(productInfo.locator('[data-allocation-month="2026-12"]')).toHaveAttribute("data-budget","0");
+  await expect(retirementRecommendations.locator("[data-comparison-product]")).toHaveCount(0);
+  await resultTabs.getByRole("button",{name:"투자구성",exact:true}).click();
+  await expect(compositions.locator('[data-portfolio-type="RETURN"]')).toContainText("후보금 0원");
+  await resultTabs.getByRole("button",{name:"재무안 선택",exact:true}).click();
+  const decemberComparison = plans.getByRole("article",{name:"2026-12 납입안 비교"});
+  await expect(decemberComparison.getByRole("row",{name:/신규 투자 후보금/}).getByRole("cell").first()).toHaveText("0원");
+  const loanComparison = rendered.getByText("은퇴기 보유자산 · 대출 유지와 전액 상환 비교",{exact:true});
+  await expect(rendered.getByRole("region",{name:"대출 유지와 전액 상환 비교"})).toHaveCount(0);
+  await loanComparison.click();
+  await expect(rendered.getByRole("region",{name:"대출 유지와 전액 상환 비교"})).toBeVisible();
+  await loanComparison.click();
+  await viewingMonth.selectOption("2027-01");
+  const januaryComparison = plans.getByRole("article",{name:"2027-01 납입안 비교"});
+  await expect(januaryComparison.getByRole("row",{name:/신규 투자 후보금/})).toContainText(formatKrw("550000"));
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
 
   await launch.click();

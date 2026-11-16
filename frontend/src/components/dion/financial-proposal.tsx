@@ -29,9 +29,9 @@ function Section({ n, title, children }: { n: number; title: string; children: R
   return <section className="d-proposal-section" aria-labelledby={`proposal-s${n}`}><h3 id={`proposal-s${n}`}><span className="d-proposal-num">{n}</span>{title}</h3>{children}</section>;
 }
 
-export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabel, onEdit, onAsk, allocation }: {
+export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabel, onEdit, onAsk, allocation, period }: {
   result: Record<string, Json>; doc: Document | null; plan: string; portfolio: string | null; deep: boolean;
-  goalLabel: (id: Json) => string; onEdit: (id: string) => void; onAsk?: () => void; allocation: ReactNode;
+  period?: string; goalLabel: (id: Json) => string; onEdit: (id: string) => void; onAsk?: () => void; allocation: ReactNode;
 }) {
   const ref = object(result.proposal_reference);
   const assumptions = object(ref.assumptions);
@@ -69,7 +69,7 @@ export function FinancialProposal({ result, doc, plan, portfolio, deep, goalLabe
       </dl>
     </Section>
 
-    <Section n={2} title="첫 계획 월 실행안 · 자금 배정과 상품 배분">{allocation}</Section>
+    <Section n={2} title={period ? `${period} 실행안 · 자금 배정과 상품 배분` : "첫 계획 월 실행안 · 자금 배정과 상품 배분"}>{allocation}</Section>
 
     <Section n={3} title="다른 방법과 비교하기">
       {!available ? <p className="d-note">비교에 필요한 월별 재무안·목표 계산이 아직 없어요. 입력을 보완해 다시 계산하면 대안 비교가 나와요.</p> : <>

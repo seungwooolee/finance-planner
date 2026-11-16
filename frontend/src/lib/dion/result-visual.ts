@@ -14,6 +14,21 @@ export function investmentDisplayMonth(rows: Obj[]): Obj | undefined {
   return rows.find(row => isWon(row.scenario_budget_krw) && BigInt(row.scenario_budget_krw) > 0n) ?? first;
 }
 
+export function rowForMonth(rows: Obj[], period: string): Obj | undefined {
+  return rows.find(row => row.period === period);
+}
+
+/** Translate the selected month's allocation state without reconstructing amounts. */
+export function allocationStateLabel(row?: Obj, budget = row?.scenario_budget_krw): string {
+  if (!isWon(budget)) return "확인 대기";
+  if (budget === "0") return "후보금 0원";
+  if (row?.comparison_only === true) return "목표 비중만 비교";
+  if (row?.cash_only === true && row.selectable === true) return "계획 현금";
+  const allocated = row?.allocated_total_krw;
+  if (!isWon(allocated)) return "확인 대기";
+  return row?.selectable === false || allocated === "0" ? "배분 보류" : "추천 가능";
+}
+
 /** part / total in basis points (0–10000), integer math only. 0 when either side is not a won string. */
 export function shareBps(part: unknown, total: unknown): number {
   if (!isWon(part) || !isWon(total) || BigInt(total) === 0n) return 0;
