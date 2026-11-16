@@ -14,8 +14,8 @@ test('saved products and final tax cards show traceable evidence only on request
   await expect(tax).toHaveCount(0);
   await page.getByRole('button', {name: '상품 정보', exact: true}).click();
   await expect(tax).toHaveCount(0);
-  const product = page.locator('.d-product-card .d-evidence').first();
-  await product.locator(':scope > summary').click();
+  const product = page.locator('[data-candidate-code="153130"]');
+  await product.getByText('공시 정보 더 보기', {exact: true}).click();
   expect(calls).toBe(0);
   const evidence = product.getByRole('region', {name: '상품 등록 근거 설명'});
   await evidence.getByRole('button', {name: '등록 근거로 설명 보기'}).dblclick();

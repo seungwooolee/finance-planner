@@ -1,8 +1,11 @@
 import { Json, list, object, textValue } from '@/lib/dion/model';
 import { sourceHref } from './scheme-evidence';
+import { PortfolioEvidence, type EvidenceAccess } from './portfolio-evidence';
 import { AddProduct, RecommendationComment, type ProductActions } from './product-comparison';
 
-export function ProductCandidates({ review, month, actions }: { review: Record<string, Json>; month?: Record<string, Json>; actions?: ProductActions }) {
+export function ProductCandidates({ review, month, actions, evidenceAccess, stale }: {
+  review: Record<string, Json>; month?: Record<string, Json>; actions?: ProductActions; evidenceAccess?: EvidenceAccess; stale?: boolean;
+}) {
   const catalog = object(review.catalog_comparison);
   const references = list(catalog.groups);
   const eligible = list(month?.comparison_groups);
@@ -112,6 +115,9 @@ export function ProductCandidates({ review, month, actions }: { review: Record<s
                       {historicalPercent && performanceHref && <p className="d-note">{performanceMonth} 말 기준 과거 1년 수익률 {historicalPercent}%
                         {" · "}<a href={performanceHref} target="_blank" rel="noopener noreferrer">운용사 공시 ↗</a></p>}
                       {href && <a href={href} target="_blank" rel="noopener noreferrer">공식 상품 자료 ↗</a>}
+                      {evidenceAccess && product.allocation_role==="DEFAULT_SLOT" &&
+                        <PortfolioEvidence key={evidenceAccess.runId} access={evidenceAccess} kind="PRODUCT" targetId={code} stale={stale}/>}
+
                     </details>
                   </td></tr>
                 </tbody>;
