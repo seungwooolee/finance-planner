@@ -61,6 +61,7 @@ test("retirement report compares the two alternatives and records the explicitly
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
   await page.setViewportSize({ width: 1280, height: 720 });
   await report.getByRole("button", { name: "월별 재무계획 저장·채택 보기" }).click();
+  await page.getByRole("combobox", {name:"결과 조회 월"}).selectOption("2027-01");
 
   await page.getByRole("button", { name: "가상 월별 재무계획 저장", exact: true }).click();
   const login = page.getByRole("dialog");

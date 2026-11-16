@@ -1,12 +1,26 @@
 {
-  "version": "DION-RETIREMENT-REPORT-1.0",
+  "version": "DION-RETIREMENT-REPORT-1.1",
+  "realEstateKrw": "1000000000",
+  "reported": {
+    "totalAssetsKrw": "1500000000",
+    "financialAssetsKrw": "500000000",
+    "debtKrw": "100000000",
+    "netAssetsKrw": "1400000000",
+    "bondKrw": "400000000",
+    "cashEquivalentKrw": "100000000",
+    "reserveKrw": "0"
+  },
   "preReserveAnnualKrw": "18250000",
   "deltaAnnualKrw": "2500000",
   "plans": [
     {
       "id": "KEEP",
+      "totalAssetsKrw": "1500000000",
       "financialAssetsKrw": "500000000",
       "debtKrw": "100000000",
+      "netAssetsKrw": "1400000000",
+      "bondKrw": "400000000",
+      "cashEquivalentKrw": "90000000",
       "reserveKrw": "10000000",
       "proposedKrw": "490000000",
       "grossAnnualKrw": "18109000",
@@ -94,8 +108,12 @@
     },
     {
       "id": "REPAY",
+      "totalAssetsKrw": "1400000000",
       "financialAssetsKrw": "400000000",
       "debtKrw": "0",
+      "netAssetsKrw": "1400000000",
+      "bondKrw": "300000000",
+      "cashEquivalentKrw": "90000000",
       "reserveKrw": "10000000",
       "proposedKrw": "390000000",
       "grossAnnualKrw": "14609000",

@@ -5,7 +5,7 @@ Types use reviewed slot tables, with an explicit return-seeking target for P3–
 a type view only changes which reviewed slot table is laid over the products the customer is
 already eligible for. Views are comparisons; the customer's own preference stays the allocation.
 """
-VERSION = "DION-PORTFOLIO-TYPES-0.7"
+VERSION = "DION-PORTFOLIO-TYPES-0.8"
 STATE = "REVIEWED_FOR_PREVIEW"  # 2026-11-13: user delegated the decision; kept as proposed (docs/integration/2026-11-13-stage4-decisions.md).
 REPRESENTATIVE_PREFERENCE = {
     "STABLE": "PREF_LEAN_STABILITY",
@@ -23,8 +23,8 @@ RETURN_TARGETS = (
 )
 RETURN_MIX_BPS = {**{role: weight for role, _, weight in RETURN_TARGETS},
                   "CASH": 10000 - sum(weight for _, _, weight in RETURN_TARGETS)}
-# Conservative comparisons within P1, below the existing P2 short-bond target.
-P1_SHORT_BOND_BPS = {"STABLE": 0, "BALANCED": 1000, "RETURN": 2000}
+# P1 comparisons vary short-bond exposure and hold the remaining target in cash.
+P1_SHORT_BOND_BPS = {"STABLE": 2000, "BALANCED": 3000, "RETURN": 4000}
 # Reasons that come from the customer's own preference slot table, not from their limits.
 PREFERENCE_ONLY_REASONS = {"STABILITY_POLICY_UNALLOCATED", "ALLOCATION_TARGETS_UNCONFIRMED", "NO_ELIGIBLE_PRODUCTS"}
 

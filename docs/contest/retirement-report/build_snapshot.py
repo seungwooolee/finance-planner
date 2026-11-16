@@ -7,14 +7,15 @@ from pathlib import Path
 
 OUT = Path(__file__).resolve().parents[3] / "frontend/src/lib/dion/retirement-report.json"
 ASSETS = (
-    ("ACE 미국하이일드액티브(H)", 20_000_000, 695, 350, 350),
-    ("KODEX 미국10년국채액티브(H)", 180_000_000, 417, 678, 0),
-    ("국고채 5년물 직접 보유", 200_000_000, 350, None, 0),
-    ("KODEX KOFR금리액티브(합성)", 40_000_000, 269, 0, 0),
-    ("KODEX CD금리액티브(합성)", 30_000_000, 285, 0, 0),
-    ("KODEX 머니마켓액티브", 30_000_000, 141, 9, 0),
+    ("ACE 미국하이일드액티브(H)", 20_000_000, 695, 350, 350, "BOND"),
+    ("KODEX 미국10년국채액티브(H)", 180_000_000, 417, 678, 0, "BOND"),
+    ("국고채 5년물 직접 보유", 200_000_000, 350, None, 0, "BOND"),
+    ("KODEX KOFR금리액티브(합성)", 40_000_000, 269, 0, 0, "CASH_EQUIVALENT"),
+    ("KODEX CD금리액티브(합성)", 30_000_000, 285, 0, 0, "CASH_EQUIVALENT"),
+    ("KODEX 머니마켓액티브", 30_000_000, 141, 9, 0, "CASH_EQUIVALENT"),
 )
 SHOCKS = (("S1", 50, 0), ("S2", 100, 100), ("S3", 200, 300))
+REAL_ESTATE = 1_000_000_000
 DEBT = 100_000_000
 DEBT_INTEREST = 6_000_000
 RESERVE = 10_000_000
@@ -40,18 +41,33 @@ def shock_loss(principals, rate_bps, spread_bps):
     rate, spread = Decimal(rate_bps) / BPS, Decimal(spread_bps) / BPS
     return sum(
         principal * (bond_loss(rate) if duration is None else (duration * rate + credit * spread) / 100)
-        for principal, (_, _, _, duration, credit) in zip(principals, ASSETS, strict=True)
+        for principal, (_, _, _, duration, credit, _) in zip(principals, ASSETS, strict=True)
     )
 
 
+def composition(principals, reserve, debt):
+    financial = sum(principals) + reserve
+    bonds = sum(principal for principal, asset in zip(principals, ASSETS, strict=True) if asset[5] == "BOND")
+    return {
+        "totalAssetsKrw": won(REAL_ESTATE + financial),
+        "financialAssetsKrw": won(financial),
+        "debtKrw": won(debt),
+        "netAssetsKrw": won(REAL_ESTATE + financial - debt),
+        "bondKrw": won(bonds),
+        "cashEquivalentKrw": won(financial - bonds - reserve),
+        "reserveKrw": won(reserve),
+    }
+
+
 def build():
+    initial_principals = [asset[1] for asset in ASSETS]
     starting = sum(asset[1] for asset in ASSETS)
-    pre_reserve = sum(income(principal, rate) for _, principal, rate, _, _ in ASSETS)
+    pre_reserve = sum(income(principal, rate) for _, principal, rate, _, _, _ in ASSETS)
     with localcontext() as context:
         context.prec = 50
         # Confirm the draft's original, rounded percentages before revaluing the two alternatives.
         assert [
-            (shock_loss([asset[1] for asset in ASSETS], rate, spread) * 100 / starting).quantize(Decimal("0.01"))
+            (shock_loss(initial_principals, rate, spread) * 100 / starting).quantize(Decimal("0.01"))
             for _, rate, spread in SHOCKS
         ] == [Decimal("2.19"), Decimal("4.50"), Decimal("9.05")]
         plans = []
@@ -66,9 +82,7 @@ def build():
             assert remaining == sum(principals) + RESERVE
             plans.append({
                 "id": "REPAY" if repay else "KEEP",
-                "financialAssetsKrw": won(remaining),
-                "debtKrw": won(DEBT - sum(repayments)),
-                "reserveKrw": won(RESERVE),
+                **composition(principals, RESERVE, DEBT - sum(repayments)),
                 "proposedKrw": won(sum(principals)),
                 "grossAnnualKrw": won(gross),
                 "debtInterestAnnualKrw": won(interest),
@@ -86,7 +100,13 @@ def build():
                 ],
             })
     assert [p["afterInterestAnnualKrw"] for p in plans] == ["12109000", "14609000"]
-    return {"version": "DION-RETIREMENT-REPORT-1.0", "preReserveAnnualKrw": won(pre_reserve),
+    reported = composition(initial_principals, 0, DEBT)
+    assert (reported["totalAssetsKrw"], reported["bondKrw"], reported["cashEquivalentKrw"]) == (
+        "1500000000", "400000000", "100000000",
+    )
+    assert plans[1]["totalAssetsKrw"] == "1400000000" and plans[1]["netAssetsKrw"] == reported["netAssetsKrw"]
+    return {"version": "DION-RETIREMENT-REPORT-1.1", "realEstateKrw": won(REAL_ESTATE), "reported": reported,
+            "preReserveAnnualKrw": won(pre_reserve),
             "deltaAnnualKrw": won(int(plans[1]["afterInterestAnnualKrw"]) - int(plans[0]["afterInterestAnnualKrw"])),
             "plans": plans}
 

@@ -119,7 +119,7 @@ def test_candidate_cap_and_unapproved_role_do_not_relax_filter():
 
 
 @pytest.mark.parametrize(('preference', 'targets', 'allocated'), [
-    ('PREF_STABILITY', ('PREF_STABILITY',) * 3, (0, 30000, 60000)),
+    ('PREF_STABILITY', ('PREF_STABILITY',) * 3, (60000, 90000, 120000)),
     ('PREF_LEAN_STABILITY', ('PREF_STABILITY', 'PREF_LEAN_STABILITY', 'PREF_BALANCED'), (0, 90000, 90000)),
     ('PREF_BALANCED', ('PREF_LEAN_STABILITY', 'PREF_BALANCED', 'PREF_LEAN_RETURN'), (90000, 180000, 125520)),
     ('PREF_LEAN_RETURN', ('PREF_BALANCED', 'PREF_LEAN_RETURN', 'PREF_RETURN'), (180000, 139230, 125520)),
@@ -150,6 +150,10 @@ def test_fifteen_relative_choices_preserve_source_and_customer_limits(preference
         assert int(v['stress_review']['scenario_loss_krw_ceil']) <= 60000
         if preference in {'PREF_STABILITY', 'PREF_LEAN_STABILITY'}:
             assert all(a['code'] == '153130' for a in v['allocations'])
+        if preference == 'PREF_STABILITY':
+            assert v['target_cash_krw'] == str(300000 - amount)
+            assert v['held_krw'] == '0'
+            assert v['stress_review']['scenario_loss_krw_ceil'] == str(amount // 20)
 
 
 def test_p1_household_with_unknown_horizon_can_compare_distinct_targets():
@@ -167,11 +171,12 @@ def test_p1_household_with_unknown_horizon_can_compare_distinct_targets():
     assert result["missing_question_ids"] == []
     assert "FUND_USE_UNDECIDED" in result["reason_codes"]
     views = result["candidates"][0]["rows"][0]["portfolio_type_views"]
-    for name, bonds in (("STABLE", 0), ("BALANCED", 1000), ("RETURN", 2000)):
+    for name, bonds in (("STABLE", 2000), ("BALANCED", 3000), ("RETURN", 4000)):
         v = views[name]
         assert v["target_mix_bps"] == {"BOND": bonds, "CASH": 10000-bonds, "KR_EQUITY": 0, "US_EQUITY": 0}
         assert v["comparison_only"] and not v["selectable"]
         assert v["allocated_total_krw"] == "0" and v["unallocated_krw"] == "300000"
+        assert v["held_krw"] == str(30 * bonds) and v["target_cash_krw"] == str(300000 - 30 * bonds)
 
 
 @pytest.mark.parametrize('missing_id,key', [('D19', 'product_understanding'), ('F17', 'risk_preference_choice_raw')])
