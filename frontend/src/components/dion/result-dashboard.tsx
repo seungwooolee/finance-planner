@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { Bot, Compass, MessagesSquare, Package, PiggyBank, Target, Wallet } from "lucide-react";
 import { type Json, list, object, textValue } from "@/lib/dion/model";
 import { formatKrw } from "@/lib/dion/money-format";
-import { assetGroup, isWon } from "@/lib/dion/result-visual";
+import { assetGroup, investmentDisplayMonth, isWon } from "@/lib/dion/result-visual";
 import { RISK_LABEL, productRole } from "@/lib/dion/product-role";
 import { portfolioNames } from "@/lib/dion/portfolio-comparison";
 import { planName } from "./plan-comparison";
@@ -36,7 +36,7 @@ function Kpi({ icon: Icon, label, value, note, tone }: { icon: typeof Wallet; la
 }
 
 function ProductCards({ review, plan }: { review: Row; plan: string }) {
-  const month = list(object(list(review.candidates).find(c => c.strategy_id === plan)).rows)[0];
+  const month = investmentDisplayMonth(list(object(list(review.candidates).find(c => c.strategy_id === plan)).rows));
   const products = list(review.products);
   const allocations = list(month?.allocations).filter(a => positive(a.review_allocated_krw));
   if (!allocations.length) return null;

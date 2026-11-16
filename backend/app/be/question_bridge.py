@@ -7,6 +7,7 @@ from ..planning.peer_reference import attach_peer_reference
 from ..planning.product_allocation import block_product_budget
 from ..planning.question_v12 import run_question_v12
 from ..planning.result_presentation import attach_presentation
+from .product_guidance import attach_product_guidance
 from .tax_guidance import attach_tax_guidance
 
 
@@ -57,4 +58,5 @@ def run_frontend_questions(document):
                                       "transaction_executed": False}
     if any("OUT-05" in gate["affected_outputs"] for gate in gates):
         block_product_budget(result)
-    return attach_tax_guidance(document, attach_peer_reference(document, attach_presentation(result)))
+    presented = attach_peer_reference(document, attach_presentation(result))
+    return attach_product_guidance(document, attach_tax_guidance(document, presented))

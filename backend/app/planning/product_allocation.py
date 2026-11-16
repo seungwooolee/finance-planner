@@ -20,6 +20,7 @@ from .product_candidates import GROUPS, comparison_groups, review_universe_group
 from .product_candidates import VERSION as COMPARISON_VERSION
 from .product_disclosures import REVIEWED_ON, apply_disclosures
 from .product_explanation import explain
+from .product_preference import product_preference
 from .product_scoring import score_role
 from .statuses import axes
 
@@ -37,7 +38,7 @@ CORE_FIELDS = {
     }),
 }
 MESSAGES = {
-    "PRODUCT_FACTS_UNVERIFIED": "상품별 위험등급·비용·현금화 조건 등의 확인이 필요해요.",
+    "PRODUCT_FACTS_UNVERIFIED": "상품별 위험등급과 비용 등 공시 확인이 필요해요.",
     "PRODUCT_NOT_ENABLED": "이번 상품 배분 검토의 후보에 포함되지 않았어요.",
     "POLICY_NOT_REVIEWED": "개인화 위험 한도와 상품별 목표 비중의 정책 검토가 필요해요.",
     "NO_POLICY_FOR_PROFILE": "이 응답 조합에 적용할 검토 정책이 아직 없어요.",
@@ -444,6 +445,75 @@ def _portfolio_slots(slots, candidates, eligible, products, policy, loss_band):
     return list(selected.values()), bounded, stress
 
 
+def _product_choices(contexts, request, products, policy, loss_band):
+    """Review replacements across all funded months without changing weights or cash."""
+    by_code = {p["code"]: p for p in products}
+    roles = {code: p["service_constraints"]["role"] for code, p in by_code.items()}
+    approved = {code for code, p in by_code.items() if p.get("recommendation_eligible") is True}
+
+    def replacements(months, codes):
+        if not months[0][0]["selectable"] or not codes or any(code not in approved for code in codes):
+            return None
+        requested = {roles[code]: code for code in codes}
+        if len(requested) != len(codes):
+            return None
+        updates = []
+        for view, slots, eligible in months:
+            if not view["selectable"]:
+                return None
+            if integer(view["scenario_budget_krw"]) == 0:
+                continue
+            budget = integer(view["scenario_budget_krw"])
+            active = {slot["code"] for slot in slots if slot["code"] in eligible
+                      and budget * slot["target_bps"] // 10000 > 0}
+            active_roles = [roles[code] for code in active]
+            if any(active_roles.count(role) != 1 or code not in eligible for role, code in requested.items()):
+                return None
+            swaps = {slot["code"]: requested[roles[slot["code"]]] for slot in slots
+                     if slot["code"] in active and roles[slot["code"]] in requested}
+            proposed = [{**slot, "code": swaps.get(slot["code"], slot["code"])} for slot in slots]
+            if len({slot["code"] for slot in proposed}) != len(proposed):
+                return None
+            guarded, _ = guarded_targets(proposed, products, policy, loss_band, reduce_concentration=True)
+            if guarded != proposed:
+                return None
+            made = allocate_budget(view["scenario_budget_krw"], proposed, eligible)["allocations"]
+            updates.append((view, made))
+        return updates or None
+
+    status = {**request, "state": "UNAVAILABLE"} if request else None
+    options = {}
+    key = (request["strategy_id"], request["portfolio_type"]) if request else None
+    for basis, months in contexts.items():
+        if not months:
+            continue
+        current_codes = request["codes"] if basis == key else []
+        if current_codes:
+            updated = replacements(months, current_codes)
+            if updated is None:
+                current_codes = []
+            else:
+                status["state"] = "APPLIED"
+                for view, allocations in updated:
+                    view["allocations"] = allocations
+        funded = [item for item in months if integer(item[0]["scenario_budget_krw"]) > 0]
+        if not funded or not months[0][0]["selectable"]:
+            continue
+        active_roles = {roles[a["code"]] for a in funded[0][0]["allocations"]
+                        if integer(a["review_allocated_krw"]) > 0}
+        choices = []
+        for code in sorted(funded[0][2] & approved):
+            if roles[code] not in active_roles:
+                continue
+            next_codes = [c for c in current_codes if roles[c] != roles[code]] + [code]
+            if len(next_codes) <= 3 and replacements(months, next_codes) is not None:
+                choices.append({"code": code, "role": roles[code]})
+        if choices:
+            strategy, kind = basis
+            options.setdefault(strategy, {})[kind] = choices
+    return status, options
+
+
 def review_products(document, result, *, catalog=None, policy=None):
     root = Path(__file__).parent
     use_current_disclosures = catalog is None and policy is None
@@ -516,7 +586,7 @@ def review_products(document, result, *, catalog=None, policy=None):
         if product["code"] in eligible:
             by_role.setdefault(product["service_constraints"]["role"], []).append(product)
     comparison_scores = {role: score_role(items, on) for role, items in sorted(by_role.items())}
-    candidates, blockers = [], []
+    candidates, blockers, choice_contexts = [], [], {}
     plans = result.get("results", {}).get("OUT-05", {})
     if plans.get("calc_state") not in {"CALCULATED", "PARTIAL"}:
         blockers.append("BUDGET_UNAVAILABLE")
@@ -666,6 +736,8 @@ def review_products(document, result, *, catalog=None, policy=None):
                                   "stress_review": {"bounded_scenario_loss_bps": loss_bps,
                                                     "scenario_loss_krw_ceil": str((type_loss + 9999) // 10000),
                                                     "full_loss_scenario_krw": view["allocated_total_krw"]}}
+                choice_contexts.setdefault((candidate["strategy_id"], type_id), []).append(
+                    (views[type_id], type_slots, month_eligible))
             rows.append({"period": month["period"], **allocation, "portfolio_type_views": views,
                          "comparison_eligible_codes": sorted(month_eligible & review_codes) if not general else [],
                          "comparison_groups": comparison_groups(products, set() if general else month_eligible,
@@ -679,6 +751,9 @@ def review_products(document, result, *, catalog=None, policy=None):
     state = "INVALID_INPUT" if invalid else "NEEDS_INPUT" if missing else "REVIEW_REQUIRED" if blockers else "CALCULATED"
     if state == "CALCULATED" and any(r["reason_codes"] for c in candidates for r in c["rows"]):
         state = "PARTIAL"
+    product_selection, product_options = _product_choices(
+        choice_contexts, product_preference(document), products, policy, profile.get("loss_tolerance_band_raw"),
+    )
     row = output(state, title="상품 적합성·배분 검토", review_version=VERSION,
                  scope="CONSTRAINED_MONTHLY_REVIEW_PREVIEW", diagnosis_scope=document["context"]["scope"],
                  missing_question_ids=missing,
@@ -693,6 +768,7 @@ def review_products(document, result, *, catalog=None, policy=None):
                                  "basis": "SERVICE_ASSUMPTIONS_FOR_PREVIEW", "backtested": False,
                                  "regulatory_certification": False},
                  products=screened, candidates=candidates, reason_messages=messages,
+                 product_selection=product_selection, product_options=product_options,
                  catalog_comparison={"reviewed_on": reference_on.isoformat(),
                                      "groups": comparison_groups(products, reference_products, default_codes),
                                      "review_universe_groups": review_universe_groups(
@@ -750,6 +826,9 @@ def block_product_budget(result):
     row["calc_state"] = "NEEDS_INPUT"
     row["reason_codes"] = sorted(set(row.get("reason_codes", []) + ["BUDGET_UNAVAILABLE"]))
     row["presentation_budget_blocked"] = True
+    row["product_options"] = {}
+    if row.get("product_selection"):
+        row["product_selection"]["state"] = "UNAVAILABLE"
     for candidate in row.get("candidates", []):
         for month in candidate["rows"]:
             month.update(allocations=[], allocated_total_krw="0", unallocated_krw=month["scenario_budget_krw"],

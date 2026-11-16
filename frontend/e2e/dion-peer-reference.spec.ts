@@ -53,11 +53,11 @@ test('reviewed research reaches real results with source, cohort, withholding an
   await composition.getByRole('button', {name: '상품 정보 자세히 보기 →'}).click();
   const products = page.getByRole('region', {name: '자산군별 상품 비교 후보'});
   await expect(products.locator('[data-candidate-code]')).toHaveCount(29);
-  await expect(products.getByText('현재 배분 보류', {exact: false}).first()).toBeVisible();
+  await expect(products.getByText('공시 참고', {exact: true}).first()).toBeVisible();
   const month = result.results['OUT-06'].candidates[0].rows[0].portfolio_type_views.RETURN;
   await expect(page.locator('[data-allocation-month]').first()).toHaveAttribute('data-allocated', month.allocated_total_krw);
   await expect(page.getByRole('article', { name: '선택 보류 · 배분 검토 내역' })).toBeVisible();
-  await expect(page.getByRole('article', { name: '추천 검토 상품' })).toHaveCount(0);
+  await expect(page.getByRole('article', { name: '추천 상품' }).getByRole('button', {name: /최종안에 추가/})).toHaveCount(0);
   await page.getByRole('button', {name:'투자구성 비교로 돌아가기'}).click();
   await expect(page.locator('[data-portfolio-apply="RETURN"]')).toHaveAttribute('aria-pressed','true');
   await page.locator('.d-tabs button').nth(4).click();

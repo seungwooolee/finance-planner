@@ -63,7 +63,6 @@ export function PortfolioChoiceDetail({ rows, products, type, messages, target }
               <div><dt>연 총보수</dt><dd>{baseFee ? `${baseFee}%` : '미확인'}</dd></div>
               {totalExpense && <div><dt>연 보수·비용</dt><dd>{totalExpense}%</dd></div>}
               <div><dt>환율 영향</dt><dd>{disclosure.fx_exposed === true ? '환노출' : disclosure.fx_exposed === false ? '직접 환노출 없음' : '미확인'}</dd></div>
-              {disclosure.cash_conversion === 'KRX_T_PLUS_2_BUSINESS_DAYS' && <div><dt>현금화</dt><dd>매도 후 2영업일 결제</dd></div>}
             </dl>
             {source && <a className="d-text-button" href={source} target="_blank" rel="noopener noreferrer">공식 상품 자료 ↗</a>}
           </article>;

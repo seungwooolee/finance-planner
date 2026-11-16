@@ -6,7 +6,7 @@ import { EvidenceDisclosure } from "./evidence-disclosure";
 import { type Answer, sourceHref, validAnswer } from "./scheme-evidence";
 
 export type EvidenceAccess = {token: string; caseId: string; runId: string; version: number; inputHash: string; evaluationOn: string};
-const topics = {risk: ["위험등급", "CON-01"], fee: ["비용 비교", "CON-03"], currency: ["환율 영향", "CON-05"], liquidity: ["매도 후 현금화", "CON-07"], product: ["상품별 확인 자료", "PRD-"]};
+const topics = {risk: ["위험등급", "CON-01"], fee: ["비용 비교", "CON-03"], currency: ["환율 영향", "CON-05"], product: ["상품별 확인 자료", "PRD-"]};
 const taxItems: Record<string, string> = {"pension-contribution": "TAX-01", "isa-account": "TAX-02", "isa-maturity": "TAX-03", "monthly-rent": "TAX-04", "sme-employment": "TAX-05", "marriage-credit": "TAX-06", "marriage-birth-gift": "TAX-07", "pension-withdrawal": "TAX-08"};
 type Result = {answer: Answer; retrievedAt: string; year: number | null};
 

@@ -69,10 +69,9 @@ def _allocation_context(catalog_product, disclosure):
                       "detail": "미국 주가가 올라도 원화가 강해지면 원화 기준 수익이 줄거나 손실이 날 수 있어요. "
                                 "주가 하락과 환율 변화가 겹칠 수도 있어요."})
     if disclosure.get("cash_conversion") == "KRX_T_PLUS_2_BUSINESS_DAYS":
-        notes.append({"label": "매매 가격과 출금 시점",
+        notes.append({"label": "거래가격 차이",
                       "detail": "매수·매도 호가 차이가 크거나 거래가격이 순자산가치(NAV)와 벌어지면 "
-                                "예상과 다른 가격에 거래될 수 있어요. 자금이 필요한 날보다 앞서 "
-                                "매도 체결 후 2영업일 결제와 증권사 출금 가능일을 확인하세요."})
+                                "예상과 다른 가격에 거래될 수 있어요."})
     if disclosure.get("deposit_protected") is False:
         notes.append({"label": "원금과 예금자보호",
                       "detail": "예금자보호 대상이 아니며, 매도 시점의 가격에 따라 납입 원금보다 적게 돌려받을 수 있어요."})

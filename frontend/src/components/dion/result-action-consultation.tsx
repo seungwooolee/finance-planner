@@ -132,6 +132,7 @@ function ActionForm(props: Props) {
     } finally { clearTimeout(timer); if (active.current === controller) {active.current = null; setBusy(false);} }
   }
   const action = answer?.next_action;
+  const showAction = action && action.topic !== "liquidity";
   const actionBasis = basis ?? {strategy_id: "STABILITY_FIRST", portfolio_type: null, revision: 0};
   const inactive = busy || blocked || flow?.saving;
   return <section className="d-result-action" aria-label="현재 결과 다음 행동 상담" aria-busy={inactive}>
@@ -166,12 +167,12 @@ function ActionForm(props: Props) {
       {!!answer.facts.length && <><h4>확인된 사실</h4><ul>{answer.facts.map((item, i) => <li key={`${item.code}-${i}`}>{item.text}</li>)}</ul></>}
       <h4>{answer.answer_state === "UNSUPPORTED" ? "상담 가능한 범위" : "이유와 확인할 점"}</h4>
       {answer.reasons.map((item, i) => <p key={`${item.code}-${i}`}>{item.text}</p>)}
-      {action && <div><button type="button" className="d-secondary" onClick={() => {
+      {action && showAction && <div><button type="button" className="d-secondary" onClick={() => {
         if (action.kind === "QUESTION") onEdit(action.target);
         else if (action.kind === "RESULT") onResult(Number(action.target));
         else setEvidence(true);
       }}>{action.label} →</button></div>}
-      {evidence && action?.kind === "EVIDENCE" && <PortfolioEvidence key={`${answer.context_sha256}-${action.target}-${action.topic}`} access={access}
+      {evidence && action?.kind === "EVIDENCE" && action.topic !== "liquidity" && <PortfolioEvidence key={`${answer.context_sha256}-${action.target}-${action.topic}`} access={access}
         kind="PRODUCT" targetId={action.target} stale={stale} initialTopic={action.topic}/>}
       <details><summary>이 답변의 결과 근거</summary>
         <p>{answer.basis_label} · {preview ? "미리보기" : `저장 입력 ${answer.input_version}`} · {answer.evaluation_on}</p>
