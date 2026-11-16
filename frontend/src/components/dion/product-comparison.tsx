@@ -1,5 +1,7 @@
 import {type Json, list, object, textValue} from "@/lib/dion/model";
 
+import { productOptionRoles, replaceProductChoice, type ProductSelection } from "@/lib/dion/portfolio-comparison";
+import { assetGroup, isWon } from "@/lib/dion/result-visual";
 import {sourceHref} from "./scheme-evidence";
 
 export type ProductActions = { canAdd: (code: string) => boolean; included: (code: string) => boolean;
@@ -24,6 +26,36 @@ export function AddProduct({product,actions}: {product:Record<string,Json>;actio
   if(!actions?.canAdd(code)) return null;
   return <button type="button" className="d-secondary d-add-product" disabled={actions.busy}
     aria-label={`${textValue(product.name)} 최종안에 추가`} onClick={()=>actions.add(code)}>최종안에 추가</button>;
+}
+
+export function ProductPicker({review, month, strategy, portfolio, blocked, onApply}: {
+  review: Record<string, Json>; month?: Record<string, Json>; strategy: string; portfolio: string;
+  blocked: boolean; onApply: (selection: ProductSelection) => void;
+}) {
+  const roles = productOptionRoles(review, strategy, portfolio);
+  const included = new Set(list(month?.allocations)
+    .filter(row => isWon(row.review_allocated_krw) && BigInt(row.review_allocated_krw) > 0n)
+    .map(row => textValue(row.code)));
+  const options = list(review.products).filter(product => roles.has(textValue(product.code)));
+  const actions: ProductActions = {canAdd: code => roles.has(code), included: code => included.has(code), busy: blocked,
+    add: code => {
+      const choice = replaceProductChoice(review, strategy, portfolio, roles, code);
+      if (choice && !blocked) onApply(choice);
+    }};
+  const canReplace = month?.selectable === true && month.comparison_only !== true
+    && options.some(product => !included.has(textValue(product.code)));
+  return <section className="d-composition-detail" aria-label="포트폴리오 상품 선택">
+    <h4>포트폴리오 상품 선택</h4>
+    {canReplace ? <>
+      <p>같은 자산군에서 상품을 바꾸면 배정 금액을 유지한 채 결과에 반영돼요.</p>
+      {options.map(product => <article className="d-composition-product" key={textValue(product.code)}>
+        <header>
+          <div><strong>{textValue(product.name)}</strong><small>{assetGroup(product).label} · {textValue(product.code)}</small></div>
+          <AddProduct product={product} actions={actions}/>
+        </header>
+      </article>)}
+    </> : <p>이 구성에서 바꿀 수 있는 상품이 없어요. 상품 정보에서 배정과 검토 조건을 확인해 보세요.</p>}
+  </section>;
 }
 
 export function ProductComparison({products,actions,emptyMessage}: {

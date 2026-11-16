@@ -106,12 +106,12 @@ function Recalculation({review}: {review: PortfolioReview}) {
   </details>;
 }
 
-export function PortfolioReviewFlow({taxSelection,clearTaxSelection,chatHandoff,visited,selectionBlocked=false,flow, basis, view, token, caseId, stale, doc, onTab, onOpenRun, onReadRun, onPrepared, onAdopt}: {
+export function PortfolioReviewFlow({taxSelection,clearTaxSelection,chatHandoff,visited,selectionBlocked=false,flow, basis, view, token, caseId, stale, doc, onTab, onOpenRun, onReadRun, onPrepared, onAdopt, showHistory=false}: {
   taxSelection?: TaxSelection; clearTaxSelection?:()=>void;
   chatHandoff?: ChatReviewHandoff;
   visited: number[]; selectionBlocked?: boolean; flow: ReviewFlow; basis: ReviewBasis | null; view: ViewResult; token: string | null; caseId: string; stale: boolean;
   doc: Document | null; onTab: (n: number) => void; onOpenRun: (id: string) => Promise<void>; onReadRun: (id: string) => Promise<void>;
-  onPrepared: (r: PortfolioReview) => void; onAdopt: () => void;
+  showHistory?: boolean; onPrepared: (r: PortfolioReview) => void; onAdopt: () => void;
 }) {
   const review = flow.review;
   const selectedTax = taxSelection && basis?.run_id === taxSelection.run_id && basis.input_hash === taxSelection.input_hash ? taxSelection : undefined;
@@ -192,10 +192,7 @@ export function PortfolioReviewFlow({taxSelection,clearTaxSelection,chatHandoff,
   const incomeChanged = proposal?.changes.some(change => change.after.question_ref.design_id === "F03"
     && JSON.stringify(change.before.fields.monthly_net_income_krw) !== JSON.stringify(change.after.fields.monthly_net_income_krw));
   return <section id="dion-portfolio-review" className="d-card d-portfolio-review" aria-label="DION 상담과 최종 포트폴리오" aria-busy={flow.busy}>
-    <span className="d-eyebrow">상담 → 변경 검토 → 최종 생성 → 별도 채택</span>
-    <h2 tabIndex={-1} ref={heading}>DION과 함께 검토안을 완성해요</h2>
-    <p>상담용 검토안: <strong>{planName(basis?.strategy_id ?? "")} · {basis ? portfolioNames[basis.portfolio_type] : "구성 선택 전"}</strong></p>
-    <p>참조 결과: 입력 {view.serverVersion ?? "저장 전"}번째 버전 · {stale ? "이전 입력 기준" : "현재 화면의 계산"}. 대화와 제안만으로 답변·계획이 바뀌지 않아요.</p>
+    <h2 tabIndex={-1} ref={heading}>포트폴리오 상담</h2>
     {chatHandoff && <section className="d-note" aria-label="채팅에서 이어온 상담">
       <h3>채팅에서 이어온 상담</h3>
       {!!pendingChanges.length && <><p>새 초안에 반영할 값을 확인해 주세요.</p><ChangesList items={pendingChanges}/></>}
@@ -211,10 +208,9 @@ export function PortfolioReviewFlow({taxSelection,clearTaxSelection,chatHandoff,
         <button type="button" className="d-text-button" disabled={blocked} onClick={()=>setDiscardedHandoff(chatHandoff)}>이번 검토에 적용하지 않기</button>
       </div>}
     </section>}
-    {!stepsDone&&<div className="d-consultation-entry">
-      {missingVisits.length>0&&<div className="d-toolbar">{missingVisits.map(({name,i})=><button type="button" className="d-text-button" key={name} onClick={()=>onTab(i)}>{name} 살펴보기 →</button>)}</div>}
-      <button type="button" className="d-primary" disabled={!basis||stale||selectionBlocked||flow.busy||!flow.loaded||missingVisits.length>0} onClick={()=>void confirmForConsultation()}>검토 내용 확인하고 상담 준비</button>
-      {!basis&&<p className="d-inline-note">저장한 결과와 선택한 투자구성이 있어야 상담을 이어갈 수 있어요.</p>}
+    {basis&&!stepsDone&&<div className="d-consultation-entry">
+      {missingVisits.length>0&&<p className="d-inline-note">상담 전 확인할 화면 · {missingVisits.map(({name})=>name).join(" · ")}</p>}
+      <button type="button" className="d-primary" disabled={stale||selectionBlocked||flow.busy||!flow.loaded||missingVisits.length>0} onClick={()=>void confirmForConsultation()}>포트폴리오 상담 시작</button>
     </div>}
     {review && <>
       <p role="status">{review.final ? "서버에 최종 포트폴리오가 생성됐어요. 계획은 아직 자동 채택되지 않았어요." : review.incomplete_reasons.map(r => reviewReasons[r] ?? "기준과 지원 상태를 확인해 주세요.").join(" ") || "최종 생성을 요청할 수 있어요."}</p>
@@ -263,6 +259,6 @@ export function PortfolioReviewFlow({taxSelection,clearTaxSelection,chatHandoff,
       </div>}
     </>}
     {flow.error && <div ref={error} role="alert" tabIndex={-1}><p>{flow.error}</p><button type="button" className="d-secondary" disabled={flow.busy} onClick={flow.reload}>서버 상태 다시 확인</button></div>}
-    <details className="d-fold"><summary>이전 최종 생성·검토 기록</summary>{flow.items.length ? flow.items.map(r => <p key={r.review_id}>{r.final ? `최종 생성 · ${r.final.generated_at}` : "진행 중 검토"} · 입력 {r.basis?.input_version ?? r.source_basis.input_version}번째 버전 <button type="button" className="d-text-button" disabled={flow.busy} onClick={() => {onPrepared(r);void (r.final?onReadRun(r.current_run_id):onOpenRun(r.current_run_id));}}>{r.final?"이 생성본의 결과 조회":"이 검토의 답변·결과 이어 열기"}</button></p>) : <p>조회된 기록 없음</p>}{flow.more&&<button type="button" className="d-secondary" disabled={flow.busy} onClick={()=>void flow.loadMore()}>이전 기록 더 보기</button>}</details>
+    {showHistory&&<details className="d-fold"><summary>이전 최종 생성·검토 기록</summary>{flow.items.length ? flow.items.map(r => <p key={r.review_id}>{r.final ? `최종 생성 · ${r.final.generated_at}` : "진행 중 검토"} · 입력 {r.basis?.input_version ?? r.source_basis.input_version}번째 버전 <button type="button" className="d-text-button" disabled={flow.busy} onClick={() => {onPrepared(r);void (r.final?onReadRun(r.current_run_id):onOpenRun(r.current_run_id));}}>{r.final?"이 생성본의 결과 조회":"이 검토의 답변·결과 이어 열기"}</button></p>) : <p>조회된 기록 없음</p>}{flow.more&&<button type="button" className="d-secondary" disabled={flow.busy} onClick={()=>void flow.loadMore()}>이전 기록 더 보기</button>}</details>}
   </section>;
 }

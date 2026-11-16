@@ -32,8 +32,9 @@ const series = [
   {key:"cumulative_gain_krw", label:"누적 평가손익", color:"#9b4c11", dash:"2 5"},
 ] as const;
 
-export function InvestmentReturnChart({view, plan, portfolio, revision, blocked, token, caseId, viewingMonth}: {
+export function InvestmentReturnChart({view, plan, portfolio, revision, blocked, token, caseId, viewingMonth, onChooseProducts}: {
   view: ViewResult; plan: string; portfolio: string | null; revision: number; blocked: boolean; token: string | null; caseId: string; viewingMonth?: string;
+  onChooseProducts?: () => void;
 }) {
   const id = useId();
   const [rate, setRate] = useState("");
@@ -166,10 +167,13 @@ export function InvestmentReturnChart({view, plan, portfolio, revision, blocked,
     <p className="d-inline-note">선택한 투자안의 월 배정액과 입력한 원화 수익률 가정을 바탕으로 전망을 계산해요. 기존 보유자산·현금 대기자금·인출은 계산에서 제외해요.</p>
     {viewingMonth&&first?.period&&first.period!==viewingMonth&&
       <p className="d-note">전망의 배분 기준 월은 {textValue(first.period)}이에요. 결과 조회 월은 {viewingMonth}이에요.</p>}
-    {!canForecast ? <p className="d-note">{!portfolio ? "투자구성을 선택해 포트폴리오에 반영하면 전망을 계산할 수 있어요."
+    {!canForecast ? <div className="d-note"><p>{!portfolio ? "투자구성과 상품을 고르면 전망을 계산할 수 있어요."
       : blocked ? "최신 결과와 투자구성을 확인한 뒤 전망을 계산할 수 있어요."
       : !linked ? "현재 계산과 연결된 투자구성 정보가 없어요. 최신 결과를 다시 열어주세요."
       : "계산 기준 월에 상품 배정액이 있어야 1년 수익률을 볼 수 있어요. 투자구성에서 상품 배정액과 보류 이유를 확인할 수 있어요."}</p>
+      {onChooseProducts&&!blocked&&(!portfolio||(linked&&!allocations.length))&&
+        <button type="button" className="d-secondary" onClick={onChooseProducts}>투자구성·상품 고르기 →</button>}
+    </div>
       : <>
       {selection.selectable === true && isWon(selection.allocated_total_krw) && isWon(selection.unallocated_krw) &&
         <p className="d-note">{textValue(first?.period)} · 상품 배정 <strong>{formatKrw(selection.allocated_total_krw)}</strong> · 미배정 {formatKrw(selection.unallocated_krw)}</p>}

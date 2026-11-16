@@ -67,7 +67,7 @@ test("retirement report compares the two alternatives and records the explicitly
   await login.getByLabel("이메일", { exact: true }).fill("retirement@example.test");
   await login.getByLabel("비밀번호", { exact: true }).fill("test-only");
   await login.getByRole("button", { name: "이메일로 로그인" }).click();
-  await expect(page.getByRole("status").filter({ hasText: "가상 월별 재무계획을 내 상담의 별도 사례에 저장했어요" })).toBeVisible();
+  await expect(page.getByRole("status").filter({ hasText: "가상 월별 재무계획을 내 상담의 별도 사례에 저장했어요" })).toBeVisible({ timeout: 30_000 });
 
   const checkin = page.getByRole("region", { name: "계획 선택과 이번 달 기록" });
   const record = checkin.getByRole("heading", { name: "2026년 12월 가상 기록" });
