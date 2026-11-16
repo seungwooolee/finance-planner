@@ -9,7 +9,7 @@ test("retirement report compares the two alternatives and records the explicitly
   await page.route("**/api/be/v1/auth/login", route => route.fulfill({ json: { access_token: "MOCK-FE-ONLY", expires_in: 3600 } }));
 
   await page.goto("/dion");
-  await page.getByRole("button", { name: "가상 사례 불러오기", exact: true }).click();
+  await page.getByRole("button", { name: "심사용 사례", exact: true }).click();
   const preview = page.waitForResponse(response => response.url().endsWith("/api/fe/v1/preview"));
   await page.getByRole("button", { name: "은퇴기 불러오기", exact: true }).click();
   const calculated = await preview;

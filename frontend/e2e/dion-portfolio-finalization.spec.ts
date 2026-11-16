@@ -29,6 +29,35 @@ async function consult(page: Page) {
   await expect(p.getByRole("button", {name: "최종 포트폴리오 생성", exact: true})).toBeEnabled();
 }
 
+test("an older policy result can be recalculated in the same saved case and then selected", async ({page, request}) => {
+  test.setTimeout(120_000);
+  const {base, first} = await prepare(page, request, false, false, false, scenario.document);
+  await page.getByRole("button", {name: new RegExp(first.run_id)}).click();
+  const tabs = page.getByRole("navigation", {name:"빠른 결과 5뷰"});
+  await tabs.getByRole("button", {name:"투자구성",exact:true}).click();
+  const choose = page.locator('[data-portfolio-apply="BALANCED"]');
+  await expect(choose).toHaveAccessibleName("중립형 선택");
+  await page.route("**/portfolio-comparison", async route => {
+    if (route.request().method() !== "PUT" || !route.request().url().includes(first.run_id)) return route.fallback();
+    await route.fulfill({status:409, json:{detail:{code:"COMPARISON_POLICY_CHANGED"}}});
+  });
+  await choose.press("Enter");
+  const issue = page.getByRole("alert").filter({hasText:"저장 당시와 상품 검토 기준이 달라졌어요"});
+  await expect(issue).toBeVisible();
+  const calculation = page.waitForResponse(r => r.url().endsWith("/question-analyses") && r.request().method() === "POST");
+  await issue.getByRole("button", {name:"최신 기준으로 다시 계산"}).click();
+  const rerun = await calculation;
+  expect(rerun.ok()).toBe(true);
+  const latest = await rerun.json();
+  expect(latest.run_id).not.toBe(first.run_id);
+  await expect(issue).toHaveCount(0);
+  await expect(choose).toHaveAccessibleName("중립형 선택");
+  await choose.click();
+  await expect(choose).toHaveAccessibleName("중립형 선택됨");
+  const comparison = await (await request.get(`${base}/analyses/${latest.run_id}/portfolio-comparison`, {headers})).json();
+  expect(comparison.selection).toMatchObject({portfolio_type:"BALANCED", run_id:latest.run_id});
+});
+
 test("no-change consultation, failed save/retry, final server artifact, resume and separate adoption", async ({page, request}, info) => {
   test.setTimeout(180_000);
   const {base, first} = await prepare(page, request, false, false, false, scenario.document);

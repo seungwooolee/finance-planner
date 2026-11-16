@@ -2,6 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "git": {
     "deploymentEnabled": {
+      "codex/portfolio-choice-judge-entry-20261116": false,
       "codex/retirement-portfolio-implementation-20261116": false,
       "codex/result-month-navigation-20261116": false,
       "codex/results-consultation-checkup-20261116": false,

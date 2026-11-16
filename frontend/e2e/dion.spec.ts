@@ -221,7 +221,7 @@ test('DION direct deep entry and mobile input/result remain within viewport',asy
   await expect(page.getByRole('heading',{name:'나의 상황부터 알려주세요'})).toBeVisible();
   await page.evaluate(()=>window.scrollTo(0,0));
   await page.screenshot({path:info.outputPath('dion-feedback-mobile-input.png'),fullPage:true});
-  await page.getByRole('button',{name:'가상 사례 불러오기',exact:true}).click();
+  await page.getByRole('button',{name:'심사용 사례',exact:true}).click();
   const scenarioResponse=page.waitForResponse(r=>r.url().endsWith('/api/fe/v1/preview')&&r.request().method()==='POST');
   await page.getByRole('dialog',{name:'요즘 나의 생활 · 가상 사례'}).getByRole('button',{name:'사회초년생 불러오기',exact:true}).click();
   expect((await scenarioResponse).ok()).toBeTruthy();

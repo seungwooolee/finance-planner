@@ -17,12 +17,15 @@
 @media(max-width:700px){.d-sidebar-coach{display:none}.d-help-launcher.compact{padding-inline:6px 10px;gap:6px}.d-help-launcher.compact>.d-cat{width:32px}}
 
 /* FE review: isolated scenarios and raw investment answers. */
-.d-scenario-launch{position:fixed;left:24px;bottom:22px;z-index:34;box-shadow:0 6px 26px #303c8c20;background:white;min-height:48px}
+.d-welcome-quick{display:grid;gap:12px;min-width:0}
+.d-welcome-quick .d-scenario-launch{justify-self:start}
+.d-scenario-tools{display:flex;justify-content:flex-end;margin-bottom:16px}
+.d-scenario-launch{min-height:44px}
 .d-scenario-dialog{margin:auto;width:960px;max-width:calc(100vw - 32px);max-height:calc(100dvh - 32px);overflow:auto;border:1px solid var(--d-line);border-radius:24px;padding:28px;background:#faf8ff;color:#161b29}
 .d-scenario-dialog::backdrop{background:#1a204460;backdrop-filter:blur(3px)}
 .d-scenario-heading{display:flex;align-items:start;justify-content:space-between;gap:18px}.d-scenario-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.d-scenario-grid h4{font-size:19px;font-weight:700}.d-scenario-grid .d-primary{margin-top:16px}.d-scenario-grid code{display:block;overflow-wrap:anywhere;white-space:pre-wrap;font-size:11px}.d-scenario-grid details{font-size:12px}.d-scenario-grid dt{font-weight:700;margin-top:18px}.d-scenario-grid li{margin-bottom:8px}
 .d-risk-question summary{font-weight:700}.d-risk-question h2{font-size:18px;margin-top:22px}.d-risk-question .d-choice{font-size:14px}.d-risk-summary>div{display:grid;grid-template-columns:170px 1fr;border-bottom:1px solid var(--d-line);padding:16px 0;gap:16px}.d-risk-summary dt{font-weight:700}.d-risk-summary small{display:block}.d-fictional .d-secondary{margin:8px 16px}.d-output-status small{display:block}.d-output-status .d-text-button{display:block;margin:7px 0}.d-scenario-dialog ul{padding-left:18px;list-style:disc}
-@media(max-width:700px){.d-scenario-launch{left:12px;bottom:12px;min-height:44px;padding:8px 12px;font-size:12px}.d-scenario-dialog{padding:20px 16px}.d-scenario-grid{grid-template-columns:1fr}.d-risk-summary>div{grid-template-columns:1fr;gap:0}.d-calc-bar{bottom:78px}.d-main{padding-bottom:145px}.d-fictional .d-secondary{margin:10px 0;display:block}.d-scenario-heading h2{font-size:20px}}
+@media(max-width:700px){.d-scenario-dialog{padding:20px 16px}.d-scenario-grid{grid-template-columns:1fr}.d-risk-summary>div{grid-template-columns:1fr;gap:0}.d-calc-bar{bottom:78px}.d-main{padding-bottom:145px}.d-fictional .d-secondary{margin:10px 0;display:block}.d-scenario-heading h2{font-size:20px}}
 
 /* Welcome header: reuse the existing mascot in its own non-interactive play area. */
 .d-tax-benefits{margin:32px 0;min-width:0}.d-tax-heading{border-top:1px solid var(--d-line);padding-top:28px}.d-tax-heading h2{margin:7px 0}.d-tax-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}.d-tax-card{min-width:0;margin:0;padding:22px;overflow-wrap:anywhere}.d-tax-card h3{margin:14px 0 4px}.d-tax-badges{display:flex;gap:7px;flex-wrap:wrap}.d-tax-badges .d-badge{white-space:normal;font-size:11px}.d-tax-status-general{background:#f0f1f5;color:#545968}.d-tax-status-needs_check{background:#fff2d8;color:#77510e}.d-tax-status-eligible{background:#e4f5ee;color:#245c48}.d-tax-status-ineligible{background:#f1ecf0;color:#684c60}.d-tax-conditions{margin:16px 0;padding-top:12px;border-top:1px solid var(--d-line);font-size:13px}.d-tax-conditions summary,.d-tax-all>summary{cursor:pointer;font-weight:650;color:var(--d-primary)}.d-tax-conditions h4{margin:16px 0 6px}.d-tax-conditions ul{padding-left:20px;list-style:disc}.d-tax-conditions li+li{margin-top:6px}.d-tax-sources a{color:var(--d-primary);text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}.d-tax-buttons{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:18px}.d-tax-buttons .d-secondary{padding:9px 13px}.d-tax-all{margin-top:18px}.d-tax-all>.d-tax-grid{margin-top:20px}.d-tax-dialog{width:680px;max-width:calc(100vw - 32px);text-align:left;overflow-wrap:anywhere}.d-tax-dialog h2{padding-right:35px;margin-top:10px}.d-tax-dialog .d-note{margin:16px 0}.d-tax-guide-block{background:var(--d-soft);border-radius:14px;padding:18px;margin:20px 0}.d-tax-guide-block h3{margin:0}.d-tax-guide-block h3:not(:first-child){margin-top:20px}.d-tax-dialog pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;max-height:260px;overflow:auto}.d-tax-dialog>.d-secondary{margin-top:22px}
@@ -472,7 +475,7 @@
 }
 
 /* v0.3: one persistent consultation, native modal focus and mobile sheet. */
-.d-ai-window{position:fixed;inset:auto auto 20px 20px;margin:0;padding:0;width:460px;max-width:calc(100vw - 32px);height:min(760px,calc(100dvh - 40px));max-height:calc(100dvh - 40px);border:1px solid #dce1f3;border-radius:24px;background:#fff;color:#202940;box-shadow:0 16px 60px #17244133;overflow:hidden}
+.d-ai-window{position:fixed;inset:auto max(20px,env(safe-area-inset-right)) max(20px,env(safe-area-inset-bottom)) auto;margin:0;padding:0;width:460px;max-width:calc(100vw - 32px);height:min(760px,calc(100dvh - 40px));max-height:calc(100dvh - 40px);border:1px solid #dce1f3;border-radius:24px;background:#fff;color:#202940;box-shadow:0 16px 60px #17244133;overflow:hidden}
 .d-ai-window[open]{display:flex;flex-direction:column}
 .d-ai-window::backdrop{background:#17244133}
 .d-ai-window>header{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #e5e8f2;flex-shrink:0}
@@ -483,8 +486,8 @@
 .d-ai-body .d-toolbar{flex-wrap:wrap}.d-ai-body input,.d-ai-body select{min-width:0;width:100%;font-size:16px}
 .d-ai-body .d-field{min-width:0}.d-ai-body .d-note{font-size:13px}.d-ai-basis{font-size:13px;font-weight:700;color:#4654ae}
 .d-ai-faq{margin-top:24px;padding-top:16px;border-top:1px solid #e5e8f2}.d-ai-faq summary{cursor:pointer;min-height:44px}
-.d-consultation{bottom:max(20px,env(safe-area-inset-bottom));left:max(20px,env(safe-area-inset-left));right:auto}.d-scenario-launch{left:auto;right:max(20px,env(safe-area-inset-right));bottom:max(20px,env(safe-area-inset-bottom))}
-@media(max-width:700px){.d-ai-window{inset:auto 0 0;width:100%;max-width:100%;height:92dvh;max-height:100dvh;border-radius:22px 22px 0 0}.d-ai-body{padding:16px 16px calc(24px + env(safe-area-inset-bottom))}.d-consultation{left:max(12px,env(safe-area-inset-left));right:auto;bottom:max(12px,env(safe-area-inset-bottom))}}
+.d-consultation{bottom:max(20px,env(safe-area-inset-bottom));right:max(20px,env(safe-area-inset-right))}
+@media(max-width:700px){.d-ai-window{inset:auto 0 0;width:100%;max-width:100%;height:92dvh;max-height:100dvh;border-radius:22px 22px 0 0}.d-ai-body{padding:16px 16px calc(24px + env(safe-area-inset-bottom))}.d-consultation{right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom))}}
 @media print{.d-consultation{display:none!important}}
 
 /* v0.5: explicit evidence lookup, supporting sources stay secondary. */
@@ -718,9 +721,11 @@
 .dion-app .d-basis-detail{font-size:12px;margin-top:6px}
 .dion-app .d-basis-detail summary{font-weight:500;color:#626775}
 .dion-app .d-basis-detail[open]>summary{margin-bottom:4px}
-/* 2026-11-15 UI 점검: 모바일에서 고정 ‘가상 사례’ 버튼이 본문·하단 버튼을 가리지 않게 */
+.dion-app .d-portfolio-card .d-type-sub{margin:0}
+.dion-app .d-portfolio-card .d-draft-chip{align-self:flex-start;margin:0}
+
+/* Leave room for the fixed consultation launcher on mobile. */
 @media(max-width:640px){
-  .d-scenario-launch{left:auto;right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));min-height:48px;padding:8px 12px;font-size:12px}
   .dion-app[data-view="results"]::after{height:64px}
   .d-main{padding-bottom:96px}
 }
