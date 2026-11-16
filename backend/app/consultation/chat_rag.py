@@ -23,6 +23,7 @@ PERSONAL_COMPOUND = re.compile(r"(?:내|제)(?:경우|상황|결과|계획|포�
 FOLLOWUP = re.compile(r"^(?:그럼|그러면|그건|그거|그중|구체적으로|자세히)")
 PRODUCT_DETAIL = re.compile(r"(?:총보수|운용보수|위험등급|수수료|비용|분배금|추적오차)")
 YEAR = re.compile(r"(?<!\d)(\d{4})\s*(?:년|귀속)")
+BARE_ANSWER = re.compile(r"(?:\d[\d,.]*\s*(?:억|만|천)?\s*원|모름|미입력|해당\s*없음)[!.。]*$")
 ALIASES = {"안심상속": "받을 상속의 재산 조회", "상속재산조회": "받을 상속의 재산 조회",
            "상속신고": "상속 개시 후 신고", "상속인": "법적 상속인", "유산": "상속",
            "연금인출": "연금 수령", "실제지출": "현금흐름 점검", "월점검": "현금흐름 점검"}
@@ -61,8 +62,10 @@ def uses_personal_basis(message):
 
 def is_evidence_question(message):
     text = _normalized(message).strip()
-    return bool(QUESTION.search(text) or FOLLOWUP.match(text)
-                or (len(text) <= 40 and not text.endswith(("어요", "예요", "입니다", "합니다", "싶어"))))
+    if QUESTION.search(text) or FOLLOWUP.match(text):
+        return True
+    return len(text) <= 40 and not (BARE_ANSWER.search(text)
+                                   or text.endswith(("어요", "예요", "입니다", "합니다", "싶어")))
 
 
 def _topic_score(question, terms, label, ticker, text):
