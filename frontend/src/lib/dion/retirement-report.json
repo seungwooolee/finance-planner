@@ -1,0 +1,185 @@
+{
+  "version": "DION-RETIREMENT-REPORT-1.0",
+  "preReserveAnnualKrw": "18250000",
+  "deltaAnnualKrw": "2500000",
+  "plans": [
+    {
+      "id": "KEEP",
+      "financialAssetsKrw": "500000000",
+      "debtKrw": "100000000",
+      "reserveKrw": "10000000",
+      "proposedKrw": "490000000",
+      "grossAnnualKrw": "18109000",
+      "debtInterestAnnualKrw": "6000000",
+      "afterInterestAnnualKrw": "12109000",
+      "positions": [
+        {
+          "label": "ACE 미국하이일드액티브(H)",
+          "currentKrw": "20000000",
+          "reserveKrw": "0",
+          "repayKrw": "0",
+          "proposedKrw": "20000000",
+          "rateBps": 695,
+          "annualKrw": "1390000"
+        },
+        {
+          "label": "KODEX 미국10년국채액티브(H)",
+          "currentKrw": "180000000",
+          "reserveKrw": "0",
+          "repayKrw": "0",
+          "proposedKrw": "180000000",
+          "rateBps": 417,
+          "annualKrw": "7506000"
+        },
+        {
+          "label": "국고채 5년물 직접 보유",
+          "currentKrw": "200000000",
+          "reserveKrw": "0",
+          "repayKrw": "0",
+          "proposedKrw": "200000000",
+          "rateBps": 350,
+          "annualKrw": "7000000"
+        },
+        {
+          "label": "KODEX KOFR금리액티브(합성)",
+          "currentKrw": "40000000",
+          "reserveKrw": "0",
+          "repayKrw": "0",
+          "proposedKrw": "40000000",
+          "rateBps": 269,
+          "annualKrw": "1076000"
+        },
+        {
+          "label": "KODEX CD금리액티브(합성)",
+          "currentKrw": "30000000",
+          "reserveKrw": "0",
+          "repayKrw": "0",
+          "proposedKrw": "30000000",
+          "rateBps": 285,
+          "annualKrw": "855000"
+        },
+        {
+          "label": "KODEX 머니마켓액티브",
+          "currentKrw": "30000000",
+          "reserveKrw": "10000000",
+          "repayKrw": "0",
+          "proposedKrw": "20000000",
+          "rateBps": 141,
+          "annualKrw": "282000"
+        }
+      ],
+      "shocks": [
+        {
+          "id": "S1",
+          "rateBps": 50,
+          "spreadBps": 0,
+          "lossKrw": "10952293",
+          "lossBps": 219
+        },
+        {
+          "id": "S2",
+          "rateBps": 100,
+          "spreadBps": 100,
+          "lossKrw": "22488216",
+          "lossBps": 450
+        },
+        {
+          "id": "S3",
+          "rateBps": 200,
+          "spreadBps": 300,
+          "lossKrw": "45224152",
+          "lossBps": 904
+        }
+      ]
+    },
+    {
+      "id": "REPAY",
+      "financialAssetsKrw": "400000000",
+      "debtKrw": "0",
+      "reserveKrw": "10000000",
+      "proposedKrw": "390000000",
+      "grossAnnualKrw": "14609000",
+      "debtInterestAnnualKrw": "0",
+      "afterInterestAnnualKrw": "14609000",
+      "positions": [
+        {
+          "label": "ACE 미국하이일드액티브(H)",
+          "currentKrw": "20000000",
+          "reserveKrw": "0",
+          "repayKrw": "0",
+          "proposedKrw": "20000000",
+          "rateBps": 695,
+          "annualKrw": "1390000"
+        },
+        {
+          "label": "KODEX 미국10년국채액티브(H)",
+          "currentKrw": "180000000",
+          "reserveKrw": "0",
+          "repayKrw": "0",
+          "proposedKrw": "180000000",
+          "rateBps": 417,
+          "annualKrw": "7506000"
+        },
+        {
+          "label": "국고채 5년물 직접 보유",
+          "currentKrw": "200000000",
+          "reserveKrw": "0",
+          "repayKrw": "100000000",
+          "proposedKrw": "100000000",
+          "rateBps": 350,
+          "annualKrw": "3500000"
+        },
+        {
+          "label": "KODEX KOFR금리액티브(합성)",
+          "currentKrw": "40000000",
+          "reserveKrw": "0",
+          "repayKrw": "0",
+          "proposedKrw": "40000000",
+          "rateBps": 269,
+          "annualKrw": "1076000"
+        },
+        {
+          "label": "KODEX CD금리액티브(합성)",
+          "currentKrw": "30000000",
+          "reserveKrw": "0",
+          "repayKrw": "0",
+          "proposedKrw": "30000000",
+          "rateBps": 285,
+          "annualKrw": "855000"
+        },
+        {
+          "label": "KODEX 머니마켓액티브",
+          "currentKrw": "30000000",
+          "reserveKrw": "10000000",
+          "repayKrw": "0",
+          "proposedKrw": "20000000",
+          "rateBps": 141,
+          "annualKrw": "282000"
+        }
+      ],
+      "shocks": [
+        {
+          "id": "S1",
+          "rateBps": 50,
+          "spreadBps": 0,
+          "lossKrw": "8706646",
+          "lossBps": 218
+        },
+        {
+          "id": "S2",
+          "rateBps": 100,
+          "spreadBps": 100,
+          "lossKrw": "18055108",
+          "lossBps": 451
+        },
+        {
+          "id": "S3",
+          "rateBps": 200,
+          "spreadBps": 300,
+          "lossKrw": "36584076",
+          "lossBps": 915
+        }
+      ]
+    }
+  ]
+}

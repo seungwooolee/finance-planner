@@ -4,11 +4,15 @@ import type { ActionBasis } from '@/components/dion/result-action-consultation';
 
 const request = (path: string, method: string, body: unknown, token: string) => requestJson(path, {method, body, token});
 
+const retirementCasePrefix = "test-retirement-monthly-";
+export const isRetirementMonthlyCase = (id: string) => id.startsWith(retirementCasePrefix);
+
 // One explicit save intent owns a new case and stable keys, including retries
 // after an ambiguous response. Existing customer cases are never overwritten.
-export function previewSaveIntent(document: Document, basis: ActionBasis, fictional: boolean) {
-  return {document: clone(document), basis, fictional,
-    id: `${fictional ? 'test-preview' : 'consultation'}-${crypto.randomUUID()}`,
+export function previewSaveIntent(document: Document, basis: ActionBasis, fictional: boolean, purpose: "consultation" | "retirement-monthly" = "consultation") {
+  const prefix = purpose === "retirement-monthly" ? retirementCasePrefix : fictional ? "test-preview-" : "consultation-";
+  return {document: clone(document), basis, fictional, purpose,
+    id: `${prefix}${crypto.randomUUID()}`,
     created: false, version: 0, next: 0, runId: ''};
 }
 
