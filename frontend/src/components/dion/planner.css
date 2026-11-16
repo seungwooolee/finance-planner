@@ -381,6 +381,9 @@
 .dion-app .d-results .d-legend strong{white-space:normal;overflow-wrap:anywhere}
 .dion-app .d-results .d-legend strong small{font-size:11px;color:var(--d-result-muted)}
 .dion-app .d-results .d-asset-composition .d-inline-note{background:transparent;border-top:1px solid var(--d-line);padding:14px 0 0;line-height:1.8;color:var(--d-result-muted)}
+/* 결과 화면 터치 영역 하한 — 컴포넌트별 규칙이 있으면 그쪽이 우선 */
+.dion-app :where(.d-results details>summary){min-height:44px;padding-block:10px}
+.dion-app :where(.d-results button){min-height:44px}
 .dion-app .d-results .d-fold>summary{min-height:44px;align-content:center;font-size:13px;color:var(--d-primary)}
 .dion-app .d-results .d-asset-empty{background:var(--d-soft);border-left:3px solid #a5afc1;border-radius:8px;padding:20px}
 .dion-app .d-results .d-cashflow-card>p{max-width:78ch;font-size:13px;line-height:1.9}
@@ -601,7 +604,8 @@
 .dion-app .d-result-next{display:flex;justify-content:flex-end;align-items:center;padding:24px 0;margin-top:28px;border-top:1px solid var(--d-line);break-inside:avoid}
 .dion-app .d-result-next .d-primary{min-height:48px;white-space:normal}
 @media(max-width:760px){
-  .dion-app .d-personal-flow li{flex-direction:column;gap:8px;padding:11px}
+  .dion-app .d-personal-flow{grid-template-columns:minmax(0,1fr)}
+  .dion-app .d-personal-flow li{gap:10px;padding:14px}
   .dion-app .d-result-next{align-items:stretch;flex-direction:column;gap:14px;padding:22px 0}
   .dion-app .d-goal-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
   .dion-app .d-goal-table,.dion-app .d-goal-table tbody,.dion-app .d-goal-table tr,.dion-app .d-goal-table th,.dion-app .d-goal-table td{display:block;width:100%}
@@ -716,7 +720,8 @@
 .dion-app .d-basis-detail[open]>summary{margin-bottom:4px}
 /* 2026-11-15 UI 점검: 모바일에서 고정 ‘가상 사례’ 버튼이 본문·하단 버튼을 가리지 않게 */
 @media(max-width:640px){
-  .d-scenario-launch{left:12px;bottom:12px;min-height:40px;padding:8px 12px;font-size:12px}
+  .d-scenario-launch{left:12px;bottom:10px;min-height:44px;padding:8px 12px;font-size:12px}
+  .dion-app[data-view="results"]::after{height:64px}
   .d-main{padding-bottom:96px}
 }
 
