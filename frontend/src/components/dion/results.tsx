@@ -39,6 +39,7 @@ import { PortfolioReviewFlow, sameReviewBasis } from "./portfolio-review-flow";
 import type { ChatReviewHandoff } from "./chat-survey";
 import { type AdoptionView, thisMonth } from "./plan-checkin";
 import { RetirementGoals, RetirementReport, type RetirementAlternative } from "./retirement-report";
+import { RetirementFinalHoldings } from "./retirement-final-holdings";
 import type { ReviewBasis, PortfolioReview } from "@/lib/dion/portfolio-review";
 
 const stateLabels: Record<string,string> = { CALCULATED:"계산됨", PARTIAL:"부분 결과", NEEDS_INPUT:"정보 보완 필요", INVALID_INPUT:"입력 확인 필요", NOT_SUPPORTED:"미지원", NOT_IMPLEMENTED:"준비 중", NOT_APPLICABLE:"해당 없음", NOT_REQUESTED:"요청하지 않음", REVIEW_ONLY:"검토 목록", INTERNAL_ERROR:"계산 오류", INFEASIBLE:"월 예산 부족", CALCULATED_MONTHLY_SCENARIO:"월 예산 시나리오" };
@@ -247,7 +248,10 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
         onClick={()=>onSaveProducts(productSelection)}>{actionFlow?.fictional?"예시 검토안 저장":"상품을 반영한 결과 저장"}</button></div>}
       <ResultDashboard after={metricValue(flow,"after_existing_contributions_krw")} row={selectedRow} month={selectedMonth} review={selectedReview}
       plan={selectedPlan} portfolio={selectedPortfolio} generated={generated} evaluationOn={textValue(object(result.context).evaluation_on)} goalPlan={goalPlan}
-      portfolioSummary={<FinalPortfolio generated={generated} plan={selectedPlan} row={selectedRow} review={selectedReview} portfolio={selectedPortfolio} assetReference={assetReference(true)}/>} returnChart={<InvestmentReturnChart key={`${view.inputHash}:${view.runId}:${selectedPlan}:${selectedPortfolio}:${comparison.revision}`} view={view} plan={selectedPlan} portfolio={selectedPortfolio} revision={comparison.revision} blocked={stale||comparison.blocked} token={token} caseId={caseId}/>}
+      portfolioSummary={<>
+        {retirementDemo&&<RetirementFinalHoldings choice={retirementAlternative} onCompare={showRetirementReport}/>}
+        <FinalPortfolio generated={generated} plan={selectedPlan} row={selectedRow} review={selectedReview} portfolio={selectedPortfolio} assetReference={assetReference(true)}/>
+      </>} returnChart={<InvestmentReturnChart key={`${view.inputHash}:${view.runId}:${selectedPlan}:${selectedPortfolio}:${comparison.revision}`} view={view} plan={selectedPlan} portfolio={selectedPortfolio} revision={comparison.revision} blocked={stale||comparison.blocked} token={token} caseId={caseId}/>}
       status={<ChoiceStatus plan={selectedPlan} portfolio={selectedPortfolio} draft={comparison.draft}
       stored={comparison.saved} adoption={adoption} runId={view.runId} evaluationOn={textValue(object(result.context).evaluation_on)}
       planMonth={textValue(selectedRow?.period)} recordMonth={recordMonth??thisMonth()} onJump={()=>tasksRef.current?.scrollIntoView({behavior:"smooth",block:"start"})}/>}
@@ -264,7 +268,7 @@ export function Results({view,deep,tab,setTab:changeTab,stale,onEdit,onRecalcula
       onEdit={id=>{closeConsultation?.();onEdit(id);}} onResult={n=>{closeConsultation?.();setTab(n);}}/>,consultationTarget)}
     {tab===4&&retirementDemo&&<section className="d-card" aria-label="가상 월별 재무계획">
       <h2>가상 월별 재무계획 저장·채택</h2>
-      <p>대출을 유지하는 월별 계획을 별도 가상 사례에 저장해요. 상환안과 보유상품 운용안은 위의 비교 화면에서 확인해요.</p>
+      <p>대출을 유지하는 월별 계획을 별도 가상 사례에 저장해요. 선택한 보유자산 운용안은 위의 은퇴기 보유자산 포트폴리오에 표시돼요.</p>
       <PlanSelector selected={selectedPlan} onSelect={setSelectedPlan}/>
       {retirementDemo.saveMonthly&&<button type="button" className="d-primary" disabled={!monthlyCandidateReady||retirementDemo.saving}
         onClick={()=>retirementDemo.saveMonthly?.(selectedPlan)}>{retirementDemo.saving?"가상 사례 저장 중…":"가상 월별 재무계획 저장"}</button>}
