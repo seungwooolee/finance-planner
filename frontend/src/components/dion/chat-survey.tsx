@@ -9,7 +9,8 @@ import type { ViewResult } from "./results";
 import type { AgentSession } from "./agent-consultation";
 
 export type SurveyLine={role:"user"|"assistant";content:string};
-type SourceLink = {title: string; url: string; effective_from: string};
+type SourceLink = {title: string; url: string; effective_from: string; source_kind?: string};
+const sourceLabels: Record<string,string> = {OFFICIAL_DOCUMENT:"공식 자료", REVIEWED_SUMMARY:"검토 요약", REVIEWED_SERVICE_POLICY:"DION 내부 검토"};
 type Line=SurveyLine&{source?:string;id?:string;delivery?:"pending"|"failed";sources?:SourceLink[]};
 export type ChatReviewHandoff = {session: AgentSession; requestKey?: string; changes: AnswerChange[]; followups: ReviewFollowup[]};
 type Retry={id:string;text:string;history:SurveyLine[]};
@@ -150,7 +151,7 @@ export function ChatSurvey({doc,token,view,stale,busy,selectedCaseId,resumeSessi
  return <section className="d-chat-only" aria-label="DION과 대화">
   <div ref={log} className="d-chat-stream" role="log" aria-label="DION 대화 내역" aria-live="polite" aria-relevant="additions" tabIndex={0}>
    {!history.length&&<article className="d-chat-message assistant"><p>안녕하세요, DION이에요. 함께 설문에 답하고 결과를 살펴볼게요. 무엇부터 이야기할까요?</p></article>}
-   {history.map((line,i)=><article key={i} className={`d-chat-message ${line.role}`} aria-label={line.role==="user"?"나":"DION"}><p>{line.content}</p>{!!line.sources?.length&&<details><summary>등록 근거 보기</summary><ul>{line.sources.map(s=><li key={s.url}><a href={s.url} target="_blank" rel="noreferrer">{s.title}</a> · 적용 {s.effective_from}</li>)}</ul></details>}{line.delivery==="failed"&&<span className="d-chat-delivery">응답 확인 필요</span>}</article>)}
+   {history.map((line,i)=><article key={i} className={`d-chat-message ${line.role}`} aria-label={line.role==="user"?"나":"DION"}><p>{line.content}</p>{!!line.sources?.length&&<details><summary>등록 근거 보기</summary><ul>{line.sources.map(s=><li key={s.url}><a href={s.url} target="_blank" rel="noreferrer">{s.title}</a>{s.source_kind&&Object.hasOwn(sourceLabels,s.source_kind)?` · ${sourceLabels[s.source_kind]}`:""} · 적용 {s.effective_from}</li>)}</ul></details>}{line.delivery==="failed"&&<span className="d-chat-delivery">응답 확인 필요</span>}</article>)}
    {!token?<article className="d-chat-message assistant"><p>로그인하면 대화를 시작할 수 있어요. 작성한 메시지는 유지할게요.</p><button type="button" onClick={onLogin}>로그인</button></article>:!approved?<article className="d-chat-message assistant"><p>AI 답변을 위해 최근 대화와 확인한 답변·결과 근거를 OnePort에 전송해요. 대화는 새로고침하면 사라지고, 직접 저장하면 결과와 함께 보관돼요.</p><button type="button" onClick={()=>{setConsent(token);input.current?.focus();}}>동의하고 대화 시작</button></article>:null}
    {pending&&<article className="d-chat-message assistant">
     <button type="button" disabled={blocked||pending.doc!==doc||!canApplyChatBatch(doc,pending.candidates)} onClick={confirm}>{stagesPending?"변경안에 담기":"확인하고 반영"}</button>
