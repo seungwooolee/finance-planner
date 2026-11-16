@@ -108,15 +108,15 @@ async function confirmRetirementIncome({doc, amend, confirm}: ReturnType<typeof 
     assumption_text:"시연용 10월의 월 소득·생활비와 기준일 자산잔액을 12월과 이듬해 1월에 사용하며 수익률은 0%로 놓는다."});
 }
 
-function confirmRetirementAssets({doc, amend, confirm}: ReturnType<typeof demoCase>, asOf: string) {
+function confirmRetirementAssets({doc, amend, confirm}: ReturnType<typeof demoCase>, asOf: string, reviewExample: boolean) {
   const owners = doc.context.included_owner_ids;
   // Part of the reported money-market balance serves as opening cash in the demo; total financial assets stay at 500m KRW.
   const positions = list(fieldValue(doc,"F06","financial_assets")).map(asset => ({
     ...asset, asset_id:asset.asset_id, owner_refs:owners, share_basis:"SCOPE_SHARE", valuation_on:asOf,
-    market_value_krw:asset.asset_id === "reported-asset-6" ? assumed("1650") : asset.market_value_krw,
+    market_value_krw:asset.asset_id === "reported-asset-6" ? assumed(reviewExample ? "1600" : "1650") : asset.market_value_krw,
   }));
   const bank = {asset_id:"demo-cash", label:"시연용 현금 계좌", owner_refs:owners, asset_class:"CASH",
-    share_basis:"SCOPE_SHARE", market_value_krw:assumed("1350"), amount_status:"KNOWN", valuation_on:asOf,
+    share_basis:"SCOPE_SHARE", market_value_krw:assumed(reviewExample ? "1400" : "1350"), amount_status:"KNOWN", valuation_on:asOf,
     withdrawal_constraint:"NONE_CONFIRMED", available_date:asOf};
   const assets = [...positions, bank];
   amend("F06", {financial_assets_detail_status:field("COMPLETE"), financial_assets:json(assets)});
@@ -127,7 +127,7 @@ function confirmRetirementAssets({doc, amend, confirm}: ReturnType<typeof demoCa
   amend("F08", {real_estate_assets:json(property.map(asset => ({...asset, valuation_on:asOf}))),
     real_estate_coverage:field("complete")});
   amend("NEW-06", {reservations:json([
-    {reservation_id:"protection", asset_ref:"demo-cash", purpose:"PROTECTION", amount:assumed("1000")},
+    {reservation_id:"protection", asset_ref:"demo-cash", purpose:"PROTECTION", amount:assumed(reviewExample ? "1050" : "1000")},
     {reservation_id:"demo-operating", asset_ref:"demo-cash", purpose:"OPERATING", amount:assumed("350")},
   ])});
   confirm("NEW-06", {coverage:"complete"});
@@ -135,13 +135,13 @@ function confirmRetirementAssets({doc, amend, confirm}: ReturnType<typeof demoCa
 
 async function retirementDemo(source: Scenario, reviewExample: boolean): Promise<Scenario> {
   const asOf = "2026-11-13";
-  const demo = demoCase(source, asOf, reviewExample ? "v4" : "v3");
+  const demo = demoCase(source, asOf, reviewExample ? "v5" : "v3");
   const {doc, amend, confirm, datedGoal, ref} = demo;
   doc.context.projection_start = "2026-12-01";
   doc.context.projection_end = "2027-01-31";
   amend("NEW-01", {scope_acknowledged:field(true,"BOOLEAN"), owner_confirmation_ref:field(ref("NEW-01"))});
   await confirmRetirementIncome(demo);
-  confirmRetirementAssets(demo, asOf);
+  confirmRetirementAssets(demo, asOf, reviewExample);
 
   const debts = list(fieldValue(doc,"F09+F10+D08","debts"));
   amend("F09+F10+D08", {debts:json(debts.map(debt => ({
@@ -181,7 +181,9 @@ async function retirementDemo(source: Scenario, reviewExample: boolean): Promise
     assumptions:[
       "진단일·평가일은 2026-11-13, 소득·지출 기준월은 10월, 계획 기간은 2026년 12월과 2027년 1월로 가정해요.",
       "가구 범위 동의와 보유·채무 범위를 시연용으로 확인했다고 가정해요. 월 소득 500만원, 생활비 300만원, 이자 50만원, 기존 납입 10만원을 유지하고 별도 소득을 더하지 않아요.",
-      "금융자산 5억원 중 엑셀의 머니마켓 3,000만원을 시연에서 ETF 1,650만원과 이미 현금화된 1,350만원으로 나눠요. 현금 중 비상자금 1,000만원과 운영자금 350만원을 배정해요.",
+      reviewExample
+        ? "12월 시작 전에 머니마켓 3,000만원 중 1,400만원을 현금화했다고 가정해요. 월별 계획에 비상자금 1,050만원(보고서 기준보다 50만원 추가)과 운영자금 350만원을 확보해요. 총 금융자산은 5억원이에요."
+        : "금융자산 5억원 중 엑셀의 머니마켓 3,000만원을 시연에서 ETF 1,650만원과 이미 현금화된 1,350만원으로 나눠요. 현금 중 비상자금 1,000만원과 운영자금 350만원을 배정해요.",
       "생활비 전액을 필수로 보고, 대출 원금은 그대로 두고 이자만 내며, 기존 10만원을 매월 15일 세후 소득에서 납입한다고 가정해요.",
       "시연용 주거 정비비 60만원은 두 달간 30만원씩 준비해요.",
       investmentAssumption,

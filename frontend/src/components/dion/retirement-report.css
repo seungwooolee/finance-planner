@@ -32,6 +32,34 @@
   font-weight: 700;
 }
 
+.d-retirement-holdings-mode {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  min-width: 0;
+  margin: 12px 0 16px;
+  padding: 8px 12px 12px;
+  border: 1px solid var(--d-line);
+  border-radius: 10px;
+}
+
+.d-retirement-holdings-mode input {
+  accent-color: #404db7;
+}
+
+.d-retirement-holdings-charts .d-donut {
+  margin: 12px auto;
+}
+
+.d-retirement-holdings-charts .d-legend li > span {
+  overflow-wrap: anywhere;
+}
+
+.d-retirement-holdings-charts figure > p {
+  margin: 12px 0 0;
+  font-size: 13px;
+}
+
 .d-retirement-bar-row {
   display: grid;
   gap: 4px;
